@@ -1,39 +1,41 @@
 import React from 'react';
 
 const Ladder = () => {
+	var objects = {};
 	return (
 		<table className="tg">
 			<tbody>
-			  <tr>
-			    <th className="tg-0pky"></th>
-			    <th className="tg-0pky"></th>
-			    <th className="tg-0pky"></th>
-			    <th className="tg-0pky"></th>
-			    <th className="tg-0pky"></th>
-			  </tr>
-			  <tr>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			  </tr>
-			  <tr>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			  </tr>
-			  <tr>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			    <td className="tg-0pky"></td>
-			  </tr>
+				<LadderHeader/>
+				<LadderHeader/>
+				<LadderRow/>
+				<LadderRow/>
+				<LadderRow/>
 			</tbody>
 		</table>
+	);
+};
+
+const LadderHeader = () => {
+	return (
+		<tr>
+			<th className="tg-0pky ladder-header"></th>
+			<th className="tg-0pky ladder-header"></th>
+			<th className="tg-0pky ladder-header"></th>
+			<th className="tg-0pky ladder-header"></th>
+			<th className="tg-0pky ladder-header"></th>
+		</tr>
+	);
+};
+
+const LadderRow = () => {
+	return (
+		<tr>
+			<th className="tg-0pky"></th>
+			<th className="tg-0pky"></th>
+			<th className="tg-0pky"></th>
+			<th className="tg-0pky"></th>
+			<th className="tg-0pky"></th>
+		</tr>
 	);
 };
 
