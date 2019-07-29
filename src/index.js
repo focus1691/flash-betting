@@ -1,25 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Ladder from './Ladder';
-import Faker from 'faker';
+import { BrowserRouter, Route } from 'react-router-dom';
+import Login from './tpages/Login/Login';
 import openSocket from 'socket.io-client';
 
 const socket = openSocket('http://localhost:8000');
-
 const App = () => {
-	return createLadder();
-};
-
-const createLadder = () => {
-	var randomName = Faker.name.findName();
-	console.log(randomName);
 	return (
-		<div>
-		<UserItem name="josh" balance="224"/>
-		<Ladder/>
-		<Ladder/>
+		<div style={{justifyContent: 'center', display: "flex"}}>
+			<Route path='/' component = {Login} />
 		</div>
-	);
+	)
 };
 
-ReactDOM.render(<App/>, document.querySelector('#root'));
+
+ReactDOM.render((
+	<BrowserRouter>
+	  <App />
+	</BrowserRouter>
+), document.getElementById('root'));
