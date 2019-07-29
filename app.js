@@ -1,19 +1,29 @@
-/* User details */
-const USERNAME = '';
-const PASSWORD = '';
-const APPKEY = '';
-
-/* Authentication */
+// The BetFair session class below contains all the methods to call the
+// BetFair API. Some samples are commented below to demonstrate their utility.
 const BetFairSession = require('./src/server/lib/session.js');
 
-/* Betting API */
-const BetFairBetting = require('./src/server/lib/betting-api/betting-api.js');
+/* User details */
+const USERNAME = 'joshbetting30@yahoo.com';
+const PASSWORD = 'dUgneBc]p6>V5wF,';
+const APPKEY = 'xLFc8VQDVulIigSx';
 
-/* Account API */
-const BetFairAccount = require('./src/server/lib/accounts-api/accounts-api.js');
+const express = require('express');
+const bodyParser = require('body-parser');
+const pino = require('express-pino-logger')();
 
-/* Streaming API */
-const BetFairStreaming = require('./src/server/lib/stream-api/stream-api.js');
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(pino);
+
+app.get('/api/greeting', (req, res) => {
+  const name = req.query.name || 'World';
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+});
+
+app.listen(3001, () =>
+  console.log('Express server is running on localhost:3001')
+);
 
 class App {
 	constructor () {
@@ -22,70 +32,41 @@ class App {
 	start () {
 		this.bfSession.login(USERNAME, PASSWORD).then((result) => {
 
+			// An sample filter used to call BetFair method 'listMarketCatalogue'
+			// with the event type (horse racing = 7). Normally you would call
+			// 'listEvents' to get the ids of the event you want to search.
+			var exampleFilter = {
+			    filter: {
+			        "eventTypeIds": [
+			            7
+			        ],
+			        "marketCountries": [
+			            "GB"
+			        ],
+			        "marketTypeCodes": [
+			            "WIN"
+			        ],
+			        "marketStartTime": {
+			            "from": new Date().toJSON()
+			        }
+			    },
+			    "sort": "FIRST_TO_START",
+			    "maxResults": "1",
+			    "marketProjection": [
+			        "RUNNER_DESCRIPTION"
+			    ]
+			}
+			// Query to find market information for the example filter
+			this.bfSession.listMarketCatalogue(exampleFilter, function(err, res) {
+			    console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
+			});
 
-			// this.bfStreaming = new BetFairStreaming();
-			// this.bfStreaming.authenticate(APPKEY, this.bfSession.sessionKey);
-
-		// this.bfSession.createDeveloperAppKeys({filter: {appName: 'sportbetting'}}, function(err, res) {
-		// 	console.log(res.result);
-		// });
-
-		this.bfSession.getVendorClientId({filter: {}}, function(err, res) {
-			console.log(res.result);
-		});
-
-		// this.bfSession.listMarketCatalogue({
-		// 	filter: {
-		// 		"eventTypeIds": [
-		// 			7
-		// 		],
-		// 		"marketCountries": [
-		// 			"GB"
-		// 		],
-		// 		"marketTypeCodes": [
-		// 			"WIN"
-		// 		],
-		// 		"marketStartTime": {
-		// 			"from": new Date().toJSON()
-		// 		}
-		// 	},
-		// 	"sort": "FIRST_TO_START",
-		// 	"maxResults": "1",
-		// 	"marketProjection": [
-		// 		"RUNNER_DESCRIPTION"
-		// 	]
-		// }, function(err, res) {
-		//     // console.log("listCurrentOrders err=%s duration=%s", err, res.duration / 1000);
-		//     // console.log("Request:%s\n", JSON.stringify(res.request, null, 2));
-		//     console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
-		//     // cb(err, res);
-		// });
-
-
-// var requestFilters = '{"filter":{"eventTypeIds": [' + eventId + '],"marketCountries":["GB"],"marketTypeCodes":["WIN"],"marketStartTime":{"from":"'+jsonDate+'"}},"sort":"FIRST_TO_START","maxResults":"1","marketProjection":["RUNNER_DESCRIPTION"]}';
-
-
-		// 	// Account API
-		// 	this.bfAccount = new BetFairAccount(APPKEY, this.bfSession.sessionKey);
-		// 	this.bfAccount.getAccountFunds().bind(this.bfBetting).then(function(funds) {
-		// 		console.log(funds);
-		// 	});
-
-			// Betting API
-		// 	this.bfBetting = new BetFairBetting(APPKEY, this.bfSession.sessionKey);
-		// 	this.bfBetting.findEvents().bind(this.bfBetting).then(function(events) {
-		// 		this.events = events;
-		// 		return this.getNextAvailableHorseRace(this.events);
-		// 		// Get next Horse Race
-		// 	}).then(function (horseRace) {
-		// 		this.horseRace = horseRace.result;
-		// 		console.log(this.horseRace[0]);
-		// 	});
+			// A call to get the vendor id, which I think is required for O-auth
+			this.bfSession.getVendorClientId({filter: {}}, function(err, res) {
+				console.log(`vendor client id: ${res.result}`);
+			});
 		});
 	}
 }
 
 new App().start();
-
-// var bfStreaming = new BetFairStreaming();
-// bfStreaming.authenticate(APPKEY, bfSession.sessionKey);
