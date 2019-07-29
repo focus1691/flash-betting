@@ -29,13 +29,6 @@
 	vertical-align:top
 }
 
-body {
-}
-
-body, html {
-	height:100%;
-}
-
 table {
 	height: 100%;
 	float: left;

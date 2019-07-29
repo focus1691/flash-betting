@@ -1,0 +1,8 @@
+.modalInputContainer {
+    width: 20%;
+    height: 30%;
+    align-self: center;
+    min-height: 5%;
+    user-select: none;
+    
+}
