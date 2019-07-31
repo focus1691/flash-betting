@@ -5,7 +5,7 @@ const BetFairSession = require('./src/server/lib/session.js');
 /* User details */
 const USERNAME = 'joshbetting30@yahoo.com';
 const PASSWORD = 'dUgneBc]p6>V5wF,';
-const APPKEY = 'xLFc8VQDVulIigSx';
+const APPKEY = '9ARELQ7SYtAsy7G4';
 
 const io = require('socket.io')(8000);
 
@@ -14,7 +14,6 @@ io.on('connection', (client) => {
 	console.log('connection');
 
 	this.bfSession = new BetFairSession(APPKEY);
-	console.log(this.bfSession);
 
 	this.bfSession.login(USERNAME, PASSWORD).then((result) => {
 
@@ -44,17 +43,18 @@ io.on('connection', (client) => {
 		}
 		// Query to find market information for the example filter
 		this.bfSession.listMarketCatalogue(exampleFilter, function(err, res) {
-		    console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
+		    // console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
 		});
 
 		// A call to get the vendor id, which I think is required for O-auth
-		this.bfSession.getVendorClientId({filter: {}}, function(err, res) {
-			console.log(`vendor client id: ${res.result}`);
+		this.bfSession.getDeveloperAppKeys({filter: {}}, function(err, res) {
+			console.log(res.result[0]);
+			// console.log(`vendor client id: ${res}`);
 		});
 
 		// Account details
 		this.bfSession.getAccountFunds({filter: {}}, function(err, res) {
-			console.log(res.result);
+			// console.log(res.result);
 		});
 	});
 });

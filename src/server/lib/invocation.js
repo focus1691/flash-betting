@@ -52,7 +52,6 @@ class BetfairInvocation {
         if (api !== "accounts" && api !== "betting" && api != "heartbeat" && api != "scores") {
             throw new Error('Bad api parameter:' + api);
         }
-        //console.log(arguments);
 
         // input params
         this.api = api;
@@ -72,6 +71,16 @@ class BetfairInvocation {
             "params": this.params
         };
         this.response = null;
+    }
+
+    vendorAccessTokenInfo () {
+        this.apiEndpoint = BETFAIR_API_ENDPOINTS[0];
+        let request = {
+            "jsonrpc": "2.0",
+            "id": BetfairInvocation.jsonRpcId++,
+            "method": this.apiEndpoint.type + '/' + this.apiEndpoint.version + '/' + 'token',
+            "params": this.params
+        };
     }
 
     _executeEmulatedCall(cb = ()=> {}) {
@@ -102,7 +111,6 @@ class BetfairInvocation {
 
         switch (this.method) {
             case 'placeOrders':
-                //console.log('$', this.request.params);
                 emulator.placeOrders(this.request.params, (err, result) => {
                     sendResult('placeOrders', err, result, cb);
                 });
@@ -149,7 +157,6 @@ class BetfairInvocation {
 
         HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
             if (err) {
-                console.log('eee', err);
                 callback(err);
                 return;
             }

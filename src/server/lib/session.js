@@ -1,4 +1,3 @@
-// (C) 2016 Anton Zemlyanov, rewritten in JavaScript 6 (ES6)
 'use strict';
 var Promise = require("bluebird");
 
@@ -41,7 +40,6 @@ const API_ACCOUNT_METHODS = [
     'getDeveloperAppKeys',
     'getAccountDetails',
     'getAccountFunds',
-    'getDeveloperAppKeys',
     'getVendorClientId',
     'getVendorDetails',
     'getAccountStatement',
@@ -167,7 +165,6 @@ class BetfairSession {
             }
             let invocation = new BetfairInvocation(api, this.sessionKey, methodName, params);
             invocation.execute((err, result) => {
-                //console.log(methodName, 'error', err, 'result', result);
                 if (err) {
                     callback(err);
                     return;
