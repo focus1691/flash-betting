@@ -44,7 +44,8 @@ const API_ACCOUNT_METHODS = [
     'getVendorDetails',
     'getAccountStatement',
     'listCurrencyRates',
-    'transferFunds'
+    'transferFunds',
+    'token'
 ];
 
 // ************************************************************************

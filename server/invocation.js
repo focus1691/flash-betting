@@ -154,8 +154,8 @@ class BetfairInvocation {
         if (this.applicationKey) {
             httpOptions.headers['X-Application'] = this.applicationKey;
         }
-
         HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
+            console.log(result);
             if (err) {
                 callback(err);
                 return;
