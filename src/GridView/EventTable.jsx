@@ -1,8 +1,4 @@
 import React, {Component} from 'react';
-import Icon from './00077962.jpg';
-import VideoIcon from '../icons/video-player.png';
-import GreenTick from '../icons/checked.png';
-import RedCross from '../icons/error.png';
 
 export default class EventTable extends Component {
 	constructor(props) {
@@ -41,10 +37,10 @@ export default class EventTable extends Component {
 			<tr id="grid-header">
 				<th colspan="11">
 					<span>Turn One click on</span>
-					<img src={VideoIcon}/>
+					<img src={window.location.origin + '/icons/video-player.png'}/>
 					<h1>18:30 6f Class Stks Windsor</h1>
 					<span>Going in-play</span>
-					<img src={GreenTick}/>
+					<img src={window.location.origin + '/icons/checked.png'}/>
 					<span>Matched: 333,834</span>
 				</th>
 			</tr>
@@ -81,7 +77,7 @@ export default class EventTable extends Component {
 			return (
 				<tr>
 					<td className="grid-contender-detail-cell">
-						<img src={Icon}/>
+						<img src={window.location.origin + '/images/00077962.jpg'}/>
 						<span>5. Night Secret</span>
 						<span>2.04</span>
 						<span>0.80</span>

@@ -69,8 +69,9 @@ io.on('connection', (client) => {
 		// });
 
 		// Account details
-		// this.bfSession.getAccountFunds({filter: {}}, function(err, res) {
-			// console.log(res.result);
-		// });
+		this.bfSession.getAccountFunds({filter: {}}, function(err, res) {
+			console.log(res.result);
+			client.emit('balance', res.result.availableToBetBalance);
+		});
 	});
 });
