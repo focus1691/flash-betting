@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import BettingPanel from "./BettingPanel.jsx";
 
 class Ladder extends Component {
 	constructor(props) {

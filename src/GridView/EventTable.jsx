@@ -37,10 +37,10 @@ export default class EventTable extends Component {
 			<tr id="grid-header">
 				<th colspan="11">
 					<span>Turn One click on</span>
-					<img src={window.location.origin + '/icons/video-player.png'}/>
+					<img src={window.location.origin + '/icons/video-player.png'} alt={"Video"}/>
 					<h1>18:30 6f Class Stks Windsor</h1>
 					<span>Going in-play</span>
-					<img src={window.location.origin + '/icons/checked.png'}/>
+					<img src={window.location.origin + '/icons/checked.png'} alt={"Matched"}/>
 					<span>Matched: 333,834</span>
 				</th>
 			</tr>
@@ -77,7 +77,7 @@ export default class EventTable extends Component {
 			return (
 				<tr>
 					<td className="grid-contender-detail-cell">
-						<img src={window.location.origin + '/images/00077962.jpg'}/>
+						<img src={window.location.origin + '/images/00077962.jpg'} alt={"Chart"}/>
 						<span>5. Night Secret</span>
 						<span>2.04</span>
 						<span>0.80</span>

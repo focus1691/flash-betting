@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import useStyles from '../../Styles/Styles.jsx';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';

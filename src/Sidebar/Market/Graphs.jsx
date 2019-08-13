@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import useStyles from '../../Styles/Styles.jsx';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
@@ -14,7 +14,7 @@ const Graphs = () => {
 				</Typography>
 			</AppBar>
 			<div id="menu-graph">
-				<img src={window.location.origin + '/images/graph.png'}/>
+				<img alt={"Chart"} src={window.location.origin + '/images/graph.png'}/>
 			</div>
 		</div>
 	);

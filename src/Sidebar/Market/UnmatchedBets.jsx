@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import useStyles from '../../Styles/Styles.jsx';
@@ -15,15 +15,11 @@ const UnmatchedBets = () => {
 			</AppBar>
 			<table id="menu-unmatched-bets">
 				<tbody>
-					{}
+				
 				</tbody>
 			</table>
 		</div>
 	);
 }
-
-const renderUnmatchedBets = () => {
-
-};
 
 export default UnmatchedBets;
