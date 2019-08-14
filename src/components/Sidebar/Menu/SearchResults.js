@@ -1,25 +1,26 @@
-import React from 'react';
+import React from "react";
+import useStyles from '../../Styles/Styles';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
-import useStyles from '../../Styles/Styles.jsx';
 
-const UnmatchedBets = () => {
+
+const SearchResults = () => {
 	const classes = useStyles();
 
 	return (
 		<div>
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Unmatched Bets
+				Search Results
 				</Typography>
 			</AppBar>
-			<table id="menu-unmatched-bets">
+			<table>
 				<tbody>
-				
+					
 				</tbody>
 			</table>
 		</div>
 	);
 }
 
-export default UnmatchedBets;
+export default SearchResults;

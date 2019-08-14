@@ -4,7 +4,7 @@ const _ = require('lodash');
 const HttpRequest = require('./http_request.js');
 
 // BETFAIR API enpoints
-const BETFAIR_API_HOST = 'https://84.20.200.10:443';
+const BETFAIR_API_HOST = 'https://api.betfair.com';
 const BETFAIR_API_ENDPOINTS = {
     accounts: {
         type: "AccountAPING",
@@ -71,16 +71,6 @@ class BetfairInvocation {
             "params": this.params
         };
         this.response = null;
-    }
-
-    vendorAccessTokenInfo () {
-        this.apiEndpoint = BETFAIR_API_ENDPOINTS[0];
-        let request = {
-            "jsonrpc": "2.0",
-            "id": BetfairInvocation.jsonRpcId++,
-            "method": this.apiEndpoint.type + '/' + this.apiEndpoint.version + '/' + 'token',
-            "params": this.params
-        };
     }
 
     _executeEmulatedCall(cb = ()=> {}) {
@@ -154,6 +144,7 @@ class BetfairInvocation {
         if (this.applicationKey) {
             httpOptions.headers['X-Application'] = this.applicationKey;
         }
+        console.log('sess key invocation', this.sessionKey);
         HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
             if (err) {
                 callback(err);

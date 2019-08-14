@@ -1,23 +1,26 @@
 import React from 'react';
-import useStyles from '../../Styles/Styles.jsx';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
+import useStyles from '../../Styles/Styles';
 
-const Graphs = () => {
+const MatchedBets = () => {
 	const classes = useStyles();
+	console.log(classes);
 
 	return (
 		<div>
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Graphs
+				Matched Bets
 				</Typography>
 			</AppBar>
-			<div id="menu-graph">
-				<img alt={"Chart"} src={window.location.origin + '/images/graph.png'}/>
-			</div>
+			<table id="menu-matched-bets">
+				<tbody>
+					{}
+				</tbody>
+			</table>
 		</div>
 	);
-};
+}
 
-export default Graphs;
+export default MatchedBets;

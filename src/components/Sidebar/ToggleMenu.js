@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
-import Ladders from "./Market/Ladders.jsx";
-import UnmatchedBets from "./Market/UnmatchedBets.jsx";
-import MatchedBets from "./Market/MatchedBets.jsx";
-import ProfitLoss from "./Market/ProfitLoss.jsx";
-import Graph from "./Market/Graphs.jsx";
-import UserMarkets from "./Menu/UserMarkets.jsx";
-import AllSports from "./Menu/AllSports.jsx";
-import UserBets from "./Menu/UserBets.jsx";
-import SearchResults from "./Menu/SearchResults.jsx";
-import Settings from "./Settings.jsx";
+import Ladders from "./Market/Ladders";
+import UnmatchedBets from "./Market/UnmatchedBets";
+import MatchedBets from "./Market/MatchedBets";
+import ProfitLoss from "./Market/ProfitLoss";
+import Graph from "./Market/Graphs";
+import UserMarkets from "./Menu/UserMarkets";
+import AllSports from "./Menu/AllSports";
+import UserBets from "./Menu/UserBets";
+import SearchResults from "./Menu/SearchResults";
+import Settings from "./Settings";
 
 export default class ToggleMenu extends Component {
 	constructor(props) {

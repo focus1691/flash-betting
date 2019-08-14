@@ -68,7 +68,7 @@ const API_SCORES_METHODS = [
 class BetfairSession {
     // Constructor
     constructor(applicationKey, options={}) {
-        this.sessionKey = null;
+        this.sessionKey = 'Abb3/d2LvR7dvPxlMLFgnG8vgmHOFIp9ni0yg87HGyU=';
         this.applicationKey = applicationKey;
         BetfairInvocation.setApplicationKey(applicationKey);
 
@@ -128,12 +128,9 @@ class BetfairSession {
         return new Promise((res, rej) => {
             auth.loginInteractive(login, password, (err, result) => {
                 if (err) {
-                    // cb(err);
                     rej(this);
-                    // return;
                 }
-                this.sessionKey = result.sessionKey;
-                // cb(null, res);
+                if (result) this.sessionKey = result.sessionKey;
                 res(this);
             });
         });

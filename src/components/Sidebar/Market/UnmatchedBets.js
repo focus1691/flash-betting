@@ -1,20 +1,19 @@
-import React from "react";
-import useStyles from '../../Styles/Styles.jsx';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
+import useStyles from '../../Styles/Styles';
 
-
-const UserMarkets = () => {
+const UnmatchedBets = () => {
 	const classes = useStyles();
 
 	return (
 		<div>
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				My Markets
+				Unmatched Bets
 				</Typography>
 			</AppBar>
-			<table>
+			<table id="menu-unmatched-bets">
 				<tbody>
 				
 				</tbody>
@@ -23,4 +22,4 @@ const UserMarkets = () => {
 	);
 }
 
-export default UserMarkets;
+export default UnmatchedBets;

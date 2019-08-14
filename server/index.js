@@ -4,11 +4,9 @@ const BetFairSession = require('./session.js');
 
 /* User details */
 const USERNAME = 'joshbetting30@yahoo.com';
-const PASSWORD = 'K%xsf6*Y\'{N';
-const APPKEY = '9ARELQ7SYtAsy7G4';
+const PASSWORD = '!fBq2JiCDNrNfkj';
+const APPKEY = 'qI6kop1fEslEArVO';
 const io = require('socket.io')(8000);
-
-// http://identitysso.betfair.com/view/vendor-login?client_id=72532&response_type=code&redirect_uri=google
 
 io.on('connection', (client) => {
 	// Here you can start emitting events to the client 
@@ -16,20 +14,48 @@ io.on('connection', (client) => {
 
 	this.bfSession = new BetFairSession(APPKEY);
 
-	this.bfSession.login(USERNAME, PASSWORD).then((result) => {
-
-		var tokenFilter = {
-			filter: {
-				"client_id": "72532",
-				"client_secret": "d67440f4-c318-42c8-bba7-31cad08124d7",
-				"grant_type": "AUTHORIZATION_CODE",
-				"code": "CODE"
-			}
-		}
-
-		this.bfSession.token(tokenFilter, function(err, res) {
-			// console.log(res);
+	this.bfSession.login(USERNAME, PASSWORD).then((res) => {
+		console.log('sesss', this.bfSession);
+		this.bfSession.getDeveloperAppKeys({filter: {}}, function(err, res) {
+			// var vendorId = res.result[1].appVersions[0].vendorId;
+			// var vendorSecret = res.result[1].appVersions[0].vendorSecret;
+			console.log(res.result[1]);
 		});
+	}).bind(this);
+
+	client.on('login', (data) => {
+		this.bfSession.login(data.user, data.pass).then((res) => {
+			console.log('bf sess on login', this.bfSession);
+			console.log('login serv');
+			 client.emit('loggedIn', {sessionKey: res.sessionKey});
+		}).catch(err => client.emit('loggedIn', {error: err}));
+	});
+
+	client.on('get_account_funds', (data) => {
+		this.bfSession.sessionKey = data.sessionKey;
+		this.bfSession.getAccountFunds({filter: {}}, function(err, res) {
+
+			if (err) client.emit('balance', {error: err});
+			else client.emit('balance', {balance: res.result.availableToBetBalance});
+		}.bind(this));
+	});
+
+	client.on('request_access_token', (data) => {
+		// console.log('bf session', this.bfSession);
+		this.bfSession.sessionKey = data.sessionKey;
+		// console.log(this.bfSession.sessionKey);
+		var tokenFilter = {
+				"client_id": "74333,",
+				"grant_type": "AUTHORIZATION_CODE",
+				"client_secret": "6d912070-7cda-47c9-819f-20ea616fd35c",
+				"code": data.code
+			
+		}
+		this.bfSession.token(tokenFilter, function(err, res) {
+			console.log(res.error);
+			client.emit('access_token', res);
+		});
+	});
 
 		// An sample filter used to call BetFair method 'listMarketCatalogue'
 		// with the event type (horse racing = 7). Normally you would call
@@ -62,16 +88,8 @@ io.on('connection', (client) => {
 
 		// A call to get the vendor id, which I think is required for O-auth
 		// this.bfSession.getDeveloperAppKeys({filter: {}}, function(err, res) {
-		// 	var vendorId = res.result[0].appVersions[0].vendorId;
-		// 	var vendorSecret = res.result[0].appVersions[0].vendorSecret;
-		// 	console.log(vendorId, vendorSecret);
-		// 	console.log(`vendor client id: ${res}`);
+		// 	var vendorId = res.result[1].appVersions[0].vendorId;
+		// 	var vendorSecret = res.result[1].appVersions[0].vendorSecret;
 		// });
-
-		// Account details
-		this.bfSession.getAccountFunds({filter: {}}, function(err, res) {
-			console.log(res.result);
-			client.emit('balance', res.result.availableToBetBalance);
-		});
-	});
+	// });
 });

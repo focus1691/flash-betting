@@ -1,9 +1,9 @@
 import React from "react";
 import Drawer from "@material-ui/core/Drawer";
-import Account from "./Account.jsx";
-import Toolbar from "./Toolbar.jsx";
-import Event from "./Event.jsx";
-import ToggleMenu from "./ToggleMenu.jsx";
+import Account from "./Account";
+import Toolbar from "./Toolbar";
+import Event from "./Event";
+import ToggleMenu from "./ToggleMenu";
 
 const PermanentDrawerLeft = () => {
     return (

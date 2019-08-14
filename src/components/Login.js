@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -46,20 +46,25 @@ const useStyles = makeStyles(theme => ({
 export default (callback) => {
 
 	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [loggedIn, setLoggedIn] = useState(false);
+  const classes = useStyles();
 
-  console.log('logged in: ', loggedIn);
+  useEffect(() => {
+    socket.on('loggedIn', (data) => {
+      if (data.error) {
+        localStorage.removeItem("loggedIn", false);
+        localStorage.removeItem("sessionKey", false);
+      } else {
+        console.log('set');
+        localStorage.setItem("loggedIn", true);
+        localStorage.setItem("sessionKey", data.sessionKey);
 
-    socket.on('loggedIn', () => {
-      setLoggedIn(true);
-      console.log('login', loggedIn);
+        socket.off('loggedIn');
+      }
     });
-
-	const classes = useStyles();
-
-  if (loggedIn) return <Redirect to='/authentication' />
+  });
+  if (localStorage.getItem("sessionKey")) return <Redirect to='/authentication' />
 
   return (
     <Container component="main" maxWidth="xs">

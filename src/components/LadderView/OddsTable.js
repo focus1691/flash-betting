@@ -1,7 +1,7 @@
 import React from 'react';
-import ContenderDetail from "./ContenderDetails.jsx";
-import Ladder from "./Ladder.jsx";
-import BettingPanel from "./BettingPanel.jsx";
+import ContenderDetail from "./ContenderDetails";
+import Ladder from "./Ladder";
+import BettingPanel from "./BettingPanel";
 
 export default function OddsTable () {
 	return (

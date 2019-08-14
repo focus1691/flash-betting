@@ -75,7 +75,6 @@ class HttpRequest extends Stream {
         httpOptions.headers.cookie = cookieJar.serialize();
 
         let request = transport.request(httpOptions, (result) => {
-            //console.log("statusCode: ", result.statusCode, "headers: ", result.headers);
             this.statusCode = result.statusCode;
             this.contentType = result.headers['content-type'];
             this.cookies = result.headers['set-cookie'];

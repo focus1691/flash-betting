@@ -1,11 +1,11 @@
 import React, {useState} from "react";
-import Siderbar from "./Sidebar/Container.jsx";
-import HomeView from "./HomeView/index.jsx";
-import LadderView from "./LadderView/OddsTable.jsx";
-import GridView from "./GridView/EventTable.jsx";
+import Siderbar from "./Sidebar/Container";
+import HomeView from "./HomeView/index";
+import LadderView from "./LadderView/OddsTable";
+import GridView from "./GridView/EventTable";
 
 export default () => {
-	const [activeView, setActiveView] = useState(5); 
+	const [activeView, setActiveView] = useState(5);
 
     return (
     <div className="horizontal-scroll-wrapper">
