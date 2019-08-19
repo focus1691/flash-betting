@@ -9,11 +9,6 @@ const SearchResults = () => {
 
 	return (
 		<div>
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-				Search Results
-				</Typography>
-			</AppBar>
 			<table>
 				<tbody>
 					

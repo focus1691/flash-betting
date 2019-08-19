@@ -73,11 +73,11 @@ class BetfairInvocation {
         this.response = null;
     }
 
-    _executeEmulatedCall(cb = ()=> {}) {
+    _executeEmulatedCall(cb = () => { }) {
         let result = {};
         let emulator = BetfairInvocation.emulator;
 
-        let sendResult = (method, error, result, cb = ()=> {}) => {
+        let sendResult = (method, error, result, cb = () => { }) => {
             // log call
             if (BetfairInvocation.logger) {
                 BetfairInvocation.logger.info(method, {
@@ -92,7 +92,7 @@ class BetfairInvocation {
             // report result
             cb(null, {
                 request: this.request,
-                response: {error: error, result: result}, // TODO place response
+                response: { error: error, result: result }, // TODO place response
                 result: result,
                 error: error,
                 duration: 0
@@ -106,10 +106,10 @@ class BetfairInvocation {
                 });
                 break;
             case 'replaceOrders':
-                sendResult('replaceOrders', {error: 'not supported'}, cb);
+                sendResult('replaceOrders', { error: 'not supported' }, cb);
                 break;
             case 'updateOrders':
-                sendResult('updateOrders', {error: 'not supported'}, cb);
+                sendResult('updateOrders', { error: 'not supported' }, cb);
                 break;
             case 'cancelOrders':
                 emulator.cancelOrders(this.request.params, (err, result) => {
@@ -119,7 +119,7 @@ class BetfairInvocation {
         }
     }
 
-    execute(cb = () => {}) {
+    execute(cb = () => { }) {
         // if emulator is enabled, redirect orders methods there
         let emulator = BetfairInvocation.emulator;
         if (emulator && _.indexOf(ORDER_METHODS, this.method) >= 0) {

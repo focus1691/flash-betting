@@ -5,7 +5,7 @@ var cleanCss = require('gulp-clean-css');
 
 var styleSheets = ['public/css/main.css', 'public/css/home.css',
                    'public/css/ladder.css', 'public/css/grid.css',
-                   'public/css/sidebar.css'];
+                   'public/css/sidebar.css', 'public/css/menu.css'];
 
 gulp.task('pack-css', function () {    
     return gulp.src(styleSheets)

@@ -22,6 +22,18 @@ const useStyles = makeStyles(theme => ({
 const Ladders = () => {
 	const classes = useStyles();
 
+	const renderContenders = () => {
+		return (
+			<tr>
+				<td>Night Secret</td>
+				<td>2.04</td>
+				<td>8.40</td>
+				<td>2.06</td>
+				<td><input type="checkbox"/></td>
+			</tr>
+		);
+	};
+
 	return (
 		<div>
 			<AppBar className={classes.appBar} position="static">
@@ -38,18 +50,6 @@ const Ladders = () => {
 				</tbody>
 			</table>
 		</div>
-	);
-};
-
-const renderContenders = () => {
-	return (
-		<tr>
-			<td>Night Secret</td>
-			<td>2.04</td>
-			<td>8.40</td>
-			<td>2.06</td>
-			<td><input type="checkbox"/></td>
-		</tr>
 	);
 };
 

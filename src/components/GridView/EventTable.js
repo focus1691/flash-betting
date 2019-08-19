@@ -35,7 +35,7 @@ export default class EventTable extends Component {
 	renderTableHeader() {
 		return (
 			<tr id="grid-header">
-				<th colspan="11">
+				<th colSpan="11">
 					<span>Turn One click on</span>
 					<img src={window.location.origin + '/icons/video-player.png'} alt={"Video"}/>
 					<h1>18:30 6f Class Stks Windsor</h1>
@@ -52,10 +52,10 @@ export default class EventTable extends Component {
 				<th>
 					<span>Market Cashout</span>
 				</th>
-				<th colspan="1">
+				<th colSpan="1">
 				</th>
 
-				<th colspan="1">
+				<th colSpan="1">
 				</th>
 				<th></th>
 				<th><span>Back</span></th>

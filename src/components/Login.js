@@ -50,6 +50,8 @@ export default (callback) => {
 
   const classes = useStyles();
 
+  localStorage.clear();
+
   useEffect(() => {
     socket.on('loggedIn', (data) => {
       if (data.error) {
@@ -61,6 +63,8 @@ export default (callback) => {
         localStorage.setItem("sessionKey", data.sessionKey);
 
         socket.off('loggedIn');
+
+        return <Redirect to='/authentication' />
       }
     });
   });

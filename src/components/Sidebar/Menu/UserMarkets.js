@@ -9,11 +9,6 @@ const UserMarkets = () => {
 
 	return (
 		<div>
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-				My Markets
-				</Typography>
-			</AppBar>
 			<table>
 				<tbody>
 				

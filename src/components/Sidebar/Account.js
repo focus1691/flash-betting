@@ -4,10 +4,11 @@ import useInterval from 'react-useinterval';
 const Account = () => {
 	const [balance, setBalance] = useState(424.24);
 	const [time, setTime] = useState(new Date().toLocaleString());
+	const ONE_SECOND = 1000;
 
 	useInterval(() => {
 		setTime(new Date().toLocaleString());
-	}, 1000);
+	}, ONE_SECOND);
 
 	return (
 	  <div id="sidebar-header">

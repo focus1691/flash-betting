@@ -8,11 +8,6 @@ const UserBets = () => {
 
 	return (
 		<div>
-		<AppBar className={classes.appBar} position="static">
-			<Typography variant="h6" className={classes.title}>
-			Active Bets
-			</Typography>
-			</AppBar>
 			<table>
 				<tbody>
 
