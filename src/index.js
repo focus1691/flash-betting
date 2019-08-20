@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import sportReducer from "./reducers/sportReducer";
-import authReducer from "./reducers/authReducer";
+import accountReducer from "./reducers/accountReducer";
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk'
 import { BrowserRouter, Route } from "react-router-dom";
@@ -18,7 +18,7 @@ const socket = openSocket("http://localhost:8000");
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
-  auth: authReducer,
+  account: accountReducer,
   sports: sportReducer
 });
 

@@ -12,3 +12,10 @@ export const setBalance = balance => {
         payload: balance
     }
 };
+
+export const setTime = time => {
+    return {
+        type: "UPDATE_TIME",
+        payload: time
+    }
+};

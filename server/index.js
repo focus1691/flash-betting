@@ -9,25 +9,33 @@ const APPKEY = 'qI6kop1fEslEArVO';
 const io = require('socket.io')(8000);
 
 io.on('connection', (client) => {
-	// Here you can start emitting events to the client 
-	console.log('connection');
-
 	this.bfSession = new BetFairSession(APPKEY);
 
+	client.on('load_session', data => {
+		this.bfSession.setActiveSession(data.sessionKey);
+	});
+
 	client.on('login', (data) => {
-		this.bfSession.login(USERNAME, PASSWORD).then((res) => {
+		this.bfSession.login(data.user, data.pass).then((res) => {
 			client.emit('loggedIn', { sessionKey: res.sessionKey });
 		}).bind(this).catch(err => client.emit('loggedIn', { error: err }));
 	});
 
-	client.on('get_account_funds', (data) => {
-		this.bfSession.sessionKey = data.sessionKey;
+	client.on('get_account_balance', () => {
 		this.bfSession.getAccountFunds({ filter: {} }, function (err, res) {
-
-			if (err) client.emit('balance', { error: err });
-			else client.emit('balance', { balance: res.result.availableToBetBalance });
+			console.log(res);
+			if (err) client.emit('account_balance', { error: err });
+			else client.emit('account_balance', { balance: res.result.availableToBetBalance });
 		}.bind(this));
 	});
+
+	client.on('get_account_details', () => {;
+		this.bfSession.getAccountDetails({ filter: {} }, function (err, res) {
+			if (err) client.emit('account_details', { error: err });
+			else client.emit('account_details', { details: res.result.firstName });
+		}.bind(this));
+	});
+
 
 	client.on('request_access_token', (data) => {
 		this.bfSession.sessionKey = data.sessionKey;
@@ -43,13 +51,11 @@ io.on('connection', (client) => {
 		});
 	});
 
-	client.on('get_all_sports', () => {
-		this.bfSession.login(USERNAME, PASSWORD).then((res) => {
-			console.log('logged in');
-			this.bfSession.listEventTypes({ filter: {} }, function (err, res) {
-				client.emit('all_sports', { sports: res.result });
-			});
-		}).bind(this).catch(err => console.log(err));
+	client.on('get_all_sports', (data) => {
+		this.bfSession.sessionKey = data.sessionKey;
+		this.bfSession.listEventTypes({ filter: {} }, function (err, res) {
+			client.emit('all_sports', { sports: res.result });
+		});
 	});
 
 	// An sample filter used to call BetFair method 'listMarketCatalogue'

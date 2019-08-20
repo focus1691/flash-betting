@@ -67,8 +67,8 @@ const API_SCORES_METHODS = [
 
 class BetfairSession {
     // Constructor
-    constructor(applicationKey, options={}) {
-        this.sessionKey = 'Abb3/d2LvR7dvPxlMLFgnG8vgmHOFIp9ni0yg87HGyU=';
+    constructor(applicationKey, sessionKey=null, options={}) {
+        this.sessionKey = sessionKey;
         this.applicationKey = applicationKey;
         BetfairInvocation.setApplicationKey(applicationKey);
 
@@ -97,6 +97,11 @@ class BetfairSession {
     stopInvocationLog() {
         auth.stopInvocationLog();
         BetfairInvocation.stopInvocationLog();
+    }
+
+    setActiveSession(sessionKey) {
+        this.sessionKey = sessionKey;
+        BetfairInvocation.setSessionKey(sessionKey);
     }
 
     setSslOptions() {
@@ -161,7 +166,7 @@ class BetfairSession {
             if (!_.isObject(params)) {
                 throw('params should be object');
             }
-            let invocation = new BetfairInvocation(api, this.sessionKey, methodName, params);
+            let invocation = new BetfairInvocation(api, methodName, params);
             invocation.execute((err, result) => {
                 if (err) {
                     callback(err);

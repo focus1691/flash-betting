@@ -32,6 +32,10 @@ const ORDER_METHODS = ['placeOrders', 'replaceOrders', 'updateOrders', 'cancelOr
 
 // Betfair Exchange JSON-RPC API invocation (excluding Auth stuff)
 class BetfairInvocation {
+    static setSessionKey(sessionKey) {
+        BetfairInvocation.sessionKey = sessionKey;
+    }
+
     static setApplicationKey(appKey) {
         BetfairInvocation.applicationKey = appKey;
     }
@@ -48,20 +52,20 @@ class BetfairInvocation {
         BetfairInvocation.emulator = emulator;
     }
 
-    constructor(api, sessionKey, method, params = {}, isEmulated = false) {
+    constructor(api, method, params = {}, isEmulated = false) {
         if (api !== "accounts" && api !== "betting" && api != "heartbeat" && api != "scores") {
             throw new Error('Bad api parameter:' + api);
         }
 
         // input params
         this.api = api;
-        this.sessionKey = sessionKey;
         this.method = method;
         this.params = params;
         this.isEmulated = isEmulated;
 
         // Request and Response stuff
         this.apiEndpoint = BETFAIR_API_ENDPOINTS[api] || BETFAIR_API_ENDPOINTS.betting;
+        this.sessionKey = BetfairInvocation.sessionKey;
         this.applicationKey = BetfairInvocation.applicationKey;
         this.service = this.apiEndpoint.service;
         this.request = {
@@ -135,16 +139,13 @@ class BetfairInvocation {
         this.jsonRequestBody = JSON.stringify(this.request);
         var httpOptions = {
             headers: {
+                'X-Application': this.applicationKey,
                 'X-Authentication': this.sessionKey,
                 'Content-Type': 'application/json',
                 'Content-Length': this.jsonRequestBody.length,
                 'Connection': 'keep-alive'
             }
         };
-        if (this.applicationKey) {
-            httpOptions.headers['X-Application'] = this.applicationKey;
-        }
-        console.log('sess key invocation', this.sessionKey);
         HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
             if (err) {
                 callback(err);

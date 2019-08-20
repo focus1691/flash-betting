@@ -1,39 +1,30 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import SocketContext from '../../SocketContext';
-import * as actions from '../../actions/auth';
+import * as actions from '../../actions/account';
 import useInterval from 'react-useinterval';
 
 const Account = props => {
-	// const [time, setTime] = useState(new Date().toLocaleString());
 	const ONE_SECOND = 1000;
 	const ONE_MINUTE = 5000;
 
-	// console.log(props);
-
-	// props.socket.emit("get_account_balance", {sesssionKey: localStorage.getItem("sessionKey")});
-
 	useEffect(() => {
-		if (!props.balance) props.socket.emit("get_account_balance");
-		if (!props.name) props.socket.emit("get_account_details");
 
-		// if (!props.name) props.socket.emit("get_account_details", {sesssionKey: localStorage.getItem("sessionKey")});
+		if (!props.name) props.socket.emit("get_account_details");
+		if (!props.balance) props.socket.emit("get_account_balance");
+
+		props.socket.on('account_details', data => {
+			props.onReceiveAccountDetails(data.details);
+		});
 
 		props.socket.on('account_balance', data => {
-			console.log('balance received', data);
 			props.onReceiveBalance(data.balance);
-		});
-		props.socket.on('account_details', data => {
-			console.log('details received', data.details);
-			props.onReceiveAccountDetails(data.details);
 		});
 	});
 
-	useInterval(() => {
-		// setTime(new Date().toLocaleString());
-		// props.time = new Date().toLocaleString();
-		console.log(props.name, props.balance);
-	}, ONE_SECOND);
+	// useInterval(() => {
+	// 	props.onUpdateTime(new Date().toLocaleString());
+	// }, ONE_SECOND);
 
 	return (
 		<div id="sidebar-header">
@@ -51,16 +42,18 @@ const AccountWithSocket = props => (
 );
 
 const mapStateToProps = state => {
-	return {
-		name: state.name,
-		balance: state.balance
-	}
+    return {
+		name: state.account.name,
+		balance: state.account.balance,
+		time: state.account.time
+	};
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
 		onReceiveAccountDetails: name => dispatch(actions.setName(name)),
-		onReceiveBalance: balance => dispatch(actions.setBalance(balance))
+		onReceiveBalance: balance => dispatch(actions.setBalance(balance)),
+		onUpdateTime: time => dispatch(actions.setTime(time))
 	}
 }
 
