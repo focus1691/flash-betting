@@ -1,6 +1,7 @@
-import React, { useEffect, useReducer } from "react";
-import {Store} from "../../../Store";
-import openSocket from "socket.io-client";
+import React, { useEffect } from "react";
+import { connect } from 'react-redux';
+import SocketContext from '../../../SocketContext';
+import * as actions from '../../../actions/sport';
 import useStyles from '../../Styles/Styles';
 import AppBar from '@material-ui/core/AppBar';
 import Collapse from '@material-ui/core/Collapse';
@@ -11,24 +12,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
 
-export default () => {
-
-	const { state, dispatch } = React.useContext(Store);
+const AllSport = props => {
 
 	const classes = useStyles();
 
-	var socket = openSocket("http://localhost:8000");
-
 	useEffect(() => {
-		if (state.sports.length === 0 && socket.emit('get_all_sports'));
+		if (props.sports.length === 0 && props.socket.emit('get_all_sports', {sessionKey: localStorage.getItem("sessionKey")}));
 
-		socket.on('all_sports', data => {
-			console.log(data);
-			dispatch({
-				type: "FETCH_SPORTS",
-				payload: data.sports
-			});
-			// socket.off('all_sports');
+		props.socket.on('all_sports', data => {
+			props.onReceiveAllSports(data.sports)
 		});
 	});
 
@@ -40,25 +32,45 @@ export default () => {
 		<div>
 			<table id="all-sports">
 				<tbody>
-				<List>
-					{state.sports.map(sport => {
-						return (
-							<React.Fragment>
-								<tr>
-									<ListItem button onClick={(e) => handleClick(sport)}>
+					<List>
+						{props.sports.map(sport => {
+							return (
+								<React.Fragment>
+									<tr>
+										<ListItem button onClick={(e) => handleClick(sport)}>
 											<ListItemIcon>
-												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"}/>
+												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
 											</ListItemIcon>
 											<ListItemText>{sport.eventType.name}</ListItemText>
-									</ListItem>
-								</tr>
-								<Divider/>
-							</React.Fragment>
-						);
-					})}
-				</List>
+										</ListItem>
+									</tr>
+									<Divider />
+								</React.Fragment>
+							);
+						})}
+					</List>
 				</tbody>
 			</table>
 		</div>
 	);
 }
+
+const AllSportsWithSocket = props => (
+	<SocketContext.Consumer>
+		{socket => <AllSport {...props} socket={socket} />}
+	</SocketContext.Consumer>
+);
+
+const mapStateToProps = state => {
+	return {
+		sports: state.sports
+	}
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+		onReceiveAllSports: sports => dispatch(actions.setAllSports(sports))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AllSportsWithSocket);

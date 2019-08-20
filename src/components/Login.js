@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
+import { connect } from 'react-redux';
+import SocketContext from '../SocketContext';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,9 +12,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import openSocket from "socket.io-client";
-
-const socket = openSocket("http://localhost:8000");
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -43,32 +42,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default (callback) => {
+const Login = props => {
 
 	const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const classes = useStyles();
 
-  localStorage.clear();
-
   useEffect(() => {
-    socket.on('loggedIn', (data) => {
+    props.socket.on('loggedIn', (data) => {
+      console.log(data);
       if (data.error) {
-        localStorage.removeItem("loggedIn", false);
         localStorage.removeItem("sessionKey", false);
       } else {
-        console.log('set');
-        localStorage.setItem("loggedIn", true);
         localStorage.setItem("sessionKey", data.sessionKey);
 
-        socket.off('loggedIn');
+        props.socket.off('loggedIn');
 
-        return <Redirect to='/authentication' />
+        return <Redirect to='/dasboard' />
       }
     });
   });
-  if (localStorage.getItem("sessionKey")) return <Redirect to='/authentication' />
+  if (!!localStorage.getItem("sessionKey")) return <Redirect to='/dashboard' />
 
   return (
     <Container component="main" maxWidth="xs">
@@ -108,7 +103,7 @@ export default (callback) => {
             label="Remember me"
           />
           <Button
-          	onClick={(e) => { socket.emit('login', {user: username, pass: password})}}
+          	onClick={(e) => { props.socket.emit('login', {user: username, pass: password})}}
             fullWidth
             variant="contained"
             color="primary"
@@ -121,3 +116,11 @@ export default (callback) => {
     </Container>
   );
 }
+
+const LoginWithSocket = props => (
+	<SocketContext.Consumer>
+		{socket => <Login {...props} socket={socket} />}
+	</SocketContext.Consumer>
+);
+
+export default connect()(LoginWithSocket);

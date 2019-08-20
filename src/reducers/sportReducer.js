@@ -1,4 +1,10 @@
-const sportReducer = (state = [], action) => {
+
+
+const initialState = {
+    sports: []
+}
+
+const reducer = (state = initialState, action) => {
     switch (action.type) {
         case "SPORTS_LIST":
             return action.payload;
@@ -7,4 +13,4 @@ const sportReducer = (state = [], action) => {
     }
 };
 
-export default sportReducer;
+export default reducer;
