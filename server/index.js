@@ -1,7 +1,7 @@
 // The BetFair session class below contains all the methods
 // to call the BetFair API. Some samples are commented below to demonstrate their utility.
 const BetFairSession = require('./BetFair/session.js');
-const ExchangeStreaming = require('./BetFair/stream-api.js');
+const ExchangeStream = require('./BetFair/stream-api.js');
 
 /* User details */
 const USERNAME = 'joshbetting30@yahoo.com';
@@ -11,9 +11,18 @@ const APPKEY = 'qI6kop1fEslEArVO';
 const io = require('socket.io')(8000);
 io.on('connection', (client) => {
     this.bfSession = new BetFairSession(APPKEY);
-
+//
     client.on('load_session', data => {
         this.bfSession.setActiveSession(data.sessionKey);
+
+        // this.exchangeStream = new ExchangeStream();
+        // this.exchangeStream.authenticate(APPKEY, data.sessionKey);
+    });
+
+    client.on('get_subscription_status', data => {
+        this.bfSession.isAccountSubscribedToWebApp({"vendorId": "74333"}, (err, res) => {
+            client.emit('subscription_status', res.result);
+        });
     });
 
     client.on('login', data => {
@@ -22,6 +31,14 @@ io.on('connection', (client) => {
                 sessionKey: res.sessionKey
             });
         }).bind(this).catch(err => client.emit('loggedIn', {
+            error: err
+        }));
+    });
+    
+    client.on('logout', data => {
+        this.bfSession.logout().then((res) => {
+            client.emit('logged_out');
+        }).bind(this).catch(err => client.emit('logged_out', {
             error: err
         }));
     });

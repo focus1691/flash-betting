@@ -48,6 +48,8 @@ const Login = props => {
   const [rememberMe, setRememberMe] = useState(!!localStorage.getItem("rememberMe") || false);
   const [sessionKey, setSessionKey] = useState(!!localStorage.getItem("sessionKey"));
 
+  if (!!localStorage.getItem("sessionKey"))  props.socket.emit('load_session', {sessionKey: sessionKey});
+
   const classes = useStyles();
 
   useEffect(() => {

@@ -19,7 +19,9 @@ class BetFairStreamAPI {
 		this.client = tls.connect(options, () => {
 			console.log("Connected");
 
-			this.client.write('{"op": "authentication", "appKey": "' + this.applicationKey + '", "session":"' + this.sessionKey + '"}\r\n');
+			console.log(this.applicationKey, this.sessionKey);
+
+			this.client.write('{"op": "authentication", "appKey": "' + this.applicationKey + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
 			this.client.write('{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["1.130856098"]},"marketDataFilter":{}}\r\n');
 
 

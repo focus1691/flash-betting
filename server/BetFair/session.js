@@ -45,7 +45,8 @@ const API_ACCOUNT_METHODS = [
     'getAccountStatement',
     'listCurrencyRates',
     'transferFunds',
-    'token'
+    'token',
+    'isAccountSubscribedToWebApp'
 ];
 
 // ************************************************************************
@@ -132,9 +133,7 @@ class BetfairSession {
     login(login, password, cb = ()=> {}) {
         return new Promise((res, rej) => {
             auth.loginInteractive(login, password, (err, result) => {
-                if (err) {
-                    rej(this);
-                }
+                if (err) rej(this);
                 if (result) this.sessionKey = result.sessionKey;
                 res(this);
             });
@@ -142,14 +141,21 @@ class BetfairSession {
     }
 
     keepAlive(cb = ()=> {}) {
-        auth.keepAlive(this.sessionKey, (err, res) => {
-            cb(err, res);
+        return new Promise((res, rej) => {
+            auth.keepAlive(this.sessionKey, (err, res) => {
+                if (err) rej(this);
+                res(this);
+            });
         });
     }
 
     logout(cb = ()=> {}) {
-        auth.logout(this.sessionKey, (err, res) => {
-            cb(err, res);
+        return new Promise((res, rej) => {
+            auth.logout(this.sessionKey, (err, res) => {
+                if (err) rej(this);
+                if (result) this.sessionKey = null;
+                res(this);
+            });
         });
     }
 
