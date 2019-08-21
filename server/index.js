@@ -1,13 +1,14 @@
-// The BetFair session class below contains all the methods to call the
-// BetFair API. Some samples are commented below to demonstrate their utility.
-const BetFairSession = require('./session.js');
+// The BetFair session class below contains all the methods
+// to call the BetFair API. Some samples are commented below to demonstrate their utility.
+const BetFairSession = require('./BetFair/session.js');
+const ExchangeStreaming = require('./BetFair/stream-api.js');
 
 /* User details */
 const USERNAME = 'joshbetting30@yahoo.com';
 const PASSWORD = '!fBq2JiCDNrNfkj';
 const APPKEY = 'qI6kop1fEslEArVO';
-const io = require('socket.io')(8000);
 
+const io = require('socket.io')(8000);
 io.on('connection', (client) => {
     this.bfSession = new BetFairSession(APPKEY);
 
