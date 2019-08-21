@@ -10,7 +10,7 @@ export default class HomeView extends Component {
 	render() {
 		return (
 			<div id="home-view">
-				<h1>Welcome to the app</h1>
+				<h1>Welcome to Sports Trader Pro</h1>
 				<hr/>
 			</div>
 		);
