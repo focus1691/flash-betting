@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import SocketContext from '../SocketContext';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -44,28 +43,41 @@ const useStyles = makeStyles(theme => ({
 
 const Login = props => {
 
-	const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+	const [username, setUsername] = useState(localStorage.getItem("username")  || "");
+  const [password, setPassword] = useState(localStorage.getItem("password") || "");
+  const [rememberMe, setRememberMe] = useState(!!localStorage.getItem("rememberMe") || false);
+  const [sessionKey, setSessionKey] = useState(!!localStorage.getItem("sessionKey"));
 
   const classes = useStyles();
 
   useEffect(() => {
     props.socket.on('loggedIn', (data) => {
-      console.log(data);
       if (data.error) {
         localStorage.removeItem("sessionKey", false);
+        localStorage.removeItem("username");
+        localStorage.removeItem("password");
+        localStorage.removeItem("rememberMe");
       } else {
         localStorage.setItem("sessionKey", data.sessionKey);
-
-        props.socket.off('loggedIn');
-
-        return <Redirect to='/dasboard' />
+        localStorage.setItem("username", username);
+        localStorage.setItem("password", password);
+        if (rememberMe) localStorage.setItem("rememberMe", "yes");
+        setSessionKey(true);
       }
     });
   });
-  if (!!localStorage.getItem("sessionKey")) return <Redirect to='/dashboard' />
+
+  const handleSubmit = (e) => {
+    props.socket.emit('login', {user: username, pass: password});
+  };
+
+  const handleRememberMe = (checked) => {
+    setRememberMe(checked);
+  };
 
   return (
+    <>
+    {sessionKey ? <Redirect to='/authentication' /> : null}
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
@@ -82,6 +94,7 @@ const Login = props => {
             id="email"
             label="Email Address"
             name="email"
+            value={username}
             onChange={(e) => {setUsername(e.target.value)}}
             autoComplete="email"
             autoFocus
@@ -92,6 +105,7 @@ const Login = props => {
             required
             fullWidth
             name="password"
+            value={password}
             onChange={(e) => {setPassword(e.target.value)}}
             label="Password"
             type="password"
@@ -101,9 +115,11 @@ const Login = props => {
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
+            checked={rememberMe}
+            onChange={(e, checked) => handleRememberMe(checked)}
           />
           <Button
-          	onClick={(e) => { props.socket.emit('login', {user: username, pass: password})}}
+          	onClick={e => handleSubmit(e)}
             fullWidth
             variant="contained"
             color="primary"
@@ -114,6 +130,7 @@ const Login = props => {
         </form>
       </div>
     </Container>
+    </>
   );
 }
 

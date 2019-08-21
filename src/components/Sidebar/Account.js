@@ -6,7 +6,6 @@ import useInterval from 'react-useinterval';
 
 const Account = props => {
 	const ONE_SECOND = 1000;
-	const ONE_MINUTE = 5000;
 
 	useEffect(() => {
 

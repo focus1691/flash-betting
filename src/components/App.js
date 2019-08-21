@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { connect } from 'react-redux';
 import SocketContext from '../SocketContext';
-import { Redirect } from "react-router-dom";
 import Siderbar from "./Sidebar/Container";
 import HomeView from "./HomeView/index";
 import LadderView from "./LadderView/OddsTable";
@@ -9,10 +8,24 @@ import GridView from "./GridView/EventTable";
 
 const App = props => {
   const [activeView, setActiveView] = useState(5);
-  
-  if (!localStorage.getItem("sessionKey")) return <Redirect to='/' />
 
   props.socket.emit("load_session", { sessionKey: localStorage.getItem("sessionKey") });
+  
+  const renderView = (view) => {
+
+    switch (view) {
+      case 1:
+        return null;
+      case 2:
+        return null;
+      case 3:
+        return <HomeView></HomeView>;
+      case 4:
+        return <LadderView></LadderView>;
+      case 5:
+        return <GridView></GridView>;
+    }
+  };
 
   return (
     <div className="horizontal-scroll-wrapper">
@@ -25,30 +38,6 @@ const App = props => {
     </div>
   );
 };
-
-const renderView = (activeView) => {
-  if (activeView === 1) {
-
-  }
-  else if (activeView === 2) {
-
-  }
-  else if (activeView === 3) {
-    return (
-      <HomeView></HomeView>
-    );
-  }
-  else if (activeView === 4) {
-    return (
-      <LadderView></LadderView>
-    );
-  }
-  else if (activeView === 5) {
-    return (
-      <GridView></GridView>
-    );
-  }
-}
 
 const AppWithSocket = props => (
 	<SocketContext.Consumer>

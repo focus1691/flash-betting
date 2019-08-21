@@ -5,11 +5,11 @@ import sportReducer from "./reducers/sportReducer";
 import accountReducer from "./reducers/accountReducer";
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk'
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Login from "./components/Login";
 import App from "./components/App";
 import AuthRedirect from "./components/AuthRedirect";
-import BetFairRedirect from "./components/RedirectPage";
+import OAuthRedirect from "./components/OAuthRedirect";
 import openSocket from "socket.io-client";
 import SocketContext from './SocketContext'
 
@@ -29,11 +29,39 @@ const store = createStore(rootReducer, composeEnhancers(
 ReactDOM.render(
   <Provider store={store}>
     <SocketContext.Provider value={socket}>
-      <BrowserRouter >
-        <Route path="/" exact component={Login} />
-        <Route path="/dashboard" exact component={App} />
-        <Route path="/authentication" exact component={AuthRedirect} />
-        <Route path="/validation" exact component={BetFairRedirect} />
+      <BrowserRouter>
+        <Switch>
+          <Route
+            path="/"
+            exact
+            render={() =>
+              !!localStorage.getItem("sessionKey") ? (
+                <Redirect to="/authentication" />
+              ) : 
+              !!localStorage.getItem("sessionKey") &&
+              !!localStorage.getItem("accessToken") ? (
+                <Redirect to="/dashboard" />
+              ) : (
+                <Login />
+              )
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            exact
+            render={() =>
+              !localStorage.getItem("sessionKey") &&
+              !localStorage.getItem("accessToken") ? (
+                <Redirect to="/" />
+              ) : (
+                <App />
+              )
+            }
+          />
+          <Route path="/authentication" exact component={AuthRedirect} />
+          <Route path="/validation" exact component={OAuthRedirect} />
+        </Switch>
       </BrowserRouter>
     </SocketContext.Provider>
   </Provider>,
