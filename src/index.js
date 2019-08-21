@@ -35,7 +35,8 @@ ReactDOM.render(
             path="/"
             exact
             render={() =>
-              !!localStorage.getItem("sessionKey") ? (
+              !!localStorage.getItem("sessionKey") &&
+              ! localStorage.getItem("accessToken") ? (
                 <Redirect to="/authentication" />
               ) : 
               !!localStorage.getItem("sessionKey") &&
@@ -51,7 +52,7 @@ ReactDOM.render(
             path="/dashboard"
             exact
             render={() =>
-              !localStorage.getItem("sessionKey") &&
+              !localStorage.getItem("sessionKey") ||
               !localStorage.getItem("accessToken") ? (
                 <Redirect to="/" />
               ) : (
