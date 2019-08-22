@@ -1,15 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
-import SocketContext from '../SocketContext';
 
 const OAuthRedirect = props => {
 
     const [accessToken, setAccessToken] = useState(null);
 
-    props.socket.emit("load_session", { sessionKey: localStorage.getItem("sessionKey") });
-    
-    function getQueryVariable(variable) {
+    const getQueryVariable = variable => {
         var query = window.location.search.substring(1);
         var vars = query.split("&");
         for (var i=0;i<vars.length;i++) {
@@ -17,19 +14,29 @@ const OAuthRedirect = props => {
         if(pair[0] === variable){return pair[1];}
          }
          return(false);
-    }
+    };
+
+    const setTokenInformation = (code, status) => {
+        if (code && status == 200) {
+            fetch(`/api/request-access-token?code=${encodeURIComponent(code)}`)
+            .then(res => res.json())
+            .then(data => {
+                localStorage.setItem("accessToken", data.accessToken);
+                localStorage.setItem("refreshToken", data.refreshToken);
+                localStorage.setItem("expiresIn", data.expiresIn);
+                setAccessToken(data.accessToken);
+            });
+        }
+    };
 
     useEffect(() => {
         var code = getQueryVariable("code");
-        if (code) {
-            var sessionKey = localStorage.getItem("sessionKey");
-            props.socket.emit('request_access_token', code);
-        }
 
-        props.socket.on('access_token', token => {
-            localStorage.setItem("accessToken", token);
-            setAccessToken(token);
-        });
+        var sessionKey = localStorage.getItem("sessionKey");
+        if (!!sessionKey) {
+            fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}`)
+            .then(res => setTokenInformation(code, res.status));
+        }
     });
 
     if (!!accessToken) {
@@ -39,10 +46,4 @@ const OAuthRedirect = props => {
     return (<section>Redirecting...</section>);
 };
 
-const OAuthRedirectWithSocket = props => (
-	<SocketContext.Consumer>
-		{socket => <OAuthRedirect {...props} socket={socket} />}
-	</SocketContext.Consumer>
-);
-
-export default connect()(OAuthRedirectWithSocket);
+export default connect()(OAuthRedirect);

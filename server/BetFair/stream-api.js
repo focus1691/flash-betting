@@ -8,9 +8,11 @@ class BetFairStreamAPI {
 		this.sessionKey = null;
 		this.client = null
 	}
-	authenticate (applicationKey, sessionKey) {
-		this.applicationKey = applicationKey;
+	setSessionKey(sessionKey) {
 		this.sessionKey = sessionKey;
+	}
+	authenticate (applicationKey) {
+		this.applicationKey = applicationKey;
 
 		let options = {
 			host: 'stream-api.betfair.com',

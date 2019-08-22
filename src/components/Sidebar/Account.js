@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import SocketContext from '../../SocketContext';
 import * as actions from '../../actions/account';
 import useInterval from 'react-useinterval';
 
@@ -8,17 +7,13 @@ const Account = props => {
 	const ONE_SECOND = 1000;
 
 	useEffect(() => {
+		fetch(`/api/get-account-details`)
+		.then(res => res.json())
+		.then(details => props.onReceiveAccountDetails(details.name));
 
-		if (!props.name) props.socket.emit("get_account_details");
-		if (!props.balance) props.socket.emit("get_account_balance");
-
-		props.socket.on('account_details', data => {
-			props.onReceiveAccountDetails(data.details);
-		});
-
-		props.socket.on('account_balance', data => {
-			props.onReceiveBalance(data.balance);
-		});
+		fetch(`/api/get-account-balance`)
+		.then(res => res.json())
+		.then(account => props.onReceiveBalance(account.balance));
 	});
 
 	// useInterval(() => {
@@ -33,12 +28,6 @@ const Account = props => {
 		</div>
 	);
 }
-
-const AccountWithSocket = props => (
-	<SocketContext.Consumer>
-		{socket => <Account {...props} socket={socket} />}
-	</SocketContext.Consumer>
-);
 
 const mapStateToProps = state => {
     return {
@@ -56,4 +45,4 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountWithSocket);
+export default connect(mapStateToProps, mapDispatchToProps)(Account);

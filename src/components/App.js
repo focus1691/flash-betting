@@ -8,8 +8,10 @@ import GridView from "./GridView/EventTable";
 
 const App = props => {
   const [activeView, setActiveView] = useState(5);
-
-  props.socket.emit("load_session", { sessionKey: localStorage.getItem("sessionKey") });
+  
+  var sessionKey = localStorage.getItem("sessionKey");
+  fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}`)
+  .then(res => console.log(res));
   
   const renderView = (view) => {
 
@@ -39,10 +41,4 @@ const App = props => {
   );
 };
 
-const AppWithSocket = props => (
-	<SocketContext.Consumer>
-		{socket => <App {...props} socket={socket} />}
-	</SocketContext.Consumer>
-);
-
-export default connect()(AppWithSocket);
+export default connect()(App);
