@@ -15,6 +15,7 @@ const app = express();
 
 app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
+
     response.send('sent');
 });
 
@@ -43,6 +44,11 @@ app.get('/api/logout', (request, response) => {
 });
 
 app.get('/api/get-account-balance', (request, response) => {
+    session.listEvents({
+        filter: {}
+    }, (err, res) => {
+        console.log(res);
+    });
     session.getAccountFunds({
         filter: {}
     }, ((err, res)  => {
@@ -57,7 +63,7 @@ app.get('/api/get-account-details', (request, response) => {
         response.json({name : res.result.firstName});
     }));
 });
-
+//
 app.get('/api/request-access-token', (request, response) => {
     var filter = {
         "client_id": "74333",
@@ -93,6 +99,27 @@ app.get('/api/get-developer-application-keys', (request, response) => {
 
 const port = 3001;
 app.listen(port, () => console.log(`Server started on port: ${port}`));
+
+process.stdin.resume();//so the program will not close instantly
+
+const exitHandler = (options, exitCode) => {
+    if (options.cleanup) console.log('clean');
+    if (exitCode || exitCode === 0) console.log(exitCode);
+    if (options.exit) process.exit();
+};
+
+// App is closing
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+
+// Catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+
+// Catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+
+// Catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
 // An sample filter used to call BetFair method 'listMarketCatalogue'
 // with the event type (horse racing = 7). Normally you would call
