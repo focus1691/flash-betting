@@ -1,15 +1,23 @@
 
 
 const initialState = {
-    sports: []
+    sports: [],
+    currentSport: {
+        currentSportId: undefined,
+        marketCountries: undefined, 
+        currentCountry: undefined
+    }
 }
 
 const reducer = (state = initialState, action) => {
+    
     switch (action.type) {
         case "SPORTS_LIST":
-            return action.payload;
+            return  {...state, sports: action.payload };
+        case "SPORTS_CURRENT":
+            return  {...state, currentSport: action.payload };
         default:
-            return [];
+            return state;
     }
 };
 

@@ -21,8 +21,25 @@ const AllSports = props => {
 		.then(sports => props.onReceiveAllSports(sports));
 	});
 
+	useEffect(() => {
+		console.log(props.sports.currentSport)
+	}, [props.sports.currentSport]);
+
 	const handleClick = (sport) => {
 		console.log('click', sport);
+
+
+		// set back to undefined if they don't want to see the menu anymore, click on same sport another time
+		if (props.sports.currentSport.currentSportId === sport.eventType.id) {
+			props.onUpdateCurrentSport({currentSportId: undefined, marketCountries: undefined, currentCountry: undefined});
+			return;
+		}
+		
+		fetch(`/api/list-countries?sportId=${sport.eventType.id}`)
+		.then(res => res.json())
+		.then(data => {
+			props.onUpdateCurrentSport({currentSportId: sport.eventType.id, marketCountries: data, currentCountry: undefined});
+		})
 	}
 
 	return (
@@ -30,7 +47,7 @@ const AllSports = props => {
 			<table id="all-sports">
 				<tbody>
 					<List>
-						{props.sports.map(sport => {
+						{props.sports.sports.map(sport => {
 							return (
 								<React.Fragment>
 									<tr>
@@ -40,6 +57,10 @@ const AllSports = props => {
 											</ListItemIcon>
 											<ListItemText>{sport.eventType.name}</ListItemText>
 										</ListItem>
+										{
+
+										}
+										
 									</tr>
 									<Divider />
 								</React.Fragment>
@@ -54,13 +75,15 @@ const AllSports = props => {
 
 const mapStateToProps = state => {
 	return {
-		sports: state.sports
+		sports: state.sports,
+		currentSport: state.currentSport
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onReceiveAllSports: sports => dispatch(actions.setAllSports(sports))
+		onReceiveAllSports: sports => dispatch(actions.setAllSports(sports)),
+		onUpdateCurrentSport: sport => dispatch(actions.setCurrentSport(sport))
 	}
 }
 

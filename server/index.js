@@ -82,6 +82,22 @@ app.get('/api/get-all-sports', (request, response) => {
     });
 });
 
+app.get('/api/list-countries', (request, response) => {
+    session.listCountries({
+        filter: {eventTypeIds: [request.query.sportId]}
+    }, (err, res) => {
+        response.json(res.result);
+    });
+});
+
+app.get('/api/list-events', (request, response) => {
+    session.listEvents({
+        filter: {eventTypeIds: [request.query.sportId],}
+    }, (err, res) => {
+        response.json(res.result);
+    });
+});
+
 // A call to get required params for O-auth (vendorId, vendorSecret)
 app.get('/api/get-developer-application-keys', (request, response) => {
     session.getDeveloperAppKeys({filter: {}}, (err, res) => {
@@ -99,9 +115,9 @@ app.listen(port, () => console.log(`Server started on port: ${port}`));
 // 'listEvents' to get the ids of the event you want to search.
 // var exampleFilter = {
 //     filter: {
-//         "eventTypeIds": [
-//             7
-//         ],
+// //         "eventTypeIds": [
+// //             7
+// //         ],
 //         "marketCountries": [
 //             "GB"
 //         ],
