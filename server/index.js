@@ -44,11 +44,6 @@ app.get('/api/logout', (request, response) => {
 });
 
 app.get('/api/get-account-balance', (request, response) => {
-    session.listEvents({
-        filter: {}
-    }, (err, res) => {
-        console.log(res);
-    });
     session.getAccountFunds({
         filter: {}
     }, ((err, res)  => {
