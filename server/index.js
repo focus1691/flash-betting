@@ -93,7 +93,7 @@ app.get('/api/list-countries', (request, response) => {
 
 app.get('/api/list-events', (request, response) => {
     session.listEvents({
-        filter: {eventTypeIds: [request.query.sportId],}
+        filter: {eventTypeIds: [request.query.sportId], marketCountries: [request.query.country]}
     }, (err, res) => {
         response.json(res.result);
     });

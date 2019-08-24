@@ -10,6 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
+import SportsFilterList from "./SportsFilterList";
 
 const AllSports = props => {
 
@@ -23,22 +24,43 @@ const AllSports = props => {
 
 	useEffect(() => {
 		console.log(props.sports.currentSport)
+		// fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}`)
+		// .then(res => res.json())
+		// .then(console.log)
+
 	}, [props.sports.currentSport]);
 
-	const handleClick = (sport) => {
+	const handleSportClick = (sport) => {
 		console.log('click', sport);
 
 
 		// set back to undefined if they don't want to see the menu anymore, click on same sport another time
 		if (props.sports.currentSport.currentSportId === sport.eventType.id) {
-			props.onUpdateCurrentSport({currentSportId: undefined, marketCountries: undefined, currentCountry: undefined});
+			props.onUpdateCurrentSport({currentSportId: undefined, marketCountries: undefined, currentCountry: undefined, currentEvent: undefined});
 			return;
 		}
 		
 		fetch(`/api/list-countries?sportId=${sport.eventType.id}`)
 		.then(res => res.json())
 		.then(data => {
-			props.onUpdateCurrentSport({currentSportId: sport.eventType.id, marketCountries: data, currentCountry: undefined});
+			props.onUpdateCurrentSport({currentSportId: sport.eventType.id, marketCountries: data, currentCountry: undefined, currentEvent: undefined});
+		})
+	}
+
+	const handleCountryClick = (country) => {
+		console.log('click', country);
+
+		
+		// set back to undefined if they don't want to see the menu anymore, click on same country another time
+		if (props.sports.currentSport.currentCountry === country.countryCode) {
+			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: undefined, countryEvents: undefined, currentEvent: undefined});
+			return;
+		}
+
+		fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}&&country=${props.sports.currentSport.currentCountry}`)
+		.then(res => res.json())
+		.then(data => {
+			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: country.countryCode, countryEvents: data, currentEvent: undefined});
 		})
 	}
 
@@ -49,21 +71,26 @@ const AllSports = props => {
 					<List>
 						{props.sports.sports.map(sport => {
 							// if we have a sport selected
-							const currentSportId = props.sports.currentSport.currentSportId;
-							if (props.sports.currentSport.currentSportId !== undefined && sport.eventType.id !== currentSportId) {
+							const {currentSportId, marketCountries} = props.sports.currentSport;
+
+							if (currentSportId !== undefined && sport.eventType.id !== currentSportId) {
 								return null;
-							}
+							} 
 
 							return (
 								<React.Fragment>
 									<tr>
-										<ListItem button onClick={(e) => handleClick(sport)}>
+										<ListItem button onClick={(e) => handleSportClick(sport)}>
 											<ListItemIcon>
 												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
 											</ListItemIcon>
 											<ListItemText>{sport.eventType.name}</ListItemText>
 										</ListItem>
-										
+										<tr>
+											{currentSportId !== undefined && sport.eventType.id === currentSportId ? 
+												<SportsFilterList list = {marketCountries} itemSelector = {'countryCode'} clickHandler = {handleCountryClick}/>
+											: null}
+											</tr>
 									</tr>
 									<Divider />
 								</React.Fragment>
