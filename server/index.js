@@ -58,7 +58,7 @@ app.get('/api/get-account-details', (request, response) => {
         response.json({name : res.result.firstName});
     }));
 });
-//
+
 app.get('/api/request-access-token', (request, response) => {
     var filter = {
         "client_id": "74333",

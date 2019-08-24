@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import sportReducer from "./reducers/sportReducer";
 import accountReducer from "./reducers/accountReducer";
+import settingsReducer from "./reducers/settingsReducer";
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk'
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
@@ -19,7 +20,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
   account: accountReducer,
-  sports: sportReducer
+  sports: sportReducer,
+  settings: settingsReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

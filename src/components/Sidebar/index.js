@@ -5,7 +5,7 @@ import Toolbar from "./Toolbar";
 import Event from "./Event";
 import ToggleMenu from "./ToggleMenu";
 
-const PermanentDrawerLeft = () => {
+const Sidebar = () => {
     return (
         <Drawer
             className="sidebar"
@@ -22,4 +22,4 @@ const PermanentDrawerLeft = () => {
     );
 };
 
-export default PermanentDrawerLeft;
+export default Sidebar;
