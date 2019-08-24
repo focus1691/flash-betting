@@ -48,6 +48,12 @@ const AllSports = props => {
 				<tbody>
 					<List>
 						{props.sports.sports.map(sport => {
+							// if we have a sport selected
+							const currentSportId = props.sports.currentSport.currentSportId;
+							if (props.sports.currentSport.currentSportId !== undefined && sport.eventType.id !== currentSportId) {
+								return null;
+							}
+
 							return (
 								<React.Fragment>
 									<tr>
@@ -57,9 +63,6 @@ const AllSports = props => {
 											</ListItemIcon>
 											<ListItemText>{sport.eventType.name}</ListItemText>
 										</ListItem>
-										{
-
-										}
 										
 									</tr>
 									<Divider />

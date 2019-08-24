@@ -4,7 +4,7 @@ const initialState = {
     sports: [],
     currentSport: {
         currentSportId: undefined,
-        marketCountries: undefined, 
+        marketCountries: [], 
         currentCountry: undefined
     }
 }
