@@ -99,6 +99,15 @@ app.get('/api/list-events', (request, response) => {
     });
 });
 
+app.get('/api/list-markets', (request, response) => {
+    session.listMarketCatalogue({
+        filter: {eventIds: [request.query.eventId]}
+    }, (err, res) => {
+        console.log(request.query.eventId)
+        response.json(res);
+    });
+});
+
 // A call to get required params for O-auth (vendorId, vendorSecret)
 app.get('/api/get-developer-application-keys', (request, response) => {
     session.getDeveloperAppKeys({filter: {}}, (err, res) => {

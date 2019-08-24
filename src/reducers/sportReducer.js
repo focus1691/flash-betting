@@ -8,6 +8,8 @@ const initialState = {
         currentCountry: undefined,
         countryEvents: [],
         currentEvent: undefined,
+        eventMarkets: [],
+        currentMarket: undefined
     }
 }
 

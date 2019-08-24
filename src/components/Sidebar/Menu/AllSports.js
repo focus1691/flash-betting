@@ -53,48 +53,87 @@ const AllSports = props => {
 		
 		// set back to undefined if they don't want to see the menu anymore, click on same country another time
 		if (props.sports.currentSport.currentCountry === country.countryCode) {
-			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: undefined, countryEvents: undefined, currentEvent: undefined});
+			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: undefined});
 			return;
 		}
 
 		fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}&&country=${props.sports.currentSport.currentCountry}`)
 		.then(res => res.json())
 		.then(data => {
-			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: country.countryCode, countryEvents: data, currentEvent: undefined});
+			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: country.countryCode, countryEvents: data.map(item => item.event), currentEvent: undefined});
 		})
 	}
+
+	const handleEventClick = (event) => {
+		console.log('click', event);
+
+		
+		// set back to undefined if they don't want to see the menu anymore, click on same country another time
+		if (props.sports.currentSport.currentEvent === event.countryCode) {
+			props.onUpdateCurrentSport({...props.sports.currentSport, currentEvent: undefined});
+			return;
+		}
+
+		fetch(`/api/list-markets?eventId=${event.id}`)
+		.then(res => res.json())
+		.then(data => {
+			console.log(data)
+			// props.onUpdateCurrentSport({...props.sports.currentSport, currentEvent: event, });
+		})
+	}
+
+	const {currentSportId, marketCountries, currentCountry, countryEvents, currentEvent} = props.sports.currentSport;
 
 	return (
 		<div>
 			<table id="all-sports">
 				<tbody>
 					<List>
-						{props.sports.sports.map(sport => {
-							// if we have a sport selected
-							const {currentSportId, marketCountries} = props.sports.currentSport;
-
-							if (currentSportId !== undefined && sport.eventType.id !== currentSportId) {
-								return null;
-							} 
-
-							return (
+						{
+							currentCountry !== undefined && countryEvents !== undefined && countryEvents.length > 0 && currentEvent === undefined ? 
+							<div>
 								<React.Fragment>
-									<tr>
-										<ListItem button onClick={(e) => handleSportClick(sport)}>
+									<ListItem button onClick={(e) => handleCountryClick(currentCountry)}>
 											<ListItemIcon>
 												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
 											</ListItemIcon>
-											<ListItemText>{sport.eventType.name}</ListItemText>
+											<ListItemText>{currentCountry}</ListItemText>
 										</ListItem>
-										<tr>
-											{currentSportId !== undefined && sport.eventType.id === currentSportId ? 
-												<SportsFilterList list = {marketCountries} itemSelector = {'countryCode'} clickHandler = {handleCountryClick}/>
-											: null}
-											</tr>
-									</tr>
-									<Divider />
 								</React.Fragment>
-							);
+								<tr>
+									<SportsFilterList list = {countryEvents} itemSelector = {'name'} clickHandler = {handleEventClick}/>
+								</tr>
+							</div>
+							
+							:
+						
+							
+							// Used for selecting sport and country
+							props.sports.sports.map(sport => {
+								// if we have a sport selected
+
+								if (currentSportId !== undefined && sport.eventType.id !== currentSportId) {
+									return null;
+								} 
+
+								return (
+									<React.Fragment>
+										<tr>
+											<ListItem button onClick={(e) => handleSportClick(sport)}>
+												<ListItemIcon>
+													<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
+												</ListItemIcon>
+												<ListItemText>{sport.eventType.name}</ListItemText>
+											</ListItem>
+											<tr>
+												{currentSportId !== undefined && sport.eventType.id === currentSportId ? 
+													<SportsFilterList list = {marketCountries} itemSelector = {'countryCode'} clickHandler = {handleCountryClick}/>
+												: null}
+											</tr>
+										</tr>
+										<Divider />
+									</React.Fragment>
+								);
 						})}
 					</List>
 				</tbody>
