@@ -20,7 +20,7 @@
     "thunk": "0.0.1"
   },
   "scripts": {
-    "start": "export HTTPS=true && PORT=8080 react-scripts start",
+    "start": "set HTTPS=true && PORT=8080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -47,6 +47,7 @@
   "devDependencies": {
     "body-parser": "^1.19.0",
     "concurrently": "^4.1.1",
+    "cross-env": "^5.2.0",
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "gulp": "^4.0.2",
@@ -59,5 +60,8 @@
     "pino-colada": "^1.4.5",
     "socket.io": "^2.2.0",
     "webpack": "^4.29.6"
+  },
+  "optionalDependencies": {
+    "win-node-env": "^0.4.0"
   }
 }
