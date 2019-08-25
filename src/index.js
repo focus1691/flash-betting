@@ -8,6 +8,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk'
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Login from "./components/Login";
+import Logout from "./components/Logout";
 import App from "./components/App";
 import AuthRedirect from "./components/AuthRedirect";
 import OAuthRedirect from "./components/OAuthRedirect";
@@ -64,6 +65,7 @@ ReactDOM.render(
           />
           <Route path="/authentication" exact component={AuthRedirect} />
           <Route path="/validation" exact component={OAuthRedirect} />
+          <Route path="/logout" exact component={Logout} />
         </Switch>
       </BrowserRouter>
     </SocketContext.Provider>

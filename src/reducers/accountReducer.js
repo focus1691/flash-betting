@@ -2,7 +2,8 @@ const initialState = {
     name: '',
     countryCode: '',
     balance: '',
-    time: new Date().toLocaleString()
+    time: new Date().toLocaleString(),
+    loggedIn: true
 }
 
 const reducer = (state = initialState, action) => {
@@ -14,7 +15,9 @@ const reducer = (state = initialState, action) => {
         case "ACCOUNT_BALANCE":
             return { ...state, balance: action.payload };
         case "UPDATE_TIME":
-            return { ...state, time: action.payload }
+            return { ...state, time: action.payload };
+        case "LOG_OUT":
+            return { ...state, loggedIn: action.payload };
         default:
             return state;
     }

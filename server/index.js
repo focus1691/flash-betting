@@ -23,7 +23,7 @@ app.get('/api/load-application-key', (request, response) => {
     // this.exchangeStream = new ExchangeStream();
     // this.exchangeStream.setSessionKey(accessToken);
     // this.exchangeStream.authenticate(APPKEY);
-    //
+    
 });
 
 app.get('/api/get-subscription-status', (request, response) => {
@@ -40,7 +40,8 @@ app.get('/api/login', (request, response) => {
 
 app.get('/api/logout', (request, response) => {
     session.logout().then((res) => {
-        response.json({loggedOut: 1});
+        console.log('logout', res);
+        response.json(res.result);
     }).bind(this).catch(err => response.json({error: err}));
 });
 

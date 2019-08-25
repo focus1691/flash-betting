@@ -10,8 +10,16 @@
 	margin: 0;
 }
 
+#logout {
+	padding: 0;
+	border: none;
+	background: none;
+	float: right;
+}
+
 #sidebar-header {
 	background: #057C9C;
+	padding: 5px;
 }
 
 #toolbar button {

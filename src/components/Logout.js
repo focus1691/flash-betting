@@ -8,20 +8,17 @@ const Logout = props => {
     const [loggedIn, setLoggedIn] = useState(true);
 
     useEffect(() => {
-        props.socket.emit('logout');
-
-        props.socket.on('logged_out', (err) => {
-            // handle if error on logout
-            if (err) {
-                
-            } else {
-                localStorage.removeItem("sessionKey");
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
-                localStorage.removeItem("expiresIn");
-                setLoggedIn(false);
-            }
+        fetch('/api/logout')
+        .then(res => res.json())
+        .then(logout => {
+            console.log(logout);
+            localStorage.removeItem("sessionKey");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("expiresIn");
+            setLoggedIn(false);
         });
+
     });
 
     return (
@@ -32,10 +29,4 @@ const Logout = props => {
       );
 }
 
-const LogoutWithSocket = props => (
-	<SocketContext.Consumer>
-		{socket => <Logout {...props} socket={socket} />}
-	</SocketContext.Consumer>
-);
-
-export default connect()(LogoutWithSocket);
+export default connect()(Logout);
