@@ -22,13 +22,13 @@ const AllSports = props => {
 		.then(sports => props.onReceiveAllSports(sports));
 	});
 
-	useEffect(() => {
-		// console.log(props.sports.currentSport)
-		// fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}`)
-		// .then(res => res.json())
-		// .then(console.log)
-		console.log(props.sports.currentMarket)
-	}, [props.sports.currentMarket]);
+	// useEffect(() => {
+	// 	// console.log(props.sports.currentSport)
+	// 	// fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}`)
+	// 	// .then(res => res.json())
+	// 	// .then(console.log)
+	// 	console.log(props.sports.currentSport.currentEvent)
+	// }, [props.sports.currentSport]);
 
 	const handleSportClick = (sport) => {
 		// console.log('click', sport);
@@ -49,7 +49,6 @@ const AllSports = props => {
 
 	const handleCountryClick = (country) => {
 		// console.log('click', country);
-
 		
 		// set back to undefined if they don't want to see the menu anymore, click on same country another time
 		if (props.sports.currentSport.currentCountry === country.countryCode) {
@@ -98,7 +97,6 @@ const AllSports = props => {
 				<tbody>
 					<List>
 						{
-
 							currentEvent !== undefined && eventMarkets !== undefined && eventMarkets.length > 0 ? 
 
 							<div>
