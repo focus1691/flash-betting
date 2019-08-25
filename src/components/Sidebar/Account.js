@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/account';
 import useInterval from 'react-useinterval';
 import FlagIcon from './FlagIcon';
+import Clock from './Clock';
 
 const Account = props => {
 	const ONE_SECOND = 1000;
@@ -25,7 +26,7 @@ const Account = props => {
 		<div id="sidebar-header">
 			<p id="flag-name" paragraph>{props.name}</p>
 			<p paragraph><FlagIcon code={props.countryCode} size={'1x'} /> £{props.balance}</p>
-			<p id="date-time"><img src={window.location.origin + '/icons/calendar-with-a-clock-time-tools.png'} alt={"Time"} />{props.time}</p>
+			<Clock/>
 		</div>
 	);
 }
