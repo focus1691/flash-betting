@@ -23,15 +23,15 @@ const AllSports = props => {
 	});
 
 	useEffect(() => {
-		console.log(props.sports.currentSport)
+		// console.log(props.sports.currentSport)
 		// fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}`)
 		// .then(res => res.json())
 		// .then(console.log)
-
-	}, [props.sports.currentSport]);
+		console.log(props.sports.currentMarket)
+	}, [props.sports.currentMarket]);
 
 	const handleSportClick = (sport) => {
-		console.log('click', sport);
+		// console.log('click', sport);
 
 
 		// set back to undefined if they don't want to see the menu anymore, click on same sport another time
@@ -48,7 +48,7 @@ const AllSports = props => {
 	}
 
 	const handleCountryClick = (country) => {
-		console.log('click', country);
+		// console.log('click', country);
 
 		
 		// set back to undefined if they don't want to see the menu anymore, click on same country another time
@@ -65,11 +65,10 @@ const AllSports = props => {
 	}
 
 	const handleEventClick = (event) => {
-		console.log('click', event);
+		// console.log('click', event);
 
-		
-		// set back to undefined if they don't want to see the menu anymore, click on same country another time
-		if (props.sports.currentSport.currentEvent === event.countryCode) {
+		// set back to undefined if they don't want to see the menu anymore, click on same event another time
+		if (props.sports.currentSport.currentEvent === event) {
 			props.onUpdateCurrentSport({...props.sports.currentSport, currentEvent: undefined});
 			return;
 		}
@@ -77,12 +76,21 @@ const AllSports = props => {
 		fetch(`/api/list-markets?eventId=${event.id}`)
 		.then(res => res.json())
 		.then(data => {
-			console.log(data)
-			// props.onUpdateCurrentSport({...props.sports.currentSport, currentEvent: event, });
+			props.onUpdateCurrentSport({...props.sports.currentSport, currentEvent: event, eventMarkets: data.result, });
 		})
 	}
 
-	const {currentSportId, marketCountries, currentCountry, countryEvents, currentEvent} = props.sports.currentSport;
+	const handleMarketClick = (market) => {
+		// console.log('click', market, currentEvent.id);
+
+		fetch(`/api/get-market-info?eventId=${currentEvent.id}&&marketType=${market.marketType}`)
+		.then(res => res.json())
+		.then(data => {
+			props.onUpdateCurrentMarket(data.result[0])
+		})
+	}
+
+	const {currentSportId, marketCountries, currentCountry, countryEvents, currentEvent, eventMarkets,} = props.sports.currentSport;
 
 	return (
 		<div>
@@ -90,6 +98,25 @@ const AllSports = props => {
 				<tbody>
 					<List>
 						{
+
+							currentEvent !== undefined && eventMarkets !== undefined && eventMarkets.length > 0 ? 
+
+							<div>
+								<React.Fragment>
+									<ListItem button onClick={(e) => handleEventClick(currentEvent)}>
+											<ListItemIcon>
+												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
+											</ListItemIcon>
+											<ListItemText>{currentEvent.name}</ListItemText>
+										</ListItem>
+								</React.Fragment>
+								<tr>
+									<SportsFilterList list = {eventMarkets} itemSelector = {'marketName'} clickHandler = {handleMarketClick}/>
+								</tr>
+							</div>
+
+							:
+
 							currentCountry !== undefined && countryEvents !== undefined && countryEvents.length > 0 && currentEvent === undefined ? 
 							<div>
 								<React.Fragment>
@@ -145,14 +172,16 @@ const AllSports = props => {
 const mapStateToProps = state => {
 	return {
 		sports: state.sports,
-		currentSport: state.currentSport
+		currentSport: state.currentSport,
+		currentMarket: state.currentMarket
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
 		onReceiveAllSports: sports => dispatch(actions.setAllSports(sports)),
-		onUpdateCurrentSport: sport => dispatch(actions.setCurrentSport(sport))
+		onUpdateCurrentSport: sport => dispatch(actions.setCurrentSport(sport)),
+		onUpdateCurrentMarket: market => dispatch(actions.setCurrentMarket(market))
 	}
 }
 

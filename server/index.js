@@ -103,9 +103,19 @@ app.get('/api/list-events', (request, response) => {
 
 app.get('/api/list-markets', (request, response) => {
     session.listMarketCatalogue({
-        filter: {eventIds: [request.query.eventId]}
+        filter: {eventIds: [request.query.eventId]},
+        maxResults: 1000
     }, (err, res) => {
-        console.log(request.query.eventId)
+        response.json(res);
+    });
+});
+
+app.get('/api/get-market-info', (request, response) => {
+    session.listMarketCatalogue({
+        filter: {eventIds: [request.query.eventId]},
+        marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME', 'MARKET_DESCRIPTION', 'RUNNER_DESCRIPTION', 'RUNNER_METADATA'],
+        maxResults: 1
+    }, (err, res) => {
         response.json(res);
     });
 });
