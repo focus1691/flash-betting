@@ -94,9 +94,11 @@ app.get('/api/list-countries', (request, response) => {
 });
 
 app.get('/api/list-events', (request, response) => {
+    console.log({eventTypeIds: [request.query.sportId], marketCountries: [request.query.country]})
     session.listEvents({
         filter: {eventTypeIds: [request.query.sportId], marketCountries: [request.query.country]}
     }, (err, res) => {
+        
         response.json(res.result);
     });
 });

@@ -10,7 +10,7 @@ const Event = ({currentEvent}) => {
 	const classes = useStyles();
 
 	const date = new Date(currentEvent.openDate);
-	console.log(currentEvent)
+	
 	return (
 		<div id="sidebar-event">
 			<div id="sidebar-event-section-1">

@@ -27,8 +27,9 @@ const AllSports = props => {
 	// 	// fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}`)
 	// 	// .then(res => res.json())
 	// 	// .then(console.log)
-	// 	console.log(props.sports.currentSport.currentEvent)
-	// }, [props.sports.currentSport]);
+	// 	// console.log(currentCountry !== undefined && countryEvents !== undefined && countryEvents.length > 0 && currentEvent === undefined)
+	// 	cnsole.log(courrentCountry, countryEvents , countryEvents.length, currentEvent === undefined)
+	// }, [props.sports.currentSport.currentCountry]);
 
 	const handleSportClick = (sport) => {
 		// console.log('click', sport);
@@ -55,8 +56,8 @@ const AllSports = props => {
 			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: undefined});
 			return;
 		}
-
-		fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}&&country=${props.sports.currentSport.currentCountry}`)
+		
+		fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}&&country=${country.countryCode}`)
 		.then(res => res.json())
 		.then(data => {
 			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: country.countryCode, countryEvents: data.map(item => item.event), currentEvent: undefined});
@@ -97,6 +98,7 @@ const AllSports = props => {
 				<tbody>
 					<List>
 						{
+							// Selecting Market
 							currentEvent !== undefined && eventMarkets !== undefined && eventMarkets.length > 0 ? 
 
 							<div>
@@ -115,6 +117,7 @@ const AllSports = props => {
 
 							:
 
+							// Selecting Event
 							currentCountry !== undefined && countryEvents !== undefined && countryEvents.length > 0 && currentEvent === undefined ? 
 							<div>
 								<React.Fragment>
