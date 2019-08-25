@@ -1,7 +1,4 @@
-let mongoose = require('mongoose');
-
-const server = '127.0.0.1:27017'; // REPLACE WITH YOUR DB SERVER
-const database = 'fcc-Mail';      // REPLACE WITH YOUR DB NAME
+const mongoose = require('mongoose');
 
 class Database {
   constructor() {
@@ -9,12 +6,12 @@ class Database {
   }
   
 _connect() {
-     mongoose.connect(`mongodb://${server}/${database}`)
+     mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-gg0gq.mongodb.net/test?retryWrites=true&w=majority`)
        .then(() => {
-         console.log('Database connection successful')
+         console.log('Database connection successful');
        })
        .catch(err => {
-         console.error('Database connection error')
+         console.error('Database connection error');
        })
   }
 }

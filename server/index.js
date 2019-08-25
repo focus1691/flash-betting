@@ -7,15 +7,35 @@ require('dotenv').config();
 const BetFairSession = require('./BetFair/session.js');
 const ExchangeStream = require('./BetFair/stream-api.js');
 
-/* BetFair credentials */
-const USERNAME = 'joshbetting30@yahoo.com';
-const PASSWORD = '!fBq2JiCDNrNfkj';
-const APPKEY = 'qI6kop1fEslEArVO';
-
-const session = new BetFairSession(APPKEY);
+const session = new BetFairSession(process.env.APP_KEY);
 
 const express = require('express');
 const app = express();
+
+const mongoose = require('mongoose');
+const database = require('./database');
+const User = require('./models/users');
+
+//****** Creating a user
+// const user = new User({
+//     email: 'joshbetting30@yahoo.com'
+// });
+// user.save()
+//     .then(result => {
+//        console.log(result);
+//     })
+//     .catch(err => console.log(err));
+
+//******** Fetching a user
+// User.find({
+//     email: 'joshbetting30@yahoo.com'
+// })
+// .then(doc => {
+//     console.log(doc);
+// })
+// .catch(err => {
+//     console.log(err);
+// })
 
 app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);

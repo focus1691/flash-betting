@@ -21,7 +21,8 @@
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "thunk": "0.0.1",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "validator": "^11.1.0"
   },
   "scripts": {
     "start": "export HTTPS=true && PORT=8080 react-scripts start",
