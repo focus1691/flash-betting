@@ -1,3 +1,7 @@
+// This adds environment-specific variables on new lines in the form of NAME=VALUE
+// Access with process.env
+require('dotenv').config();
+
 // The BetFair session class below contains all the methods
 // to call the BetFair API. Some samples are commented below to demonstrate their utility.
 const BetFairSession = require('./BetFair/session.js');
