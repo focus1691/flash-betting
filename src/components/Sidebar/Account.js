@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/account';
 import useInterval from 'react-useinterval';
+import FlagIcon from './FlagIcon';
 
 const Account = props => {
 	const ONE_SECOND = 1000;
@@ -9,7 +10,7 @@ const Account = props => {
 	useEffect(() => {
 		fetch(`/api/get-account-details`)
 		.then(res => res.json())
-		.then(details => props.onReceiveAccountDetails(details.name));
+		.then(details => props.onReceiveAccountDetails(details));
 
 		fetch(`/api/get-account-balance`)
 		.then(res => res.json())
@@ -22,9 +23,9 @@ const Account = props => {
 
 	return (
 		<div id="sidebar-header">
-			<p paragraph>{props.name}</p>
-			<p paragraph>£{props.balance}</p>
-			<span id="date-time"><img src={window.location.origin + '/icons/calendar-with-a-clock-time-tools.png'} alt={"Time"} />{props.time}</span>
+			<p id="flag-name" paragraph>{props.name}</p>
+			<p paragraph><FlagIcon code={props.countryCode} size={'1x'} /> £{props.balance}</p>
+			<p id="date-time"><img src={window.location.origin + '/icons/calendar-with-a-clock-time-tools.png'} alt={"Time"} />{props.time}</p>
 		</div>
 	);
 }
@@ -32,6 +33,7 @@ const Account = props => {
 const mapStateToProps = state => {
     return {
 		name: state.account.name,
+		countryCode: state.account.countryCode,
 		balance: state.account.balance,
 		time: state.account.time
 	};
@@ -39,7 +41,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onReceiveAccountDetails: name => dispatch(actions.setName(name)),
+		onReceiveAccountDetails: details => dispatch(actions.setAccountDetails(details)),
 		onReceiveBalance: balance => dispatch(actions.setBalance(balance)),
 		onUpdateTime: time => dispatch(actions.setTime(time))
 	}

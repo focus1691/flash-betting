@@ -23,6 +23,7 @@ app.get('/api/load-application-key', (request, response) => {
     // this.exchangeStream = new ExchangeStream();
     // this.exchangeStream.setSessionKey(accessToken);
     // this.exchangeStream.authenticate(APPKEY);
+    //
 });
 
 app.get('/api/get-subscription-status', (request, response) => {
@@ -55,7 +56,7 @@ app.get('/api/get-account-details', (request, response) => {
     session.getAccountDetails({
         filter: {}
     }, ((err, res) => {
-        response.json({name : res.result.firstName});
+        response.json({name : res.result.firstName, countryCode: res.result.countryCode});
     }));
 });
 

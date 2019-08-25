@@ -1,8 +1,8 @@
 
-export const setName = name => {
+export const setAccountDetails = details => {
     return {
-        type: "NAME",
-        payload: name
+        type: "ACCOUNT_DETAILS",
+        payload: details
     }
 };
 

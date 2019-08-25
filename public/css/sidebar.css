@@ -6,9 +6,8 @@
 	color: #fff;
 }
 
-#date-time {
-	float: left;
-	font-size: small;
+#date-time, #flag-name {
+	margin: 0;
 }
 
 #sidebar-header {
