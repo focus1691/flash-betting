@@ -37,6 +37,13 @@ const User = require('./models/users');
 //     console.log(err);
 // })
 
+
+app.get('/api/load-session', (request, response) => {
+    session.setActiveSession(request.query.sessionKey);
+
+    response.send('sent');
+});
+
 app.get('/api/load-application-key', (request, response) => {
     // this.exchangeStream = new ExchangeStream();
     // this.exchangeStream.setSessionKey(accessToken);
