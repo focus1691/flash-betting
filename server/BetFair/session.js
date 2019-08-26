@@ -71,6 +71,7 @@ class BetfairSession {
     constructor(applicationKey, sessionKey=null, options={}) {
         this.sessionKey = sessionKey;
         this.applicationKey = applicationKey;
+        this.email = null;
         BetfairInvocation.setApplicationKey(applicationKey);
 
         this.createApiMethods('betting', API_BETTING_METHODS);
@@ -105,6 +106,10 @@ class BetfairSession {
         BetfairInvocation.setSessionKey(sessionKey);
     }
 
+    setEmailAddress(email) {
+        this.email = email;
+    }
+
     setSslOptions() {
         // TODO, bot login is not supported yet
     }
@@ -134,7 +139,10 @@ class BetfairSession {
         return new Promise((res, rej) => {
             auth.loginInteractive(login, password, (err, result) => {
                 if (err) rej(this);
-                if (result) this.sessionKey = result.sessionKey;
+                if (result) {
+                    this.setActiveSession(result.sessionKey);
+                    this.setEmailAddress(login);
+                }
                 res(this);
             });
         });
@@ -153,7 +161,10 @@ class BetfairSession {
         return new Promise((res, rej) => {
             auth.logout(this.sessionKey, (err, res) => {
                 if (err) rej(this);
-                if (result) this.sessionKey = null;
+                if (result) {
+                    this.sessionKey = null;
+                    this.email = null;
+                }
                 res(this);
             });
         });

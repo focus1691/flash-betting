@@ -37,12 +37,6 @@ const User = require('./models/users');
 //     console.log(err);
 // })
 
-app.get('/api/load-session', (request, response) => {
-    session.setActiveSession(request.query.sessionKey);
-
-    response.send('sent');
-});
-
 app.get('/api/load-application-key', (request, response) => {
     // this.exchangeStream = new ExchangeStream();
     // this.exchangeStream.setSessionKey(accessToken);
@@ -92,12 +86,26 @@ app.get('/api/request-access-token', (request, response) => {
         "client_secret": "6d912070-7cda-47c9-819f-20ea616fd35c",
         "code": request.query.code
     }
+    // Accounts API method to exchange the BetFair 'code'
+    // with an 'access token', required for the Stream API
     session.token(filter, (err, res) => {
-        response.json({
+        var tokenInfo = {
             accessToken: res.result.access_token,
             ecxpiresIn: res.result.expires_in,
             refreshToken: res.result.refresh_token 
-        });
+        }
+        // Update the user details with the token information
+        User.findOneAndUpdate({email: session.email}, tokenInfo, {
+            new: true,
+            runValidators: true
+        }).then(user => {
+            response.json({
+                accessToken: res.result.access_token,
+                expiresIn: res.result.expires_in,
+                refreshToken: res.result.refresh_token
+            });
+            // Need to do something if an error occurs
+        }).catch(err => console.log(err))
     });
 });
 
@@ -161,7 +169,6 @@ app.listen(port, () => console.log(`Server started on port: ${port}`));
 process.stdin.resume();//so the program will not close instantly
 
 const exitHandler = (options, exitCode) => {
-    if (options.cleanup) console.log('clean');
     if (exitCode || exitCode === 0) console.log(exitCode);
     if (options.exit) process.exit();
 };

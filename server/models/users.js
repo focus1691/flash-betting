@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
         },
     },
     accessToken: String,
+    expiresIn: Number,
     refreshToken: String,
     markets: Array,
     premiumMember: {
