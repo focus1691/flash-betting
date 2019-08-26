@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
             return validator.isEmail(value)
         },
     },
+    sessionKey: String,
     accessToken: String,
     expiresIn: Number,
     refreshToken: String,

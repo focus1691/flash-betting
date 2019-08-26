@@ -80,10 +80,12 @@ app.get('/api/get-account-details', (request, response) => {
 });
 
 app.get('/api/request-access-token', (request, response) => {
+    // This call can be used for the refresh token
+    // by changing the "grant type" to "REFRESH_TOKEN"
     var filter = {
-        "client_id": "74333",
+        "client_id": process.env.APP_ID,
         "grant_type": "AUTHORIZATION_CODE",
-        "client_secret": "6d912070-7cda-47c9-819f-20ea616fd35c",
+        "client_secret": process.env.APP_SECRET,
         "code": request.query.code
     }
     // Accounts API method to exchange the BetFair 'code'
