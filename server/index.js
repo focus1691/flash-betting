@@ -61,15 +61,29 @@ app.get('/api/login', (request, response) => {
     session.login(request.query.user, request.query.pass).then((res) => {
         response.json({sessionKey: res.sessionKey});
         
-        //****** Creating a user
-        const user = new User({
+        // Check if user exists, if doesn't exist, then create a new user
+
+        User.find({
             email: request.query.user
-        });
-        user.save()
-        .then(result => {
-            console.log(result);
         })
-        .catch(err => console.log(err));
+        .then(doc => {
+
+            if (doc.length === 0) {
+                //****** Creating a user
+                const user = new User({
+                    email: request.query.user
+                });
+                user.save()
+                .then(result => {
+                    console.log(result);
+                })
+                .catch(err => console.log(err));
+            }
+
+        })
+        .catch(console.log)
+        
+        
 
     }).bind(this).catch(err => response.json({error: err}));
 });
