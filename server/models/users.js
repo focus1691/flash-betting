@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const Settings = require('./settings');
 
 const userSchema = mongoose.Schema({
     email: {
@@ -19,7 +20,8 @@ const userSchema = mongoose.Schema({
     premiumMember: {
         type: Boolean,
         default: false
-    }
+    },
+    settings: Settings.schema
 });
 
 module.exports = mongoose.model('User', userSchema);

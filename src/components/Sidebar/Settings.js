@@ -16,11 +16,7 @@ const Settings = props => {
 	const handleChange = () => {
 		
 	};
-
-	const handleIt = (e, afa) => {
-		console.log(afa);
-	};
-
+	
 	// props.onReceiveTrainingBalance(400);
 
 	props.onToggleLadderColourContrast(true);
@@ -65,6 +61,7 @@ const Settings = props => {
 				  <Checkbox
 				    value="checkedB"
 						color="primary"
+						checked={props.sounds}
 						onChange={val => props.onToggleSounds(val)}
 				  />
 				}
@@ -82,6 +79,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.tools.visible}
+						onChange={val => props.onToggleTools({visible: val, open: props.tools.open})}
 				  />
 				}
 				label="Show Panel"
@@ -92,6 +90,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.tools.open}
+						onChange={val => props.onToggleTools({visible: props.tools.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -108,6 +107,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.unmatchedBets.visible}
+						onChange={val => props.onToggleUnmatchedBets({visible: val, open: props.unmatchedBets.open})}
 				  />
 				}
 				label="Show Panel"
@@ -118,6 +118,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.unmatchedBets.open}
+						onChange={val => props.onToggleUnmatchedBets({visible: props.unmatchedBets.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -134,6 +135,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.matchedBets.visible}
+						onChange={val => props.onToggleMatchedBets({visible: val, open: props.matchedBets.open})}
 				  />
 				}
 				label="Show Panel"
@@ -144,6 +146,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.matchedBets.open}
+						onChange={val => props.onToggleMatchedBets({visible: props.matchedBets.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -160,6 +163,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.profitAndLoss.visible}
+						onChange={val => props.onToggleProfitAndLoss({visible: val, open: props.profitAndLoss.open})}
 				  />
 				}
 				label="Show Panel"
@@ -170,6 +174,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.profitAndLoss.open}
+						onChange={val => props.onToggleProfitAndLoss({visible: props.profitAndLoss.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -186,6 +191,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.projectedSP.visible}
+						onChange={val => props.onToggleProjectedSP({visible: val, open: props.projectedSP.open})}
 				  />
 				}
 				label="Show Panel"
@@ -196,6 +202,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.projectedSP.open}
+						onChange={val => props.onToggleProjectedSP({visible: props.projectedSP.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -212,7 +219,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.graphs.visible}
-						
+						onChange={val => props.onToggleGraph({visible: val, open: props.graphs.open})}
 				  />
 				}
 				label="Show Panel"
@@ -222,7 +229,8 @@ const Settings = props => {
 				  <Checkbox
 				    value="checkedB"
 						color="primary"
-						checked={props.graphs.visible}
+						checked={props.graphs.open}
+						onChange={val => props.onToggleProjectedSP({visible: props.graphs.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -239,6 +247,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.marketInfo.visible}
+						onChange={val => props.onToggleMarketInformation({visible: val, open: props.marketInfo.open})}
 				  />
 				}
 				label="Show Panel"
@@ -248,7 +257,8 @@ const Settings = props => {
 				  <Checkbox
 				    value="checkedB"
 						color="primary"
-						checked={props.marketInfo.visible}
+						checked={props.marketInfo.open}
+						onChange={val => props.onToggleMarketInformation({visible:  props.marketInfo.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -265,6 +275,7 @@ const Settings = props => {
 				    value="checkedB"
 						color="primary"
 						checked={props.rules.visible}
+						onChange={val => props.onToggleRules({visible: val, open: props.rules.open})}
 				  />
 				}
 				label="Show Panel"
@@ -274,7 +285,8 @@ const Settings = props => {
 				  <Checkbox
 				    value="checkedB"
 						color="primary"
-						checked={props.rules.visible}
+						checked={props.rules.open}
+						onChange={val => props.onToggleRules({visible:  props.rules.visible, open: val})}
 				  />
 				}
 				label="Panel Open"
@@ -290,7 +302,8 @@ const Settings = props => {
 				  <Checkbox
 				    value="checkedB"
 						color="primary"
-						checked={props.rules.trainingLadderAutoCenter}
+						checked={props.trainingLadderAutoCenter}
+						onChange={val => props.onToggleTrainingLadderAutoCenter(val)}
 				  />
 				}
 				label="Default to ON"

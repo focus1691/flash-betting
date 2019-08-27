@@ -18,7 +18,16 @@ const User = require('./models/users');
 
 //****** Creating a user
 // const user = new User({
-//     email: 'joshbetting30@yahoo.com'
+//     email: 'joshbetting30@yahoo.com',
+//     settings: {
+//         trainingBalance: 242,
+//         ladderColourContrast: false,
+//         sounds: false,
+//         tools: {
+//             visible: false,
+//             open: false
+//         }
+//     }
 // });
 // user.save()
 //     .then(result => {
@@ -109,6 +118,10 @@ app.get('/api/get-account-details', (request, response) => {
     }, ((err, res) => {
         response.json({name : res.result.firstName, countryCode: res.result.countryCode});
     }));
+});
+
+app.get('/api/get-user-settings', (request, response) => {
+    
 });
 
 app.get('/api/request-access-token', (request, response) => {
@@ -207,7 +220,7 @@ const exitHandler = (options, exitCode) => {
     if (exitCode || exitCode === 0) console.log(exitCode);
     if (options.exit) process.exit();
 };
-
+//
 // App is closing
 process.on('exit', exitHandler.bind(null,{cleanup:true}));
 
