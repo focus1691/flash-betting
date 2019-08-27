@@ -60,6 +60,31 @@ app.get('/api/get-subscription-status', (request, response) => {
 app.get('/api/login', (request, response) => {
     session.login(request.query.user, request.query.pass).then((res) => {
         response.json({sessionKey: res.sessionKey});
+        
+        // Check if user exists, if doesn't exist, then create a new user
+
+        User.find({
+            email: request.query.user
+        })
+        .then(doc => {
+
+            if (doc.length === 0) {
+                //****** Creating a user
+                const user = new User({
+                    email: request.query.user
+                });
+                user.save()
+                .then(result => {
+                    console.log(result);
+                })
+                .catch(err => console.log(err));
+            }
+
+        })
+        .catch(console.log)
+        
+        
+
     }).bind(this).catch(err => response.json({error: err}));
 });
 
@@ -100,9 +125,10 @@ app.get('/api/request-access-token', (request, response) => {
     session.token(filter, (err, res) => {
         var tokenInfo = {
             accessToken: res.result.access_token,
-            ecxpiresIn: res.result.expires_in,
+            expiresIn: res.result.expires_in,
             refreshToken: res.result.refresh_token 
         }
+
         // Update the user details with the token information
         User.findOneAndUpdate({email: session.email}, tokenInfo, {
             new: true,
