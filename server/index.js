@@ -60,6 +60,17 @@ app.get('/api/get-subscription-status', (request, response) => {
 app.get('/api/login', (request, response) => {
     session.login(request.query.user, request.query.pass).then((res) => {
         response.json({sessionKey: res.sessionKey});
+        
+        //****** Creating a user
+        const user = new User({
+            email: request.query.user
+        });
+        user.save()
+        .then(result => {
+            console.log(result);
+        })
+        .catch(err => console.log(err));
+
     }).bind(this).catch(err => response.json({error: err}));
 });
 
@@ -103,6 +114,7 @@ app.get('/api/request-access-token', (request, response) => {
             expiresIn: res.result.expires_in,
             refreshToken: res.result.refresh_token 
         }
+
         // Update the user details with the token information
         User.findOneAndUpdate({email: session.email}, tokenInfo, {
             new: true,
