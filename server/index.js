@@ -100,7 +100,7 @@ app.get('/api/request-access-token', (request, response) => {
     session.token(filter, (err, res) => {
         var tokenInfo = {
             accessToken: res.result.access_token,
-            ecxpiresIn: res.result.expires_in,
+            expiresIn: res.result.expires_in,
             refreshToken: res.result.refresh_token 
         }
         // Update the user details with the token information
