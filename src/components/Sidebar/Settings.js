@@ -13,26 +13,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 const Settings = props => {
 	const classes = useStyles();
 
-	// useEffect(() => {
-	// 	fetch(`/api/get-user-settings`)
-	// 	.then(res => res.json())
-	// 	.then(settings => {
-			
-	// 		props.onReceiveTrainingBalance(settings.trainingBalance);
-	// 		props.onToggleLadderColourContrast(settings.ladderColourContrast);
-	// 		props.onToggleSounds(settings.sounds);
-	// 		props.onToggleTools(settings.tools);
-	// 		props.onToggleUnmatchedBets(settings.unmatchedBets);
-	// 		props.onToggleMatchedBets(settings.matchedBets);
-	// 		props.onToggleProfitAndLoss(settings.profitAndLoss);
-	// 		props.onToggleProjectedSP(settings.projectedSP);
-	// 		props.onToggleGraph(settings.graphs);
-	// 		props.onToggleMarketInformation(settings.marketInfo);
-	// 		props.onToggleRules(settings.rules);
-	// 		// onToggleTrainingLadderAutoCenter(settings.trainingLadderAutoCenter);
-	// 	});
-	// });
-
 	const saveSetting = setting => {
 		fetch(`/api/save-user-settings`,
 		{
@@ -41,7 +21,7 @@ const Settings = props => {
 				'Content-Type': 'application/json'
 			},
 			method: 'POST',
-			body: JSON.stringify({settings: setting})
+			body: JSON.stringify(setting)
 		})
 		.then(res => {})
 	};
@@ -79,7 +59,7 @@ const Settings = props => {
 				}
 				label="Ladder Colour Contrast"
 			/>
-			<button className={"save-btn"} onClick={e => saveSetting({ladderColourContrast: props.ladderColourContrast})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
+			<button className={"save-btn"} onClick={e => saveSetting({"settings.ladderColourContrast": props.ladderColourContrast})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
@@ -97,7 +77,7 @@ const Settings = props => {
 				}
 				label="Sounds"
 			/>
-			<button className={"save-btn"} onClick={e => saveSetting({sounds: props.sounds})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
+			<button className={"save-btn"} onClick={e => saveSetting({"settings.sounds": props.sounds})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
@@ -118,7 +98,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					tools: { visible: props.tools.visible, open: props.tools.open }
+					"settings.tools": { visible: props.tools.visible, open: props.tools.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -154,7 +134,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					unmatchedBets: { visible: props.unmatchedBets.visible, open: props.unmatchedBets.open }
+					"settings.unmatchedBets": { visible: props.unmatchedBets.visible, open: props.unmatchedBets.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -190,7 +170,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					matchedBets: { visible: props.matchedBets.visible, open: props.matchedBets.open }
+					"settings.matchedBets": { visible: props.matchedBets.visible, open: props.matchedBets.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -226,7 +206,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					profitAndLoss: { visible: props.profitAndLoss.visible, open: props.profitAndLoss.open }
+					"settings.profitAndLoss": { visible: props.profitAndLoss.visible, open: props.profitAndLoss.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -262,7 +242,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					projectedSP: { visible: props.projectedSP.visible, open: props.projectedSP.open }
+					"settings.projectedSP": { visible: props.projectedSP.visible, open: props.projectedSP.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -298,7 +278,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					graphs: { visible: props.graphs.visible, open: props.graphs.open }
+					"settings.graphs": { visible: props.graphs.visible, open: props.graphs.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -334,7 +314,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					marketInfo: { visible: props.marketInfo.visible, open: props.marketInfo.open }
+					"settings.marketInfo": { visible: props.marketInfo.visible, open: props.marketInfo.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -370,7 +350,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					rules: { visible: props.rules.visible, open: props.rules.open }
+					"settings.rules": { visible: props.rules.visible, open: props.rules.open }
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
@@ -406,7 +386,7 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					trainingLadderAutoCenter: props.trainingLadderAutoCenter
+					"settings.trainingLadderAutoCenter": props.trainingLadderAutoCenter
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
