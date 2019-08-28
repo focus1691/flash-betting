@@ -23,7 +23,7 @@ const Account = props => {
 		{props.loggedIn ? null : <Redirect to='/logout' /> }
 		<div id="sidebar-header">
 			<p id="flag-name" paragraph>{props.name}
-			<button id="logout" onClick={e =>	props.onLogout(false)}><img alt={"Logout"} src={window.location.origin + '/icons/logout.png'}/></button>
+			<button id="logout" onClick={e => props.onLogout(false)}><img alt={"Logout"} src={window.location.origin + '/icons/logout.png'}/></button>
 			</p>
 			<p paragraph><FlagIcon code={props.countryCode} size={'1x'} /> £{props.balance}</p>
 			<Clock/>

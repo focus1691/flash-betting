@@ -7,8 +7,10 @@ import GridView from "./GridView/EventTable";
 
 const App = props => {
   
-  var sessionKey = localStorage.getItem("sessionKey");
-  fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}`)
+  let sessionKey = localStorage.getItem("sessionKey");
+  let email = localStorage.getItem("username");
+
+  fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}&email=${encodeURIComponent(email)}`)
   .then(res => console.log(res));
 
   const renderView = () => {

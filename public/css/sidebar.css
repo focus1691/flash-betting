@@ -60,7 +60,7 @@
 	margin-top: 4px;
 }
 
-#toggle-buttons button {
+.toggle-button {
 	width: 33.33%;
 	background: #000;
 	color: #fff;

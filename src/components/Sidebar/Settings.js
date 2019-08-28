@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/settings';
 import useStyles from '../Styles/Styles';
@@ -13,19 +13,48 @@ import Checkbox from '@material-ui/core/Checkbox';
 const Settings = props => {
 	const classes = useStyles();
 
-	const handleChange = () => {
-		
-	};
-	
-	// props.onReceiveTrainingBalance(400);
+	// useEffect(() => {
+	// 	fetch(`/api/get-user-settings`)
+	// 	.then(res => res.json())
+	// 	.then(settings => {
+			
+	// 		props.onReceiveTrainingBalance(settings.trainingBalance);
+	// 		props.onToggleLadderColourContrast(settings.ladderColourContrast);
+	// 		props.onToggleSounds(settings.sounds);
+	// 		props.onToggleTools(settings.tools);
+	// 		props.onToggleUnmatchedBets(settings.unmatchedBets);
+	// 		props.onToggleMatchedBets(settings.matchedBets);
+	// 		props.onToggleProfitAndLoss(settings.profitAndLoss);
+	// 		props.onToggleProjectedSP(settings.projectedSP);
+	// 		props.onToggleGraph(settings.graphs);
+	// 		props.onToggleMarketInformation(settings.marketInfo);
+	// 		props.onToggleRules(settings.rules);
+	// 		// onToggleTrainingLadderAutoCenter(settings.trainingLadderAutoCenter);
+	// 	});
+	// });
 
-	props.onToggleLadderColourContrast(true);
-	
+	const saveSetting = setting => {
+		fetch(`/api/save-user-settings`,
+		{
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			method: 'POST',
+			body: JSON.stringify({settings: setting})
+		})
+		.then(res => {})
+	};
+
+	const handleChange = () => {
+
+	};
+
 	return (
 		<div>
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Training Bank
+					Training Bank
 				</Typography>
 			</AppBar>
 			<TextField
@@ -36,282 +65,356 @@ const Settings = props => {
 			/>
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Ladder Colour
+					Ladder Colour
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.ladderColourContrast}
-						onChange={val => props.onToggleLadderColourContrast(val)}
-				  />
+						onChange={val => props.onToggleLadderColourContrast(!props.ladderColourContrast)}
+					/>
 				}
 				label="Ladder Colour Contrast"
 			/>
+			<button className={"save-btn"} onClick={e => saveSetting({ladderColourContrast: props.ladderColourContrast})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Sound
+					Sound
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.sounds}
-						onChange={val => props.onToggleSounds(val)}
-				  />
+						onChange={val => props.onToggleSounds(!props.sounds)}
+					/>
 				}
 				label="Sounds"
 			/>
+			<button className={"save-btn"} onClick={e => saveSetting({sounds: props.sounds})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Tools
+					Tools
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.tools.visible}
-						onChange={val => props.onToggleTools({visible: val, open: props.tools.open})}
-				  />
+						onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					tools: { visible: props.tools.visible, open: props.tools.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.tools.open}
-						onChange={val => props.onToggleTools({visible: props.tools.visible, open: val})}
-				  />
+						onChange={val => props.onToggleTools({ visible: props.tools.visible, open: !props.tools.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Unmatched Bets
+					Unmatched Bets
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.unmatchedBets.visible}
-						onChange={val => props.onToggleUnmatchedBets({visible: val, open: props.unmatchedBets.open})}
-				  />
+						onChange={val => props.onToggleUnmatchedBets({ visible: !props.unmatchedBets.visible, open: props.unmatchedBets.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					unmatchedBets: { visible: props.unmatchedBets.visible, open: props.unmatchedBets.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.unmatchedBets.open}
-						onChange={val => props.onToggleUnmatchedBets({visible: props.unmatchedBets.visible, open: val})}
-				  />
+						onChange={val => props.onToggleUnmatchedBets({ visible: props.unmatchedBets.visible, open: !props.unmatchedBets.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Matched Bets
+					Matched Bets
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.matchedBets.visible}
-						onChange={val => props.onToggleMatchedBets({visible: val, open: props.matchedBets.open})}
-				  />
+						onChange={val => props.onToggleMatchedBets({ visible: !props.matchedBets.visible, open: props.matchedBets.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					matchedBets: { visible: props.matchedBets.visible, open: props.matchedBets.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.matchedBets.open}
-						onChange={val => props.onToggleMatchedBets({visible: props.matchedBets.visible, open: val})}
-				  />
+						onChange={val => props.onToggleMatchedBets({ visible: props.matchedBets.visible, open: !props.matchedBets.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Profit & Loss
+					Profit & Loss
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.profitAndLoss.visible}
-						onChange={val => props.onToggleProfitAndLoss({visible: val, open: props.profitAndLoss.open})}
-				  />
+						onChange={val => props.onToggleProfitAndLoss({ visible: !props.profitAndLoss.visible, open: props.profitAndLoss.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					profitAndLoss: { visible: props.profitAndLoss.visible, open: props.profitAndLoss.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
-						checked={props.profitAndLoss.open}
-						onChange={val => props.onToggleProfitAndLoss({visible: props.profitAndLoss.visible, open: val})}
-				  />
+						checked={props.profitAndLoss.visible}
+						onChange={val => props.onToggleProfitAndLoss({ visible: props.profitAndLoss.visible, open: !props.profitAndLoss.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Projected SP
+					Projected SP
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.projectedSP.visible}
-						onChange={val => props.onToggleProjectedSP({visible: val, open: props.projectedSP.open})}
-				  />
+						onChange={val => props.onToggleProjectedSP({ visible: !props.projectedSP.visible, open: props.projectedSP.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					projectedSP: { visible: props.projectedSP.visible, open: props.projectedSP.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
-						checked={props.projectedSP.open}
-						onChange={val => props.onToggleProjectedSP({visible: props.projectedSP.visible, open: val})}
-				  />
+						checked={props.projectedSP.visible}
+						onChange={val => props.onToggleProjectedSP({ visible: props.projectedSP.visible, open: !props.projectedSP.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Graphs
+					Graphs
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.graphs.visible}
-						onChange={val => props.onToggleGraph({visible: val, open: props.graphs.open})}
-				  />
+						onChange={val => props.onToggleGraph({ visible: !props.graphs.visible, open: props.graphs.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					graphs: { visible: props.graphs.visible, open: props.graphs.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
-						checked={props.graphs.open}
-						onChange={val => props.onToggleProjectedSP({visible: props.graphs.visible, open: val})}
-				  />
+						checked={props.graphs.visible}
+						onChange={val => props.onToggleProjectedSP({ visible: props.graphs.visible, open: !props.graphs.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Market Information
+					Market Information
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.marketInfo.visible}
-						onChange={val => props.onToggleMarketInformation({visible: val, open: props.marketInfo.open})}
-				  />
+						onChange={val => props.onToggleMarketInformation({ visible: !props.marketInfo.visible, open: props.marketInfo.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					marketInfo: { visible: props.marketInfo.visible, open: props.marketInfo.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
-						checked={props.marketInfo.open}
-						onChange={val => props.onToggleMarketInformation({visible:  props.marketInfo.visible, open: val})}
-				  />
+						checked={props.marketInfo.visible}
+						onChange={val => props.onToggleMarketInformation({ visible: props.marketInfo.visible, open: props.marketInfo.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Rules
+					Rules
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.rules.visible}
-						onChange={val => props.onToggleRules({visible: val, open: props.rules.open})}
-				  />
+						onChange={val => props.onToggleRules({ visible: !props.rules.visible, open: props.rules.open })}
+					/>
 				}
 				label="Show Panel"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					rules: { visible: props.rules.visible, open: props.rules.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
-						checked={props.rules.open}
-						onChange={val => props.onToggleRules({visible:  props.rules.visible, open: val})}
-				  />
+						checked={props.rules.visible}
+						onChange={val => props.onToggleRules({ visible: props.rules.visible, open: !props.rules.open })}
+					/>
 				}
 				label="Panel Open"
 			/>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Training Ladder Auto-Center
+					Training Ladder Auto-Center
 				</Typography>
 			</AppBar>
 			<FormControlLabel
 				control={
-				  <Checkbox
-				    value="checkedB"
+					<Checkbox
+						value="checkedB"
 						color="primary"
 						checked={props.trainingLadderAutoCenter}
-						onChange={val => props.onToggleTrainingLadderAutoCenter(val)}
-				  />
+						onChange={val => props.onToggleTrainingLadderAutoCenter(!props.trainingLadderAutoCenter)}
+					/>
 				}
 				label="Default to ON"
 			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					trainingLadderAutoCenter: props.trainingLadderAutoCenter
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-				Ladder Unmatched Column
+					Ladder Unmatched Column
 				</Typography>
 			</AppBar>
 			<RadioGroup

@@ -155,15 +155,18 @@ export default () => {
 	return (
 		<div id="toggle-buttons">
 			<button
+				className={"toggle-button"}
 				style={openTab === 1 ? { background: activeStyle } : {}}
 				onClick={(e) => { setOpenTab(1) }}>Menu
 
 			</button>
 			<button
+				className={"toggle-button"}
 				style={openTab === 2 ? { background: activeStyle } : {}}
 				onClick={(e) => { setOpenTab(2) }}>Market
 			</button>
 			<button
+				className={"toggle-button"}
 				style={openTab === 3 ? { background: activeStyle } : {}}
 				onClick={(e) => { setOpenTab(3) }}>Settings
 			</button>
