@@ -26,8 +26,8 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function createData(name, setting) {
+  return { name, setting };
 }
 
 const rows = [
@@ -45,35 +45,32 @@ const rows = [
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    overflowX: 'auto',
+    overflowX: 'hidden',
   },
   table: {
-    minWidth: 20,
-    
+    minWidth: 100,
+    // width: 10,
+    // background: 'red',
   },
 }));
 
 const Tools = () => {
   const classes = useStyles();
 
+  rows.map(row => {
+    console.log(row);
+  });
+
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Tools</StyledTableCell>
-          </TableRow>
-        </TableHead>
         <TableBody>
           {rows.map(row => (
             <StyledTableRow key={row.name}>
               <StyledTableCell component="th" scope="row">
                 {row.name}
               </StyledTableCell>
-              <StyledTableCell align="left">{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="right">{row.protein}</StyledTableCell>
+              <StyledTableCell align="left">{row.setting}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

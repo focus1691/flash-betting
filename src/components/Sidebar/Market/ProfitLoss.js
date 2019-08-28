@@ -1,18 +1,8 @@
 import React from 'react';
-import useStyles from '../../Styles/Styles';
-import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
 
 const ProfitLoss = () => {
-	const classes = useStyles();
-
 	return (
 		<div>
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-				Profit & Loss
-				</Typography>
-			</AppBar>
 			<table id="menu-profit-loss">
 				<tbody>
 					{renderProfitAndLoss()}
