@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions/settings';
-import useStyles from '../Styles/Styles';
+import * as actions from '../../../actions/settings';
+import useStyles from '../../Styles/Styles';
 import TextField from '@material-ui/core/TextField';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';

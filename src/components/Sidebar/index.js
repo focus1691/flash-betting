@@ -14,10 +14,12 @@ const Sidebar = () => {
                 paper: "sidebar"
             }}
             anchor="left">
-        <Account></Account>
-        <Toolbar></Toolbar>
-        <Event></Event>
-        <ToggleMenu></ToggleMenu>
+        <div style={{position: "sticky", top: 0}}>
+            <Account/>
+            <Toolbar/>
+        </div>
+        <Event/>
+        <ToggleMenu/>
         </Drawer>
     );
 };

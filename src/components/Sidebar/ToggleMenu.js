@@ -1,18 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/settings";
-import Ladders from "./Market/Ladders";
-import Tools from "./Market/Tools";
-import UnmatchedBets from "./Market/UnmatchedBets";
-import MatchedBets from "./Market/MatchedBets";
-import ProfitLoss from "./Market/ProfitLoss";
-import Graph from "./Market/Graphs";
-import MarketInfo from "./Market/MarketInfo";
-import UserMarkets from "./Menu/UserMarkets";
-import AllSports from "./Menu/AllSports";
-import UserBets from "./Menu/UserBets";
-import SearchResults from "./Menu/SearchResults";
-import Settings from "./Settings";
+import Menu from "./Menu/";
+import Market from "./Market/";
+import Settings from "./Settings/";
 import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import MultiExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
@@ -65,16 +56,11 @@ const ExpansionPanelDetails = withStyles(theme => ({
   }
 }))(MultiExpansionPanelDetails);
 
-const ToggleMenu = props => {
+const ToggleMenu = () => {
   const [openTab, setOpenTab] = useState(2);
-  const [expanded, setExpanded] = useState("my_markets");
   const [activeStyle, setActiveStyle] = useState("#389C41");
 
   const classes = useStyles();
-
-  const handleChange = tab => (event, newExpanded) => {
-    setExpanded(newExpanded ? tab : false);
-  };
 
   const createExpansionPanelSummary = name => {
     return (
@@ -112,96 +98,11 @@ const ToggleMenu = props => {
   };
 
   const renderActiveTab = () => {
-    if (openTab === 1) {
-      return (
-        <React.Fragment>
-          <ExpansionPanel
-            expanded={expanded === "my_markets"}
-            onChange={handleChange("my_markets")}
-          >
-            {createExpansionPanelSummary("My Markets")}
-            <UserMarkets />
-          </ExpansionPanel>
-
-          <ExpansionPanel
-            expanded={expanded === "all_sports"}
-            onChange={handleChange("all_sports")}
-          >
-            {createExpansionPanelSummary("All Sports")}
-            <AllSports />
-          </ExpansionPanel>
-
-          <ExpansionPanel
-            expanded={expanded === "active_bets"}
-            onChange={handleChange("active_bets")}
-          >
-            {createExpansionPanelSummary("Active Bets")}
-            <UserBets />
-          </ExpansionPanel>
-
-          <ExpansionPanel
-            expanded={expanded === "search_results"}
-            onChange={handleChange("search_results")}
-          >
-            {createExpansionPanelSummary("Search Results")}
-            <SearchResults />
-          </ExpansionPanel>
-        </React.Fragment>
-      );
-    } else if (openTab === 2) {
-      return (
-        <React.Fragment>
-          <Ladders />
-
-					{props.tools.visible ?
-						<React.Fragment>
-							{createTitle("Tools", "static")}
-							<Tools/>
-						</React.Fragment>
-					: null}
-
-					{props.unmatchedBets.visible ?
-						<React.Fragment>
-							{createTitle("Unmatched Bets", "static")}
-							<UnmatchedBets/>
-						</React.Fragment>
-					: null}
-
-					{props.matchedBets.visible ?
-						<React.Fragment>
-							{createTitle("Matched Bets", "static")}
-							<MatchedBets/>
-						</React.Fragment>
-					: null}
-
-					{props.profitAndLoss.visible ?
-						<React.Fragment>
-							{createTitle("Profit & Loss", "static")}
-							<ProfitLoss/>
-						</React.Fragment>
-					: null}
-
-					{props.graphs.visible ?
-						<React.Fragment>
-							{createTitle("Graphs", "static")}
-							<Graph/>
-						</React.Fragment>
-					: null}
-
-					{props.marketInfo.visible ?
-						<React.Fragment>
-							{createTitle("Market Information", "static")}
-							<MarketInfo/>
-						</React.Fragment>
-					: null}
-        </React.Fragment>
-      );
-    } else if (openTab === 3) {
-      return (
-        <React.Fragment>
-          <Settings></Settings>
-        </React.Fragment>
-      );
+    switch (openTab) {
+      case 1: return <Menu/>;
+      case 2: return <Market/>
+      case 3: return <Settings/>
+      default: return null;
     }
   };
 
@@ -215,15 +116,4 @@ const ToggleMenu = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    tools: state.settings.tools,
-    unmatchedBets: state.settings.unmatchedBets,
-    matchedBets: state.settings.matchedBets,
-    profitAndLoss: state.settings.profitAndLoss,
-    graphs: state.settings.graphs,
-    marketInfo: state.settings.marketInfo
-  };
-};
-
-export default connect(mapStateToProps)(ToggleMenu);
+export default ToggleMenu;
