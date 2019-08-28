@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/settings';
 import Ladders from "./Market/Ladders";
+import Tools from "./Market/Tools";
 import UnmatchedBets from "./Market/UnmatchedBets";
 import MatchedBets from "./Market/MatchedBets";
 import ProfitLoss from "./Market/ProfitLoss";
 import Graph from "./Market/Graphs";
+import MarketInfo from "./Market/MarketInfo";
 import UserMarkets from "./Menu/UserMarkets";
 import AllSports from "./Menu/AllSports";
 import UserBets from "./Menu/UserBets";
@@ -139,10 +141,12 @@ const ToggleMenu = props => {
 			return (
 				<React.Fragment>
 					<Ladders></Ladders>
+					{props.tools.visible ? <Tools/> : null}
 					{props.unmatchedBets.visible ? <UnmatchedBets/> : null}
 					{props.matchedBets.visible ? <MatchedBets/> : null}
 					{props.profitAndLoss.visible ? <ProfitLoss/> : null}
 					{props.graphs.visible ? <Graph/> : null}
+					{props.marketInfo.visible ? <MarketInfo/> : null}
 				</React.Fragment>
 			);
 		}
@@ -180,10 +184,12 @@ const ToggleMenu = props => {
 
 const mapStateToProps = state => {
 	return {
+		tools: state.settings.tools,
 		unmatchedBets: state.settings.unmatchedBets,
 		matchedBets: state.settings.matchedBets,
 		profitAndLoss: state.settings.profitAndLoss,
-		graphs: state.settings.graphs
+		graphs: state.settings.graphs,
+		marketInfo: state.settings.marketInfo
 	}
 }
 

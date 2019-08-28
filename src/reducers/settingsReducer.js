@@ -4,7 +4,7 @@ const initialState = {
     ladderColourContrast: false,
     sounds: false,
     tools: {
-        visible: false,
+        visible: true,
         open: false
     },
     unmatchedBets: {
