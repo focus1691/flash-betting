@@ -28,6 +28,11 @@ const User = require('./models/users');
 app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
     session.setEmailAddress(request.query.email);
+
+    this.exchangeStream = new ExchangeStream();
+    this.exchangeStream.setSessionKey("QmyCgkdb44MgtehxD5NCedX1sMQlNP1PseB+JhHSrGaXvGfTtC9jMFAeEbLcBSpd");
+    this.exchangeStream.authenticate(process.env.APP_KEY);
+
     response.send('sent');
 });
 
@@ -144,15 +149,12 @@ app.get('/api/request-access-token', (request, response) => {
         }
 
         // Update the user details with the token information
+        console.log('token info:', tokenInfo);
         User.findOneAndUpdate({ email: session.email }, tokenInfo, {
             new: true,
             runValidators: true
         }).then(user => {
-            response.json({
-                accessToken: res.result.access_token,
-                expiresIn: res.result.expires_in,
-                refreshToken: res.result.refresh_token
-            });
+            response.json(tokenInfo);
             // Need to do something if an error occurs
         }).catch(err => console.log(err))
     });

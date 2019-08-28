@@ -34,7 +34,9 @@ const OAuthRedirect = props => {
 
         var sessionKey = localStorage.getItem("sessionKey");
         if (!!sessionKey) {
-            fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}`)
+            let sessionKey = localStorage.getItem("sessionKey");
+            let email = localStorage.getItem("username");
+            fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}&email=${encodeURIComponent(email)}`)
             .then(res => setTokenInformation(code, res.status));
         }
     });

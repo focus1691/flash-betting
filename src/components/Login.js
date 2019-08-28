@@ -50,8 +50,11 @@ const Login = props => {
 
   useEffect(() => {
     if (!!localStorage.getItem("sessionKey")) {
-      fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}`)
-        .then(res => setSessionKey(true));
+      let sessionKey = localStorage.getItem("sessionKey");
+      let email = localStorage.getItem("username");
+    
+      fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}&email=${encodeURIComponent(email)}`)
+      .then(res => console.log(res));
     }
   });
 
@@ -69,7 +72,11 @@ const Login = props => {
           localStorage.setItem("sessionKey", res.sessionKey);
           localStorage.setItem("username", username);
           localStorage.setItem("password", password);
+          
           if (rememberMe) localStorage.setItem("rememberMe", "yes");
+
+          fetch(`/api/load-session?sessionKey=${encodeURIComponent(res.sessionKey)}&email=${encodeURIComponent(username)}`);
+
           setSessionKey(true);
         }
       });

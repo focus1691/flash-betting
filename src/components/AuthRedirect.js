@@ -20,7 +20,8 @@ const AuthRedirect = props => {
   useEffect(() => {
     var sessionKey = localStorage.getItem("sessionKey");
     if (!!sessionKey) {
-      fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}`)
+      let email = localStorage.getItem("username");
+      fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}&email=${email}`)
         .then(res => redirectToBetFairOAuth(res.status));
     }
   });
