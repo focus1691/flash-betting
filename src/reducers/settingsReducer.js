@@ -56,9 +56,9 @@ const reducer = (state = initialState, action) => {
         case "TOGGLE_TOOLS":
             return { ...state, tools: action.payload };
         case "TOGGLE_UNMATCHED_BETS":
-            return { ...state, unmatchedBetsTools: action.payload };
+            return { ...state, unmatchedBets: action.payload };
         case "TOGGLE_MATCHED_BETS":
-            return { ...state, matchedBetsTools: action.payload };
+            return { ...state, matchedBets: action.payload };
         case "TOGGLE_PROFIT_AND_LOSS":
             return { ...state, profitAndLoss: action.payload };
         case "TOGGLE_PROJECTED_SP":

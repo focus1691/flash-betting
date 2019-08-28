@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../actions/settings';
 import Ladders from "./Market/Ladders";
 import UnmatchedBets from "./Market/UnmatchedBets";
 import MatchedBets from "./Market/MatchedBets";
@@ -30,7 +32,6 @@ const ExpansionPanel = withStyles({
 	  '&$expanded': {
 		margin: 'auto',
 	  },
-	//   background: "#303030",
 	backgroundColor: '#fff',
 	  color: "orange",
 	  fontWeight: "900",
@@ -62,7 +63,7 @@ const ExpansionPanel = withStyles({
 	},
   }))(MultiExpansionPanelDetails);
 
-export default () => {
+const ToggleMenu = props => {
 
 	const [openTab, setOpenTab] = useState(2);
 	const [expanded, setExpanded] = useState("my_markets");
@@ -73,6 +74,8 @@ export default () => {
 	const handleChange = tab => (event, newExpanded) => {
 		setExpanded(newExpanded ? tab : false);
 	};
+
+	console.log(props);
 
 	const renderActiveTab = () => {
 		if (openTab === 1) {
@@ -136,10 +139,10 @@ export default () => {
 			return (
 				<React.Fragment>
 					<Ladders></Ladders>
-					<UnmatchedBets></UnmatchedBets>
-					<MatchedBets></MatchedBets>
-					<ProfitLoss></ProfitLoss>
-					<Graph></Graph>
+					{props.unmatchedBets.visible ? <UnmatchedBets/> : null}
+					{props.matchedBets.visible ? <MatchedBets/> : null}
+					{props.profitAndLoss.visible ? <ProfitLoss/> : null}
+					{props.graphs.visible ? <Graph/> : null}
 				</React.Fragment>
 			);
 		}
@@ -174,3 +177,14 @@ export default () => {
 		</div>
 	);
 }
+
+const mapStateToProps = state => {
+	return {
+		unmatchedBets: state.settings.unmatchedBets,
+		matchedBets: state.settings.matchedBets,
+		profitAndLoss: state.settings.profitAndLoss,
+		graphs: state.settings.graphs
+	}
+}
+
+export default connect(mapStateToProps)(ToggleMenu);
