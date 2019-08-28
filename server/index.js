@@ -25,36 +25,6 @@ const mongoose = require('mongoose');
 const database = require('./database');
 const User = require('./models/users');
 
-//****** Creating a user
-// const user = new User({
-//     email: 'joshbetting30@yahoo.com',
-//     settings: {
-//         trainingBalance: 242,
-//         ladderColourContrast: false,
-//         sounds: false,
-//         tools: {
-//             visible: false,
-//             open: false
-//         }
-//     }
-// });
-// user.save()
-//     .then(result => {
-//        console.log(result);
-//     })
-//     .catch(err => console.log(err));
-
-//******** Fetching a user
-// User.find({
-//     email: 'joshbetting30@yahoo.com'
-// })
-// .then(doc => {
-//     console.log(doc);
-// })
-// .catch(err => {
-//     console.log(err);
-// })
-
 app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
     session.setEmailAddress(request.query.email);
