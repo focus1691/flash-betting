@@ -31,14 +31,12 @@ const ToggleMenu = () => {
   };
 
   return (
-    <React.Fragment>
       <div id="toggle-buttons">
         {createToggleButton("Menu", 1)}
         {createToggleButton("Market", 2)}
         {createToggleButton("Settings", 3)}
+        {renderActiveTab()}
       </div>
-      {renderActiveTab()}
-    </React.Fragment>
   );
 };
 
