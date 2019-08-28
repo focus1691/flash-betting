@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
+import * as actions from '../actions/settings';
 import Siderbar from "./Sidebar";
 import HomeView from "./HomeView/index";
 import LadderView from "./LadderView/OddsTable";
@@ -12,6 +13,21 @@ const App = props => {
 
   fetch(`/api/load-session?sessionKey=${encodeURIComponent(sessionKey)}&email=${encodeURIComponent(email)}`)
   .then(res => console.log(res));
+
+  fetch(`/api/get-user-settings`)
+  .then(res => res.json())
+  .then(settings =>  {
+    props.onToggleSounds(settings.sounds);
+    props.onToggleTools(settings.tools);
+    props.onToggleUnmatchedBets(settings.unmatchedBets);
+    props.onToggleMatchedBets(settings.matchedBets);
+    props.onToggleProfitAndLoss(settings.profitAndLoss);
+    props.onToggleProjectedSP(settings.projectedSP);
+    props.onToggleGraph(settings.graphs);
+    props.onToggleMarketInformation(settings.marketInfo);
+    props.onToggleRules(settings.rules);
+    console.log(settings.tools);
+  });
 
   const renderView = () => {
     switch (props.view) {
@@ -40,8 +56,22 @@ const App = props => {
 
 const mapStateToProps = state => {
 	return {
-		view: state.settings.view
+    view: state.settings.view,
 	}
 }
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => {
+	return {
+		onToggleSounds: isSelected => dispatch(actions.toggleSound(isSelected)),
+    onToggleTools: settings => dispatch(actions.toggleTools(settings)),
+		onToggleUnmatchedBets: settings => dispatch(actions.toggleUnmatchedBets(settings)),
+		onToggleMatchedBets: settings => dispatch(actions.toggleMatchedBets(settings)),
+		onToggleProfitAndLoss: settings => dispatch(actions.toggleProfitAndLoss(settings)),
+		onToggleProjectedSP: settings => dispatch(actions.toggleProjectedSP(settings)),
+		onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
+		onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
+		onToggleRules: settings => dispatch(actions.toggleRules(settings)),
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

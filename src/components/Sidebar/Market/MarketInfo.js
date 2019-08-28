@@ -4,20 +4,48 @@ const MarketInfo = () => {
 	return (
 		<table>
 			<tbody>
-				<tr>Market Information</tr>
-				<tr>5. Night secret</tr>
-				<tr>Selection</tr>
-				<tr>20525252</tr>
-				<tr>Silk</tr>
-				<tr>Grey</tr>
-				<tr>Trainer Name</tr>
-				<tr>William Haggas</tr>
-				<tr>Age & Weight</tr>
-				<tr>3 years / 126 pounds</tr>
-				<tr>Form</tr>
-				<tr>382-</tr>
-				<tr>Days since last run</tr>
-				<tr>43</tr>
+				<tr>
+					<td>Market Information</td>
+				</tr>
+				<tr>
+					<td>5. Night secret</td>
+				</tr>
+				<tr>
+					<td>Selection</td>
+				</tr>
+				<tr>
+					<td>20525252</td>
+				</tr>
+				<tr>
+					<td>Silk</td>
+				</tr>
+				<tr>
+					<td>Grey</td>
+				</tr>
+				<tr>
+					<td>Trainer Name</td>
+				</tr>
+				<tr>
+					<td>William Haggas</td>
+				</tr>
+				<tr>
+					<td>Age & Weight</td>
+				</tr>
+				<tr>
+					<td>3 years / 126 pounds</td>
+				</tr>
+				<tr>
+					<td>Form</td>
+				</tr>
+				<tr>
+					<td>382-</td>
+				</tr>
+				<tr>
+					<td>Days since last run</td>
+				</tr>
+				<tr>
+					<td>43e</td>
+				</tr>
 			</tbody>
 		</table>
 	);
