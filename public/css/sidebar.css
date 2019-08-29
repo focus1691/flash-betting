@@ -188,3 +188,48 @@
 #menu-graph img {
 	width: 100%;
 }
+
+#menu-unmatched-bets {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	table-layout: fixed;
+	border: none;
+	margin: 0 auto;
+	width: 100%;
+	height: auto;
+}
+
+#menu-unmatched-heading {
+	background: #ff6600;
+
+}
+
+#menu-unmatched-heading > td {
+	padding: 2px;
+}
+
+#menu-unmatched-event {
+	width: 400%;
+	background: #6f6f1f;
+	display: inline-block;
+	color: white;
+}
+
+#menu-unmatched-event > td {
+	padding: 2px;
+}
+
+#menu-unmatched-selection {
+	display: inline-block;
+	width: 400%;
+	background: rgb(0, 111, 223);
+	color: rgb(223, 223, 0);
+}
+
+#menu-unmatched-selection > td {
+	padding: 2px;
+}
+
+#pl-style {
+	font-weight: bold;
+}
