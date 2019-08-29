@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -14,6 +15,7 @@ const StyledTableCell = withStyles(theme => ({
   },
   body: {
     fontSize: 14,
+    border: 0,
   },
   width: 100,
 }))(TableCell);
@@ -26,8 +28,8 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-function createData(name, setting) {
-  return { name, setting };
+function createData(name, setting, third) {
+  return { name, setting, third };
 }
 
 const rows = [
@@ -49,8 +51,6 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: 100,
-    // width: 10,
-    // background: 'red',
   },
 }));
 
@@ -63,14 +63,20 @@ const Tools = () => {
 
   return (
     <Paper className={classes.root}>
-      <Table className={classes.table}>
+      <Table className={`${classes.table} order-settings-tbl`}>
         <TableBody>
           {rows.map(row => (
             <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
+              <StyledTableCell scope="row">
                 {row.name}
               </StyledTableCell>
               <StyledTableCell align="left">{row.setting}</StyledTableCell>
+              <StyledTableCell padding="checkbox">
+                        <Checkbox
+                          // checked={isItemSelected}
+                          // inputProps={{ 'aria-labelledby': labelId }}
+                        />
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
