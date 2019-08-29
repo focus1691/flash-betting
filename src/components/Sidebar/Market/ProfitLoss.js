@@ -1,50 +1,49 @@
 import React from 'react';
 
-const ProfitLoss = () => {
+const ProfitLoss = ({data}) => {
+	if (data.filter(item => item.selection !== "None").length < 1) {
+		return null;
+	}
 	return (
 		<div>
 			<table id="menu-profit-loss">
 				<tbody>
-					{renderProfitAndLoss()}
+					{renderProfitAndLoss(data)}
 				</tbody>
 			</table>
 		</div>
 	);
 };
 
-const renderProfitAndLoss = () => {
+ProfitLoss.defaultProps = {
+	data: [
+		{
+			selection: "None",
+			win: "0.00",
+			lose: "0.00"
+		}
+	]
+}
+
+const renderProfitAndLoss = (data) => {
 	return (
 		<React.Fragment>
-			<tr>
+			<tr id = "menu-selected-name">
 				<td>Selection</td>
 				<td>Win</td>
 				<td>Lose</td>
 			</tr>
-			<tr>
-				<td>Night Secret</td>
-				<td>0.80</td>
-				<td>0.80</td>			
-			</tr>
-			<tr>
-				<td>Night Secret</td>
-				<td>0.80</td>
-				<td>0.80</td>			
-			</tr>
-			<tr>
-				<td>Night Secret</td>
-				<td>0.80</td>
-				<td>0.80</td>			
-			</tr>
-			<tr>
-				<td>Night Secret</td>
-				<td>0.80</td>
-				<td>0.80</td>			
-			</tr>
-			<tr>
-				<td>Night Secret</td>
-				<td>0.80</td>
-				<td>0.80</td>			
-			</tr>
+			{
+				data.map(item => 
+					<>
+					<tr>
+						<td>{item.selection}</td>
+						<td>{item.win}</td>
+						<td>{item.lose}</td>
+					</tr>
+					</>	
+				)
+			}
 		</React.Fragment>
 	);
 };
