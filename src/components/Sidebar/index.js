@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { connect } from 'react-redux';
 import Drawer from "@material-ui/core/Drawer";
 import { createMuiTheme, withStyles, makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
@@ -21,7 +22,7 @@ const BootstrapButton = withStyles({
       lineHeight: 1.5,
       color: "#fff",
       backgroundColor: '#232323',
-      borderColor: '#007bff',
+      borderColor: '#fff',
       fontWeight: 'bold',
       fontFamily: [
         '-apple-system',
@@ -56,7 +57,7 @@ const BootstrapButton = withStyles({
     },
   });
 
-const Sidebar = () => {
+const Sidebar = props => {
 
     const [openTab, setOpenTab] = useState(2);
     const [activeStyle, setActiveStyle] = useState("#389C41");
@@ -96,7 +97,7 @@ const Sidebar = () => {
             }}
             anchor="left">
         <div className={"sticky"}>
-            <Account/>
+            {props.fullscreen ? null : <Account/>}
             <Toolbar/>
             <Event/>
             <div id="toggle-buttons">
@@ -110,4 +111,11 @@ const Sidebar = () => {
     );
 };
 
-export default Sidebar;
+const mapStateToProps = state => {
+	return {
+		view: state.settings.view,
+		fullscreen: state.settings.fullscreen
+	}
+}
+
+export default connect(mapStateToProps)(Sidebar);

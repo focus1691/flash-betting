@@ -8,17 +8,27 @@ const Toolbar = props => {
 		props.onViewChange(view);
 	};
 
-	const toggleFullScreen = () => {
+	const toggleFullScreen = (view) => {
 		props.onToggleFullscreen(!props.fullscreen);
 	};
 
 	return (
 		<div id="toolbar">
-			<button onClick={e => handleClick("HomeView")}><img alt={"Training"} src={window.location.origin + '/icons/graduated.png'}/></button>
-			<button onClick={e => toggleFullScreen()}><img alt={"Hide"} src={window.location.origin + '/icons/sort-up.png'}/></button>
-			<button onClick={e => handleClick("HomeView")}><img alt={"Home"} src={window.location.origin + '/icons/homepage.png'}/></button>
-			<button onClick={e => handleClick("LadderView")}><img alt={"Ladder"} src={window.location.origin + '/icons/menu-button-of-three-vertical-lines.png'}/></button>
-			<button onClick={e => handleClick("GridView")}><img alt={"Grid"} src={window.location.origin + '/icons/menu-button-of-three-horizontal-lines.png'}/></button>
+			<button onClick={e => handleClick("TrainingView")} style={props.view === 'TrainingView' ? {background: '#389C41'} : {}}>
+				<img alt={"Training"} src={window.location.origin + '/icons/graduated.png'}/>
+			</button>
+			<button onClick={e => toggleFullScreen()} style={props.fullscreen ? {background: '#389C41'} : {} }>
+				<img alt={"Hide"} src={window.location.origin + '/icons/sort-up.png'}/>
+			</button>
+			<button onClick={e => handleClick("HomeView")} style={props.view === 'HomeView' ? {background: '#389C41'} : {}}>
+				<img alt={"Home"} src={window.location.origin + '/icons/homepage.png'}/>
+			</button>
+			<button onClick={e => handleClick("LadderView")} style={props.view === 'LadderView' ? {background: '#389C41'} : {}}>
+				<img alt={"Ladder"} src={window.location.origin + '/icons/menu-button-of-three-vertical-lines.png'}/>
+			</button>
+			<button onClick={e => handleClick("GridView")} style={props.view === 'GridView' ? {background: '#389C41'} : {}}>
+				<img alt={"Grid"} src={window.location.origin + '/icons/menu-button-of-three-horizontal-lines.png'}/>
+			</button>
 		</div>
 	);
 }
