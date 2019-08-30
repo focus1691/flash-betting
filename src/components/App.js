@@ -21,8 +21,6 @@ const App = props => {
     props.onToggleTools(settings.tools);
     props.onToggleUnmatchedBets(settings.unmatchedBets);
     props.onToggleMatchedBets(settings.matchedBets);
-    props.onToggleProfitAndLoss(settings.profitAndLoss);
-    props.onToggleProjectedSP(settings.projectedSP);
     props.onToggleGraph(settings.graphs);
     props.onToggleMarketInformation(settings.marketInfo);
     props.onToggleRules(settings.rules);
@@ -66,8 +64,6 @@ const mapDispatchToProps = dispatch => {
     onToggleTools: settings => dispatch(actions.toggleTools(settings)),
 		onToggleUnmatchedBets: settings => dispatch(actions.toggleUnmatchedBets(settings)),
 		onToggleMatchedBets: settings => dispatch(actions.toggleMatchedBets(settings)),
-		onToggleProfitAndLoss: settings => dispatch(actions.toggleProfitAndLoss(settings)),
-		onToggleProjectedSP: settings => dispatch(actions.toggleProjectedSP(settings)),
 		onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
 		onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
 		onToggleRules: settings => dispatch(actions.toggleRules(settings)),

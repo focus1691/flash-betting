@@ -6,10 +6,6 @@ const settingsSchema = mongoose.Schema({
         type: Number,
         default: false
     },
-    ladderColourContrast: {
-        type: Boolean,
-        default: false
-    },
     sounds: {
         type: Boolean,
         default: false
@@ -35,26 +31,6 @@ const settingsSchema = mongoose.Schema({
         }
     },
     matchedBets: {
-        visible: {
-            type: Boolean,
-            default: false
-        },
-        open: {
-            type: Boolean,
-            default: false
-        }
-    },
-    profitAndLoss: {
-        visible: {
-            type: Boolean,
-            default: false
-        },
-        open: {
-            type: Boolean,
-            default: false
-        }
-    },
-    projectedSP: {
         visible: {
             type: Boolean,
             default: false

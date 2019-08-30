@@ -45,24 +45,6 @@ const Settings = props => {
 			/>
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
-					Ladder Colour
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.ladderColourContrast}
-						onChange={val => props.onToggleLadderColourContrast(!props.ladderColourContrast)}
-					/>
-				}
-				label="Ladder Colour Contrast"
-			/>
-			<button className={"save-btn"} onClick={e => saveSetting({"settings.ladderColourContrast": props.ladderColourContrast})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
-
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
 					Sound
 				</Typography>
 			</AppBar>
@@ -186,79 +168,6 @@ const Settings = props => {
 				}
 				label="Panel Open"
 			/>
-
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Profit & Loss
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.profitAndLoss.visible}
-						onChange={val => props.onToggleProfitAndLoss({ visible: !props.profitAndLoss.visible, open: props.profitAndLoss.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.profitAndLoss": { visible: props.profitAndLoss.visible, open: props.profitAndLoss.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.profitAndLoss.open}
-						onChange={val => props.onToggleProfitAndLoss({ visible: props.profitAndLoss.visible, open: !props.profitAndLoss.open })}
-					/>
-				}
-				label="Panel Open"
-			/>
-
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Projected SP
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.projectedSP.visible}
-						onChange={val => props.onToggleProjectedSP({ visible: !props.projectedSP.visible, open: props.projectedSP.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.projectedSP": { visible: props.projectedSP.visible, open: props.projectedSP.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.projectedSP.open}
-						onChange={val => props.onToggleProjectedSP({ visible: props.projectedSP.visible, open: !props.projectedSP.open })}
-					/>
-				}
-				label="Panel Open"
-			/>
-
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
 					Graphs
@@ -430,13 +339,10 @@ const Settings = props => {
 const mapStateToProps = state => {
 	return {
 		trainingBalance: state.settings.trainingBalance,
-		ladderColourContrast: state.settings.ladderColourContrast,
 		sounds: state.settings.sounds,
 		tools: state.settings.tools,
 		unmatchedBets: state.settings.unmatchedBets,
 		matchedBets: state.settings.matchedBets,
-		profitAndLoss: state.settings.profitAndLoss,
-		projectedSP: state.settings.projectedSP,
 		graphs: state.settings.graphs,
 		marketInfo: state.settings.marketInfo,
 		rules: state.settings.rules,
@@ -448,13 +354,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		onReceiveTrainingBalance: balance => dispatch(actions.setTrainingBalance(balance)),
-		onToggleLadderColourContrast: isSelected => dispatch(actions.toggleLadderColourContrast(isSelected)),
 		onToggleSounds: isSelected => dispatch(actions.toggleSound(isSelected)),
 		onToggleTools: settings => dispatch(actions.toggleTools(settings)),
 		onToggleUnmatchedBets: settings => dispatch(actions.toggleUnmatchedBets(settings)),
 		onToggleMatchedBets: settings => dispatch(actions.toggleMatchedBets(settings)),
-		onToggleProfitAndLoss: settings => dispatch(actions.toggleProfitAndLoss(settings)),
-		onToggleProjectedSP: settings => dispatch(actions.toggleProjectedSP(settings)),
 		onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
 		onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
 		onToggleRules: settings => dispatch(actions.toggleRules(settings)),

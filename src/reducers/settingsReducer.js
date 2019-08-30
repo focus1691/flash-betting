@@ -1,7 +1,6 @@
 const initialState = {
     view: 'HomeView',
     trainingBalance: 1000,
-    ladderColourContrast: false,
     sounds: false,
     tools: {
         visible: true,
@@ -12,14 +11,6 @@ const initialState = {
         open: false
     },
     matchedBets: {
-        visible: false,
-        open: false
-    },
-    profitAndLoss: {
-        visible: false,
-        open: false
-    },
-    projectedSP: {
         visible: false,
         open: false
     },
@@ -49,8 +40,6 @@ const reducer = (state = initialState, action) => {
             return { ...state, view: action.payload };
         case "SET_TRAINING_BALANCE":
             return { ...state, trainingBalance: action.payload };
-        case "TOGGLE_LADDER_COLOUR_CONTRAST":
-            return { ...state, ladderColourContrast: action.payload };
         case "TOGGLE_SOUNDS":
             return { ...state, sounds: action.payload };
         case "TOGGLE_TOOLS":
@@ -59,10 +48,6 @@ const reducer = (state = initialState, action) => {
             return { ...state, unmatchedBets: action.payload };
         case "TOGGLE_MATCHED_BETS":
             return { ...state, matchedBets: action.payload };
-        case "TOGGLE_PROFIT_AND_LOSS":
-            return { ...state, profitAndLoss: action.payload };
-        case "TOGGLE_PROJECTED_SP":
-            return { ...state, projectedSP: action.payload };
         case "TOGGLE_GRAPH":
             return { ...state, graphs: action.payload }; 
         case "TOGGLE_MARKET_INFORMATION":
