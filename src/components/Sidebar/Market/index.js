@@ -4,7 +4,6 @@ import Ladders from "./Ladders";
 import Tools from "./Tools";
 import UnmatchedBets from "./UnmatchedBets";
 import MatchedBets from "./MatchedBets";
-import ProfitLoss from "./ProfitLoss";
 import Graph from "./Graphs";
 import MarketInfo from "./MarketInfo";
 import { withStyles } from "@material-ui/core/styles";
@@ -96,13 +95,6 @@ const Market = props => {
         <React.Fragment>
           {createTitle("Matched Bets", "static")}
           <MatchedBets />
-        </React.Fragment>
-      ) : null}
-
-      {props.profitAndLoss.visible ? (
-        <React.Fragment>
-          {createTitle("Profit & Loss", "static")}
-          <ProfitLoss />
         </React.Fragment>
       ) : null}
 
