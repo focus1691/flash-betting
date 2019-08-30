@@ -18,8 +18,9 @@
 }
 
 #sidebar-header {
-	background: #057C9C;
+	background: #232323;
 	padding: 5px;
+	font-weight: bold;
 }
 
 #toolbar button {
