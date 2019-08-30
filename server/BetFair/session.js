@@ -147,7 +147,7 @@ class BetfairSession {
             });
         });
     }
-
+//
     keepAlive(cb = ()=> {}) {
         return new Promise((res, rej) => {
             auth.keepAlive(this.sessionKey, (err, res) => {
