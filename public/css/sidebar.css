@@ -26,8 +26,12 @@
 	width: 20%;
 }
 
+#sidebar-event {
+	background: white;
+}
+
 #sidebar-event-section-1 {
-	background: green;
+	padding: 5px;
 }
 
 #sidebar-event-section-1 span:nth-child(1) {

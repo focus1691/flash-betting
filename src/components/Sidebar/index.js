@@ -17,8 +17,8 @@ const Sidebar = () => {
         <div style={{position: "sticky", top: 0}}>
             <Account/>
             <Toolbar/>
+            <Event/>
         </div>
-        <Event/>
         <ToggleMenu/>
         </Drawer>
     );

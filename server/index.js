@@ -30,7 +30,7 @@ app.get('/api/load-session', (request, response) => {
     session.setEmailAddress(request.query.email);
 
     this.exchangeStream = new ExchangeStream();
-    this.exchangeStream.setSessionKey("pj81VR8LT2iLT7d3TuQuqGIr0yedCm2ePpENrwPDYiWcBT9kRqjGhmiCa75/AvU0");
+    this.exchangeStream.setSessionKey("1azOlKw9NYKlf8EO/yDMxX4ZTtwpsmv9G2nc6tRSyTVhhI3K1m5PiE73YYx5/s/+");
     this.exchangeStream.authenticate(process.env.APP_KEY);
 
     response.send('sent');
@@ -128,7 +128,7 @@ app.get('/api/get-user-settings', (request, response) => {
             console.log(err);
         })
 });
-
+//
 app.post('/api/save-user-settings', (request, response) => {
     console.log(session.email);
     User.findOneAndUpdate({

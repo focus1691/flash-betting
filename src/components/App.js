@@ -24,7 +24,6 @@ const App = props => {
     props.onToggleGraph(settings.graphs);
     props.onToggleMarketInformation(settings.marketInfo);
     props.onToggleRules(settings.rules);
-    console.log(settings.tools);
   });
 
   const renderView = () => {
@@ -43,7 +42,7 @@ const App = props => {
   return (
     <div className="horizontal-scroll-wrapper">
       <div className="root">
-        <Siderbar></Siderbar>
+        <Siderbar/>
         <main className="content">
           {renderView()}
         </main>

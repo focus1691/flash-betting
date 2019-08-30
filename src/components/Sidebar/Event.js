@@ -14,11 +14,11 @@ const Event = ({currentEvent}) => {
 	return (
 		<div id="sidebar-event">
 			<div id="sidebar-event-section-1">
-				<span>Price: 5</span>
-				<span>API: 33.87</span>
-				<div id="sidebar-event-section-2">
+			<div id="sidebar-event-section-2">
 					<span>00:01:39</span>
 				</div>
+				<Typography>Price: <b>5</b></Typography>
+				<Typography>API: <b>33.87</b></Typography>
 			</div>
 			<AppBar className={classes.AppBar} position="static">
 				<Typography variant="h6" className={classes.title}>
