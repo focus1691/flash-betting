@@ -5,6 +5,13 @@ export const setActiveView = view => {
     }
 };
 
+export const setFullscreen = fullscreenSelected => {
+    return {
+        type: "FULL_SCREEN",
+        payload: fullscreenSelected
+    }
+}
+
 export const setTrainingBalance = balance => {
     return {
         type: "SET_TRAINING_BALANCE",

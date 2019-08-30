@@ -1,5 +1,6 @@
 const initialState = {
     view: 'HomeView',
+    fullscreen: false,
     trainingBalance: 1000,
     sounds: false,
     tools: {
@@ -38,6 +39,8 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case "ACTIVE_VIEW":
             return { ...state, view: action.payload };
+        case "FULL_SCREEN":
+            return { ...state, fullscreen: action.payload };
         case "SET_TRAINING_BALANCE":
             return { ...state, trainingBalance: action.payload };
         case "TOGGLE_SOUNDS":
