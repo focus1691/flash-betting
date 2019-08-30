@@ -19,8 +19,9 @@ p, span, h1 {
 	overflow-y: hidden;
 }
 
-.bold {
-	font-weight: bold;
+.sticky {
+	position: sticky;
+	top: 0;
 }
 
 .horizontal-scroll-wrapper {

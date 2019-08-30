@@ -1,5 +1,3 @@
-
-
 .save-btn {
     background-color: Transparent;
     background-repeat: no-repeat;
@@ -9,5 +7,4 @@
     overflow: hidden;
     outline: none;
     float: right;
-    /* display: inline-block; */
 }

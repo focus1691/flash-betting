@@ -14,7 +14,7 @@ const Sidebar = () => {
                 paper: "sidebar"
             }}
             anchor="left">
-        <div style={{position: "sticky", top: 0}}>
+        <div className={"sticky"}>
             <Account/>
             <Toolbar/>
             <Event/>
