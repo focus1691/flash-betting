@@ -246,10 +246,11 @@ app.get('/api/get-next-horse-race', (request, response) => {
         "sort": "FIRST_TO_START",
         "maxResults": "1",
         "marketProjection": [
-            "RUNNER_DESCRIPTION"
+            "RUNNER_DESCRIPTION",
+            "RUNNER_METADATA"
         ]
     }, function(err, res) {
-        // console.log("Response:%s\n", JSON.stringify(res.response, null, 2));	
+        console.log("Response:%s\n", JSON.stringify(res.response, null, 2));	
         response.json(res.result);
     });
 });
