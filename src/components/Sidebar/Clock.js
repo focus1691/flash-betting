@@ -10,7 +10,10 @@ const Clock = () => {
     }, ONE_SECOND);
     
 	return (
-        <p id="date-time"><img src={window.location.origin + '/icons/calendar-with-alarm-clock.png'} alt={"Time"} />{time}</p>
+        <div className={"box"}>
+            <img src={window.location.origin + '/icons/calendar-with-alarm-clock.png'} alt={"Time"} />
+            <span>{time}</span>
+        </div>
 	);
 }
 

@@ -65,7 +65,7 @@ const Tools = () => {
             <StyledTableRow key={row.name}>
               <StyledTableCell scope="row">
                 <button className={"order-btn"} onClick={e => console.log("order button clicked")}>
-                  <div class="box">
+                  <div className={"box"}>
                     <img alt={"Add"} src={window.location.origin + '/icons/add-button-inside-black-circle.png'}/>
                     <span>{row.name}</span>
                   </div>
