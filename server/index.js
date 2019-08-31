@@ -194,12 +194,13 @@ app.get('/api/list-countries', (request, response) => {
 });
 
 app.get('/api/list-competitions', (request, response) => {
+    console.log('4')
     session.listCompetitions({
         filter: {
             eventTypeIds: [request.query.sportId],
             marketCountries: [request.query.country]
         }
-    }, (err, response) => {
+    }, (err, res) => {
         response.json(res.result);
     });
 });
