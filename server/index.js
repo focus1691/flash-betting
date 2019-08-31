@@ -25,6 +25,18 @@ const mongoose = require('mongoose');
 const database = require('./database');
 const User = require('./models/users');
 
+var sess = new BetFairSession(process.env.APP_KEY);
+sess.setActiveSession("3ZnlIeuqNz75413rH1riWVstm+4IPHVZdi4ZFjndU+8=");
+sess.listMarketCatalogue({
+    filter: {
+        "eventTypeIds": ["1"]
+    },
+    maxResults: 1000
+}, (err, response) => {
+    console.log("Response:%s\n", JSON.stringify(response.result, null, 2));	
+    // console.log(response.result);
+});
+
 app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
     session.setEmailAddress(request.query.email);
@@ -128,9 +140,8 @@ app.get('/api/get-user-settings', (request, response) => {
             console.log(err);
         })
 });
-//
+
 app.post('/api/save-user-settings', (request, response) => {
-    console.log(session.email);
     User.findOneAndUpdate({
         email: session.email
     }, request.body, {
@@ -301,7 +312,7 @@ const exitHandler = (options, exitCode) => {
     if (exitCode || exitCode === 0) console.log(exitCode);
     if (options.exit) process.exit();
 };
-//
+
 // App is closing
 process.on('exit', exitHandler.bind(null, {
     cleanup: true

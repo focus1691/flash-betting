@@ -96,7 +96,7 @@ const Sidebar = props => {
                 paper: "sidebar"
             }}
             anchor="left">
-        <div className={"sticky"}>
+        <div className={"sticky"} style={{zIndex: "2"}}>
             {props.fullscreen ? null : <Account/>}
             <Toolbar/>
             <Event/>

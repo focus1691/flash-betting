@@ -19,10 +19,10 @@ const ExpansionPanel = withStyles({
         borderBottom: 0
       },
       "&:before": {
-        display: "none"
+        // display: "none"
       },
       "&$expanded": {
-        margin: "auto"
+        // margin: "auto"
       },
       backgroundColor: "#fff",
       color: "orange",
@@ -33,17 +33,18 @@ const ExpansionPanel = withStyles({
   
   const ExpansionPanelSummary = withStyles({
     root: {
-      backgroundColor: "rgba(0, 0, 0, .03)",
-      borderBottom: "1px solid rgba(0, 0, 0, .125)",
-      marginBottom: -1,
-      minHeight: 56,
+      // backgroundColor: "rgba(0, 0, 0, .03)",
+      zIndex: "1",
+      // borderBottom: "1px solid rgba(0, 0, 0, .125)",
+      // marginBottom: -1,
+      // minHeight: 56,
       "&$expanded": {
-        minHeight: 56
+        // minHeight: 56
       }
     },
     content: {
       "&$expanded": {
-        margin: "12px 0"
+        // margin: "12px 0"
       }
     },
     expanded: {}
@@ -51,7 +52,7 @@ const ExpansionPanel = withStyles({
   
   const ExpansionPanelDetails = withStyles(theme => ({
     root: {
-      padding: theme.spacing(2)
+      // padding: theme.spacing(2)
     }
   }))(MultiExpansionPanelDetails);
 
