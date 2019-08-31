@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../actions/sport';
 
-export default class EventTable extends Component {
+class EventTable extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -8,6 +10,10 @@ export default class EventTable extends Component {
 		};
 	}
 	render() {
+		if (this.props.currentEvent === undefined) {
+			return null; 
+		}
+
 		return (
 			<div id="grid-container">
 				<table className={"grid-view"}>
@@ -33,12 +39,17 @@ export default class EventTable extends Component {
 		return data;
 	}
 	renderTableHeader() {
+		const { currentEvent } = this.props;
+		const date = new Date(currentEvent.openDate);
+
 		return (
 			<tr id="grid-header">
 				<th colSpan="11">
 					<span>Turn One click on</span>
 					<img src={window.location.origin + '/icons/video-player.png'} alt={"Video"}/>
-					<h1>18:30 6f Class Stks Windsor</h1>
+					<h1>{currentEvent.openDate !== 0 ? 
+						date.toLocaleTimeString() + " " + currentEvent.name
+						: "No Event Selected"}</h1>
 					<span>Going in-play</span>
 					<img src={window.location.origin + '/icons/checked.png'} alt={"Matched"}/>
 					<span>Matched: 333,834</span>
@@ -98,3 +109,19 @@ export default class EventTable extends Component {
 		});
 	}
 }
+
+const mapStateToProps = state => {
+	
+	return {
+		currentEvent: state.sports.currentSport.currentEvent
+	}
+}
+
+Event.defaultProps = 
+{
+	currentEvent: {
+		openDate: 0,
+	}
+}
+
+export default connect(mapStateToProps, null)(EventTable);
