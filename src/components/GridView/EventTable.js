@@ -10,9 +10,6 @@ class EventTable extends Component {
 		};
 	}
 	render() {
-		if (this.props.currentEvent === undefined) {
-			return null; 
-		}
 
 		return (
 			<div id="grid-container">
@@ -20,7 +17,7 @@ class EventTable extends Component {
 					<tbody>
 						{this.renderTableHeader()}
 						{this.renderTableSubheader()}
-						{this.renderTableData()}
+						{this.props.currentEvent.openDate <= 0 ? null : this.renderTableData()}
 					</tbody>
 				</table>
 			</div>
@@ -117,7 +114,7 @@ const mapStateToProps = state => {
 	}
 }
 
-Event.defaultProps = 
+EventTable.defaultProps = 
 {
 	currentEvent: {
 		openDate: 0,
