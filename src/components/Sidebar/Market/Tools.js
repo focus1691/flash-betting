@@ -47,19 +47,15 @@ const rows = [
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    overflowX: 'hidden',
+    // overflowX: 'auto',
   },
   table: {
-    minWidth: 100,
+    // minWidth: 100,
   },
 }));
 
 const Tools = () => {
   const classes = useStyles();
-
-  rows.map(row => {
-    console.log(row);
-  });
 
   return (
     <Paper className={classes.root}>
@@ -68,7 +64,12 @@ const Tools = () => {
           {rows.map(row => (
             <StyledTableRow key={row.name}>
               <StyledTableCell scope="row">
-                {row.name}
+                <button className={"order-btn"} onClick={e => console.log("order button clicked")}>
+                  <div class="box">
+                    <img alt={"Add"} src={window.location.origin + '/icons/add-button-inside-black-circle.png'}/>
+                    <span>{row.name}</span>
+                  </div>
+                </button>
               </StyledTableCell>
               <StyledTableCell align="left">{row.setting}</StyledTableCell>
               <StyledTableCell padding="checkbox">

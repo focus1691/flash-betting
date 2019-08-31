@@ -24,6 +24,11 @@ p, span, h1 {
 	top: 0;
 }
 
+.box {
+	display: flex;
+	align-items:center;
+ }
+
 .horizontal-scroll-wrapper {
 
 }

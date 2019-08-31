@@ -12,20 +12,36 @@
 }
 
 .order-settings-tbl td {
-    font-size: small;
+    font-size: x-small;
     margin: 0;
     padding: 5px;
 }
 
 .order-settings-tbl td:nth-child(3) {
-    width: 15%;
+    width: 20%;
 }
 
 .order-settings-tbl td:nth-child(2) {
-    width: 50%;
+    width: 45%;
 }
 
 .order-settings-tbl td:first-child {
-    width: 40%;
+    width: 35%;
     border-right: 1px solid;
+}
+
+.order-btn {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    float: left;
+}
+
+.order-btn span {
+    font-size: x-small;
+    margin-left: 2px;
 }

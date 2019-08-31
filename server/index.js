@@ -25,18 +25,6 @@ const mongoose = require('mongoose');
 const database = require('./database');
 const User = require('./models/users');
 
-var sess = new BetFairSession(process.env.APP_KEY);
-sess.setActiveSession("3ZnlIeuqNz75413rH1riWVstm+4IPHVZdi4ZFjndU+8=");
-sess.listMarketCatalogue({
-    filter: {
-        "eventTypeIds": ["1"]
-    },
-    maxResults: 1000
-}, (err, response) => {
-    console.log("Response:%s\n", JSON.stringify(response.result, null, 2));	
-    // console.log(response.result);
-});
-
 app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
     session.setEmailAddress(request.query.email);
