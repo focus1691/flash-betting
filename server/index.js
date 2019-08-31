@@ -194,7 +194,6 @@ app.get('/api/list-countries', (request, response) => {
 });
 
 app.get('/api/list-competitions', (request, response) => {
-    console.log('4')
     session.listCompetitions({
         filter: {
             eventTypeIds: [request.query.sportId],
@@ -209,14 +208,14 @@ app.get('/api/list-events', (request, response) => {
     session.listEvents({
         filter: {
             eventTypeIds: [request.query.sportId],
-            marketCountries: [request.query.country]
+            marketCountries: [request.query.country],
         }
     }, (err, res) => {
         response.json(res.result);
     });
 });
 
-app.get('/api/list-events2', (request, response) => {
+app.get('/api/list-competition-events', (request, response) => {
     session.listEvents({
         filter: {
             competitionIds: [request.query.competitionId],
@@ -269,7 +268,7 @@ app.get('/api/list-markets', (request, response) => {
 app.get('/api/get-market-info', (request, response) => {
     session.listMarketCatalogue({
         filter: {
-            eventIds: [request.query.eventId]
+            marketIds: [request.query.marketId]
         },
         marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME', 'MARKET_DESCRIPTION', 'RUNNER_DESCRIPTION', 'RUNNER_METADATA'],
         maxResults: 1

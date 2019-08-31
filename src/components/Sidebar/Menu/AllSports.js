@@ -22,75 +22,53 @@ const AllSports = props => {
 		.then(sports => props.onReceiveAllSports(sports));
 	});
 
-	// useEffect(() => {
-	// 	// console.log(props.sports.currentSport)
-	// 	// fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}`)
-	// 	// .then(res => res.json())
-	// 	// .then(console.log)
-	// 	// console.log(currentCountry !== undefined && countryEvents !== undefined && countryEvents.length > 0 && currentEvent === undefined)
-	// 	cnsole.log(courrentCountry, countryEvents , countryEvents.length, currentEvent === undefined)
-	// }, [props.sports.currentSport.currentCountry]);
-
-	const handleSportClick = (sport) => {
-		// console.log('click', sport);
-
-
-		// set back to undefined if they don't want to see the menu anymore, click on same sport another time
-		if (props.sports.currentSport.currentSportId === sport.eventType.id) {
-			props.onUpdateCurrentSport({currentSportId: undefined, marketCountries: undefined, currentCountry: undefined, currentEvent: undefined});
-			return;
-		}
+	 const handleClick = async (result, currentObjectSelector, currentObjectArraySelector, api, sportId = '', country = '', competition = '', event = '', dataFormatter = data => data) => {
 		
-		fetch(`/api/list-countries?sportId=${sport.eventType.id}`)
-		.then(res => res.json())
-		.then(data => {
-			props.onUpdateCurrentSport({currentSportId: sport.eventType.id, marketCountries: data, currentCountry: undefined, currentEvent: undefined});
-		})
-	}
+		/*
+			result - button click
+			currentObjectSelector - variable that is associated with result
+			currentObjectArraySelector - array that is associated with result (we can also use this to reset an array associated with the result)
+			api - where we should fetch
+			sports, country, competition, event - api information,
+			dataFormatter - formats the data we get from the api
+		*/
 
-	const handleCountryClick = (country) => {
-		// console.log('click', country);
-		
-		// set back to undefined if they don't want to see the menu anymore, click on same country another time
-		if (props.sports.currentSport.currentCountry === country.countryCode) {
-			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: undefined});
-			return;
-		}
-		
-		fetch(`/api/list-events?sportId=${props.sports.currentSport.currentSportId}&&country=${country.countryCode}`)
-		.then(res => res.json())
-		.then(data => {
-			props.onUpdateCurrentSport({...props.sports.currentSport, currentCountry: country.countryCode, countryEvents: data.map(item => item.event), currentEvent: undefined});
-		})
-	}
+		// set back to undefined if they don't want to see the menu anymore, click on the same button another time
+		if (props.sports.currentSport[currentObjectSelector] === result) {
+			const newSport = Object.assign({}, props.sports.currentSport)
+			
+			newSport[currentObjectSelector] = undefined;
+			newSport[currentObjectArraySelector] = undefined;
 
-	const handleEventClick = (event) => {
-		// console.log('click', event);
-
-		// set back to undefined if they don't want to see the menu anymore, click on same event another time
-		if (props.sports.currentSport.currentEvent === event) {
-			props.onUpdateCurrentSport({...props.sports.currentSport, currentEvent: undefined});
+			props.onUpdateCurrentSport(newSport);
 			return;
 		}
 
-		fetch(`/api/list-markets?eventId=${event.id}`)
-		.then(res => res.json())
-		.then(data => {
-			props.onUpdateCurrentSport({...props.sports.currentSport, currentEvent: event, eventMarkets: data.result, });
-		})
+		const request = await fetch(`/api/${api}?sportId=${sportId}&&country=${country}&&competitionId=${competition}&&eventId=${event}`);
+		const data = await request.json()
+
+		const newSport = Object.assign({}, props.sports.currentSport)
+
+		newSport[currentObjectSelector] = result;
+		newSport[currentObjectArraySelector] = dataFormatter(data);
+
+		props.onUpdateCurrentSport(newSport);
+
+		return data;
+		
 	}
 
-	const handleMarketClick = (market) => {
-		// console.log('click', market, currentEvent.id);
 
-		fetch(`/api/get-market-info?eventId=${currentEvent.id}&&marketType=${market.marketType}`)
+	const handleMarketClick = (marketId) => {
+
+		fetch(`/api/get-market-info?marketId=${marketId}`)
 		.then(res => res.json())
 		.then(data => {
 			props.onUpdateCurrentMarket(data.result[0])
 		})
 	}
 
-	const {currentSportId, marketCountries, currentCountry, countryEvents, currentEvent, eventMarkets,} = props.sports.currentSport;
+	const { currentSportId, sportCountries, currentCountry, countryCompetitions, currentCompetition, competitionEvents, currentEvent, eventMarkets } = props.sports.currentSport;
 
 	return (
 		<div>
@@ -103,7 +81,7 @@ const AllSports = props => {
 
 							<div>
 								<React.Fragment>
-									<ListItem button onClick={(e) => handleEventClick(currentEvent)}>
+									<ListItem button onClick={(e) => handleClick(currentEvent, 'currentEvent', 'eventMarkets')}>
 											<ListItemIcon>
 												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
 											</ListItemIcon>
@@ -111,17 +89,40 @@ const AllSports = props => {
 										</ListItem>
 								</React.Fragment>
 								<tr>
-									<SportsFilterList list = {eventMarkets} itemSelector = {'marketName'} clickHandler = {handleMarketClick}/>
+									<SportsFilterList list = {eventMarkets} itemSelector = {'marketName'} clickHandler = {data => handleMarketClick(data.id)}/>
 								</tr>
 							</div>
 
 							:
 
 							// Selecting Event
-							currentCountry !== undefined && countryEvents !== undefined && countryEvents.length > 0 && currentEvent === undefined ? 
+							currentCountry !== undefined && competitionEvents !== undefined && competitionEvents.length > 0 && currentEvent === undefined ? 
 							<div>
 								<React.Fragment>
-									<ListItem button onClick={(e) => handleCountryClick(currentCountry)}>
+									<ListItem 
+										button 
+										onClick={(e) => { currentCompetition !== undefined ? handleClick(currentCompetition, 'currentCompetition', 'competitionEvents') : handleClick(currentCountry, 'currentCountry', 'competitionEvents') }}>
+												<ListItemIcon>
+													<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
+												</ListItemIcon>
+												<ListItemText>{currentCompetition !== undefined ? currentCompetition.name : currentCountry }</ListItemText>
+										</ListItem>
+								</React.Fragment>
+								<tr>
+									<SportsFilterList 
+										list = {competitionEvents} 
+										itemSelector = {'name'} 
+										clickHandler = {data => handleClick(data, 'currentEvent', 'eventMarkets', 'list-markets', '', '', '', data.id, data => data.result )}
+									/>
+								</tr>
+							</div>
+							
+							:
+
+							currentCountry !== undefined && countryCompetitions !== undefined && countryCompetitions.length > 0 && currentEvent === undefined ? 
+							<div>
+								<React.Fragment> 
+									<ListItem button onClick={(e) => handleClick(currentCountry, 'currentCountry', 'countryCompetitions')}>
 											<ListItemIcon>
 												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
 											</ListItemIcon>
@@ -129,25 +130,27 @@ const AllSports = props => {
 										</ListItem>
 								</React.Fragment>
 								<tr>
-									<SportsFilterList list = {countryEvents} itemSelector = {'name'} clickHandler = {handleEventClick}/>
+									<SportsFilterList 
+										list = {countryCompetitions} 
+										itemSelector = {'name'} 
+										clickHandler = {data => handleClick(data, 'currentCompetition', 'competitionEvents', 'list-competition-events', currentSportId, currentCountry, data.id, '', data => data.map(item => item.event))}
+									/>
 								</tr>
 							</div>
 							
 							:
-						
 							
 							// Used for selecting sport and country
 							props.sports.sports.map(sport => {
 								// if we have a sport selected
-
 								if (currentSportId !== undefined && sport.eventType.id !== currentSportId) {
 									return null;
 								} 
-
+								
 								return (
 									<React.Fragment>
 										<tr>
-											<ListItem button onClick={(e) => handleSportClick(sport)}>
+											<ListItem button onClick={(e) => handleClick(sport.eventType.id, 'currentSportId', 'sportCountries', 'list-countries', sport.eventType.id)}>
 												<ListItemIcon>
 													<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
 												</ListItemIcon>
@@ -155,7 +158,18 @@ const AllSports = props => {
 											</ListItem>
 											<tr>
 												{currentSportId !== undefined && sport.eventType.id === currentSportId ? 
-													<SportsFilterList list = {marketCountries} itemSelector = {'countryCode'} clickHandler = {handleCountryClick}/>
+													<SportsFilterList 
+														list = {sportCountries} 
+														itemSelector = {'countryCode'} 
+														clickHandler = {async data => {
+																const competitions = await handleClick(data.countryCode, 'currentCountry', 'countryCompetitions', 'list-competitions', currentSportId, data.countryCode, '', '', data => data.map(item => item.competition));	
+
+																if (competitions.length === 0) {
+																	await handleClick(data.countryCode, 'currentCountry', 'competitionEvents', 'list-events', currentSportId, data.countryCode, '', '', data => data.map(item => item.event));
+																}
+															}
+														}
+													/>
 												: null}
 											</tr>
 										</tr>
