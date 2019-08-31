@@ -5,7 +5,6 @@ import UserBets from "./UserBets";
 import SearchResults from "./SearchResults";
 import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import MultiExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
@@ -18,12 +17,6 @@ const ExpansionPanel = withStyles({
       "&:not(:last-child)": {
         borderBottom: 0
       },
-      "&:before": {
-        // display: "none"
-      },
-      "&$expanded": {
-        // margin: "auto"
-      },
       backgroundColor: "#fff",
       color: "orange",
       fontWeight: "900"
@@ -33,28 +26,10 @@ const ExpansionPanel = withStyles({
   
   const ExpansionPanelSummary = withStyles({
     root: {
-      // backgroundColor: "rgba(0, 0, 0, .03)",
-      zIndex: "1",
-      // borderBottom: "1px solid rgba(0, 0, 0, .125)",
-      // marginBottom: -1,
-      // minHeight: 56,
-      "&$expanded": {
-        // minHeight: 56
-      }
-    },
-    content: {
-      "&$expanded": {
-        // margin: "12px 0"
-      }
+      zIndex: "1"
     },
     expanded: {}
   })(MultiExpansionPanelSummary);
-  
-  const ExpansionPanelDetails = withStyles(theme => ({
-    root: {
-      // padding: theme.spacing(2)
-    }
-  }))(MultiExpansionPanelDetails);
 
 const Menu = () => {
 
