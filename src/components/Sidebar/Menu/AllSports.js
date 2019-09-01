@@ -11,6 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
 import SportsFilterList from "./SportsFilterList";
+import SportsClickList from "./SportsClickList";
 
 const AllSports = props => {
 
@@ -22,7 +23,11 @@ const AllSports = props => {
 		.then(sports => props.onReceiveAllSports(sports));
 	});
 
-	 const handleClick = async (result, currentObjectSelector, currentObjectArraySelector, api, sportId = '', country = '', competition = '', event = '', dataFormatter = data => data) => {
+	useEffect(() => {
+		console.log(props.sports.currentSport)
+	}, [props.sports.currentSport]);
+
+	const handleClick = async (result, currentObjectSelector, currentObjectArraySelector, api, sportId = '', country = '', competition = '', event = '', dataFormatter = data => data) => {
 		
 		/*
 			result - button click
@@ -51,7 +56,6 @@ const AllSports = props => {
 
 		newSport[currentObjectSelector] = result;
 		newSport[currentObjectArraySelector] = dataFormatter(data);
-
 		props.onUpdateCurrentSport(newSport);
 
 		return data;
@@ -79,64 +83,48 @@ const AllSports = props => {
 							// Selecting Market
 							currentEvent !== undefined && eventMarkets !== undefined && eventMarkets.length > 0 ? 
 
-							<div>
-								<React.Fragment>
-									<ListItem button onClick={(e) => handleClick(currentEvent, 'currentEvent', 'eventMarkets')}>
-											<ListItemIcon>
-												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
-											</ListItemIcon>
-											<ListItemText>{currentEvent.name}</ListItemText>
-										</ListItem>
-								</React.Fragment>
-								<tr>
-									<SportsFilterList list = {eventMarkets} itemSelector = {'marketName'} clickHandler = {data => handleMarketClick(data.id)}/>
-								</tr>
-							</div>
+								<SportsClickList 
+									currentItem = {currentEvent.name} 
+									newArray = {eventMarkets} 
+									currentItemName = {'currentEvent'} 
+									newArrayName = {'eventMarkets'} 
+									listSelector = {'marketName'} 
+									reverseClickHandler = {handleClick} 
+									clickHandler = {data => handleMarketClick(data.id)} 
+									currentItemFull = {currentEvent}
+								/>
 
 							:
 
 							// Selecting Event
 							currentCountry !== undefined && competitionEvents !== undefined && competitionEvents.length > 0 && currentEvent === undefined ? 
-							<div>
-								<React.Fragment>
-									<ListItem 
-										button 
-										onClick={(e) => { currentCompetition !== undefined ? handleClick(currentCompetition, 'currentCompetition', 'competitionEvents') : handleClick(currentCountry, 'currentCountry', 'competitionEvents') }}>
-												<ListItemIcon>
-													<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
-												</ListItemIcon>
-												<ListItemText>{currentCompetition !== undefined ? currentCompetition.name : currentCountry }</ListItemText>
-										</ListItem>
-								</React.Fragment>
-								<tr>
-									<SportsFilterList 
-										list = {competitionEvents} 
-										itemSelector = {'name'} 
-										clickHandler = {data => handleClick(data, 'currentEvent', 'eventMarkets', 'list-markets', '', '', '', data.id, data => data.result )}
-									/>
-								</tr>
-							</div>
+
+								<SportsClickList 
+									currentItem = {currentCompetition !== undefined ? currentCompetition.name : currentCountry} 
+									newArray = {competitionEvents} 
+									currentItemName = {currentCompetition !== undefined ? 'currentCompetition' : 'currentCountry'} 
+									newArrayName = {'competitionEvents'} 
+									listSelector = {'name'} 
+									reverseClickHandler = {handleClick} 
+									clickHandler = {data => handleClick(data, 'currentEvent', 'eventMarkets', 'list-markets', '', '', '', data.id, data => data.result)} 
+									currentItemFull = {currentCompetition !== undefined ? currentCompetition : currentCountry}
+								/>
+							
 							
 							:
 
+							// Selecting Competition
 							currentCountry !== undefined && countryCompetitions !== undefined && countryCompetitions.length > 0 && currentEvent === undefined ? 
-							<div>
-								<React.Fragment> 
-									<ListItem button onClick={(e) => handleClick(currentCountry, 'currentCountry', 'countryCompetitions')}>
-											<ListItemIcon>
-												<img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
-											</ListItemIcon>
-											<ListItemText>{currentCountry}</ListItemText>
-										</ListItem>
-								</React.Fragment>
-								<tr>
-									<SportsFilterList 
-										list = {countryCompetitions} 
-										itemSelector = {'name'} 
-										clickHandler = {data => handleClick(data, 'currentCompetition', 'competitionEvents', 'list-competition-events', currentSportId, currentCountry, data.id, '', data => data.map(item => item.event))}
-									/>
-								</tr>
-							</div>
+
+								<SportsClickList 
+									currentItem = {currentCountry} 
+									newArray = {countryCompetitions} 
+									currentItemName = {'currentCountry'} 
+									newArrayName = {'countryCompetitions'} 
+									listSelector = {'name'} 
+									reverseClickHandler = {handleClick} 
+									clickHandler = {data => handleClick(data, 'currentCompetition', 'competitionEvents', 'list-competition-events', currentSportId, currentCountry, data.id, '', data => data.map(item => item.event))} 
+								/>
 							
 							:
 							
