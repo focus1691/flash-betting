@@ -18,16 +18,17 @@
 }
 
 .order-settings-tbl td:nth-child(3) {
-    width: 20%;
 }
 
 .order-settings-tbl td:nth-child(2) {
-    width: 45%;
+    /* color: red; */
+    border-left: 1px solid;
 }
 
-.order-settings-tbl td:first-child {
-    width: 35%;
-    border-right: 1px solid;
+.order-settings-tbl td:first-child span {
+    /* border-right: 1px solid; */
+    /* color: green; */
+    font-size: x-small;
 }
 
 .order-btn {
@@ -44,4 +45,9 @@
 .order-btn span {
     font-size: x-small;
     margin-left: 2px;
+}
+
+.order-editable {
+    border: none;
+    border-collapse: collapse;
 }
