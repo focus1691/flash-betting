@@ -34,11 +34,11 @@ const Account = props => {
 
 const mapStateToProps = state => {
     return {
-			name: state.account.name,
-			countryCode: state.account.countryCode,
-			balance: state.account.balance,
-			time: state.account.time,
-			loggedIn: state.account.loggedIn
+		name: state.account.name,
+		countryCode: state.account.countryCode,
+		balance: state.account.balance,
+		time: state.account.time,
+		loggedIn: state.account.loggedIn
 	};
 }
 

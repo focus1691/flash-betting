@@ -29,55 +29,7 @@ const StopEntry = () => {
 
     return (
         <React.Fragment>
-            <RadioGroup
-            aria-label="gender"
-            name="gender1"
-            // className={classes.group}
-            // value={value}
-            // onChange={handleChange}
-            >
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-                <FormControlLabel className={classes.formControlLabel} value="Tick" control={<Radio />}
-                label={<span>Tick</span>}
-                />
-                <FormControlLabel value="Percent" control={<Radio />} label="%" />
-            </div>
-            </RadioGroup>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            // value="checkedB"
-                            color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
-                        />
-                    }
-                    label="Trailing"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            // value="checkedB"
-                            color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
-                        />
-                    }
-                    label="Hedged"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            // value="checkedB"
-                            color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
-                        />
-                    }
-                    label="Chaser"
-                />
-            </div>
+            
         </React.Fragment>
     );
 };

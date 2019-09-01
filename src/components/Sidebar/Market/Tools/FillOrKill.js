@@ -1,27 +1,16 @@
 import React from 'react';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
     root: {
       display: 'flex',
+      flexDirection: 'row',
     },
-    formControl: {
-      margin: theme.spacing(3),
+    number: {
+        marginLeft: theme.spacing(1),
+        width: 50,
     },
-    group: {
-      margin: theme.spacing(1, 0),
-    },
-    formControlLabel: {
-        fontSize: '0.6rem', 
-        '& label': {
-            fontSize: '0.6rem'
-        } 
-    }
   }));
 
 const FillOrKill = () => {
@@ -29,31 +18,15 @@ const FillOrKill = () => {
 
     return (
         <React.Fragment>
-            <RadioGroup
-            aria-label="gender"
-            name="gender1"
-            // className={classes.group}
-            // value={value}
-            // onChange={handleChange}
-            >
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-                <FormControlLabel className={classes.formControlLabel} value="Tick" control={<Radio />}
-                label={<span>Tick</span>}
-                />
-                <FormControlLabel value="Percent" control={<Radio />} label="%" />
-            </div>
-            </RadioGroup>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            // value="checkedB"
-                            color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
-                        />
-                    }
-                    label="Hedged"
+            <div className={classes.root}>
+                <TextField
+                    id="standard-number"
+                    className={classes.number}
+                    type="number"
+                    label="Seconds"
+                    // value={props.offset}
+                    // onChange={val => handleChange(val)}
+                    margin="normal"
                 />
             </div>
         </React.Fragment>

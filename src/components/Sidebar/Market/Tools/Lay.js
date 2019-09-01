@@ -3,25 +3,31 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
-    root: {
-      display: 'flex',
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
     },
-    formControl: {
-      margin: theme.spacing(3),
+    button: {
+        margin: theme.spacing(1),
     },
-    group: {
-      margin: theme.spacing(1, 0),
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
     formControlLabel: {
-        fontSize: '0.6rem', 
-        '& label': {
-            fontSize: '0.6rem'
-        } 
-    }
+        flexDirection: 'row',
+    },
+    dense: {
+      marginTop: 19,
+    },
+    menu: {
+      width: 200,
+    },
   }));
 
 const Lay = () => {
@@ -29,6 +35,28 @@ const Lay = () => {
 
     return (
         <React.Fragment>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <TextField
+                    id="standard-number"
+                    className={classes.textField}
+                    type="number"
+                    // value={props.offset}
+                    label="stake"
+                    // onChange={val => handleChange(val)}
+                    margin="normal"
+                />
+                <TextField
+                    id="standard-number"
+                    className={classes.textField}
+                    type="number"
+                    label="@"
+                    // value={props.offset}
+                    // onChange={val => handleChange(val)}
+                    margin="normal"
+                />
+                <Button className={classes.button}>Submit</Button>
+            </div>
+
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <FormControlLabel
                     control={
@@ -64,20 +92,51 @@ const Lay = () => {
                     label="Tick Offset"
                 />
             </div>
-            <RadioGroup
-                aria-label="gender"
-                name="gender1"
-                // className={classes.group}
-                // value={value}
-                // onChange={handleChange}
-                >
-                <div style={{display: 'flex', flexDirection: 'row'}}>
-                    <FormControlLabel className={classes.formControlLabel} value="Tick" control={<Radio />}
-                    label={<span>Tick</span>}
+
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+
+                <TextField
+                    id="standard-number"
+                    className={classes.textField}
+                    type="number"
+                    // value={props.offset}
+                    label="hh"
+                    // onChange={val => handleChange(val)}
+                    margin="normal"
+                />
+                <TextField
+                    id="standard-number"
+                    className={classes.textField}
+                    type="number"
+                    label="mm"
+                    // value={props.offset}
+                    // onChange={val => handleChange(val)}
+                    margin="normal"
+                />
+                <TextField
+                    id="standard-number"
+                    className={classes.textField}
+                    type="number"
+                    label="ss"
+                    // value={props.offset}
+                    // onChange={val => handleChange(val)}
+                    margin="normal"
+                />
+
+                <RadioGroup
+                    aria-label="gender"
+                    name="gender1"
+                    className={classes.formControlLabel}
+                    // className={classes.group}
+                    // value={value}
+                    // onChange={handleChange}
+                    >
+                    <FormControlLabel value="Tick" control={<Radio />}
+                    label={<span>-</span>}
                     />
-                    <FormControlLabel value="Percent" control={<Radio />} label="%" />
-                </div>
-            </RadioGroup>
+                    <FormControlLabel value="Percent" control={<Radio />} label="+" />
+                </RadioGroup>
+            </div>
         </React.Fragment>
     );
 };

@@ -54,6 +54,7 @@ const Tools = () => {
   const [tickOffset, toggleTickOffset] = useState(false);
   const [back, toggleBack] = useState(false);
   const [lay, toggleLay] = useState(false);
+  const [fillOrKill, toggleFillOrKill] = useState(false);
   const [stopEntry, toggleStopEntry] = useState(false);
 
   const rows = [
@@ -61,7 +62,7 @@ const Tools = () => {
     createData('Tick Offset', '3 Ticks (%) [x]', <TickOffset/>, tickOffset, toggleTickOffset),
     createData('Back', '@ 1 [-][-][-]', <Back/>, back, toggleBack),
     createData('Lay', '100 @ 4 [-][-][-]', <Lay/>, lay, toggleLay),
-    createData('Fill or Kill', '0 Seconds', <FillOrKill/>, lay, toggleLay),
+    createData('Fill or Kill', '0 Seconds', <FillOrKill/>, fillOrKill, toggleFillOrKill),
     createData('Stop Entry', '', <StopEntry/>, stopEntry, toggleStopEntry)
   ];
 
