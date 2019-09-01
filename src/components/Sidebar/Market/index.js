@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Ladders from "./Ladders";
-import Tools from "./Tools";
+import Tools from "./Tools/";
 import UnmatchedBets from "./UnmatchedBets";
 import MatchedBets from "./MatchedBets";
 import Graph from "./Graphs";
