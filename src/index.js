@@ -8,6 +8,7 @@ import stopLossReducer from "./reducers/stopLossReducer";
 import backReducer from "./reducers/backReducer";
 import layReducer from "./reducers/layReducer";
 import fillOrKillReducer from "./reducers/fillOrKillReducer";
+import tickOffsetReducer from "./reducers/tickOffsetReducer";
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   sports: sportReducer,
   settings: settingsReducer,
   stopLoss: stopLossReducer,
+  tickOffset: tickOffsetReducer,
   back: backReducer,
   lay: layReducer,
   fillOrKill: fillOrKillReducer

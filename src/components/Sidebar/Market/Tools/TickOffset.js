@@ -1,91 +1,95 @@
-import React from 'react';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Typography from '@material-ui/core/Typography';
+import * as React from "react";
+import { connect } from "react-redux";
+import * as actions from "../../../../actions/tickOffset";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles(theme => ({
-    root: {
-      display: 'flex',
-    },
-    formControl: {
-      margin: theme.spacing(3),
-    },
-    group: {
-      margin: theme.spacing(1, 0),
-    },
-    formControlLabel: {
-        fontSize: '0.6rem', 
-        '& label': {
-            fontSize: '0.6rem'
-        } 
-    }
-  }));
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(5),
+    width: 75
+  }
+}));
 
-const TickOffset = () => {
-    const classes = useStyles();
+const TickOffset = props => {
+  const classes = useStyles();
 
-    return (
-        <React.Fragment>
-            <RadioGroup
-            aria-label="gender"
-            name="gender1"
-            // className={classes.group}
-            // value={value}
-            // onChange={handleChange}
-            >
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-                <TextField
-                    id="standard-number"
-                    type="number"
-                    // className={classes.textField}
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
-                    margin="normal"
-                />
-                <FormControlLabel className={classes.formControlLabel} value="Tick" control={<Radio />}
-                label={<span>Tick</span>}
-                />
-                <FormControlLabel value="Percent" control={<Radio />} label="%" />
-            </div>
-            </RadioGroup>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-            <TextField
-                    id="standard-number2"
-                    type="number"
-                    // className={classes.textField}
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
-                    margin="normal"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            // value="checkedB"
-                            color="primary"
-                            // checked={props.hedged}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
-                        />
-                    }
-                    label="Hedged"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            // value="checkedB"
-                            color="primary"
-                            // checked={props.chaser}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
-                        />
-                    }
-                    label="Chaser"
-                />
-            </div>
-        </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <TextField
+          id="standard-number"
+          type="number"
+          label="Stake"
+          className={classes.textField}
+          value={props.stake}
+          onChange={e => props.onReceiveStake(e.target.value)}
+          margin="normal"
+        />
+        <RadioGroup
+          aria-label="tickoffset"
+          name="tickoffset"
+          value={props.unit}
+          onChange={e => props.onReceiveUnit(e.target.value)}
+        >
+          <FormControlLabel
+            className={classes.formControlLabel}
+            value="Tick"
+            control={<Radio />}
+            label={<span>Tick</span>}
+          />
+          <FormControlLabel value="Percent" control={<Radio />} label="%" />
+        </RadioGroup>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <TextField
+          id="standard-number"
+          className={classes.textField}
+          type="number"
+          label="% Trigger"
+          value={props.percentTrigger}
+          onChange={e => props.onReceivePercentTrigger(e.target.value)}
+          margin="normal"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              color="primary"
+              checked={props.hedged}
+              onChange={e => props.onReceiveHedged(e.target.checked)}
+            />
+          }
+          label="Hedged"
+        />
+      </div>
+    </React.Fragment>
+  );
 };
 
-export default TickOffset;
+const mapStateToProps = state => {
+    return {
+        stake: state.tickOffset.stake,
+        unit: state.tickOffset.units,
+        percentTrigger: state.tickOffset.percentTrigger,
+        hedged: state.tickOffset.hedged
+    };
+  };
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+        onReceiveStake: stake => dispatch(actions.setStake(stake)),
+        onReceiveUnit: unit => dispatch(actions.setUnit(unit)),
+        onReceivePercentTrigger: percent => dispatch(actions.setPercentTrigger(percent)),
+        onReceiveHedged: selected => dispatch(actions.setHedged(selected))
+    };
+  };
+  
+  export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(TickOffset);
