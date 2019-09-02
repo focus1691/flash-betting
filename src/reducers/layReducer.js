@@ -7,32 +7,33 @@ const initialState = {
     offset: {
         hours: 0,
         minutes: 0,
-        seconds: 0,
-        beforeMarket: true,
-        afterMarket: false
-    }
+        seconds: 0
+    },
+    executionTime: "Before"
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case "SET_STAKE":
-            return { ...state, view: action.payload };
-        case "SET_PRICE":
-            return { ...state, view: action.payload };
-        case "TOGGLE_FILL_OR_KILL":
-            return { ...state, view: action.payload };
-        case "TOGGLE_STOP_LOSS":
-            return { ...state, view: action.payload };
-        case "TOGGLE_TICK_OFFSET":
-            return { ...state, view: action.payload };
-        case "SET_HOURS":
-            return { ...state, view: action.payload };
-        case "SET_MINUTES":
-            return { ...sstate, view: action.payload };
-        case "SET_SECONDS":
-            return { ...state, view: action.payload };
-        case "TOGGLE_EXECUTION_BEFORE_OR_AFTER":
-            return { ...state, view: action.payload };
+        case "SET_LAY_STAKE":
+            return { ...state, stake: action.payload };
+        case "SET_LAY_PRICE":
+            return { ...state, price: action.payload };
+        case "TOGGLE_LAY_FILL_OR_KILL":
+            return { ...state, fillOrKill: action.payload };
+        case "TOGGLE_LAY_STOP_LOSS":
+            return { ...state, stopLoss: action.payload };
+        case "TOGGLE_LAY_TICK_OFFSET":
+            return { ...state, tickOffset: action.payload };
+        case "SET_LAY_HOURS":
+            return { ...state, offset: { hours: action.payload, minutes: state.offset.minutes, seconds: state.offset.seconds } };
+        case "SET_LAY_MINUTES":
+            return { ...state, offset: { hours: state.offset.hours, minutes: action.payload, seconds: state.offset.seconds } };
+        case "SET_LAY_SECONDS":
+            return { ...state, offset: { hours: state.offset.hours, minutes: state.offset.minutes, seconds: action.payload } };
+        case "TOGGLE_LAY_EXECUTION_BEFORE_OR_AFTER":
+            return { ...state, executionTime: action.payload };
+        default:
+            return state;
     }
 };
 

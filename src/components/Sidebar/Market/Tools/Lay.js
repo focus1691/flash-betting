@@ -1,4 +1,6 @@
-import React from 'react';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../../../actions/lay';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -9,8 +11,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
     container: {
-        display: 'flex',
-        flexWrap: 'wrap',
+      display: 'flex',
+      flexWrap: 'wrap',
     },
     button: {
         margin: theme.spacing(1),
@@ -19,18 +21,9 @@ const useStyles = makeStyles(theme => ({
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
     },
-    formControlLabel: {
-        flexDirection: 'row',
-    },
-    dense: {
-      marginTop: 19,
-    },
-    menu: {
-      width: 200,
-    },
   }));
 
-const Lay = () => {
+const Lay = props => {
     const classes = useStyles();
 
     return (
@@ -40,9 +33,9 @@ const Lay = () => {
                     id="standard-number"
                     className={classes.textField}
                     type="number"
-                    // value={props.offset}
                     label="stake"
-                    // onChange={val => handleChange(val)}
+                    value={props.stake}
+                    onChange={e => props.onReceiveStake(e.target.value)}
                     margin="normal"
                 />
                 <TextField
@@ -50,8 +43,8 @@ const Lay = () => {
                     className={classes.textField}
                     type="number"
                     label="@"
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
+                    value={props.price}
+                    onChange={e => props.onReceivePrice(e.target.value)}
                     margin="normal"
                 />
                 <Button className={classes.button}>Submit</Button>
@@ -61,10 +54,9 @@ const Lay = () => {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            // value="checkedB"
                             color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
+                            checked={props.fillOrKill}
+                            onChange={e => props.ontoggleFillOrKill(e.target.checked)}
                         />
                     }
                     label="Fill/Kill"
@@ -72,10 +64,9 @@ const Lay = () => {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            // value="checkedB"
                             color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
+                            checked={props.stopLoss}
+                            onChange={e => props.onToggleStopLoss(e.target.checked)}
                         />
                     }
                     label="Stop Loss"
@@ -83,10 +74,9 @@ const Lay = () => {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            // value="checkedB"
                             color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
+                            checked={props.tickOffset}
+                            onChange={e => props.onToggleTickOffset(e.target.checked)}
                         />
                     }
                     label="Tick Offset"
@@ -99,9 +89,9 @@ const Lay = () => {
                     id="standard-number"
                     className={classes.textField}
                     type="number"
-                    // value={props.offset}
                     label="hh"
-                    // onChange={val => handleChange(val)}
+                    value={props.hours}
+                    onChange={e => props.onReceiveHours(e.target.value)}
                     margin="normal"
                 />
                 <TextField
@@ -109,8 +99,8 @@ const Lay = () => {
                     className={classes.textField}
                     type="number"
                     label="mm"
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
+                    value={props.minutes}
+                    onChange={e => props.onReceiveMinutes(e.target.value)}
                     margin="normal"
                 />
                 <TextField
@@ -118,27 +108,55 @@ const Lay = () => {
                     className={classes.textField}
                     type="number"
                     label="ss"
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
+                    value={props.seconds}
+                    onChange={e => props.onReceiveSeconds(e.target.value)}
                     margin="normal"
                 />
 
                 <RadioGroup
-                    aria-label="gender"
-                    name="gender1"
-                    className={classes.formControlLabel}
-                    // className={classes.group}
-                    // value={value}
-                    // onChange={handleChange}
+                    aria-label="orderexecution"
+                    name="orderexecution"
+                    value={props.executionTime}
+                    onChange={e => props.onToggleExecutionTime(e.target.value)}
                     >
-                    <FormControlLabel value="Tick" control={<Radio />}
+
+                    <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio />}
                     label={<span>-</span>}
                     />
-                    <FormControlLabel value="Percent" control={<Radio />} label="+" />
+
+                    <FormControlLabel value="After" control={<Radio />} label="+" />
                 </RadioGroup>
             </div>
         </React.Fragment>
     );
 };
 
-export default Lay;
+const mapStateToProps = state => {
+    return {
+        stake: state.lay.stake,
+        price: state.lay.price,
+        fillOrKill: state.lay.fillOrKill,
+        stopLoss: state.lay.stopLoss,
+        tickOffset: state.lay.tickOffset,
+        hours: state.lay.offset.hours,
+        minutes: state.lay.offset.minutes,
+        seconds: state.lay.offset.seconds,
+        executionTime: state.lay.executionTime
+	};
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+        onReceiveStake: stake => dispatch(actions.setStake(stake)),
+        onReceivePrice: price => dispatch(actions.setPrice(price)),
+        ontoggleFillOrKill: selected => dispatch(actions.toggleFillOrKill(selected)),
+        onToggleStopLoss: selected => dispatch(actions.toggleStopLoss(selected)),
+        onToggleTickOffset: selected => dispatch(actions.toggleTickOffset(selected)),
+        onReceiveHours: hours => dispatch(actions.setHours(hours)),
+        onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
+        onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
+        onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Lay);

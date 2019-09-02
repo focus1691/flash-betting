@@ -11,7 +11,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case "SET_LAST_TRADED_PRICE":
+        case "SET_OPERATOR":
             return { ...state, view: action.payload };
         case "SET_STAKE":
             return { ...state, view: action.payload };

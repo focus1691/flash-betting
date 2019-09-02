@@ -1,4 +1,6 @@
-import React from 'react';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../../../actions/back';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -21,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     },
   }));
 
-const Back = () => {
+const Back = props => {
     const classes = useStyles();
 
     return (
@@ -31,18 +33,18 @@ const Back = () => {
                     id="standard-number"
                     className={classes.textField}
                     type="number"
-                    // value={props.offset}
                     label="stake"
-                    // onChange={val => handleChange(val)}
+                    value={props.stake}
+                    onChange={e => props.onReceiveStake(e.target.value)}
                     margin="normal"
-                    />
+                />
                 <TextField
                     id="standard-number"
                     className={classes.textField}
                     type="number"
                     label="@"
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
+                    value={props.price}
+                    onChange={e => props.onReceivePrice(e.target.value)}
                     margin="normal"
                 />
                 <Button className={classes.button}>Submit</Button>
@@ -52,10 +54,9 @@ const Back = () => {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            // value="checkedB"
                             color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
+                            checked={props.fillOrKill}
+                            onChange={e => props.ontoggleFillOrKill(e.target.checked)}
                         />
                     }
                     label="Fill/Kill"
@@ -63,10 +64,9 @@ const Back = () => {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            // value="checkedB"
                             color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
+                            checked={props.stopLoss}
+                            onChange={e => props.onToggleStopLoss(e.target.checked)}
                         />
                     }
                     label="Stop Loss"
@@ -74,10 +74,9 @@ const Back = () => {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            // value="checkedB"
                             color="primary"
-                            // checked={props.tools.visible}
-                            // onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
+                            checked={props.tickOffset}
+                            onChange={e => props.onToggleTickOffset(e.target.checked)}
                         />
                     }
                     label="Tick Offset"
@@ -90,9 +89,9 @@ const Back = () => {
                     id="standard-number"
                     className={classes.textField}
                     type="number"
-                    // value={props.offset}
                     label="hh"
-                    // onChange={val => handleChange(val)}
+                    value={props.hours}
+                    onChange={e => props.onReceiveHours(e.target.value)}
                     margin="normal"
                 />
                 <TextField
@@ -100,8 +99,8 @@ const Back = () => {
                     className={classes.textField}
                     type="number"
                     label="mm"
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
+                    value={props.minutes}
+                    onChange={e => props.onReceiveMinutes(e.target.value)}
                     margin="normal"
                 />
                 <TextField
@@ -109,28 +108,55 @@ const Back = () => {
                     className={classes.textField}
                     type="number"
                     label="ss"
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
+                    value={props.seconds}
+                    onChange={e => props.onReceiveSeconds(e.target.value)}
                     margin="normal"
                 />
 
                 <RadioGroup
-                    aria-label="gender"
-                    name="gender1"
-                    // className={classes.group}
-                    // value={value}
-                    // onChange={handleChange}
+                    aria-label="orderexecution"
+                    name="orderexecution"
+                    value={props.executionTime}
+                    onChange={e => props.onToggleExecutionTime(e.target.value)}
                     >
 
-                    <FormControlLabel className={classes.formControlLabel} value="Tick" control={<Radio />}
+                    <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio />}
                     label={<span>-</span>}
                     />
 
-                    <FormControlLabel value="Percent" control={<Radio />} label="+" />
+                    <FormControlLabel value="After" control={<Radio />} label="+" />
                 </RadioGroup>
             </div>
         </React.Fragment>
     );
 };
 
-export default Back;
+const mapStateToProps = state => {
+    return {
+        stake: state.back.stake,
+        price: state.back.price,
+        fillOrKill: state.back.fillOrKill,
+        stopLoss: state.back.stopLoss,
+        tickOffset: state.back.tickOffset,
+        hours: state.back.offset.hours,
+        minutes: state.back.offset.minutes,
+        seconds: state.back.offset.seconds,
+        executionTime: state.back.executionTime
+	};
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+        onReceiveStake: stake => dispatch(actions.setStake(stake)),
+        onReceivePrice: price => dispatch(actions.setPrice(price)),
+        ontoggleFillOrKill: selected => dispatch(actions.toggleFillOrKill(selected)),
+        onToggleStopLoss: selected => dispatch(actions.toggleStopLoss(selected)),
+        onToggleTickOffset: selected => dispatch(actions.toggleTickOffset(selected)),
+        onReceiveHours: hours => dispatch(actions.setHours(hours)),
+        onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
+        onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
+        onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Back);

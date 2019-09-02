@@ -7,7 +7,7 @@ export const setStopLossOffset = offset => {
 
 export const setStopLossUnit = unit => {
     return {
-        type: "SET_STOP_LOSS_UNIT",
+        type: "SET_STOP_LOSS_UNITS",
         payload: unit
     }
 };

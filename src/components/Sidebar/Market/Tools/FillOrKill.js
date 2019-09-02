@@ -1,4 +1,6 @@
-import React from 'react';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../../../actions/fillOrKill';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -13,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     },
   }));
 
-const FillOrKill = () => {
+const FillOrKill = props => {
     const classes = useStyles();
 
     return (
@@ -24,8 +26,8 @@ const FillOrKill = () => {
                     className={classes.number}
                     type="number"
                     label="Seconds"
-                    // value={props.offset}
-                    // onChange={val => handleChange(val)}
+                    value={props.seconds}
+                    onChange={e => props.onReceiveFillOrKill(e.target.value)}
                     margin="normal"
                 />
             </div>
@@ -33,4 +35,16 @@ const FillOrKill = () => {
     );
 };
 
-export default FillOrKill;
+const mapStateToProps = state => {
+    return {
+        seconds: state.fillOrKill.seconds
+	};
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+        onReceiveFillOrKill: seconds => dispatch(actions.setFillOrKill(seconds)),
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FillOrKill);

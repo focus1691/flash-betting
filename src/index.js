@@ -5,8 +5,11 @@ import sportReducer from "./reducers/sportReducer";
 import accountReducer from "./reducers/accountReducer";
 import settingsReducer from "./reducers/settingsReducer";
 import stopLossReducer from "./reducers/stopLossReducer";
+import backReducer from "./reducers/backReducer";
+import layReducer from "./reducers/layReducer";
+import fillOrKillReducer from "./reducers/fillOrKillReducer";
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import thunk from 'redux-thunk'
+import thunk from 'redux-thunk';
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
@@ -24,7 +27,10 @@ const rootReducer = combineReducers({
   account: accountReducer,
   sports: sportReducer,
   settings: settingsReducer,
-  stopLoss: stopLossReducer
+  stopLoss: stopLossReducer,
+  back: backReducer,
+  lay: layReducer,
+  fillOrKill: fillOrKillReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

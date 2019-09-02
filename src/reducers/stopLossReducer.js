@@ -1,9 +1,6 @@
 const initialState = {
     offset: 5,
-    units: {
-        ticks: true,
-        percent: false,
-    },
+    units: "Ticks",
     trailing: true,
     hedged: true,
     chaser: false
@@ -12,15 +9,15 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case "SET_STOP_LOSS_OFFSET":
-            return { ...state, view: action.payload };
-        case "SET_STOP_LOSS_UNIT":
-            return { ...state, view: action.payload };
+            return { ...state, offset: action.payload };
+        case "SET_STOP_LOSS_UNITS":
+            return { ...state, units: action.payload };
         case "TOGGLE_STOP_LOSS_TRAILING":
-            return { ...state, view: action.payload };
+            return { ...state, trailing: action.payload };
         case "TOGGLE_STOP_LOSS_HEDGED":
-            return { ...state, view: action.payload };
+            return { ...state, hedged: action.payload };
         case "TOGGLE_STOP_LOSS_CHASER":
-            return { ...state, view: action.payload };
+            return { ...state, chaser: action.payload };
         default:
             return state;
     }
