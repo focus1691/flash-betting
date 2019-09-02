@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from "react-redux";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -84,6 +85,7 @@ const Tools = () => {
               <StyledTableCell align="left" colSpan={3}>{row.description}</StyledTableCell>
               <StyledTableCell padding="checkbox" colSpan={1}>
                 <Checkbox
+                  color="primary"
                   // checked={isItemSelected}
                   // inputProps={{ 'aria-labelledby': labelId }}
                 />
@@ -103,4 +105,20 @@ const Tools = () => {
   );
 }
 
-export default Tools;
+const mapStateToProps = state => {
+  return {
+    stake: state.lay.stake,
+    price: state.lay.price,
+    fillOrKill: state.lay.fillOrKill,
+    stopLoss: state.lay.stopLoss,
+    tickOffset: state.lay.tickOffset,
+    hours: state.lay.offset.hours,
+    minutes: state.lay.offset.minutes,
+    seconds: state.lay.offset.seconds,
+    executionTime: state.lay.executionTime
+  };
+};
+
+export default connect(
+  mapStateToProps
+)(Tools);
