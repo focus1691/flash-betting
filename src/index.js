@@ -5,6 +5,7 @@ import sportReducer from "./reducers/sportReducer";
 import accountReducer from "./reducers/accountReducer";
 import settingsReducer from "./reducers/settingsReducer";
 import stopLossReducer from "./reducers/stopLossReducer";
+import stopEntryReducer from "./reducers/stopEntryReducer";
 import backReducer from "./reducers/backReducer";
 import layReducer from "./reducers/layReducer";
 import fillOrKillReducer from "./reducers/fillOrKillReducer";
@@ -32,7 +33,8 @@ const rootReducer = combineReducers({
   tickOffset: tickOffsetReducer,
   back: backReducer,
   lay: layReducer,
-  fillOrKill: fillOrKillReducer
+  fillOrKill: fillOrKillReducer,
+  stopEntry: stopEntryReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

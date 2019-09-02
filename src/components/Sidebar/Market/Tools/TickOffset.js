@@ -40,10 +40,10 @@ const TickOffset = props => {
           <FormControlLabel
             className={classes.formControlLabel}
             value="Tick"
-            control={<Radio />}
+            control={<Radio color="primary" />}
             label={<span>Tick</span>}
           />
-          <FormControlLabel value="Percent" control={<Radio />} label="%" />
+          <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
         </RadioGroup>
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}>

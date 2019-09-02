@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
       flexWrap: 'wrap',
     },
     button: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(2),
     },
     textField: {
       marginLeft: theme.spacing(1),
@@ -47,7 +47,7 @@ const Back = props => {
                     onChange={e => props.onReceivePrice(e.target.value)}
                     margin="normal"
                 />
-                <Button className={classes.button}>Submit</Button>
+                <Button variant="outlined" color="primary" size="small" className={classes.button}>Submit</Button>
             </div>
 
             <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -120,11 +120,11 @@ const Back = props => {
                     onChange={e => props.onToggleExecutionTime(e.target.value)}
                     >
 
-                    <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio />}
+                    <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />}
                     label={<span>-</span>}
                     />
 
-                    <FormControlLabel value="After" control={<Radio />} label="+" />
+                    <FormControlLabel value="After" control={<Radio color="primary" />} label="+" />
                 </RadioGroup>
             </div>
         </React.Fragment>

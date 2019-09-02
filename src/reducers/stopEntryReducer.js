@@ -1,24 +1,22 @@
 const initialState = {
-    ltp: {
-        lessThan: true,
-        equal: false,
-        greaterThan: false
-    },
+    operator: "<",
+    ticks: 3,
     stake: 2,
-    price: 750,
-    ticks: 3
+    price: 750
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case "SET_OPERATOR":
-            return { ...state, view: action.payload };
-        case "SET_STAKE":
-            return { ...state, view: action.payload };
-        case "SET_PRICE":
-            return { ...state, view: action.payload };
-        case "SET_TICKS":
-            return { ...state, view: action.payload };
+        case "SET_STOP_ENTRY_OPERATOR":
+            return { ...state, operator: action.payload };
+        case "SET_STOP_ENTRY_TICKS":
+            return { ...state, ticks: action.payload };
+        case "SET_STOP_ENTRY_STAKE":
+            return { ...state, stake: action.payload };
+        case "SET_STOP_ENTRY_PRICE":
+            return { ...state, price: action.payload };
+        default:
+            return state;
     }
 };
 

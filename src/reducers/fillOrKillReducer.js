@@ -5,7 +5,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case "SET_FILL_OR_KILL_TIME":
-            return { ...state, view: action.payload };
+            return { ...state, seconds: action.payload };
         default:
             return state;
     }

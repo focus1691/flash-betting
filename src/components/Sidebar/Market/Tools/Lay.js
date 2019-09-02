@@ -11,11 +11,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   button: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(2),
   },
   textField: {
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   }
 }));
 
@@ -43,7 +43,7 @@ const Lay = props => {
           onChange={e => props.onReceivePrice(e.target.value)}
           margin="normal"
         />
-        <Button className={classes.button}>Submit</Button>
+        <Button variant="outlined" color="primary" className={classes.button}>Submit</Button>
       </div>
 
       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -117,11 +117,11 @@ const Lay = props => {
           <FormControlLabel
             value="Before"
             className={classes.formControlLabel}
-            control={<Radio />}
+            control={<Radio color="primary" />}
             label={<span>-</span>}
           />
 
-          <FormControlLabel value="After" control={<Radio />} label="+" />
+          <FormControlLabel value="After" control={<Radio color="primary" />} label="+" />
         </RadioGroup>
       </div>
     </React.Fragment>

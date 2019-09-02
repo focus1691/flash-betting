@@ -49,10 +49,10 @@ const StopLoss = props => {
           <FormControlLabel
             value="Ticks"
             className={classes.formControlLabel}
-            control={<Radio />}
+            control={<Radio color="primary" Radio/>}
             label={<span>Tick</span>}
           />
-          <FormControlLabel value="Percent" control={<Radio />} label="%" />
+          <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
         </div>
       </RadioGroup>
       <div style={{ display: "flex", flexDirection: "row" }}>
