@@ -26,7 +26,6 @@ const Event = ({currentEvent}) => {
 						currentEvent.openDate !== 0 ? 
 						date.toLocaleTimeString() + " " + currentEvent.name
 						: "No Event Selected"}
-						{/* 18:30 6f Class Stks Windsor */}
 				</Typography>
 			</AppBar>
 		</div>

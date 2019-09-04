@@ -76,16 +76,6 @@ const StopLoss = props => {
           }
           label="Hedged"
         />
-        <FormControlLabel
-          control={
-            <Checkbox
-              color="primary"
-              checked={props.chaser}
-              onChange={e => props.onToggleChaser(e.target.checked)}
-            />
-          }
-          label="Chaser"
-        />
       </div>
     </React.Fragment>
   );
@@ -106,8 +96,7 @@ const mapDispatchToProps = dispatch => {
     onReceiveOffset: offset => dispatch(actions.setStopLossOffset(offset)),
     onReceiveUnit: unit => dispatch(actions.setStopLossUnit(unit)),
     onToggleTrailing: selected => dispatch(actions.toggleStopLossTrailing(selected)),
-    onToggleHedged: selected => dispatch(actions.toggleStopLossHedged(selected)),
-    onToggleChaser: selected => dispatch(actions.toggleStopLossChaser(selected))
+    onToggleHedged: selected => dispatch(actions.toggleStopLossHedged(selected))
   };
 };
 

@@ -3,7 +3,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SportsFilterList from './SportsFilterList'
-import Divider from '@material-ui/core/Divider';
 
 /*
     currentItem - Item at the shown

@@ -2,8 +2,7 @@ const initialState = {
     offset: 5,
     units: "Ticks",
     trailing: true,
-    hedged: true,
-    chaser: false
+    hedged: true
 }
 
 const reducer = (state = initialState, action) => {
@@ -16,8 +15,6 @@ const reducer = (state = initialState, action) => {
             return { ...state, trailing: action.payload };
         case "TOGGLE_STOP_LOSS_HEDGED":
             return { ...state, hedged: action.payload };
-        case "TOGGLE_STOP_LOSS_CHASER":
-            return { ...state, chaser: action.payload };
         default:
             return state;
     }

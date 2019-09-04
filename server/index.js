@@ -30,9 +30,9 @@ app.get('/api/load-session', (request, response) => {
     session.setEmailAddress(request.query.email);
 
     this.exchangeStream = new ExchangeStream();
-    this.exchangeStream.setSessionKey("1azOlKw9NYKlf8EO/yDMxX4ZTtwpsmv9G2nc6tRSyTVhhI3K1m5PiE73YYx5/s/+");
+    this.exchangeStream.setSessionKey("RsZb9h15b0MWsZPxXUMRDiyGS311Ybze80vSJ1QcnFEodXEgQz7/aVaBh6wEiwJk");
     this.exchangeStream.authenticate(process.env.APP_KEY);
-
+    //
     response.send('sent');
 });
 
@@ -79,9 +79,6 @@ app.get('/api/login', (request, response) => {
                 }
 
             })
-            .catch(console.log)
-
-
     }).bind(this).catch(err => response.json({
         error: err
     }));
@@ -170,7 +167,6 @@ app.get('/api/request-access-token', (request, response) => {
             runValidators: true
         }).then(user => {
             response.json(tokenInfo);
-            // Need to do something if an error occurs
         }).catch(err => console.log(err))
     });
 });
@@ -248,8 +244,8 @@ app.get('/api/get-next-horse-race', (request, response) => {
             "RUNNER_DESCRIPTION",
             "RUNNER_METADATA"
         ]
-    }, function(err, res) {
-        console.log("Response:%s\n", JSON.stringify(res.response, null, 2));	
+    }, function (err, res) {
+        console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
         response.json(res.result);
     });
 });
@@ -260,7 +256,7 @@ app.get('/api/list-markets', (request, response) => {
             eventIds: [request.query.eventId]
         },
         maxResults: 1000
-    }, (err, res) => {	
+    }, (err, res) => {
         response.json(res);
     });
 });

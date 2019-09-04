@@ -18,8 +18,12 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(2),
     },
     textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
+        width: 45,
+        margin: theme.spacing(1),
+    },
+    textField2: {
+        width: 30,
+        margin: theme.spacing(2),
     },
   }));
 
@@ -51,43 +55,10 @@ const Back = props => {
             </div>
 
             <div style={{display: 'flex', flexDirection: 'row'}}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            color="primary"
-                            checked={props.fillOrKill}
-                            onChange={e => props.ontoggleFillOrKill(e.target.checked)}
-                        />
-                    }
-                    label="Fill/Kill"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            color="primary"
-                            checked={props.stopLoss}
-                            onChange={e => props.onToggleStopLoss(e.target.checked)}
-                        />
-                    }
-                    label="Stop Loss"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            color="primary"
-                            checked={props.tickOffset}
-                            onChange={e => props.onToggleTickOffset(e.target.checked)}
-                        />
-                    }
-                    label="Tick Offset"
-                />
-            </div>
-
-            <div style={{display: 'flex', flexDirection: 'row'}}>
 
                 <TextField
                     id="standard-number"
-                    className={classes.textField}
+                    className={classes.textField2}
                     type="number"
                     label="hh"
                     value={props.hours}
@@ -96,7 +67,7 @@ const Back = props => {
                 />
                 <TextField
                     id="standard-number"
-                    className={classes.textField}
+                    className={classes.textField2}
                     type="number"
                     label="mm"
                     value={props.minutes}
@@ -105,7 +76,7 @@ const Back = props => {
                 />
                 <TextField
                     id="standard-number"
-                    className={classes.textField}
+                    className={classes.textField2}
                     type="number"
                     label="ss"
                     value={props.seconds}
@@ -135,9 +106,6 @@ const mapStateToProps = state => {
     return {
         stake: state.back.stake,
         price: state.back.price,
-        fillOrKill: state.back.fillOrKill,
-        stopLoss: state.back.stopLoss,
-        tickOffset: state.back.tickOffset,
         hours: state.back.offset.hours,
         minutes: state.back.offset.minutes,
         seconds: state.back.offset.seconds,
@@ -149,9 +117,6 @@ const mapDispatchToProps = dispatch => {
 	return {
         onReceiveStake: stake => dispatch(actions.setStake(stake)),
         onReceivePrice: price => dispatch(actions.setPrice(price)),
-        ontoggleFillOrKill: selected => dispatch(actions.toggleFillOrKill(selected)),
-        onToggleStopLoss: selected => dispatch(actions.toggleStopLoss(selected)),
-        onToggleTickOffset: selected => dispatch(actions.toggleTickOffset(selected)),
         onReceiveHours: hours => dispatch(actions.setHours(hours)),
         onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
         onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),

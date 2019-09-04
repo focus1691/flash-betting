@@ -26,7 +26,7 @@ class BetFairStreamAPI {
 			this.client.write('{"op": "authentication", "appKey": "' + this.applicationKey + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
 
 
-			this.client.write('{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["1.161668737"]},"marketDataFilter":{}}\r\n');
+			this.client.write('{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["1.162020260"]},"marketDataFilter":{"ladderLevels": 2}}\r\n');
 
 
 			this.client.on('data', function(data) {

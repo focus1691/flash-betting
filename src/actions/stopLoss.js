@@ -24,10 +24,3 @@ export const toggleStopLossHedged = selected => {
         payload: selected
     }
 };
-
-export const toggleStopLossChaser = selected => {
-    return {
-        type: "TOGGLE_STOP_LOSS_CHASER",
-        payload: selected
-    }
-};

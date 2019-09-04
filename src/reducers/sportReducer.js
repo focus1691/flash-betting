@@ -20,7 +20,7 @@ const reducer = (state = initialState, action) => {
             return { ...state, sports: action.payload };
         case "SPORTS_CURRENT":
             return { ...state, currentSport: action.payload };
-        case "CURRENT_MARKET": 
+        case "CURRENT_MARKET":
             return { ...state, currentMarket: action.payload };
         default:
             return state;

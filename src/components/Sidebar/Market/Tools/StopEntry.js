@@ -36,6 +36,9 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
+  select: {
+    margin: theme.spacing(1),
+  },
 }));
 
 const StopEntry = props => {
@@ -48,6 +51,7 @@ const StopEntry = props => {
           <InputLabel>LTP</InputLabel>
           <Select
             native
+            className={classes.select}
             value={props.operator}
             onChange={e => props.onReceiveOperator(e.target.value)}
             input={<OutlinedInput name="age" />}

@@ -12,27 +12,6 @@ export const setPrice = price => {
     }
 };
 
-export const toggleFillOrKill = selected => {
-    return {
-        type: "TOGGLE_LAY_FILL_OR_KILL",
-        payload: selected
-    }
-};
-
-export const toggleStopLoss = selected => {
-    return {
-        type: "TOGGLE_LAY_STOP_LOSS",
-        payload: selected
-    }
-};
-
-export const toggleTickOffset = selected => {
-    return {
-        type: "TOGGLE_LAY_TICK_OFFSET",
-        payload: selected
-    }
-};
-
 export const setHours = hours => {
     return {
         type: "SET_LAY_HOURS",

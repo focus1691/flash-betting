@@ -6,72 +6,22 @@ import UnmatchedBets from "./UnmatchedBets";
 import MatchedBets from "./MatchedBets";
 import Graph from "./Graphs";
 import MarketInfo from "./MarketInfo";
-import { withStyles } from "@material-ui/core/styles";
-import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
-import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import MultiExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import useStyles from "../../Styles/Styles";
 
-const ExpansionPanel = withStyles({
-    root: {
-      border: "1px solid #fff",
-      boxShadow: "none",
-      "&:not(:last-child)": {
-        borderBottom: 0
-      },
-      "&:before": {
-        display: "none"
-      },
-      "&$expanded": {
-        margin: "auto"
-      },
-      backgroundColor: "#fff",
-      color: "orange",
-      fontWeight: "900"
-    },
-    expanded: {}
-  })(MultiExpansionPanel);
-  
-  const ExpansionPanelSummary = withStyles({
-    root: {
-      backgroundColor: "rgba(0, 0, 0, .03)",
-      borderBottom: "1px solid rgba(0, 0, 0, .125)",
-      marginBottom: -1,
-      minHeight: 56,
-      "&$expanded": {
-        minHeight: 56
-      }
-    },
-    content: {
-      "&$expanded": {
-        margin: "12px 0"
-      }
-    },
-    expanded: {}
-  })(MultiExpansionPanelSummary);
-  
-  const ExpansionPanelDetails = withStyles(theme => ({
-    root: {
-      padding: theme.spacing(2)
-    }
-  }))(MultiExpansionPanelDetails);
-
-
 const Market = props => {
+  const classes = useStyles();
 
-    const classes = useStyles();
-        
-    const createTitle = (name, position) => {
-        return (
-            <AppBar className={classes.appBar} position={position || "absolute"}>
-                <Typography variant="h6" className={classes.title}>
-                    {name}
-                </Typography>
-            </AppBar>
-        );
-    };
+  const createTitle = (name, position) => {
+    return (
+      <AppBar className={classes.appBar} position={position || "absolute"}>
+        <Typography variant="h6" className={classes.title}>
+          {name}
+        </Typography>
+      </AppBar>
+    );
+  };
 
   return (
     <React.Fragment>
@@ -116,15 +66,14 @@ const Market = props => {
 };
 
 const mapStateToProps = state => {
-    return {
-      tools: state.settings.tools,
-      unmatchedBets: state.settings.unmatchedBets,
-      matchedBets: state.settings.matchedBets,
-      profitAndLoss: state.settings.profitAndLoss,
-      graphs: state.settings.graphs,
-      marketInfo: state.settings.marketInfo
-    };
+  return {
+    tools: state.settings.tools,
+    unmatchedBets: state.settings.unmatchedBets,
+    matchedBets: state.settings.matchedBets,
+    profitAndLoss: state.settings.profitAndLoss,
+    graphs: state.settings.graphs,
+    marketInfo: state.settings.marketInfo
   };
-  
-  export default connect(mapStateToProps)(Market);
-  
+};
+
+export default connect(mapStateToProps)(Market);
