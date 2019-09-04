@@ -8,7 +8,24 @@ import Graph from "./Graphs";
 import MarketInfo from "./MarketInfo";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import useStyles from "../../Styles/Styles";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  appBar: {
+    background: "#303030",
+    color: "orange",
+    fontWeight: "900",
+    border: "2px solid #fff",
+    zIndex: "1",
+  },
+  title: {
+  	textAlign: "center",
+  	fontWeight: "bold",
+  },
+  group: {
+    margin: theme.spacing(1, 0),
+  }
+}));
 
 const Market = props => {
   const classes = useStyles();

@@ -26,7 +26,7 @@ const ExpansionPanel = withStyles({
   
   const ExpansionPanelSummary = withStyles({
     root: {
-      zIndex: "1"
+      zIndex: "1",
     },
     expanded: {}
   })(MultiExpansionPanelSummary);
