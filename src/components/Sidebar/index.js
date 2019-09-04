@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from 'react-redux';
 import Drawer from "@material-ui/core/Drawer";
-import { createMuiTheme, withStyles, makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme, withStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import { green } from '@material-ui/core/colors';
@@ -60,7 +60,7 @@ const BootstrapButton = withStyles({
 const Sidebar = props => {
 
     const [openTab, setOpenTab] = useState(2);
-    const [activeStyle, setActiveStyle] = useState("#389C41");
+    const activeStyle = "#389C41";
 
     const createToggleButton = (name, tab) => {
         return (

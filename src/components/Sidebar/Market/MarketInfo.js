@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MarketInfo = ({selection, info}) => {
-	if (selection == "None") {
+	if (selection === 'None') {
 		return null;
 	}
 	

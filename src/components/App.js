@@ -16,7 +16,7 @@ const App = props => {
 
   fetch(`/api/get-user-settings`)
   .then(res => res.json())
-  .then(settings =>  {
+  .then(settings => {
     props.onToggleSounds(settings.sounds);
     props.onToggleTools(settings.tools);
     props.onToggleUnmatchedBets(settings.unmatchedBets);
@@ -53,7 +53,7 @@ const App = props => {
 
 const mapStateToProps = state => {
 	return {
-    view: state.settings.view,
+    view: state.settings.view
 	}
 }
 
@@ -65,7 +65,7 @@ const mapDispatchToProps = dispatch => {
 		onToggleMatchedBets: settings => dispatch(actions.toggleMatchedBets(settings)),
 		onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
 		onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
-		onToggleRules: settings => dispatch(actions.toggleRules(settings)),
+		onToggleRules: settings => dispatch(actions.toggleRules(settings))
 	}
 }
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
-import SocketContext from '../SocketContext';
 
 const Logout = props => {
 

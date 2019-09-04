@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions/sport';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import useStyles from '../Styles/Styles';
@@ -47,5 +46,5 @@ Event.defaultProps =
 	}
 }
 
-export default connect(mapStateToProps, null)(Event);
+export default connect(mapStateToProps)(Event);
 

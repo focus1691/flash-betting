@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions/sport';
 
 class EventTable extends Component {
 	constructor(props) {
@@ -108,7 +107,6 @@ class EventTable extends Component {
 }
 
 const mapStateToProps = state => {
-	
 	return {
 		currentEvent: state.sports.currentSport.currentEvent
 	}
@@ -121,4 +119,4 @@ EventTable.defaultProps =
 	}
 }
 
-export default connect(mapStateToProps, null)(EventTable);
+export default connect(mapStateToProps)(EventTable);

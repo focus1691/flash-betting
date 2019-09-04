@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import SportsFilterList from './SportsFilterList'
+import React from "react";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import SportsFilterList from "./SportsFilterList";
 
 /*
     currentItem - Item at the shown
@@ -15,28 +15,45 @@ import SportsFilterList from './SportsFilterList'
     currentItemFull - full item for comparison in reverse click handler
 */
 
-export default ({currentItem, newArray, currentItemName, newArrayName, listSelector, reverseClickHandler, clickHandler, currentItemFull}) => {
-    if (currentItemFull === undefined) {
-        currentItemFull = currentItem; 
-    }
-    
-    return (
-        <div>
-            <React.Fragment> 
-                <ListItem button onClick={(e) => reverseClickHandler(currentItemFull, currentItemName, newArrayName)}>
-                        <ListItemIcon>
-                            <img src={window.location.origin + '/icons/expand.png'} alt={"Expand"} />
-                        </ListItemIcon>
-                        <ListItemText>{currentItem}</ListItemText>
-                    </ListItem>
-            </React.Fragment>
-            <tr>
-                <SportsFilterList 
-                    list = {newArray} 
-                    itemSelector = {listSelector} 
-                    clickHandler = {data => clickHandler(data)}
-                />
-            </tr>
-        </div>
-    )
-}
+export default ({
+  currentItem,
+  newArray,
+  currentItemName,
+  newArrayName,
+  listSelector,
+  reverseClickHandler,
+  clickHandler,
+  currentItemFull
+}) => {
+  if (currentItemFull === undefined) {
+    currentItemFull = currentItem;
+  }
+
+  return (
+    <div>
+      <React.Fragment>
+        <ListItem
+          button
+          onClick={e =>
+            reverseClickHandler(currentItemFull, currentItemName, newArrayName)
+          }
+        >
+          <ListItemIcon>
+            <img
+              src={window.location.origin + "/icons/expand.png"}
+              alt={"Expand"}
+            />
+          </ListItemIcon>
+          <ListItemText>{currentItem}</ListItemText>
+        </ListItem>
+      </React.Fragment>
+      <tr>
+        <SportsFilterList
+          list={newArray}
+          itemSelector={listSelector}
+          clickHandler={data => clickHandler(data)}
+        />
+      </tr>
+    </div>
+  );
+};

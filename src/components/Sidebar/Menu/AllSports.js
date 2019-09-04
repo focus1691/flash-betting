@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../actions/sport";
-import useStyles from "../../Styles/Styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -11,8 +10,6 @@ import SportsFilterList from "./SportsFilterList";
 import SportsClickList from "./SportsClickList";
 
 const AllSports = props => {
-  const classes = useStyles();
-
   useEffect(() => {
     fetch(`/api/get-all-sports`)
       .then(res => res.json())
@@ -72,7 +69,7 @@ const AllSports = props => {
     fetch(`/api/get-market-info?marketId=${marketId}`)
       .then(res => res.json())
       .then(data => {
-		  console.log(data.result[0]);
+        console.log(data.result[0]);
         props.onUpdateCurrentMarket(data.result[0]);
       });
   };

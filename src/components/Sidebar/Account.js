@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import * as actions from '../../actions/account';
-import useInterval from 'react-useinterval';
 import FlagIcon from './FlagIcon';
 import Clock from './Clock';
 
