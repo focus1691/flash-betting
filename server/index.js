@@ -21,18 +21,16 @@ app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
-const mongoose = require('mongoose');
-const database = require('./database');
-const User = require('./models/users');
+const database = require('./Database/helper');
 
 app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
     session.setEmailAddress(request.query.email);
 
-    this.exchangeStream = new ExchangeStream();
-    this.exchangeStream.setSessionKey("egIkfFjZwPXQ9Tx42nG/+i/HSTrTJ/a0PGJSgeTUFvPwgXFc4LVrS/IZ5fKnh2y1");
-    this.exchangeStream.authenticate(process.env.APP_KEY);
-    //
+    // this.exchangeStream = new ExchangeStream();
+    // this.exchangeStream.setSessionKey("ZzexTVulahCzd7nLsZ7Hunt5Cc9UBhJjTQbUAgIIVSpb1fHgb2yAT33gb1XF6p5J");
+    // this.exchangeStream.authenticate(process.env.APP_KEY);
+
     response.send('sent');
 });
 
@@ -52,33 +50,14 @@ app.get('/api/get-subscription-status', (request, response) => {
         });
     });
 });
-
+//
 app.get('/api/login', (request, response) => {
     session.login(request.query.user, request.query.pass).then((res) => {
         response.json({
             sessionKey: res.sessionKey
         });
-
         // Check if user exists, if doesn't exist, then create a new user
-
-        User.find({
-                email: request.query.user
-            })
-            .then(doc => {
-
-                if (doc.length === 0) {
-                    //****** Creating a user
-                    const user = new User({
-                        email: request.query.user
-                    });
-                    user.save()
-                        .then(result => {
-                            console.log(result);
-                        })
-                        .catch(err => console.log(err));
-                }
-
-            })
+        database.setUser(request.query.user, res.sessionKey);
     }).bind(this).catch(err => response.json({
         error: err
     }));
@@ -115,59 +94,38 @@ app.get('/api/get-account-details', (request, response) => {
 });
 
 app.get('/api/get-user-settings', (request, response) => {
-    User.findOne({
-            email: session.email
-        })
-        .then(doc => {
-            response.json(doc.settings);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+    database.getSettings(session.email)
+    .then((settings) => {
+        response.json(settings); 
+    });
 });
 
 app.post('/api/save-user-settings', (request, response) => {
-    User.findOneAndUpdate({
-        email: session.email
-    }, request.body, {
-        new: true,
-        useFindAndModify: false
-    }, (err, doc) => {
-        if (err) {
-            console.log(err);
-        }
-        response.sendStatus(200);
-    })
+    database.updateSettings(session.email, request.body)
+    .then((res) => {
+        response.sendStatus(res);
+    });
 });
 
 app.get('/api/request-access-token', (request, response) => {
     // This call can be used for the refresh token
     // by changing the "grant type" to "REFRESH_TOKEN"
-    var filter = {
+    session.token({
         "client_id": process.env.APP_ID,
         "grant_type": "AUTHORIZATION_CODE",
         "client_secret": process.env.APP_SECRET,
         "code": request.query.code
-    }
-    // Accounts API method to exchange the BetFair 'code'
-    // with an 'access token', required for the Stream API
-    session.token(filter, (err, res) => {
+    }, (err, res) => {
         var tokenInfo = {
             accessToken: res.result.access_token,
             expiresIn: res.result.expires_in,
             refreshToken: res.result.refresh_token
         }
-
         // Update the user details with the token information
         console.log('token info:', tokenInfo);
-        User.findOneAndUpdate({
-            email: session.email
-        }, tokenInfo, {
-            new: true,
-            runValidators: true
-        }).then(user => {
-            response.json(tokenInfo);
-        }).catch(err => console.log(err))
+        database.setToken(session.email, tokenInfo).then((status) => {
+            response.json(tokenInfo); 
+        });
     });
 });
 

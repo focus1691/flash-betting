@@ -4,15 +4,13 @@ const tls = require('tls');
 
 class BetFairStreamAPI {
 	constructor () {
-		this.applicationKey = null;
 		this.sessionKey = null;
 		this.client = null
 	}
 	setSessionKey(sessionKey) {
 		this.sessionKey = sessionKey;
 	}
-	authenticate (applicationKey) {
-		this.applicationKey = applicationKey;
+	authenticate () {
 
 		let options = {
 			host: 'stream-api.betfair.com',
@@ -21,10 +19,9 @@ class BetFairStreamAPI {
 		this.client = tls.connect(options, () => {
 			console.log("Connected");
 
-			console.log(`app key:${this.applicationKey} session key:${this.sessionKey}`);
+			console.log(`app key:${process.env.APP_KEY} session key:${this.sessionKey}`);
 
-			this.client.write('{"op": "authentication", "appKey": "' + this.applicationKey + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
-
+			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
 
 			this.client.write('{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["1.162055238"]},"marketDataFilter":{"ladderLevels": 2}}\r\n');
 
