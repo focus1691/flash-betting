@@ -11,6 +11,10 @@ import SportsClickList from "./SportsClickList";
 
 const AllSports = props => {
   useEffect(() => {
+    fetch(`/test`)
+    .then(res => {
+      console.log(res);
+    })
     fetch(`/api/get-all-sports`)
       .then(res => res.json())
       .then(sports => props.onReceiveAllSports(sports));

@@ -3,12 +3,9 @@
 const tls = require('tls');
 
 class BetFairStreamAPI {
-	constructor () {
-		this.sessionKey = null;
-		this.client = null
-	}
-	setSessionKey(sessionKey) {
+	constructor (sessionKey) {
 		this.sessionKey = sessionKey;
+		this.client = null
 	}
 	authenticate () {
 
@@ -23,7 +20,7 @@ class BetFairStreamAPI {
 
 			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
 
-			this.client.write('{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["1.162055238"]},"marketDataFilter":{"ladderLevels": 2}}\r\n');
+			this.client.write('{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["1.162050530"]},"marketDataFilter":{"ladderLevels": 2}}\r\n');
 
 
 			this.client.on('data', function(data) {

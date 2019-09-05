@@ -27,9 +27,8 @@ app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
     session.setEmailAddress(request.query.email);
 
-    // this.exchangeStream = new ExchangeStream();
-    // this.exchangeStream.setSessionKey("ZzexTVulahCzd7nLsZ7Hunt5Cc9UBhJjTQbUAgIIVSpb1fHgb2yAT33gb1XF6p5J");
-    // this.exchangeStream.authenticate(process.env.APP_KEY);
+    // this.exchangeStream = new ExchangeStream("ZzexTVulahCzd7nLsZ7Hunt5Cc9UBhJjTQbUAgIIVSpb1fHgb2yAT33gb1XF6p5J");
+    // this.exchangeStream.authenticate();
 
     response.send('sent');
 });
@@ -282,5 +281,12 @@ process.on('uncaughtException', exitHandler.bind(null, {
 
 const io = require('socket.io')(8000);
 io.on('connection', (client) => {
+    client.on('market-subscription', marketId => {
+        const exchangeStream = new ExchangeStream("ZzexTVulahCzd7nLsZ7Hunt5Cc9UBhJjTQbUAgIIVSpb1fHgb2yAT33gb1XF6p5J");
+        exchangeStream.authenticate();
+    });
 
+    app.get('/test', (request, response) => {
+        console.log('test');
+    });    
 });
