@@ -30,7 +30,7 @@ app.get('/api/load-session', (request, response) => {
     session.setEmailAddress(request.query.email);
 
     this.exchangeStream = new ExchangeStream();
-    this.exchangeStream.setSessionKey("RsZb9h15b0MWsZPxXUMRDiyGS311Ybze80vSJ1QcnFEodXEgQz7/aVaBh6wEiwJk");
+    this.exchangeStream.setSessionKey("egIkfFjZwPXQ9Tx42nG/+i/HSTrTJ/a0PGJSgeTUFvPwgXFc4LVrS/IZ5fKnh2y1");
     this.exchangeStream.authenticate(process.env.APP_KEY);
     //
     response.send('sent');
@@ -255,6 +255,7 @@ app.get('/api/list-markets', (request, response) => {
         filter: {
             eventIds: [request.query.eventId]
         },
+        sort: 'MAXIMUM_TRADED',
         maxResults: 1000
     }, (err, res) => {
         response.json(res);
@@ -269,6 +270,7 @@ app.get('/api/get-market-info', (request, response) => {
         marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME', 'MARKET_DESCRIPTION', 'RUNNER_DESCRIPTION', 'RUNNER_METADATA'],
         maxResults: 1
     }, (err, res) => {
+        console.log(res.result);
         response.json(res);
     });
 });

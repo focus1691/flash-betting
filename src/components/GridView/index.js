@@ -1,41 +1,18 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
-class EventTable extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			data: this.getTableData()
-		};
-	}
-	render() {
+const Grid = props => {
 
-		return (
-			<div id="grid-container">
-				<table className={"grid-view"}>
-					<tbody>
-						{this.renderTableHeader()}
-						{this.renderTableSubheader()}
-						{this.props.currentEvent.openDate <= 0 ? null : this.renderTableData()}
-					</tbody>
-				</table>
-			</div>
-		);
-	}
-	getTableData() {
-		var data = [];
+	const getTableData = () => {
+		return {back1: 1.98, back1Matched: 252, back2: 1.99, back2Matched: 100,
+			back3: 2, back3Matched: 10, back4: 2.02, back4Matched: 50,
+			backAll: 2.04, backAllMatched: 743, layAll: 2.06, layAllMatched: 424,
+			lay1: 2.08, lay1Matched: 242, lay2: 2.1, lay2Matched: 10,
+			lay3: 2.12, lay3Matched: 250, lay4: 2.14, lay4Matched: 525};
+	};
 
-		for (var i = 0; i < 7; i++) {
-			data.push({back1: 1.98, back1Matched: 252, back2: 1.99, back2Matched: 100,
-					   back3: 2, back3Matched: 10, back4: 2.02, back4Matched: 50,
-					   backAll: 2.04, backAllMatched: 743, layAll: 2.06, layAllMatched: 424,
-					   lay1: 2.08, lay1Matched: 242, lay2: 2.1, lay2Matched: 10,
-					   lay3: 2.12, lay3Matched: 250, lay4: 2.14, lay4Matched: 525});
-		}
-		return data;
-	}
-	renderTableHeader() {
-		const { currentEvent } = this.props;
+	const renderTableHeader = () => {
+		const { currentEvent } = props;
 		const date = new Date(currentEvent.openDate);
 
 		return (
@@ -48,12 +25,13 @@ class EventTable extends Component {
 						: "No Event Selected"}</h1>
 					<span>Going in-play</span>
 					<img src={window.location.origin + '/icons/checked.png'} alt={"Matched"}/>
-					<span>Matched: 333,834</span>
+					<span>Matched: {props.market ? `£${props.market.totalMatched}` : null}</span>
 				</th>
 			</tr>
 		);
-	}
-	renderTableSubheader() {
+	};
+
+	const renderTableSubheader = () => {
 		return (
 			<tr id="grid-subheader">
 				<th>
@@ -74,18 +52,24 @@ class EventTable extends Component {
 				<th></th>
 			</tr>
 		);
-	}
-	renderTableData() {
-		return this.state.data.map((contender, index) => {
-			const {back1, back2, back3, back4, backAll, layAll, lay1,
-				lay2, lay3, lay4, back1Matched, back2Matched, back3Matched,
-				back4Matched, backAllMatched, layAllMatched, lay1Matched,
-				lay2Matched, lay3Matched, lay4Matched} = contender;
+	};
+
+	const renderTableData = () => {
+		console.log(`${props.market}\nRUNNERS:`);
+
+		const {back1, back2, back3, back4, backAll, layAll, lay1,
+			lay2, lay3, lay4, back1Matched, back2Matched, back3Matched,
+			back4Matched, backAllMatched, layAllMatched, lay1Matched,
+			lay2Matched, lay3Matched, lay4Matched} = getTableData();
+
+		return props.market.runners.map((runner, index) => {
+			console.log(runner);
+
 			return (
-				<tr>
+				<tr key={runner.selectionId}>
 					<td className="grid-contender-detail-cell">
 						<img src={window.location.origin + '/images/00077962.jpg'} alt={"Chart"}/>
-						<span>5. Night Secret</span>
+						<span>{runner.runnerName}</span>
 						<span>2.04</span>
 						<span>0.80</span>
 						<span>235,232</span>
@@ -101,22 +85,35 @@ class EventTable extends Component {
 					<td className="grid-cell"><span>{lay3}</span><span>{lay3Matched}</span></td>
 					<td className="grid-cell"><span>{lay4}</span><span>{lay4Matched}</span></td>
 				</tr>
-			)
+			);
 		});
-	}
+	};
+
+	return (
+		<div id="grid-container">
+			<table className={"grid-view"}>
+				<tbody>
+					{renderTableHeader()}
+					{renderTableSubheader()}
+					{props.market ? renderTableData() : null}
+				</tbody>
+			</table>
+		</div>
+	);
 }
 
 const mapStateToProps = state => {
 	return {
-		currentEvent: state.sports.currentSport.currentEvent
+		currentEvent: state.sports.currentSport.currentEvent,
+		market: state.sports.currentMarket
 	}
 }
 
-EventTable.defaultProps = 
+Grid.defaultProps = 
 {
 	currentEvent: {
-		openDate: 0,
+		openDate: 0
 	}
 }
 
-export default connect(mapStateToProps)(EventTable);
+export default connect(mapStateToProps)(Grid);

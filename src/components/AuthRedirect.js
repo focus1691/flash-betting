@@ -7,7 +7,7 @@ const AuthRedirect = props => {
   const [subscribedToWebApp, setSubscribedToWebApp] = useState(null);
 
   const redirectToBetFairOAuth = (status) => {
-    if (status === '200') {
+    if (status === 200) {
       fetch(`/api/get-subscription-status`)
         .then(subscribedToWebApp => {
           var isSubscribedToWebApp = subscribedToWebApp.val === 'true' ? true : false;

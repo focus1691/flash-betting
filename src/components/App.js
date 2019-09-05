@@ -4,7 +4,7 @@ import * as actions from '../actions/settings';
 import Siderbar from "./Sidebar";
 import HomeView from "./HomeView/index";
 import LadderView from "./LadderView/OddsTable";
-import GridView from "./GridView/EventTable";
+import GridView from "./GridView/";
 
 const App = props => {
   

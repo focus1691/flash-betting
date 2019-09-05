@@ -35,8 +35,8 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-function createData(name, description, settings, state, toggle) {
-  return { name, description, settings, state, toggle };
+function createData(name, abbreviation, description, settings, state, toggle) {
+  return { name, abbreviation, description, settings, state, toggle };
 }
 
 const useStyles = makeStyles(theme => ({
@@ -44,6 +44,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
   },
   table: {
+    
   },
 }));
 
@@ -58,12 +59,12 @@ const Tools = () => {
   const [stopEntry, toggleStopEntry] = useState(false);
 
   const rows = [
-    createData('Stop Loss', '30 Ticks', <StopLoss/>, stopLoss, toggleStopLoss),
-    createData('Tick Offset', '3 Ticks (%) [x]', <TickOffset/>, tickOffset, toggleTickOffset),
-    createData('Back', '@ 1 [-][-][-]', <Back/>, back, toggleBack),
-    createData('Lay', '100 @ 4 [-][-][-]', <Lay/>, lay, toggleLay),
-    createData('Fill or Kill', '0 Seconds', <FillOrKill/>, fillOrKill, toggleFillOrKill),
-    createData('Stop Entry', '', <StopEntry/>, stopEntry, toggleStopEntry)
+    createData('Stop Loss', 'SL', '30 Ticks', <StopLoss/>, stopLoss, toggleStopLoss),
+    createData('Tick Offset',  'TO', '3 Ticks (%) [x]', <TickOffset/>, tickOffset, toggleTickOffset),
+    createData('Back', 'B', '@ 1 [-][-][-]', <Back/>, back, toggleBack),
+    createData('Lay', 'L', '100 @ 4 [-][-][-]', <Lay/>, lay, toggleLay),
+    createData('Fill or Kill', 'FOK', '0 Seconds', <FillOrKill/>, fillOrKill, toggleFillOrKill),
+    createData('Stop Entry', 'SE', '', <StopEntry/>, stopEntry, toggleStopEntry)
   ];
 
   return (
@@ -91,7 +92,7 @@ const Tools = () => {
               </StyledTableCell>
             </StyledTableRow>
 
-            <StyledTableRow key={row.name} className={"order-editable"}>
+            <StyledTableRow key={row.abbreviation} className={"order-editable"}>
               <Collapse hidden={!row.state} in={row.state}>
                 <StyledTableCell colSpan={6}>{row.settings}</StyledTableCell>
               </Collapse>

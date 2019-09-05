@@ -15,19 +15,17 @@
     font-size: x-small;
     margin: 0;
     padding: 5px;
+    border: none;
 }
 
 .order-settings-tbl td:nth-child(3) {
 }
 
 .order-settings-tbl td:nth-child(2) {
-    /* color: red; */
     border-left: 1px solid;
 }
 
 .order-settings-tbl td:first-child span {
-    /* border-right: 1px solid; */
-    /* color: green; */
     font-size: x-small;
 }
 

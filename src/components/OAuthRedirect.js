@@ -17,7 +17,7 @@ const OAuthRedirect = props => {
     };
 
     const setTokenInformation = (code, status) => {
-        if (code && status === '200') {
+        if (code && status === 200) {
             fetch(`/api/request-access-token?code=${encodeURIComponent(code)}`)
             .then(res => res.json())
             .then(data => {

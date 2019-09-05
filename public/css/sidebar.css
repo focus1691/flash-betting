@@ -1,5 +1,7 @@
 .sidebar {
 	width: 20%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 #sidebar-header p, #sidebar-header span {

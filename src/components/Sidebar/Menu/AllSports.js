@@ -66,6 +66,7 @@ const AllSports = props => {
   };
 
   const handleMarketClick = marketId => {
+    console.log(`market id: ${marketId}`);
     fetch(`/api/get-market-info?marketId=${marketId}`)
       .then(res => res.json())
       .then(data => {
@@ -101,7 +102,7 @@ const AllSports = props => {
                 newArrayName={"eventMarkets"}
                 listSelector={"marketName"}
                 reverseClickHandler={handleClick}
-                clickHandler={data => handleMarketClick(data.id)}
+                clickHandler={market => handleMarketClick(market.marketId)}
                 currentItemFull={currentEvent}
               />
             ) : // Selecting Event

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import useStyles from '../Styles/Styles';
+import CountDown from './Countdown';
 
 const Event = ({currentEvent}) => {
 	// TODO get length of horse race
@@ -14,7 +15,7 @@ const Event = ({currentEvent}) => {
 		<div id="sidebar-event">
 			<div id="sidebar-event-section-1">
 			<div id="sidebar-event-section-2">
-					<span>00:01:39</span>
+					<span><CountDown/></span>
 				</div>
 				<Typography>Price: <b>5</b></Typography>
 				<Typography>API: <b>33.87</b></Typography>
