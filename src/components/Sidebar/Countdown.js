@@ -10,22 +10,31 @@ const Countdown = props => {
         setTimeRemaining(props.market ? (new Date (props.market.marketStartTime) - new Date() ) : '--');
     }, ONE_SECOND);
 
+    const padZeroes = num => {
+        var str = num.toString();
+
+        while (str.length < 2) {
+            str = '0'.concat(str);
+        }
+        return str;
+    }
+
     const msToHMS = ms => {
         if (typeof ms !== 'number') return '--';
 
         // 1- Convert to seconds:
         var seconds = ms / 1000;
         // 2- Extract hours:
-        var hours = parseInt( seconds / 3600 ); // 3,600 seconds in 1 hour
+        var hours = Math.floor(parseInt( seconds / 3600 )); // 3,600 seconds in 1 hour
         seconds = seconds % 3600; // seconds remaining after extracting hours
         // 3- Extract minutes:
-        var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
+        var minutes = Math.floor(parseInt( seconds / 60 )); // 60 seconds in 1 minute
         // 4- Keep only seconds not extracted to minutes:
         seconds = Math.floor(seconds % 60);
 
-        return `${hours}:${minutes}:${seconds}`;
+        return `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
     };
-    return props.marketOpen ? <span>{msToHMS (timeRemaining)}</span> : <span>--</span>
+    return props.marketOpen ? <span>{msToHMS (timeRemaining)}</span> : <span>Sports Trader Pro</span>
 }
 
 const mapStateToProps = state => {

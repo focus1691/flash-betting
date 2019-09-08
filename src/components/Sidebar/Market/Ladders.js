@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
@@ -8,30 +9,68 @@ const useStyles = makeStyles(theme => ({
     background: "#303030",
     color: "orange",
     fontWeight: "900",
-    border: "2px solid #fff"
+    border: "2px solid #fff",
   },
   title: {
   	textAlign: "center",
-  	fontWeight: "bold"
+  	fontWeight: "bold",
   },
   group: {
     margin: theme.spacing(1, 0),
   }
 }));
 
-const Ladders = () => {
+const Ladder = props => {
 	const classes = useStyles();
 
-	const renderContenders = () => {
-		return (
-			<tr>
-				<td>Night Secret</td>
-				<td>2.04</td>
-				<td>8.40</td>
-				<td>2.06</td>
-				<td><input type="checkbox"/></td>
-			</tr>
-		);
+  const sortDes = arr => {
+    if (arr.length <= 0) return [];
+
+    arr = arr.sort(function(a, b) {
+      return b[0] - a[0];
+    });
+    return arr;
+	};
+	
+  const getLadderData = ladder => {
+    const data = {
+      ltp: ladder.ltp
+    };
+
+    if (ladder.atb) {
+      data.atb = sortDes(ladder.atb);
+    }
+    if (ladder.atl) {
+      data.atl = sortDes(ladder.atl);
+    }
+
+    return data;
+  };
+
+	const renderRunners = () => {
+		var j = 1;
+
+		return Object.keys(props.ladder).map(key => {
+			console.log('j: ', j++);
+
+			const {atb, atl, ltp} = getLadderData(
+        props.ladder[key]
+      );
+
+
+			return (
+				<tr>
+					<td>{props.runners[key].runnerName}</td>
+					<td>{atl[atl.length - 1][0]}</td>
+					<td>{ltp}</td>
+					<td>{atb[0][0]}</td>
+					<td>
+						<input type="checkbox"/>
+					</td>
+				</tr>
+
+			);
+		});
 	};
 
 	return (
@@ -43,14 +82,20 @@ const Ladders = () => {
 			</AppBar>
 			<table id="menu-ladder">
 				<tbody>
-					{renderContenders()}
-					{renderContenders()}
-					{renderContenders()}
-					{renderContenders()}
+					{renderRunners()}
 				</tbody>
 			</table>
 		</div>
 	);
 };
 
-export default Ladders;
+const mapStateToProps = state => {
+	return {
+    marketOpen: state.market.marketOpen,
+    market: state.market.currentMarket,
+    ladder: state.market.ladder,
+    runners: state.market.runners
+	}
+};
+
+export default connect(mapStateToProps)(Ladder);

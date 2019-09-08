@@ -99,17 +99,14 @@ const Grid = props => {
     for (var i = 0; i < betOdds.length; i++) {
       rows.push(createCell(betOdds[i][0], betOdds[i][1]));
       if (i === 4) break;
-    }
-
-    // const remainder = rows.length < 5 ? 5 - rows.length : 0;
-    for (var i = rows.length - 5; i > 0; i--) {
+	}
+	
+    for (i = rows.length - 5; i > 0; i--) {
       rows.push(createCell("", ""));
     }
 
     return rows;
   };
-
-  const renderLayRow = (abl, batl) => {};
 
   const test = (e, td) => {};
 
@@ -117,7 +114,7 @@ const Grid = props => {
     return (
       <td className="grid-cell">
         <span>{odds}</span>
-        <span>{matched}</span>
+        <span>{Math.floor(matched)}</span>
       </td>
     );
   };
