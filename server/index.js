@@ -33,13 +33,6 @@ app.get('/api/load-session', (request, response) => {
     response.send('sent');
 });
 
-app.get('/api/load-application-key', (request, response) => {
-    // this.exchangeStream = new ExchangeStream();
-    // this.exchangeStream.setSessionKey(accessToken);
-    // this.exchangeStream.authenticate(APPKEY);
-
-});
-
 app.get('/api/get-subscription-status', (request, response) => {
     session.isAccountSubscribedToWebApp({
         "vendorId": "74333"
@@ -49,7 +42,7 @@ app.get('/api/get-subscription-status', (request, response) => {
         });
     });
 });
-//
+
 app.get('/api/login', (request, response) => {
     session.login(request.query.user, request.query.pass).then((res) => {
         response.json({
@@ -121,7 +114,6 @@ app.get('/api/request-access-token', (request, response) => {
             refreshToken: res.result.refresh_token
         }
         // Update the user details with the token information
-        console.log('token info:', tokenInfo);
         database.setToken(session.email, tokenInfo).then((status) => {
             response.json(tokenInfo); 
         });
@@ -227,7 +219,6 @@ app.get('/api/get-market-info', (request, response) => {
         marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME', 'MARKET_DESCRIPTION', 'RUNNER_DESCRIPTION', 'RUNNER_METADATA'],
         maxResults: 1
     }, (err, res) => {
-        console.log(res.result);
         response.json(res);
     });
 });
@@ -281,12 +272,8 @@ process.on('uncaughtException', exitHandler.bind(null, {
 
 const io = require('socket.io')(8000);
 io.on('connection', (client) => {
-    client.on('market-subscription', marketId => {
-        const exchangeStream = new ExchangeStream("ZzexTVulahCzd7nLsZ7Hunt5Cc9UBhJjTQbUAgIIVSpb1fHgb2yAT33gb1XF6p5J");
-        exchangeStream.authenticate();
-    });
-
-    app.get('/test', (request, response) => {
-        console.log('test');
-    });    
+    client.on('market-subscription', data => {
+        const exchangeStream = new ExchangeStream("BG85ZmcYRAnG0XVXujJAMtYS6eHTnCGf5LS1PpIbj2SX+6FjBtCADhSkkhvv4Gg/");
+        exchangeStream.authenticate(data, client);
+    }); 
 });

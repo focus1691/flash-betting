@@ -56,17 +56,18 @@ class DatabaseHelper extends Database {
             })
         });
     }
-    setToken(user, token) {
+    setToken(user, tokenInfo) {
         return new Promise((res, rej) => {
             User.findOneAndUpdate({
-                email: session.email
+                email: user
             }, tokenInfo, {
                 new: true,
-                runValidators: true
+                runValidators: true,
+                useFindAndModify: false
             }).then(user => {
-                return true;
+                res(true);
             }).catch(err => {
-                return false;
+                rej(false);
             });
         });
     }

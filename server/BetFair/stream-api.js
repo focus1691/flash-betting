@@ -1,13 +1,17 @@
 'use strict';
+const { StringDecoder } = require('string_decoder');
+const decoder = new StringDecoder('utf8');
 
 const tls = require('tls');
 
 class BetFairStreamAPI {
 	constructor (sessionKey) {
 		this.sessionKey = sessionKey;
-		this.client = null
+		this.client = null;
+		this.openSocket = null;
+		this.bufferedStr = '';
 	}
-	authenticate () {
+	authenticate (data, openSocket) {
 
 		let options = {
 			host: 'stream-api.betfair.com',
@@ -20,11 +24,34 @@ class BetFairStreamAPI {
 
 			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
 
-			this.client.write('{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["1.162050530"]},"marketDataFilter":{"ladderLevels": 2}}\r\n');
-
+			this.client.write(`{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 2}}\r\n`);
 
 			this.client.on('data', function(data) {
-				console.log('Received: ' + data);
+				// console.log('Received: ' + data);
+				//
+				// Read the data into Buffer
+				const bufferedData = Buffer.from(data);
+
+				// Convert the buffer into a String
+				this.bufferedStr = decoder.write(bufferedData);
+				this.bufferedStr = this.bufferedStr.split('Received: ').join('');
+				// console.log(this.bufferedStr);
+
+				// Parse the data String into JSON Object
+				try {
+					const result = JSON.parse(this.bufferedStr);
+					this.bufferedStr = '';
+
+					if (result.op === 'mcm' && result.mc) {
+
+						//** Correct format: result.mc[0].rc **/
+						console.log(result.mc[0].rc);
+
+						openSocket.emit('mcm', result.mc[0]);
+					}
+				} catch (e) {
+					console.log('err', e);
+				}
 			});
 
 			this.client.on('close', function() {
@@ -35,6 +62,9 @@ class BetFairStreamAPI {
 				console.log('Error:' + err);
 			});
 		});
+	}
+	formatJSON (str) {
+		return str.split('Received:').join('');
 	}
 }
 

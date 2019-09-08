@@ -17,10 +17,13 @@ const OAuthRedirect = props => {
     };
 
     const setTokenInformation = (code, status) => {
+        console.log('set token info');
         if (code && status === 200) {
+            console.log(`session status = 200`);
             fetch(`/api/request-access-token?code=${encodeURIComponent(code)}`)
             .then(res => res.json())
             .then(data => {
+                console.log(data);
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("expiresIn", data.expiresIn);

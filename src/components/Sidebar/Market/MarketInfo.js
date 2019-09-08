@@ -1,43 +1,38 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-const MarketInfo = ({selection, info}) => {
-	if (selection === 'None') {
-		return null;
-	}
-	
+const MarketInfo = props => {
 	return (
 		<table id = "menu-market-info">
-			<tbody>
-				<React.Fragment>
+			{/* <tbody>
+				{props.marketOpen && props.market.eventType && props.market.eventType.id === "7" ?
+					<React.Fragment>
 						<tr id = "menu-selected-name">
-							<td>{selection}</td>
+							<td>{props.selection.runnerName}</td>
 						</tr>
-						{
-							info.map(data => (
-								<>
-									<tr>
-										<td>{data.heading}</td>
-									</tr>
-									<tr>
-										<td>{data.data}</td>
-									</tr>
-								</>
-							))
-						}
-				</React.Fragment>
-			</tbody>
+
+
+						<tr>
+							<td>{}</td>
+						</tr>
+						<tr>
+							<td>{}</td>
+						</tr>
+
+						</React.Fragment>
+					: null}
+			</tbody> */}
 		</table>
 	);
 }
 
-MarketInfo.defaultProps = {
-	selection: "None",
-	info: [
-		{ 
-			heading: "Selection",
-			data: "None"
-		}
-	]
+const mapStateToProps = state => {
+	return {
+		market: state.market.currentMarket,
+		marketOpen: state.market.marketOpen,
+		selection: state.market.runnerSelection,
+		runners: state.market.runners
+	}
 }
 
-export default MarketInfo;
+export default connect(mapStateToProps)(MarketInfo);

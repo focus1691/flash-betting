@@ -25,29 +25,14 @@ const Countdown = props => {
 
         return `${hours}:${minutes}:${seconds}`;
     };
-    
-    if (props.market) {
-        return <span>{msToHMS (timeRemaining)}</span>
-    }
-
-    
-	return (
-        <span>--</span>
-	);
+    return props.marketOpen ? <span>{msToHMS (timeRemaining)}</span> : <span>--</span>
 }
 
 const mapStateToProps = state => {
 	return {
-		market: state.sports.currentMarket
+        marketOpen: state.market.marketOpen,
+		market: state.market.currentMarket
 	}
-}
-
-Countdown.defaultProps = 
-{
-	currentEvent: {
-		openDate: 0
-    },
-    timeLeft: ''
 }
 
 export default connect(mapStateToProps)(Countdown);

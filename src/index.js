@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import sportReducer from "./reducers/sportReducer";
+import marketReducer from "./reducers/marketReducer";
 import accountReducer from "./reducers/accountReducer";
 import settingsReducer from "./reducers/settingsReducer";
 import stopLossReducer from "./reducers/stopLossReducer";
@@ -28,6 +29,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
   account: accountReducer,
   sports: sportReducer,
+  market: marketReducer,
   settings: settingsReducer,
   stopLoss: stopLossReducer,
   tickOffset: tickOffsetReducer,

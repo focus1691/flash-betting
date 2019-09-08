@@ -24,8 +24,8 @@
 }
 
 .grid-view td:nth-child(1){width: 30%;}
-.grid-view td:nth-child(5){background-color: #BCE4FC;}
-.grid-view td:nth-child(6){background-color: #FCC9D3;}
+.grid-view td:nth-child(6){background-color: #BCE4FC;}
+.grid-view td:nth-child(7){background-color: #FCC9D3;}
 
 .grid-view img {
 	float: left;
@@ -118,6 +118,6 @@
 	background: #BCE4FC;
 }
 
-#grid-subheader th:nth-child(n+6) {
+#grid-subheader th:nth-child(n+7) {
 	background: #FCC9D3;
 }

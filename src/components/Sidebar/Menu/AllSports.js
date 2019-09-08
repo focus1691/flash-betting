@@ -11,10 +11,6 @@ import SportsClickList from "./SportsClickList";
 
 const AllSports = props => {
   useEffect(() => {
-    fetch(`/test`)
-    .then(res => {
-      console.log(res);
-    })
     fetch(`/api/get-all-sports`)
       .then(res => res.json())
       .then(sports => props.onReceiveAllSports(sports));
@@ -69,16 +65,6 @@ const AllSports = props => {
     return data;
   };
 
-  const handleMarketClick = marketId => {
-    console.log(`market id: ${marketId}`);
-    fetch(`/api/get-market-info?marketId=${marketId}`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data.result[0]);
-        props.onUpdateCurrentMarket(data.result[0]);
-      });
-  };
-
   const {
     currentSportId,
     sportCountries,
@@ -106,7 +92,7 @@ const AllSports = props => {
                 newArrayName={"eventMarkets"}
                 listSelector={"marketName"}
                 reverseClickHandler={handleClick}
-                clickHandler={market => handleMarketClick(market.marketId)}
+                clickHandler={market => window.open(`/dashboard?marketId=${market.marketId}`)}
                 currentItemFull={currentEvent}
               />
             ) : // Selecting Event
@@ -260,16 +246,14 @@ const AllSports = props => {
 const mapStateToProps = state => {
   return {
     sports: state.sports,
-    currentSport: state.currentSport,
-    currentMarket: state.currentMarket
+    currentSport: state.currentSport
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onReceiveAllSports: sports => dispatch(actions.setAllSports(sports)),
-    onUpdateCurrentSport: sport => dispatch(actions.setCurrentSport(sport)),
-    onUpdateCurrentMarket: market => dispatch(actions.setCurrentMarket(market))
+    onUpdateCurrentSport: sport => dispatch(actions.setCurrentSport(sport))
   };
 };
 
