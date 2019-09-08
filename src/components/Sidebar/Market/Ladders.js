@@ -51,7 +51,6 @@ const Ladder = props => {
 		var j = 1;
 
 		return Object.keys(props.ladder).map(key => {
-			console.log('j: ', j++);
 
 			const {atb, atl, ltp} = getLadderData(
         props.ladder[key]

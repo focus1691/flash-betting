@@ -72,17 +72,6 @@ const App = props => {
 
       console.log(ladder);
       props.onReceiverLadder(ladder);
-      
-      // if (props.marketOpen) {
-      //   if (res.mc) {
-          
-      //   }
-      // }
-      // else if (!props.marketOpen) {
-      //   if (res.mc) {
-      //     props.onReceiveMarket(res.mc[0]);
-      //   }
-      // }
     });
   },[]);
 

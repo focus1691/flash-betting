@@ -34,7 +34,7 @@ const Countdown = props => {
 
         return `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
     };
-    return props.marketOpen ? <span>{msToHMS (timeRemaining)}</span> : <span>Sports Trader Pro</span>
+    return props.marketOpen ? <span>{msToHMS (timeRemaining)}</span> : <span>--</span>
 }
 
 const mapStateToProps = state => {

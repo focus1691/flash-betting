@@ -271,9 +271,10 @@ process.on('uncaughtException', exitHandler.bind(null, {
 }));
 
 const io = require('socket.io')(8000);
-io.on('connection', (client) => {
+io.on('connection', client => {
+
     client.on('market-subscription', data => {
-        const exchangeStream = new ExchangeStream("BG85ZmcYRAnG0XVXujJAMtYS6eHTnCGf5LS1PpIbj2SX+6FjBtCADhSkkhvv4Gg/");
+        const exchangeStream = new ExchangeStream("Lj4pFgd5Ic+ONzpilfiiZXmSjZuag/Xx6SyfvVbZWgA0zWytDl7YL1f7Ul3NHssn");
         exchangeStream.authenticate(data, client);
     }); 
 });

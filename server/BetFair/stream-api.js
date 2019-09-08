@@ -10,6 +10,7 @@ class BetFairStreamAPI {
 		this.client = null;
 		this.openSocket = null;
 		this.bufferedStr = '';
+		this.chunks = [];
 	}
 	authenticate (data, openSocket) {
 
@@ -22,43 +23,49 @@ class BetFairStreamAPI {
 
 			console.log(`app key:${process.env.APP_KEY} session key:${this.sessionKey}`);
 
+			this.client.setEncoding('utf8');
+
 			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
 
 			this.client.write(`{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`);
 
-			this.client.on('data', function(data) {
+			this.client.on('data', data => {
 				// console.log('Received: ' + data);
-				//
+
 				// Read the data into Buffer
 				const bufferedData = Buffer.from(data);
 
 				// Convert the buffer into a String
-				this.bufferedStr = decoder.write(bufferedData);
-				this.bufferedStr = this.bufferedStr.split('Received: ').join('');
-				// console.log(this.bufferedStr);
+				this.chunks.push(decoder.write(bufferedData));
 
 				// Parse the data String into JSON Object
 				try {
-					const result = JSON.parse(this.bufferedStr);
-					this.bufferedStr = '';
+					const result = JSON.parse(this.chunks.join(""));
 
 					if (result.op === 'mcm' && result.mc) {
 
-						//** Correct format: result.mc[0].rc **/
-						console.log(result.mc[0].rc);
-
 						openSocket.emit('mcm', result.mc[0]);
+						this.chunks = [];
+					} else {
+						this.chunks = [];
 					}
 				} catch (e) {
-					console.log('err', e);
+					if (this.chunks.length >= 2) {
+						console.log(2);
+					}
+					// console.log('err', e);
 				}
 			});
 
-			this.client.on('close', function() {
+			this.client.on('end', data => {
+				console.log(data);
+			});
+
+			this.client.on('close', () => {
 			    console.log('Connection closed');
 			});
 
-			this.client.on('error', function(err) {
+			this.client.on('error', err => {
 				console.log('Error:' + err);
 			});
 		});
