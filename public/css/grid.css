@@ -34,6 +34,10 @@
 	cursor: pointer;
 }
 
+.grid-cell:hover {
+	background: #DFDFDF;
+}
+
 .grid-cell span:nth-child(1) {
 	width: 100%;
 	float: left;
