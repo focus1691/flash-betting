@@ -20,7 +20,6 @@
 	font-size: 0.8;
 	font-weight: bold;
 	border: 1px solid #D6D6D6;
-	/*border: none;*/
 }
 
 .grid-view td:nth-child(1){width: 30%;}
@@ -29,6 +28,10 @@
 
 .grid-view img {
 	float: left;
+}
+
+.grid-cell {
+	cursor: pointer;
 }
 
 .grid-cell span:nth-child(1) {
@@ -46,30 +49,31 @@
 	font-weight: normal;
 }
 
-.grid-contender-detail-cell {
+.grid-runner-details {
 	padding: 5px;
+	cursor: url('../icons/question.png'), auto;
 }
 
-.grid-contender-detail-cell span:nth-child(2) {
+.grid-runner-details span:nth-child(2) {
 	float: left;
 	font-weight: normal;
 	margin-left: 5px;
 }
 
-.grid-contender-detail-cell span:nth-child(3) {
+.grid-runner-details span:nth-child(3) {
 	float: right;
 	font-size: small;
 	font-weight: normal;
 }
 
-.grid-contender-detail-cell span:nth-child(4) {
+.grid-runner-details span:nth-child(4) {
 	float: left;
 	clear: both;
 	color: #01CC41;
 	margin-left: 10%;
 }
 
-.grid-contender-detail-cell span:nth-child(5) {
+.grid-runner-details span:nth-child(5) {
 	float: right;
 	clear: right;
 	font-size: small;
@@ -110,8 +114,6 @@
     padding: 0;
     border: 0;
     border-spacing: 0;
-	/*border: 1px solid;*/
-	/*background: yellow;*/
 }
 
 #grid-subheader th:nth-child(n+2) {

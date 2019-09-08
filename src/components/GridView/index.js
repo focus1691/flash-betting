@@ -130,7 +130,7 @@ const Grid = props => {
 
       return (
         <tr>
-          <td className="grid-contender-detail-cell">
+          <td className="grid-runner-details">
             <img
               src={window.location.origin + "/images/00077962.jpg"}
               alt={"Chart"}
