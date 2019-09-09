@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
+import * as actions from '../../actions/market';
 
 const Grid = props => {
-
-  const renderTableHeader = () => {	
+  const renderTableHeader = () => {
     return (
       <React.Fragment>
         <tr id="grid-header">
@@ -21,10 +21,17 @@ const Grid = props => {
                 : "No Event Selected"}
             </h1>
             <span>Going in-play</span>
-            <img
-              src={window.location.origin + "/icons/checked.png"}
-              alt={"Matched"}
-            />
+            {props.marketOpen ? (
+              <img
+                src={window.location.origin + "/icons/checked.png"}
+                alt={"active"}
+              />
+            ) : (
+              <img
+                src={window.location.origin + "/icons/error.png"}
+                alt={"inactive"}
+              />
+            )}
             <span>
               Matched:{" "}
               {props.marketOpen ? `£${props.market.totalMatched}` : null}
@@ -99,8 +106,8 @@ const Grid = props => {
     for (var i = 0; i < betOdds.length; i++) {
       rows.push(createCell(betOdds[i][0], betOdds[i][1]));
       if (i === 4) break;
-	}
-	
+    }
+
     for (i = rows.length - 5; i > 0; i--) {
       rows.push(createCell("", ""));
     }
@@ -109,6 +116,11 @@ const Grid = props => {
   };
 
   const test = (e, td) => {};
+
+  const selectRacer = selectionId => {
+
+  };
+  
 
   const createCell = (odds, matched) => {
     return (
@@ -127,7 +139,7 @@ const Grid = props => {
 
       return (
         <tr>
-          <td className="grid-runner-details">
+          <td className="grid-runner-details" onClick={e => {props.onSelectRunner(props.runners[key].metadata)}}>
             <img
               src={window.location.origin + "/images/00077962.jpg"}
               alt={"Chart"}
@@ -167,4 +179,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Grid);
+const mapDispatchToProps = dispatch => {
+	return {
+    onSelectRunner: runner => dispatch(actions.setRunner(runner))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Grid);

@@ -21,8 +21,6 @@ class BetFairStreamAPI {
 		this.client = tls.connect(options, () => {
 			console.log("Connected");
 
-			console.log(`app key:${process.env.APP_KEY} session key:${this.sessionKey}`);
-
 			this.client.setEncoding('utf8');
 
 			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
@@ -50,9 +48,6 @@ class BetFairStreamAPI {
 						this.chunks = [];
 					}
 				} catch (e) {
-					if (this.chunks.length >= 2) {
-						console.log(2);
-					}
 					// console.log('err', e);
 				}
 			});

@@ -171,39 +171,19 @@ app.get('/api/list-competition-events', (request, response) => {
     });
 });
 
-app.get('/api/get-next-horse-race', (request, response) => {
-    session.listMarketCatalogue({
-        filter: {
-            "eventTypeIds": [
-                7
-            ],
-            "marketCountries": [
-                "GB"
-            ],
-            "marketTypeCodes": [
-                "WIN"
-            ],
-            "marketStartTime": {
-                "from": new Date().toJSON()
-            }
-        },
-        "sort": "FIRST_TO_START",
-        "maxResults": "1",
-        "marketProjection": [
-            "RUNNER_DESCRIPTION",
-            "RUNNER_METADATA"
-        ]
-    }, function (err, res) {
-        console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
-        response.json(res.result);
-    });
-});
-
 app.get('/api/list-markets', (request, response) => {
+    const filter = {
+        eventIds: [request.query.eventId],
+    }
+    switch (request.query.eventId) {
+        case 1 :
+            filter.marketTypeCodes = ["MATCH_ODDS"];
+        case 7 :
+            filter.marketTypeCodes = ["WIN"];
+    }
+
     session.listMarketCatalogue({
-        filter: {
-            eventIds: [request.query.eventId]
-        },
+        filter,
         sort: 'MAXIMUM_TRADED',
         maxResults: 1000
     }, (err, res) => {
@@ -274,7 +254,7 @@ const io = require('socket.io')(8000);
 io.on('connection', client => {
 
     client.on('market-subscription', data => {
-        const exchangeStream = new ExchangeStream("Lj4pFgd5Ic+ONzpilfiiZXmSjZuag/Xx6SyfvVbZWgA0zWytDl7YL1f7Ul3NHssn");
+        const exchangeStream = new ExchangeStream("b1GwE0adWo95ss6GL5y5/NI7uJfQAMxCkictkrKdr3dTDyIP8gCrXWstsSS0BNn7");
         exchangeStream.authenticate(data, client);
     }); 
 });
