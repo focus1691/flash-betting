@@ -27,9 +27,6 @@ app.get('/api/load-session', (request, response) => {
     session.setActiveSession(request.query.sessionKey);
     session.setEmailAddress(request.query.email);
 
-    // this.exchangeStream = new ExchangeStream("ZzexTVulahCzd7nLsZ7Hunt5Cc9UBhJjTQbUAgIIVSpb1fHgb2yAT33gb1XF6p5J");
-    // this.exchangeStream.authenticate();
-
     response.send('sent');
 });
 

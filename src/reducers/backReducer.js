@@ -8,9 +8,12 @@ const initialState = {
     },
     executionTime: "Before"
 }
+initialState.text = `${initialState.stake} @ ${initialState.price}`;
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case "SET_BACK_TEXT":
+            return { ...state, text: action.payload };
         case "SET_BACK_STAKE":
             return { ...state, stake: action.payload };
         case "SET_BACK_PRICE":

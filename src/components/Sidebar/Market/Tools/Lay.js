@@ -10,20 +10,24 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   button: {
-    margin: theme.spacing(2),
+    margin: theme.spacing(2)
   },
   textField: {
     width: 45,
-    margin: theme.spacing(1),
+    margin: theme.spacing(1)
   },
   textField2: {
-      width: 30,
-      margin: theme.spacing(2),
-  },
+    width: 30,
+    margin: theme.spacing(2)
+  }
 }));
 
 const Lay = props => {
   const classes = useStyles();
+
+  React.useEffect(() => {
+    props.onTextUpdate(`${props.stake} @ ${props.price}`);
+  }, [props.price, props.stake]);
 
   return (
     <React.Fragment>
@@ -34,6 +38,7 @@ const Lay = props => {
           type="number"
           label="stake"
           value={props.stake}
+          inputProps={{ min: "1"}}
           onChange={e => props.onReceiveStake(e.target.value)}
           margin="normal"
         />
@@ -43,10 +48,13 @@ const Lay = props => {
           type="number"
           label="@"
           value={props.price}
+          inputProps={{ min: "1"}}
           onChange={e => props.onReceivePrice(e.target.value)}
           margin="normal"
         />
-        <Button variant="outlined" color="primary" className={classes.button}>Submit</Button>
+        <Button variant="outlined" color="primary" className={classes.button}>
+          Submit
+        </Button>
       </div>
 
       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -91,7 +99,11 @@ const Lay = props => {
             label={<span>-</span>}
           />
 
-          <FormControlLabel value="After" control={<Radio color="primary" />} label="+" />
+          <FormControlLabel
+            value="After"
+            control={<Radio color="primary" />}
+            label="+"
+          />
         </RadioGroup>
       </div>
     </React.Fragment>
@@ -100,6 +112,7 @@ const Lay = props => {
 
 const mapStateToProps = state => {
   return {
+    text: state.lay.text,
     stake: state.lay.stake,
     price: state.lay.price,
     hours: state.lay.offset.hours,
@@ -111,6 +124,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onTextUpdate: text => dispatch(actions.setDisplayText(text)),
     onReceiveStake: stake => dispatch(actions.setStake(stake)),
     onReceivePrice: price => dispatch(actions.setPrice(price)),
     onReceiveHours: hours => dispatch(actions.setHours(hours)),

@@ -19,16 +19,25 @@ const useStyles = makeStyles(theme => ({
 const TickOffset = props => {
   const classes = useStyles();
 
+  React.useEffect(() => {
+    var unit = props.unit === "Percent" ? "%" : props.unit;
+    var percent = `(${props.percentTrigger}%)`;
+
+    props.onTextUpdate(`${props.ticks} ${unit} ${percent} [${props.hedged ? "x" : "-"}]`);
+
+  }, [props.ticks, props.unit, props.percentTrigger, props.hedged]);
+
   return (
     <React.Fragment>
       <div style={{ display: "flex", flexDirection: "row" }}>
         <TextField
           id="standard-number"
           type="number"
-          label="Stake"
+          label="Ticks"
           className={classes.textField}
-          value={props.stake}
-          onChange={e => props.onReceiveStake(e.target.value)}
+          value={props.ticks}
+          inputProps={{ min: "1", max: "100" }}
+          onChange={e => props.onReceiveTicks(e.target.value)}
           margin="normal"
         />
         <RadioGroup
@@ -39,11 +48,15 @@ const TickOffset = props => {
         >
           <FormControlLabel
             className={classes.formControlLabel}
-            value="Tick"
+            value="Ticks"
             control={<Radio color="primary" />}
-            label={<span>Tick</span>}
+            label="Ticks"
           />
-          <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
+          <FormControlLabel
+            value="Percent"
+            control={<Radio color="primary" />}
+            label="%"
+          />
         </RadioGroup>
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -53,6 +66,7 @@ const TickOffset = props => {
           type="number"
           label="% Trigger"
           value={props.percentTrigger}
+          inputProps={{ min: "1", max: "100" }}
           onChange={e => props.onReceivePercentTrigger(e.target.value)}
           margin="normal"
         />
@@ -72,24 +86,27 @@ const TickOffset = props => {
 };
 
 const mapStateToProps = state => {
-    return {
-        stake: state.tickOffset.stake,
-        unit: state.tickOffset.units,
-        percentTrigger: state.tickOffset.percentTrigger,
-        hedged: state.tickOffset.hedged
-    };
+  return {
+    text: state.tickOffset.text,
+    ticks: state.tickOffset.ticks,
+    unit: state.tickOffset.units,
+    percentTrigger: state.tickOffset.percentTrigger,
+    hedged: state.tickOffset.hedged
   };
-  
-  const mapDispatchToProps = dispatch => {
-    return {
-        onReceiveStake: stake => dispatch(actions.setStake(stake)),
-        onReceiveUnit: unit => dispatch(actions.setUnit(unit)),
-        onReceivePercentTrigger: percent => dispatch(actions.setPercentTrigger(percent)),
-        onReceiveHedged: selected => dispatch(actions.setHedged(selected))
-    };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTextUpdate: text => dispatch(actions.setDisplayText(text)),
+    onReceiveTicks: ticks => dispatch(actions.setTicks(ticks)),
+    onReceiveUnit: unit => dispatch(actions.setUnit(unit)),
+    onReceivePercentTrigger: percent =>
+      dispatch(actions.setPercentTrigger(percent)),
+    onReceiveHedged: selected => dispatch(actions.setHedged(selected))
   };
-  
-  export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TickOffset);
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TickOffset);

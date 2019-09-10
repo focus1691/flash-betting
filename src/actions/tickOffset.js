@@ -1,7 +1,7 @@
-export const setStake = stake => {
+export const setTicks = ticks => {
     return {
-        type: "SET_TICK_OFFSET_STAKE",
-        payload: stake
+        type: "SET_TICK_OFFSET_TICKS",
+        payload: ticks
     }
 };
 
@@ -23,5 +23,12 @@ export const setHedged = selected => {
     return {
         type: "TOGGLE_TICK_OFFSET_HEDGED",
         payload: selected
+    }
+};
+
+export const setDisplayText = text => {
+    return {
+        type: "SET_TICK_OFFSET_TEXT",
+        payload: text
     }
 };

@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Tools = () => {
+const Tools = props => {
   const classes = useStyles();
 
   const [stopLoss, toggleStopLoss] = useState(false);
@@ -59,11 +59,11 @@ const Tools = () => {
   const [stopEntry, toggleStopEntry] = useState(false);
 
   const rows = [
-    createData('Stop Loss', 'SL', '30 Ticks', <StopLoss/>, stopLoss, toggleStopLoss),
-    createData('Tick Offset',  'TO', '3 Ticks (%) [x]', <TickOffset/>, tickOffset, toggleTickOffset),
-    createData('Back', 'B', '@ 1 [-][-][-]', <Back/>, back, toggleBack),
-    createData('Lay', 'L', '100 @ 4 [-][-][-]', <Lay/>, lay, toggleLay),
-    createData('Fill or Kill', 'FOK', '0 Seconds', <FillOrKill/>, fillOrKill, toggleFillOrKill),
+    createData('Stop Loss', 'SL', props.stopLossText, <StopLoss/>, stopLoss, toggleStopLoss),
+    createData('Tick Offset',  'TO', props.tickOffsetText, <TickOffset/>, tickOffset, toggleTickOffset),
+    createData('Back', 'B', props.backText, <Back/>, back, toggleBack),
+    createData('Lay', 'L', props.layText, <Lay/>, lay, toggleLay),
+    createData('Fill or Kill', 'FOK', props.fillKillText, <FillOrKill/>, fillOrKill, toggleFillOrKill),
     createData('Stop Entry', 'SE', '', <StopEntry/>, stopEntry, toggleStopEntry)
   ];
 
@@ -107,15 +107,11 @@ const Tools = () => {
 
 const mapStateToProps = state => {
   return {
-    stake: state.lay.stake,
-    price: state.lay.price,
-    fillOrKill: state.lay.fillOrKill,
-    stopLoss: state.lay.stopLoss,
-    tickOffset: state.lay.tickOffset,
-    hours: state.lay.offset.hours,
-    minutes: state.lay.offset.minutes,
-    seconds: state.lay.offset.seconds,
-    executionTime: state.lay.executionTime
+    stopLossText: state.stopLoss.text,
+    tickOffsetText: state.tickOffset.text,
+    backText: state.back.text,
+    layText: state.lay.text,
+    fillKillText: state.fillOrKill.text
   };
 };
 

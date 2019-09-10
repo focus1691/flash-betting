@@ -68,6 +68,7 @@ const StopEntry = props => {
             type="number"
             label="Ticks"
             value={props.ticks}
+            inputProps={{ min: "1", max: "100"}}
             onChange={e => props.onReceiveTicks(e.target.value)}
             margin="normal"
           />
@@ -79,6 +80,7 @@ const StopEntry = props => {
               type="number"
               label="Back"
               value={props.stake}
+              inputProps={{ min: "1"}}
               onChange={e => props.onReceiveStake(e.target.value)}
               margin="normal"
             />
@@ -88,6 +90,7 @@ const StopEntry = props => {
               type="number"
               label="@"
               value={props.price}
+              inputProps={{ min: "1"}}
               onChange={e => props.onReceivePrice(e.target.value)}
               margin="normal"
             />

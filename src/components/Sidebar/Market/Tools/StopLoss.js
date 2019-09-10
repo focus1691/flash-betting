@@ -27,6 +27,14 @@ const useStyles = makeStyles(theme => ({
 const StopLoss = props => {
   const classes = useStyles();
 
+  React.useEffect(() => {
+    var box1Val = props.trailing ? "x" : "-";
+    var box2Val = props.hedged ? "x" : "-";
+    var unit = props.units === 'Percent' ? '(%)' : props.units;
+
+    props.onTextUpdate(`${props.offset} ${unit} [${box1Val}][${box2Val}]`);
+  }, [props.offset, props.units, props.hedged, props.trailing]);
+
   return (
     <React.Fragment>
       <RadioGroup
@@ -42,16 +50,21 @@ const StopLoss = props => {
             className={classes.textField}
             type="number"
             value={props.offset}
+            inputProps={{ min: "1", max: "100" }}
             onChange={e => props.onReceiveOffset(e.target.value)}
             margin="normal"
           />
           <FormControlLabel
             value="Ticks"
             className={classes.formControlLabel}
-            control={<Radio color="primary" Radio/>}
+            control={<Radio color="primary" Radio />}
             label={<span>Tick</span>}
           />
-          <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
+          <FormControlLabel
+            value="Percent"
+            control={<Radio color="primary" />}
+            label="%"
+          />
         </div>
       </RadioGroup>
       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -82,19 +95,21 @@ const StopLoss = props => {
 
 const mapStateToProps = state => {
   return {
+    text: state.back.text,
     offset: state.stopLoss.offset,
     units: state.stopLoss.units,
     trailing: state.stopLoss.trailing,
-    hedged: state.stopLoss.hedged,
-    chaser: state.stopLoss.chaser
+    hedged: state.stopLoss.hedged
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    onTextUpdate: text => dispatch(actions.setDisplayText(text)),
     onReceiveOffset: offset => dispatch(actions.setStopLossOffset(offset)),
     onReceiveUnit: unit => dispatch(actions.setStopLossUnit(unit)),
-    onToggleTrailing: selected => dispatch(actions.toggleStopLossTrailing(selected)),
+    onToggleTrailing: selected =>
+      dispatch(actions.toggleStopLossTrailing(selected)),
     onToggleHedged: selected => dispatch(actions.toggleStopLossHedged(selected))
   };
 };

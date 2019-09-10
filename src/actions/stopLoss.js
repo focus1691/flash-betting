@@ -24,3 +24,10 @@ export const toggleStopLossHedged = selected => {
         payload: selected
     }
 };
+
+export const setDisplayText = text => {
+    return {
+        type: "SET_STOP_LOSS_TEXT",
+        payload: text
+    }
+};

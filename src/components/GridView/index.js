@@ -126,7 +126,7 @@ const Grid = props => {
     return (
       <td className="grid-cell">
         <span>{odds}</span>
-        <span>{Math.floor(matched)}</span>
+        <span>{matched}</span>
       </td>
     );
   };

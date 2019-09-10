@@ -18,6 +18,10 @@ const useStyles = makeStyles(theme => ({
 const FillOrKill = props => {
   const classes = useStyles();
 
+  React.useEffect(() => {
+    props.onTextUpdate(`${props.seconds} seconds`);
+  }, [props.seconds]);
+
   return (
     <React.Fragment>
       <div className={classes.root}>
@@ -27,6 +31,7 @@ const FillOrKill = props => {
           type="number"
           label="Seconds"
           value={props.seconds}
+          inputProps={{ min: "1", max: "100"}}
           onChange={e => props.onReceiveFillOrKill(e.target.value)}
           margin="normal"
         />
@@ -43,6 +48,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onTextUpdate: text => dispatch(actions.setDisplayText(text)),
     onReceiveFillOrKill: seconds => dispatch(actions.setFillOrKill(seconds))
   };
 };

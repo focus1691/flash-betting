@@ -39,3 +39,10 @@ export const toggleExecutionTime = executionTime => {
         payload: executionTime
     }
 };
+
+export const setDisplayText = text => {
+    return {
+        type: "SET_BACK_TEXT",
+        payload: text
+    }
+};

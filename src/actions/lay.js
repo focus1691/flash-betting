@@ -39,3 +39,10 @@ export const toggleExecutionTime = executionTime => {
         payload: executionTime
     }
 };
+
+export const setDisplayText = text => {
+    return {
+        type: "SET_LAY_TEXT",
+        payload: text
+    }
+};

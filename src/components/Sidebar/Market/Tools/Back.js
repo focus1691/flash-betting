@@ -29,6 +29,10 @@ const useStyles = makeStyles(theme => ({
 const Back = props => {
     const classes = useStyles();
 
+    React.useEffect(() => {
+        props.onTextUpdate(`${props.stake} @ ${props.price}`);
+    }, [props.price, props.stake]);
+
     return (
         <React.Fragment>
             <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -38,6 +42,7 @@ const Back = props => {
                     type="number"
                     label="stake"
                     value={props.stake}
+                    inputProps={{ min: "1"}}
                     onChange={e => props.onReceiveStake(e.target.value)}
                     margin="normal"
                 />
@@ -47,6 +52,7 @@ const Back = props => {
                     type="number"
                     label="@"
                     value={props.price}
+                    inputProps={{ min: "1"}}
                     onChange={e => props.onReceivePrice(e.target.value)}
                     margin="normal"
                 />
@@ -103,6 +109,7 @@ const Back = props => {
 
 const mapStateToProps = state => {
     return {
+        text: state.back.text,
         stake: state.back.stake,
         price: state.back.price,
         hours: state.back.offset.hours,
@@ -114,6 +121,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
+        onTextUpdate: text => dispatch(actions.setDisplayText(text)),
         onReceiveStake: stake => dispatch(actions.setStake(stake)),
         onReceivePrice: price => dispatch(actions.setPrice(price)),
         onReceiveHours: hours => dispatch(actions.setHours(hours)),
