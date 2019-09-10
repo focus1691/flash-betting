@@ -46,7 +46,7 @@ const MarketInfo = props => {
             <td>{"Silk"}</td>
           </tr>
           <tr>
-            <td>{colours}</td>
+            <td><img src={`https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${colorsFileName}`}/></td>
           </tr>
           <tr>
             <td>{"Trainer name"}</td>

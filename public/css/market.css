@@ -52,5 +52,84 @@
     border-collapse: collapse;
 }
 
+/*** MARKET TAB --LADDER-- **/
+
+#menu-ladder {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	table-layout: fixed;
+	border: none;
+	margin: 0 auto;
+	width: 100%;
+	height: auto;
+}
+
+#menu-ladder tr:nth-child(n+1) td {
+	border: 1px solid #D6D6D6;
+	text-align: center;
+}
+
+#menu-ladder td:nth-child(1) {
+	width: 60%;
+	font-size: small;
+}
+
+#menu-ladder td:nth-child(n+2) {
+	width: 20%;
+	font-size: small;
+}
+
+#menu-ladder td:nth-child(2) {
+	background: #FCB3C1;
+}
+
+#menu-ladder td:nth-child(4) {
+	background: #90D2FB;
+}
+
+#menu-ladder input[type="checkbox"] {
+	border: 1px solid #333;
+	content: "\00a0";
+	display: inline-block;
+	font: 16px/1em sans-serif;
+	height: 16px;
+	margin: 0 .25em 0 0;
+	padding: 0;
+	vertical-align: top;
+	width: 16px;
+}
+
 /*** MARKET TAB --MARKET INFORMATION-- **/
 
+#menu-market-info {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	table-layout: fixed;
+	border: none;
+	margin: 0 auto;
+	width: 100%;
+	height: auto;
+}
+
+#menu-market-info td {
+	padding: 5px;
+}
+
+#menu-market-info tr:nth-child(4n-1), #menu-market-info tr:nth-child(4n-2) {
+	background: #D6E5E6;
+}
+
+#menu-market-info tr:nth-child(4n-3), #menu-market-info tr:nth-child(4n-4) {
+	background: #F0FFFF;
+}
+
+#menu-market-info tr:nth-child(2n-1) {
+	font-weight: normal;
+	font-size: small;
+	border-bottom: 3px solid #D3D3D3;
+}
+
+#menu-market-info tr:nth-child(2n-2) {
+	font-weight: bold;
+	font-size: medium;
+}

@@ -64,6 +64,7 @@ const Lay = props => {
           type="number"
           label="hh"
           value={props.hours}
+          inputProps={{ min: "0"}}
           onChange={e => props.onReceiveHours(e.target.value)}
           margin="normal"
         />
@@ -73,6 +74,7 @@ const Lay = props => {
           type="number"
           label="mm"
           value={props.minutes}
+          inputProps={{ min: "0", max: "59"}}
           onChange={e => props.onReceiveMinutes(e.target.value)}
           margin="normal"
         />
@@ -82,6 +84,7 @@ const Lay = props => {
           type="number"
           label="ss"
           value={props.seconds}
+          inputProps={{ min: "0", max: "59"}}
           onChange={e => props.onReceiveSeconds(e.target.value)}
           margin="normal"
         />

@@ -71,51 +71,6 @@
 	width: 33.33%;
 }
 
-#menu-ladder {
-	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	border-collapse: collapse;
-	table-layout: fixed;
-	border: none;
-	margin: 0 auto;
-	width: 100%;
-	height: auto;
-}
-
-#menu-ladder tr:nth-child(n+1) td {
-	border: 1px solid #D6D6D6;
-	text-align: center;
-}
-
-#menu-ladder td:nth-child(1) {
-	width: 60%;
-	font-size: small;
-}
-
-#menu-ladder td:nth-child(n+2) {
-	width: 20%;
-	font-size: small;
-}
-
-#menu-ladder td:nth-child(2) {
-	background: #FCB3C1;
-}
-
-#menu-ladder td:nth-child(4) {
-	background: #90D2FB;
-}
-
-#menu-ladder input[type="checkbox"] {
-	border: 1px solid #333;
-	content: "\00a0";
-	display: inline-block;
-	font: 16px/1em sans-serif;
-	height: 16px;
-	margin: 0 .25em 0 0;
-	padding: 0;
-	vertical-align: top;
-	width: 16px;
-}
-
 #menu-profit-loss {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
@@ -143,36 +98,6 @@
 
 #menu-profit-loss tr:nth-child(2n) {
 	background: #D9D9D9;
-}
-
-#menu-market-info {
-	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	border-collapse: collapse;
-	table-layout: fixed;
-	border: none;
-	margin: 0 auto;
-	width: 100%;
-	height: auto;
-}
-
-#menu-market-info tr:nth-child(n+1) {
-	border: 3px solid #D6D6D6;
-	
-}
-
-#menu-market-info td:nth-child(1) {
-	width: 60%;
-	font-size: small;
-}
-
-#menu-market-info td:nth-child(n+2) {
-	width: 40%;
-	font-size: small;
-}
-
-#menu-market-info tr:nth-child(2n) {
-	background: #D9D9D9;
-	font-weight: bold;
 }
 
 #menu-selected-name {
