@@ -77,7 +77,9 @@ app.get('/api/get-account-details', (request, response) => {
     }, ((err, res) => {
         response.json({
             name: res.result.firstName,
-            countryCode: res.result.countryCode
+            countryCode: res.result.countryCode,
+            currencyCode: res.result.currencyCode,
+            localeCode: res.result.localeCode
         });
     }));
 });

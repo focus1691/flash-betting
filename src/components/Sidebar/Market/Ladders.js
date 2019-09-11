@@ -64,7 +64,7 @@ const Ladder = props => {
         props.ladder[key]
 			);
 			
-			var color = ltp[0] < ltp[1] ? "green" : ltp[0] > ltp[1] ? "red" : "yellow"; 
+			var color = ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00"; 
 			
 			return (
 				<tr>

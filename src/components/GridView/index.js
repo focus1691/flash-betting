@@ -140,7 +140,7 @@ const Grid = props => {
       );
 
       const bg =
-        ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FF5651" : "#FFFF00";
+        ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
       
       const logo = props.runners[key].metadata.COLOURS_FILENAME ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}` : `${window.location.origin}/images/baseball-player.png`; 
 

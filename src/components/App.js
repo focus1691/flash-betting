@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
 import Siderbar from "./Sidebar";
-import HomeView from "./HomeView/index";
-import LadderView from "./LadderView/OddsTable";
+import HomeView from "./HomeView/";
+import LadderView from "./LadderView/";
 import GridView from "./GridView/";
 import SocketContext from "../SocketContext";
 
