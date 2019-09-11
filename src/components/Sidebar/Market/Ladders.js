@@ -23,6 +23,15 @@ const useStyles = makeStyles(theme => ({
 const Ladder = props => {
 	const classes = useStyles();
 
+  const sortAsc = arr => {
+    if (arr.length <= 0) return [];
+
+    arr = arr.sort(function(a, b) {
+      return a[0] - b[0];
+    });
+    return arr;
+  };
+
   const sortDes = arr => {
     if (arr.length <= 0) return [];
 
@@ -41,27 +50,27 @@ const Ladder = props => {
       data.atb = sortDes(ladder.atb);
     }
     if (ladder.atl) {
-      data.atl = sortDes(ladder.atl);
+      data.atl = sortAsc(ladder.atl);
     }
 
     return data;
   };
 
 	const renderRunners = () => {
-		var j = 1;
 
 		return Object.keys(props.ladder).map(key => {
 
 			const {atb, atl, ltp} = getLadderData(
         props.ladder[key]
-      );
-
-
+			);
+			
+			var color = ltp[0] < ltp[1] ? "green" : ltp[0] > ltp[1] ? "red" : "yellow"; 
+			
 			return (
 				<tr>
 					<td>{props.runners[key].runnerName}</td>
-					<td>{atl[atl.length - 1][0]}</td>
-					<td>{ltp}</td>
+					<td>{atl[0][0]}</td>
+					<td style={{background: color}}>{ltp[0]}</td>
 					<td>{atb[0][0]}</td>
 					<td>
 						<input type="checkbox"/>

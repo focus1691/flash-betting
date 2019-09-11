@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import * as actions from '../../actions/market';
+import * as actions from "../../actions/market";
 
 const Grid = props => {
   const renderTableHeader = () => {
@@ -34,7 +34,7 @@ const Grid = props => {
             )}
             <span>
               Matched:{" "}
-              {props.marketOpen ? `£${props.market.totalMatched}` : null}
+              {props.marketOpen ? `£${sumMatchedBets().toLocaleString()}` : null}
             </span>
           </th>
         </tr>
@@ -83,6 +83,11 @@ const Grid = props => {
     return data;
   };
 
+  const sumMatchedBets = () => {
+    const sum = Object.keys(props.ladder).reduce((sum,key)=>sum+parseFloat(props.ladder[key].tv||0),0);
+    return Math.floor(sum);
+  };
+
   const sortDes = arr => {
     if (arr.length <= 0) return [];
 
@@ -117,11 +122,6 @@ const Grid = props => {
 
   const test = (e, td) => {};
 
-  const selectRacer = selectionId => {
-
-  };
-  
-
   const createCell = (odds, matched) => {
     return (
       <td className="grid-cell">
@@ -131,23 +131,35 @@ const Grid = props => {
     );
   };
 
+  const getImage = () => {};
+
   const renderTableData = () => {
     return Object.keys(props.ladder).map(key => {
       const { atb, atl, batb, batl, ltp, tv } = getLadderData(
         props.ladder[key]
       );
 
+      const bg =
+        ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FF5651" : "#FFFF00";
+      
+      const logo = props.runners[key].metadata.COLOURS_FILENAME ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}` : `${window.location.origin}/images/baseball-player.png`; 
+
       return (
         <tr>
-          <td className="grid-runner-details" onClick={e => {props.onSelectRunner(props.runners[key].metadata)}}>
+          <td
+            className="grid-runner-details"
+            onClick={e => {
+              props.onSelectRunner(props.runners[key].metadata);
+            }}
+          >
             <img
-              src={window.location.origin + "/images/00077962.jpg"}
+              src={logo}
               alt={"Chart"}
             />
             <span>{props.runners[key].runnerName}</span>
-            <span>{ltp}</span>
+            <span style={{ background: bg }}>{ltp[0]}</span>
             <span>{}</span>
-            <span>{Math.floor(tv)}</span>
+            <span>{Math.floor(tv[0]).toLocaleString()}</span>
           </td>
 
           {renderRow(atb, batb).reverse()}
@@ -175,14 +187,18 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
     ladder: state.market.ladder,
-    runners: state.market.runners
+    runners: state.market.runners,
+    selection: state.market.runnerSelection
   };
 };
 
 const mapDispatchToProps = dispatch => {
-	return {
+  return {
     onSelectRunner: runner => dispatch(actions.setRunner(runner))
-	}
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Grid);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Grid);
