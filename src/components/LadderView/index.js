@@ -5,14 +5,21 @@ import Ladder from "./Ladder";
 import BettingPanel from "./BettingPanel";
 
 
-function OddsTable ({currentEvent}) {
-	if (currentEvent.openDate === 0) {
-		return <p>No Event Selected</p>
-	}
+const Ladders = props => {
+	// if (props.currentEvent.openDate === 0) {
+		// return <p>No Event Selected</p>
+	// }
 	return (
       	<div className="odds-table">
 	        <ContenderDetail className="contender-detail"></ContenderDetail>
 	        <Ladder></Ladder>
+			<Ladder></Ladder>
+	        <Ladder></Ladder>
+			<Ladder></Ladder>
+	        <Ladder></Ladder>
+			<Ladder></Ladder>
+	        <Ladder></Ladder>
+			<Ladder></Ladder>
 	        <BettingPanel></BettingPanel>
         </div>
 	);
@@ -20,18 +27,11 @@ function OddsTable ({currentEvent}) {
 
 
 const mapStateToProps = state => {
-	
 	return {
-		currentEvent: state.sports.currentSport.currentEvent
+		currentEvent: state.sports.currentSport.currentEvent,
+		marketOpen: state.market.marketOpen,
+		market: state.market.currentMarket
 	}
 }
 
-OddsTable.defaultProps = 
-{
-	currentEvent: {
-		openDate: 0,
-
-	}
-}
-
-export default connect(mapStateToProps, null)(OddsTable);
+export default connect(mapStateToProps)(Ladders);

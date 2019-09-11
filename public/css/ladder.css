@@ -1,8 +1,8 @@
 .odds-table {
-	width: 17%;
-	float: left;
+	width: 100%;
+	display: inline-block;
+	position: relative;
 	margin: 5px;
-	border: 1px solid gray;
 }
 
 /** 
@@ -33,7 +33,8 @@
 	table-layout: fixed;
 	border: 1px solid;
 	margin: 0 auto;
-	width: 100%;
+	width: 20%;
+	float: left;
 }
 
 .ladder td:nth-child(2){background-color: #FCC9D3;}

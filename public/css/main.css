@@ -16,7 +16,8 @@ p, span, h1 {
 .content {
 	width: 100%;
 	height: 100vh;
-	overflow-y: hidden;
+	overflow-x: hidden;
+	/* white-space: nowrap; */
 }
 
 .sticky {

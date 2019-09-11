@@ -40,7 +40,7 @@ const Account = props => {
               style: "currency",
               currency: props.currencyCode || "GBP"
             }
-          ).format(props.balance)}{" "}
+          ).format(props.balance)}
         </p>
         <Clock />
       </div>
