@@ -32,6 +32,9 @@ const Countdown = props => {
         // 4- Keep only seconds not extracted to minutes:
         seconds = Math.floor(seconds % 60);
 
+        if (hours < 0 && minutes < 0 && seconds < 0) {
+            return `00:00:00`;
+        }
         return `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
     };
     return props.marketOpen ? <span>{msToHMS (timeRemaining)}</span> : <span>--</span>

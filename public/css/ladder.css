@@ -1,8 +1,18 @@
 .odds-table {
 	width: 100%;
-	display: inline-block;
+	display: block;
 	position: relative;
-	margin: 5px;
+	border: 1px solid gray;
+    width: 23%;
+    height: 100%;
+	overflow: hidden;
+	float: left;
+	padding: 0;
+	object-fit: cover;
+}
+
+.ass {
+	height: 100vh;
 }
 
 /** 
@@ -15,12 +25,14 @@
 
 .contender-name {
 	font-size: 1em;
+	text-align: left;
 }
 
 .contender-odds {
 	color: #01CC41;
 	font-weight: bold;
-	margin-left: 10%
+	text-align: left;
+	display: inline-block;
 }
 
 /**
@@ -28,47 +40,179 @@
 * horse racing, football team, cricket team.
 **/
 .ladder {
+	position: relative;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 75vh;
+}
+
+.ladder-header {
+	display: inline-block;
+	width: 100%;
+	height: 5vh;
+}
+
+.ladder table {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	table-layout: fixed;
 	border: 1px solid;
-	margin: 0 auto;
-	width: 20%;
-	float: left;
+    width: 100%;
 }
 
 .ladder td:nth-child(2){background-color: #FCC9D3;}
-.ladder td:nth-child(3){background-color: #BBBBBB;}
+.ladder td:nth-child(3) {
+	font-weight: bold;
+	background: #BBBBBB;
+}
 .ladder td:nth-child(4){background-color: #BCE4FC;}
 
 .ladder td {
 	text-align: center;
-	font-size: 0.8;
-	font-weight: bold;
+	font-size: 0.8em;
+	border: 1px solid;
+	padding: 2px;
+	cursor: pointer;
+	width: 20%;
+	overflow: hidden;
 }
 
-/**
-* Price row
-* 
-**/
-.price-row td {
-	border: 4px solid gray;
+.ladder td:first-child() {
+	border: none;
+	background: red;
+}
+
+.ladder th {
+	position: sticky;
+	top: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.order-row {
+	bottom: 0;
+	height: 15vh;
+	background: #fff;
+	display:table-row;
+	overflow-y: scroll;
+	width: 100%;
+	float: left;
+}
+
+.order-row td:nth-child(1), .order-row td:nth-child(3) {
+	width: 40%;
+}
+
+.order-row td:nth-child(2) {
+	top: 0;
+	position: absolute;
+	background: orange;
+	height: 100%;
+	width: 20%;
+}
+
+.order-row table {
+	border-collapse: collapse;
+	table-layout: fixed;
+	border: 1px solid;
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+}
+
+.order-row td {
+	width: 20%;
+	margin: 0;
+	padding: 0;
+}
+
+.order-row button {
+	width: 100%;
+	height: 33.33%;
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	border: 1px solid;
+	cursor: pointer;
+	overflow: hidden;
+	outline: none;
+}
+
+.order-row button:nth-child(1) {
+	background: silver;
+}
+
+.order-row button:nth-child(2) {
+	background: gold;
+}
+
+.order-row button:nth-child(3) {
+	background: crimson;
+}
+
+/** LAY TABLE **/
+
+.lay-table {
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+	white-space: nowrap;
+}
+
+.lay-table tr {
+	width: 30px;
+	border-bottom: 1px solid;
+}
+
+.lay-table td {
+	width: 30px;
+	border-bottom: 1px solid;
+
+	text-align: center;
+	overflow: scroll;
+}
+
+.lay-table tr:nth-child(odd) {
+	width: 100%;
+	background: #FCC9D3;;
+}
+
+/** PERCENTAGE ROW **/
+
+.percentage-row {
+	width: 100%;
+	display: table;
+	background: pink;
+	border: 1px solid;
+	z-index: inherit;
+}
+
+.percentage-row td {
+	width: 19.5%;
+	padding: 0;
+	border: none;
+	float: left;
+	overflow: hidden;
+}
+
+.percentage-row td:nth-child(1), .percentage-row td:nth-child(2),
+.percentage-row td:nth-child(3), .percentage-row td:nth-child(4) {
+	border-right: 1px solid;
+}
+
+/** PRICE ROW **/
+
+.price-row {
+	position: sticky;
+	bottom: 0;
+	display: table;
+	width: 100%;
 	background: #fff;
 }
 
-
-/**
-* Betting Panel
-* 
-**/
-.betting-panel {
-	background-color: yellow;
-	width: 100px;
-	height: 100px;
-}
-
-.cancelled-bets {
-	width: 50px;
-	height: 100px;
-	background: red;
+.price-row td {
+	position: relative;
+	display: table-cell;
+	border: 2px solid gray;
+	width: 33.333%;
 }

@@ -112,7 +112,6 @@ const App = props => {
     props.socket.on("mcm", data => {
       const ladders = {};
       for (let i = 0; i < data.rc.length; i++) {
-        console.log(data.rc[i]);
         let key = [data.rc[i].id];
         
         if (key in props.ladders) {
@@ -130,6 +129,7 @@ const App = props => {
           ladders[key].tv = [ladders[key].tv, ladders[key].tv];
         }
       }
+      console.log(ladders);
       props.socket.off("mcm");
       props.onReceiverLadders(ladders);
     });

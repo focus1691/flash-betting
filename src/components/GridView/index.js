@@ -34,7 +34,9 @@ const Grid = props => {
             )}
             <span>
               Matched:{" "}
-              {props.marketOpen ? `£${sumMatchedBets().toLocaleString()}` : null}
+              {props.marketOpen
+                ? `£${sumMatchedBets().toLocaleString()}`
+                : null}
             </span>
           </th>
         </tr>
@@ -84,7 +86,10 @@ const Grid = props => {
   };
 
   const sumMatchedBets = () => {
-    const sum = Object.keys(props.ladder).reduce((sum,key)=>sum+parseFloat(props.ladder[key].tv||0),0);
+    const sum = Object.keys(props.ladder).reduce(
+      (sum, key) => sum + parseFloat(props.ladder[key].tv || 0),
+      0
+    );
     return Math.floor(sum);
   };
 
@@ -112,8 +117,7 @@ const Grid = props => {
       rows.push(createCell(betOdds[i][0], betOdds[i][1]));
       if (i === 4) break;
     }
-
-    for (i = rows.length - 5; i > 0; i--) {
+    while (rows.length < 5) {
       rows.push(createCell("", ""));
     }
 
@@ -141,8 +145,10 @@ const Grid = props => {
 
       const bg =
         ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
-      
-      const logo = props.runners[key].metadata.COLOURS_FILENAME ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}` : `${window.location.origin}/images/baseball-player.png`; 
+
+      const logo = props.runners[key].metadata.COLOURS_FILENAME
+        ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
+        : `${window.location.origin}/images/baseball-player.png`;
 
       return (
         <tr>
@@ -152,10 +158,7 @@ const Grid = props => {
               props.onSelectRunner(props.runners[key].metadata);
             }}
           >
-            <img
-              src={logo}
-              alt={"Chart"}
-            />
+            <img src={logo} alt={"Chart"} />
             <span>{props.runners[key].runnerName}</span>
             <span style={{ background: bg }}>{ltp[0]}</span>
             <span>{}</span>
