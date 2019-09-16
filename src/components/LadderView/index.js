@@ -2,15 +2,9 @@ import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 
 const Ladders = props => {
-
   const tableRef = useRef(null);
 
-  useEffect(() => {
-    console.log(tableRef);
-  }, []);
-
   const createLadder = () => {
-
     return Object.keys(props.ladder).map(key => {
       const ladder = props.ladder[key].fullLadder;
       const ltp = props.ladder[key].ltp;
@@ -25,7 +19,6 @@ const Ladders = props => {
                 {renderPercentageRow(ltp)}
                 {renderData(ladder)}
                 {renderPriceRow()}
-                {window.scrollTo(0, 1500)}
               </tbody>
             </table>
           </div>
@@ -37,21 +30,24 @@ const Ladders = props => {
 
   const renderHeaderRow = runner => {
     const name = runner.runnerName;
-    const number = runner.metadata.CLOTH_NUMBER + ". " || "";
+
+    const number = runner.metadata.CLOTH_NUMBER ? runner.metadata.CLOTH_NUMBER + '. ' : "";
     const logo = runner.metadata.COLOURS_FILENAME
-    ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${runner.metadata.COLOURS_FILENAME}`
-    : `${window.location.origin}/images/baseball-player.png`;
+      ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${runner.metadata.COLOURS_FILENAME}`
+      : `${window.location.origin}/images/baseball-player.png`;
 
     return (
       <div colspan={5} className={"ladder-header"}>
-        <h2 className="contender-name">{<img src={logo} alt={"Colours"} />}{`${number}${name}`}</h2>
+        <h2 className="contender-name">
+          {<img src={logo} alt={"Colours"} />}
+          {`${number}${name}`}
+        </h2>
         <p className="contender-odds">0.80</p>
       </div>
     );
   };
 
   const renderPercentageRow = ltp => {
-    
     const bg =
       ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
 
@@ -150,19 +146,9 @@ const Ladders = props => {
     );
   };
 
-  const renderUnMatchedBets = () => {
-    return <></>;
-  };
-
-  if (props.marketOpen && props.ladder) {
-    console.log(tableRef);
-  }
-
   return (
     <React.Fragment>
-      {/* {createLadder()} */}
       {props.marketOpen && props.ladder ? createLadder() : null}
-      {/* {props.marketOpen && props.ladder ? createLadder() : null} */}
     </React.Fragment>
   );
 };

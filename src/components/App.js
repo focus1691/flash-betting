@@ -125,7 +125,7 @@ const App = props => {
       const length = data.rc.length;
       
       for (var i = 0; i < length; i++) {
-        console.log(data);
+        console.log(data.rc[i]);
         let key = [data.rc[i].id];
 
         if (key in props.ladders) {
@@ -168,6 +168,8 @@ const App = props => {
           ladders[key].tv = [ladders[key].tv, ladders[key].tv];
           ladders[key].fullLadder = {};
           var k;
+
+          console.log(ladders[key]);
  
           // 100 - 1000
           for (k = 1000; k >= 100; k -= 10) {

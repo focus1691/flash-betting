@@ -144,7 +144,9 @@ const Grid = props => {
       );
 
       const name = props.runners[key].runnerName;
-      const number = props.runners[key].metadata.CLOTH_NUMBER + ". " || "";
+      const number = props.runners[key].metadata.CLOTH_NUMBER
+        ? props.runners[key].metadata.CLOTH_NUMBER + ". "
+        : "";
       const bg =
         ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
 
