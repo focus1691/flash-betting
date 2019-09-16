@@ -2,158 +2,41 @@ import React from "react";
 import { connect } from "react-redux";
 
 const Ladders = props => {
-  // const sortDes = arr => {
-  //   if (arr.length <= 0) return [];
-
-  //   arr = arr.sort((a, b) => {
-  //     return b[0] - a[0];
-  //   });
-  //   return arr;
-  // };
-
-  // const round = num => {
-  //   return Math.round(num * 100) / 100;
-  // };
-
-  // const createDataPoints = odds => {
-  //   return {
-  //     backProfit: null,
-  //     backMatched: null,
-  //     odds: odds,
-  //     layMatched: null,
-  //     layProfit: null
-  //   };
-  // };
-
-  // const createData = () => {
-  //   var data = {};
-
-  //   for (var i = 1.01; i < 2; i += 0.01) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-
-  //   for (var i = 2; i < 3; i += 0.02) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   for (var i = 3; i < 3.95; i += 0.05) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   for (var i = 4; i < 5.99; i += 0.1) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   for (var i = 6; i < 10; i += 0.2) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   for (var i = 10; i < 20; i += 0.5) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   for (var i = 20; i < 30; i += 1) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   for (var i = 30; i < 50; i += 2) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   for (var i = 100; i <= 1000; i += 10) {
-  //     const key = createDataPoints((Math.round(odds * 100) / 100).toFixed(2));
-  //     data[key] = key;
-  //   }
-  //   return data.reverse();
-  // };
-
-  // const Table = () => {
-  //   const data = createData();
-  //   const rows = renderData(data);
-
-  //   return (
-  //     <div className="odds-table">
-  //       {renderHeaderRow("5. Nights Fall")}
-
-  //       <div className={"ladder"}>
-  //         <table>
-  //           <tbody>
-  //             {renderPercentageRow("")}
-  //             {/* {renderHeaderRow(props.runners[key].runnerName)} */}
-  //             {/* {renderPercentageRow(props.ladder[key].ltp)} */}
-  //             {rows}
-  //             {renderPriceRow()}
-  //             {/* {renderPercentageRow("")} */}
-  //           </tbody>
-  //         </table>
-  //       </div>
-  //       {renderOrderRow()}
-  //     </div>
-  //   );
-  // };
 
   const createLadder = () => {
-    // return (
-    //   <React.Fragment>
-    //     <div className={"ass"}>
-    //       {Table()}
-    //       {Table()}
-    //       {Table()}
-    //       {Table()}
-    //       {Table()}
-    //     </div>
-    //   </React.Fragment>
-    // );
-
     return Object.keys(props.ladder).map(key => {
       const ladder = props.ladder[key].fullLadder;
       const ltp = props.ladder[key].ltp;
 
       return (
         <div className="odds-table">
-          {renderHeaderRow("5. Nights Fall")}
+          {renderHeaderRow(props.runners[key])}
 
           <div className={"ladder"}>
             <table>
               <tbody>
                 {renderPercentageRow(ltp)}
-                {/* {renderHeaderRow(props.runners[key].runnerName)} */}
-                {/* {renderPercentageRow(props.ladder[key].ltp)} */}
                 {renderData(ladder)}
                 {renderPriceRow()}
-                {/* {renderPercentageRow("")} */}
               </tbody>
             </table>
           </div>
           {renderOrderRow()}
         </div>
       );
-
-      // if (props.ladder[key].trd) {
-      //   const fullLadder = sortDes(props.ladder[key].trd);
-
-      //   return (
-      //     <div className="odds-table">
-      //       <table className={"ladder"}>
-      //         <tbody>
-      //           {renderHeaderRow(props.runners[key].runnerName)}
-      //           {renderPercentageRow(props.ladder[key].ltp)}
-      //           {renderTableData(tradedLadder)}
-      //           {renderPriceRow()}
-      //           {renderOrderRow()}
-      //         </tbody>
-      //       </table>
-      //     </div>
-      //   );
-      // }
     });
   };
 
-  const renderHeaderRow = name => {
+  const renderHeaderRow = runner => {
+    const name = runner.runnerName;
+    const number = runner.metadata.CLOTH_NUMBER + ". " || "";
+    const logo = runner.metadata.COLOURS_FILENAME
+    ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${runner.metadata.COLOURS_FILENAME}`
+    : `${window.location.origin}/images/baseball-player.png`;
+
     return (
       <div colspan={5} className={"ladder-header"}>
-        <h2 className="contender-name">{name}</h2>
+        <h2 className="contender-name">{<img src={logo} alt={"Colours"} />}{`${number}${name}`}</h2>
         <p className="contender-odds">0.80</p>
       </div>
     );

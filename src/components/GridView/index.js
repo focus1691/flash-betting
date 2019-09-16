@@ -142,7 +142,9 @@ const Grid = props => {
       const { atb, atl, batb, batl, ltp, tv } = getLadderData(
         props.ladder[key]
       );
-
+      
+      const name = props.runners[key].runnerName;
+      const number = props.runners[key].metadata.CLOTH_NUMBER + ". " || "";
       const bg =
         ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
 
@@ -159,7 +161,7 @@ const Grid = props => {
             }}
           >
             <img src={logo} alt={"Chart"} />
-            <span>{props.runners[key].runnerName}</span>
+            <span>{`${number}${name}`}</span>
             <span style={{ background: bg }}>{ltp[0]}</span>
             <span>{}</span>
             <span>{Math.floor(tv[0]).toLocaleString()}</span>
