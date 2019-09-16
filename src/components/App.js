@@ -37,6 +37,16 @@ const App = props => {
     return false;
   };
 
+  const createDataPoints = odds => {
+    return {
+      backProfit: null,
+      backMatched: null,
+      odds: odds,
+      layMatched: null,
+      layProfit: null
+    };
+  };
+
   const createLadder = ladder => {
     ladder.atb.map(atb => {
       atb.push(["-", "false"]);
@@ -104,16 +114,20 @@ const App = props => {
   }, []);
 
   useEffect(() => {
-
     /**
      * Listen for Market Change Messages and create/update them
      * @param {obj} data The market change message data: rc: [(atb, atl, batb, batl, tv, ltp, id)]
      */
     props.socket.on("mcm", data => {
+
       const ladders = {};
-      for (let i = 0; i < data.rc.length; i++) {
+
+      const length = data.rc.length;
+      
+      for (var i = 0; i < length; i++) {
+        console.log(data);
         let key = [data.rc[i].id];
-        
+
         if (key in props.ladders) {
           ladders[key] = props.ladders[key];
 
@@ -123,10 +137,114 @@ const App = props => {
           if (data.rc[i].tv) {
             ladders[key].tv = [data.rc[i].tv, ladders[key].tv[0]];
           }
+
+          var j;
+          ladders[key].fullLadder = Object.assign(
+            {},
+            props.ladders[key].fullLadder
+          );
+          /// Copy the full ladder 1.01-1000 and update values ATB
+          if (data.rc[i].atb) {
+            for (j = 0; j < data.rc[i].atb.length; j++) {
+              let priceKey = data.rc[i].atb[j][0].toFixed(2);
+              ladders[key].fullLadder[priceKey].odds = priceKey;
+              ladders[key].fullLadder[priceKey].backMatched =
+                data.rc[i].atb[j][1];
+            }
+          }
+
+          /// Copy the full ladder 1.01-1000 and update values ATL
+          if (data.rc[i].atl) {
+            for (j = 0; j < data.rc[i].atl.length; j++) {
+              let priceKey = data.rc[i].atl[j][0].toFixed(2);
+              ladders[key].fullLadder[priceKey].odds = priceKey;
+              ladders[key].fullLadder[priceKey].layMatched =
+                data.rc[i].atl[j][1];
+            }
+          }
         } else {
           ladders[key] = data.rc[i];
           ladders[key].ltp = [ladders[key].ltp, ladders[key].ltp];
           ladders[key].tv = [ladders[key].tv, ladders[key].tv];
+          ladders[key].fullLadder = {};
+          var k;
+ 
+          // 100 - 1000
+          for (k = 1000; k >= 100; k -= 10) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 50 - 100
+          for (k = 100; k >= 50; k -= 5) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 30 - 50
+          for (k = 50; k >= 30; k -= 2) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 20 - 30
+          for (k = 30; k >= 20; k -= 1) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 10 - 20
+          for (k = 20; k >= 10; k -= 0.5) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 6 - 10
+          for (k = 10; k >= 6; k -= 0.2) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 4 - 6
+          for (k = 6; k >= 4; k -= 0.1) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 3 - 4
+          for (k = 4; k >= 3; k -= 0.05) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 2 - 3
+          for (var k = 3; k >= 2; k -= 0.02) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          // 1 - 2
+          for (k = 2; k >= 1; k -= 0.01) {
+            let priceKey = (Math.round(k * 100) / 100).toFixed(2);
+            ladders[key].fullLadder[priceKey] = createDataPoints(priceKey);
+          }
+
+          if (ladders[key].atb) {
+            for (k = 0; k < ladders[key].atb.length; k++) {
+              let priceKey = ladders[key].atb[k][0].toFixed(2);
+              ladders[key].fullLadder[priceKey].odds = priceKey;
+              ladders[key].fullLadder[priceKey].backMatched =
+                ladders[key].atb[k][1];
+            }
+          }
+          if (ladders[key].atl) {
+            for (k = 0; k < ladders[key].atl.length; k++) {
+              let priceKey = ladders[key].atl[k][0].toFixed(2);
+              ladders[key].fullLadder[priceKey].odds = priceKey;
+              ladders[key].fullLadder[priceKey].layMatched =
+                ladders[key].atl[k][1];
+            }
+          }
         }
       }
       console.log(ladders);
