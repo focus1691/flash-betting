@@ -92,27 +92,34 @@
 	color: #fff;
 }
 
-#grid-header img:nth-child(2) {
-	float: right;
+#grid-header h1 {
+	display: block;
+	font-size: 1.4em;
+	text-align: center;
+	font-weight: bold;
 }
 
-#grid-header span:nth-child(1) {
+#grid-header button:nth-child(1) {
 	float: right;
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	color: #fff;
+	padding: 5px;
 }
 
-#grid-header span:nth-child(4) {
-	margin: 3px;
+.in-play {
 	float: left;
+	padding-block-end: 5px;
+	padding-inline-start: 5px;
 }
 
-#grid-header img:nth-child(5) {
-	margin: 3px;
-	float: left;
+.in-play span {
+	padding-right: 5px;
 }
 
-#grid-header span:nth-child(6) {
-	margin: 3px;
+.grid-video {
 	float: right;
+	padding: 5px;
 }
 
 #grid-subheader {

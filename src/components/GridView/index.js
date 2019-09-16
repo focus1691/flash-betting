@@ -9,11 +9,14 @@ const Grid = props => {
       <React.Fragment>
         <tr id="grid-header">
           <th colSpan="11">
-            <span>Turn One click on</span>
-            <img
-              src={window.location.origin + "/icons/video-player.png"}
-              alt={"Video"}
-            />
+            <button>Turn One click on</button>
+            <span className={"grid-video"}>
+              {" "}
+              <img
+                src={window.location.origin + "/icons/youtube.png"}
+                alt={"Video"}
+              />
+            </span>
             <h1>
               {props.marketOpen
                 ? new Date(props.market.event.openDate).toLocaleTimeString() +
@@ -21,17 +24,22 @@ const Grid = props => {
                   props.market.event.name
                 : "No Event Selected"}
             </h1>
-            <span>Going in-play</span>
             {props.marketOpen ? (
-              <img
-                src={window.location.origin + "/icons/checked.png"}
-                alt={"active"}
-              />
+              <div className={"in-play"}>
+                <span className={"in-play"}>Going in-play</span>
+                <img
+                  src={window.location.origin + "/icons/checked.png"}
+                  alt={"active"}
+                />
+              </div>
             ) : (
-              <img
-                src={window.location.origin + "/icons/error.png"}
-                alt={"inactive"}
-              />
+              <div className={"in-play"}>
+                <span>Not Going in-play</span>
+                <img
+                  src={window.location.origin + "/icons/error.png"}
+                  alt={"inactive"}
+                />
+              </div>
             )}
             <span>{props.marketOpen ? sumMatchedBets() : null}</span>
           </th>
@@ -206,11 +214,12 @@ const Grid = props => {
                   }}
                   className={"grid-order-row"}
                 >
-                  <li onClick={() => {
-
-                  }}>
-                  <img src={`${window.location.origin}/icons/change.png`} alt={"Toggle"} />
-                  {orderProps.text}
+                  <li onClick={() => {}}>
+                    <img
+                      src={`${window.location.origin}/icons/change.png`}
+                      alt={"Toggle"}
+                    />
+                    {orderProps.text}
                   </li>
                   <li key={`${2}${name}`}>2</li>
                   <li key={`${4}${name}`}>4</li>
