@@ -32,12 +32,7 @@ const Grid = props => {
                 alt={"inactive"}
               />
             )}
-            <span>
-              Matched:{" "}
-              {props.marketOpen
-                ? `£${sumMatchedBets().toLocaleString()}`
-                : null}
-            </span>
+            <span>{props.marketOpen ? sumMatchedBets() : null}</span>
           </th>
         </tr>
         <tr id="grid-subheader">
@@ -90,7 +85,7 @@ const Grid = props => {
       (sum, key) => sum + parseFloat(props.ladder[key].tv || 0),
       0
     );
-    return Math.floor(sum);
+    return sum ? `Matched: ${Math.floor(sum).toLocaleString()}` : "";
   };
 
   const sortDes = arr => {
@@ -135,8 +130,6 @@ const Grid = props => {
     );
   };
 
-  const getImage = () => {};
-
   const renderTableData = () => {
     return Object.keys(props.ladder).map(key => {
       const { atb, atl, batb, batl, ltp, tv } = getLadderData(
@@ -147,8 +140,15 @@ const Grid = props => {
       const number = props.runners[key].metadata.CLOTH_NUMBER
         ? props.runners[key].metadata.CLOTH_NUMBER + ". "
         : "";
+
       const bg =
-        ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
+        ltp[0] < ltp[1] // #0AFD03 (Green Lower LTP)
+          ? "#0AFD03"
+          : ltp[0] > ltp[1] // #FC0700 (Red Higher LTP)
+          ? "#FC0700"
+          : ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
+          ? "#FFFF00"
+          : "#FFF"; // #FFF (No Value)
 
       const logo = props.runners[key].metadata.COLOURS_FILENAME
         ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
@@ -165,9 +165,9 @@ const Grid = props => {
             >
               <img src={logo} alt={"Chart"} />
               <span>{`${number}${name}`}</span>
-              <span style={{ background: bg }}>{ltp[0]}</span>
+              <span style={{ background: bg }}>{ltp[0] ? ltp[0] : ""}</span>
               <span>{}</span>
-              <span>{Math.floor(tv[0]).toLocaleString()}</span>
+              <span>{tv[0] ? Math.floor(tv[0]).toLocaleString() : ""}</span>
             </td>
 
             {renderRow(atb, batb).reverse()}
