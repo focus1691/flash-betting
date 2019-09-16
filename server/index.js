@@ -253,7 +253,9 @@ const io = require('socket.io')(8000);
 io.on('connection', client => {
 
     client.on('market-subscription', data => {
-        const exchangeStream = new ExchangeStream("f2YkCUOQoPKnFJ2YHTsy8QPGeNKlTNH6qzaIJJY30oAO9hBoXgYZsDingcTEovcx");
-        exchangeStream.authenticate(data, client);
+        database.getToken(session.email).then((accessToken) => {
+            const exchangeStream = new ExchangeStream(accessToken);
+            exchangeStream.authenticate(data, client);
+        });
     }); 
 });

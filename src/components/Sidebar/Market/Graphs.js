@@ -9,7 +9,6 @@ const Graph = props => {
   useEffect(() => {
     if (props.marketOpen) {
 		const marketId = props.market.marketId.slice(2, props.market.marketId.length);
-		console.log(marketId);
 		const URI = `http://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId}&selectionId=${props.market.runners[props.selection].selectionId}&handicap=0`;
       setGraph(URI);
     }
@@ -18,7 +17,6 @@ const Graph = props => {
   return (
     <div>
       <div id="menu-graph">
-        {/* <img alt={"Chart"} src= */}
         <img alt={"Chart"} src={graph} />
       </div>
     </div>

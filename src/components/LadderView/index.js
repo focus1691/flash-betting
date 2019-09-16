@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 
 const Ladders = props => {
 
+  const tableRef = useRef(null);
+
+  useEffect(() => {
+    console.log(tableRef);
+  }, []);
+
   const createLadder = () => {
+
     return Object.keys(props.ladder).map(key => {
       const ladder = props.ladder[key].fullLadder;
       const ltp = props.ladder[key].ltp;
@@ -13,11 +20,12 @@ const Ladders = props => {
           {renderHeaderRow(props.runners[key])}
 
           <div className={"ladder"}>
-            <table>
+            <table ref={tableRef}>
               <tbody>
                 {renderPercentageRow(ltp)}
                 {renderData(ladder)}
                 {renderPriceRow()}
+                {window.scrollTo(0, 1500)}
               </tbody>
             </table>
           </div>
@@ -43,6 +51,7 @@ const Ladders = props => {
   };
 
   const renderPercentageRow = ltp => {
+    
     const bg =
       ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
 
@@ -68,20 +77,6 @@ const Ladders = props => {
           <td>{ladder[key].odds}</td>
           <td>{ladder[key].layMatched}</td>
           <td>{ladder[key].layProfit}</td>
-        </tr>
-      );
-    });
-  };
-
-  const renderTableData = data => {
-    return data.map(price => {
-      return (
-        <tr>
-          <td>{}</td>
-          <td>{Math.floor(price[1])}</td>
-          <td>{price[0]}</td>
-          <td>{Math.floor(price[1])}</td>
-          <td> </td>
         </tr>
       );
     });
@@ -158,6 +153,10 @@ const Ladders = props => {
   const renderUnMatchedBets = () => {
     return <></>;
   };
+
+  if (props.marketOpen && props.ladder) {
+    console.log(tableRef);
+  }
 
   return (
     <React.Fragment>

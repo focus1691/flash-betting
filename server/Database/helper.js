@@ -35,7 +35,6 @@ class DatabaseHelper extends Database {
                 res(doc.settings);
             })
             .catch(err => {
-                console.log(err);
                 rej(err);
             });
         });
@@ -49,7 +48,6 @@ class DatabaseHelper extends Database {
                 useFindAndModify: false
             }, (err, doc) => {
                 if (err) {
-                    console.log(err);
                     rej(404);
                 }
                 res(200);
@@ -68,6 +66,17 @@ class DatabaseHelper extends Database {
                 res(true);
             }).catch(err => {
                 rej(false);
+            });
+        });
+    }
+    getToken(user) {
+        return new Promise((res, rej) => {
+            User.findOne({
+                email: user
+            }).then(doc => {
+                res(doc.accessToken)
+            }).catch(err => {
+                rej(err);
             });
         });
     }

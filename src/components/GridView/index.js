@@ -142,7 +142,7 @@ const Grid = props => {
       const { atb, atl, batb, batl, ltp, tv } = getLadderData(
         props.ladder[key]
       );
-      
+
       const name = props.runners[key].runnerName;
       const number = props.runners[key].metadata.CLOTH_NUMBER + ". " || "";
       const bg =
@@ -153,23 +153,50 @@ const Grid = props => {
         : `${window.location.origin}/images/baseball-player.png`;
 
       return (
-        <tr>
-          <td
-            className="grid-runner-details"
-            onClick={e => {
-              props.onSelectRunner(props.runners[key].metadata);
-            }}
-          >
-            <img src={logo} alt={"Chart"} />
-            <span>{`${number}${name}`}</span>
-            <span style={{ background: bg }}>{ltp[0]}</span>
-            <span>{}</span>
-            <span>{Math.floor(tv[0]).toLocaleString()}</span>
-          </td>
+        <React.Fragment>
+          <tr>
+            <td
+              className="grid-runner-details"
+              onClick={e => {
+                props.onSelectRunner(props.runners[key].metadata);
+              }}
+            >
+              <img src={logo} alt={"Chart"} />
+              <span>{`${number}${name}`}</span>
+              <span style={{ background: bg }}>{ltp[0]}</span>
+              <span>{}</span>
+              <span>{Math.floor(tv[0]).toLocaleString()}</span>
+            </td>
 
-          {renderRow(atb, batb).reverse()}
-          {renderRow(atl, batl)}
-        </tr>
+            {renderRow(atb, batb).reverse()}
+            {renderRow(atl, batl)}
+          </tr>
+          <tr>
+            <td colSpan={11}>
+              <ul className={"grid-order-row"}>
+                <button>STAKE</button>
+                <button>2</button>
+                <button>4</button>
+                <button>6</button>
+                <button>8</button>
+                <button>10</button>
+                <button>12</button>
+                <button>14</button>
+                <button>0</button>
+
+                <button>Submit</button>
+
+                <img
+                  src={window.location.origin + "/icons/error.png"}
+                  alt={"Close"}
+                  onClick={() => {
+                    
+                  }}
+                />
+              </ul>
+            </td>
+          </tr>
+        </React.Fragment>
       );
     });
   };

@@ -127,3 +127,28 @@
 #grid-subheader th:nth-child(n+7) {
 	background: #FCC9D3;
 }
+
+/** GRID ORDER ROW **/
+
+.grid-order-row {
+	background: #DBEFFF;
+	margin: 0;
+}
+
+.grid-order-row li {
+	text-decoration: none;
+	float: left;
+	list-style-type: none;
+}
+
+.grid-order-row button {
+	background-color: Transparent;
+	background: #fff;
+    background-repeat: no-repeat;
+    border: 1px dashed;
+	padding: 5px;
+	margin: 2px;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
