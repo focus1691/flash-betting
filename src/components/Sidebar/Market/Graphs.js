@@ -7,9 +7,13 @@ const Graph = props => {
   );
 
   useEffect(() => {
-    if (props.marketOpen) {
-		const marketId = props.market.marketId.slice(2, props.market.marketId.length);
-		const URI = `http://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId}&selectionId=${props.market.runners[props.selection].selectionId}&handicap=0`;
+    if (props.marketOpen && props.market.runners[props.selection]) {
+      const marketId = props.market.marketId.slice(
+        2,
+        props.market.marketId.length
+      );
+      const selectionId = props.market.runners[props.selection].selectionId;
+      const URI = `http://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId}&selectionId=${selectionId}&handicap=0`;
       setGraph(URI);
     }
   }, [props.market]);

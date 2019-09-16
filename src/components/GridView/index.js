@@ -171,7 +171,7 @@ const Grid = props => {
             {renderRow(atb, batb).reverse()}
             {renderRow(atl, batl)}
           </tr>
-          <tr>
+          {/* <tr>
             <td colSpan={11}>
               <ul className={"grid-order-row"}>
                 <button>STAKE</button>
@@ -195,7 +195,7 @@ const Grid = props => {
                 />
               </ul>
             </td>
-          </tr>
+          </tr> */}
         </React.Fragment>
       );
     });
