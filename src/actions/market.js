@@ -1,3 +1,5 @@
+import { getThemeProps } from "@material-ui/styles";
+
 export const loadMarket = market => {
     return {
         type: "LOAD_MARKET",
@@ -23,5 +25,19 @@ export const setRunner = runner => {
     return {
         type: "SELECT_RUNNER",
         payload: runner
+    }
+}
+
+export const updateOrder = order => {
+    return {
+        type: "UPDATE_ORDER",
+        payload: order
+    }
+};
+
+export const toggleVisibility = settings => {
+    return {
+        type: "TOGGLE_ORDER_VISIBILITY",
+        payload: settings
     }
 }

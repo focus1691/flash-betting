@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
+import classnames from "classnames";
 
 const Grid = props => {
   const renderTableHeader = () => {
@@ -106,14 +107,14 @@ const Grid = props => {
     return arr;
   };
 
-  const renderRow = (betOdds, bestOdds) => {
+  const renderRow = (betOdds, bestOdds, key, backLay) => {
     const rows = [];
     for (var i = 0; i < betOdds.length; i++) {
-      rows.push(createCell(betOdds[i][0], betOdds[i][1]));
+      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
       if (i === 4) break;
     }
     while (rows.length < 5) {
-      rows.push(createCell("", ""));
+      rows.push(createCell("", "", key, backLay));
     }
 
     return rows;
@@ -121,9 +122,19 @@ const Grid = props => {
 
   const test = (e, td) => {};
 
-  const createCell = (odds, matched) => {
+  const createCell = (odds, matched, key, backLay) => {
     return (
-      <td className="grid-cell">
+      <td
+        className="grid-cell"
+        onClick={() => {
+          props.onUpdateOrder({
+            id: key,
+            visible: true,
+            backLay: backLay,
+            price: odds
+          });
+        }}
+      >
         <span>{odds}</span>
         <span>{matched}</span>
       </td>
@@ -154,6 +165,19 @@ const Grid = props => {
         ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
         : `${window.location.origin}/images/baseball-player.png`;
 
+      const orderProps =
+        props.runners[key].order.backLay === 0
+          ? {
+              bg: "#DBEFFF",
+              text: "STAKE",
+              text2: "BACK"
+            }
+          : {
+              bg: "#FEE9EE",
+              text: "LIABILITY",
+              text2: "LAY"
+            };
+
       return (
         <React.Fragment>
           <tr>
@@ -163,41 +187,76 @@ const Grid = props => {
                 props.onSelectRunner(props.runners[key].metadata);
               }}
             >
-              <img src={logo} alt={"Chart"} />
+              <img src={logo} alt={"Runner"} />
               <span>{`${number}${name}`}</span>
               <span style={{ background: bg }}>{ltp[0] ? ltp[0] : ""}</span>
               <span>{}</span>
               <span>{tv[0] ? Math.floor(tv[0]).toLocaleString() : ""}</span>
             </td>
 
-            {renderRow(atb, batb).reverse()}
-            {renderRow(atl, batl)}
+            {renderRow(atb, batb, key, 0).reverse()}
+            {renderRow(atl, batl, key, 1)}
           </tr>
-          {/* <tr>
-            <td colSpan={11}>
-              <ul className={"grid-order-row"}>
-                <button>STAKE</button>
-                <button>2</button>
-                <button>4</button>
-                <button>6</button>
-                <button>8</button>
-                <button>10</button>
-                <button>12</button>
-                <button>14</button>
-                <button>0</button>
-
-                <button>Submit</button>
-
-                <img
-                  src={window.location.origin + "/icons/error.png"}
-                  alt={"Close"}
-                  onClick={() => {
-                    
+          <tr>
+            {props.runners[key].order.visible ? (
+              <td colSpan={11}>
+                <ul
+                  style={{
+                    background: orderProps.bg
                   }}
-                />
-              </ul>
-            </td>
-          </tr> */}
+                  className={"grid-order-row"}
+                >
+                  <li onClick={() => {
+
+                  }}>
+                  <img src={`${window.location.origin}/icons/change.png`} alt={"Toggle"} />
+                  {orderProps.text}
+                  </li>
+                  <li key={`${2}${name}`}>2</li>
+                  <li key={`${4}${name}`}>4</li>
+                  <li key={`${6}${name}`}>6</li>
+                  <li key={`${8}${name}`}>8</li>
+                  <li key={`${10}${name}`}>10</li>
+                  <li key={`${12}${name}`}>12</li>
+                  <li key={`${14}${name}`}>14</li>
+                  <li key={`${0}${name}`}>0</li>
+                  <span>{orderProps.text2}</span>
+
+                  <input type="text" name="stake" value={4}></input>
+                  <span>@</span>
+                  <input
+                    type="number"
+                    name="price"
+                    min="1"
+                    max="10000"
+                    value={props.runners[key].order.price}
+                  ></input>
+
+                  <button className={"execute-order-btn"}>Submit</button>
+
+                  <span className={"grid-img-container"}>
+                    <a
+                      href={"#"}
+                      onClick={() => {
+                        return false;
+                      }}
+                    >
+                      <img
+                        src={window.location.origin + "/icons/error.png"}
+                        alt={"Close"}
+                        onClick={() => {
+                          props.onUpdateOrderVisibility({
+                            id: key,
+                            visible: false
+                          });
+                        }}
+                      />
+                    </a>
+                  </span>
+                </ul>
+              </td>
+            ) : null}
+          </tr>
         </React.Fragment>
       );
     });
@@ -228,7 +287,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectRunner: runner => dispatch(actions.setRunner(runner))
+    onSelectRunner: runner => dispatch(actions.setRunner(runner)),
+    onUpdateRunners: runners => dispatch(actions.loadRunners(runners)),
+    onUpdateOrder: order => dispatch(actions.updateOrder(order)),
+    onUpdateOrderVisibility: settings =>
+      dispatch(actions.toggleVisibility(settings))
   };
 };
 

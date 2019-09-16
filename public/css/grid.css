@@ -22,7 +22,7 @@
 	border: 1px solid #D6D6D6;
 }
 
-.grid-view td:nth-child(1){width: 30%;}
+.grid-view td:nth-child(1) {width: 30%;}
 .grid-view td:nth-child(6){background-color: #BCE4FC;}
 .grid-view td:nth-child(7){background-color: #FCC9D3;}
 
@@ -55,7 +55,10 @@
 
 .grid-runner-details {
 	padding: 5px;
-	cursor: url('../icons/question.png'), auto;
+}
+
+.grid-runner-details img {
+	cursor: url('../icons/faq.png'), auto;
 }
 
 .grid-runner-details span:nth-child(2) {
@@ -131,24 +134,49 @@
 /** GRID ORDER ROW **/
 
 .grid-order-row {
-	background: #DBEFFF;
 	margin: 0;
+	display: block;
+	font-size: small;
 }
+
 
 .grid-order-row li {
 	text-decoration: none;
 	float: left;
 	list-style-type: none;
-}
-
-.grid-order-row button {
+	height: 100%;
 	background-color: Transparent;
 	background: #fff;
     background-repeat: no-repeat;
     border: 1px dashed;
-	padding: 5px;
-	margin: 2px;
+	margin: 0 5px 0 0;
+	width: 5%;
     cursor: pointer;
     overflow: hidden;
     outline: none;
+}
+
+.grid-order-row li:first-child {
+	width: 10%;
+}
+
+.grid-img-container {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.grid-order-row img {
+	vertical-align: middle;
+}
+
+.grid-order-row input[type=text] {
+	width: 6%;
+}
+
+.grid-order-row input[type=number] {
+	width: 6%;
+}
+
+.execute-order-btn {
 }

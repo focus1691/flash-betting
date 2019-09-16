@@ -1,5 +1,5 @@
 const initialState = {
-    view: 'LadderView',
+    view: 'GridView',
     fullscreen: false,
     trainingBalance: 1000,
     sounds: false,

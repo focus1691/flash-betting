@@ -98,11 +98,19 @@ const App = props => {
 
             const runners = {};
             for (let i = 0; i < data.result[0].runners.length; i++) {
-              runners[data.result[0].runners[i].selectionId] =
-                data.result[0].runners[i];
+
+              let selectionId = data.result[0].runners[i].selectionId;
+              runners[selectionId] = data.result[0].runners[i];
+
+              runners[selectionId].order = {
+                visible: false,
+                backLay: 0,
+                stake: 2,
+                price: 0
+              }
             }
 
-            props.onReceiveRunners(runners);
+            props.onUpdateRunners(runners);
             props.onReceiveMarket(data.result[0]);
             props.onSelectRunner(data.result[0].runners[0].metadata);
             props.socket.emit("market-subscription", {
@@ -307,7 +315,7 @@ const mapDispatchToProps = dispatch => {
     onToggleRules: settings => dispatch(actions.toggleRules(settings)),
     onReceiveMarket: market => dispatch(actions2.loadMarket(market)),
     onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
-    onReceiveRunners: runners => dispatch(actions2.loadRunners(runners)),
+    onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),
     onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders))
   };
 };
