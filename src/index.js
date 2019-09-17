@@ -49,7 +49,7 @@ ReactDOM.render(
       <BrowserRouter>
         <Switch>
           <Route path="/" exact component={Login} />
-          <Route path="/dashboard" exact component={App} />
+          <Route path="/dashboard" component={App} />
           <Route path="/authentication" exact component={AuthRedirect} />
           <Route path="/validation" exact component={OAuthRedirect} />
           <Route path="/logout" exact component={Logout} />

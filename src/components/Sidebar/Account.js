@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../actions/account";
@@ -6,24 +6,28 @@ import FlagIcon from "./FlagIcon";
 import Clock from "./Clock";
 
 const Account = props => {
+  const [loggedIn, setLoggedIn] = useState(true);
+
   useEffect(() => {
     fetch(`/api/get-account-details`)
       .then(res => res.json())
-      .then(details => props.onReceiveAccountDetails(details));
+      .then(details => props.onReceiveAccountDetails(details))
+      .catch(err => setLoggedIn(false));
 
     fetch(`/api/get-account-balance`)
       .then(res => res.json())
-      .then(account => props.onReceiveBalance(account.balance));
+      .then(account => props.onReceiveBalance(account.balance))
+      .catch(err => setLoggedIn(false));
   }, []);
 
-  if (!props.loggedIn) {
+  if (!loggedIn) {
     return <Redirect to="/logout" />;
   } else {
     return (
       <div id="sidebar-header">
         <p id="flag-name" paragraph>
           {props.name}
-          <button id="logout" onClick={e => props.onLogout(false)}>
+          <button id="logout" onClick={e => setLoggedIn(false)}>
             <img
               alt={"Logout"}
               src={window.location.origin + "/icons/logout.png"}
@@ -55,14 +59,12 @@ const mapStateToProps = state => {
     currencyCode: state.account.currencyCode,
     localeCode: state.account.localeCode,
     balance: state.account.balance,
-    time: state.account.time,
-    loggedIn: state.account.loggedIn
+    time: state.account.time
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLogout: loggedIn => dispatch(actions.setLoggedIn(loggedIn)),
     onReceiveAccountDetails: details =>
       dispatch(actions.setAccountDetails(details)),
     onReceiveBalance: balance => dispatch(actions.setBalance(balance)),
