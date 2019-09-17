@@ -1,31 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
+import * as actions from "../actions/account";
 
 const Logout = props => {
+  useEffect(() => {
+    fetch("/api/logout")
+      .then(res => res.json())
+      .then(logout => {
+        localStorage.removeItem("sessionKey");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("expiresIn");
+        props.onLogout(false);
+      });
+  }, []);
 
-    const [loggedIn, setLoggedIn] = useState(true);
+  return (
+    <>
+      {props.loggedIn ? null : <Redirect to="/" />}
+      <section>Logging out...</section>
+    </>
+  );
+};
 
-    useEffect(() => {
-        fetch('/api/logout')
-        .then(res => res.json())
-        .then(logout => {
-            console.log(logout);
-            localStorage.removeItem("sessionKey");
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("expiresIn");
-            setLoggedIn(false);
-        });
+const mapStateToProps = state => {
+  return {
+    loggedIn: state.account.loggedIn
+  };
+};
 
-    });
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogout: loggedIn => dispatch(actions.setLoggedIn(loggedIn))
+  };
+};
 
-    return (
-        <>
-        { loggedIn === false ? <Redirect to='/login' /> : null }
-        <section>Logging out...</section>
-        </>
-      );
-}
-
-export default connect()(Logout);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Logout);

@@ -14,11 +14,12 @@ const Account = props => {
     fetch(`/api/get-account-balance`)
       .then(res => res.json())
       .then(account => props.onReceiveBalance(account.balance));
-  });
+  }, []);
 
-  return (
-    <>
-      {props.loggedIn ? null : <Redirect to="/logout" />}
+  if (!props.loggedIn) {
+    return <Redirect to="/logout" />;
+  } else {
+    return (
       <div id="sidebar-header">
         <p id="flag-name" paragraph>
           {props.name}
@@ -30,8 +31,7 @@ const Account = props => {
           </button>
         </p>
         <p paragraph>
-          <FlagIcon code={props.countryCode || "gb"} />
-					{" "}
+          <FlagIcon code={props.countryCode || "gb"} />{" "}
           {new Intl.NumberFormat(
             props.localeCode
               ? `${props.localeCode}-${props.localeCode.toUpperCase()}`
@@ -44,8 +44,8 @@ const Account = props => {
         </p>
         <Clock />
       </div>
-    </>
-  );
+    );
+  }
 };
 
 const mapStateToProps = state => {
@@ -62,7 +62,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLogout: loggedIn => dispatch(actions.setLogout(loggedIn)),
+    onLogout: loggedIn => dispatch(actions.setLoggedIn(loggedIn)),
     onReceiveAccountDetails: details =>
       dispatch(actions.setAccountDetails(details)),
     onReceiveBalance: balance => dispatch(actions.setBalance(balance)),

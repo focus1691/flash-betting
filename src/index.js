@@ -48,35 +48,8 @@ ReactDOM.render(
     <SocketContext.Provider value={socket}>
       <BrowserRouter>
         <Switch>
-          <Route
-            path="/"
-            exact
-            render={() =>
-              !!localStorage.getItem("sessionKey") &&
-              ! localStorage.getItem("accessToken") ? (
-                <Redirect to="/authentication" />
-              ) : 
-              !!localStorage.getItem("sessionKey") &&
-              !!localStorage.getItem("accessToken") ? (
-                <Redirect to="/dashboard" />
-              ) : (
-                <Login />
-              )
-            }
-          />
-
-          <Route
-            path="/dashboard"
-            exact
-            render={() =>
-              !localStorage.getItem("sessionKey") ||
-              !localStorage.getItem("accessToken") ? (
-                <Redirect to="/" />
-              ) : (
-                <App />
-              )
-            }
-          />
+          <Route path="/" exact component={Login} />
+          <Route path="/dashboard" exact component={App} />
           <Route path="/authentication" exact component={AuthRedirect} />
           <Route path="/validation" exact component={OAuthRedirect} />
           <Route path="/logout" exact component={Logout} />

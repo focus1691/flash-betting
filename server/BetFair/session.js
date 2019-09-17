@@ -159,7 +159,7 @@ class BetfairSession {
 
     logout(cb = ()=> {}) {
         return new Promise((res, rej) => {
-            auth.logout(this.sessionKey, (err, res) => {
+            auth.logout(this.sessionKey, (err, result) => {
                 if (err) rej(this);
                 if (result) {
                     this.sessionKey = null;

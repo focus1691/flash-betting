@@ -20,9 +20,9 @@ export const setTime = time => {
     }
 };
 
-export const setLogout = loggedIn => {
+export const setLoggedIn = loggedIn => {
     return {
-        type: "LOG_OUT",
+        type: "LOG_IN",
         payload: loggedIn
     }
 }

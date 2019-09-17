@@ -1,5 +1,6 @@
 export default () => {
   const Ladders = {};
+  var k;
   // 100 - 1000
   for (k = 1000; k >= 100; k -= 10) {
     let priceKey = (Math.round(k * 100) / 100).toFixed(2);
@@ -49,7 +50,7 @@ export default () => {
   }
 
   // 2 - 3
-  for (var k = 3; k >= 2; k -= 0.02) {
+  for (k = 3; k >= 2; k -= 0.02) {
     let priceKey = (Math.round(k * 100) / 100).toFixed(2);
     Ladders[priceKey] = createDataPoints(priceKey);
   }

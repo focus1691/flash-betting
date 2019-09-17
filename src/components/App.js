@@ -18,14 +18,12 @@ const App = props => {
    */
   let sessionKey = localStorage.getItem("sessionKey");
   let email = localStorage.getItem("username");
+
   fetch(
     `/api/load-session?sessionKey=${encodeURIComponent(
       sessionKey
     )}&email=${encodeURIComponent(email)}`
   );
-
-  var test = SearchInsert([5, 7, 8, 9, 11], 7.5);
-  console.log(test);
 
   useEffect(() => {
     fetch(`/api/get-user-settings`)

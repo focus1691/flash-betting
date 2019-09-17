@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
+import * as actions from "../actions/account";
 
 const OAuthRedirect = props => {
 
-    const [accessToken, setAccessToken] = useState(null);
 
     const getQueryVariable = variable => {
         var query = window.location.search.substring(1);
@@ -17,17 +17,15 @@ const OAuthRedirect = props => {
     };
 
     const setTokenInformation = (code, status) => {
-        console.log('set token info');
         if (code && status === 200) {
-            console.log(`session status = 200`);
             fetch(`/api/request-access-token?code=${encodeURIComponent(code)}`)
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 localStorage.setItem("expiresIn", data.expiresIn);
-                setAccessToken(data.accessToken);
+                // setAccessToken(data.accessToken);
+                props.onLogin(true);
             });
         }
     };
@@ -44,11 +42,27 @@ const OAuthRedirect = props => {
         }
     });
 
-    if (!!accessToken) {
+    if (props.loggedIn) {
         return <Redirect to='/dashboard' />
+    } else {
+        return (<section>Redirecting...</section>);
     }
-
-    return (<section>Redirecting...</section>);
 };
 
-export default connect()(OAuthRedirect);
+const mapStateToProps = state => {
+    return {
+      loggedIn: state.account.loggedIn
+    };
+  };
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+      onLogin: loggedIn => dispatch(actions.setLoggedIn(loggedIn))
+    };
+  };
+  
+  export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(OAuthRedirect);
+  
