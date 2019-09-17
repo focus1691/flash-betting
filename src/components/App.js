@@ -24,6 +24,9 @@ const App = props => {
     )}&email=${encodeURIComponent(email)}`
   );
 
+  var test = SearchInsert([5, 7, 8, 9, 11], 7.5);
+  console.log(test);
+
   useEffect(() => {
     fetch(`/api/get-user-settings`)
       .then(res => res.json())
@@ -101,7 +104,8 @@ const App = props => {
             {},
             props.ladders[key].fullLadder
           );
-          /// Copy the full ladder 1.01-1000 and update values ATB
+
+          // Update the atb values
           if (data.rc[i].atb) {
             for (j = 0; j < data.rc[i].atb.length; j++) {
               let priceKey = data.rc[i].atb[j][0].toFixed(2);
@@ -109,22 +113,25 @@ const App = props => {
               ladders[key].fullLadder[priceKey].backMatched =
                 data.rc[i].atb[j][1];
             }
-            // let newAtb = ladders[key].atb;
-            // let l;
-            // for (j = 0; j < data.rc[i].atb.length; j++) {
-            //   for (l = 0; l < newAtb.length; l++) {
-            //     if (data.rc[i].atb[j][0] == ladders[key].atb[l]) {
+            let newAtb = ladders[key].atb;
+            for (j = 0; j < data.rc[i].atb.length; j++) {
+              const odds = data.rc[i].atb[j][0];
+              const matched = data.rc[i].atb[j][1];
 
-            //     }
-            //     else if (data.rc[i].atb[j][0] > ladders[key].atb[l]) {
-
-            //     }
-            //   }
-            // }
-            // ladders[key].atb
+              const index = SearchInsert(newAtb, parseInt(odds));
+              if (odds == newAtb[index]) {
+                if (matched == 0) {
+                  newAtb.splice(index, 1);
+                } else {
+                  newAtb[index][1] = matched;
+                }
+              } else {
+                newAtb.splice(index, 0, data.rc[i].atb[j]);
+              }
+            }
           }
 
-          /// Copy the full ladder 1.01-1000 and update values ATL
+          // Update the atl values
           if (data.rc[i].atl) {
             for (j = 0; j < data.rc[i].atl.length; j++) {
               let priceKey = data.rc[i].atl[j][0].toFixed(2);

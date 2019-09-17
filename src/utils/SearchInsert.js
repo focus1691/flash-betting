@@ -11,7 +11,7 @@ export default (nums, target) => {
         // Start in middle, divide and conquer.
         while (start < end) {
             // Get value at current index.
-            var value = nums[index];
+            var value = nums[index][0];
             
             if (value === target) {
                 // Found our target.
