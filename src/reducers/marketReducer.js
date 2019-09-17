@@ -3,7 +3,8 @@ const initialState = {
   currentMarket: {},
   runnerSelection: 0,
   runners: {},
-  ladder: {}
+  ladder: {},
+  oneClickOn: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -16,6 +17,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, runners: action.payload };
     case "SELECT_RUNNER":
       return { ...state, runnerSelection: action.payload };
+    case "TOGGLE_ONE_CLICK":
+        return { ...state, oneClickOn: action.payload };
     case "UPDATE_ORDER":
       return {
         ...state,

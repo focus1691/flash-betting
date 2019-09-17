@@ -104,7 +104,6 @@ const App = props => {
 
               runners[selectionId].order = {
                 visible: false,
-                oneClickOn: false,
                 backLay: 0,
                 stakeLiability: 0,
                 stake: 2,

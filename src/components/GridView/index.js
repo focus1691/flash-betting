@@ -1,15 +1,26 @@
-import React from "react";
+import React, { createRef } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
-import classnames from "classnames";
 
 const Grid = props => {
+  const oneClickRef = createRef();
+
   const renderTableHeader = () => {
     return (
       <React.Fragment>
         <tr id="grid-header">
           <th colSpan="11">
-            <button>Turn One click on</button>
+            <button
+              id="one-click-btn"
+              ref={oneClickRef}
+              onClick={e => {
+                props.onToggleOneClick(!props.oneClickOn);
+                const node = oneClickRef.current;
+                props.oneClickOn ? node.blur() : node.focus();
+              }}
+            >
+              Turn One click on
+            </button>
             <span className={"grid-video"}>
               {" "}
               <img
@@ -24,6 +35,31 @@ const Grid = props => {
                   props.market.event.name
                 : "No Event Selected"}
             </h1>
+            {props.oneClickOn ? (
+              <React.Fragment>
+                <div id="one-click-stake">
+                  <button>Stake</button>
+                  <button>2</button>
+                  <button>4</button>
+                  <button>6</button>
+                  <button>8</button>
+                  <button>10</button>
+                  <button>12</button>
+                  <button>14</button>
+                </div>
+                <br />
+                <div id="one-click-liability">
+                  <button>Liability</button>
+                  <button>5</button>
+                  <button>7.50</button>
+                  <button>10</button>
+                  <button>12.50</button>
+                  <button>15</button>
+                  <button>17.50</button>
+                  <button>20</button>
+                </div>
+              </React.Fragment>
+            ) : null}
             {props.marketOpen ? (
               <div className={"in-play"}>
                 <span className={"in-play"}>Going in-play</span>
@@ -127,8 +163,6 @@ const Grid = props => {
 
     return rows;
   };
-
-  const test = (e, td) => {};
 
   const createCell = (odds, matched, key, backLay) => {
     return (
@@ -238,7 +272,10 @@ const Grid = props => {
                   <li
                     key={`${orderProps.prices[0]}${name}`}
                     onClick={() => {
-                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[0] });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: orderProps.prices[0]
+                      });
                     }}
                   >
                     {orderProps.prices[0]}
@@ -246,7 +283,10 @@ const Grid = props => {
                   <li
                     key={`${orderProps.prices[1]}${name}`}
                     onClick={() => {
-                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[1] });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: orderProps.prices[1]
+                      });
                     }}
                   >
                     {orderProps.prices[1]}
@@ -254,7 +294,10 @@ const Grid = props => {
                   <li
                     key={`${orderProps.prices[2]}${name}`}
                     onClick={() => {
-                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[2] });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: orderProps.prices[2]
+                      });
                     }}
                   >
                     {orderProps.prices[2]}
@@ -262,7 +305,10 @@ const Grid = props => {
                   <li
                     key={`${orderProps.prices[3]}${name}`}
                     onClick={() => {
-                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[3] });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: orderProps.prices[3]
+                      });
                     }}
                   >
                     {orderProps.prices[3]}
@@ -270,7 +316,10 @@ const Grid = props => {
                   <li
                     key={`${orderProps.prices[4]}${name}`}
                     onClick={() => {
-                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[4] });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: orderProps.prices[4]
+                      });
                     }}
                   >
                     {orderProps.prices[4]}
@@ -278,7 +327,10 @@ const Grid = props => {
                   <li
                     key={`${orderProps.prices[5]}${name}`}
                     onClick={() => {
-                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[5] });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: orderProps.prices[5]
+                      });
                     }}
                   >
                     {orderProps.prices[5]}
@@ -286,7 +338,10 @@ const Grid = props => {
                   <li
                     key={`${orderProps.prices[6]}${name}`}
                     onClick={() => {
-                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[6] });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: orderProps.prices[6]
+                      });
                     }}
                   >
                     {orderProps.prices[6]}
@@ -310,9 +365,17 @@ const Grid = props => {
                     {orderProps.text2}
                   </span>
 
-                  <input type="text" name="stake" value={props.runners[key].order.stake} onChange={e => {
-                    props.onUpdateOrderValue({id: key, stake: e.target.value});
-                  }}></input>
+                  <input
+                    type="text"
+                    name="stake"
+                    value={props.runners[key].order.stake}
+                    onChange={e => {
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: e.target.value
+                      });
+                    }}
+                  ></input>
                   <span>@</span>
                   <input
                     type="number"
@@ -321,7 +384,10 @@ const Grid = props => {
                     max="10000"
                     value={props.runners[key].order.price}
                     onChange={e => {
-                      props.onUpdateOrderPrice({id: key, price: e.target.value});
+                      props.onUpdateOrderPrice({
+                        id: key,
+                        price: e.target.value
+                      });
                     }}
                   ></input>
 
@@ -369,6 +435,7 @@ const Grid = props => {
 
 const mapStateToProps = state => {
   return {
+    oneClickOn: state.market.oneClickOn,
     currentEvent: state.sports.currentSport.currentEvent,
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
@@ -389,7 +456,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.toggleVisibility(settings)),
     onToggleStakeAndLiability: value =>
       dispatch(actions.toggleStakeAndLiability(value)),
-    onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value))
+    onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value)),
+    onToggleOneClick: active => dispatch(actions.toggleOneClick(active))
   };
 };
 

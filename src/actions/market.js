@@ -26,6 +26,13 @@ export const setRunner = runner => {
   };
 };
 
+export const toggleOneClick = active => {
+    return {
+        type: "TOGGLE_ONE_CLICK",
+        payload: active
+    }
+}
+
 export const updateOrder = order => {
   return {
     type: "UPDATE_ORDER",

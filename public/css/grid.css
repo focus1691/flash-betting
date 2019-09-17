@@ -99,12 +99,47 @@
 	font-weight: bold;
 }
 
-#grid-header button:nth-child(1) {
+#one-click-btn {
 	float: right;
 	background-color: Transparent;
 	background-repeat: no-repeat;
+	border: 2px solid;
+	border-color: #000;
 	color: #fff;
 	padding: 5px;
+}
+
+#one-click-btn:focus{border-color:red;}
+
+#one-click-stake button, #one-click-liability button {
+	border: 2px solid #000;
+	border-radius: 8px;
+	padding: 5px;
+	margin: 5px;
+	font: inherit;
+	font-size: 0.7em;
+	font-weight: bold;
+	cursor: pointer;
+	outline: inherit;
+}
+
+#one-click-stake button:first-child, #one-click-liability button:first-child {
+	width: 10%;
+}
+
+#one-click-stake button:not(:first-child), #one-click-liability button:not(:first-child) {
+	color: #000;
+	font-weight: bold;
+	background-repeat: no-repeat;
+	width: 6%;
+}
+
+#one-click-stake button {
+	background: #DBEFFF;
+}
+
+#one-click-liability button {
+	background: #FEE9EE;
 }
 
 .in-play {
