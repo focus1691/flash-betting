@@ -78,7 +78,7 @@ const Grid = props => {
                 />
               </div>
             )}
-            <span>{props.marketOpen ? sumMatchedBets() : null}</span>
+            <span id="matched-bets">{props.marketOpen ? sumMatchedBets() : null}</span>
           </th>
         </tr>
         <tr id="grid-subheader">

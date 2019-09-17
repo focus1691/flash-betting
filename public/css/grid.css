@@ -157,6 +157,11 @@
 	padding: 5px;
 }
 
+#matched-bets {
+	float: right;
+	padding-inline-end: 5px;
+}
+
 #grid-subheader {
 	border-collapse: collapse;
     margin: 0;
