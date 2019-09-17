@@ -1,6 +1,7 @@
 import React, { createRef } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
+import { sortAsc, sortDes } from "../../utils/Sort";
 
 const Grid = props => {
   const oneClickRef = createRef();
@@ -131,24 +132,6 @@ const Grid = props => {
       0
     );
     return sum ? `Matched: ${Math.floor(sum).toLocaleString()}` : "";
-  };
-
-  const sortDes = arr => {
-    if (arr.length <= 0) return [];
-
-    arr = arr.sort(function(a, b) {
-      return b[0] - a[0];
-    });
-    return arr;
-  };
-
-  const sortAsc = arr => {
-    if (arr.length <= 0) return [];
-
-    arr = arr.sort(function(a, b) {
-      return a[0] - b[0];
-    });
-    return arr;
   };
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {

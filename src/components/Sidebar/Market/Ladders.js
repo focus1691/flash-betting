@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
+import { sortAsc, sortDes } from "../../../utils/Sort";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -22,24 +23,6 @@ const useStyles = makeStyles(theme => ({
 
 const Ladder = props => {
   const classes = useStyles();
-
-  const sortAsc = arr => {
-    if (arr.length <= 0) return [];
-
-    arr = arr.sort(function(a, b) {
-      return a[0] - b[0];
-    });
-    return arr;
-  };
-
-  const sortDes = arr => {
-    if (arr.length <= 0) return [];
-
-    arr = arr.sort(function(a, b) {
-      return b[0] - a[0];
-    });
-    return arr;
-  };
 
   const getLadderData = ladder => {
     const data = {
