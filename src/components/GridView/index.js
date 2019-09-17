@@ -169,12 +169,14 @@ const Grid = props => {
       <td
         className="grid-cell"
         onClick={() => {
-          props.onUpdateOrder({
-            id: key,
-            visible: true,
-            backLay: backLay,
-            price: odds
-          });
+          if (!props.oneClickOn) {
+            props.onUpdateOrder({
+              id: key,
+              visible: true,
+              backLay: backLay,
+              price: odds
+            });
+          }
         }}
       >
         <span>{odds}</span>
