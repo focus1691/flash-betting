@@ -7,6 +7,7 @@ import HomeView from "./HomeView/";
 import LadderView from "./LadderView/";
 import GridView from "./GridView/";
 import SocketContext from "../SocketContext";
+import { Helmet } from "react-helmet";
 
 const App = props => {
   /**
@@ -279,6 +280,15 @@ const App = props => {
   return (
     <div className="horizontal-scroll-wrapper">
       <div className="root">
+        {props.marketOpen ? (
+          <Helmet>
+            <title>
+              {new Date(props.market.event.openDate).toLocaleTimeString() +
+                " " +
+                props.market.event.name}
+            </title>
+          </Helmet>
+        ) : null}
         <Siderbar />
         <main className="content">{renderView()}</main>
       </div>
