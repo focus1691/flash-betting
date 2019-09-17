@@ -22,13 +22,70 @@ const reducer = (state = initialState, action) => {
         runners: {
           ...state.runners,
           [action.payload.id]: {
-              ...state.runners[action.payload.id],
-              order: {
-                  ...state.runners[action.payload.id].order,
-                  backLay: action.payload.backLay,
-                  price: action.payload.price,
-                  visible: action.payload.visible
-              }
+            ...state.runners[action.payload.id],
+            order: {
+              ...state.runners[action.payload.id].order,
+              backLay: action.payload.backLay,
+              stake: action.payload.stake,
+              price: action.payload.price,
+              visible: action.payload.visible
+            }
+          }
+        }
+      };
+      case "UPDATE_ORDER_VALUE":
+      return {
+        ...state,
+        runners: {
+          ...state.runners,
+          [action.payload.id]: {
+            ...state.runners[action.payload.id],
+            order: {
+              ...state.runners[action.payload.id].order,
+              stake: action.payload.stake
+            }
+          }
+        }
+      };
+    case "UPDATE_ORDER_PRICE":
+      return {
+        ...state,
+        runners: {
+          ...state.runners,
+          [action.payload.id]: {
+            ...state.runners[action.payload.id],
+            order: {
+              ...state.runners[action.payload.id].order,
+              price: action.payload.price
+            }
+          }
+        }
+      };
+    case "TOGGLE_STAKE_AND_LIABILITY":
+      return {
+        ...state,
+        runners: {
+          ...state.runners,
+          [action.payload.id]: {
+            ...state.runners[action.payload.id],
+            order: {
+              ...state.runners[action.payload.id].order,
+              stakeLiability: action.payload.stakeLiability
+            }
+          }
+        }
+      };
+      case "TOGGLE_BACK_AND_LAY":
+      return {
+        ...state,
+        runners: {
+          ...state.runners,
+          [action.payload.id]: {
+            ...state.runners[action.payload.id],
+            order: {
+              ...state.runners[action.payload.id].order,
+              backLay: action.payload.backLay
+            }
           }
         }
       };
@@ -38,11 +95,11 @@ const reducer = (state = initialState, action) => {
         runners: {
           ...state.runners,
           [action.payload.id]: {
-              ...state.runners[action.payload.id],
-              order: {
-                  ...state.runners[action.payload.id].order,
-                  visible: action.payload.visible
-              }
+            ...state.runners[action.payload.id],
+            order: {
+              ...state.runners[action.payload.id].order,
+              visible: action.payload.visible
+            }
           }
         }
       };

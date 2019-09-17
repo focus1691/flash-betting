@@ -98,16 +98,17 @@ const App = props => {
 
             const runners = {};
             for (let i = 0; i < data.result[0].runners.length; i++) {
-
               let selectionId = data.result[0].runners[i].selectionId;
               runners[selectionId] = data.result[0].runners[i];
 
               runners[selectionId].order = {
                 visible: false,
+                oneClickOn: false,
                 backLay: 0,
+                stakeLiability: 0,
                 stake: 2,
                 price: 0
-              }
+              };
             }
 
             props.onUpdateRunners(runners);
@@ -127,11 +128,10 @@ const App = props => {
      * @param {obj} data The market change message data: rc: [(atb, atl, batb, batl, tv, ltp, id)]
      */
     props.socket.on("mcm", data => {
-
       const ladders = {};
 
       const length = data.rc.length;
-      
+
       for (var i = 0; i < length; i++) {
         console.log(data.rc[i]);
         let key = [data.rc[i].id];
@@ -178,7 +178,7 @@ const App = props => {
           var k;
 
           console.log(ladders[key]);
- 
+
           // 100 - 1000
           for (k = 1000; k >= 100; k -= 10) {
             let priceKey = (Math.round(k * 100) / 100).toFixed(2);

@@ -174,17 +174,22 @@ const Grid = props => {
         : `${window.location.origin}/images/baseball-player.png`;
 
       const orderProps =
-        props.runners[key].order.backLay === 0
+        props.runners[key].order.stakeLiability === 0
           ? {
               bg: "#DBEFFF",
               text: "STAKE",
-              text2: "BACK"
+              text2: "BACK",
+              prices: [2, 4, 6, 8, 10, 12, 14]
             }
           : {
               bg: "#FEE9EE",
               text: "LIABILITY",
-              text2: "LAY"
+              text2: "LAY",
+              prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
             };
+
+      orderProps.text2 =
+        props.runners[key].order.backLay === 0 ? "BACK" : "LAY";
 
       return (
         <React.Fragment>
@@ -214,24 +219,100 @@ const Grid = props => {
                   }}
                   className={"grid-order-row"}
                 >
-                  <li onClick={() => {}}>
+                  <li
+                    onClick={() => {
+                      let stakeLiability =
+                        props.runners[key].order.stakeLiability === 0 ? 1 : 0;
+                      props.onToggleStakeAndLiability({
+                        id: key,
+                        stakeLiability: stakeLiability
+                      });
+                    }}
+                  >
                     <img
                       src={`${window.location.origin}/icons/change.png`}
                       alt={"Toggle"}
                     />
                     {orderProps.text}
                   </li>
-                  <li key={`${2}${name}`}>2</li>
-                  <li key={`${4}${name}`}>4</li>
-                  <li key={`${6}${name}`}>6</li>
-                  <li key={`${8}${name}`}>8</li>
-                  <li key={`${10}${name}`}>10</li>
-                  <li key={`${12}${name}`}>12</li>
-                  <li key={`${14}${name}`}>14</li>
-                  <li key={`${0}${name}`}>0</li>
-                  <span>{orderProps.text2}</span>
+                  <li
+                    key={`${orderProps.prices[0]}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[0] });
+                    }}
+                  >
+                    {orderProps.prices[0]}
+                  </li>
+                  <li
+                    key={`${orderProps.prices[1]}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[1] });
+                    }}
+                  >
+                    {orderProps.prices[1]}
+                  </li>
+                  <li
+                    key={`${orderProps.prices[2]}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[2] });
+                    }}
+                  >
+                    {orderProps.prices[2]}
+                  </li>
+                  <li
+                    key={`${orderProps.prices[3]}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[3] });
+                    }}
+                  >
+                    {orderProps.prices[3]}
+                  </li>
+                  <li
+                    key={`${orderProps.prices[4]}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[4] });
+                    }}
+                  >
+                    {orderProps.prices[4]}
+                  </li>
+                  <li
+                    key={`${orderProps.prices[5]}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[5] });
+                    }}
+                  >
+                    {orderProps.prices[5]}
+                  </li>
+                  <li
+                    key={`${orderProps.prices[6]}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: orderProps.prices[6] });
+                    }}
+                  >
+                    {orderProps.prices[6]}
+                  </li>
+                  <li
+                    key={`${0}${name}`}
+                    onClick={() => {
+                      props.onUpdateOrderValue({ id: key, stake: 0 });
+                    }}
+                  >
+                    0
+                  </li>
+                  <span
+                    className={"toggle-back-lay"}
+                    onClick={() => {
+                      let backLay =
+                        props.runners[key].order.backLay === 0 ? 1 : 0;
+                      props.onToggleBackAndLay({ id: key, backLay: backLay });
+                    }}
+                  >
+                    {orderProps.text2}
+                  </span>
 
-                  <input type="text" name="stake" value={4}></input>
+                  <input type="text" name="stake" value={props.runners[key].order.stake} onChange={e => {
+                    props.onUpdateOrderValue({id: key, stake: e.target.value});
+                  }}></input>
                   <span>@</span>
                   <input
                     type="number"
@@ -239,6 +320,9 @@ const Grid = props => {
                     min="1"
                     max="10000"
                     value={props.runners[key].order.price}
+                    onChange={e => {
+                      props.onUpdateOrderPrice({id: key, price: e.target.value});
+                    }}
                   ></input>
 
                   <button className={"execute-order-btn"}>Submit</button>
@@ -299,8 +383,13 @@ const mapDispatchToProps = dispatch => {
     onSelectRunner: runner => dispatch(actions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(actions.loadRunners(runners)),
     onUpdateOrder: order => dispatch(actions.updateOrder(order)),
+    onUpdateOrderValue: val => dispatch(actions.updateOrderValue(val)),
+    onUpdateOrderPrice: price => dispatch(actions.updateOrderPrice(price)),
     onUpdateOrderVisibility: settings =>
-      dispatch(actions.toggleVisibility(settings))
+      dispatch(actions.toggleVisibility(settings)),
+    onToggleStakeAndLiability: value =>
+      dispatch(actions.toggleStakeAndLiability(value)),
+    onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value))
   };
 };
 

@@ -146,21 +146,15 @@
 	font-size: small;
 }
 
-
 .grid-order-row li {
-	text-decoration: none;
 	float: left;
 	list-style-type: none;
 	height: 100%;
-	background-color: Transparent;
 	background: #fff;
-    background-repeat: no-repeat;
     border: 1px dashed;
 	margin: 0 5px 0 0;
 	width: 5%;
-    cursor: pointer;
-    overflow: hidden;
-    outline: none;
+	cursor: pointer;
 }
 
 .grid-order-row li:first-child {
@@ -183,6 +177,10 @@
 
 .grid-order-row input[type=number] {
 	width: 6%;
+}
+
+.toggle-back-lay {
+	cursor: pointer;
 }
 
 .execute-order-btn {

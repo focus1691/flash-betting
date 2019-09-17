@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 const Graph = props => {
   const [graph, setGraph] = useState(
-    window.location.origin + "/images/betfair-logo.png"
+    window.location.origin + "/images/Webp.net-resizeimage.png"
   );
 
   useEffect(() => {
