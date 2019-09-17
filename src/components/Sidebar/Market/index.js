@@ -6,9 +6,10 @@ import UnmatchedBets from "./UnmatchedBets";
 import MatchedBets from "./MatchedBets";
 import Graph from "./Graphs";
 import MarketInfo from "./MarketInfo";
+import Rules from "./Rules";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -16,14 +17,14 @@ const useStyles = makeStyles(theme => ({
     color: "orange",
     fontWeight: "900",
     border: "2px solid #fff",
-    zIndex: "1",
+    zIndex: "1"
   },
   title: {
-  	textAlign: "center",
-  	fontWeight: "bold",
+    textAlign: "center",
+    fontWeight: "bold"
   },
   group: {
-    margin: theme.spacing(1, 0),
+    margin: theme.spacing(1, 0)
   }
 }));
 
@@ -78,6 +79,13 @@ const Market = props => {
           <MarketInfo />
         </React.Fragment>
       ) : null}
+
+      {props.rules.visible ? (
+        <React.Fragment>
+          {createTitle("Rules", "static")}
+          <Rules />
+        </React.Fragment>
+      ) : null}
     </React.Fragment>
   );
 };
@@ -89,7 +97,8 @@ const mapStateToProps = state => {
     matchedBets: state.settings.matchedBets,
     profitAndLoss: state.settings.profitAndLoss,
     graphs: state.settings.graphs,
-    marketInfo: state.settings.marketInfo
+    marketInfo: state.settings.marketInfo,
+    rules: state.settings.rules
   };
 };
 
