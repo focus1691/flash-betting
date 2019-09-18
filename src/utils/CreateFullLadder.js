@@ -1,6 +1,7 @@
-export default () => {
+const createFullLader = () => {
   const Ladders = {};
   var k;
+
   // 100 - 1000
   for (k = 1000; k >= 100; k -= 10) {
     let priceKey = (Math.round(k * 100) / 100).toFixed(2);
@@ -8,7 +9,7 @@ export default () => {
   }
 
   // 50 - 100
-  for (k = 100; k >= 50; k -= 5) {
+  for (k = 95; k >= 50; k -= 5) {
     let priceKey = (Math.round(k * 100) / 100).toFixed(2);
     Ladders[priceKey] = createDataPoints(priceKey);
   }
@@ -63,6 +64,26 @@ export default () => {
   return Ladders;
 };
 
+const formatPriceKey = key => {
+  return (Math.round(key * 100) / 100).toFixed(2);
+};
+
+const formatOdds = odds => {
+
+  odds = parseFloat(odds);
+
+  switch (true) {
+    case odds < 4:
+      return odds.toFixed(2);
+    case odds < 20:
+      return odds.toFixed(1);
+    case odds >= 20:
+      return odds.toFixed(0);
+    default:
+      return odds.toFixed(2);
+  }
+};
+
 const createDataPoints = odds => {
   return {
     backProfit: null,
@@ -72,3 +93,5 @@ const createDataPoints = odds => {
     layProfit: null
   };
 };
+
+export { createFullLader, formatPriceKey, formatOdds };

@@ -10,7 +10,7 @@ import SocketContext from "../SocketContext";
 import { Helmet } from "react-helmet";
 import SearchInsert from "../utils/SearchInsert";
 import getQueryVariable from "../utils/GetQueryVariable";
-import FullLadder from "../utils/CreateFullLadder";
+import { createFullLader, formatPriceKey } from "../utils/CreateFullLadder";
 
 const App = props => {
   /**
@@ -106,7 +106,7 @@ const App = props => {
           // Update the atb values
           if (data.rc[i].atb) {
             for (j = 0; j < data.rc[i].atb.length; j++) {
-              let priceKey = data.rc[i].atb[j][0].toFixed(2);
+              let priceKey = formatPriceKey(data.rc[i].atb[j][0]);
               ladders[key].fullLadder[priceKey].odds = priceKey;
               ladders[key].fullLadder[priceKey].backMatched =
                 data.rc[i].atb[j][1];
@@ -132,7 +132,7 @@ const App = props => {
           // Update the atl values
           if (data.rc[i].atl) {
             for (j = 0; j < data.rc[i].atl.length; j++) {
-              let priceKey = data.rc[i].atl[j][0].toFixed(2);
+              let priceKey = formatPriceKey(data.rc[i].atl[j][0]);
               ladders[key].fullLadder[priceKey].odds = priceKey;
               ladders[key].fullLadder[priceKey].layMatched =
                 data.rc[i].atl[j][1];
@@ -142,12 +142,12 @@ const App = props => {
           ladders[key] = data.rc[i];
           ladders[key].ltp = [ladders[key].ltp, ladders[key].ltp];
           ladders[key].tv = [ladders[key].tv, ladders[key].tv];
-          ladders[key].fullLadder = FullLadder();
+          ladders[key].fullLadder = createFullLader();
           var k;
 
           if (ladders[key].atb) {
             for (k = 0; k < ladders[key].atb.length; k++) {
-              let priceKey = ladders[key].atb[k][0].toFixed(2);
+              let priceKey = formatPriceKey(ladders[key].atb[k][0]);
               ladders[key].fullLadder[priceKey].odds = priceKey;
               ladders[key].fullLadder[priceKey].backMatched =
                 ladders[key].atb[k][1];
@@ -155,7 +155,7 @@ const App = props => {
           }
           if (ladders[key].atl) {
             for (k = 0; k < ladders[key].atl.length; k++) {
-              let priceKey = ladders[key].atl[k][0].toFixed(2);
+              let priceKey = formatPriceKey(ladders[key].atl[k][0]);
               ladders[key].fullLadder[priceKey].odds = priceKey;
               ladders[key].fullLadder[priceKey].layMatched =
                 ladders[key].atl[k][1];

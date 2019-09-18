@@ -2,6 +2,7 @@ import React, { createRef } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
 import { sortAsc, sortDes } from "../../utils/Sort";
+import { sumMatchedBets } from "../../utils/PriceCalculator";
 
 const Grid = props => {
   const oneClickRef = createRef();
@@ -78,7 +79,7 @@ const Grid = props => {
                 />
               </div>
             )}
-            <span id="matched-bets">{props.marketOpen ? sumMatchedBets() : null}</span>
+            <span id="matched-bets">{props.marketOpen ? `Matched: ${sumMatchedBets(props.ladder)}` : null}</span>
           </th>
         </tr>
         <tr id="grid-subheader">
@@ -124,14 +125,6 @@ const Grid = props => {
     }
 
     return data;
-  };
-
-  const sumMatchedBets = () => {
-    const sum = Object.keys(props.ladder).reduce(
-      (sum, key) => sum + parseFloat(props.ladder[key].tv || 0),
-      0
-    );
-    return sum ? `Matched: ${Math.floor(sum).toLocaleString()}` : "";
   };
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
