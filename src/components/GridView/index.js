@@ -33,8 +33,8 @@ const Grid = props => {
             <h1>
               {props.marketOpen
                 ? new Date(props.market.event.openDate).toLocaleTimeString() +
-                  " " +
-                  props.market.event.name
+                " " +
+                props.market.event.name
                 : "No Event Selected"}
             </h1>
             {props.oneClickOn ? (
@@ -71,14 +71,14 @@ const Grid = props => {
                 />
               </div>
             ) : (
-              <div className={"in-play"}>
-                <span>Not Going in-play</span>
-                <img
-                  src={window.location.origin + "/icons/error.png"}
-                  alt={"inactive"}
-                />
-              </div>
-            )}
+                <div className={"in-play"}>
+                  <span>Not Going in-play</span>
+                  <img
+                    src={window.location.origin + "/icons/error.png"}
+                    alt={"inactive"}
+                  />
+                </div>
+              )}
             <span id="matched-bets">{props.marketOpen ? `Matched: ${sumMatchedBets(props.ladder)}` : null}</span>
           </th>
         </tr>
@@ -128,7 +128,11 @@ const Grid = props => {
   };
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
+
+    if (!betOdds) return Array(4).fill(createCell("", "", key, backLay));
+
     const rows = [];
+    
     for (var i = 0; i < betOdds.length; i++) {
       rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
       if (i === 4) break;
@@ -176,10 +180,10 @@ const Grid = props => {
         ltp[0] < ltp[1] // #0AFD03 (Green Lower LTP)
           ? "#0AFD03"
           : ltp[0] > ltp[1] // #FC0700 (Red Higher LTP)
-          ? "#FC0700"
-          : ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
-          ? "#FFFF00"
-          : "#FFF"; // #FFF (No Value)
+            ? "#FC0700"
+            : ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
+              ? "#FFFF00"
+              : "#FFF"; // #FFF (No Value)
 
       const logo = props.runners[key].metadata.COLOURS_FILENAME
         ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
@@ -188,17 +192,17 @@ const Grid = props => {
       const orderProps =
         props.runners[key].order.stakeLiability === 0
           ? {
-              bg: "#DBEFFF",
-              text: "STAKE",
-              text2: "BACK",
-              prices: [2, 4, 6, 8, 10, 12, 14]
-            }
+            bg: "#DBEFFF",
+            text: "STAKE",
+            text2: "BACK",
+            prices: [2, 4, 6, 8, 10, 12, 14]
+          }
           : {
-              bg: "#FEE9EE",
-              text: "LIABILITY",
-              text2: "LAY",
-              prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
-            };
+            bg: "#FEE9EE",
+            text: "LIABILITY",
+            text2: "LAY",
+            prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
+          };
 
       orderProps.text2 =
         props.runners[key].order.backLay === 0 ? "BACK" : "LAY";

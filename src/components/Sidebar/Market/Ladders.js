@@ -29,12 +29,8 @@ const Ladder = props => {
       ltp: ladder.ltp
     };
 
-    if (ladder.atb) {
-      data.atb = sortDes(ladder.atb);
-    }
-    if (ladder.atl) {
-      data.atl = sortAsc(ladder.atl);
-    }
+    data.atb = ladder.atb ? ladder.atb[0][0] : null;
+    data.atl = ladder.atl ? ladder.atl[0][0] : null;
 
     return data;
   };
@@ -45,13 +41,15 @@ const Ladder = props => {
 
       var color =
         ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
+        
+        console.log(`atl: ${atl}`);
 
       return (
         <tr>
           <td>{props.runners[key].runnerName}</td>
-          <td>{atl[0][0]}</td>
+          <td>{atl}</td>
           <td style={{ background: color }}>{ltp[0]}</td>
-          <td>{atb[0][0]}</td>
+          <td>{atb}</td>
           <td>
             <input type="checkbox" />
           </td>

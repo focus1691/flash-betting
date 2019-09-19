@@ -10,25 +10,30 @@ const Ladders = props => {
       const ladder = props.ladder[key].fullLadder;
       const ltp = props.ladder[key].ltp;
       const tv = props.ladder[key].tv[0] ? props.ladder[key].tv[0].toLocaleString() : "";
+      const selectionId = props.runners[key].selectionId;
 
       return (
-        
-          <div className="odds-table">
-            {renderHeaderRow(props.runners[key])}
 
-            <div className={"ladder"}>
-              <table ref={tableRef}>
-                <tbody>
-                  {renderPercentageRow(ltp, tv)}
-                  {renderData(ladder)}
-                  {renderPriceRow()}
-                </tbody>
-              </table>
-            </div>
-            {renderOrderRow()}
+        <div className="odds-table">
+          {renderHeaderRow(props.runners[key])}
+
+          <div className={"ladder"}>
+            <table ref={tableRef}>
+              <tbody>
+                {renderPercentageRow(ltp, tv)}
+                {renderData(ladder, selectionId)}
+                {renderPriceRow()}
+              </tbody>
+            </table>
           </div>
+          {renderOrderRow()}
+        </div>
       );
     });
+  };
+
+  const placeOrder = (side, amount, selection) => {
+    console.log(side, amount, selection);
   };
 
   const renderHeaderRow = runner => {
@@ -68,13 +73,13 @@ const Ladders = props => {
     );
   };
 
-  const renderData = ladder => {
+  const renderData = (ladder, selectionId) => {
     return Object.keys(ladder).map(key => {
       return (
         <tr key={ladder[key].odds}>
-          <td className={"candle-stick-col"} colSpan={2}><img src={`${window.location.origin}/icons/green-candle.png`}/></td>
+          <td className={"candle-stick-col"} colSpan={2}><img src={`${window.location.origin}/icons/green-candle.png`} /></td>
           <td>{ladder[key].backProfit}</td>
-          <td>{ladder[key].backMatched}</td>
+          <td onClick={e => placeOrder('BACK', formatOdds(ladder[key].odds, props.runners[key]), selectionId)}>{ladder[key].backMatched}</td>
           <td>{formatOdds(ladder[key].odds)}</td>
           <td>{ladder[key].layMatched}</td>
           <td>{ladder[key].layProfit}</td>
