@@ -188,7 +188,7 @@ const App = props => {
         {props.marketOpen ? (
           <Helmet>
             <title>
-              {new Date(props.market.event.openDate).toLocaleTimeString() +
+              {new Date(props.market.marketStartTime).toLocaleTimeString() +
                 " " +
                 props.market.event.name}
             </title>
