@@ -9,7 +9,7 @@ const Ladders = props => {
     return Object.keys(props.ladder).map(key => {
       const ladder = props.ladder[key].fullLadder;
       const ltp = props.ladder[key].ltp;
-      const tv = props.ladder[key].tv ? Math.floor(props.ladder[key].tv[0]).toLocaleString() : "";
+      const tv = props.ladder[key].tv[0] ? props.ladder[key].tv[0].toLocaleString() : "";
 
       return (
         

@@ -87,7 +87,7 @@
 
 .candle-stick-col {
 	border-right: 2px solid;
-	background-color: #d1d9e6
+	background-color: #4f4d4f;
 }
 
 .ladder th {
@@ -190,12 +190,11 @@
 	width: 28.5714%;
 	padding: 0;
 	float: left;
-    background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 0%),
-				radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+	background-color: #29539b;
+	background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
 	color: #fff;
 	overflow: hidden;
 	text-align: left;
-	border-bottom: 2px solid;
 }
 
 .percentage-row td:first-child span {
