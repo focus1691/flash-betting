@@ -33,6 +33,7 @@
 
 .contender-image {
 	vertical-align: middle;
+	cursor: url('../icons/faq.png'), auto;
 }
 
 .contender-odds {
@@ -68,6 +69,10 @@
     width: 100%;
 }
 
+.ladder td {
+	font-size: x-small;
+}
+
 .ladder td:nth-child(3){background-color: #FCC9D3;}
 .ladder td:nth-child(4) {
 	font-weight: bold;
@@ -76,8 +81,9 @@
 .ladder td:nth-child(5){background-color: #BCE4FC;}
 
 .ladder tr:not(:first-child) td:not(:first-child) {
-	text-align: center;
-	font-size: 0.8em;
+	/* text-align: center; */
+	/* font-size: 0.8em; */
+	font-size: x-small;
 	border: 1px solid;
 	padding: 2px;
 	cursor: pointer;

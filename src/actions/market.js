@@ -1,3 +1,10 @@
+export const setMarketStatus = isOpen => {
+  return {
+    type: "NEW_MARKET_STATUS",
+    payload: isOpen
+  }
+}
+
 export const loadMarket = market => {
   return {
     type: "LOAD_MARKET",

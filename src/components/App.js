@@ -65,7 +65,7 @@ const App = props => {
 
             props.onUpdateRunners(runners);
             props.onReceiveMarket(data.result[0]);
-            props.onSelectRunner(data.result[0].runners[0].metadata);
+            props.onSelectRunner(data.result[0].runners[0]);
             props.socket.emit("market-subscription", {
               marketId: data.result[0].marketId
             });
@@ -80,6 +80,11 @@ const App = props => {
      * @param {obj} data The market change message data: rc: [(atb, atl, batb, batl, tv, ltp, id)]
      */
     props.socket.on("mcm", data => {
+
+      if (!props.marketOpen && data.marketDefinition && data.marketDefinition.status === 'OPEN') {
+        props.onMarketStatusChange(true);
+      }
+
       const ladders = {};
 
       const length = data.rc.length;
@@ -139,6 +144,7 @@ const App = props => {
             }
           }
         } else {
+
           ladders[key] = data.rc[i];
           ladders[key].ltp = [ladders[key].ltp, ladders[key].ltp];
           ladders[key].tv = [ladders[key].tv, ladders[key].tv];
@@ -229,7 +235,8 @@ const mapDispatchToProps = dispatch => {
     onReceiveMarket: market => dispatch(actions2.loadMarket(market)),
     onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
     onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),
-    onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders))
+    onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders)),
+    onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen))
   };
 };
 

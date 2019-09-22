@@ -5,14 +5,15 @@ import sportReducer from "./reducers/sportReducer";
 import marketReducer from "./reducers/marketReducer";
 import accountReducer from "./reducers/accountReducer";
 import settingsReducer from "./reducers/settingsReducer";
+import orderReducer from "./reducers/orderReducer";
 import stopLossReducer from "./reducers/stopLossReducer";
 import stopEntryReducer from "./reducers/stopEntryReducer";
 import backReducer from "./reducers/backReducer";
 import layReducer from "./reducers/layReducer";
 import fillOrKillReducer from "./reducers/fillOrKillReducer";
 import tickOffsetReducer from "./reducers/tickOffsetReducer";
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import thunk from "redux-thunk";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
@@ -20,7 +21,7 @@ import App from "./components/App";
 import AuthRedirect from "./components/AuthRedirect";
 import OAuthRedirect from "./components/OAuthRedirect";
 import openSocket from "socket.io-client";
-import SocketContext from './SocketContext'
+import SocketContext from "./SocketContext";
 
 const socket = openSocket("http://localhost:8000");
 
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   sports: sportReducer,
   market: marketReducer,
   settings: settingsReducer,
+  order: orderReducer,
   stopLoss: stopLossReducer,
   tickOffset: tickOffsetReducer,
   back: backReducer,
@@ -39,9 +41,10 @@ const rootReducer = combineReducers({
   stopEntry: stopEntryReducer
 });
 
-const store = createStore(rootReducer, composeEnhancers(
-  applyMiddleware(thunk)
-));
+const store = createStore(
+  rootReducer,
+  composeEnhancers(applyMiddleware(thunk))
+);
 
 ReactDOM.render(
   <Provider store={store}>

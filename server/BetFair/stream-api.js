@@ -41,8 +41,10 @@ class BetFairStreamAPI {
 					const result = JSON.parse(this.chunks.join(""));
 
 					if (result.op === 'mcm' && result.mc) {
+						
 
 						openSocket.emit('mcm', result.mc[0]);
+						console.log(result.mc[0]);
 						this.chunks = [];
 					} else {
 						this.chunks = [];
@@ -65,8 +67,11 @@ class BetFairStreamAPI {
 			});
 		});
 	}
-	formatJSON (str) {
-		return str.split('Received:').join('');
+	subscribeToMarket () {
+		
+	}
+	subscribeToOrder () { 
+
 	}
 }
 

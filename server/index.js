@@ -2,6 +2,8 @@
 // Access with process.env
 require("dotenv").config();
 
+var crypto = require('crypto');
+
 // The BetFair session class below contains all the methods
 // to call the BetFair API. Some samples are commented below to demonstrate their utility.
 const BetFairSession = require("./BetFair/session.js");
@@ -250,6 +252,34 @@ app.get("/api/get-market-info", (request, response) => {
       maxResults: 1
     },
     (err, res) => {
+      response.json(res);
+    }
+  );
+});
+
+app.post("/api/place-order", (request, response) => {
+  console.log(request.body);
+  session.placeOrders(
+    {
+      marketId: request.body.marketId,
+      instructions: [
+        {
+          selectionId: request.body.selectionId,
+          handicap: "0",
+          side: request.body.side,
+          orderType: "LIMIT",
+          limitOrder: {
+            size: request.body.size,
+            price: request.body.price,
+            persistenceType: "PERSIST",
+
+          }
+        }
+      ],
+      customerStrategyRef : crypto.randomBytes(Math.ceil(15/2)).toString('hex').slice(0,15)
+    },
+    (err, res) => {
+      // console.log(res);
       response.json(res);
     }
   );

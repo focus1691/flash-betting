@@ -4,22 +4,25 @@ import { connect } from "react-redux";
 const MarketInfo = props => {
 
   const getRacerDetails = () => {
+    console.log(props.selection);
     const details = {
-      selectionId: props.selection.runnerId,
-      colours: props.selection.COLOURS_DESCRIPTION,
-      colorsFileName: props.selection.COLOURS_FILENAME,
-      trainer: props.selection.TRAINER_NAME,
-      ageWeight: `${props.selection.AGE} years / ${props.selection.WEIGHT_VALUE} ${props.selection.WEIGHT_UNITS}`,
-      form: props.selection.form,
-      lastRun: props.selection.DAYS_SINCE_LAST_RUN,
-      jockeysClaim: props.selection.JOCKEY_CLAIM,
-      clothNumber: props.selection.CLOTH_NUMBER
+      name: props.selection.runnerName,
+      selectionId: props.selection.metadata.runnerId,
+      colours: props.selection.metadata.COLOURS_DESCRIPTION,
+      colorsFileName: props.selection.metadata.COLOURS_FILENAME,
+      trainer: props.selection.metadata.TRAINER_NAME,
+      ageWeight: `${props.selection.metadata.AGE} years / ${props.selection.metadata.WEIGHT_VALUE} ${props.selection.metadata.WEIGHT_UNITS}`,
+      form: props.selection.metadata.form,
+      lastRun: props.selection.metadata.DAYS_SINCE_LAST_RUN,
+      jockeysClaim: props.selection.metadata.JOCKEY_CLAIM,
+      clothNumber: props.selection.metadata.CLOTH_NUMBER
     };
     return details;
   };
 
   const renderRacerDetails = () => {
       const {
+        name,
         selectionId,
         colours,
         colorsFileName,
@@ -34,7 +37,7 @@ const MarketInfo = props => {
       return (
         <React.Fragment>
           <tr>
-            <td>{"Horse name here"}</td>
+            <td>{`${clothNumber}.${name}`}</td>
           </tr>
           <tr>
             <td>{"Selection"}</td>

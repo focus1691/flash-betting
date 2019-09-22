@@ -1,76 +1,88 @@
-import React from 'react';
+import React from "react";
+import { connect } from "react-redux";
 
-const UnmatchedBets = ({details}) => {
+const UnmatchedBets = props => {
+  return (
+    <div>
+      <table className="menu-bets">
+        <tbody>
+          <tr className="menu-bets-heading">
+            <button
+              style={{
+                height: "22px",
+                width: "auto",
+                backgroundColor: "transparent",
+                visibility: "collapse",
+                pointerEvents: "none"
+              }}
+            />
+            <td>Odds</td>
+            <td>Stake</td>
+            <td>P/L</td>
+          </tr>
+          <tr>
+            <td className="menu-bets-event" colSpan={4}>
+              6f Class Stks Windsor Event name here
+            </td>
+          </tr>
+          {props.marketOpen
+            ? props.bets.unmatched.map(orders => (
+                <>
+                  <tr className="menu-bets-selection" colSpan={4}>
+                    <td>{props.selection}</td>
+                  </tr>
+                  {orders.map(bet => (
+                    <>
+                      <tr
+                        id="menu-unmatched-bet"
+                        style={{
+                          backgroundColor: bet.isBack ? "#A6D8FF" : "#FAC9D7"
+                        }}
+                      >
+                        <button style={{ height: "22px", width: "auto" }}>
+                          {/* <img src = {require('./CancelIcon.svg')} alt="" style = {{height: "100%", width: "auto"}} /> In Progress */}
+                        </button>
 
-	return (
-		<div>
-			<table id="menu-unmatched-bets">
-				<tbody>
-					<React.Fragment>
-						<tr id = "menu-unmatched-heading">
-							<button style = {{height: "22px", width: "auto", backgroundColor: 'transparent', visibility: "collapse", pointerEvents: "none"}} />
-							<td>Odds</td>
-							<td>Stake</td>
-							<td>P/L</td>
-						</tr>
-						{   
-							details[0].event === "None" ?
-								null :
-								details.map(info => (
-									<>
-										<tr id = "menu-unmatched-event">
-											<td>{info.event}</td>
-										</tr>
-										<tr id = "menu-unmatched-selection">
-											<td>{info.selection}</td>
-										</tr>
-										{
-											info.bets.map(bet => (
-												<>
-													<tr id = "menu-unmatched-bet" style={{backgroundColor: bet.isBack ? "#A6D8FF" : "#FAC9D7"}}>
-											
-														<button style = {{height: "22px", width: "auto"}}>
-															{/* <img src = {require('./CancelIcon.svg')} alt="" style = {{height: "100%", width: "auto"}} /> In Progress */}
-														</button>
-														
-														<td>{bet.odds}</td>
-														<td>{bet.stake}</td>
-														<td id = "pl-style" style = {{color: bet.PL === "0.00" ? "black" : bet.PL > 0 ? "green" : "red"}}>{bet.PL}</td>
-													
-													</tr>
-												</>
-											))
-										}
-										
-									</>
-								))
-								
-								
-						}
-					</React.Fragment>
+                        <td>{bet.odds}</td>
+                        <td>{bet.stake}</td>
+                        <td
+                          id="pl-style"
+                          style={{
+                            color:
+                              bet.PL === "0.00"
+                                ? "black"
+                                : bet.PL > 0
+                                ? "green"
+                                : "red"
+                          }}
+                        >
+                          {bet.PL}
+                        </td>
+                      </tr>
+                    </>
+                  ))}
+                </>
+              ))
+            : null}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
-				</tbody>
-			</table>
-		</div>
-	);
-}
+const mapStateToProps = state => {
+  return {
+    marketOpen: state.market.marketOpen,
+    market: state.market.currentMarket,
+    bets: state.order.bets
+  };
+};
 
-UnmatchedBets.defaultProps = {
-	
-	details: [
-		{
-			event: "None",
-			selection: "None",
-			bets: [
-				{
-					odds: 0.0,
-					stake: 0.00,
-					PL: "0.00",
-					isBack: true
-				},
-			]
-		}, 
-	]
-}
+const mapDispatchToProps = dispatch => {
+  return {};
+};
 
-export default UnmatchedBets;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UnmatchedBets);

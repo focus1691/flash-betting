@@ -9,8 +9,10 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "NEW_MARKET_STATUS":
+      return { ...state, marketOpen: true };
     case "LOAD_MARKET":
-      return { ...state, marketOpen: true, currentMarket: action.payload };
+      return { ...state, currentMarket: action.payload };
     case "LOAD_LADDER":
       return { ...state, ladder: action.payload };
     case "LOAD_RUNNERS":

@@ -213,7 +213,7 @@ const Grid = props => {
             <td
               className="grid-runner-details"
               onClick={e => {
-                props.onSelectRunner(props.runners[key].metadata);
+                props.onSelectRunner(props.runners[key]);
               }}
             >
               <img src={logo} alt={"Runner"} />
@@ -422,8 +422,7 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
     ladder: state.market.ladder,
-    runners: state.market.runners,
-    selection: state.market.runnerSelection
+    runners: state.market.runners
   };
 };
 
