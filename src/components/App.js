@@ -83,8 +83,8 @@ const App = props => {
      */
     props.socket.on("mcm", data => {
 
-      if (!props.marketOpen && data.marketDefinition && data.marketDefinition.status === 'OPEN') {
-        props.onMarketStatusChange(true);
+      if (!props.marketOpen && data.marketDefinition && data.marketDefinition.status) {
+        props.onMarketStatusChange(data.marketDefinition.status);
       }
 
       var ladders = {};

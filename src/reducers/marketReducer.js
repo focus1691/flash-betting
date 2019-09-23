@@ -1,5 +1,6 @@
 const initialState = {
   marketOpen: false,
+  status: 'OPEN',
   currentMarket: {},
   runnerSelection: 0,
   runners: {},

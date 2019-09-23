@@ -8,7 +8,6 @@ const Graph = props => {
 
   useEffect(() => {
     if (props.marketOpen && props.selection) {
-      console.log(props.selection);
       const marketId = props.market.marketId.slice(
         2,
         props.market.marketId.length
