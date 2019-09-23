@@ -1,4 +1,4 @@
-import React, { useRef, } from "react";
+import React, { useRef } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/order";
 import * as actions2 from "../../actions/market";
@@ -10,17 +10,11 @@ import OrderRow from "./OrderRow";
 
 const Ladders = props => {
   const tableRef = useRef(null);
-  
+
   return (
     <div className={"ladder-container"}>
       {props.marketOpen && props.ladder
         ? Object.keys(props.ladder).map(key => {
-            const ladder = props.ladder[key].fullLadder;
-            const ltp = props.ladder[key].ltp;
-            const tv = props.ladder[key].tv[0]
-              ? props.ladder[key].tv[0].toLocaleString()
-              : "";
-
             return (
               <div className="odds-table">
                 <LadderHeader
@@ -33,9 +27,16 @@ const Ladders = props => {
                 <div className={"ladder"}>
                   <table ref={tableRef}>
                     <tbody>
-                      <PercentageRow ltp={ltp} tv={tv} />
+                      <PercentageRow
+                        ltp={props.ladder[key].ltp}
+                        tv={
+                          props.ladder[key].tv[0]
+                            ? props.ladder[key].tv[0].toLocaleString()
+                            : ""
+                        }
+                      />
                       <LadderBody
-                        ladder={ladder}
+                        ladder={props.ladder[key].fullLadder}
                         selectionId={key}
                         placeOrder={data => {
                           props.onPlaceOrder({
