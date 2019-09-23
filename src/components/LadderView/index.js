@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import * as actions from "../../actions/order";
 import * as actions2 from "../../actions/market";
 import { formatOdds } from "../../utils/ladder/CreateFullLadder";
+import LadderHeader from "./header";
 
 const Ladders = props => {
   const tableRef = useRef(null);
@@ -17,7 +18,12 @@ const Ladders = props => {
 
       return (
         <div className="odds-table">
-          {renderHeaderRow(props.runners[key])}
+          <LadderHeader
+            runner={props.runners[key]}
+            runnerClick={e => {
+              props.onSelectRunner(runner);
+            }}
+          />
 
           <div className={"ladder"}>
             <table ref={tableRef}>
@@ -41,30 +47,7 @@ const Ladders = props => {
       size: 5,
       price: price,
       selectionId: selectionId
-    })
-  };
-
-  const renderHeaderRow = runner => {
-    const name = runner.runnerName;
-
-    const number = runner.metadata.CLOTH_NUMBER
-      ? runner.metadata.CLOTH_NUMBER + ". "
-      : "";
-    const logo = runner.metadata.COLOURS_FILENAME
-      ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${runner.metadata.COLOURS_FILENAME}`
-      : `${window.location.origin}/images/baseball-player.png`;
-
-    return (
-      <div colspan={7} className={"ladder-header"}>
-        <h2 className="contender-name">
-          {<img className={"contender-image"} src={logo} alt={"Colours"} onClick={e => {
-            props.onSelectRunner(runner);
-          }} />}
-          {`${number}${name}`}
-        </h2>
-        <span className="contender-odds">0.80</span>
-      </div>
-    );
+    });
   };
 
   const renderPercentageRow = (ltp, tv) => {
@@ -97,11 +80,7 @@ const Ladders = props => {
           <td>{ladder[key].backProfit}</td>
           <td
             onClick={e =>
-              placeOrder(
-                "BACK",
-                formatOdds(ladder[key].odds),
-                selectionId
-              )
+              placeOrder("BACK", formatOdds(ladder[key].odds), selectionId)
             }
           >
             {ladder[key].backMatched}
@@ -109,11 +88,7 @@ const Ladders = props => {
           <td>{formatOdds(ladder[key].odds)}</td>
           <td
             onClick={e => {
-              placeOrder(
-                "LAY",
-                formatOdds(ladder[key].odds),
-                selectionId
-              );
+              placeOrder("LAY", formatOdds(ladder[key].odds), selectionId);
             }}
           >
             {ladder[key].layMatched}
@@ -215,4 +190,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Ladders);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Ladders);

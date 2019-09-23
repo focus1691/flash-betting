@@ -77,7 +77,7 @@ const App = props => {
   useEffect(() => {
     /**
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
-     * @param {obj} data The market change message data: rc: [(atb, atl, batb, batl, tv, ltp, id)]
+     * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     props.socket.on("mcm", data => {
 

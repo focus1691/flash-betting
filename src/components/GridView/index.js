@@ -71,12 +71,20 @@ const Grid = props => {
                   alt={"active"}
                 />
               </div>
+            ) : props.marketOpen && props.marketStatus === "SUSPENDED" ? (
+              <div className={"in-play"}>
+                <span>In-play</span>
+                <img
+                  src={window.location.origin + "/icons/checked.png"}
+                  alt={"in-play"}
+                />
+              </div>
             ) : (
               <div className={"in-play"}>
-                <span>Not Going in-play</span>
+                <span className={"in-play"}>Not Going in-play</span>
                 <img
                   src={window.location.origin + "/icons/error.png"}
-                  alt={"inactive"}
+                  alt={"Not active"}
                 />
               </div>
             )}
@@ -448,9 +456,7 @@ const Grid = props => {
         className={"grid-view"}
       >
         <p
-          style={
-            props.marketStatus !== "SUSPENDED" ? { display: "none" } : {}
-          }
+          style={props.marketStatus !== "SUSPENDED" ? { display: "none" } : {}}
           id="suspended-message"
         >
           {props.marketStatus}

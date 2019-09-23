@@ -34,9 +34,10 @@ const Countdown = props => {
     // 4- Keep only seconds not extracted to minutes:
     seconds = Math.floor(seconds % 60);
 
-    if (hours < 0 && minutes < 0 && seconds < 0) {
+    if (Math.abs(hours) < 0 && minutes < 0 && seconds < 0) {
       return `00:00:00`;
     }
+    console.log(Math.abs(hours), Math.floor(hours) < 0, minutes < 0, seconds < 0);
     return `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
   };
   return (
