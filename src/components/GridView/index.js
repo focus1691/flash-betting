@@ -2,6 +2,7 @@ import React, { createRef } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
 import { sortAsc, sortDes } from "../../utils/Sort";
+import { formatCurrency } from "./../../utils/NumberFormat";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
 
 const Grid = props => {
@@ -79,7 +80,7 @@ const Grid = props => {
                   />
                 </div>
               )}
-            <span id="matched-bets">{props.marketOpen ? `Matched: ${sumMatchedBets(props.ladder)}` : null}</span>
+            <span id="matched-bets">{props.marketOpen ? `Matched: ${formatCurrency(props.localeCode, props.currencyCode, sumMatchedBets(props.ladder))}` : null}</span>
           </th>
         </tr>
         <tr id="grid-subheader">
@@ -422,7 +423,10 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
     ladder: state.market.ladder,
-    runners: state.market.runners
+    runners: state.market.runners,
+    countryCode: state.account.countryCode,
+    currencyCode: state.account.currencyCode,
+    localeCode: state.account.localeCode
   };
 };
 

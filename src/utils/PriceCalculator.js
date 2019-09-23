@@ -3,7 +3,7 @@ const sumMatchedBets = ladder => {
     (sum, key) => sum + parseFloat(ladder[key].tv || 0),
     0
   );
-  return sum ? Math.floor(sum).toLocaleString() : "";
+  return sum ? Math.floor(sum) : "";
 };
 
 export { sumMatchedBets };
