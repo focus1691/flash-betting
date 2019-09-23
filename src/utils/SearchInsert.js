@@ -1,4 +1,4 @@
-export default (nums, target) => {
+const SearchInsert = (nums, target) => {
     var start = 0;
     var end = nums.length - 1;
     var index = Math.floor((end - start) / 2) + start;
@@ -33,3 +33,5 @@ export default (nums, target) => {
     
     return index;
 };
+
+export { SearchInsert };

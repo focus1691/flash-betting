@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/order";
 import * as actions2 from "../../actions/market";
-import { formatOdds } from "../../utils/CreateFullLadder";
+import { formatOdds } from "../../utils/ladder/CreateFullLadder";
 
 const Ladders = props => {
   const tableRef = useRef(null);
