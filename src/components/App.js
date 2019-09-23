@@ -8,11 +8,9 @@ import LadderView from "./LadderView/";
 import GridView from "./GridView/";
 import SocketContext from "../SocketContext";
 import { Helmet } from "react-helmet";
-import SearchInsert from "../utils/SearchInsert";
 import getQueryVariable from "../utils/GetQueryVariable";
 import { AddRunner } from "../utils/ladder/AddRunner";
 import { UpdateRunner } from "../utils/ladder/UpdateRunner";
-import { createFullLadder, formatPriceKey } from "../utils/ladder/CreateFullLadder";
 
 const App = props => {
   /**
