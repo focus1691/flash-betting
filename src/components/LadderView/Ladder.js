@@ -7,7 +7,21 @@ import OrderRow from "./OrderRow";
 
 const Ladder = props => {
   const tableRef = useRef(null);
+  const ltpRef = useRef(null);
+  
+  useEffect(() => {
 
+    if (tableRef.current !== null) {
+        if (ltpRef.current !== null) {
+            // delay for waiting to load
+            setTimeout(() => {
+                tableRef.current.scrollTop = ltpRef.current.offsetTop; 
+                tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
+            }, 100)
+        }
+    }
+      
+  }, [ltpRef]);
   
 
   const { id, runners, ladder, market, onPlaceOrder, onSelectRunner } = props;
@@ -21,8 +35,8 @@ const Ladder = props => {
             }}
         />
 
-        <div className={"ladder"}>
-            <table ref={tableRef.current === null ? tableRef : null}>
+        <div className={"ladder"} ref={tableRef}>
+            <table>
             <tbody>
                 <PercentageRow
                     ltp={ladder[id].ltp}
@@ -43,7 +57,9 @@ const Ladder = props => {
                             price: data.price,
                             selectionId: data.selectionId
                         });
-                }}
+                    }}
+                    ltp = {ladder[id].ltp[0]}
+                    ltpRef = {ltpRef}
                 />
                 <PriceRow />
             </tbody>
