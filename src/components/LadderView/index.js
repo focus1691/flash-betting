@@ -21,7 +21,7 @@ const Ladders = props => {
           <LadderHeader
             runner={props.runners[key]}
             runnerClick={e => {
-              props.onSelectRunner(runner);
+              props.onSelectRunner(props.runners[key]);
             }}
           />
 
