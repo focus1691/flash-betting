@@ -4,124 +4,33 @@ import * as actions from "../../actions/market";
 import { sortAsc, sortDes } from "../../utils/Sort";
 import { formatCurrency } from "./../../utils/NumberFormat";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
+import GridHeader from "./GridHeader";
 
 const Grid = props => {
   const oneClickRef = createRef();
 
   const renderTableHeader = () => {
     return (
-      <React.Fragment>
-        <tr id="grid-header">
-          <th colSpan="11">
-            <button
-              id="one-click-btn"
-              ref={oneClickRef}
-              onClick={e => {
-                props.onToggleOneClick(!props.oneClickOn);
-                const node = oneClickRef.current;
-                props.oneClickOn ? node.blur() : node.focus();
-              }}
-            >
-              Turn One click on
-            </button>
-            <span className={"grid-video"}>
-              {" "}
-              <img
-                src={window.location.origin + "/icons/youtube.png"}
-                alt={"Video"}
-              />
-            </span>
-            <h1>
-              {props.marketOpen
-                ? new Date(props.market.event.openDate).toLocaleTimeString() +
-                  " " +
-                  props.market.event.name
-                : "No Event Selected"}
-            </h1>
-            {props.oneClickOn ? (
-              <React.Fragment>
-                <div id="one-click-stake">
-                  <button>Stake</button>
-                  <button>2</button>
-                  <button>4</button>
-                  <button>6</button>
-                  <button>8</button>
-                  <button>10</button>
-                  <button>12</button>
-                  <button>14</button>
-                </div>
-                <br />
-                <div id="one-click-liability">
-                  <button>Liability</button>
-                  <button>5</button>
-                  <button>7.50</button>
-                  <button>10</button>
-                  <button>12.50</button>
-                  <button>15</button>
-                  <button>17.50</button>
-                  <button>20</button>
-                </div>
-              </React.Fragment>
-            ) : null}
-            {props.marketOpen && props.marketStatus === "OPEN" ? (
-              <div className={"in-play"}>
-                <span className={"in-play"}>Going in-play</span>
-                <img
-                  src={window.location.origin + "/icons/checked.png"}
-                  alt={"active"}
-                />
-              </div>
-            ) : props.marketOpen && props.marketStatus === "SUSPENDED" ? (
-              <div className={"in-play"}>
-                <span>In-play</span>
-                <img
-                  src={window.location.origin + "/icons/checked.png"}
-                  alt={"in-play"}
-                />
-              </div>
-            ) : (
-              <div className={"in-play"}>
-                <span className={"in-play"}>Not Going in-play</span>
-                <img
-                  src={window.location.origin + "/icons/error.png"}
-                  alt={"Not active"}
-                />
-              </div>
-            )}
-            <span id="matched-bets">
-              {props.marketOpen
-                ? `Matched: ${formatCurrency(
-                    props.localeCode,
-                    props.currencyCode,
-                    sumMatchedBets(props.ladder)
-                  )}`
-                : null}
-            </span>
-          </th>
-        </tr>
-        <tr id="grid-subheader">
-          <th>
-            <span>Market Cashout</span>
-          </th>
-          <th colSpan="1"></th>
-
-          <th colSpan="1"></th>
-          <th></th>
-          <th></th>
-          <th>
-            <span>Back</span>
-          </th>
-          <th>
-            <span>Lay</span>
-          </th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-      </React.Fragment>
+      <GridHeader
+        event={props.market.event}
+        ladder={props.ladder}
+        marketOpen={props.marketOpen}
+        status={props.marketStatus}
+        country={{
+          localeCode: props.localeCode,
+          countryCode: props.countryCode
+        }}
+        oneClickRef={oneClickRef}
+        oneClickOn={props.oneClickOn}
+        toggleOneClick={e => {
+          props.onToggleOneClick(!props.oneClickOn);
+          const node = oneClickRef.current;
+          props.oneClickOn ? node.blur() : node.focus();
+        }}
+      />
     );
   };
+
   const getLadderData = ladder => {
     const data = {
       ltp: ladder.ltp,
