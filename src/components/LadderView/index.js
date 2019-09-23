@@ -3,7 +3,9 @@ import { connect } from "react-redux";
 import * as actions from "../../actions/order";
 import * as actions2 from "../../actions/market";
 import { formatOdds } from "../../utils/ladder/CreateFullLadder";
-import LadderHeader from "./header";
+import LadderHeader from "./Header";
+import PercentageRow from "./PercentageRow";
+import PriceRow from "./PriceRow";
 
 const Ladders = props => {
   const tableRef = useRef(null);
@@ -28,9 +30,12 @@ const Ladders = props => {
           <div className={"ladder"}>
             <table ref={tableRef}>
               <tbody>
-                {renderPercentageRow(ltp, tv)}
+                <PercentageRow
+                  ltp={ltp}
+                  tv={tv}
+                />
                 {renderData(ladder, key)}
-                {renderPriceRow()}
+                <PriceRow/>
               </tbody>
             </table>
           </div>
@@ -48,26 +53,6 @@ const Ladders = props => {
       price: price,
       selectionId: selectionId
     });
-  };
-
-  const renderPercentageRow = (ltp, tv) => {
-    const bg =
-      ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
-
-    return (
-      <th colSpan={7}>
-        <div className={"percentage-row"}>
-          <td colSpan={2}>
-            <span>{tv}</span>
-          </td>
-          <td>--</td>
-          <td>60%</td>
-          <td style={{ background: bg }}>{ltp[0]}</td>
-          <td>40%</td>
-          <td>--</td>
-        </div>
-      </th>
-    );
   };
 
   const renderData = (ladder, selectionId) => {
@@ -97,20 +82,6 @@ const Ladders = props => {
         </tr>
       );
     });
-  };
-
-  const renderPriceRow = () => {
-    return (
-      <tfoot className="price-row">
-        <td>5</td>
-        <td>5</td>
-        <td>10</td>
-        <td>20</td>
-        <td>25</td>
-        <td>50</td>
-        <td>100</td>
-      </tfoot>
-    );
   };
 
   const renderOrderRow = () => {
