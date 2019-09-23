@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import * as stopEntryActions from "../../../../actions/stopEntry";
-import * as stopLossActions from "../../../../actions/stopLoss";
-import * as tickOffsetActions from "../../../../actions/tickOffset";
-import * as backActions from "../../../../actions/back";
-import * as layActions from "../../../../actions/lay";
-import * as fillOrKillActions from "../../../../actions/fillOrKill";
+import { setStopEntrySelected } from "../../../../actions/stopEntry";
+import { setStopLossSelected } from "../../../../actions/stopLoss";
+import { setTickOffsetSelected } from "../../../../actions/tickOffset";
+import { setBackSelected } from "../../../../actions/back";
+import { setLaySelected } from "../../../../actions/lay";
+import { setFillOrKillSelected } from "../../../../actions/fillOrKill";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -41,8 +41,26 @@ const StyledTableRow = withStyles(theme => ({
   }
 }))(TableRow);
 
-function createData(name, abbreviation, description, settings, isOpen, toggleExpand, selected, toggleSelected) {
-  return { name, abbreviation, description, settings, isOpen, toggleExpand, selected, toggleSelected };
+function createData(
+  name,
+  abbreviation,
+  description,
+  settings,
+  isOpen,
+  toggleExpand,
+  selected,
+  toggleSelected
+) {
+  return {
+    name,
+    abbreviation,
+    description,
+    settings,
+    isOpen,
+    toggleExpand,
+    selected,
+    toggleSelected
+  };
 }
 
 const useStyles = makeStyles(theme => ({
@@ -83,8 +101,26 @@ const OrderTools = props => {
       props.tickOffsetSelected,
       props.onTickOffsetSelection
     ),
-    createData("Back", "B", props.backText, <Back />, back, toggleBack),
-    createData("Lay", "L", props.layText, <Lay />, lay, toggleLay),
+    createData(
+      "Back",
+      "B",
+      props.backText,
+      <Back />,
+      back,
+      toggleBack,
+      props.backSelected,
+      props.onBackSelection
+    ),
+    createData(
+      "Lay",
+      "L",
+      props.layText,
+      <Lay />,
+      lay,
+      toggleLay,
+      props.laySelected,
+      props.onLaySelection
+    ),
     createData(
       "Fill or Kill",
       "FOK",
@@ -186,13 +222,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onStopEntrySelection: selection => dispatch(stopEntryActions.setStopEntrySelected(null)),
-    onStopLossSelection: selection => dispatch(stopLossActions.setStopLossSelected(null)),
-    onTickOffsetSelection: selection => dispatch(tickOffsetActions.setTickOffsetSelected(null)),
-    onBackSelection: selection => dispatch(backActions.setBackSelected(null)),
-    onLaySelection: selection => dispatch(layActions.setLaySelected(null)),
-    onFillOrKillSelection: selection => dispatch(fillOrKillActions.setFillOrKillSelected(null))
-  }
+    onStopEntrySelection: selection => dispatch(setStopEntrySelected(null)),
+    onStopLossSelection: selection => dispatch(setStopLossSelected(null)),
+    onTickOffsetSelection: selection => dispatch(setTickOffsetSelected(null)),
+    onBackSelection: selection => dispatch(setBackSelected(null)),
+    onLaySelection: selection => dispatch(setLaySelected(null)),
+    onFillOrKillSelection: selection => dispatch(setFillOrKillSelected(null))
+  };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderTools);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OrderTools);
