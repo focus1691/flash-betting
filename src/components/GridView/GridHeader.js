@@ -11,8 +11,6 @@ export default ({ event, ladder, marketOpen, status, country, oneClickRef, oneCl
           ref={oneClickRef}
           onClick={e => {
             toggleOneClick();
-            // const node = oneClickRef.current;
-            // oneClickOn ? node.blur() : node.focus();
           }}
         >
           Turn One click on
