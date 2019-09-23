@@ -280,7 +280,7 @@ app.post("/api/place-order", (request, response) => {
     },
     (err, res) => {
       // console.log(res);
-      response.json(res);
+      response.json(res.result);
     }
   );
 });
