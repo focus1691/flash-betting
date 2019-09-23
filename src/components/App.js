@@ -78,7 +78,7 @@ const App = props => {
 
   useEffect(() => {
     /**
-     * Listen for Market Change Messages and create/update them
+     * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
      * @param {obj} data The market change message data: rc: [(atb, atl, batb, batl, tv, ltp, id)]
      */
     props.socket.on("mcm", data => {
@@ -103,6 +103,17 @@ const App = props => {
       props.socket.off("mcm");
       props.onReceiverLadders(ladders);
     });
+
+    /**
+     * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
+     * @param {obj} data The order change message data: 
+     */
+    props.socket.on("ocm", data => {
+      
+
+      props.socket.off("ocm");
+    });
+
   }, [props.ladders]);
 
   const renderView = () => {
