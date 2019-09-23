@@ -34,8 +34,8 @@ const Grid = props => {
             <h1>
               {props.marketOpen
                 ? new Date(props.market.event.openDate).toLocaleTimeString() +
-                " " +
-                props.market.event.name
+                  " " +
+                  props.market.event.name
                 : "No Event Selected"}
             </h1>
             {props.oneClickOn ? (
@@ -63,7 +63,7 @@ const Grid = props => {
                 </div>
               </React.Fragment>
             ) : null}
-            {props.marketOpen ? (
+            {props.marketOpen && props.marketStatus === "OPEN" ? (
               <div className={"in-play"}>
                 <span className={"in-play"}>Going in-play</span>
                 <img
@@ -72,15 +72,23 @@ const Grid = props => {
                 />
               </div>
             ) : (
-                <div className={"in-play"}>
-                  <span>Not Going in-play</span>
-                  <img
-                    src={window.location.origin + "/icons/error.png"}
-                    alt={"inactive"}
-                  />
-                </div>
-              )}
-            <span id="matched-bets">{props.marketOpen ? `Matched: ${formatCurrency(props.localeCode, props.currencyCode, sumMatchedBets(props.ladder))}` : null}</span>
+              <div className={"in-play"}>
+                <span>Not Going in-play</span>
+                <img
+                  src={window.location.origin + "/icons/error.png"}
+                  alt={"inactive"}
+                />
+              </div>
+            )}
+            <span id="matched-bets">
+              {props.marketOpen
+                ? `Matched: ${formatCurrency(
+                    props.localeCode,
+                    props.currencyCode,
+                    sumMatchedBets(props.ladder)
+                  )}`
+                : null}
+            </span>
           </th>
         </tr>
         <tr id="grid-subheader">
@@ -129,11 +137,10 @@ const Grid = props => {
   };
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
-
     if (!betOdds) return Array(4).fill(createCell("", "", key, backLay));
 
     const rows = [];
-    
+
     for (var i = 0; i < betOdds.length; i++) {
       rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
       if (i === 4) break;
@@ -181,10 +188,10 @@ const Grid = props => {
         ltp[0] < ltp[1] // #0AFD03 (Green Lower LTP)
           ? "#0AFD03"
           : ltp[0] > ltp[1] // #FC0700 (Red Higher LTP)
-            ? "#FC0700"
-            : ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
-              ? "#FFFF00"
-              : "#FFF"; // #FFF (No Value)
+          ? "#FC0700"
+          : ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
+          ? "#FFFF00"
+          : "#FFF"; // #FFF (No Value)
 
       const logo = props.runners[key].metadata.COLOURS_FILENAME
         ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
@@ -193,17 +200,17 @@ const Grid = props => {
       const orderProps =
         props.runners[key].order.stakeLiability === 0
           ? {
-            bg: "#DBEFFF",
-            text: "STAKE",
-            text2: "BACK",
-            prices: [2, 4, 6, 8, 10, 12, 14]
-          }
+              bg: "#DBEFFF",
+              text: "STAKE",
+              text2: "BACK",
+              prices: [2, 4, 6, 8, 10, 12, 14]
+            }
           : {
-            bg: "#FEE9EE",
-            text: "LIABILITY",
-            text2: "LAY",
-            prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
-          };
+              bg: "#FEE9EE",
+              text: "LIABILITY",
+              text2: "LAY",
+              prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
+            };
 
       orderProps.text2 =
         props.runners[key].order.backLay === 0 ? "BACK" : "LAY";
@@ -404,12 +411,59 @@ const Grid = props => {
     });
   };
 
+  const renderSuspended = () => {
+    return Object.keys(props.ladder).map(key => {
+      const name = props.runners[key].runnerName;
+      const number = props.runners[key].metadata.CLOTH_NUMBER
+        ? props.runners[key].metadata.CLOTH_NUMBER + ". "
+        : "";
+      const logo = props.runners[key].metadata.COLOURS_FILENAME
+        ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
+        : `${window.location.origin}/images/baseball-player.png`;
+      const rows = Array(10).fill(<td></td>);
+
+      return (
+        <React.Fragment>
+          <tr>
+            <td
+              className="grid-runner-details"
+              onClick={e => {
+                props.onSelectRunner(props.runners[key]);
+              }}
+            >
+              <img src={logo} alt={"Runner"} />
+              <span>{`${number}${name}`}</span>
+            </td>
+            {rows}
+          </tr>
+        </React.Fragment>
+      );
+    });
+  };
+
   return (
     <div id="grid-container">
-      <table className={"grid-view"}>
+      <table
+        style={props.marketStatus === "SUSPENDED" ? { opacity: 0.75 } : {}}
+        className={"grid-view"}
+      >
+        <p
+          style={
+            props.marketStatus !== "SUSPENDED" ? { display: "none" } : {}
+          }
+          id="suspended-message"
+        >
+          {props.marketStatus}
+        </p>
         <tbody>
           {renderTableHeader()}
-          {props.marketOpen ? renderTableData() : null}
+          {props.marketOpen
+            ? props.marketStatus === "OPEN"
+              ? renderTableData()
+              : props.marketStatus === "SUSPENDED"
+              ? renderSuspended()
+              : null
+            : null}
         </tbody>
       </table>
     </div>
@@ -421,6 +475,7 @@ const mapStateToProps = state => {
     oneClickOn: state.market.oneClickOn,
     currentEvent: state.sports.currentSport.currentEvent,
     marketOpen: state.market.marketOpen,
+    marketStatus: state.market.status,
     market: state.market.currentMarket,
     ladder: state.market.ladder,
     runners: state.market.runners,

@@ -11,11 +11,11 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "NEW_MARKET_STATUS":
-      return { ...state, marketOpen: true };
+      return { ...state, status: action.payload };
     case "LOAD_MARKET":
       return { ...state, currentMarket: action.payload };
     case "LOAD_LADDER":
-      return { ...state, ladder: action.payload };
+      return { ...state, marketOpen: true, ladder: action.payload };
     case "LOAD_RUNNERS":
       return { ...state, runners: action.payload };
     case "SELECT_RUNNER":

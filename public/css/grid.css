@@ -83,7 +83,7 @@
 .grid-runner-details span:nth-child(5) {
 	float: right;
 	clear: right;
-	font-size: small;
+	font-size: x-small;
 	font-weight: normal;
 }
 
@@ -184,7 +184,7 @@
 .grid-order-row {
 	margin: 0;
 	display: block;
-	font-size: small;
+	font-size: x-small;
 }
 
 .grid-order-row li {
@@ -225,4 +225,18 @@
 }
 
 .execute-order-btn {
+}
+
+#suspended-message {
+	margin: auto;
+	width: 10%;
+    position: absolute;
+    top:50%;
+    left:50%;
+	border: 3px solid #B30011;
+	padding: 10px;
+	text-align: center;
+	font-weight: bold;
+	color: #B30011;
+	cursor: pointer;
 }
