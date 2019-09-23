@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import * as actions from "../../actions/market";
 import { sortAsc, sortDes } from "../../utils/Sort";
 import GridHeader from "./GridHeader";
-import GridCell from "./GridCell";
 
 const Grid = props => {
   const oneClickRef = createRef();
@@ -53,67 +52,40 @@ const Grid = props => {
   };
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
-    if (!betOdds)
-      return Array(4).fill(
-        <GridCell
-          odds={""}
-          matched={""}
-          key={key}
-          backLay={backLay}
-          oneClickOn={props.oneClickOn}
-          updateOrder={e => {
-            props.onUpdateOrder({
-              id: key,
-              visible: true,
-              backLay: backLay,
-              price: ""
-            });
-          }}
-        />
-      );
+    if (!betOdds) return Array(4).fill(createCell("", "", key, backLay));
 
     const rows = [];
 
     for (var i = 0; i < betOdds.length; i++) {
-      rows.push(
-        <GridCell
-          odds={betOdds[i][0]}
-          matched={betOdds[i][1]}
-          key={key}
-          backLay={backLay}
-          oneClickOn={props.oneClickOn}
-          updateOrder={e => {
-            props.onUpdateOrder({
-              id: key,
-              visible: true,
-              backLay: backLay,
-              price: ""
-            });
-          }}
-        />
-      );
+      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
       if (i === 4) break;
     }
     while (rows.length < 5) {
-      rows.push(
-        <GridCell
-          odds={""}
-          matched={""}
-          key={key}
-          backLay={backLay}
-          oneClickOn={props.oneClickOn}
-          updateOrder={e => {
+      rows.push(createCell("", "", key, backLay));
+    }
+
+    return rows;
+  };
+
+  const createCell = (odds, matched, key, backLay) => {
+    return (
+      <td
+        className="grid-cell"
+        onClick={() => {
+          if (!props.oneClickOn) {
             props.onUpdateOrder({
               id: key,
               visible: true,
               backLay: backLay,
-              price: ""
+              price: odds
             });
-          }}
-        />
-      );
-    }
-    return rows;
+          }
+        }}
+      >
+        <span>{odds}</span>
+        <span>{matched}</span>
+      </td>
+    );
   };
 
   const renderTableData = () => {
