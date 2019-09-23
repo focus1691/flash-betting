@@ -1,4 +1,5 @@
 const initialState = {
+  selected: false,
   offset: 5,
   units: "Ticks",
   trailing: true,
@@ -10,6 +11,8 @@ initialState.text = `${initialState.offset} ${initialState.units} [${
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SET_STOP_LOSS_SELECTED":
+      return { ...state, selected: !state.selected };
     case "SET_STOP_LOSS_TEXT":
       return { ...state, text: action.payload };
     case "SET_STOP_LOSS_OFFSET":

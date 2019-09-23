@@ -1,3 +1,10 @@
+export const setStopEntrySelected = isSelected => {
+    return {
+        type: "SET_STOP_ENTRY_SELECTED",
+        payload: isSelected
+    }
+};
+
 export const setLTPOperator = operator => {
     return {
         type: "SET_STOP_ENTRY_OPERATOR",

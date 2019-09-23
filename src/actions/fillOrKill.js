@@ -1,3 +1,10 @@
+export const setFillOrKillSelected = isSelected => {
+    return {
+        type: "SET_FILL_OR_KILL_SELECTED",
+        payload: isSelected
+    }
+};
+
 export const setFillOrKill = seconds => {
     return {
         type: "SET_FILL_OR_KILL_TIME",

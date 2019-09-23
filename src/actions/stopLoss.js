@@ -1,3 +1,10 @@
+export const setStopLossSelected = isSelected => {
+    return {
+        type: "SET_STOP_LOSS_SELECTED",
+        payload: isSelected
+    }
+};
+
 export const setStopLossOffset = offset => {
     return {
         type: "SET_STOP_LOSS_OFFSET",
