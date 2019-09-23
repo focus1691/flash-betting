@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../actions/order";
-import * as actions2 from "../../actions/market";
+import { placeOrder } from "../../actions/order";
+import { setRunner } from "../../actions/market";
 import LadderHeader from "./LadderHeader";
 import LadderBody from "./LadderBody";
 import PercentageRow from "./PercentageRow";
@@ -74,8 +74,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
-    onPlaceOrder: order => dispatch(actions.placeOrder(order))
+    onSelectRunner: runner => dispatch(setRunner(runner)),
+    onPlaceOrder: order => dispatch(placeOrder(order))
   };
 };
 
