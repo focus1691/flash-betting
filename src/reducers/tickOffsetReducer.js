@@ -1,4 +1,5 @@
 const initialState = {
+  selected: false,
   ticks: 2,
   units: "Ticks",
   percentTrigger: 2,
@@ -10,6 +11,8 @@ initialState.text = `${initialState.ticks} ${initialState.units} [${
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SET_TICK_OFFSET_SELECTED":
+      return { ...state, selected: !state.selected };
     case "SET_TICK_OFFSET_TEXT":
       return { ...state, text: action.payload };
     case "SET_TICK_OFFSET_TICKS":

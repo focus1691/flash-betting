@@ -1,3 +1,10 @@
+export const setTickOffsetSelected = isSelected => {
+    return {
+        type: "SET_TICK_OFFSET_SELECTED",
+        payload: isSelected
+    }
+};
+
 export const setTicks = ticks => {
     return {
         type: "SET_TICK_OFFSET_TICKS",

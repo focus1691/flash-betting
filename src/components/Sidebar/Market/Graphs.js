@@ -12,7 +12,7 @@ const Graph = props => {
         2,
         props.market.marketId.length
       );
-      const URI = `https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId}&selectionId=${props.selection.runnerId}&handicap=0`;
+      const URI = `https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId}&selectionId=${props.selection.selectionId}&handicap=0`;
       setGraph(URI);
     }
   }, [props.selection]);

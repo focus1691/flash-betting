@@ -1,4 +1,4 @@
-const createFullLader = () => {
+const createFullLadder = () => {
   const Ladders = {};
   var k;
 
@@ -94,4 +94,4 @@ const createDataPoints = odds => {
   };
 };
 
-export { createFullLader, formatPriceKey, formatOdds };
+export { createFullLadder, formatPriceKey, formatOdds };

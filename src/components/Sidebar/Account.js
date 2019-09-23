@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import * as actions from "../../actions/account";
 import FlagIcon from "./FlagIcon";
 import Clock from "./Clock";
+import { formatCurrency } from "./../../utils/NumberFormat";
 
 const Account = props => {
   const [loggedIn, setLoggedIn] = useState(true);
@@ -36,15 +37,7 @@ const Account = props => {
         </p>
         <p paragraph>
           <FlagIcon code={props.countryCode || "gb"} />{" "}
-          {new Intl.NumberFormat(
-            props.localeCode
-              ? `${props.localeCode}-${props.localeCode.toUpperCase()}`
-              : "gb-GB",
-            {
-              style: "currency",
-              currency: props.currencyCode || "GBP"
-            }
-          ).format(props.balance)}
+          {formatCurrency(props.localeCode, props.currencyCode, props.balance)}
         </p>
         <Clock />
       </div>

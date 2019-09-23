@@ -8,9 +8,9 @@ import LadderView from "./LadderView/";
 import GridView from "./GridView/";
 import SocketContext from "../SocketContext";
 import { Helmet } from "react-helmet";
-import SearchInsert from "../utils/SearchInsert";
 import getQueryVariable from "../utils/GetQueryVariable";
-import { createFullLader, formatPriceKey } from "../utils/CreateFullLadder";
+import { AddRunner } from "../utils/ladder/AddRunner";
+import { UpdateRunner } from "../utils/ladder/UpdateRunner";
 
 const App = props => {
   /**
@@ -76,103 +76,42 @@ const App = props => {
 
   useEffect(() => {
     /**
-     * Listen for Market Change Messages and create/update them
-     * @param {obj} data The market change message data: rc: [(atb, atl, batb, batl, tv, ltp, id)]
+     * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
+     * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     props.socket.on("mcm", data => {
 
-      if (!props.marketOpen && data.marketDefinition && data.marketDefinition.status === 'OPEN') {
-        props.onMarketStatusChange(true);
+      if (!props.marketOpen && data.marketDefinition && data.marketDefinition.status) {
+        props.onMarketStatusChange(data.marketDefinition.status);
       }
 
-      const ladders = {};
+      var ladders = {};
 
       const length = data.rc.length;
 
       for (var i = 0; i < length; i++) {
         let key = [data.rc[i].id];
-
         if (key in props.ladders) {
-          ladders[key] = props.ladders[key];
-
-          if (data.rc[i].ltp) {
-            ladders[key].ltp = [data.rc[i].ltp, ladders[key].ltp[0]];
-          }
-          if (data.rc[i].tv) {
-            ladders[key].tv = [data.rc[i].tv, ladders[key].tv[0]];
-          }
-
-          var j;
-          ladders[key].fullLadder = Object.assign(
-            {},
-            props.ladders[key].fullLadder
-          );
-
-          // Update the atb values
-          if (data.rc[i].atb) {
-            for (j = 0; j < data.rc[i].atb.length; j++) {
-              let priceKey = formatPriceKey(data.rc[i].atb[j][0]);
-              ladders[key].fullLadder[priceKey].odds = priceKey;
-              ladders[key].fullLadder[priceKey].backMatched =
-                data.rc[i].atb[j][1];
-            }
-            let newAtb = ladders[key].atb;
-            for (j = 0; j < data.rc[i].atb.length; j++) {
-              const odds = data.rc[i].atb[j][0];
-              const matched = data.rc[i].atb[j][1];
-
-              const index = SearchInsert(newAtb, parseInt(odds));
-              if (odds == newAtb[index]) {
-                if (matched == 0) {
-                  newAtb.splice(index, 1);
-                } else {
-                  newAtb[index][1] = matched;
-                }
-              } else {
-                newAtb.splice(index, 0, data.rc[i].atb[j]);
-              }
-            }
-          }
-
-          // Update the atl values
-          if (data.rc[i].atl) {
-            for (j = 0; j < data.rc[i].atl.length; j++) {
-              let priceKey = formatPriceKey(data.rc[i].atl[j][0]);
-              ladders[key].fullLadder[priceKey].odds = priceKey;
-              ladders[key].fullLadder[priceKey].layMatched =
-                data.rc[i].atl[j][1];
-            }
-          }
+          ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
         } else {
-
-          ladders[key] = data.rc[i];
-          ladders[key].ltp = [ladders[key].ltp, ladders[key].ltp];
-          ladders[key].tv = [ladders[key].tv, ladders[key].tv];
-          ladders[key].fullLadder = createFullLader();
-          var k;
-
-          if (ladders[key].atb) {
-            for (k = 0; k < ladders[key].atb.length; k++) {
-              let priceKey = formatPriceKey(ladders[key].atb[k][0]);
-              ladders[key].fullLadder[priceKey].odds = priceKey;
-              ladders[key].fullLadder[priceKey].backMatched =
-                ladders[key].atb[k][1];
-            }
-          }
-          if (ladders[key].atl) {
-            for (k = 0; k < ladders[key].atl.length; k++) {
-              let priceKey = formatPriceKey(ladders[key].atl[k][0]);
-              ladders[key].fullLadder[priceKey].odds = priceKey;
-              ladders[key].fullLadder[priceKey].layMatched =
-                ladders[key].atl[k][1];
-            }
-          }
+          ladders[key] = AddRunner(key, data.rc[i]);
         }
       }
       console.log(ladders);
       props.socket.off("mcm");
       props.onReceiverLadders(ladders);
     });
+
+    /**
+     * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
+     * @param {obj} data The order change message data: 
+     */
+    props.socket.on("ocm", data => {
+      
+
+      props.socket.off("ocm");
+    });
+
   }, [props.ladders]);
 
   const renderView = () => {
