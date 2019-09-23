@@ -104,8 +104,7 @@
 	float: right;
 	background-color: Transparent;
 	background-repeat: no-repeat;
-	border: 2px solid;
-	border-color: #000;
+	border: 2px solid #fff;
 	color: #fff;
 	padding: 5px;
 }
