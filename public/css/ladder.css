@@ -10,7 +10,7 @@
 	position: relative;
 
 
-    width: 15%;
+    width: 18%;
     height: 100%;
 	float: left;
 	padding: 0;
@@ -28,7 +28,8 @@
 .contender-name {
 	font-size: 1em;
 	text-align: left;
-	color: #350505
+	color: #350505;
+	font-family: "Open Sans";
 }
 
 .contender-image {
@@ -71,6 +72,7 @@
 
 .ladder td {
 	font-size: x-small;
+	text-align: right;
 }
 
 .ladder td:nth-child(3){background-color: #FCC9D3;}
@@ -83,8 +85,10 @@
 .ladder tr:not(:first-child) td:not(:first-child) {
 	/* text-align: center; */
 	/* font-size: 0.8em; */
+	font-family: "Open Sans";
+	font-weight: 600;
 	font-size: x-small;
-	border: 1px solid;
+	border: 1px solid rgb(178, 181, 181);
 	padding: 2px;
 	cursor: pointer;
 	width: 20%;
