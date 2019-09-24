@@ -7,18 +7,18 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import StyledMenuItem from '../../../MaterialUI/StyledMenuItem';
-import StyledMenu from '../../../MaterialUI/StyledMenu';
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
+import StyledMenu from "../../../MaterialUI/StyledMenu";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
-    height: '50px',
-    backgroundColor: theme.palette.background.paper,
+    height: "50px",
+    backgroundColor: theme.palette.background.paper
   },
   group: {
     margin: theme.spacing(1, 0)
@@ -41,10 +41,10 @@ const StopLoss = props => {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const options = [
-    'Show some love to Material-UI',
-    'Show all notification content',
-    'Hide sensitive notification content',
-    'Hide all notification content',
+    "Show some love to Material-UI",
+    "Show all notification content",
+    "Hide sensitive notification content",
+    "Hide all notification content"
   ];
 
   React.useEffect(() => {
@@ -80,7 +80,11 @@ const StopLoss = props => {
         >
           <ListItemText
             // primary="When device is locked"
-            secondary={options[selectedIndex]}
+            secondary={
+              props.runners[selectedIndex]
+                ? props.runners[selectedIndex].runnerName
+                : ""
+            }
           />
         </ListItem>
       </List>
@@ -91,14 +95,14 @@ const StopLoss = props => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {options.map((option, index) => (
+        {Object.keys(props.runners).map(key => (
           <StyledMenuItem
-            key={option}
+            key={`stoploss${props.runners[key].runnerName}`}
             className={classes.root}
-            selected={index === selectedIndex}
-            onClick={event => handleMenuItemClick(event, index)}
+            selected={key === selectedIndex}
+            onClick={event => handleMenuItemClick(event, key)}
           >
-            {option}
+            {props.runners[key].runnerName}
           </StyledMenuItem>
         ))}
       </StyledMenu>
@@ -165,7 +169,8 @@ const mapStateToProps = state => {
     offset: state.stopLoss.offset,
     units: state.stopLoss.units,
     trailing: state.stopLoss.trailing,
-    hedged: state.stopLoss.hedged
+    hedged: state.stopLoss.hedged,
+    runners: state.market.runners
   };
 };
 
