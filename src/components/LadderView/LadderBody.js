@@ -8,7 +8,7 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList }) => {
     if (index === ltpList.length - 1) { // if last element
       return {
         tick: item,
-        color: item > ltpList[index - 1] ? 'G' : 'R'
+        color: item > ltpList[index - 1] || index === 0 ? 'G' : 'R'
       } 
     } else {
       return {
