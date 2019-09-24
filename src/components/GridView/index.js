@@ -141,8 +141,15 @@ const Grid = props => {
                     name={props.runners[key].runnerName}
                     key={key}
                     orderProps={orderProps}
-                    updateOrderValue={data => {
-                      props.onUpdateOrderValue(data);
+                    updateOrderValue={price => {
+                      console.log({
+                        id: key,
+                        stake: price
+                      });
+                      props.onUpdateOrderValue({
+                        id: key,
+                        stake: price
+                      });
                     }}
                   />
                   <span
