@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import * as actions from "../../actions/market";
 import { sortAsc, sortDes } from "../../utils/Sort";
 import GridHeader from "./GridHeader";
+import GridDetailSuspCell from "./GridDetailSuspCell";
+import GridDetailCell from "./GridDetailCell";
 
 const Grid = props => {
   const oneClickRef = createRef();
@@ -71,6 +73,12 @@ const Grid = props => {
     return (
       <td
         className="grid-cell"
+        onMouseEnter={e => {
+          console.log("mouse enter");
+        }}
+        OnMouseLeave={e => {
+          console.log("mouse leave");
+        }}
         onClick={() => {
           if (!props.oneClickOn) {
             props.onUpdateOrder({
@@ -133,19 +141,26 @@ const Grid = props => {
       return (
         <React.Fragment>
           <tr>
-            <td
-              className="grid-runner-details"
-              onClick={e => {
+            <GridDetailCell
+              runner={props.runners[key]}
+              name={props.runners[key].runnerName}
+              number={
+                props.runners[key].metadata.CLOTH_NUMBER
+                  ? props.runners[key].metadata.CLOTH_NUMBER + ". "
+                  : ""
+              }
+              logo={
+                props.runners[key].metadata.COLOURS_FILENAME
+                  ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
+                  : `${window.location.origin}/images/baseball-player.png`
+              }
+              selectRunner={e => {
                 props.onSelectRunner(props.runners[key]);
               }}
-            >
-              <img src={logo} alt={"Runner"} />
-              <span>{`${number}${name}`}</span>
-              <span style={{ background: bg }}>{ltp[0] ? ltp[0] : ""}</span>
-              <span>{}</span>
-              <span>{tv[0] ? Math.floor(tv[0]).toLocaleString() : ""}</span>
-            </td>
-
+              ltp={ltp}
+              tv={tv}
+              bg={bg}
+            />
             {renderRow(atb, batb, key, 0).reverse()}
             {renderRow(atl, batl, key, 1)}
           </tr>
@@ -328,30 +343,16 @@ const Grid = props => {
 
   const renderSuspended = () => {
     return Object.keys(props.ladder).map(key => {
-      const name = props.runners[key].runnerName;
-      const number = props.runners[key].metadata.CLOTH_NUMBER
-        ? props.runners[key].metadata.CLOTH_NUMBER + ". "
-        : "";
-      const logo = props.runners[key].metadata.COLOURS_FILENAME
-        ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
-        : `${window.location.origin}/images/baseball-player.png`;
-      const rows = Array(10).fill(<td></td>);
-
       return (
-        <React.Fragment>
-          <tr>
-            <td
-              className="grid-runner-details"
-              onClick={e => {
-                props.onSelectRunner(props.runners[key]);
-              }}
-            >
-              <img src={logo} alt={"Runner"} />
-              <span>{`${number}${name}`}</span>
-            </td>
-            {rows}
-          </tr>
-        </React.Fragment>
+        <tr>
+          <GridDetailSuspCell
+            runner={props.runners[key]}
+            selectRunner={e => {
+              props.onSelectRunner(props.runners[key]);
+            }}
+          />
+          {Array(10).fill(<td></td>)}
+        </tr>
       );
     });
   };
