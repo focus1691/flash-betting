@@ -8,8 +8,8 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef }) => {
     Object.keys(ladder).map(key => {
       return (
         <tr key={ladder[key].odds} ref = {key == ltp ? ltpRef : null}>
-          <td className={"candle-stick-col"} colSpan={2}>
-            <img src={`${window.location.origin}/icons/green-candle.png`} />
+          <td className={"candle-stick-col"} colSpan={3}>
+            <img src={`${window.location.origin}/icons/green-candle.png`} className={"candle-stick"} alt = "" />
           </td>
           <td>{ladder[key].backProfit}</td>
           <td
