@@ -7,8 +7,19 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import StyledMenuItem from '../../../MaterialUI/StyledMenuItem';
+import StyledMenu from '../../../MaterialUI/StyledMenu';
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    height: '50px',
+    backgroundColor: theme.palette.background.paper,
+  },
   group: {
     margin: theme.spacing(1, 0)
   },
@@ -26,17 +37,72 @@ const useStyles = makeStyles(theme => ({
 
 const StopLoss = props => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
+
+  const options = [
+    'Show some love to Material-UI',
+    'Show all notification content',
+    'Hide sensitive notification content',
+    'Hide all notification content',
+  ];
 
   React.useEffect(() => {
     var box1Val = props.trailing ? "x" : "-";
     var box2Val = props.hedged ? "x" : "-";
-    var unit = props.units === 'Percent' ? '(%)' : props.units;
+    var unit = props.units === "Percent" ? "(%)" : props.units;
 
     props.onTextUpdate(`${props.offset} ${unit} [${box1Val}][${box2Val}]`);
   }, [props.offset, props.units, props.hedged, props.trailing]);
 
+  const handleClickListItem = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuItemClick = (event, index) => {
+    setSelectedIndex(index);
+    setAnchorEl(null);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <React.Fragment>
+      <List component="nav" aria-label="Device settings">
+        <ListItem
+          button
+          aria-haspopup="true"
+          aria-controls="lock-menu"
+          // aria-label="when device is locked"
+          onClick={handleClickListItem}
+        >
+          <ListItemText
+            // primary="When device is locked"
+            secondary={options[selectedIndex]}
+          />
+        </ListItem>
+      </List>
+      <StyledMenu
+        id="lock-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        {options.map((option, index) => (
+          <StyledMenuItem
+            key={option}
+            className={classes.root}
+            selected={index === selectedIndex}
+            onClick={event => handleMenuItemClick(event, index)}
+          >
+            {option}
+          </StyledMenuItem>
+        ))}
+      </StyledMenu>
+
       <RadioGroup
         aria-label="stoploss"
         name="stoploss"
