@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { formatOdds } from "../../utils/ladder/CreateFullLadder";
 
-export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList }) => {
+export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) => {
   // TODO ltpList
   // const arr = [2.44, 2.50, 2.46, 2.62] for testing, replace ltpList with arr
   const coloredLTPList = ltpList.map((item, index) => {
