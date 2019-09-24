@@ -1,7 +1,7 @@
 import React from "react";
 
 export default ({ ltp, tv }) => (
-  <th colSpan={7}>
+  <th colSpan={8}>
     <div className={"percentage-row"}>
       <td colSpan={2}>
         <span>{tv}</span>
