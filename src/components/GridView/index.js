@@ -1,36 +1,14 @@
 import React, { createRef } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
-import { sortAsc, sortDes } from "../../utils/Sort";
 import GridHeader from "./GridHeader";
 import GridDetailSuspCell from "./GridDetailSuspCell";
 import GridDetailCell from "./GridDetailCell";
 import GridPriceRow from "./GridPriceRow";
+import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 
 const Grid = props => {
   const oneClickRef = createRef();
-
-  const getLadderData = ladder => {
-    const data = {
-      ltp: ladder.ltp,
-      tv: ladder.tv
-    };
-
-    if (ladder.atb) {
-      data.atb = sortDes(ladder.atb);
-    }
-    if (ladder.atl) {
-      data.atl = sortAsc(ladder.atl);
-    }
-    if (ladder.batb) {
-      data.batb = sortDes(ladder.batb);
-    }
-    if (ladder.batl) {
-      data.batl = sortAsc(ladder.batl);
-    }
-
-    return data;
-  };
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
     if (!betOdds) return Array(4).fill(createCell("", "", key, backLay));
@@ -77,10 +55,9 @@ const Grid = props => {
 
   const renderTableData = () => {
     return Object.keys(props.ladder).map(key => {
-      const { atb, atl, batb, batl, ltp, tv } = getLadderData(
+      const { atb, atl, batb, batl, ltp, tv } = DeconstructLadder(
         props.ladder[key]
       );
-      const name = props.runners[key].runnerName;
 
       const orderProps =
         props.runners[key].order.stakeLiability === 0
@@ -161,7 +138,7 @@ const Grid = props => {
                   </li>
 
                   <GridPriceRow
-                    name={name}
+                    name={props.runners[key].runnerName}
                     key={key}
                     orderProps={orderProps}
                     updateOrderValue={data => {
