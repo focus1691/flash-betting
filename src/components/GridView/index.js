@@ -4,6 +4,7 @@ import * as actions from "../../actions/market";
 import GridHeader from "./GridHeader";
 import GridDetailSuspCell from "./GridDetailSuspCell";
 import GridDetailCell from "./GridDetailCell";
+import EmptyCell from "./EmptyCell";
 import GridPriceRow from "./GridPriceRow";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 
@@ -11,7 +12,7 @@ const Grid = props => {
   const oneClickRef = createRef();
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
-    if (!betOdds) return Array(4).fill(createCell("", "", key, backLay));
+    if (!betOdds) return Array(4).fill(<EmptyCell/>);
 
     const rows = [];
 
@@ -20,7 +21,7 @@ const Grid = props => {
       if (i === 4) break;
     }
     while (rows.length < 5) {
-      rows.push(createCell("", "", key, backLay));
+      rows.push(<EmptyCell/>);
     }
 
     return rows;
