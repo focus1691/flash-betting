@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
 import { formatOdds } from "../../utils/ladder/CreateFullLadder";
 
-export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList }) => {
+export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) => {
   // TODO ltpList
   // const arr = [2.44, 2.50, 2.46, 2.62] for testing, replace ltpList with arr
   const coloredLTPList = ltpList.map((item, index) => {
     if (index === ltpList.length - 1) { // if last element
       return {
         tick: item,
-        color: item > ltpList[index - 1] ? 'G' : 'R'
+        color: item > ltpList[index - 1] || index === 0 ? 'G' : 'R'
       } 
     } else {
       return {

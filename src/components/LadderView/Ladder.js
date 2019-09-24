@@ -32,7 +32,7 @@ const Ladder = props => {
         // Always keep the 0th element as there is nothing before it
         // Then check if each element is different than the one before it
         return pos === 0 || item !== arr[pos-1];
-    }) : null
+    }) : []
 
   return (
     <div className="odds-table">
