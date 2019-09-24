@@ -5,7 +5,7 @@ import { SearchInsert } from "../SearchInsert";
 const UpdateRunner = (oldData, newData) => {
 
     if (newData.ltp) {
-        oldData.ltp = [newData.ltp, oldData.ltp[0]];
+        oldData.ltp = [newData.ltp, ...oldData.ltp];
     }
     if (newData.tv) {
       oldData.tv = [newData.tv, oldData.tv[0]];
