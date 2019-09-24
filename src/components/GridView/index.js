@@ -9,28 +9,6 @@ import GridDetailCell from "./GridDetailCell";
 const Grid = props => {
   const oneClickRef = createRef();
 
-  const renderTableHeader = () => {
-    return (
-      <GridHeader
-        event={props.market.event}
-        ladder={props.ladder}
-        marketOpen={props.marketOpen}
-        status={props.marketStatus}
-        country={{
-          localeCode: props.localeCode,
-          countryCode: props.countryCode
-        }}
-        oneClickRef={oneClickRef}
-        oneClickOn={props.oneClickOn}
-        toggleOneClick={e => {
-          props.onToggleOneClick(!props.oneClickOn);
-          const node = oneClickRef.current;
-          props.oneClickOn ? node.blur() : node.focus();
-        }}
-      />
-    );
-  };
-
   const getLadderData = ladder => {
     const data = {
       ltp: ladder.ltp,
@@ -101,24 +79,7 @@ const Grid = props => {
       const { atb, atl, batb, batl, ltp, tv } = getLadderData(
         props.ladder[key]
       );
-
       const name = props.runners[key].runnerName;
-      const number = props.runners[key].metadata.CLOTH_NUMBER
-        ? props.runners[key].metadata.CLOTH_NUMBER + ". "
-        : "";
-
-      const bg =
-        ltp[0] < ltp[1] // #0AFD03 (Green Lower LTP)
-          ? "#0AFD03"
-          : ltp[0] > ltp[1] // #FC0700 (Red Higher LTP)
-          ? "#FC0700"
-          : ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
-          ? "#FFFF00"
-          : "#FFF"; // #FFF (No Value)
-
-      const logo = props.runners[key].metadata.COLOURS_FILENAME
-        ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
-        : `${window.location.origin}/images/baseball-player.png`;
 
       const orderProps =
         props.runners[key].order.stakeLiability === 0
@@ -159,7 +120,15 @@ const Grid = props => {
               }}
               ltp={ltp}
               tv={tv}
-              bg={bg}
+              bg={
+                ltp[0] < ltp[1] // #0AFD03 (Green Lower LTP)
+                  ? "#0AFD03"
+                  : ltp[0] > ltp[1] // #FC0700 (Red Higher LTP)
+                  ? "#FC0700"
+                  : ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
+                  ? "#FFFF00"
+                  : "#FFF" // #FFF (No Value)
+              }
             />
             {renderRow(atb, batb, key, 0).reverse()}
             {renderRow(atl, batl, key, 1)}
@@ -370,7 +339,23 @@ const Grid = props => {
           {props.marketStatus}
         </p>
         <tbody>
-          {renderTableHeader()}
+          <GridHeader
+            event={props.market.event}
+            ladder={props.ladder}
+            marketOpen={props.marketOpen}
+            status={props.marketStatus}
+            country={{
+              localeCode: props.localeCode,
+              countryCode: props.countryCode
+            }}
+            oneClickRef={oneClickRef}
+            oneClickOn={props.oneClickOn}
+            toggleOneClick={e => {
+              props.onToggleOneClick(!props.oneClickOn);
+              const node = oneClickRef.current;
+              props.oneClickOn ? node.blur() : node.focus();
+            }}
+          />
           {props.marketOpen
             ? props.marketStatus === "OPEN"
               ? renderTableData()
