@@ -21,7 +21,6 @@ const colorForBack = side => {
 };
 
 const colorForLay = side => {
-  console.log(side === 0 ? "red" : "#01CC41");
   return side === 0 ? "red" : "#01CC41";
 };
 

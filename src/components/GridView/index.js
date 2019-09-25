@@ -2,6 +2,7 @@ import React, { useState, createRef } from "react";
 import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
+import { moveGraph } from "../../actions/graph";
 import GridHeader from "./GridHeader";
 import GridDetailSuspCell from "./GridDetailSuspCell";
 import GridDetailCell from "./GridDetailCell";
@@ -15,11 +16,25 @@ import {
   colorForBack,
   colorForLay
 } from "../../utils/PriceCalculator";
+import Draggable from "react-draggable";
+import DraggableGraph from "../DraggableGraph";
 
 const Grid = props => {
   const [cellHovered, setCellHovered] = useState(false);
   const [stakeSelected, setStakeSelected] = useState(null);
   const oneClickRef = createRef();
+
+  const handleDrag = (e, ui) => {
+    // const {x, y} = this.state.deltaPosition;
+    props.onMoveGraph({
+      x: props.graph.pos.x + ui.deltaX,
+      y: props.graph.pos.y + ui.deltaY
+    })
+    // setDeltaPosition({
+    //   x: deltaPosition.x + ui.deltaX,
+    //   y: deltaPosition.y + ui.deltaY
+    // });
+  };
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
     if (!betOdds) return Array(4).fill(<EmptyCell />);
@@ -265,6 +280,17 @@ const Grid = props => {
 
   return (
     <div id="grid-container">
+      <Draggable
+        defaultPosition={{ x: 0, y: 0 }}
+        bounds="body"
+        // onStart={this.handleStart}
+        onDrag={handleDrag}
+        // onStop={this.handleStop}
+      >
+        <div className="box" style={{position: 'absolute', bottom: '100px', right: '100px'}}>
+        <DraggableGraph />
+        </div>
+      </Draggable>
       <table
         style={props.marketStatus === "SUSPENDED" ? { opacity: 0.75 } : {}}
         className={"grid-view"}
@@ -313,11 +339,13 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
     market: state.market.currentMarket,
+    selection: state.market.runnerSelection,
     ladder: state.market.ladder,
     runners: state.market.runners,
     countryCode: state.account.countryCode,
     currencyCode: state.account.currencyCode,
-    localeCode: state.account.localeCode
+    localeCode: state.account.localeCode,
+    graph: state.graph
   };
 };
 
@@ -333,7 +361,8 @@ const mapDispatchToProps = dispatch => {
     onToggleStakeAndLiability: value =>
       dispatch(actions.toggleStakeAndLiability(value)),
     onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value)),
-    onToggleOneClick: active => dispatch(actions.toggleOneClick(active))
+    onToggleOneClick: active => dispatch(actions.toggleOneClick(active)),
+    onMoveGraph: pos => dispatch(moveGraph(pos))
   };
 };
 
