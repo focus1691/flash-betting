@@ -29,6 +29,13 @@ export default ({
           <img
             src={window.location.origin + "/icons/youtube.png"}
             alt={"Video"}
+            onClick={e => {
+              window.open(
+                `https://videoplayer.betfair.com/GetPlayer.do?tr=1&mID=${event.marketId}&allowPopup=false`,
+                event.name,
+                "width=500,height=500"
+              );
+            }}
           />
         </span>
         <h1>
