@@ -155,6 +155,7 @@
 .grid-video {
 	float: right;
 	padding: 5px;
+	cursor: pointer;
 }
 
 #matched-bets {
