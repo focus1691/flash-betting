@@ -11,10 +11,3 @@ export const openGraph = () => {
     payload: null
   };
 };
-
-export const moveGraph = pos => {
-  return {
-    type: "MOVE_GRAPH",
-    payload: pos
-  };
-};

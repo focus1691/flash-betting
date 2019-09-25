@@ -1,7 +1,6 @@
 const initialState = {
   transparent: false,
-  open: false,
-  pos: { x: 0, y: 0 }
+  open: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -10,8 +9,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, transparent: action.payload };
     case "OPEN_GRAPH":
       return { ...state, open: !state.open };
-    case "MOVE_GRAPH":
-      return { ...state, pos: action.payload };
     default:
       return state;
   }
