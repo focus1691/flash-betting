@@ -95,3 +95,11 @@ export const toggleVisibility = settings => {
     payload: settings
   };
 };
+
+export const changePriceType = priceType => { // stake and liability
+  return {
+    type: "SWITCH_PRICE_TYPE",
+    payload: priceType
+  };
+};
+

@@ -1,6 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
+import { changePriceType } from '../../actions/market'
 
-export default () => (
+const OrderRow = ({priceType, onChangePriceType}) => (
   <div className={"order-row"}>
     <table>
       <tbody>
@@ -24,7 +26,11 @@ export default () => (
         </td>
         <td colSpan={1} rowSpan={4}>
           <button>0</button>
-          <button>S</button>
+          <button onClick={() => {
+            onChangePriceType(priceType === "STAKE" ? "LIABILITY" : "STAKE")
+          }}>
+            {priceType === "STAKE" ? "S" : "L"}
+          </button>
           <button>K</button>
         </td>
         <td colSpan={3} rowSpan={4}>
@@ -49,3 +55,18 @@ export default () => (
     </table>
   </div>
 );
+
+const mapStateToProps = state => {
+  return {
+    priceType: state.market.priceType
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onChangePriceType: priceType => dispatch(changePriceType(priceType))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderRow);
