@@ -13,7 +13,6 @@ import { formatCurrency } from "../../utils/NumberFormat";
 const Grid = props => {
   const [cellHovered, setCellHovered] = useState(false);
   const [stakeSelected, setStakeSelected] = useState(null);
-  const [rowHovered, setRowHovered] = useState(null);
   const oneClickRef = createRef();
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
@@ -38,11 +37,9 @@ const Grid = props => {
         className="grid-cell"
         onMouseEnter={e => {
           setCellHovered(true);
-          setRowHovered(key);
 
           $(e.currentTarget).one("mouseleave", e => {
             setCellHovered(false);
-            setRowHovered(null);
           });
         }}
         onClick={() => {
