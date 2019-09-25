@@ -15,6 +15,8 @@ import {
   colorForBack,
   colorForLay
 } from "../../utils/PriceCalculator";
+import Draggable from "react-draggable";
+import DraggableGraph from "../DraggableGraph";
 
 const Grid = props => {
   const [cellHovered, setCellHovered] = useState(false);
@@ -265,6 +267,14 @@ const Grid = props => {
 
   return (
     <div id="grid-container">
+      <Draggable bounds="body">
+        <div
+          className="box"
+          style={{ position: "absolute", top: "25%", left: "50%" }}
+        >
+          <DraggableGraph />
+        </div>
+      </Draggable>
       <table
         style={props.marketStatus === "SUSPENDED" ? { opacity: 0.75 } : {}}
         className={"grid-view"}
@@ -313,11 +323,13 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
     market: state.market.currentMarket,
+    selection: state.market.runnerSelection,
     ladder: state.market.ladder,
     runners: state.market.runners,
     countryCode: state.account.countryCode,
     currencyCode: state.account.currencyCode,
-    localeCode: state.account.localeCode
+    localeCode: state.account.localeCode,
+    graph: state.graph
   };
 };
 

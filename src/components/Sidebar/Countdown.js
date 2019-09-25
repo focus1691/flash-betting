@@ -27,17 +27,16 @@ const Countdown = props => {
     // 1- Convert to seconds:
     var seconds = ms / 1000;
     // 2- Extract hours:
-    var hours = Math.abs(Math.floor(parseInt(seconds / 3600))); // 3,600 seconds in 1 hour
+    var hours = Math.floor(parseInt(seconds / 3600)); // 3,600 seconds in 1 hour
     seconds = seconds % 3600; // seconds remaining after extracting hours
     // 3- Extract minutes:
     var minutes = Math.floor(parseInt(seconds / 60)); // 60 seconds in 1 minute
     // 4- Keep only seconds not extracted to minutes:
     seconds = Math.floor(seconds % 60);
 
-    if (hours < 0 && minutes < 0 && seconds < 0) {
-      return `00:00:00`;
-    }
-    return `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
+    return Math.abs(hours) <= 0 && minutes <= 0 && seconds <= 0
+      ? "00:00:00"
+      : `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
   };
   return (
     <div>

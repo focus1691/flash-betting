@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
@@ -13,6 +13,7 @@ import { AddRunner } from "../utils/ladder/AddRunner";
 import { UpdateRunner } from "../utils/ladder/UpdateRunner";
 
 const App = props => {
+
   /**
    * Send the session key to the server to login to BetFair
    */
@@ -80,8 +81,11 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     props.socket.on("mcm", data => {
-
-      if (!props.marketOpen && data.marketDefinition && data.marketDefinition.status) {
+      if (
+        !props.marketOpen &&
+        data.marketDefinition &&
+        data.marketDefinition.status
+      ) {
         props.onMarketStatusChange(data.marketDefinition.status);
       }
 
@@ -104,14 +108,11 @@ const App = props => {
 
     /**
      * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
-     * @param {obj} data The order change message data: 
+     * @param {obj} data The order change message data:
      */
     props.socket.on("ocm", data => {
-      
-
       props.socket.off("ocm");
     });
-
   }, [props.ladders]);
 
   const renderView = () => {
@@ -131,11 +132,15 @@ const App = props => {
     <div className="horizontal-scroll-wrapper">
       <div className="root">
         {props.marketOpen ? (
-          <Helmet>
-            <title>
-              {`${new Date(props.market.marketStartTime).toLocaleTimeString()} ${props.market.marketName}  ${props.market.event.venue}`}
-            </title>
-          </Helmet>
+            <Helmet>
+              <title>
+                {`${new Date(
+                  props.market.marketStartTime
+                ).toLocaleTimeString()} ${props.market.marketName}  ${
+                  props.market.event.venue
+                }`}
+              </title>
+            </Helmet>
         ) : null}
         <Siderbar />
         <main className="content">{renderView()}</main>

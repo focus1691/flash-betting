@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { openGraph } from "../../../actions/graph";
 
 const Graph = props => {
-  const [graph, setGraph] = useState(
-    window.location.origin + "/images/betfair-logo.png"
-  );
+  const [graph, setGraph] = useState(null);
 
   useEffect(() => {
     if (props.marketOpen && props.selection) {
@@ -19,7 +18,9 @@ const Graph = props => {
 
   return (
     <div id="menu-graph">
-      <img alt={"Chart"} src={graph} />
+      {graph ? <img alt={"Chart"} src={graph} onDoubleClick={e => {
+        props.onOpenGraph();
+      }} /> : null}
     </div>
   );
 };
@@ -32,4 +33,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Graph);
+const mapDispatchToProps = dispatch => {
+  return {
+    onOpenGraph: () => dispatch(openGraph())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Graph);
