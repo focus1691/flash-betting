@@ -33,6 +33,12 @@ export const updateExcludedLadders = ladders => {
   };
 };
 
+export const updateLadderOrder = orderList => {
+  return {
+    type: "UPDATE_LADDER_ORDER",
+    payload: orderList
+  };
+};
 
 export const setRunner = runner => {
   return {

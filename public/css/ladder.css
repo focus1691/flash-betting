@@ -22,6 +22,7 @@
 * Top part of the ladder view where the details of the contender is displayed.
 **/
 .ladder-header {
+	cursor: move;
 
 }
 
@@ -30,6 +31,9 @@
 	text-align: left;
 	color: #350505;
 	font-family: "Open Sans";
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 .contender-image {
@@ -67,20 +71,24 @@
 	border-collapse: collapse;
 	table-layout: fixed;
 	border: 1px solid;
-    width: 100%;
+	width: 100%;
 }
 
 .ladder td {
 	font-size: x-small;
 	text-align: right;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
-.ladder td:nth-child(3){background-color: #FCC9D3;}
+.ladder td:nth-child(3) {background-color: #FCC9D3; }
 .ladder td:nth-child(4) {
 	font-weight: bold;
 	background: #BBBBBB;
 }
-.ladder td:nth-child(5){background-color: #BCE4FC;}
+
+.ladder td:nth-child(5) { background-color: #BCE4FC; }
 
 .ladder tr:not(:first-child) td:not(:first-child) {
 	/* text-align: center; */
@@ -187,6 +195,9 @@
 .lay-table tr {
 	width: 30px;
 	border-bottom: 1px solid;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 .lay-table td {
