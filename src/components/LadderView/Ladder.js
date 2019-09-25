@@ -24,7 +24,6 @@ const Ladder = props => {
       
   }, [ltpRef]);
   
-
   const { id, runners, ladder, market, onPlaceOrder, onSelectRunner } = props;
   
   // remove adjacent LTP values
@@ -39,8 +38,8 @@ const Ladder = props => {
     <div 
         className="odds-table" 
         style={{
-            left: isReferenceSet === false ? '0px' : `${props.order * containerRef.current.clientWidth}px`,
-            display: isReferenceSet === false ? 'none' : 'inherit'
+            left: isReferenceSet ? `${props.order * containerRef.current.clientWidth}px` : `0px`,
+            visibility: isReferenceSet ? 'visible' : 'collapse'
         }} 
         ref = {containerRef}
         onLoad={() => {
