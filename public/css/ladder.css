@@ -14,6 +14,7 @@
 	padding: 0;
 	border: 2px solid #d8d9d9;
 	visibility: collapse;
+	z-index: 0;
 }
 
 /** 
@@ -45,6 +46,9 @@
 	font-weight: bold;
 	text-align: left;
 	display: block;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 /**

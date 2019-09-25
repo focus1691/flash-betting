@@ -24,7 +24,7 @@ const Ladder = props => {
       
   }, [ltpRef]);
   
-  const { id, runners, ladder, market, onPlaceOrder, onSelectRunner } = props;
+  const { id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, resetPosition } = props;
   
   // remove adjacent LTP values
   const filteredLTPs = ladder[id].ltp[0] != undefined ? 
@@ -38,8 +38,8 @@ const Ladder = props => {
     <div 
         className="odds-table" 
         style={{
-            left: isReferenceSet ? `${props.order * containerRef.current.clientWidth}px` : `0px`,
-            visibility: isReferenceSet ? 'visible' : 'collapse'
+            left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
+            visibility: isReferenceSet ? 'visible' : 'collapse',
         }} 
         ref = {containerRef}
         onLoad={() => {
@@ -48,8 +48,18 @@ const Ladder = props => {
         <LadderHeader
             runner={runners[id]}
             runnerClick={e => {
-            onSelectRunner(runners[id]);
+                onSelectRunner(runners[id]);
             }}
+            parentRef = {containerRef}
+            moveLadder = {(offsetPos) => {
+                containerRef.current.style.left = isReferenceSet ? `${parseInt(containerRef.current.style.left, 10) + offsetPos}px` : `0px`
+                containerRef.current.style['z-index'] = 9999;
+            }}
+            returnToOrderedPos = {() => {
+                containerRef.current.style.left = isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`
+                containerRef.current.style['z-index'] = 0;
+            }}
+            
         />
 
         <div className={"ladder"} ref={tableRef}>
