@@ -13,6 +13,7 @@ import { formatCurrency } from "../../utils/NumberFormat";
 const Grid = props => {
   const [cellHovered, setCellHovered] = useState(false);
   const [stakeSelected, setStakeSelected] = useState(null);
+  const [rowHovered, setRowHovered] = useState(null);
   const oneClickRef = createRef();
 
   const renderRow = (betOdds, bestOdds, key, backLay) => {
@@ -35,6 +36,15 @@ const Grid = props => {
     return (
       <td
         className="grid-cell"
+        onMouseEnter={e => {
+          setCellHovered(true);
+          setRowHovered(key);
+
+          $(e.currentTarget).one("mouseleave", e => {
+            setCellHovered(false);
+            setRowHovered(null);
+          });
+        }}
         onClick={() => {
           if (!props.oneClickOn) {
             props.onUpdateOrder({
@@ -78,15 +88,7 @@ const Grid = props => {
 
       return (
         <React.Fragment>
-          <tr
-            onMouseEnter={e => {
-              setCellHovered(true);
-
-              $(e.currentTarget).one("mouseleave", e => {
-                setCellHovered(false);
-              });
-            }}
-          >
+          <tr>
             <GridDetailCell
               runner={props.runners[key]}
               name={props.runners[key].runnerName}
@@ -106,7 +108,7 @@ const Grid = props => {
               ltp={ltp}
               tv={tv}
               PL={
-                order.visible && cellHovered
+                order.visible
                   ? {
                       val: formatCurrency(
                         props.localeCode,
@@ -229,6 +231,7 @@ const Grid = props => {
                             id: key,
                             visible: false
                           });
+                          setStakeSelected(null);
                         }}
                       />
                     </a>
