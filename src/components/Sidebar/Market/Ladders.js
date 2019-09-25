@@ -57,7 +57,6 @@ const Ladder = props => {
               type="checkbox" 
               checked={props.excludedLadders.indexOf(key) === -1} // false automatically omits attribute
               onClick={() => {
-                console.log(props.excludedLadders.indexOf(key) === -1)
                 if (props.excludedLadders.indexOf(key) === -1) {
                   props.onChangeExcluded(props.excludedLadders.concat(key))
                 } else {

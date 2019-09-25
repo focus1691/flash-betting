@@ -1,7 +1,7 @@
 import React from "react";
 
 export default ({ runner, runnerClick }) => (
-  <div className={"ladder-header"}>
+  <div className={"ladder-header"} onMouseDown = {() => console.log(4)} onMouseUp={() => console.log(5)}>
     <h2 className="contender-name">
       {
         <img
