@@ -19,7 +19,7 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
         Object.keys(ladder).map((key, index) => {
           newOrderList[index] = key;
         })
-        
+
         onChangeLadderOrder(newOrderList);
     }
   }, [ladder])
@@ -29,7 +29,7 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
       {marketOpen && ladder
         ? Object.values(ladderOrder)
           .filter(value => excludedLadders.indexOf(value) === -1)
-          .map(value => 
+          .map((value, index) => 
           <Ladder 
             runners = {runners}
             ladder = {ladder}
@@ -37,6 +37,7 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             onPlaceOrder = {onPlaceOrder}
             onSelectRunner = {onSelectRunner}
             id = {value}
+            order = {index}
           />
         )
       : null } 

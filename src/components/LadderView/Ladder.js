@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import LadderHeader from "./LadderHeader";
 import LadderBody from "./LadderBody";
 import PercentageRow from "./PercentageRow";
@@ -6,26 +6,27 @@ import PriceRow from "./PriceRow";
 import OrderRow from "./OrderRow";
 
 const Ladder = props => {
+  const containerRef = useRef(null);
   const tableRef = useRef(null);
   const ltpRef = useRef(null);
+
+  const [isReferenceSet, setIsReferenceSet] = useState(false);
   
   useEffect(() => {
 
-    if (tableRef.current !== null) {
-        if (ltpRef.current !== null) {
-            // delay for waiting to load
-            setTimeout(() => {
-                tableRef.current.scrollTop = ltpRef.current.offsetTop; 
-                tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
-            }, 100)
-        }
+    if (tableRef.current !== null && ltpRef.current !== null) {
+        // delay for waiting to load
+        setTimeout(() => {
+            tableRef.current.scrollTop = ltpRef.current.offsetTop; 
+            tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
+        }, 100)
     }
       
   }, [ltpRef]);
   
 
   const { id, runners, ladder, market, onPlaceOrder, onSelectRunner } = props;
-
+  
   // remove adjacent LTP values
   const filteredLTPs = ladder[id].ltp[0] != undefined ? 
     ladder[id].ltp.filter((item, pos, arr) => {
@@ -35,7 +36,16 @@ const Ladder = props => {
     }) : []
 
   return (
-    <div className="odds-table">
+    <div 
+        className="odds-table" 
+        style={{
+            left: isReferenceSet === false ? '0px' : `${props.order * containerRef.current.clientWidth}px`,
+            display: isReferenceSet === false ? 'none' : 'inherit'
+        }} 
+        ref = {containerRef}
+        onLoad={() => {
+            setIsReferenceSet(true);
+        }}>
         <LadderHeader
             runner={runners[id]}
             runnerClick={e => {

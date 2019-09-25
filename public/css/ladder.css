@@ -1,5 +1,5 @@
 .ladder-container {
-	position: absolute;
+	position: relative;
 	height: 100%;
 	overflow-x:scroll;
 	overflow-y: hidden;
@@ -7,9 +7,7 @@
 }
 
 .odds-table {
-	position: relative;
-
-
+	position: absolute;
     width: 18%;
     height: 100%;
 	float: left;
