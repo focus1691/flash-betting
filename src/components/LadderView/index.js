@@ -23,7 +23,7 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
         onChangeLadderOrder(newOrderList);
     }
   }, [ladder])
-
+  
   return (
     <div className={"ladder-container"}>
       {marketOpen && ladder
@@ -37,7 +37,18 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             onPlaceOrder = {onPlaceOrder}
             onSelectRunner = {onSelectRunner}
             id = {value}
+            key = {value}
             order = {index}
+            ladderOrderList = {ladderOrder}
+
+            swapLadders = {(fromIndex, toIndex) => {
+              const newOrderList = Object.assign({}, ladderOrder);
+
+              newOrderList[fromIndex] = ladderOrder[toIndex];
+              newOrderList[toIndex] = ladderOrder[fromIndex];
+
+              onChangeLadderOrder(newOrderList);
+            }}
           />
         )
       : null } 

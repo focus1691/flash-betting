@@ -15,6 +15,8 @@
 	border: 2px solid #d8d9d9;
 	visibility: collapse;
 	z-index: 0;
+	opacity: 1.0;
+	transition: opacity 0.25s ease-in-out 0s;
 }
 
 /** 
@@ -22,7 +24,6 @@
 * Top part of the ladder view where the details of the contender is displayed.
 **/
 .ladder-header {
-	cursor: move;
 
 }
 
@@ -34,6 +35,7 @@
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
+	cursor: move;
 }
 
 .contender-image {
@@ -253,7 +255,7 @@
 	position: sticky;
 	bottom: 0;
 	display: table;
-	width: 750%;
+	width: 825%;
 	background: #fff;
 }
 
