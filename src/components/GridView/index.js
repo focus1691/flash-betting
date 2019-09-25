@@ -1,5 +1,5 @@
 import React, { useState, createRef } from "react";
-import $ from 'jquery';
+import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
 import GridHeader from "./GridHeader";
@@ -15,13 +15,13 @@ const Grid = props => {
   const [stakeSelected, setStakeSelected] = useState(null);
   const oneClickRef = createRef();
 
-  const renderRow = (betOdds, bestOdds, key, backLay, cb) => {
+  const renderRow = (betOdds, bestOdds, key, backLay) => {
     if (!betOdds) return Array(4).fill(<EmptyCell />);
 
     const rows = [];
 
     for (var i = 0; i < betOdds.length; i++) {
-      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay, cb));
+      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
       if (i === 4) break;
     }
     while (rows.length < 5) {
@@ -31,7 +31,7 @@ const Grid = props => {
     return rows;
   };
 
-  const createCell = (odds, matched, key, backLay, cb) => {
+  const createCell = (odds, matched, key, backLay) => {
     return (
       <td
         className="grid-cell"
@@ -50,10 +50,6 @@ const Grid = props => {
         <span>{matched}</span>
       </td>
     );
-  };
-
-  const updateaaa = val => {
-    console.log(val);
   };
 
   const renderTableData = () => {
@@ -84,11 +80,9 @@ const Grid = props => {
         <React.Fragment>
           <tr
             onMouseEnter={e => {
-              console.log("mouse enter");
               setCellHovered(true);
 
-              $(e.currentTarget).one('mouseleave', (e) => {
-                console.log('leave');
+              $(e.currentTarget).one("mouseleave", e => {
                 setCellHovered(false);
               });
             }}
@@ -142,8 +136,8 @@ const Grid = props => {
                   : "#FFF" // #FFF (No Value)
               }
             />
-            {renderRow(atb, batb, key, 0, updateaaa).reverse()}
-            {renderRow(atl, batl, key, 1, updateaaa)}
+            {renderRow(atb, batb, key, 0).reverse()}
+            {renderRow(atl, batl, key, 1)}
           </tr>
           <tr>
             {order.visible ? (
