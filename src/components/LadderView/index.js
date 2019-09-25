@@ -13,7 +13,9 @@ const Ladders = props => {
   return (
     <div className={"ladder-container"}>
       {props.marketOpen && props.ladder
-        ? Object.keys(props.ladder).map(key => 
+        ? Object.keys(props.ladder)
+          .filter(key => props.excludedLadders.indexOf(key) === -1)
+          .map(key => 
           <Ladder 
             runners = {props.runners}
             ladder = {props.ladder}
@@ -35,6 +37,7 @@ const mapStateToProps = state => {
     market: state.market.currentMarket,
     runners: state.market.runners,
     ladder: state.market.ladder,
+    excludedLadders: state.market.excludedLadders,
     bets: state.order.bets
   };
 };

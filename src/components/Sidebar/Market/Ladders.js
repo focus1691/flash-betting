@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { updateExcludedLadders } from "../../../actions/market";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
@@ -37,6 +38,7 @@ const Ladder = props => {
 
   const renderRunners = () => {
     return Object.keys(props.ladder).map(key => {
+      
       const { atb, atl, ltp } = getLadderData(props.ladder[key]);
 
       var color =
@@ -51,7 +53,17 @@ const Ladder = props => {
           <td style={{ background: color }}>{ltp[0]}</td>
           <td>{atb}</td>
           <td>
-            <input type="checkbox" />
+            <input 
+              type="checkbox" 
+              checked={props.excludedLadders.indexOf(key) === -1} // false automatically omits attribute
+              onClick={() => {
+                console.log(props.excludedLadders.indexOf(key) === -1)
+                if (props.excludedLadders.indexOf(key) === -1) {
+                  props.onChangeExcluded(props.excludedLadders.concat(key))
+                } else {
+                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== key))
+                }
+              }} />
           </td>
         </tr>
       );
@@ -77,8 +89,15 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
     ladder: state.market.ladder,
-    runners: state.market.runners
+    runners: state.market.runners,
+    excludedLadders: state.market.excludedLadders
   };
 };
 
-export default connect(mapStateToProps)(Ladder);
+const mapDispatchToProps = dispatch => {
+  return {
+    onChangeExcluded: excludedLadders => dispatch(updateExcludedLadders(excludedLadders))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Ladder);

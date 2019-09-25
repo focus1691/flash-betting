@@ -26,6 +26,14 @@ export const loadRunners = runners => {
   };
 };
 
+export const updateExcludedLadders = ladders => {
+  return {
+    type: "EXCLUDE_LADDERS",
+    payload: ladders
+  };
+};
+
+
 export const setRunner = runner => {
   return {
     type: "SELECT_RUNNER",

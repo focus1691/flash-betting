@@ -5,6 +5,7 @@ const initialState = {
   runnerSelection: 0,
   runners: {},
   ladder: {},
+  excludedLadders: [], 
   oneClickOn: false
 };
 
@@ -18,6 +19,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, marketOpen: true, ladder: action.payload };
     case "LOAD_RUNNERS":
       return { ...state, runners: action.payload };
+    case "EXCLUDE_LADDERS":
+      return { ...state, excludedLadders: action.payload };
     case "SELECT_RUNNER":
       return { ...state, runnerSelection: action.payload };
     case "TOGGLE_ONE_CLICK":
