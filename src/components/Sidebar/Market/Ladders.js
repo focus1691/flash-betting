@@ -37,9 +37,10 @@ const Ladder = props => {
   };
 
   const renderRunners = () => {
-    return Object.keys(props.ladder).map(key => {
+    // values of ladder order are the keys of props.ladder
+    return Object.values(props.ladderOrder).map(value => {
       
-      const { atb, atl, ltp } = getLadderData(props.ladder[key]);
+      const { atb, atl, ltp } = getLadderData(props.ladder[value]);
 
       var color =
         ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
@@ -48,19 +49,19 @@ const Ladder = props => {
 
       return (
         <tr>
-          <td>{props.runners[key].runnerName}</td>
+          <td>{props.runners[value].runnerName}</td>
           <td>{atl}</td>
           <td style={{ background: color }}>{ltp[0]}</td>
           <td>{atb}</td>
           <td>
             <input 
               type="checkbox" 
-              checked={props.excludedLadders.indexOf(key) === -1} // false automatically omits attribute
+              checked={props.excludedLadders.indexOf(value) === -1} // false automatically omits attribute
               onClick={() => {
-                if (props.excludedLadders.indexOf(key) === -1) {
-                  props.onChangeExcluded(props.excludedLadders.concat(key))
+                if (props.excludedLadders.indexOf(value) === -1) {
+                  props.onChangeExcluded(props.excludedLadders.concat(value))
                 } else {
-                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== key))
+                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== value))
                 }
               }} />
           </td>
@@ -89,7 +90,8 @@ const mapStateToProps = state => {
     market: state.market.currentMarket,
     ladder: state.market.ladder,
     runners: state.market.runners,
-    excludedLadders: state.market.excludedLadders
+    excludedLadders: state.market.excludedLadders,
+    ladderOrder: state.market.ladderOrder,
   };
 };
 
