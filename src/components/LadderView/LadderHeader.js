@@ -1,27 +1,13 @@
 import React, {useState} from "react";
 
-export default ({ runner, runnerClick, parentRef, moveLadder, returnToOrderedPos }) => {
-  const [isHeaderDown, setHeaderDown] = useState(false);
+export default ({ runner, runnerClick, setLadderDown }) => {
 
   return (
     <div className={"ladder-header"}>
       <h2 className="contender-name"
-        onMouseDown = {() => setHeaderDown(true)} 
-        onMouseUp={() => {
-          if (parentRef.current === null) return;
-          setHeaderDown(false);
-          returnToOrderedPos();
-        }}
-        onMouseLeave = {() => {
-          if (parentRef.current === null) return;
-          setHeaderDown(false);
-          returnToOrderedPos();
-        }}
-        onMouseMove = {(e) => {
-          if (parentRef.current === null) return;
-          if (!isHeaderDown) return;
-          moveLadder(e.movementX, e.clientX)
-        }}
+        onMouseDown = {() => {
+          setLadderDown(true)
+        }} 
       >
         {
           <img
