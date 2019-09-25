@@ -1,4 +1,5 @@
-import React, { createRef } from "react";
+import React, { useState, createRef } from "react";
+import $ from 'jquery';
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
 import GridHeader from "./GridHeader";
@@ -7,36 +8,33 @@ import GridDetailCell from "./GridDetailCell";
 import EmptyCell from "./EmptyCell";
 import GridPriceRow from "./GridPriceRow";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
+import { formatCurrency } from "../../utils/NumberFormat";
 
 const Grid = props => {
+  const [cellHovered, setCellHovered] = useState(false);
+  const [stakeSelected, setStakeSelected] = useState(null);
   const oneClickRef = createRef();
 
-  const renderRow = (betOdds, bestOdds, key, backLay) => {
-    if (!betOdds) return Array(4).fill(<EmptyCell/>);
+  const renderRow = (betOdds, bestOdds, key, backLay, cb) => {
+    if (!betOdds) return Array(4).fill(<EmptyCell />);
 
     const rows = [];
 
     for (var i = 0; i < betOdds.length; i++) {
-      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
+      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay, cb));
       if (i === 4) break;
     }
     while (rows.length < 5) {
-      rows.push(<EmptyCell/>);
+      rows.push(<EmptyCell />);
     }
 
     return rows;
   };
 
-  const createCell = (odds, matched, key, backLay) => {
+  const createCell = (odds, matched, key, backLay, cb) => {
     return (
       <td
         className="grid-cell"
-        onMouseEnter={e => {
-          console.log("mouse enter");
-        }}
-        OnMouseLeave={e => {
-          console.log("mouse leave");
-        }}
         onClick={() => {
           if (!props.oneClickOn) {
             props.onUpdateOrder({
@@ -54,14 +52,19 @@ const Grid = props => {
     );
   };
 
+  const updateaaa = val => {
+    console.log(val);
+  };
+
   const renderTableData = () => {
     return Object.keys(props.ladder).map(key => {
       const { atb, atl, batb, batl, ltp, tv } = DeconstructLadder(
         props.ladder[key]
       );
+      const order = props.runners[key].order;
 
       const orderProps =
-        props.runners[key].order.stakeLiability === 0
+        order.stakeLiability === 0
           ? {
               bg: "#DBEFFF",
               text: "STAKE",
@@ -75,12 +78,21 @@ const Grid = props => {
               prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
             };
 
-      orderProps.text2 =
-        props.runners[key].order.backLay === 0 ? "BACK" : "LAY";
+      orderProps.text2 = order.backLay === 0 ? "BACK" : "LAY";
 
       return (
         <React.Fragment>
-          <tr>
+          <tr
+            onMouseEnter={e => {
+              console.log("mouse enter");
+              setCellHovered(true);
+
+              $(e.currentTarget).one('mouseleave', (e) => {
+                console.log('leave');
+                setCellHovered(false);
+              });
+            }}
+          >
             <GridDetailCell
               runner={props.runners[key]}
               name={props.runners[key].runnerName}
@@ -99,6 +111,27 @@ const Grid = props => {
               }}
               ltp={ltp}
               tv={tv}
+              PL={
+                order.visible && cellHovered
+                  ? {
+                      val: formatCurrency(
+                        props.localeCode,
+                        props.currencyCode,
+                        order.stake * order.price - order.stake
+                      ).toLocaleString(),
+                      color: "#01CC41"
+                    }
+                  : !order.visible && cellHovered
+                  ? {
+                      val: formatCurrency(
+                        props.localeCode,
+                        props.currencyCode,
+                        -stakeSelected
+                      ),
+                      color: "red"
+                    }
+                  : { val: "", color: "" }
+              }
               bg={
                 ltp[0] < ltp[1] // #0AFD03 (Green Lower LTP)
                   ? "#0AFD03"
@@ -109,11 +142,11 @@ const Grid = props => {
                   : "#FFF" // #FFF (No Value)
               }
             />
-            {renderRow(atb, batb, key, 0).reverse()}
-            {renderRow(atl, batl, key, 1)}
+            {renderRow(atb, batb, key, 0, updateaaa).reverse()}
+            {renderRow(atl, batl, key, 1, updateaaa)}
           </tr>
           <tr>
-            {props.runners[key].order.visible ? (
+            {order.visible ? (
               <td colSpan={11}>
                 <ul
                   style={{
@@ -123,8 +156,7 @@ const Grid = props => {
                 >
                   <li
                     onClick={() => {
-                      let stakeLiability =
-                        props.runners[key].order.stakeLiability === 0 ? 1 : 0;
+                      let stakeLiability = order.stakeLiability === 0 ? 1 : 0;
                       props.onToggleStakeAndLiability({
                         id: key,
                         stakeLiability: stakeLiability
@@ -142,22 +174,18 @@ const Grid = props => {
                     name={props.runners[key].runnerName}
                     key={key}
                     orderProps={orderProps}
-                    updateOrderValue={price => {
-                      console.log({
-                        id: key,
-                        stake: price
-                      });
+                    updateOrderValue={stake => {
                       props.onUpdateOrderValue({
                         id: key,
-                        stake: price
+                        stake: stake
                       });
+                      setStakeSelected(stake);
                     }}
                   />
                   <span
                     className={"toggle-back-lay"}
                     onClick={() => {
-                      let backLay =
-                        props.runners[key].order.backLay === 0 ? 1 : 0;
+                      let backLay = order.backLay === 0 ? 1 : 0;
                       props.onToggleBackAndLay({ id: key, backLay: backLay });
                     }}
                   >
@@ -167,7 +195,7 @@ const Grid = props => {
                   <input
                     type="text"
                     name="stake"
-                    value={props.runners[key].order.stake}
+                    value={order.stake}
                     onChange={e => {
                       props.onUpdateOrderValue({
                         id: key,
@@ -181,7 +209,7 @@ const Grid = props => {
                     name="price"
                     min="1"
                     max="10000"
-                    value={props.runners[key].order.price}
+                    value={order.price}
                     onChange={e => {
                       props.onUpdateOrderPrice({
                         id: key,
