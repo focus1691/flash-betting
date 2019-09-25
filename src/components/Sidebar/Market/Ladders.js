@@ -26,6 +26,11 @@ const Ladder = props => {
   const classes = useStyles();
 
   const getLadderData = ladder => {
+
+    if (ladder === undefined) {
+      return {}
+    }
+
     const data = {
       ltp: ladder.ltp
     };
