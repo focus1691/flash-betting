@@ -9,6 +9,12 @@ import EmptyCell from "./EmptyCell";
 import GridPriceRow from "./GridPriceRow";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 import { formatCurrency } from "../../utils/NumberFormat";
+import {
+  calcBackProfit,
+  calcLiability,
+  colorForBack,
+  colorForLay
+} from "../../utils/PriceCalculator";
 
 const Grid = props => {
   const [cellHovered, setCellHovered] = useState(false);
@@ -69,19 +75,18 @@ const Grid = props => {
       const orderProps =
         order.stakeLiability === 0
           ? {
-              bg: "#DBEFFF",
               text: "STAKE",
               text2: "BACK",
               prices: [2, 4, 6, 8, 10, 12, 14]
             }
           : {
-              bg: "#FEE9EE",
               text: "LIABILITY",
               text2: "LAY",
               prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
             };
 
       orderProps.text2 = order.backLay === 0 ? "BACK" : "LAY";
+      orderProps.bg = order.backLay === 0 ? "#DBEFFF" : "#FEE9EE";
 
       return (
         <React.Fragment>
@@ -110,18 +115,18 @@ const Grid = props => {
                       val: formatCurrency(
                         props.localeCode,
                         props.currencyCode,
-                        order.stake * order.price - order.stake
-                      ).toLocaleString(),
-                      color: "#01CC41"
+                        calcBackProfit(order.stake, order.price, order.backLay)
+                      ),
+                      color: colorForBack(order.backLay)
                     }
                   : !order.visible && cellHovered
                   ? {
                       val: formatCurrency(
                         props.localeCode,
                         props.currencyCode,
-                        -stakeSelected
+                        calcLiability(stakeSelected, order.backLay)
                       ),
-                      color: "red"
+                      color: colorForLay(order.backLay)
                     }
                   : { val: "", color: "" }
               }
