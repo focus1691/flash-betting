@@ -2,7 +2,16 @@ import React from "react";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
 import { formatCurrency } from "./../../utils/NumberFormat";
 
-export default ({ event, ladder, marketOpen, status, country, oneClickRef, oneClickOn, toggleOneClick }) => (
+export default ({
+  event,
+  ladder,
+  marketOpen,
+  status,
+  country,
+  oneClickRef,
+  oneClickOn,
+  toggleOneClick
+}) => (
   <React.Fragment>
     <tr id="grid-header">
       <th colSpan="11">
@@ -13,7 +22,7 @@ export default ({ event, ladder, marketOpen, status, country, oneClickRef, oneCl
             toggleOneClick();
           }}
         >
-          Turn One click on
+          {`Turn One click ${oneClickOn ? "off" : "on"}`}
         </button>
         <span className={"grid-video"}>
           {" "}
@@ -24,9 +33,7 @@ export default ({ event, ladder, marketOpen, status, country, oneClickRef, oneCl
         </span>
         <h1>
           {marketOpen
-            ? new Date(event.openDate).toLocaleTimeString() +
-              " " +
-              event.name
+            ? new Date(event.openDate).toLocaleTimeString() + " " + event.name
             : "No Event Selected"}
         </h1>
         {oneClickOn ? (
