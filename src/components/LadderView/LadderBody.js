@@ -45,7 +45,9 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) 
           >
             {ladder[key].backMatched}
           </td>
-          <td>{formatOdds(ladder[key].odds)}</td>
+          <td style = {{
+            background: key == ltp ? 'yellow' : '#BBBBBB'
+          }}>{formatOdds(ladder[key].odds)}</td>
           <td
             onClick={e => {
               placeOrder({
