@@ -27,6 +27,7 @@ app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
 const database = require("./Database/helper");
+const PayPal = require("./PayPal");
 
 app.get("/api/load-session", (request, response) => {
   session.setActiveSession(request.query.sessionKey);

@@ -6,6 +6,7 @@
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
     "bluebird": "^3.5.5",
+    "braintree": "^2.20.0",
     "classnames": "^2.2.6",
     "dotenv": "^8.1.0",
     "faker": "^4.1.0",
