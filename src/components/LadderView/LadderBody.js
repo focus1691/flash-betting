@@ -18,6 +18,8 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) 
     }
   })
 
+  
+
   return (
     Object.keys(ladder).map(key => {
       const indexInLTPList = coloredLTPList.findIndex(item => item.tick == key);
@@ -43,7 +45,7 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) 
               })
             }
           >
-            {ladder[key].backMatched}
+            {ladder[key].backMatched === null ? null : Math.floor(ladder[key].backMatched)}
           </td>
           <td style = {{
             background: key == ltp ? 'yellow' : '#BBBBBB'
@@ -57,7 +59,7 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) 
               });
             }}
           >
-            {ladder[key].layMatched}
+            {ladder[key].layMatched === null ? null : Math.floor(ladder[key].layMatched)}
           </td>
           <td>{ladder[key].layProfit}</td>
         </tr>
