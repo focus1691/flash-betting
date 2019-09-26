@@ -75,7 +75,7 @@
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	table-layout: fixed;
-	border: 1px solid;
+	border: 1px solid rgb(178, 181, 181);
 	width: 100%;
 }
 
@@ -94,6 +94,11 @@
 }
 
 .ladder td:nth-child(5) { background-color: #BCE4FC; }
+
+/* .ladder td {
+	border: 1px solid rgb(178, 181, 181);
+	padding: 2px;
+} */
 
 .ladder tr:not(:first-child) td:not(:first-child) {
 	/* text-align: center; */
@@ -220,48 +225,53 @@
 
 /** PERCENTAGE ROW **/
 
-.percentage-row td:first-child {
-	width: 28.5714%;
-	padding: 0;
-	float: left;
-	background-color: #29539b;
-	background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
-	color: #fff;
-	overflow: hidden;
-	text-align: left;
-}
-
-.percentage-row td:first-child span {
+.percentage-row {
+	font-family: "Open Sans";
+	font-weight: 600;
 	font-size: small;
 }
 
-
-.percentage-row td:not(:first-child) {
-	width: 14.28572%;
-	padding: 0;
-	border: none;
-	float: left;
-	overflow: hidden;
+.percentage-row th:first-child {
+	background: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+	color: white;
+	z-index: 99999;
 }
 
-.percentage-row td:nth-child(1), .percentage-row td:nth-child(2),
-.percentage-row td:nth-child(3), .percentage-row td:nth-child(4), .percentage-row td:nth-child(5) {
-	/* border-right: 1px solid; */
+.percentage-row th {
+	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+	outline: 1px solid rgb(178, 181, 181); 
 }
+
+.percentage-row th:not(:first-child) {
+	background-color: white;
+
+}
+
+.percentage-row th:nth-child(3) {
+	background-color: #FCC9D3;
+}
+
+.percentage-row th:nth-child(5) {
+	background-color: #BCE4FC;
+}
+
 
 /** PRICE ROW **/
 
 .price-row {
 	position: sticky;
 	bottom: 0;
-	display: table;
-	width: 825%;
-	background: #fff;
+
 }
 
-.price-row td {
+.price-row th {
 	position: sticky;
-	display: inline-block;
-	border: 2px solid gray;
-	width: 11.7%;
+	bottom: 0;
+	background-color: white;
+	outline: 1px solid rgb(178, 181, 181); 
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	cursor: pointer;
+	font-size: small;
 }

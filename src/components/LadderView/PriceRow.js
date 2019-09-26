@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 
 const PriceRow = ({ ltp, tv, priceType }) => {
 
-  const prices = priceType === "STAKE" ? [2, 4, 6, 8, 10, 12, 14] : [5, 7.50, 10, 12.50, 15, 17.50, 20]
+  const prices = priceType === "STAKE" ? [2, 4, 6, 8, 10, 12, 14, 16] : [5, 7.50, 10, 12.50, 15, 17.50, 20, 22.5]
 
   return (
-    <tfoot className="price-row">
+    <tr className="price-row">
       {prices.map(price => (
-        <td>{price}</td>
+        <th>{price}</th>
       ))}
-    </tfoot>
+    </tr>
   );
 };
 
