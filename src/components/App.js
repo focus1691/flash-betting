@@ -104,6 +104,7 @@ const App = props => {
       console.log(ladders);
       props.socket.off("mcm");
       props.onReceiverLadders(ladders);
+      props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length))
     });
 
     /**
@@ -180,6 +181,7 @@ const mapDispatchToProps = dispatch => {
     onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
     onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),
     onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders)),
+    onChangeExcludedLadders: excludedLadders => dispatch(actions2.updateExcludedLadders(excludedLadders)),
     onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen))
   };
 };
