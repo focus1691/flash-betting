@@ -13,7 +13,7 @@ export default () => {
           <DraggableGraph />
         </div>
       </Draggable>
-      <h1>Welcome to Sports Trader Pro</h1>
+      <h1>Welcome to Trader Pro</h1>
       <hr />
     </div>
   );
