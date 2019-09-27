@@ -359,9 +359,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="One"
-				value={2}
+				value={props.stakeBtns[0]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateStakeBtn({id: 0, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -369,9 +369,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Two"
-				value={2}
+				value={props.stakeBtns[1]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateStakeBtn({id: 1, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -379,9 +379,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Three"
-				value={6}
+				value={props.stakeBtns[2]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateStakeBtn({id: 2, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -389,9 +389,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Four"
-				value={100}
+				value={props.stakeBtns[3]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateStakeBtn({id: 3, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -399,9 +399,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Five"
-				value={10}
+				value={props.stakeBtns[4]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateStakeBtn({id: 4, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -409,9 +409,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Six"
-				value={12}
+				value={props.stakeBtns[5]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateStakeBtn({id: 5, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -419,16 +419,14 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Seven"
-				value={14}
+				value={props.stakeBtns[6]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateStakeBtn({id: 6, value: e.target.value})}}
 				margin="normal"
 			/>
 			<button
 				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.rules": { visible: props.rules.visible, open: props.rules.open }
-				})}
+				onClick={e => saveSetting(saveSetting({ "settings.backBtns": props.backBtns }))}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
 			</button>
@@ -445,9 +443,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="One"
-				value={2.5}
+				value={props.layBtns[0]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateLayBtn({id: 0, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -455,9 +453,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Two"
-				value={5}
+				value={props.layBtns[1]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateLayBtn({id: 1, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -465,9 +463,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Three"
-				value={7.5}
+				value={props.layBtns[2]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateLayBtn({id: 2, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -475,9 +473,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Four"
-				value={10}
+				value={props.layBtns[3]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateLayBtn({id: 3, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -485,9 +483,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Five"
-				value={12.5}
+				value={props.layBtns[4]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateLayBtn({id: 4, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -495,9 +493,9 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Six"
-				value={15}
+				value={props.layBtns[5]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateLayBtn({id: 5, value: e.target.value})}}
 				margin="normal"
 			/>
 			<TextField
@@ -505,16 +503,14 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Seven"
-				value={17.5}
+				value={props.layBtns[6]}
 				inputProps={{ min: "1" }}
-				onChange={e => { }}
+				onChange={e => { props.onUpdateLayBtn({id: 6, value: e.target.value})}}
 				margin="normal"
 			/>
 			<button
 				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.rules": { visible: props.rules.visible, open: props.rules.open }
-				})}
+				onClick={e => saveSetting(saveSetting({ "settings.layBtns": JSON.parse(props.layBtns) }))}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
 			</button>
@@ -534,7 +530,9 @@ const mapStateToProps = state => {
 		marketInfo: state.settings.marketInfo,
 		rules: state.settings.rules,
 		trainingLadderAutoCenter: state.settings.trainingLadderAutoCenter,
-		ladderUnmatched: state.settings.ladderUnmatched
+		ladderUnmatched: state.settings.ladderUnmatched,
+		stakeBtns: state.settings.stakeBtns,
+		layBtns: state.settings.layBtns
 	}
 }
 
@@ -549,7 +547,9 @@ const mapDispatchToProps = dispatch => {
 		onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
 		onToggleRules: settings => dispatch(actions.toggleRules(settings)),
 		onToggleTrainingLadderAutoCenter: settings => dispatch(actions.toggleTrainingLadderAutoCenter(settings)),
-		onToggleLadderUnmatched: isSelected => dispatch(actions.toggleLadderUnmatched(isSelected))
+		onToggleLadderUnmatched: isSelected => dispatch(actions.toggleLadderUnmatched(isSelected)),
+		onUpdateStakeBtn: data => dispatch(actions.updateStakeBtn(data)),
+		onUpdateLayBtn: data => dispatch(actions.updateLayBtn(data))
 	}
 }
 

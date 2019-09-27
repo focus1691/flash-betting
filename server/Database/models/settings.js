@@ -84,6 +84,14 @@ const settingsSchema = mongoose.Schema({
             type: Boolean,
             default: false
         }
+    },
+    stakeBtns: {
+        type: Array,
+        default: [2, 4, 6, 8, 10, 12, 14]
+    },
+    layBtns: {
+        type: Array,
+        default: [2.5, 5, 7.5, 10, 12.5, 15, 17.5]
     }
 });
 

@@ -38,6 +38,8 @@ const App = props => {
         props.onToggleGraph(settings.graphs);
         props.onToggleMarketInformation(settings.marketInfo);
         props.onToggleRules(settings.rules);
+        props.onReceiveStakeBtns(settings.stakeBtns);
+        props.onReceiveLayBtns(settings.layBtns);
       });
     fetch(`/api/premium-status`)
       .then(res => res.json())
@@ -189,6 +191,8 @@ const mapDispatchToProps = dispatch => {
     onToggleMarketInformation: settings =>
       dispatch(actions.toggleMarketInformation(settings)),
     onToggleRules: settings => dispatch(actions.toggleRules(settings)),
+		onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
+		onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
     onReceiveMarket: market => dispatch(actions2.loadMarket(market)),
     onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
     onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),

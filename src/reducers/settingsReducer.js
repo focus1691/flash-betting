@@ -34,7 +34,9 @@ const initialState = {
     unmatchedBets: false,
     unmatchedBetsPL: false,
     unmatchedBetsHedge: false
-  }
+  },
+  stakeBtns: [2, 4, 6, 8, 10, 12, 14],
+  layBtns: [2.5, 5, 7.5, 10, 12.5, 15, 17.5]
 };
 
 const reducer = (state = initialState, action) => {
@@ -67,6 +69,23 @@ const reducer = (state = initialState, action) => {
       return { ...state, trainingLadderAutoCenter: action.payload };
     case "TOGGLE_LADDER_UNMATCHED_COLUMN":
       return { ...state, ladderUnmatched: action.payload };
+    case "SET_STAKE_BUTTONS":
+      return { ...state, stakeBtns: action.payload };
+    case "SET_LAY_BUTTONS":
+      return { ...state, layBtns: action.payload };
+    case "UPDATE_STAKE_BUTTON":
+      return {
+        ...state, stakeBtns: {
+          ...state.stakeBtns,
+          [action.payload.id]: action.payload.value
+        }
+      };
+    case "UPDATE_LAY_BUTTON":
+      return {
+        ...state, layBtns: {
+          [action.payload.id]: action.payload.value
+        }
+      };
     default:
       return state;
   }

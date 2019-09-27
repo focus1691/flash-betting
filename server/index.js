@@ -124,7 +124,9 @@ app.get("/api/get-user-settings", (request, response) => {
 });
 
 app.post("/api/save-user-settings", (request, response) => {
+  console.log(request.body);
   database.updateSettings(session.email, request.body).then(res => {
+    console.log(res);
     response.sendStatus(res);
   });
 });

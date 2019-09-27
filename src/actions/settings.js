@@ -116,3 +116,31 @@ export const toggleLadderUnmatched = settings => {
         payload: settings
     }
 }
+
+export const setStakeBtns = buttons => {
+    return {
+        type: "SET_STAKE_BUTTONS",
+        payload: buttons
+    }
+};
+
+export const setLayBtns = buttons => {
+    return {
+        type: "SET_LAY_BUTTONS",
+        payload: buttons
+    }
+};
+
+export const updateStakeBtn = data => {
+    return {
+        type: "UPDATE_STAKE_BUTTON",
+        payload: data
+    }
+};
+
+export const updateLayBtn = data => {
+    return {
+        type: "UPDATE_LAY_BUTTON",
+        payload: data
+    }
+};
