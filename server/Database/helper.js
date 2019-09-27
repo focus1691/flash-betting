@@ -26,6 +26,17 @@ class DatabaseHelper extends Database {
 
         })
     }
+    getPremiumStatus(user) {
+        return new Promise((res, rej) => {
+            User.findOne({
+                email: user
+            }).then(doc => {
+                res(doc.premiumMember);
+            }).catch(err => {
+                rej(err);
+            });
+        });
+    }
     getSettings(user) {
         return new Promise((res, rej) => {
             User.findOne({

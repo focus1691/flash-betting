@@ -1,5 +1,7 @@
 const initialState = {
   view: "GridView",
+  premiumMember: false,
+  premiumPopupOpen: false,
   fullscreen: false,
   trainingBalance: 1000,
   sounds: false,
@@ -39,6 +41,10 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "ACTIVE_VIEW":
       return { ...state, view: action.payload };
+    case "SET_PREMIUM_STATUS":
+      return { ...state, premiumMember: action.payload };
+    case "TOGGLE_POPUP":
+      return { ...state, premiumPopupOpen: action.payload };
     case "FULL_SCREEN":
       return { ...state, fullscreen: action.payload };
     case "SET_TRAINING_BALANCE":

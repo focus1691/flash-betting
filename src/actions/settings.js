@@ -5,6 +5,20 @@ export const setActiveView = view => {
     }
 };
 
+export const openPremiumDialog = open => {
+    return {
+        type: "TOGGLE_POPUP",
+        payload: open
+    }
+};
+
+export const setPremiumStatus = isPremium => {
+    return {
+        type: "SET_PREMIUM_STATUS",
+        payload: isPremium
+    }
+};
+
 export const setFullscreen = fullscreenSelected => {
     return {
         type: "FULL_SCREEN",

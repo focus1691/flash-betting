@@ -110,6 +110,13 @@ app.get("/api/get-account-details", (request, response) => {
   );
 });
 
+app.get("/api/premium-status", (request, response) => {
+  database.getPremiumStatus(session.email).then(premiumStatus => {
+    response.json(premiumStatus);
+  });
+});
+
+
 app.get("/api/get-user-settings", (request, response) => {
   database.getSettings(session.email).then(settings => {
     response.json(settings);

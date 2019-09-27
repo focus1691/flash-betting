@@ -11,6 +11,7 @@ import { Helmet } from "react-helmet";
 import getQueryVariable from "../utils/GetQueryVariable";
 import { AddRunner } from "../utils/ladder/AddRunner";
 import { UpdateRunner } from "../utils/ladder/UpdateRunner";
+import PremiumPopup from "./PremiumPopup";
 
 const App = props => {
 
@@ -37,6 +38,11 @@ const App = props => {
         props.onToggleGraph(settings.graphs);
         props.onToggleMarketInformation(settings.marketInfo);
         props.onToggleRules(settings.rules);
+      });
+    fetch(`/api/premium-status`)
+      .then(res => res.json())
+      .then(premiumStatus => {
+        props.setPremiumStatus(premiumStatus);
       });
   }, []);
 
@@ -123,7 +129,7 @@ const App = props => {
       case "LadderView":
         return <LadderView />;
       case "GridView":
-        return <GridView />;
+        return <GridView/>;
       default:
         return <HomeView />;
     }
@@ -144,7 +150,10 @@ const App = props => {
             </Helmet>
         ) : null}
         <Siderbar />
-        <main className="content">{renderView()}</main>
+        <main className="content">
+        {renderView()}
+        {<PremiumPopup/>}
+        </main>
       </div>
     </div>
   );
@@ -161,7 +170,9 @@ const mapStateToProps = state => {
     view: state.settings.view,
     market: state.market.currentMarket,
     marketOpen: state.market.marketOpen,
-    ladders: state.market.ladder
+    ladders: state.market.ladder,
+    premiumMember: state.settings.premiumMember,
+    premiumPopup: state.settings.premiumPopupOpen
   };
 };
 
@@ -182,7 +193,8 @@ const mapDispatchToProps = dispatch => {
     onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),
     onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders)),
     onChangeExcludedLadders: excludedLadders => dispatch(actions2.updateExcludedLadders(excludedLadders)),
-    onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen))
+    onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen)),
+    setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium))
   };
 };
 
