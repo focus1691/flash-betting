@@ -3,7 +3,6 @@ import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
 import GridHeader from "./GridHeader";
-import GridDetailSuspCell from "./GridDetailSuspCell";
 import GridDetailCell from "./GridDetailCell";
 import EmptyCell from "./EmptyCell";
 import GridPriceRow from "./GridPriceRow";
@@ -18,6 +17,7 @@ import {
 import Draggable from "react-draggable";
 import DraggableGraph from "../DraggableGraph";
 import SuspendedGrid from "./SuspendedGrid";
+import GridOrderRow from "./GridOrderRow";
 
 const Grid = props => {
 	const [cellHovered, setCellHovered] = useState(false);
@@ -146,104 +146,27 @@ const Grid = props => {
 						{renderRow(atb, batb, key, 0).reverse()}
 						{renderRow(atl, batl, key, 1)}
 					</tr>
-					<tr style={{
-						background: orderProps.bg
-					}}>
-						{order.visible ? (
-							<td colSpan={11}>
-								<ul
-									className={"grid-order-row"}
-								>
-									<li
-										onClick={() => {
-											let stakeLiability = order.stakeLiability === 0 ? 1 : 0;
-											props.onToggleStakeAndLiability({
-												id: key,
-												stakeLiability: stakeLiability
-											});
-										}}
-									>
-										<img
-											src={`${window.location.origin}/icons/change.png`}
-											alt={"Toggle"}
-										/>
-										{orderProps.text}
-									</li>
 
-									<GridPriceRow
-										name={props.runners[key].runnerName}
-										key={key}
-										orderProps={orderProps}
-										updateOrderValue={stake => {
-											props.onUpdateOrderValue({
-												id: key,
-												stake: stake
-											});
-											setStakeSelected(stake);
-										}}
-									/>
-									<span
-										className={"toggle-back-lay"}
-										onClick={() => {
-											let backLay = order.backLay === 0 ? 1 : 0;
-											props.onToggleBackAndLay({ id: key, backLay: backLay });
-										}}
-									>
-										{orderProps.text2}
-									</span>
+					<GridOrderRow
+						name={props.runners[key].runnerName}
+						runnerId={key}
+						order={order}
+						orderProps={orderProps}
+						toggleStakeAndLiability={stakeLiability => { props.onToggleStakeAndLiability(stakeLiability) }}
+						toggleBackAndLay={side => { props.onToggleBackAndLay(side) }}
+						updateOrderValue={orderValue => {
+							props.onUpdateOrderValue(orderValue);
+							setStakeSelected(orderValue.stake);
+						}}
+						updateOrderPrice={price => { props.onUpdateOrderPrice(price) }}
+						updateOrderVisibility={visibility => {
+							props.onUpdateOrderVisibility(visibility);
+							setStakeSelected(null);
+						}}
+					/>
 
-									<input
-										type="text"
-										name="stake"
-										value={order.stake}
-										onChange={e => {
-											props.onUpdateOrderValue({
-												id: key,
-												stake: e.target.value
-											});
-										}}
-									></input>
-									<span>@</span>
-									<input
-										type="number"
-										name="price"
-										min="1"
-										max="10000"
-										value={order.price}
-										onChange={e => {
-											props.onUpdateOrderPrice({
-												id: key,
-												price: e.target.value
-											});
-										}}
-									></input>
 
-									<button className={"execute-order-btn"}>Submit</button>
 
-									<span className={"grid-img-container"}>
-										<a
-											href={"#"}
-											onClick={() => {
-												return false;
-											}}
-										>
-											<img
-												src={window.location.origin + "/icons/error.png"}
-												alt={"Close"}
-												onClick={() => {
-													props.onUpdateOrderVisibility({
-														id: key,
-														visible: false
-													});
-													setStakeSelected(null);
-												}}
-											/>
-										</a>
-									</span>
-								</ul>
-							</td>
-						) : null}
-					</tr>
 				</React.Fragment>
 			);
 		});

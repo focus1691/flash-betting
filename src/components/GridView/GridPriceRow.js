@@ -1,67 +1,67 @@
 import React from "react";
 
-export default ({ name, key, orderProps, updateOrderValue }) => (
+export default ({ name, runnerId, orderProps, onUpdateOrderValue }) => (
   <React.Fragment>
     <li
-      key={`${orderProps.prices[0]}${name}`}
+      runnerId={`${orderProps.prices[0]}${name}`}
       onClick={() => {
-        updateOrderValue(orderProps.prices[0]);
+        onUpdateOrderValue(orderProps.prices[0]);
       }}
     >
       {orderProps.prices[0]}
     </li>
     <li
-      key={`${orderProps.prices[1]}${name}`}
+      runnerId={`${orderProps.prices[1]}${name}`}
       onClick={() => {
-        updateOrderValue(orderProps.prices[1]);
+        onUpdateOrderValue(orderProps.prices[1]);
       }}
     >
       {orderProps.prices[1]}
     </li>
     <li
-      key={`${orderProps.prices[2]}${name}`}
+      runnerId={`${orderProps.prices[2]}${name}`}
       onClick={() => {
-        updateOrderValue(orderProps.prices[2]);
+        onUpdateOrderValue(orderProps.prices[2]);
       }}
     >
       {orderProps.prices[2]}
     </li>
     <li
-      key={`${orderProps.prices[3]}${name}`}
+      runnerId={`${orderProps.prices[3]}${name}`}
       onClick={() => {
-        updateOrderValue(orderProps.prices[3]);
+        onUpdateOrderValue(orderProps.prices[3]);
       }}
     >
       {orderProps.prices[3]}
     </li>
     <li
-      key={`${orderProps.prices[4]}${name}`}
+      runnerId={`${orderProps.prices[4]}${name}`}
       onClick={() => {
-        updateOrderValue(orderProps.prices[4]);
+        onUpdateOrderValue(orderProps.prices[4]);
       }}
     >
       {orderProps.prices[4]}
     </li>
     <li
-      key={`${orderProps.prices[5]}${name}`}
+      runnerId={`${orderProps.prices[5]}${name}`}
       onClick={() => {
-        updateOrderValue(orderProps.prices[5]);
+        onUpdateOrderValue(orderProps.prices[5]);
       }}
     >
       {orderProps.prices[5]}
     </li>
     <li
-      key={`${orderProps.prices[6]}${name}`}
+      runnerId={`${orderProps.prices[6]}${name}`}
       onClick={() => {
-        updateOrderValue(orderProps.prices[6]);
+        onUpdateOrderValue(orderProps.prices[6]);
       }}
     >
       {orderProps.prices[6]}
     </li>
     <li
-      key={`${0}${name}`}
+      runnerId={`${0}${name}`}
       onClick={() => {
-        updateOrderValue(0);
+        onUpdateOrderValue(0);
       }}
     >
       0
