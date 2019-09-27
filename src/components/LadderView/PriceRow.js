@@ -1,22 +1,26 @@
 import React from "react";
 import { connect } from "react-redux";
 
-const PriceRow = ({ ltp, tv, priceType }) => {
+const PriceRow = ({ ltp, tv, priceType, stake, lay }) => {
 
-  const prices = priceType === "STAKE" ? [2, 4, 6, 8, 10, 12, 14, 16] : [5, 7.50, 10, 12.50, 15, 17.50, 20, 22.5]
+  const prices = priceType === "STAKE" ? stake : lay
 
   return (
     <tr className="price-row">
-      {prices.map(price => (
-        <th>{price}</th>
-      ))}
+      <th colspan="8">
+        {prices.map(price => (
+          <th>{price}</th>
+        ))}
+      </th>
     </tr>
   );
 };
 
 const mapStateToProps = state => {
   return {
-    priceType: state.market.priceType
+    priceType: state.market.priceType,
+    stake: state.settings.stakeBtns,
+    lay: state.settings.layBtns
   };
 };
 
