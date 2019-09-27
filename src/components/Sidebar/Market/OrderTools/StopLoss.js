@@ -165,7 +165,7 @@ const StopLoss = props => {
 
 const mapStateToProps = state => {
   return {
-    text: state.back.text,
+    text: state.stopLoss.text,
     offset: state.stopLoss.offset,
     units: state.stopLoss.units,
     trailing: state.stopLoss.trailing,
