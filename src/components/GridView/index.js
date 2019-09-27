@@ -17,6 +17,7 @@ import {
 } from "../../utils/PriceCalculator";
 import Draggable from "react-draggable";
 import DraggableGraph from "../DraggableGraph";
+import SuspendedGrid from "./SuspendedGrid";
 
 const Grid = props => {
 	const [cellHovered, setCellHovered] = useState(false);
@@ -249,19 +250,16 @@ const Grid = props => {
 	};
 
 	const renderSuspended = () => {
-		return Object.keys(props.ladder).map(key => {
-			return (
-				<tr>
-					<GridDetailSuspCell
-						runner={props.runners[key]}
-						selectRunner={e => {
-							props.onSelectRunner(props.runners[key]);
-						}}
-					/>
-					{Array(10).fill(<td></td>)}
-				</tr>
-			);
-		});
+		return (
+			<SuspendedGrid
+				ladder={props.ladder}
+				runners={props.runners}
+				selectRunner={runner => {
+					props.onSelectRunner(runner);
+				}}
+
+			/>
+		);
 	};
 
 	return (

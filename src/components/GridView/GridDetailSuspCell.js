@@ -1,13 +1,13 @@
 import React from "react";
 
-export default ({ runner, selectRunner }) => (
+export default ({ name, number, logo, onSelectRunner }) => (
     <td
     className="grid-runner-details"
     onClick={e => {
-        selectRunner();
+        onSelectRunner();
     }}
   >
-    <img src={runner.metadata.COLOURS_FILENAME} alt={"Runner"} />
-    <span>{`${runner.metadata.CLOTH_NUMBER}${runner.runnerName}`}</span>
+    <img src={`https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${logo}`} alt={"Runner"} />
+    <span>{`${number}. ${name}`}</span>
   </td>
 );

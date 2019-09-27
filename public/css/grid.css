@@ -227,19 +227,17 @@
 	cursor: pointer;
 }
 
-.execute-order-btn {
-}
-
 #suspended-message {
 	margin: auto;
 	width: 10%;
     position: absolute;
     top: 25%;
-    left: 50%;
+    left: 33.3%;
 	border: 3px solid #B30011;
 	padding: 10px;
 	text-align: center;
 	font-weight: bold;
+	font-size: small;
 	color: #B30011;
 	cursor: pointer;
 }
