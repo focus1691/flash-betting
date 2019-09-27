@@ -1,5 +1,4 @@
 
-import { formatPriceKey } from "./CreateFullLadder";
 import { SearchInsert } from "../SearchInsert";
 
 const UpdateRunner = (oldData, rawData) => {
@@ -19,13 +18,13 @@ const UpdateRunner = (oldData, rawData) => {
       for (var j = 0; j < rawData.atb.length; j++) {
 
         const price = rawData.atb[j][0];
-        const matched = rawData.atb[j][1];
+        const matched = Math.floor(rawData.atb[j][1]);
   
         const index = SearchInsert(newAtb, price, true);
 
         if (price === oldData.atb[index][0]) {
 
-          if (matched === 0) {
+          if (matched <= 0) {
             newAtb.splice(index, 1);
           } else {
             newAtb[index][1] = matched;
@@ -44,13 +43,13 @@ const UpdateRunner = (oldData, rawData) => {
       for (var j = 0; j < rawData.atl.length; j++) {
 
         const price = rawData.atl[j][0];
-        const matched = rawData.atl[j][1];
+        const matched = Math.floor(rawData.atl[j][1]);
   
         const index = SearchInsert(newAtl, price, false);
 
         if (price === oldData.atl[index][0]) {
 
-          if (matched === 0) {
+          if (matched <= 0) {
             newAtl.splice(index, 1);
           } else {
             newAtl[index][1] = matched;

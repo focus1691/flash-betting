@@ -20,16 +20,38 @@ const AddRunner = (key, data) => {
 
   if (runner.atb) {
     for (var i = 0; i < runner.atb.length; i++) {
-      let priceKey = formatPriceKey(runner.atb[i][0]);
-      runner.fullLadder[priceKey].odds = priceKey;
-      runner.fullLadder[priceKey].backMatched = runner.atb[i][1];
+
+      let price = formatPriceKey(runner.atb[i][0]);
+      const matched = Math.floor(runner.atb[i][1]);
+
+      if (matched <= 0) {
+
+      } else {
+        // Update the values in the full ladder: 1.01 - 1000
+        runner.fullLadder[price].odds = price;
+        runner.fullLadder[price].backMatched = runner.atb[i][1];
+
+        // Alter the value to round down
+        runner.atb[i][1] = matched;
+      }
     }
   }
   if (runner.atl) {
     for (i = 0; i < runner.atl.length; i++) {
-      let priceKey = formatPriceKey(runner.atl[i][0]);
-      runner.fullLadder[priceKey].odds = priceKey;
-      runner.fullLadder[priceKey].layMatched = runner.atl[i][1];
+
+      let price = formatPriceKey(runner.atl[i][0]);
+      const matched = Math.floor(runner.atl[i][1]);
+
+      if (matched <= 0) {
+
+      } else {
+        // Update the values in the full ladder: 1.01 - 1000
+        runner.fullLadder[price].odds = price;
+        runner.fullLadder[price].backMatched = runner.atl[i][1];
+
+        // Alter the value to round down
+        runner.atl[i][1] = matched;
+      }
     }
   }
   return runner;
