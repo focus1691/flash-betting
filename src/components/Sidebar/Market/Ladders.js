@@ -47,7 +47,7 @@ const Ladder = props => {
       const { atb, atl, ltp } = getLadderData(props.ladder[value]);
 
       var color =
-        ltp ? ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
+        ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
         
         console.log(`atl: ${atl}`);
 
