@@ -287,7 +287,7 @@ const Grid = props => {
         </p>
         <tbody>
           <GridHeader
-            event={props.market.event}
+            market={props.market}
             ladder={props.ladder}
             marketOpen={props.marketOpen}
             status={props.marketStatus}

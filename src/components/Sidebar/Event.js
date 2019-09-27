@@ -7,7 +7,14 @@ import CountDown from "./Countdown";
 
 const Event = props => {
   const classes = useStyles();
-  
+
+  const renderTitle = () => {
+    if (props.marketOpen) return new Date(
+      props.market.marketStartTime
+    ).toLocaleTimeString() + " " + props.market.marketName + " " + props.market.event.venue;
+    return "No Event Selected";
+  }
+
   return (
     <div id="sidebar-event">
       <div id="sidebar-event-section-1">
@@ -25,11 +32,7 @@ const Event = props => {
       </div>
       <AppBar className={classes.AppBar} position="static">
         <Typography variant="h6" className={classes.title}>
-          {props.marketOpen
-            ? new Date(props.market.event.openDate).toLocaleTimeString() +
-              " " +
-              props.market.event.name
-            : "No Event Selected"}
+          {renderTitle()}
         </Typography>
       </AppBar>
     </div>
@@ -38,8 +41,8 @@ const Event = props => {
 
 const mapStateToProps = state => {
   return {
-	currentEvent: state.sports.currentSport.currentEvent,
-	market: state.market.currentMarket,
+    currentEvent: state.sports.currentSport.currentEvent,
+    market: state.market.currentMarket,
     marketOpen: state.market.marketOpen
   };
 };

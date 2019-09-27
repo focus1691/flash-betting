@@ -4,7 +4,6 @@ import { updateExcludedLadders } from "../../../actions/market";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import { sortAsc, sortDes } from "../../../utils/Sort";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
