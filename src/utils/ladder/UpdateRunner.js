@@ -2,50 +2,65 @@
 import { formatPriceKey } from "./CreateFullLadder";
 import { SearchInsert } from "../SearchInsert";
 
-const UpdateRunner = (oldData, newData) => {
+const UpdateRunner = (oldData, rawData) => {
 
-    if (newData.ltp) {
-        oldData.ltp = [newData.ltp, ...oldData.ltp];
+    if (rawData.ltp) {
+        oldData.ltp = [rawData.ltp, ...oldData.ltp];
     }
-    if (newData.tv) {
-      oldData.tv = [newData.tv, oldData.tv[0]];
+    if (rawData.tv) {
+      oldData.tv = [rawData.tv, oldData.tv[0]];
     }
 
     // Update the atb values
-    if (newData.atb) {
-      for (var j = 0; j < newData.atb.length; j++) {
-        let priceKey = formatPriceKey(newData.atb[j][0]);
-        oldData.fullLadder[priceKey].odds = priceKey;
-        oldData.fullLadder[priceKey].backMatched =
-          newData.atb[j][1];
-      }
-      let newAtb = oldData.atb;
-      for (j = 0; j < newData.atb.length; j++) {
-        const odds = newData.atb[j][0];
-        const matched = newData.atb[j][1];
+    if (rawData.atb) {
 
-        const index = SearchInsert(newAtb, parseInt(odds));
-        if (odds == newAtb[index]) {
-          if (matched == 0) {
+      let newAtb = oldData.atb;
+
+      for (var j = 0; j < rawData.atb.length; j++) {
+
+        const price = rawData.atb[j][0];
+        const matched = rawData.atb[j][1];
+  
+        const index = SearchInsert(newAtb, price, true);
+
+        if (price === oldData.atb[index][0]) {
+
+          if (matched === 0) {
             newAtb.splice(index, 1);
           } else {
             newAtb[index][1] = matched;
           }
         } else {
-          newAtb.splice(index, 0, newData.atb[j]);
+          newAtb.splice(index, 0, rawData.atb[j]);
         }
       }
     }
 
     // Update the atl values
-    if (newData.atl) {
-      for (j = 0; j < newData.atl.length; j++) {
-        let priceKey = formatPriceKey(newData.atl[j][0]);
-        oldData.fullLadder[priceKey].odds = priceKey;
-        oldData.fullLadder[priceKey].layMatched =
-          newData.atl[j][1];
+    if (rawData.atl) {
+
+      let newAtl = oldData.atl;
+
+      for (var j = 0; j < rawData.atl.length; j++) {
+
+        const price = rawData.atl[j][0];
+        const matched = rawData.atl[j][1];
+  
+        const index = SearchInsert(newAtl, price, false);
+
+        if (price === oldData.atl[index][0]) {
+
+          if (matched === 0) {
+            newAtl.splice(index, 1);
+          } else {
+            newAtl[index][1] = matched;
+          }
+        } else {
+          newAtl.splice(index, 0, rawData.atl[j]);
+        }
       }
     }
+
     return oldData;
 }
 

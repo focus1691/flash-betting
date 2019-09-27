@@ -1,9 +1,16 @@
-const SearchInsert = (nums, target) => {
+const SearchInsert = (nums, target, reversed) => {
     var start = 0;
     var end = nums.length - 1;
+
+    if (reversed) {
+        let temp = start;
+        start = end;
+        end = start;
+    }
+
     var index = Math.floor((end - start) / 2) + start;
     
-    if (target > nums[nums.length-1]) {
+    if (nums.length === 0 || target > nums[nums.length-1]) {
         // The target is beyond the end of this array.
         index = nums.length;
     }

@@ -105,6 +105,7 @@ const App = props => {
           ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
         } else {
           ladders[key] = AddRunner(key, data.rc[i]);
+          console.log(ladders[key]);
         }
       }
       console.log(ladders);

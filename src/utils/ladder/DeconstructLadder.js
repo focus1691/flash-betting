@@ -7,16 +7,16 @@ const DeconstructLadder = ladder => {
   };
 
   if (ladder.atb) {
-    data.atb = sortDes(ladder.atb);
+    data.atb = ladder.atb;
   }
   if (ladder.atl) {
-    data.atl = sortAsc(ladder.atl);
+    data.atl = ladder.atl;
   }
   if (ladder.batb) {
-    data.batb = sortDes(ladder.batb);
+    data.batb = ladder.batb;
   }
   if (ladder.batl) {
-    data.batl = sortAsc(ladder.batl);
+    data.batl = ladder.batl;
   }
 
   return data;

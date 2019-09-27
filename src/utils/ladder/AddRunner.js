@@ -1,4 +1,5 @@
 import { createFullLadder, formatPriceKey } from "./CreateFullLadder";
+import { sortAsc, sortDes } from "../Sort";
 
 const AddRunner = (key, data) => {
   const runner = data;
@@ -13,6 +14,9 @@ const AddRunner = (key, data) => {
     stake: 2,
     price: 0
   };
+
+  sortDes(runner.atb);
+  sortAsc(runner.atl);
 
   if (runner.atb) {
     for (var i = 0; i < runner.atb.length; i++) {
