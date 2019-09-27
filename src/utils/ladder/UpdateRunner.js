@@ -22,14 +22,15 @@ const UpdateRunner = (oldData, rawData) => {
   
         const index = SearchInsert(newAtb, price, true);
 
-        if (price === oldData.atb[index][0]) {
-
-          if (matched <= 0) {
+        if (matched <= 0) {
+          if (price === oldData.atb[index][0]) {
             newAtb.splice(index, 1);
-          } else {
-            newAtb[index][1] = matched;
           }
-        } else {
+        }
+        else if (price === oldData.atb[index][0]) {
+          newAtb[index][1] = matched;
+        }
+        else {
           newAtb.splice(index, 0, rawData.atb[j]);
         }
       }
@@ -47,14 +48,15 @@ const UpdateRunner = (oldData, rawData) => {
   
         const index = SearchInsert(newAtl, price, false);
 
-        if (price === oldData.atl[index][0]) {
-
-          if (matched <= 0) {
+        if (matched <= 0) {
+          if (price === oldData.atl[index][0]) {
             newAtl.splice(index, 1);
-          } else {
-            newAtl[index][1] = matched;
           }
-        } else {
+        }
+        else if (price === oldData.atl[index][0]) {
+          newAtl[index][1] = matched;
+        }
+        else {
           newAtl.splice(index, 0, rawData.atl[j]);
         }
       }
