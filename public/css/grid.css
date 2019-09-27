@@ -186,8 +186,8 @@
 
 .grid-order-row {
 	margin: 0;
-	display: block;
-	font-size: x-small;
+	font-size: small;
+	text-align: center;
 }
 
 .grid-order-row li {

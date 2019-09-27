@@ -145,13 +145,12 @@ const Grid = props => {
 						{renderRow(atb, batb, key, 0).reverse()}
 						{renderRow(atl, batl, key, 1)}
 					</tr>
-					<tr>
+					<tr style={{
+						background: orderProps.bg
+					}}>
 						{order.visible ? (
 							<td colSpan={11}>
 								<ul
-									style={{
-										background: orderProps.bg
-									}}
 									className={"grid-order-row"}
 								>
 									<li
