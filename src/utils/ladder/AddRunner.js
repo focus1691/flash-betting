@@ -25,11 +25,12 @@ const AddRunner = (key, data) => {
       const matched = Math.floor(runner.atb[i][1]);
 
       if (matched <= 0) {
-
+        runner.atb.splice(i, 1);
+        i--;
       } else {
         // Update the values in the full ladder: 1.01 - 1000
         runner.fullLadder[price].odds = price;
-        runner.fullLadder[price].backMatched = runner.atb[i][1];
+        runner.fullLadder[price].backMatched = matched;
 
         // Alter the value to round down
         runner.atb[i][1] = matched;
@@ -43,11 +44,12 @@ const AddRunner = (key, data) => {
       const matched = Math.floor(runner.atl[i][1]);
 
       if (matched <= 0) {
-
+        runner.atl.splice(i, 1);
+        i--;
       } else {
         // Update the values in the full ladder: 1.01 - 1000
         runner.fullLadder[price].odds = price;
-        runner.fullLadder[price].backMatched = runner.atl[i][1];
+        runner.fullLadder[price].layMatched = matched;
 
         // Alter the value to round down
         runner.atl[i][1] = matched;
