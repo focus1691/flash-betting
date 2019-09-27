@@ -5,7 +5,6 @@ import * as actions from "../../actions/market";
 import GridHeader from "./GridHeader";
 import GridDetailCell from "./GridDetailCell";
 import EmptyCell from "./EmptyCell";
-import GridPriceRow from "./GridPriceRow";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 import { formatCurrency } from "../../utils/NumberFormat";
 import {
@@ -164,9 +163,6 @@ const Grid = props => {
 							setStakeSelected(null);
 						}}
 					/>
-
-
-
 				</React.Fragment>
 			);
 		});

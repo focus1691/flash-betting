@@ -13,7 +13,8 @@ const calcBackProfit = (stake, price, side) => {
 };
 
 const calcLiability = (stake, side) => {
-  return (side === 0) ? Math.abs(stake) : -stake;
+  if (side === 0) return -stake;
+  return Math.abs(stake);
 };
 
 const colorForBack = side => {

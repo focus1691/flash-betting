@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions/settings';
-import useStyles from '../../Styles/Styles';
+import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
@@ -9,21 +9,42 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Checkbox from '@material-ui/core/Checkbox';
+import TrainingBank from "./TrainingBank";
+
+const useStyles = makeStyles(theme => ({
+	appBar: {
+		background: "#303030",
+		color: "orange",
+		fontWeight: "900",
+		border: "2px solid #fff"
+	},
+	title: {
+		textAlign: "center",
+		fontWeight: "bold"
+	},
+	group: {
+		margin: theme.spacing(1, 0)
+	},
+	textField: {
+		width: 50,
+		margin: theme.spacing(2),
+	},
+}));
 
 const Settings = props => {
 	const classes = useStyles();
 
 	const saveSetting = setting => {
 		fetch(`/api/save-user-settings`,
-		{
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			method: 'POST',
-			body: JSON.stringify(setting)
-		})
-		.then(res => {})
+			{
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				method: 'POST',
+				body: JSON.stringify(setting)
+			})
+			.then(res => { })
 	};
 
 	const handleChange = () => {
@@ -32,17 +53,12 @@ const Settings = props => {
 
 	return (
 		<div>
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Training Bank
-				</Typography>
-			</AppBar>
-			<TextField
-				id="standard-name"
-				label="Bank Balance"
-				margin="normal"
-				onChange={val => props.onReceiveTrainingBalance(val)}
+
+			<TrainingBank
+				receiveTrainingBalance={balance => props.onReceiveTrainingBalance(balance)}
+				styles={classes}
 			/>
+
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
 					Sound
@@ -59,7 +75,7 @@ const Settings = props => {
 				}
 				label="Sounds"
 			/>
-			<button className={"save-btn"} onClick={e => saveSetting({"settings.sounds": props.sounds})}><img alt={"Save"} src={window.location.origin + '/icons/save.png'}/></button>
+			<button className={"save-btn"} onClick={e => saveSetting({ "settings.sounds": props.sounds })}><img alt={"Save"} src={window.location.origin + '/icons/save.png'} /></button>
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
@@ -332,6 +348,177 @@ const Settings = props => {
 					labelPlacement="end"
 				/>
 			</RadioGroup>
+
+			<AppBar className={classes.appBar} position="static">
+				<Typography variant="h6" className={classes.title}>
+					Stake Button
+				</Typography>
+			</AppBar>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="One"
+				value={2}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Two"
+				value={2}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Three"
+				value={6}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Four"
+				value={100}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Five"
+				value={10}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Six"
+				value={12}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Seven"
+				value={14}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					"settings.rules": { visible: props.rules.visible, open: props.rules.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
+
+
+
+			<AppBar className={classes.appBar} position="static">
+				<Typography variant="h6" className={classes.title}>
+					Liability Button
+				</Typography>
+			</AppBar>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="One"
+				value={2.5}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Two"
+				value={5}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Three"
+				value={7.5}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Four"
+				value={10}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Five"
+				value={12.5}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Six"
+				value={15}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<TextField
+				id="standard-number"
+				className={classes.textField}
+				type="number"
+				label="Seven"
+				value={17.5}
+				inputProps={{ min: "1" }}
+				onChange={e => { }}
+				margin="normal"
+			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					"settings.rules": { visible: props.rules.visible, open: props.rules.open }
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
+
 		</div>
 	);
 };
