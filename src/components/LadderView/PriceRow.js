@@ -5,10 +5,13 @@ const PriceRow = ({ ltp, tv, priceType, stake, lay }) => {
 
   const prices = priceType === "STAKE" ? stake : lay
 
+  const castedPrices = Array.isArray(prices) ? prices : Object.values(prices)
+  
+
   return (
     <tr className="price-row">
       <th colspan="8">
-        {prices.map(price => (
+        {castedPrices.map(price => (
           <th>{price}</th>
         ))}
       </th>

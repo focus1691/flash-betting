@@ -79,12 +79,12 @@ const Grid = props => {
 					? {
 						text: "STAKE",
 						text2: "BACK",
-						prices: [2, 4, 6, 8, 10, 12, 14]
+						prices: props.stakeBtns
 					}
 					: {
 						text: "LIABILITY",
 						text2: "LAY",
-						prices: [5, 7.5, 10, 12.5, 15, 17.5, 20]
+						prices: props.layBtns
 					};
 
 			orderProps.text2 = order.backLay === 0 ? "BACK" : "LAY";
@@ -242,6 +242,8 @@ const mapStateToProps = state => {
 		selection: state.market.runnerSelection,
 		ladder: state.market.ladder,
 		runners: state.market.runners,
+		stakeBtns: state.settings.stakeBtns,
+		layBtns: state.settings.layBtns,
 		countryCode: state.account.countryCode,
 		currencyCode: state.account.currencyCode,
 		localeCode: state.account.localeCode,

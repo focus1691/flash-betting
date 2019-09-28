@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { formatOdds } from "../../utils/ladder/CreateFullLadder";
+import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 
 export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) => {
   // TODO ltpList
@@ -37,29 +37,31 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [] }) 
           </td>
           <td>{ladder[key].backProfit}</td>
           <td
+            style={ladder[key].backMatched ? {background: "#F694AA"} : null}
             onClick={e =>
               placeOrder({
                 side: "BACK",
-                price: formatOdds(ladder[key].odds),
+                price: formatPrice(ladder[key].odds),
                 selectionId: selectionId
               })
             }
           >
-            {ladder[key].backMatched === null ? null : Math.floor(ladder[key].backMatched)}
+            {ladder[key].backMatched}
           </td>
           <td style = {{
             background: key == ltp ? 'yellow' : '#BBBBBB'
-          }}>{formatOdds(ladder[key].odds)}</td>
+          }}>{formatPrice(ladder[key].odds)}</td>
           <td
+            style={ladder[key].layMatched ? {background: "#75C2FD"} : null} 
             onClick={e => {
               placeOrder({
                 side: "LAY",
-                price: formatOdds(ladder[key].odds),
+                price: formatPrice(ladder[key].odds),
                 selectionId: selectionId
               });
             }}
           >
-            {ladder[key].layMatched === null ? null : Math.floor(ladder[key].layMatched)}
+            {ladder[key].layMatched}
           </td>
           <td>{ladder[key].layProfit}</td>
         </tr>
