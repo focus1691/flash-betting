@@ -95,14 +95,8 @@
 
 .ladder td:nth-child(5) { background-color: #BCE4FC; }
 
-/* .ladder td {
-	border: 1px solid rgb(178, 181, 181);
-	padding: 2px;
-} */
-
 .ladder tr:not(:first-child) td:not(:first-child) {
-	/* text-align: center; */
-	/* font-size: 0.8em; */
+	text-align: center;
 	font-family: "Open Sans";
 	font-weight: 600;
 	font-size: x-small;
