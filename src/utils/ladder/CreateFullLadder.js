@@ -68,7 +68,7 @@ const formatPriceKey = key => {
   return (Math.round(key * 100) / 100).toFixed(2);
 };
 
-const formatOdds = odds => {
+const formatPrice = odds => {
 
   odds = parseFloat(odds);
 
@@ -94,4 +94,4 @@ const createDataPoints = odds => {
   };
 };
 
-export { createFullLadder, formatPriceKey, formatOdds };
+export { createFullLadder, formatPriceKey, formatPrice };
