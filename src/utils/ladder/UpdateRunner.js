@@ -18,7 +18,7 @@ const UpdateRunner = (ladder, rawData) => {
       for (var j = 0; j < rawData.atb.length; j++) {
 
         // Filter out values > 0 and < 1
-        if (matched > 0 && Math.floor(rawData.atb[j][1] <= 0)) continue;
+        if (rawData.atb[j][1] > 0 && Math.floor(rawData.atb[j][1] <= 0)) continue;
 
         const price = rawData.atb[j][0];
         const matched = Math.floor(rawData.atb[j][1]);
@@ -47,7 +47,7 @@ const UpdateRunner = (ladder, rawData) => {
       for (var j = 0; j < rawData.atl.length; j++) {
 
         // Filter out values > 0 and < 1
-        if (matched > 0 && Math.floor(rawData.atl[j][1] <= 0)) continue;
+        if (rawData.atl[j][1] > 0 && Math.floor(rawData.atl[j][1] <= 0)) continue;
 
         const price = rawData.atl[j][0];
         const matched = Math.floor(rawData.atl[j][1]);
