@@ -1,21 +1,24 @@
 
 import { SearchInsert } from "../SearchInsert";
 
-const UpdateRunner = (oldData, rawData) => {
+const UpdateRunner = (ladder, rawData) => {
 
     if (rawData.ltp) {
-        oldData.ltp = [rawData.ltp, ...oldData.ltp];
+      ladder.ltp = [rawData.ltp, ...ladder.ltp];
     }
     if (rawData.tv) {
-      oldData.tv = [rawData.tv, oldData.tv[0]];
+      ladder.tv = [rawData.tv, ladder.tv[0]];
     }
 
     // Update the atb values
     if (rawData.atb) {
 
-      let newAtb = oldData.atb;
+      let newAtb = ladder.atb;
 
       for (var j = 0; j < rawData.atb.length; j++) {
+
+        // Filter out values > 0 and < 1
+        if (rawData.atb[j][1] > 0 && Math.floor(rawData.atb[j][1] <= 0)) continue;
 
         const price = rawData.atb[j][0];
         const matched = Math.floor(rawData.atb[j][1]);
@@ -23,15 +26,15 @@ const UpdateRunner = (oldData, rawData) => {
         const index = SearchInsert(newAtb, price, true);
 
         if (matched <= 0) {
-          if (price === oldData.atb[index][0]) {
+          if (price === newAtb[index][0]) {
             newAtb.splice(index, 1);
           }
         }
-        else if (price === oldData.atb[index][0]) {
+        else if (price === newAtb[index][0]) {
           newAtb[index][1] = matched;
         }
         else {
-          newAtb.splice(index, 0, rawData.atb[j]);
+          newAtb.splice(index, 0, [price, matched]);
         }
       }
     }
@@ -39,9 +42,12 @@ const UpdateRunner = (oldData, rawData) => {
     // Update the atl values
     if (rawData.atl) {
 
-      let newAtl = oldData.atl;
+      let newAtl = ladder.atl;
 
       for (var j = 0; j < rawData.atl.length; j++) {
+
+        // Filter out values > 0 and < 1
+        if (rawData.atl[j][1] > 0 && Math.floor(rawData.atl[j][1] <= 0)) continue;
 
         const price = rawData.atl[j][0];
         const matched = Math.floor(rawData.atl[j][1]);
@@ -49,20 +55,20 @@ const UpdateRunner = (oldData, rawData) => {
         const index = SearchInsert(newAtl, price, false);
 
         if (matched <= 0) {
-          if (price === oldData.atl[index][0]) {
+          if (price === newAtl[index][0]) {
             newAtl.splice(index, 1);
           }
         }
-        else if (price === oldData.atl[index][0]) {
+        else if (price === newAtl[index][0]) {
           newAtl[index][1] = matched;
         }
         else {
-          newAtl.splice(index, 0, rawData.atl[j]);
+          newAtl.splice(index, 0, [price, matched]);
         }
       }
     }
 
-    return oldData;
+    return ladder;
 }
 
 export { UpdateRunner };
