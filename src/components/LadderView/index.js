@@ -5,7 +5,8 @@ import { setRunner, updateLadderOrder } from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
-const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, onChangeStopLossList}) => {
+const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
+                  stopLossOffset, stopLossUnits, stopLossTrailing, stopLossHedged , onChangeStopLossList}) => {
 
   useEffect(() => {
     if (Object.keys(ladderOrder).length === 0 && Object.keys(ladder).length > 0) {
@@ -40,19 +41,23 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             ladderOrderList = {ladderOrder}
             stopLoss = { stopLossList.find(stopLoss => stopLoss.selectionId == value) }
             changeStopLossList = {newStopLoss => {
-              const calculatedStopLoss = {...newStopLoss, tickOffset: 0} // NEEDS TO BE CALCULATED
 
-              const stopLossIndex = stopLossList.findIndex(stopLoss => stopLoss.selectionId == calculatedStopLoss.selectionId)
+              const stopLossIndex = stopLossList.findIndex(stopLoss => stopLoss.selectionId == newStopLoss.selectionId)
 
-              console.log(calculatedStopLoss)
+              const adjustedNewStopLoss = {...newStopLoss, 
+                tickOffset: newStopLoss.customStopLoss ? 0 : stopLossOffset,
+                trailing: newStopLoss.customStopLoss ? false : stopLossTrailing
+              }
 
               if (stopLossIndex === -1) {
-                const newStopLossList = stopLossList.concat(calculatedStopLoss)
+
+                const newStopLossList = stopLossList.concat(adjustedNewStopLoss)
                 onChangeStopLossList(newStopLossList);
 
-              } else {
+              } else { // this is when you manually change it
+
                 const newStopLossList = [...stopLossList]; 
-                newStopLossList[stopLossIndex] = calculatedStopLoss;
+                newStopLossList[stopLossIndex] = adjustedNewStopLoss;
                 onChangeStopLossList(newStopLossList);
               }
 
@@ -83,6 +88,11 @@ const mapStateToProps = state => {
     ladderOrder: state.market.ladderOrder,
     bets: state.order.bets,
     stopLossList: state.stopLoss.list,
+    stopLossSelected: state.stopLoss.selected,
+    stopLossOffset: state.stopLoss.offset,
+    stopLossUnits: state.stopLoss.ticks,
+    stopLossTrailing: state.stopLoss.trailing,
+    stopLossHedged: state.stopLoss.hedged,
 
   };
 };

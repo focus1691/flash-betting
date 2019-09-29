@@ -85,9 +85,8 @@ const Ladder = props => {
                         ltp = {ladder[id].ltp[0]}
                         ltpRef = {ltpRef}
                         ltpList = {filteredLTPs}
-                        stopLoss = {stopLoss == undefined ? false : stopLoss}
+                        stopLoss = {stopLoss}
                         changeStopLossList = {data => {
-                            console.log(data)
                             changeStopLossList({
                                 marketId: market.marketId,
                                 selectionId: parseInt(id),
@@ -95,7 +94,7 @@ const Ladder = props => {
                                 size: 5,
                                 matchedPrice: data.price, 
                                 trailing: false,
-                                // we calculate tick offset and trailing in index
+                                customStopLoss: data.custom, 
                             })
                         }}
                     />

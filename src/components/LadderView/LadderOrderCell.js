@@ -1,12 +1,9 @@
 import React from 'react'
+import { connect } from "react-redux";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
 
-export default ({side, cell, selectionId, placeOrder, isStopLoss, stopLossData, changeStopLossList}) => {
-
-    if (side == "LAY") {
-      console.log(isStopLoss)
-    }
+const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopLossData, changeStopLossList, selected,  }) => {
 
     return (
         <td
@@ -21,13 +18,23 @@ export default ({side, cell, selectionId, placeOrder, isStopLoss, stopLossData, 
                 price: formatPrice(cell.odds),
                 selectionId: selectionId
               })
+
+              if (selected && stopLossData === undefined) {
+                changeStopLossList({
+                  side: side === "BACK" ? "LAY" : "BACK",
+                  price: formatPrice(cell.odds),
+                  custom: false,
+                })
+              }
+
             }}
             onContextMenu = { e => {
               e.preventDefault()
 
               changeStopLossList({
                   side: side,
-                  price: formatPrice(cell.odds)
+                  price: formatPrice(cell.odds),
+                  custom: true,
               })
               
               return false;
@@ -37,3 +44,11 @@ export default ({side, cell, selectionId, placeOrder, isStopLoss, stopLossData, 
         </td>
     )
 }
+
+const mapStateToProps = state => {
+  return {
+    selected: state.stopLoss.selected,
+  };
+};
+
+export default connect(mapStateToProps)(LadderOrderCell)
