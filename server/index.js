@@ -35,13 +35,7 @@ app.get("/api/load-session", (request, response) => {
   session.setActiveSession(request.query.sessionKey);
   session.setEmailAddress(request.query.email);
 
-  // Create the user if it doesn't exist as a record in the database
-  database.setUser(request.query.email, request.query.sessionKey);
-
-  // Update the user details with the token information
-  database.setToken(request.query.email, {accessToken: request.query.sessionKey}).then(status => {
-    response.send("sent");
-  });
+  response.send("sent");
 });
 
 app.get("/api/get-subscription-status", (request, response) => {

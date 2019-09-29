@@ -59,7 +59,7 @@ class BetFairStreamAPI {
 			});
 
 			this.client.on('close', () => {
-			    console.log('Connection closed');
+				console.log('Connection closed');
 			});
 
 			this.client.on('error', err => {

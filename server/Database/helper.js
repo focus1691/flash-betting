@@ -7,7 +7,6 @@ class DatabaseHelper extends Database {
         super();
     }
     setUser(username, sessionKey) {
-        console.log('set user');
         User.findOne({
             email: username
         })
@@ -24,10 +23,7 @@ class DatabaseHelper extends Database {
                         console.log(result);
                     })
                     .catch(err => console.log(err));
-            } else {
-                console.log('user exists');
             }
-
         })
     }
     getPremiumStatus(user) {
