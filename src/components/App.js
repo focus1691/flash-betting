@@ -61,6 +61,8 @@ const App = props => {
   useEffect(() => {
     let marketId = getQueryVariable("marketId");
 
+    // Check if the page has query parameter 'marketId'
+    // Load the market if found
     if (marketId !== false) {
       fetch(`/api/get-market-info?marketId=${marketId}`)
         .then(res => res.json())
@@ -73,6 +75,7 @@ const App = props => {
               let selectionId = data.result[0].runners[i].selectionId;
               runners[selectionId] = data.result[0].runners[i];
 
+              // The Stake/Liability buttons for the GridView
               runners[selectionId].order = {
                 visible: false,
                 backLay: 0,
@@ -85,6 +88,8 @@ const App = props => {
             props.onUpdateRunners(runners);
             props.onReceiveMarket(data.result[0]);
             props.onSelectRunner(data.result[0].runners[0]);
+
+            // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
             props.socket.emit("market-subscription", {
               marketId: data.result[0].marketId
             });
