@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 const Settings = require('./settings');
 
 const userSchema = mongoose.Schema({
@@ -7,10 +6,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        lowercase: true,
-        validate: value => {
-            return validator.isEmail(value)
-        },
     },
     sessionKey: String,
     accessToken: String,
