@@ -27,7 +27,8 @@ const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopL
                   side: side === "BACK" ? "LAY" : "BACK",
                   price: formatPrice(cell.odds),
                   custom: false,
-                  customerStrategyRef: referenceStrategyId
+                  customerStrategyRef: referenceStrategyId,
+                  assignedIsOrderMatched: false,
                 })
               }
 
@@ -39,6 +40,8 @@ const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopL
                   side: side,
                   price: formatPrice(cell.odds),
                   custom: true,
+                  rfs: undefined,
+                  assignedIsOrderMatched: false,
               })
               
               return false;

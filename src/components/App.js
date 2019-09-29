@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
+import * as actions3 from '../actions/stopLoss'
 import Siderbar from "./Sidebar";
 import HomeView from "./HomeView/";
 import LadderView from "./LadderView/";
@@ -12,6 +13,8 @@ import getQueryVariable from "../utils/GetQueryVariable";
 import { AddRunner } from "../utils/ladder/AddRunner";
 import { UpdateRunner } from "../utils/ladder/UpdateRunner";
 import PremiumPopup from "./PremiumPopup";
+import { checkStopLossHit } from "../utils/TradingStategy/StopLoss";
+import { placeOrder } from "../actions/order";
 
 const App = props => {
 
@@ -116,11 +119,41 @@ const App = props => {
 
       const length = data.rc.length;
 
+      const adjustedStopLossList = Object.assign({}, props.stopLossList)
+
       for (var i = 0; i < length; i++) {
         let key = [data.rc[i].id];
         if (key in props.ladders) {
           // Runner found so we update our object with the raw data
           ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
+
+          // We increment and check the stoplosses
+          if (props.stopLossList[key] !== undefined) {
+            let adjustedStopLoss = Object.assign({}, props.stopLossList[key])
+            if (props.stopLossList[key].trailing && data.rc[i].ltp > props.ladders[key].ltp[0]) {
+              adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1; 
+            }
+
+            // if it doesn't have a reference or the order has been matched
+            if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
+              const stopLossCheck = checkStopLossHit(adjustedStopLoss.matchedPrice, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset);
+              if (stopLossCheck.targetMet) {
+                props.onPlaceOrder({
+                  marketId: adjustedStopLoss.marketId,
+                  selectionId: adjustedStopLoss.selectionId,
+                  side: adjustedStopLoss.side,
+                  size: adjustedStopLoss.size,
+                  price: stopLossCheck.priceReached,
+                })
+                adjustedStopLoss = null;
+              }
+            }
+            adjustedStopLossList[key] = adjustedStopLoss;
+          } 
+
+          const filteredStopLosses = adjustedStopLossList.filter(stoploss => stoploss != null)
+          props.onChangeStopLossList(filteredStopLosses);
+
         } else {
           // Runner not found so we create the new object with the raw data
           ladders[key] = AddRunner(key, data.rc[i]);
@@ -141,6 +174,25 @@ const App = props => {
      * @param {obj} data The order change message data:
      */
     props.socket.on("ocm", data => {
+
+      const checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
+
+      data.oc.map(changes => {
+        changes.orc.map(runner => { 
+          // checks if the runner has a stoploss based on an order
+          if(props.stopLossList[runner.id] !== undefined && props.stopLossList[runner.id].rfs !== undefined) {
+            runner.uo.map(order => {
+              // if the strategies are the same
+              if (props.stopLossList[runner.id].rfs === order.rfs && order.sr === 0) {
+                checkForMatchInStopLoss[runner.id].assignedIsOrderMatched = true;
+              }
+            })
+          }
+        })
+      })
+
+      props.onChangeStopLossList(checkForMatchInStopLoss);
+
       props.socket.off("ocm");
     });
   }, [props.ladders]);
@@ -195,7 +247,8 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     ladders: state.market.ladder,
     premiumMember: state.settings.premiumMember,
-    premiumPopup: state.settings.premiumPopupOpen
+    premiumPopup: state.settings.premiumPopupOpen,
+    stopLossList: state.stopLoss.list,
   };
 };
 
@@ -219,7 +272,9 @@ const mapDispatchToProps = dispatch => {
     onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders)),
     onChangeExcludedLadders: excludedLadders => dispatch(actions2.updateExcludedLadders(excludedLadders)),
     onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen)),
-    setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium))
+    setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
+    onChangeStopLossList: list => dispatch(actions3.updateStopLossList(list)),
+    onPlaceOrder: order => dispatch(placeOrder(order)),
   };
 };
 
