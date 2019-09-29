@@ -6,11 +6,12 @@ class DatabaseHelper extends Database {
         super();
     }
     setUser(username, sessionKey) {
+        console.log('set user');
         User.findOne({
             email: username
         })
         .then(doc => {
-            if (doc.length === 0) {
+            if (!doc || doc.length === 0) {
                 // Create a new user
                 const user = new User({
                     email: request.query.user
@@ -21,7 +22,7 @@ class DatabaseHelper extends Database {
                     })
                     .catch(err => console.log(err));
             } else {
-
+                console.log('user exists');
             }
 
         })
