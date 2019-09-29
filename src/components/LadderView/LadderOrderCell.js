@@ -19,7 +19,7 @@ const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopL
                 side: side,
                 price: formatPrice(cell.odds),
                 selectionId: selectionId,
-                rfs: referenceStrategyId
+                customerStrategyRef: referenceStrategyId
               })
 
               if (selected && stopLossData === undefined) {
@@ -27,7 +27,7 @@ const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopL
                   side: side === "BACK" ? "LAY" : "BACK",
                   price: formatPrice(cell.odds),
                   custom: false,
-                  customerStrategyRef: referenceStrategyId,
+                  rfs: referenceStrategyId,
                   assignedIsOrderMatched: false,
                 })
               }
