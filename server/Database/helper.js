@@ -1,5 +1,6 @@
 const Database = require('./database');
 const User = require('./models/users');
+const Settings = require('./models/settings');
 
 class DatabaseHelper extends Database {
     constructor() {
@@ -14,8 +15,10 @@ class DatabaseHelper extends Database {
             if (!doc || doc.length === 0) {
                 // Create a new user
                 const user = new User({
-                    email: request.query.user
+                    email: username
                 });
+                const settings = new Settings();
+                user.settings = settings;
                 user.save()
                     .then(result => {
                         console.log(result);
