@@ -28,6 +28,11 @@ const App = props => {
   );
 
   useEffect(() => {
+    /**
+     * Fetch settings from the database and load them into redux state
+     * @return {Object} settings
+     *   User settings.
+     */
     fetch(`/api/get-user-settings`)
       .then(res => res.json())
       .then(settings => {
@@ -41,6 +46,11 @@ const App = props => {
         props.onReceiveStakeBtns(settings.stakeBtns);
         props.onReceiveLayBtns(settings.layBtns);
       });
+
+    /**
+     * @return {Boolean} premiumStatus
+     *   Premium membership status required to access the LadderView.
+     */
     fetch(`/api/premium-status`)
       .then(res => res.json())
       .then(premiumStatus => {
@@ -104,14 +114,19 @@ const App = props => {
       for (var i = 0; i < length; i++) {
         let key = [data.rc[i].id];
         if (key in props.ladders) {
+          // Runner found so we update our object with the raw data
           ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
         } else {
+          // Runner not found so we create the new object with the raw data
           ladders[key] = AddRunner(key, data.rc[i]);
           console.log(ladders[key]);
         }
       }
       console.log(ladders);
+
+      // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
+
       props.onReceiverLadders(ladders);
       props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length))
     });
