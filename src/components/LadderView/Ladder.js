@@ -87,6 +87,19 @@ const Ladder = props => {
                         ltpList = {filteredLTPs}
                         stopLoss = {stopLoss}
                         changeStopLossList = {data => {
+                            console.log(
+                                {
+                                    marketId: market.marketId,
+                                    selectionId: parseInt(id),
+                                    side: data.side,
+                                    size: 5,
+                                    matchedPrice: data.price, 
+                                    trailing: false,
+                                    customStopLoss: data.custom, 
+                                    rfs: data.rfs,
+                                    assignedIsOrderMatched: data.assignedIsOrderMatched
+                                }
+                            )
                             changeStopLossList({
                                 marketId: market.marketId,
                                 selectionId: parseInt(id),
@@ -95,6 +108,8 @@ const Ladder = props => {
                                 matchedPrice: data.price, 
                                 trailing: false,
                                 customStopLoss: data.custom, 
+                                rfs: data.rfs,
+                                assignedIsOrderMatched: data.assignedIsOrderMatched
                             })
                         }}
                     />
