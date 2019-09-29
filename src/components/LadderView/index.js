@@ -39,27 +39,17 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             key = {value}
             order = {index}
             ladderOrderList = {ladderOrder}
-            stopLoss = { stopLossList.find(stopLoss => stopLoss.selectionId == value) }
+            stopLoss = { stopLossList[value] }
             changeStopLossList = {newStopLoss => {
-
-              const stopLossIndex = stopLossList.findIndex(stopLoss => stopLoss.selectionId == newStopLoss.selectionId)
 
               const adjustedNewStopLoss = {...newStopLoss, 
                 tickOffset: newStopLoss.customStopLoss ? 0 : stopLossOffset,
                 trailing: newStopLoss.customStopLoss ? false : stopLossTrailing
               }
 
-              if (stopLossIndex === -1) {
-
-                const newStopLossList = stopLossList.concat(adjustedNewStopLoss)
-                onChangeStopLossList(newStopLossList);
-
-              } else { // this is when you manually change it
-
-                const newStopLossList = [...stopLossList]; 
-                newStopLossList[stopLossIndex] = adjustedNewStopLoss;
-                onChangeStopLossList(newStopLossList);
-              }
+              const newStopLossList = Object.assign({}, stopLossList) 
+              newStopLossList[newStopLoss.selectionId] = adjustedNewStopLoss
+              onChangeStopLossList(newStopLossList);
 
             }}
             swapLadders = {(fromIndex, toIndex) => {
