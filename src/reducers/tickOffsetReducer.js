@@ -3,7 +3,8 @@ const initialState = {
   ticks: 2,
   units: "Ticks",
   percentTrigger: 2,
-  hedged: false
+  hedged: false,
+  list: {} // {marketId: , selectionId: , matchedPrice: , size: , side: , tickOffset: , percentage: , rfs: ,}
 };
 initialState.text = `${initialState.ticks} ${initialState.units} [${
   initialState.hedged ? "x" : "-"
@@ -23,6 +24,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, percentTrigger: action.payload };
     case "TOGGLE_TICK_OFFSET_HEDGED":
       return { ...state, hedged: action.payload };
+    case "UPDATE_TICK_OFFSET_LIST":
+      return { ...state, list: action.payload };
     default:
       return state;
   }

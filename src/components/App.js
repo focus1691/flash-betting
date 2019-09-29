@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
-import * as actions3 from '../actions/stopLoss'
+import { updateStopLossList } from '../actions/stopLoss'
+import { updateTickOffsetList } from "../actions/tickOffset";
 import Siderbar from "./Sidebar";
 import HomeView from "./HomeView/";
 import LadderView from "./LadderView/";
@@ -106,6 +107,7 @@ const App = props => {
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
+    
     props.socket.on("mcm", data => {
       if (
         !props.marketOpen &&
@@ -176,21 +178,36 @@ const App = props => {
     props.socket.on("ocm", data => {
 
       const checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
+      const checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
 
       data.oc.map(changes => {
         changes.orc.map(runner => { 
-          // checks if the runner has a stoploss based on an order
-          if(props.stopLossList[runner.id] !== undefined && props.stopLossList[runner.id].rfs !== undefined) {
-            runner.uo.map(order => {
-              // if the strategies are the same
-              if (props.stopLossList[runner.id].rfs === order.rfs && order.sr === 0) {
+          runner.uo.map(order => {
+              // if the strategies are the same and all the order has been matched (STOPLOSS)
+              if (props.stopLossList[runner.id] !== undefined && props.stopLossList[runner.id].rfs === order.rfs && order.sr === 0) {
                 checkForMatchInStopLoss[runner.id].assignedIsOrderMatched = true;
               }
-            })
-          }
+              
+              // if the strategies are the same and enough of the order has been matched (TICK OFFSET)
+              const tickOffsetItem = props.tickOffsetList[order.rfs]
+              if (tickOffsetItem !== undefined && order.rfs.sm / tickOffsetItem.size >= tickOffsetItem.percentage / 100) {
+                props.onPlaceOrder({
+                  marketId: tickOffsetItem.marketId,
+                  selectionId: tickOffsetItem.selectionId,
+                  side: tickOffsetItem.side === "BACK" ? "LAY" : "BACK",
+                  size: tickOffsetItem.size,
+                  price: tickOffsetItem.newPrice, 
+                })
+                checkForMatchInTickOffset[order.rfs] = null;
+              }
+            
+          })
         })
       })
 
+      const filterCompletedTickOffset = checkForMatchInTickOffset.filter(item => item !== null);
+
+      props.onChangeTickOffsetList(filterCompletedTickOffset);
       props.onChangeStopLossList(checkForMatchInStopLoss);
 
       props.socket.off("ocm");
@@ -249,6 +266,7 @@ const mapStateToProps = state => {
     premiumMember: state.settings.premiumMember,
     premiumPopup: state.settings.premiumPopupOpen,
     stopLossList: state.stopLoss.list,
+    tickOffsetList: state.tickOffset.list
   };
 };
 
@@ -273,7 +291,8 @@ const mapDispatchToProps = dispatch => {
     onChangeExcludedLadders: excludedLadders => dispatch(actions2.updateExcludedLadders(excludedLadders)),
     onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen)),
     setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
-    onChangeStopLossList: list => dispatch(actions3.updateStopLossList(list)),
+    onChangeStopLossList: list => dispatch(updateStopLossList(list)),
+    onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
   };
 };
