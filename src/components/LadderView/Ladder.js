@@ -27,7 +27,7 @@ const Ladder = props => {
       
   }, [ltpRef]);
   
-  const { id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList } = props;
+  const { id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList } = props;
   
   // remove adjacent LTP values
   const filteredLTPs = ladder[id].ltp[0] != undefined ? 
@@ -59,35 +59,48 @@ const Ladder = props => {
             setLadderDown = {setLadderDown}
         />
 
-        <div className={"ladder"} ref={tableRef}>
-            <table>
-            <tbody>
-                <PercentageRow
-                    ltp={ladder[id].ltp}
-                    tv={
-                        ladder[id].tv[0]
-                        ? ladder[id].tv[0].toLocaleString()
-                        : ""
-                    }
-                />
-                <LadderBody
-                    ladder={ladder[id].fullLadder}
-                    selectionId={id}
-                    placeOrder={data => {
-                        onPlaceOrder({
-                            marketId: market.marketId,
-                            side: data.side,
-                            size: 5,
-                            price: data.price,
-                            selectionId: data.selectionId
-                        });
-                    }}
-                    ltp = {ladder[id].ltp[0]}
-                    ltpRef = {ltpRef}
-                    ltpList = {filteredLTPs}
-                />
-                <PriceRow />
-            </tbody>
+        <div className={"ladder"} ref={tableRef} onContextMenu = { () => false }>
+            <table onContextMenu = { (e) => { e.preventDefault(); return false } }>
+                <tbody onContextMenu = { (e) => { e.preventDefault(); return false } }>
+                    <PercentageRow
+                        ltp={ladder[id].ltp}
+                        tv={
+                            ladder[id].tv[0]
+                            ? ladder[id].tv[0].toLocaleString()
+                            : ""
+                        }
+                    />
+                    <LadderBody
+                        ladder={ladder[id].fullLadder}
+                        selectionId={id}
+                        placeOrder={data => {
+                            onPlaceOrder({
+                                marketId: market.marketId,
+                                side: data.side,
+                                size: 5,
+                                price: data.price,
+                                selectionId: data.selectionId
+                            });
+                        }}
+                        ltp = {ladder[id].ltp[0]}
+                        ltpRef = {ltpRef}
+                        ltpList = {filteredLTPs}
+                        stopLoss = {stopLoss == undefined ? false : stopLoss}
+                        changeStopLossList = {data => {
+                            console.log(data)
+                            changeStopLossList({
+                                marketId: market.marketId,
+                                selectionId: parseInt(id),
+                                side: data.side,
+                                size: 5,
+                                matchedPrice: data.price, 
+                                trailing: false,
+                                // we calculate tick offset and trailing in index
+                            })
+                        }}
+                    />
+                    <PriceRow />
+                </tbody>
             </table>
         </div>
         <OrderRow />

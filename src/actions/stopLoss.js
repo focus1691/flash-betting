@@ -38,3 +38,10 @@ export const setDisplayText = text => {
         payload: text
     }
 };
+
+export const updateStopLossList = list => {
+    return {
+        type: "UPDATE_STOP_LOSS_LIST",
+        payload: list
+    }
+};
