@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from "react-redux";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
+import crypto from 'crypto'
 
 const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopLossData, changeStopLossList, selected,  }) => {
 
@@ -13,10 +13,13 @@ const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopL
                 cell.layMatched && side === "LAY" ? {background: "#75C2FD"} : null
             }
             onClick={e => {
+              const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
+              
               placeOrder({
                 side: side,
                 price: formatPrice(cell.odds),
-                selectionId: selectionId
+                selectionId: selectionId,
+                rfs: referenceStrategyId
               })
 
               if (selected && stopLossData === undefined) {
@@ -24,6 +27,7 @@ const LadderOrderCell = ({side, cell, selectionId, placeOrder, isStopLoss, stopL
                   side: side === "BACK" ? "LAY" : "BACK",
                   price: formatPrice(cell.odds),
                   custom: false,
+                  customerStrategyRef: referenceStrategyId
                 })
               }
 
