@@ -26,25 +26,35 @@ Array(100).fill().map((v,i)=> parseFloat((i/100 + 1.01).toFixed(2) ))
  *   User settings.
  */
 const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOffsetStrategy) => {
+
+	// We turn the prices into floating point numbers in case strings are passed
     matchedPrice = parseFloat(matchedPrice);
     currentPrice = parseFloat(currentPrice);
   
-       if (tickOffsetStrategy === 'percent') {
-          let initialPL = parseFloat((size * matchedPrice - size).toFixed(2));
-          let currPL = parseFloat((size * currentPrice - size).toFixed(2));
-          let percentIncrease = Math.floor(Math.abs((currPL - initialPL) / initialPL * 100));
-          
-          console.log(initialPL, currPL);
-          console.log(percentIncrease); 
-  
-          return { targetMet: percentIncrease > ticks, priceReached: matchedPrice };
-       } 
-      else if (side === 'back' && currentPrice < matchedPrice || side === 'lay' && currentPrice > matchedPrice) {
-            return { targetMet: false, priceReached: matchedPrice };
-      } else if (Math.abs(ALL_PRICES.indexOf(matchedPrice) - ALL_PRICES.indexOf(currentPrice)) >= ticks) {
-        return { targetMet: true, priceReached: matchedPrice };
-      }
-      return { targetMet: false, priceReached: currentPrice };
+	// Percent is passed so we look at the percentage lost
+	if (tickOffsetStrategy === 'percent') {
+		let initialPL = parseFloat((size * matchedPrice - size).toFixed(2));
+		let currPL = parseFloat((size * currentPrice - size).toFixed(2));
+		let percentIncrease = Math.floor(Math.abs((currPL - initialPL) / initialPL * 100));
+		
+		console.log(initialPL, currPL);
+		console.log(percentIncrease);
+
+		// TODO conditional check on whether it is back/lay
+
+		return { targetMet: percentIncrease > ticks, priceReached: matchedPrice };
+	} 
+	// The price is trading in our favour so no need for further checks
+	else if (side === 'back' && currentPrice < matchedPrice || side === 'lay' && currentPrice > matchedPrice) {
+		return { targetMet: false, priceReached: matchedPrice };
+	}
+	// Check if the tick offset has been satisfied by checking the price difference
+	// between the matched and current prices, by finding the absolute value of their indexes
+	else if (Math.abs(ALL_PRICES.indexOf(matchedPrice) - ALL_PRICES.indexOf(currentPrice)) >= ticks) {
+		return { targetMet: true, priceReached: matchedPrice };
+	}
+	// Target not met
+	return { targetMet: false, priceReached: currentPrice };
   }
 
 export { checkStopLossHit };
