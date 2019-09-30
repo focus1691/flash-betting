@@ -21,7 +21,7 @@ const Ladder = props => {
         if (ltpRef.current !== null) {
             // delay for waiting to load
             setTimeout(() => {
-                tableRef.current.scrollTop = ltpRef.current.offsetTop; 
+                tableRef.current.scrollTop = ltpRef.current ? ltpRef.current.offsetTop : 0; 
                 tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
             }, 100)
         }
