@@ -18,13 +18,16 @@ const Ladder = props => {
   useEffect(() => {
 
     if (tableRef.current !== null) {
-        if (ltpRef.current !== null) {
             // delay for waiting to load
-            setTimeout(() => {
-                tableRef.current.scrollTop = ltpRef.current ? ltpRef.current.offsetTop : 0; 
-                tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
+            const interval = setInterval(() => {
+                if (ltpRef.current !== null) {
+                    tableRef.current.scrollTop = ltpRef.current ? ltpRef.current.offsetTop : 0; 
+                    tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
+                    clearInterval(interval)
+                } else {
+                    
+                }
             }, 100)
-        }
     }
       
   }, [ltpRef]);
