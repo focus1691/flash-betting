@@ -12,6 +12,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
+import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -73,7 +74,7 @@ const Back = props => {
           executionTime: props.executionTime,
           timeOffset: (props.hours * 3600) + (props.minutes * 60) + props.seconds,
           size: props.stake,
-          price: props.price 
+          price: formatPrice(props.price)
       };
 
       if (newBackList[convertedSelection] === undefined) {

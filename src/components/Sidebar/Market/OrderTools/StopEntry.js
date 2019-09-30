@@ -74,22 +74,28 @@ const StopEntry = props => {
 
   // Handle Submit click to place an order
   const placeOrder = () => {
-    const adjustedStopEntryList = Object.assign({}, props.stopEntryList);
+    const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
-    const stopEntrySelectionList =
-      props.stopEntryList[selectedIndex] === undefined
-        ? []
-        : props.stopEntryList[selectedIndex];
-    const newStopEntrySelectionList = stopEntrySelectionList.concat({
-      targetLTP: props.ticks,
-      condition: props.operator,
-      side: props.side,
-      size: props.stake,
-      price: formatPrice(props.price)
-    });
+    const newStopEntryList = Object.assign({}, props.stopEntryList)
 
-    adjustedStopEntryList[selectedIndex] = newStopEntrySelectionList;
-    props.onUpdateStopEntryList(adjustedStopEntryList);
+    selections.map(selection => {
+      const convertedSelection = parseInt(selection);
+      const addedOrder = {
+          targetLTP: props.ticks,
+          condition: props.operator,
+          side: props.side,
+          size: props.stake,
+          price: formatPrice(props.price)
+      };
+
+      if (newStopEntryList[convertedSelection] === undefined) {
+        newStopEntryList[convertedSelection] = [addedOrder]
+      } else {
+        newStopEntryList[convertedSelection] = newStopEntryList[convertedSelection].concat(addedOrder)
+      }
+    })
+
+    props.onUpdateStopEntryList(newStopEntryList);
   };
 
   return (
