@@ -22,8 +22,7 @@ Array(100).fill().map((v,i)=> parseFloat((i/100 + 1.01).toFixed(2) ))
  * @param {string} side - Back or Lay *REQUIRED*
  * @param {number} ticks - Number of ticks for the stop, or percentage of price
  * @param {string} tickOffsetStrategy - ticks field represents percent if percent is passed
- * @return {Object} {targetMet, priceReached} 
- *   User settings.
+ * @return {Object} {targetMet, priceReached}
  */
 const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOffsetStrategy) => {
 
@@ -36,16 +35,13 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
 		let initialPL = parseFloat((size * matchedPrice - size).toFixed(2));
 		let currPL = parseFloat((size * currentPrice - size).toFixed(2));
 		let percentIncrease = Math.floor(Math.abs((currPL - initialPL) / initialPL * 100));
-		
-		console.log(initialPL, currPL);
-		console.log(percentIncrease);
 
 		// TODO conditional check on whether it is back/lay
 
 		return { targetMet: percentIncrease > ticks, priceReached: matchedPrice };
 	} 
-	// The price is trading in our favour so no need for further checks
 	else if (side === 'back' && currentPrice < matchedPrice || side === 'lay' && currentPrice > matchedPrice) {
+		// The price is trading in our favour so no need for further checks
 		return { targetMet: false, priceReached: matchedPrice };
 	}
 	// Check if the tick offset has been satisfied by checking the price difference
@@ -55,6 +51,24 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
 	}
 	// Target not met
 	return { targetMet: false, priceReached: currentPrice };
-  }
+	}
 
-export { checkStopLossHit };
+/**
+ * This function is used to calculate the position of the stop loss.
+ * For example a matched price of 2.02 for the lay side with a stop loss
+ * with 5 ticks would return 1.96 = 2.02 > 2.00 > 1.99 > 1.98 > 1.97 > 1.96
+ * @param {number} matchedPrice - The price the bet was matched at e.g. 2.56
+ * @param {number} ticks - Number of ticks for the stop, or percentage of price
+ * @param {string} side - Back or Lay *REQUIRED*
+ * @param {string} tickOffsetStrategy - ticks field represents percent if percent is passed
+ * @return {Object} {targetMet, priceReached} 
+ */
+const findStopPosition = (matchedPrice, ticks, side, tickOffsetStrategy) => {
+	matchedPrice = parseFloat(matchedPrice);
+
+	const index = Math.floor(ALL_PRICES.indexOf(matchedPrice) + (side === 'back' ? +ticks : -ticks));
+	
+	return ALL_PRICES[index];
+}
+
+export { checkStopLossHit, findStopPosition };
