@@ -1,4 +1,4 @@
-const findTickOffset = (matchedPrice, currentPrice, side, tickOffset, percent=false) => {
+const findTickOffset = (matchedPrice, side, offset, percent=false) => {
 
     var arr =
     Array(100).fill().map((v,i)=> (i/100 + 1.01).toFixed(2) )
@@ -15,6 +15,12 @@ const findTickOffset = (matchedPrice, currentPrice, side, tickOffset, percent=fa
     var target = matchedPrice;
     
     if (percent) {
+
+        const computedPrice = parseFloat(matchedPrice) * (1 - offset/100);
+        const closestToComputed = arr.sort((a, b) => Math.abs(computedPrice - a) - Math.abs(computedPrice - b));
+        
+        // takes the lowest value
+        target = closestToComputed[0] < closestToComputed[1] ? closestToComputed[0] : closestToComputed[2]
         
         return { priceReached: target };
     }
@@ -22,21 +28,23 @@ const findTickOffset = (matchedPrice, currentPrice, side, tickOffset, percent=fa
     if (side === 'back') {
         for (var i = arr.indexOf(matchedPrice); i <= 1000; i++) {
             target = arr[i];
-            if (tickOffset-- <= 0 || i === 1000) {
+            if (offset-- <= 0 || i === 1000) {
                 break;
             }
         }
         
     }
     else if (side === 'lay') {
-        for (var i = arr.indexOf(currentPrice); i >= 0; i--) {
+        for (var i = arr.indexOf(matchedPrice); i >= 0; i--) {
             target = arr[i];
-            if (tickOffset-- <= 0 || i === 0) {
+            if (offset-- <= 0 || i === 0) {
                 break;
             }
         }
     }
     
+    console.log(parseFloat(target))
+
     return { priceReached: target };
 }
 
