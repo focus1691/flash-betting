@@ -5,7 +5,7 @@ import { updateTickOffsetList } from '../../actions/tickOffset';
 import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import crypto from 'crypto'
 
-const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, isStopLoss, stopLossData, changeStopLossList, stopLossSelected, 
+const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, 
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger }) => {
 
     return (
@@ -31,6 +31,7 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
                   side: side === "BACK" ? "LAY" : "BACK",
                   price: formatPrice(cell.odds),
                   custom: false,
+                  units: stopLossUnits,
                   rfs: referenceStrategyId,
                   assignedIsOrderMatched: false,
                 })
@@ -79,6 +80,7 @@ const mapStateToProps = state => {
   return {
     marketId: state.market.currentMarket.marketId,
     stopLossSelected: state.stopLoss.selected,
+    stopLossUnits: state.stopLoss.units,
     tickOffsetList: state.tickOffset.list,
     tickOffsetSelected: state.tickOffset.selected,
     tickOffsetTicks: state.tickOffset.ticks,

@@ -61,9 +61,9 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
 const findStopPosition = (matchedPrice, ticks, side) => {
 	matchedPrice = parseFloat(matchedPrice);
 
-	const index = Math.floor(ALL_PRICES.indexOf(matchedPrice) + (side === 'back' ? +ticks : -ticks));
-	
-	return ALL_PRICES[index].toFixed(2);
+  const index = Math.floor(ALL_PRICES.indexOf(matchedPrice) + (side === 'back' ? +ticks : -ticks));
+
+	return parseFloat(ALL_PRICES[index]).toFixed(2);
 }
 
 /**
@@ -99,4 +99,4 @@ const findStopPositionForPercent = (size, matchedPrice, percent, side) => {
 }
 
 
-export { checkStopLossHit, findStopPosition };
+export { checkStopLossHit, findStopPosition, findStopPositionForPercent };

@@ -167,7 +167,7 @@ const App = props => {
           
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
             if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
-              const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.matchedPrice, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset);
+              const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.matchedPrice, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, adjustedStopLoss.units.toLowerCase());
               if (stopLossCheck.targetMet) {
                 props.onPlaceOrder({
                   marketId: adjustedStopLoss.marketId,

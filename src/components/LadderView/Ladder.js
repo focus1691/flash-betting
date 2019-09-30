@@ -104,6 +104,7 @@ const Ladder = props => {
                                 matchedPrice: data.price, 
                                 trailing: false,
                                 customStopLoss: data.custom, 
+                                units: data.units,
                                 rfs: data.rfs,
                                 assignedIsOrderMatched: data.assignedIsOrderMatched
                             })
