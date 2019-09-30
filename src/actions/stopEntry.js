@@ -46,3 +46,10 @@ export const updateStopEntryList = list => {
         payload: list
     }
 };
+
+export const setSelections = selections => {
+    return {
+        type: "SET_STOP_ENTRY_SELECTIONS",
+        payload: selections
+    }
+}

@@ -7,7 +7,8 @@ const initialState = {
     minutes: 0,
     seconds: 0
   },
-  executionTime: "Before"
+  executionTime: "Before",
+  selections: null
 };
 initialState.text = `${initialState.stake} @ ${initialState.price}`;
 
@@ -50,6 +51,8 @@ const reducer = (state = initialState, action) => {
       };
     case "TOGGLE_BACK_EXECUTION_BEFORE_OR_AFTER":
       return { ...state, executionTime: action.payload };
+    case "SET_BACK_SELECTIONS":
+      return { ...state, selections: action.payload };
     default:
       return state;
   }

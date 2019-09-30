@@ -18,7 +18,7 @@ import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
-    flexWrap: "wrap",
+    flexWrap: "wrap"
   },
   formControl: {
     margin: theme.spacing(1),
@@ -35,16 +35,16 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   backPriceTextFields: {
     width: 75,
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   select: {
-    margin: theme.spacing(1),
-  },
+    margin: theme.spacing(1)
+  }
 }));
 
 const StopEntry = props => {
@@ -52,17 +52,44 @@ const StopEntry = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
+  // Load all the runners / set All / The Field as the default
+  React.useEffect(() => {
+    props.onSelection(
+      Object.keys(props.runners).map(key => [props.runners[key].selectionId])
+    );
+  }, []);
+
   const handleClickListItem = event => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
+    props.onSelection(index);
     setAnchorEl(null);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  // Handle Submit click to place an order
+  const placeOrder = () => {
+    const adjustedStopEntryList = Object.assign({}, props.stopEntryList);
+
+    const stopEntrySelectionList =
+      props.stopEntryList[selectedIndex] === undefined
+        ? []
+        : props.stopEntryList[selectedIndex];
+    const newStopEntrySelectionList = stopEntrySelectionList.concat({
+      targetLTP: props.ticks,
+      condition: props.operator,
+      side: props.side,
+      size: props.stake,
+      price: formatPrice(props.price)
+    });
+
+    adjustedStopEntryList[selectedIndex] = newStopEntrySelectionList;
+    props.onUpdateStopEntryList(adjustedStopEntryList);
   };
 
   return (
@@ -72,14 +99,16 @@ const StopEntry = props => {
           button
           aria-haspopup="true"
           aria-controls="lock-menu"
-          // aria-label="when device is locked"
+          aria-label="Selections"
           onClick={handleClickListItem}
         >
           <ListItemText
-            // primary="When device is locked"
+            primary="Runners"
             secondary={
-              props.runners[selectedIndex]
-                ? props.runners[selectedIndex].runnerName
+              props.selections
+                ? typeof props.selections === "string"
+                  ? props.runners[props.selections].runnerName
+                  : "All / The Field"
                 : ""
             }
           />
@@ -92,11 +121,32 @@ const StopEntry = props => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        {/* The Menu Item for All / the Field */}
+        {props.runners ? (
+          <StyledMenuItem
+            key={`stop-loss-order-all/field`}
+            className={classes.root}
+            selected={typeof props.selections != "string"}
+            onClick={event =>
+              handleMenuItemClick(
+                event,
+                Object.keys(props.runners).map(key => [
+                  props.runners[key].selectionId
+                ])
+              )
+            }
+          >
+            All / The Field
+          </StyledMenuItem>
+        ) : null}
+        {/* Create Menu Items for all the runners and display their names
+         * Store their selectionId to be used to place bets for event clicks
+         */}
         {Object.keys(props.runners).map(key => (
           <StyledMenuItem
-            key={`stoploss${props.runners[key].runnerName}`}
+            key={`stop-entry-order-${props.runners[key].runnerName}`}
             className={classes.root}
-            selected={key === selectedIndex}
+            selected={key === props.selections}
             onClick={event => handleMenuItemClick(event, key)}
           >
             {props.runners[key].runnerName}
@@ -120,58 +170,48 @@ const StopEntry = props => {
           </Select>
         </FormControl>
         <TextField
-            id="standard-number"
-            className={classes.textField}
-            type="number"
-            label="Ticks"
-            value={props.ticks}
-            inputProps={{ min: "1", max: "100"}}
-            onChange={e => props.onReceiveTicks(e.target.value)}
-            margin="normal"
-          />
+          id="standard-number"
+          className={classes.textField}
+          type="number"
+          label="Ticks"
+          value={props.ticks}
+          inputProps={{ min: "1", max: "100" }}
+          onChange={e => props.onReceiveTicks(e.target.value)}
+          margin="normal"
+        />
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}>
         <TextField
-              id="standard-number"
-              className={classes.backPriceTextFields}
-              type="number"
-              label="Back"
-              value={props.stake}
-              inputProps={{ min: "1"}}
-              onChange={e => props.onReceiveStake(e.target.value)}
-              margin="normal"
-            />
+          id="standard-number"
+          className={classes.backPriceTextFields}
+          type="number"
+          label="Back"
+          value={props.stake}
+          inputProps={{ min: "1" }}
+          onChange={e => props.onReceiveStake(e.target.value)}
+          margin="normal"
+        />
         <TextField
-              id="standard-number"
-              className={classes.backPriceTextFields}
-              type="number"
-              label="@"
-              value={props.price}
-              inputProps={{ min: "1"}}
-              onChange={e => props.onReceivePrice(e.target.value)}
-              margin="normal"
-            />
+          id="standard-number"
+          className={classes.backPriceTextFields}
+          type="number"
+          label="@"
+          value={props.price}
+          inputProps={{ min: "1" }}
+          onChange={e => props.onReceivePrice(e.target.value)}
+          margin="normal"
+        />
       </div>
-      <Button variant="outlined" color="primary" className={classes.button}
-        onClick = { () => {
-          const adjustedStopEntryList = Object.assign({}, props.stopEntryList)
-          
-          const stopEntrySelectionList = props.stopEntryList[selectedIndex] === undefined ? [] : props.stopEntryList[selectedIndex];
-          const newStopEntrySelectionList = stopEntrySelectionList.concat({
-            targetLTP: props.ticks,
-            condition: props.operator,
-            side: props.side,
-            size: props.stake,
-            price: formatPrice(props.price)
-          })
-
-          
-          
-          adjustedStopEntryList[selectedIndex] = newStopEntrySelectionList;
-          props.onUpdateStopEntryList(adjustedStopEntryList);
-
+      <Button
+        variant="outlined"
+        color="primary"
+        className={classes.button}
+        onClick={() => {
+          placeOrder();
         }}
-      >Submit</Button>
+      >
+        Submit
+      </Button>
     </div>
   );
 };
@@ -184,7 +224,8 @@ const mapStateToProps = state => {
     price: state.stopEntry.price,
     runners: state.market.runners,
     side: state.stopEntry.side,
-    stopEntryList: state.stopEntry.list
+    stopEntryList: state.stopEntry.list,
+    selections: state.stopEntry.selections
   };
 };
 
@@ -195,7 +236,8 @@ const mapDispatchToProps = dispatch => {
     onReceiveStake: stake => dispatch(actions.setStake(stake)),
     onReceivePrice: price => dispatch(actions.setPrice(price)),
     onRecieveSide: side => dispatch(actions.setSide(side)),
-    onUpdateStopEntryList: list => dispatch(actions.updateStopEntryList(list))
+    onUpdateStopEntryList: list => dispatch(actions.updateStopEntryList(list)),
+    onSelection: selections => dispatch(actions.setSelections(selections))
   };
 };
 

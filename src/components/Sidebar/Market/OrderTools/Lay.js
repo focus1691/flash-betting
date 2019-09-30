@@ -30,18 +30,25 @@ const useStyles = makeStyles(theme => ({
 const Lay = props => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
 
+  // Change the text when the fields change
   React.useEffect(() => {
     props.onTextUpdate(`${props.stake} @ ${props.price}`);
   }, [props.price, props.stake]);
+
+  // Load all the runners / set All / The Field as the default
+  React.useEffect(() => {
+    props.onSelection((Object.keys(props.runners).map(key => [
+      props.runners[key].selectionId
+    ])));
+  }, []);
 
   const handleClickListItem = event => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
+    props.onSelection(index);
     setAnchorEl(null);
   };
 
@@ -56,14 +63,16 @@ const Lay = props => {
           button
           aria-haspopup="true"
           aria-controls="lock-menu"
-          // aria-label="when device is locked"
+          aria-label="Selections"
           onClick={handleClickListItem}
         >
           <ListItemText
-            // primary="When device is locked"
+            primary="Lay"
             secondary={
-              props.runners[selectedIndex]
-                ? props.runners[selectedIndex].runnerName
+              props.selections
+                ? typeof props.selections === "string"
+                  ? props.runners[props.selections].runnerName
+                  : "Lay All / The Field"
                 : ""
             }
           />
@@ -76,11 +85,33 @@ const Lay = props => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        {/* The Menu Item for Back All / the Field */}
+        {props.runners ? (
+          <StyledMenuItem
+            key={`lay-order-all/field`}
+            className={classes.root}
+            selected={typeof props.selections != "string"}
+            onClick={event =>
+              handleMenuItemClick(
+                event,
+                Object.keys(props.runners).map(key => [
+                  props.runners[key].selectionId
+                ])
+              )
+            }
+          >
+            Lay All / The Field
+          </StyledMenuItem>
+        ) : null}
+
+        {/* Create Menu Items for all the runners and display their names
+         * Store their selectionId to be used to place bets for event clicks
+         */}
         {Object.keys(props.runners).map(key => (
           <StyledMenuItem
-            key={`stoploss${props.runners[key].runnerName}`}
+            key={`lay-order-${props.runners[key].runnerName}`}
             className={classes.root}
-            selected={key === selectedIndex}
+            selected={key === props.selections}
             onClick={event => handleMenuItemClick(event, key)}
           >
             {props.runners[key].runnerName}
@@ -178,7 +209,8 @@ const mapStateToProps = state => {
     minutes: state.lay.offset.minutes,
     seconds: state.lay.offset.seconds,
     executionTime: state.lay.executionTime,
-    runners: state.market.runners
+    runners: state.market.runners,
+    selections: state.lay.selections
   };
 };
 
@@ -190,7 +222,8 @@ const mapDispatchToProps = dispatch => {
     onReceiveHours: hours => dispatch(actions.setHours(hours)),
     onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
     onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
-    onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time))
+    onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time)),
+    onSelection: selections => dispatch(actions.setSelections(selections))
   };
 };
 

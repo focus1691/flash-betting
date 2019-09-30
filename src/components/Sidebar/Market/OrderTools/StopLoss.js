@@ -38,15 +38,8 @@ const useStyles = makeStyles(theme => ({
 const StopLoss = props => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const options = [
-    "Show some love to Material-UI",
-    "Show all notification content",
-    "Hide sensitive notification content",
-    "Hide all notification content"
-  ];
-
+  // Change the text when the fields change
   React.useEffect(() => {
     var box1Val = props.trailing ? "x" : "-";
     var box2Val = props.hedged ? "x" : "-";
@@ -55,12 +48,19 @@ const StopLoss = props => {
     props.onTextUpdate(`${props.offset} ${unit} [${box1Val}][${box2Val}]`);
   }, [props.offset, props.units, props.hedged, props.trailing]);
 
+  // Load all the runners / set All / The Field as the default
+  React.useEffect(() => {
+    props.onSelection(
+      Object.keys(props.runners).map(key => [props.runners[key].selectionId])
+    );
+  }, []);
+
   const handleClickListItem = event => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
+    props.onSelection(index);
     setAnchorEl(null);
   };
 
@@ -75,14 +75,16 @@ const StopLoss = props => {
           button
           aria-haspopup="true"
           aria-controls="lock-menu"
-          // aria-label="when device is locked"
+          aria-label="Selections"
           onClick={handleClickListItem}
         >
           <ListItemText
-            // primary="When device is locked"
+            primary="Runners"
             secondary={
-              props.runners[selectedIndex]
-                ? props.runners[selectedIndex].runnerName
+              props.selections
+                ? typeof props.selections === "string"
+                  ? props.runners[props.selections].runnerName
+                  : "All / The Field"
                 : ""
             }
           />
@@ -95,11 +97,32 @@ const StopLoss = props => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        {/* The Menu Item for All / the Field */}
+        {props.runners ? (
+          <StyledMenuItem
+            key={`stop-loss-order-all/field`}
+            className={classes.root}
+            selected={typeof props.selections != "string"}
+            onClick={event =>
+              handleMenuItemClick(
+                event,
+                Object.keys(props.runners).map(key => [
+                  props.runners[key].selectionId
+                ])
+              )
+            }
+          >
+            All / The Field
+          </StyledMenuItem>
+        ) : null}
+        {/* Create Menu Items for all the runners and display their names
+         * Store their selectionId to be used to place bets for event clicks
+         */}
         {Object.keys(props.runners).map(key => (
           <StyledMenuItem
-            key={`stoploss${props.runners[key].runnerName}`}
+            key={`stop-loss-order-${props.runners[key].runnerName}`}
             className={classes.root}
-            selected={key === selectedIndex}
+            selected={key === props.selections}
             onClick={event => handleMenuItemClick(event, key)}
           >
             {props.runners[key].runnerName}
@@ -170,7 +193,8 @@ const mapStateToProps = state => {
     units: state.stopLoss.units,
     trailing: state.stopLoss.trailing,
     hedged: state.stopLoss.hedged,
-    runners: state.market.runners
+    runners: state.market.runners,
+    selections: state.stopLoss.selections
   };
 };
 
@@ -181,7 +205,8 @@ const mapDispatchToProps = dispatch => {
     onReceiveUnit: unit => dispatch(actions.setStopLossUnit(unit)),
     onToggleTrailing: selected =>
       dispatch(actions.toggleStopLossTrailing(selected)),
-    onToggleHedged: selected => dispatch(actions.toggleStopLossHedged(selected))
+    onToggleHedged: selected => dispatch(actions.toggleStopLossHedged(selected)),
+    onSelection: selections => dispatch(actions.setSelections(selections))
   };
 };
 

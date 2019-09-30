@@ -5,7 +5,8 @@ const initialState = {
   stake: 2,
   price: 750,
   side: 'BACK',
-  list: {} // {selectionId(parameter): [{targetLTP: , condition: , side: , size: , price: },]  }
+  list: {}, // {selectionId(parameter): [{targetLTP: , condition: , side: , size: , price: },]  }
+  selections: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -24,6 +25,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, side: action.payload };
     case "UPDATE_STOP_ENTRY_LIST":
       return { ...state, list: action.payload };
+    case "SET_STOP_ENTRY_SELECTIONS":
+      return { ...state, selections: action.payload };
     default:
       return state;
   }

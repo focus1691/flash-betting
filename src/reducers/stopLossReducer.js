@@ -4,7 +4,8 @@ const initialState = {
   units: "Ticks",
   trailing: true,
   hedged: true,
-  list: {} // {marketId: , selectionId: , matchedPrice: , side: , size: , tickOffset: , trailing: , rfs(reference strategy): , assignedIsOrderMatched: false}
+  list: {}, // {marketId: , selectionId: , matchedPrice: , side: , size: , tickOffset: , trailing: , rfs(reference strategy): , assignedIsOrderMatched: false}
+  selections: null
 };
 initialState.text = `${initialState.offset} ${initialState.units} [${
   initialState.trailing ? "x" : "-"
@@ -26,6 +27,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, hedged: action.payload };
     case "UPDATE_STOP_LOSS_LIST": 
       return { ...state, list: action.payload };
+    case "SET_STOP_LOSS_SELECTIONS":
+      return { ...state, selections: action.payload };
     default:
       return state;
   }

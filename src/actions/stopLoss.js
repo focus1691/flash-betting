@@ -45,3 +45,10 @@ export const updateStopLossList = list => {
         payload: list
     }
 };
+
+export const setSelections = selections => {
+    return {
+        type: "SET_STOP_LOSS_SELECTIONS",
+        payload: selections
+    }
+}

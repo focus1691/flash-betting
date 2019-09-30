@@ -53,3 +53,10 @@ export const setDisplayText = text => {
         payload: text
     }
 };
+
+export const setSelections = selections => {
+    return {
+        type: "SET_LAY_SELECTIONS",
+        payload: selections
+    }
+}

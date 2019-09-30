@@ -34,24 +34,34 @@ const useStyles = makeStyles(theme => ({
 const Back = props => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
 
+  // Change the text when the fields change
   React.useEffect(() => {
     props.onTextUpdate(`${props.stake} @ ${props.price}`);
   }, [props.price, props.stake]);
+
+  // Load all the runners / set All / The Field as the default
+  React.useEffect(() => {
+    props.onSelection((Object.keys(props.runners).map(key => [
+      props.runners[key].selectionId
+    ])));
+  }, []);
 
   const handleClickListItem = event => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
+    props.onSelection(index);
     setAnchorEl(null);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // Handle Submit click to place an order
+  const placeOrder = () => {};
 
   return (
     <React.Fragment>
@@ -60,14 +70,16 @@ const Back = props => {
           button
           aria-haspopup="true"
           aria-controls="lock-menu"
-          // aria-label="when device is locked"
+          aria-label="Selections"
           onClick={handleClickListItem}
         >
           <ListItemText
-            // primary="When device is locked"
+            primary="Back"
             secondary={
-              props.runners[selectedIndex]
-                ? props.runners[selectedIndex].runnerName
+              props.selections
+                ? typeof props.selections === "string"
+                  ? props.runners[props.selections].runnerName
+                  : "Back All / The Field"
                 : ""
             }
           />
@@ -80,11 +92,33 @@ const Back = props => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        {/* The Menu Item for Back All / the Field */}
+        {props.runners ? (
+          <StyledMenuItem
+            key={`back-order-all/field`}
+            className={classes.root}
+            selected={typeof props.selections != "string"}
+            onClick={event =>
+              handleMenuItemClick(
+                event,
+                Object.keys(props.runners).map(key => [
+                  props.runners[key].selectionId
+                ])
+              )
+            }
+          >
+            Back All / The Field
+          </StyledMenuItem>
+        ) : null}
+
+        {/* Create Menu Items for all the runners and display their names
+         * Store their selectionId to be used to place bets for event clicks
+         */}
         {Object.keys(props.runners).map(key => (
           <StyledMenuItem
-            key={`stoploss${props.runners[key].runnerName}`}
+            key={`back-order-${props.runners[key].runnerName}`}
             className={classes.root}
-            selected={key === selectedIndex}
+            selected={key === props.selections}
             onClick={event => handleMenuItemClick(event, key)}
           >
             {props.runners[key].runnerName}
@@ -118,6 +152,7 @@ const Back = props => {
           color="primary"
           size="small"
           className={classes.button}
+          onClick={e => placeOrder()}
         >
           Submit
         </Button>
@@ -188,7 +223,8 @@ const mapStateToProps = state => {
     minutes: state.back.offset.minutes,
     seconds: state.back.offset.seconds,
     executionTime: state.back.executionTime,
-    runners: state.market.runners
+    runners: state.market.runners,
+    selections: state.back.selections
   };
 };
 
@@ -200,7 +236,8 @@ const mapDispatchToProps = dispatch => {
     onReceiveHours: hours => dispatch(actions.setHours(hours)),
     onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
     onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
-    onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time))
+    onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time)),
+    onSelection: selections => dispatch(actions.setSelections(selections))
   };
 };
 
