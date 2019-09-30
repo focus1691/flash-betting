@@ -61,7 +61,30 @@ const Back = props => {
   };
 
   // Handle Submit click to place an order
-  const placeOrder = () => {};
+  const placeOrder = () => {
+
+    const selections = typeof props.selections == "string" ? [props.selections] : props.selections
+
+    const newBackList = Object.assign({}, props.list)
+
+    selections.map(selection => {
+      const convertedSelection = parseInt(selection);
+      const addedOrder = {
+          executionTime: props.executionTime,
+          timeOffset: (props.hours * 3600) + (props.minutes * 60) + props.seconds,
+          size: props.stake,
+          price: props.price 
+      };
+
+      if (newBackList[convertedSelection] === undefined) {
+        newBackList[convertedSelection] = [addedOrder]
+      } else {
+        newBackList[convertedSelection] = newBackList[convertedSelection].concat(addedOrder)
+      }
+    })
+
+    props.onUpdateBackList(newBackList);
+  };
 
   return (
     <React.Fragment>
@@ -224,7 +247,8 @@ const mapStateToProps = state => {
     seconds: state.back.offset.seconds,
     executionTime: state.back.executionTime,
     runners: state.market.runners,
-    selections: state.back.selections
+    selections: state.back.selections,
+    list: state.back.list
   };
 };
 
@@ -237,7 +261,8 @@ const mapDispatchToProps = dispatch => {
     onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
     onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
     onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time)),
-    onSelection: selections => dispatch(actions.setSelections(selections))
+    onSelection: selections => dispatch(actions.setSelections(selections)),
+    onUpdateBackList: list => dispatch(actions.updateBackList(list))
   };
 };
 

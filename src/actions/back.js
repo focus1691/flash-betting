@@ -60,3 +60,10 @@ export const setSelections = selections => {
         payload: selections
     }
 }
+
+export const updateBackList = list => {
+    return {
+        type: "UPDATE_BACK_LIST",
+        payload: list
+    }
+};

@@ -8,7 +8,8 @@ const initialState = {
     seconds: 0
   },
   executionTime: "Before",
-  selections: null
+  selections: null,
+  list: {} // {selectionId(parameter): [{executionTime: Before, timeOffset: (seconds) , size: (2) , price: (750) },]  }
 };
 initialState.text = `${initialState.stake} @ ${initialState.price}`;
 
@@ -53,6 +54,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, executionTime: action.payload };
     case "SET_BACK_SELECTIONS":
       return { ...state, selections: action.payload };
+    case "UPDATE_BACK_LIST":
+      return { ...state, list: action.payload };
     default:
       return state;
   }
