@@ -7,15 +7,17 @@ const MatchedBets = props => {
       <table className="menu-bets">
         <tbody>
           <tr className="menu-bets-heading">
-            <button
-              style={{
-                height: "22px",
-                width: "auto",
-                backgroundColor: "transparent",
-                visibility: "collapse",
-                pointerEvents: "none"
-              }}
-            />
+            <td>
+              <button
+                style={{
+                  height: "22px",
+                  width: "auto",
+                  backgroundColor: "transparent",
+                  visibility: "collapse",
+                  pointerEvents: "none"
+                }}
+              />
+            </td>
             <td>Odds</td>
             <td>Stake</td>
             <td>P/L</td>
@@ -39,9 +41,11 @@ const MatchedBets = props => {
                           backgroundColor: bet.isBack ? "#A6D8FF" : "#FAC9D7"
                         }}
                       >
-                        <button style={{ height: "22px", width: "auto" }}>
-                          {/* <img src = {require('./CancelIcon.svg')} alt="" style = {{height: "100%", width: "auto"}} /> In Progress */}
-                        </button>
+                        <td>
+                          <button style={{ height: "22px", width: "auto" }}>
+                            {/* <img src = {require('./CancelIcon.svg')} alt="" style = {{height: "100%", width: "auto"}} /> In Progress */}
+                          </button>
+                        </td>
 
                         <td>{bet.odds}</td>
                         <td>{bet.stake}</td>

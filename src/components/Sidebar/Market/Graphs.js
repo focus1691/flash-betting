@@ -14,7 +14,7 @@ const Graph = props => {
       const URI = `https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId}&selectionId=${props.selection.selectionId}&handicap=0`;
       setGraph(URI);
     }
-  }, [props.selection]);
+  }, [props.selection, props.market.marketId, props.marketOpen]);
 
   return (
     <div id="menu-graph">

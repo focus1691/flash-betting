@@ -42,7 +42,7 @@ const Market = props => {
   };
 
   return (
-    <React.Fragment onContextMenu = { (e) => { e.preventDefault(); return false } }>
+    <React.Fragment>
       <Ladders />
 
       {props.tools.visible ? (
