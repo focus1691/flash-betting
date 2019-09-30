@@ -131,6 +131,12 @@ app.post("/api/save-user-settings", (request, response) => {
   });
 });
 
+app.post("/api/save-order", (request, response) => {
+  database.saveOrder(session.email, request.body).then(res => {
+    response.sendStatus(res);
+  });
+});
+
 app.get("/api/request-access-token", (request, response) => {
   // This call can be used for the refresh token
   // by changing the "grant type" to "REFRESH_TOKEN"

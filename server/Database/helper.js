@@ -1,6 +1,8 @@
+const mongoose = require('mongoose'), Schema = mongoose.Schema;
 const Database = require('./database');
 const User = require('./models/users');
 const Settings = require('./models/settings');
+const Order = require('./models/orders');
 
 class DatabaseHelper extends Database {
     constructor() {
@@ -52,18 +54,19 @@ class DatabaseHelper extends Database {
     }
     updateSettings(user, settings) {
         return new Promise((res, rej) => {
-            User.findOneAndUpdate({
-                email: user
-            }, settings, {
-                new: true,
-                useFindAndModify: false
-            }, (err, doc) => {
-                if (err) {
-                    rej(404);
-                }
-                res(200);
-            })
-        });
+            User.findOneAndUpdate(
+                { email: user },
+                settings, {
+                    new: true,
+                    useFindAndModify: false
+                },
+                (err, doc) => {
+                    if (err) {
+                        rej(404);
+                    }
+                    res(200);
+                })
+            });
     }
     setToken(user, tokenInfo) {
         return new Promise((res, rej) => {
@@ -88,6 +91,18 @@ class DatabaseHelper extends Database {
                 res(doc.accessToken)
             }).catch(err => {
                 rej(err);
+            });
+        });
+    }
+    saveOrder(user, order) {
+        return new Promise((res, rej) => {
+            User.findOne({email: user},)
+            .then(user => {
+                user.orders.push(order);
+                user.save();
+                res(true)
+            }).catch(err => {
+                rej(false);
             });
         });
     }

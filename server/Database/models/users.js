@@ -1,5 +1,4 @@
 const mongoose = require('mongoose'), Schema = mongoose.Schema;
-const validator = require('validator');
 const Settings = require('./settings');
 const Strategies = require('./trading');
 const Orders = require('./orders');
@@ -9,10 +8,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        lowercase: true,
-        validate: value => {
-            return validator.isEmail(value)
-        },
     },
     sessionKey: String,
     accessToken: String,
@@ -25,7 +20,7 @@ const userSchema = mongoose.Schema({
     },
     settings: Settings.schema,
     strategies: Strategies.schema,
-    orders: [{ type: Schema.Types.ObjectId, ref: 'Orders' }]
+    orders: [{ type: Orders.schema }]
 });
 
 module.exports = mongoose.model('User', userSchema);
