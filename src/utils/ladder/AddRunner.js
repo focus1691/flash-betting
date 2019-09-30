@@ -1,5 +1,6 @@
 import { createFullLadder, formatPriceKey } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Sort";
+import { SearchInsert } from "../SearchInsert";
 
 const AddRunner = (key, data) => {
   const runner = data;
@@ -56,6 +57,10 @@ const AddRunner = (key, data) => {
       }
     }
   }
+  const index = SearchInsert(runner.atb, runner.ltp[0], false);
+  const res = runner.atb.slice(index, index + 5);
+  console.log(index, res);
+
   return runner;
 };
 

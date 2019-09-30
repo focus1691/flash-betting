@@ -67,8 +67,15 @@ const UpdateRunner = (ladder, rawData) => {
         }
       }
     }
+    updateRunnerBackLayPercentages(ladder);
 
     return ladder;
 }
+
+const updateRunnerBackLayPercentages = ladder => {
+  const index = SearchInsert(ladder.atb, ladder.ltp[0], true);
+  const res = ladder.atb.slice(index, index + 5);
+  console.log(res);
+};
 
 export { UpdateRunner };
