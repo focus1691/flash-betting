@@ -60,3 +60,10 @@ export const setSelections = selections => {
         payload: selections
     }
 }
+
+export const updateLayList = list => {
+    return {
+        type: "UPDATE_LAY_LIST",
+        payload: list
+    }
+}

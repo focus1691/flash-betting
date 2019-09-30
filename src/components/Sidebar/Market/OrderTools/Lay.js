@@ -12,6 +12,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
+import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -55,6 +56,34 @@ const Lay = props => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // Handle Submit click to place an order
+  const placeOrder = () => {
+
+    const selections = typeof props.selections == "string" ? [props.selections] : props.selections
+
+    const newLayList = Object.assign({}, props.list)
+
+    selections.map(selection => {
+      const convertedSelection = parseInt(selection);
+      const addedOrder = {
+          executionTime: props.executionTime,
+          timeOffset: (props.hours * 3600) + (props.minutes * 60) + props.seconds,
+          size: props.stake,
+          price: formatPrice(props.price)
+      };
+
+      if (newLayList[convertedSelection] === undefined) {
+        newLayList[convertedSelection] = [addedOrder]
+      } else {
+        newLayList[convertedSelection] = newLayList[convertedSelection].concat(addedOrder)
+      }
+    })
+
+    props.onUpdateLayList(newLayList);
+  };
+
+  console.log(props.list)
 
   return (
     <React.Fragment>
@@ -139,7 +168,7 @@ const Lay = props => {
           onChange={e => props.onReceivePrice(e.target.value)}
           margin="normal"
         />
-        <Button variant="outlined" color="primary" className={classes.button}>
+        <Button variant="outlined" color="primary" className={classes.button} onClick={e => placeOrder()}>
           Submit
         </Button>
       </div>
@@ -210,7 +239,8 @@ const mapStateToProps = state => {
     seconds: state.lay.offset.seconds,
     executionTime: state.lay.executionTime,
     runners: state.market.runners,
-    selections: state.lay.selections
+    selections: state.lay.selections,
+    list: state.lay.list
   };
 };
 
@@ -223,7 +253,8 @@ const mapDispatchToProps = dispatch => {
     onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
     onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
     onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time)),
-    onSelection: selections => dispatch(actions.setSelections(selections))
+    onSelection: selections => dispatch(actions.setSelections(selections)),
+    onUpdateLayList: list => dispatch(actions.updateLayList(list))
   };
 };
 
