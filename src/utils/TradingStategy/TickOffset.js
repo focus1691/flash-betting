@@ -1,4 +1,4 @@
-const findTickOffset = (matchedPrice, currentPrice, side, tickOffset, percent) => {
+const findTickOffset = (matchedPrice, currentPrice, side, tickOffset, percent=false) => {
 
     var arr =
     Array(100).fill().map((v,i)=> (i/100 + 1.01).toFixed(2) )
@@ -13,8 +13,12 @@ const findTickOffset = (matchedPrice, currentPrice, side, tickOffset, percent) =
     .concat(Array(90).fill().map((v,i)=> (i*10 + 110).toFixed(0) ))
 
     var target = matchedPrice;
-    var targetMet = false;
     
+    if (percent) {
+        
+        return { priceReached: target };
+    }
+
     if (side === 'back') {
         for (var i = arr.indexOf(matchedPrice); i <= 1000; i++) {
             target = arr[i];
