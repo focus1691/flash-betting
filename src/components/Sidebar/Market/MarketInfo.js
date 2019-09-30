@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 const MarketInfo = props => {
 
   const getRacerDetails = () => {
-    console.log(props.selection);
     const details = {
       name: props.selection.runnerName,
       selectionId: props.selection.metadata.runnerId,

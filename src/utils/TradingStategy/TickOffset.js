@@ -42,9 +42,6 @@ const findTickOffset = (matchedPrice, side, offset, percent=false) => {
             }
         }
     }
-    
-    console.log(parseFloat(target))
-
     return { priceReached: target };
 }
 

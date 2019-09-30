@@ -67,7 +67,7 @@ const Login = props => {
         `/api/load-session?sessionKey=${encodeURIComponent(
           sessionKey
         )}&email=${encodeURIComponent(email)}`
-      ).then(res => console.log(res));
+      );
     }
   });
 
@@ -75,7 +75,6 @@ const Login = props => {
     fetch(`/api/login?user=${username}&pass=${password}`)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         if (res.error) {
           localStorage.removeItem("sessionKey", false);
           localStorage.removeItem("username");

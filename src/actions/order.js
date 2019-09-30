@@ -17,7 +17,7 @@ export const placeOrder = order => {
     })
       .then(res => res.json())
       .then(json => {
-        console.log(json);
+
         dispatch(updateOrders("adad"));
       });
   };

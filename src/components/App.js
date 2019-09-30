@@ -73,8 +73,6 @@ const App = props => {
         .then(res => res.json())
         .then(data => {
           if (data.result.length > 0) {
-            console.log(data.result[0]);
-
             const runners = {};
             for (let i = 0; i < data.result[0].runners.length; i++) {
               let selectionId = data.result[0].runners[i].selectionId;
@@ -197,10 +195,8 @@ const App = props => {
         } else {
           // Runner not found so we create the new object with the raw data
           ladders[key] = AddRunner(key, data.rc[i]);
-          console.log(ladders[key]);
         }
       }
-      console.log(ladders);
 
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
@@ -250,8 +246,6 @@ const App = props => {
     });
   }, [props.ladders]);
 
-  console.log(props.stopEntryList)
-
   const renderView = () => {
     switch (props.view) {
       case "HomeView":
@@ -264,9 +258,6 @@ const App = props => {
         return <HomeView />;
     }
   };
-
-  console.log(props.stopEntryList)
-
   return (
     <div className="horizontal-scroll-wrapper">
       <div className="root">

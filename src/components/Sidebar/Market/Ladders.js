@@ -49,8 +49,6 @@ const Ladder = props => {
       var color =
         !ltp ? "#FFFF00" : ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
         
-        console.log(`atl: ${atl}`);
-
       return (
         <tr>
           <td>{props.runners[value].runnerName}</td>

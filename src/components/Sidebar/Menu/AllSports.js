@@ -17,7 +17,6 @@ const AllSports = props => {
   });
 
   useEffect(() => {
-    console.log(props.sports.currentSport);
   }, [props.sports.currentSport]);
 
   const handleClick = async (
