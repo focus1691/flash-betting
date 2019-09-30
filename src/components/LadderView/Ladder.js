@@ -17,12 +17,14 @@ const Ladder = props => {
 
   useEffect(() => {
 
-    if (tableRef.current !== null && ltpRef.current !== null) {
-        // delay for waiting to load
-        setTimeout(() => {
-            tableRef.current.scrollTop = ltpRef.current.offsetTop; 
-            tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
-        }, 100)
+    if (tableRef.current !== null) {
+        if (ltpRef.current !== null) {
+            // delay for waiting to load
+            setTimeout(() => {
+                tableRef.current.scrollTop = ltpRef.current.offsetTop; 
+                tableRef.current.scrollTop -= tableRef.current.clientHeight / 2; // add half the height of the table to center;
+            }, 100)
+        }
     }
       
   }, [ltpRef]);
@@ -30,12 +32,15 @@ const Ladder = props => {
   const { id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList } = props;
   
   // remove adjacent LTP values
-  const filteredLTPs = ladder[id].ltp[0] != undefined ? 
-    ladder[id].ltp.filter((item, pos, arr) => {
-        // Always keep the 0th element as there is nothing before it
-        // Then check if each element is different than the one before it
-        return pos === 0 || item !== arr[pos-1];
-    }) : []
+  const filteredLTPs = 
+  ladder[id] !== undefined ? 
+    ladder[id].ltp[0] !== undefined ? 
+        ladder[id].ltp.filter((item, pos, arr) => {
+            // Always keep the 0th element as there is nothing before it
+            // Then check if each element is different than the one before it
+            return pos === 0 || item !== arr[pos-1];
+        }) : [] 
+    : []
 
   return (
     <LadderContainer

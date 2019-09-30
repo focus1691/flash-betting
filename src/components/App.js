@@ -148,13 +148,13 @@ const App = props => {
                   price: stopLossCheck.priceReached,
                 })
                 adjustedStopLoss = null;
+                delete adjustedStopLossList[key];
               }
             }
-            adjustedStopLossList[key] = adjustedStopLoss;
+            
           } 
-
-          const filteredStopLosses = adjustedStopLossList.filter(stoploss => stoploss != null)
-          props.onChangeStopLossList(filteredStopLosses);
+          
+          props.onChangeStopLossList(adjustedStopLossList);
 
         } else {
           // Runner not found so we create the new object with the raw data
@@ -198,17 +198,15 @@ const App = props => {
                   size: tickOffsetItem.size,
                   price: tickOffsetItem.newPrice, 
                 })
-                checkForMatchInTickOffset[order.rfs] = null;
+                delete checkForMatchInTickOffset[order.rfs];
               }
             
           })
         })
       })
-
-      const filterCompletedTickOffset = checkForMatchInTickOffset.filter(item => item !== null);
-
-      props.onChangeTickOffsetList(filterCompletedTickOffset);
+      
       props.onChangeStopLossList(checkForMatchInStopLoss);
+      props.onChangeTickOffsetList(checkForMatchInTickOffset);
 
       props.socket.off("ocm");
     });
