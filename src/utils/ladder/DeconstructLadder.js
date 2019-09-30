@@ -1,5 +1,9 @@
-import { sortAsc, sortDes } from "../Sort";
 
+/**
+ * This function is used to deconstruct the ladder data when mapping through ladders
+ * @param {object} ladder - Ladder information for a runner
+ * @return {data} The deconstructed ladder
+ */
 const DeconstructLadder = ladder => {
   const data = {
     ltp: ladder.ltp,
