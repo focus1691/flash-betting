@@ -39,3 +39,10 @@ export const setDisplayText = text => {
         payload: text
     }
 };
+
+export const updateTickOffsetList = list => {
+    return {
+        type: "UPDATE_TICK_OFFSET_LIST",
+        payload: list
+    }
+};
