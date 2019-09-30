@@ -13,6 +13,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
+import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -151,7 +152,26 @@ const StopEntry = props => {
               margin="normal"
             />
       </div>
-      <Button variant="outlined" color="primary" className={classes.button}>Submit</Button>
+      <Button variant="outlined" color="primary" className={classes.button}
+        onClick = { () => {
+          const adjustedStopEntryList = Object.assign({}, props.stopEntryList)
+          
+          const stopEntrySelectionList = props.stopEntryList[selectedIndex] === undefined ? [] : props.stopEntryList[selectedIndex];
+          const newStopEntrySelectionList = stopEntrySelectionList.concat({
+            targetLTP: props.ticks,
+            condition: props.operator,
+            side: props.side,
+            size: props.stake,
+            price: formatPrice(props.price)
+          })
+
+          
+          
+          adjustedStopEntryList[selectedIndex] = newStopEntrySelectionList;
+          props.onUpdateStopEntryList(adjustedStopEntryList);
+
+        }}
+      >Submit</Button>
     </div>
   );
 };
@@ -162,7 +182,9 @@ const mapStateToProps = state => {
     ticks: state.stopEntry.ticks,
     stake: state.stopEntry.stake,
     price: state.stopEntry.price,
-    runners: state.market.runners
+    runners: state.market.runners,
+    side: state.stopEntry.side,
+    stopEntryList: state.stopEntry.list
   };
 };
 
@@ -171,7 +193,9 @@ const mapDispatchToProps = dispatch => {
     onReceiveOperator: operator => dispatch(actions.setLTPOperator(operator)),
     onReceiveTicks: ticks => dispatch(actions.setTicks(ticks)),
     onReceiveStake: stake => dispatch(actions.setStake(stake)),
-    onReceivePrice: price => dispatch(actions.setPrice(price))
+    onReceivePrice: price => dispatch(actions.setPrice(price)),
+    onRecieveSide: side => dispatch(actions.setSide(side)),
+    onUpdateStopEntryList: list => dispatch(actions.updateStopEntryList(list))
   };
 };
 

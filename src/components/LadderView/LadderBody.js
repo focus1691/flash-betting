@@ -41,7 +41,7 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [], st
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder}
-            isStopLoss = {stopLoss !== undefined && stopLoss.side == "BACK" ? parseFloat(checkStopLossHit(stopLoss.matchedPrice, formatPrice(key), stopLoss.side.toLowerCase(), stopLoss.tickOffset).priceReached).toFixed(2) == key : false}
+            isStopLoss = {stopLoss !== undefined && stopLoss.side == "BACK" ? parseFloat(checkStopLossHit(5, stopLoss.matchedPrice, formatPrice(key), stopLoss.side.toLowerCase(), stopLoss.tickOffset).priceReached).toFixed(2) == key : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
           />
@@ -53,7 +53,7 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [], st
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder} // We swap the formatPrice(key), stopLoss.matchedPrice, because it is in a different order if lay
-            isStopLoss = {stopLoss !== undefined && stopLoss.side == "LAY" ? parseFloat(checkStopLossHit(formatPrice(key), stopLoss.matchedPrice, stopLoss.side.toLowerCase(), stopLoss.tickOffset).priceReached).toFixed(2) == key : false}
+            isStopLoss = {stopLoss !== undefined && stopLoss.side == "LAY" ? parseFloat(checkStopLossHit(5, formatPrice(key), stopLoss.matchedPrice, stopLoss.side.toLowerCase(), stopLoss.tickOffset).priceReached).toFixed(2) == key : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
           />

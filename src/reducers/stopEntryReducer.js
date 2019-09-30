@@ -3,7 +3,9 @@ const initialState = {
   operator: "<",
   ticks: 3,
   stake: 2,
-  price: 750
+  price: 750,
+  side: 'BACK',
+  list: {} // {selectionId(parameter): [{targetLTP: , condition: , side: , size: , price: },]  }
 };
 
 const reducer = (state = initialState, action) => {
@@ -18,6 +20,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, stake: action.payload };
     case "SET_STOP_ENTRY_PRICE":
       return { ...state, price: action.payload };
+    case "SET_STOP_ENTRY_SIDE":
+      return { ...state, side: action.payload };
+    case "UPDATE_STOP_ENTRY_LIST":
+      return { ...state, list: action.payload };
     default:
       return state;
   }
