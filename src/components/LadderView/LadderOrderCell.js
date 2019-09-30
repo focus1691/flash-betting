@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from "react-redux";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { updateTickOffsetList } from '../../actions/tickOffset';
-import { checkStopLossHit } from "../../utils/TradingStategy/StopLoss";
+import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import crypto from 'crypto'
 
 const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, isStopLoss, stopLossData, changeStopLossList, stopLossSelected, 
@@ -38,12 +38,12 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
 
               if (tickOffsetSelected) {
                 const newTickOffset = Object.assign({}, tickOffsetList)
-
+                
                 newTickOffset[referenceStrategyId] = {
                   marketId: marketId, 
                   selectionId: selectionId, 
                   matchedPrice: formatPrice(cell.odds), 
-                  newPrice: checkStopLossHit(formatPrice(cell.odds), formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks).priceReached,
+                  newPrice: findTickOffset(formatPrice(cell.odds), formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks).priceReached,
                   size: 5, 
                   side: side, 
                   tickOffset: tickOffsetUnits === "Ticks" ? tickOffsetTicks : "TODO", 
