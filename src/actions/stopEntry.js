@@ -32,3 +32,17 @@ export const setPrice = price => {
         payload: price
     }
 };
+
+export const setSide = side => {
+    return {
+        type: "SET_STOP_ENTRY_SIDE",
+        payload: side
+    }
+};
+
+export const updateStopEntryList = list => {
+    return {
+        type: "UPDATE_STOP_ENTRY_LIST",
+        payload: list
+    }
+};

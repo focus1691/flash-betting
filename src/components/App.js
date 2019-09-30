@@ -4,6 +4,7 @@ import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
 import { updateStopLossList } from '../actions/stopLoss'
 import { updateTickOffsetList } from "../actions/tickOffset";
+import { updateStopEntryList } from "../actions/stopEntry";
 import Siderbar from "./Sidebar";
 import HomeView from "./HomeView/";
 import LadderView from "./LadderView/";
@@ -122,6 +123,7 @@ const App = props => {
       const length = data.rc.length;
 
       const adjustedStopLossList = Object.assign({}, props.stopLossList)
+      const newStopEntryList = {};
 
       for (var i = 0; i < length; i++) {
         let key = [data.rc[i].id];
@@ -136,7 +138,36 @@ const App = props => {
               adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1; 
             }
 
-            // if it doesn't have a reference or the order has been matched
+            // stop Entry
+            const stopEntryArray = props.stopEntryList[key]
+            let indexesToRemove = []
+
+            if (stopEntryArray !== undefined) {
+              const marketId = getQueryVariable("marketId");
+              // eslint-disable-next-line no-loop-func
+              stopEntryArray.map((item, index) => {
+                  
+                  if ((data.rc[i].ltp < item.targetLTP && item.condition == '<' ) || (data.rc[i].ltp == item.targetLTP && item.condition == '=' ) || (data.rc[i].ltp > item.targetLTP && item.condition == '>' )) {
+                    props.onPlaceOrder({
+                      marketId: marketId,
+                      selectionId: key,
+                      side: item.side,
+                      size: item.size,
+                      price: item.price
+                    })
+
+                    indexesToRemove = indexesToRemove.concat(index);
+                  }  
+                }
+              )
+
+              if (stopEntryArray.length < indexesToRemove.length) {
+                newStopEntryList[key] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
+              }
+            }
+
+          
+            // if it doesn't have a reference or the order has been matched (STOP LOSS)
             if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
               const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.matchedPrice, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset);
               if (stopLossCheck.targetMet) {
@@ -159,7 +190,8 @@ const App = props => {
             }
             
           } 
-          
+
+          props.onChangeStopEntryList(newStopEntryList);          
           props.onChangeStopLossList(adjustedStopLossList);
 
         } else {
@@ -218,6 +250,8 @@ const App = props => {
     });
   }, [props.ladders]);
 
+  console.log(props.stopEntryList)
+
   const renderView = () => {
     switch (props.view) {
       case "HomeView":
@@ -230,6 +264,8 @@ const App = props => {
         return <HomeView />;
     }
   };
+
+  console.log(props.stopEntryList)
 
   return (
     <div className="horizontal-scroll-wrapper">
@@ -255,6 +291,7 @@ const App = props => {
   );
 };
 
+
 const AppWithSocket = props => (
   <SocketContext.Consumer>
     {socket => <App {...props} socket={socket} />}
@@ -270,7 +307,8 @@ const mapStateToProps = state => {
     premiumMember: state.settings.premiumMember,
     premiumPopup: state.settings.premiumPopupOpen,
     stopLossList: state.stopLoss.list,
-    tickOffsetList: state.tickOffset.list
+    tickOffsetList: state.tickOffset.list,
+    stopEntryList: state.stopEntry.list
   };
 };
 
@@ -297,6 +335,7 @@ const mapDispatchToProps = dispatch => {
     setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
+    onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
   };
 };
