@@ -2,8 +2,6 @@
 // Access with process.env
 require("dotenv").config();
 
-var crypto = require('crypto');
-
 // The BetFair session class below contains all the methods
 // to call the BetFair API. Some samples are commented below to demonstrate their utility.
 const BetFairSession = require("./BetFair/session.js");

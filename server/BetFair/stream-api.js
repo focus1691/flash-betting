@@ -39,12 +39,15 @@ class BetFairStreamAPI {
 				// Parse the data String into JSON Object
 				try {
 					const result = JSON.parse(this.chunks.join(""));
-
+					
+					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						
-
 						openSocket.emit('mcm', result.mc[0]);
-						console.log(result.mc[0]);
+						this.chunks = [];
+					}
+					// Order Change Message Data Found
+					else if (result.op === 'ocm') {
+						openSocket.emit('ocm', result);
 						this.chunks = [];
 					} else {
 						this.chunks = [];
@@ -67,11 +70,12 @@ class BetFairStreamAPI {
 			});
 		});
 	}
-	subscribeToMarket () {
-		
+	subscribeToMarket (data) {
+		this.client.write(`{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`);
 	}
-	subscribeToOrder () { 
 
+	subscribeToOrder (data) { 
+		this.client.write(`{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":["${data.strategyRef}"]},"segmentationEnabled":true}\r\n`);
 	}
 }
 
