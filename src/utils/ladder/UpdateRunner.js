@@ -1,5 +1,6 @@
 
 import { SearchInsert } from "../SearchInsert";
+import { formatPriceKey } from "../ladder/CreateFullLadder";
 
 const UpdateRunner = (ladder, rawData) => {
 
@@ -28,13 +29,16 @@ const UpdateRunner = (ladder, rawData) => {
         if (matched <= 0) {
           if (price === newAtb[index][0]) {
             newAtb.splice(index, 1);
+            ladder.fullLadder[formatPriceKey(price)].backMatched = null;
           }
         }
         else if (price === newAtb[index][0]) {
           newAtb[index][1] = matched;
+          ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
         }
         else {
           newAtb.splice(index, 0, [price, matched]);
+          ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
         }
       }
     }
@@ -57,13 +61,16 @@ const UpdateRunner = (ladder, rawData) => {
         if (matched <= 0) {
           if (price === newAtl[index][0]) {
             newAtl.splice(index, 1);
+            ladder.fullLadder[formatPriceKey(price)].layMatched = null;
           }
         }
         else if (price === newAtl[index][0]) {
           newAtl[index][1] = matched;
+          ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
         }
         else {
           newAtl.splice(index, 0, [price, matched]);
+          ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
         }
       }
     }
