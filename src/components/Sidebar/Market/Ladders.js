@@ -47,13 +47,13 @@ const Ladder = props => {
       const { atb, atl, ltp } = getLadderData(props.ladder[value]);
 
       var color =
-        !ltp ? "#FFFF00" : ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
+        !ltp || !ltp[0] ? "#FFFFFF" : ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
         
       return (
         <tr>
           <td>{props.runners[value].runnerName}</td>
           <td>{atl}</td>
-          <td style={{ background: color }}>{ltp[0]}</td>
+          <td style={{ background: color }}>{ltp && ltp[0] ? ltp[0] : null}</td>
           <td>{atb}</td>
           <td>
             <input 
