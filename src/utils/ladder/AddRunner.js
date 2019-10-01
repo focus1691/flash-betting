@@ -1,4 +1,4 @@
-import { createFullLadder, formatPriceKey } from "./CreateFullLadder";
+import { createFullLadder, formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Sort";
 
 const AddRunner = (key, data) => {
@@ -56,6 +56,7 @@ const AddRunner = (key, data) => {
       }
     }
   }
+  runner.percent = calcBackLayPercentages(runner.fullLadder, runner.ltp[0]);
   return runner;
 };
 

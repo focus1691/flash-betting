@@ -33,7 +33,6 @@ const Ladder = props => {
   }, [ltpRef]);
   
   const { id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList } = props;
-  
   // remove adjacent LTP values
   const filteredLTPs = 
   ladder[id] !== undefined ? 
@@ -44,7 +43,6 @@ const Ladder = props => {
             return pos === 0 || item !== arr[pos-1];
         }) : [] 
     : []
-
   return (
     <LadderContainer
         isReferenceSet = {isReferenceSet}
@@ -77,6 +75,7 @@ const Ladder = props => {
                             ? ladder[id].tv[0].toLocaleString()
                             : ""
                         }
+                        percent={ladder[id].percent}
                     />
                     <LadderBody
                         ladder={ladder[id].fullLadder}

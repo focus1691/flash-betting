@@ -1,19 +1,5 @@
 import { calcPercentDifference } from "../PriceCalculator";
-
-/** An array of all BetFair values between 1.01 to 1000
- * Used in the stop loss check function below
- */
-const ALL_PRICES =
-Array(100).fill().map((v,i)=> parseFloat((i/100 + 1.01).toFixed(2) ))
-.concat(Array(50).fill().map((v,i)=> parseFloat((i/50 + 2.02).toFixed(2) )))
-.concat(Array(20).fill().map((v,i)=> parseFloat((i/20 + 3.05).toFixed(2) )))
-.concat(Array(20).fill().map((v,i)=> parseFloat((i/10 + 4.1).toFixed(1) )))
-.concat(Array(20).fill().map((v,i)=> parseFloat((i/5 + 6.2).toFixed(1) )))
-.concat(Array(19).fill().map((v,i)=> parseFloat((i/2 + 10.5).toFixed(1) )))
-.concat(Array(11).fill().map((v,i)=> parseFloat((i + 20).toFixed(0) )))
-.concat(Array(10).fill().map((v,i)=> parseFloat((i*2 + 32).toFixed(0) )))
-.concat(Array(10).fill().map((v,i)=> parseFloat((i*5 + 55).toFixed(0) )))
-.concat(Array(90).fill().map((v,i)=> parseFloat((i*10 + 110).toFixed(0) )))
+import { ALL_PRICES } from "../ladder/CreateFullLadder";
 
 /**
  * This function is used to calculate whether the stop loss has been triggered.
