@@ -112,17 +112,12 @@ const App = props => {
     
     props.socket.on("mcm", data => {
 
-      const isMarketRunning = data.marketDefinition !== undefined && data.marketDefinition.status === "RUNNING"
-
-      if (
-        !props.marketOpen &&
-        data.marketDefinition &&
-        data.marketDefinition.status
-      ) {
+      // Update the market status
+      if (data.marketDefinition) {
         props.onMarketStatusChange(data.marketDefinition.status);
       }
 
-      var ladders = {};
+      var ladders = Object.assign({}, props.ladders);
 
       const length = data.rc.length;
 
@@ -140,7 +135,7 @@ const App = props => {
           const marketId = getQueryVariable("marketId");
           
           // Back and Lay
-          if (isMarketRunning) {
+          if (props.marketStatus === "RUNNING") {
             
             const adjustedBackOrderArray = checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
             if (adjustedBackOrderArray.length > 0) {
@@ -322,6 +317,7 @@ const mapStateToProps = state => {
     view: state.settings.view,
     market: state.market.currentMarket,
     marketOpen: state.market.marketOpen,
+    marketStatus: state.market.status,
     ladders: state.market.ladder,
     premiumMember: state.settings.premiumMember,
     premiumPopup: state.settings.premiumPopupOpen,

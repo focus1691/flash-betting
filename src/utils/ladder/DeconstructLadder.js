@@ -6,8 +6,8 @@
  */
 const DeconstructLadder = ladder => {
   const data = {
-    ltp: ladder.ltp,
-    tv: ladder.tv
+    ltp: ladder.ltp ? ladder.ltp : [null, null],
+    tv: ladder.tv ? ladder.tv : null
   };
 
   if (ladder.atb) {
