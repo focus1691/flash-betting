@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import useInterval from "react-useinterval";
+import { placeOrder } from "../../actions/order";
+import { updateLayList } from "../../actions/lay";
+import { updateBackList } from "../../actions/back";
+import { checkTimeListsBefore } from '../../utils/TradingStategy/BackLay'
+
 
 const Countdown = props => {
   const ONE_SECOND = 1000;
@@ -10,6 +15,10 @@ const Countdown = props => {
     setTimeRemaining(
       props.market ? new Date(props.market.marketStartTime) - new Date() : "--"
     );
+    
+    props.onUpdateBackList(checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK"))
+    props.onUpdateLayList(checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY"))
+
   }, ONE_SECOND);
 
   const padZeroes = num => {
@@ -56,8 +65,19 @@ const mapStateToProps = state => {
   return {
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
-    market: state.market.currentMarket
+    market: state.market.currentMarket,
+    layList: state.lay.list,
+    backList: state.back.list
   };
 };
 
-export default connect(mapStateToProps)(Countdown);
+const matchDispatchToProps = dispatch => {
+  return {
+    onPlaceOrder: order => dispatch(placeOrder(order)),
+    onUpdateLayList: list => dispatch(updateLayList(list)),
+    onUpdateBackList: list => dispatch(updateBackList(list))
+  }
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(Countdown);
+

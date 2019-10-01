@@ -16,6 +16,9 @@ import { AddRunner } from "../utils/ladder/AddRunner";
 import { UpdateRunner } from "../utils/ladder/UpdateRunner";
 import PremiumPopup from "./PremiumPopup";
 import { checkStopLossHit } from "../utils/TradingStategy/StopLoss";
+import { updateLayList } from "../actions/lay";
+import { updateBackList } from "../actions/back";
+import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
 import { placeOrder } from "../actions/order";
 
 const App = props => {
@@ -108,6 +111,9 @@ const App = props => {
      */
     
     props.socket.on("mcm", data => {
+
+      const isMarketRunning = data.marketDefinition.status === "RUNNING"
+
       if (
         !props.marketOpen &&
         data.marketDefinition &&
@@ -121,6 +127,8 @@ const App = props => {
       const length = data.rc.length;
 
       const adjustedStopLossList = Object.assign({}, props.stopLossList)
+      const adjustedBackList = Object.assign({}, props.stopLossList)
+      const adjustedLayList = Object.assign({}, props.stopLossList)
       const newStopEntryList = {};
 
       for (var i = 0; i < length; i++) {
@@ -129,41 +137,57 @@ const App = props => {
           // Runner found so we update our object with the raw data
           ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
 
+          const marketId = getQueryVariable("marketId");
+          
+          // Back and Lay
+          if (isMarketRunning) {
+            
+            const adjustedBackOrderArray = checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
+            if (adjustedBackOrderArray.length > 0) {
+              adjustedBackList[key] = adjustedBackOrderArray; 
+            }
+
+            const adjustedLayOrderArray = checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY")
+            if (adjustedLayOrderArray.length > 0) {
+              adjustedLayList[key] = adjustedLayOrderArray;
+            }
+
+          }
+
+          // stop Entry
+          const stopEntryArray = props.stopEntryList[key]
+          let indexesToRemove = []
+          
+
+          if (stopEntryArray !== undefined) {
+            
+            // eslint-disable-next-line no-loop-func
+            stopEntryArray.map((item, index) => {
+                if ((data.rc[i].ltp < item.targetLTP && item.condition == '<' ) || (data.rc[i].ltp == item.targetLTP && item.condition == '=' ) || (data.rc[i].ltp > item.targetLTP && item.condition == '>' )) {
+                  props.onPlaceOrder({
+                    marketId: marketId,
+                    selectionId: key,
+                    side: item.side,
+                    size: item.size,
+                    price: item.price
+                  })
+
+                  indexesToRemove = indexesToRemove.concat(index);
+                }  
+              }
+            )
+
+            if (stopEntryArray.length < indexesToRemove.length) {
+              newStopEntryList[key] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
+            }
+          }
+
           // We increment and check the stoplosses
           if (props.stopLossList[key] !== undefined) {
             let adjustedStopLoss = Object.assign({}, props.stopLossList[key])
             if (props.stopLossList[key].trailing && data.rc[i].ltp > props.ladders[key].ltp[0]) {
               adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1; 
             }
-
-            // stop Entry
-            const stopEntryArray = props.stopEntryList[key]
-            let indexesToRemove = []
-
-            if (stopEntryArray !== undefined) {
-              const marketId = getQueryVariable("marketId");
-              // eslint-disable-next-line no-loop-func
-              stopEntryArray.map((item, index) => {
-                  
-                  if ((data.rc[i].ltp < item.targetLTP && item.condition == '<' ) || (data.rc[i].ltp == item.targetLTP && item.condition == '=' ) || (data.rc[i].ltp > item.targetLTP && item.condition == '>' )) {
-                    props.onPlaceOrder({
-                      marketId: marketId,
-                      selectionId: key,
-                      side: item.side,
-                      size: item.size,
-                      price: item.price
-                    })
-
-                    indexesToRemove = indexesToRemove.concat(index);
-                  }  
-                }
-              )
-
-              if (stopEntryArray.length < indexesToRemove.length) {
-                newStopEntryList[key] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
-              }
-            }
-
           
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
             if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
@@ -189,14 +213,18 @@ const App = props => {
             
           } 
 
-          props.onChangeStopEntryList(newStopEntryList);          
-          props.onChangeStopLossList(adjustedStopLossList);
+          
 
         } else {
           // Runner not found so we create the new object with the raw data
           ladders[key] = AddRunner(key, data.rc[i]);
         }
       }
+
+      props.onChangeBackList(adjustedBackList);  
+      props.onChangeLayList(adjustedLayList);  
+      props.onChangeStopEntryList(newStopEntryList);          
+      props.onChangeStopLossList(adjustedStopLossList);
 
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
@@ -299,7 +327,9 @@ const mapStateToProps = state => {
     premiumPopup: state.settings.premiumPopupOpen,
     stopLossList: state.stopLoss.list,
     tickOffsetList: state.tickOffset.list,
-    stopEntryList: state.stopEntry.list
+    stopEntryList: state.stopEntry.list,
+    layList: state.lay.list,
+    backList: state.back.list
   };
 };
 
@@ -327,6 +357,8 @@ const mapDispatchToProps = dispatch => {
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
     onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
+    onChangeLayList: list => dispatch(updateLayList(list)),
+    onChangeBackList: list => dispatch(updateBackList(list)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
   };
 };

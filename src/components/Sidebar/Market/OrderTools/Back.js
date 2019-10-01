@@ -64,6 +64,8 @@ const Back = props => {
   // Handle Submit click to place an order
   const placeOrder = () => {
 
+    console.log('true')
+
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
     const newBackList = Object.assign({}, props.list)
@@ -72,7 +74,7 @@ const Back = props => {
       const convertedSelection = parseInt(selection);
       const addedOrder = {
           executionTime: props.executionTime,
-          timeOffset: (props.hours * 3600) + (props.minutes * 60) + props.seconds,
+          timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
           size: props.stake,
           price: formatPrice(props.price)
       };
@@ -86,6 +88,8 @@ const Back = props => {
 
     props.onUpdateBackList(newBackList);
   };
+
+  console.log(props.list)
 
   return (
     <React.Fragment>

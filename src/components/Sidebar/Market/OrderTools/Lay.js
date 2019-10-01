@@ -68,7 +68,7 @@ const Lay = props => {
       const convertedSelection = parseInt(selection);
       const addedOrder = {
           executionTime: props.executionTime,
-          timeOffset: (props.hours * 3600) + (props.minutes * 60) + props.seconds,
+          timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
           size: props.stake,
           price: formatPrice(props.price)
       };
@@ -83,8 +83,7 @@ const Lay = props => {
     props.onUpdateLayList(newLayList);
   };
 
-  console.log(props.list)
-
+  
   return (
     <React.Fragment>
       <List component="nav" aria-label="Device settings">
