@@ -127,8 +127,8 @@ const App = props => {
       const length = data.rc.length;
 
       const adjustedStopLossList = Object.assign({}, props.stopLossList)
-      const adjustedBackList = Object.assign({}, props.stopLossList)
-      const adjustedLayList = Object.assign({}, props.stopLossList)
+      const adjustedBackList = {}
+      const adjustedLayList = {}
       const newStopEntryList = {};
 
       for (var i = 0; i < length; i++) {

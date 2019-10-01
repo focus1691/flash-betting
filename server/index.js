@@ -292,7 +292,27 @@ app.post("/api/place-order", (request, response) => {
           }
         }
       ],
-      customerStrategyRef: crypto.randomBytes(Math.ceil(15 / 2)).toString('hex').slice(0, 15)
+      customerStrategyRef: request.body.customerStrategyRef
+    },
+    (err, res) => {
+      // console.log(res);
+      response.json(res.result);
+    }
+  );
+});
+
+app.post("/api/cancel-order", (request, response) => {
+  console.log(request.body);
+  session.cancelOrders(
+    {
+      marketId: request.body.marketId,
+      instructions: [
+        {
+          betId: request.body.betId,
+          sizeReduction: request.body.sizeReduction
+        }
+      ],
+      customerRef: request.body.customerRef
     },
     (err, res) => {
       // console.log(res);

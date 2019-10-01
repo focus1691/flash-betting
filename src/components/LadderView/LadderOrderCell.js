@@ -6,8 +6,11 @@ import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import crypto from 'crypto'
 
 const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, 
-                          onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger }) => {
+                          onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger,
+                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList }) => {
 
+      
+    
     return (
         <td
             style={
@@ -19,11 +22,15 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
 
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
               
+              // stoploss and fill or kill can't be together, stoploss takes priority
               placeOrder({
                 side: side,
                 price: formatPrice(cell.odds),
                 selectionId: selectionId,
-                customerStrategyRef: referenceStrategyId
+                customerStrategyRef: referenceStrategyId,
+                fillOrKill: !stopLossSelected && fillOrKillSelected ? true : false,
+                fillOrKillSeconds: fillOrKillSeconds,
+                fillOrKillList: fillOrKillList
               })
 
               if (stopLossSelected && stopLossData === undefined) {
@@ -86,6 +93,9 @@ const mapStateToProps = state => {
     tickOffsetTicks: state.tickOffset.ticks,
     tickOffsetUnits: state.tickOffset.units,
     tickOffsetTrigger: state.tickOffset.percentTrigger,
+    fillOrKillSelected: state.fillOrKill.selected,
+    fillOrKillSeconds: state.fillOrKill.seconds,
+    fillOrKillList: state.fillOrKill.list
   };
 };
 

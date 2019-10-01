@@ -18,3 +18,10 @@ export const setDisplayText = text => {
         payload: text
     }
 };
+
+export const updateFillOrKillList = list => {
+    return {
+        type: "UPDATE_FILL_OR_KILL_LIST",
+        payload: list
+    }
+};

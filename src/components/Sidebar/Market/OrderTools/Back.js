@@ -64,8 +64,6 @@ const Back = props => {
   // Handle Submit click to place an order
   const placeOrder = () => {
 
-    console.log('true')
-
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
     const newBackList = Object.assign({}, props.list)
@@ -88,8 +86,6 @@ const Back = props => {
 
     props.onUpdateBackList(newBackList);
   };
-
-  console.log(props.list)
 
   return (
     <React.Fragment>

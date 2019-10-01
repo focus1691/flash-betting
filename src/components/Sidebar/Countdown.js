@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import useInterval from "react-useinterval";
-import { placeOrder } from "../../actions/order";
+import { placeOrder, cancelOrder } from "../../actions/order";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
+import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { checkTimeListsBefore } from '../../utils/TradingStategy/BackLay'
 
 
@@ -18,6 +19,22 @@ const Countdown = props => {
     
     props.onUpdateBackList(checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK"))
     props.onUpdateLayList(checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY"))
+
+    const newFillOrKillList = {};
+    Object.keys(props.fillOrKillList).map((betId, index) => {
+      const order = props.fillOrKillList[betId]; 
+      if ((Date.now() / 1000) - (order.startTime / 1000) >= order.seconds) {
+        props.onCancelOrder({
+          marketId: props.market.marketId,
+          betId: betId,
+          sizeReduction: null
+        })
+      } else {
+        newFillOrKillList[betId] = props.fillOrKillList[betId]
+      }
+    })
+
+    props.onUpdateFillOrKillList(newFillOrKillList);
 
   }, ONE_SECOND);
 
@@ -67,15 +84,18 @@ const mapStateToProps = state => {
     marketStatus: state.market.status,
     market: state.market.currentMarket,
     layList: state.lay.list,
-    backList: state.back.list
+    backList: state.back.list,
+    fillOrKillList: state.fillOrKill.list
   };
 };
 
 const matchDispatchToProps = dispatch => {
   return {
     onPlaceOrder: order => dispatch(placeOrder(order)),
+    onCancelOrder: order => dispatch(cancelOrder(order)),
     onUpdateLayList: list => dispatch(updateLayList(list)),
-    onUpdateBackList: list => dispatch(updateBackList(list))
+    onUpdateBackList: list => dispatch(updateBackList(list)),
+    onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list))
   }
 }
 
