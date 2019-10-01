@@ -112,7 +112,7 @@ const App = props => {
     
     props.socket.on("mcm", data => {
 
-      const isMarketRunning = data.marketDefinition.status === "RUNNING"
+      const isMarketRunning = data.marketDefinition !== undefined && data.marketDefinition.status === "RUNNING"
 
       if (
         !props.marketOpen &&
