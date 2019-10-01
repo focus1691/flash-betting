@@ -95,6 +95,8 @@ class DatabaseHelper extends Database {
         });
     }
     saveOrder(user, order) {
+        // Create the object with our Order Schema
+        order = new Order(order);
         return new Promise((res, rej) => {
             User.findOne({email: user},)
             .then(user => {
