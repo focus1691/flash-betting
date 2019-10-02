@@ -119,7 +119,6 @@ const App = props => {
             if (order.marketId === marketId) {
               switch (order.strategy) {
                 case "Back" || "Lay":
-                    
                     const toConcat = { executionTime: order.executionTime, timeOffset: order.timeOffset, size: order.size, price: order.price, rfs: order.rfs }
                     if (order.strategy === "Back") {
                       loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [toConcat] : loadedBackOrders[order.selectionId].concat(toConcat)
@@ -146,7 +145,7 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     
-    props.socket.on("mcm", data => {
+    props.socket.on("mcm", async data => {
 
       // Update the market status
       if (data.marketDefinition) {
@@ -172,17 +171,15 @@ const App = props => {
           
           // Back and Lay
           if (props.marketStatus === "RUNNING") {
-            
-            const adjustedBackOrderArray = checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
+            const adjustedBackOrderArray = await checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
             if (adjustedBackOrderArray.length > 0) {
               adjustedBackList[key] = adjustedBackOrderArray; 
             }
 
-            const adjustedLayOrderArray = checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY")
+            const adjustedLayOrderArray = await checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY")
             if (adjustedLayOrderArray.length > 0) {
               adjustedLayList[key] = adjustedLayOrderArray;
             }
-
           }
 
           // stop Entry
@@ -249,6 +246,7 @@ const App = props => {
         } else {
           // Runner not found so we create the new object with the raw data
           ladders[key] = AddRunner(key, data.rc[i]);
+          
         }
       }
 
