@@ -108,6 +108,26 @@ class DatabaseHelper extends Database {
             });
         });
     }
+
+    removeOrders(user, orders) {
+        // Create the object with our Order Schema
+        const formattedOrders = orders.map(order => new Order(order))
+ 
+        return new Promise((res, rej) => {
+            User.findOne({email: user},)
+            .then(user => {
+                formattedOrders.find(order => {
+                    const index = user.orders.find(item => item.rfs === order.rfs);
+                    user.orders.splice(index, 1);
+                })
+                user.save();
+                res(200)
+            }).catch(err => {
+                console.log(err)
+                rej(400);
+            });
+        });
+    }
 }
 
 module.exports = new DatabaseHelper();

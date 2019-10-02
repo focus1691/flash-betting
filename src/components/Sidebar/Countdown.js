@@ -12,13 +12,16 @@ const Countdown = props => {
   const ONE_SECOND = 1000;
   const [timeRemaining, setTimeRemaining] = useState("--");
 
-  useInterval(() => {
+  useInterval(async () => {
     setTimeRemaining(
       props.market ? new Date(props.market.marketStartTime) - new Date() : "--"
     );
     
-    props.onUpdateBackList(checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK"))
-    props.onUpdateLayList(checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY"))
+    const newBackList = await checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK")
+    props.onUpdateBackList(newBackList)
+
+    const newLayList = await checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY")
+    props.onUpdateLayList(newLayList)
 
     const newFillOrKillList = {};
     Object.keys(props.fillOrKillList).map((betId, index) => {

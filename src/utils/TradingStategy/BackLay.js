@@ -1,10 +1,12 @@
-const checkTimeListsBefore = (list, marketStartTime, onPlaceOrder, marketId, side) => {
+const checkTimeListsBefore = async (list, marketStartTime, onPlaceOrder, marketId, side) => {
 
     const newList = Object.assign({}, list)
-  
+    let ordersToRemove = []
+
     Object.keys(list).map(selectionId => {
       const newSelectionArray = newList[selectionId];
       let indexesToRemove = []
+       // this is for the remove orders
       list[selectionId].map((order, index) => {
         const remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000) 
   
@@ -18,8 +20,10 @@ const checkTimeListsBefore = (list, marketStartTime, onPlaceOrder, marketId, sid
             size: order.size,
             price: order.price
           })
+
           
           indexesToRemove = indexesToRemove.concat(index)
+          ordersToRemove = ordersToRemove.concat(order)
         }
       })
   
@@ -29,6 +33,8 @@ const checkTimeListsBefore = (list, marketStartTime, onPlaceOrder, marketId, sid
       }
   
     })
+
+    
   
     return newList
 }

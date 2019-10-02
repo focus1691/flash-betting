@@ -130,7 +130,14 @@ app.post("/api/save-user-settings", (request, response) => {
 });
 
 app.post("/api/save-order", (request, response) => {
+
   database.saveOrder(session.email, request.body).then(res => {
+    response.sendStatus(res);
+  });
+});
+
+app.post("/api/remove-orders", (request, response) => {
+  database.removeOrders(session.email, request.body).then(res => {
     response.sendStatus(res);
   });
 });

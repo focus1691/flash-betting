@@ -269,8 +269,6 @@ const App = props => {
     });
   }, [props.ladders]);
 
-  console.log(props.backList)
-
   const renderView = () => {
     switch (props.view) {
       case "HomeView":
