@@ -34,7 +34,16 @@ const checkTimeListsBefore = async (list, marketStartTime, onPlaceOrder, marketI
   
     })
 
-    
+    if (ordersToRemove.length > 0) {
+      await fetch('/api/remove-orders', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(ordersToRemove)
+      })
+    }
   
     return newList
 }
