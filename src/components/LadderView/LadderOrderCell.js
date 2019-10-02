@@ -42,21 +42,16 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
                   rfs: referenceStrategyId,
                   assignedIsOrderMatched: false,
                 })
-              }
-
-              if (tickOffsetSelected) {
+              } else if (tickOffsetSelected) {
                 const newTickOffset = Object.assign({}, tickOffsetList)
 
                 newTickOffset[referenceStrategyId] = {
                   marketId: marketId, 
                   selectionId: selectionId, 
-                  matchedPrice: formatPrice(cell.odds), 
-                  newPrice: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetTrigger).priceReached,
-                  size: 5, 
+                  newPrice: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
+                  size: 5, // TODO WE NEED TO PUT A SIZE!
                   side: side, 
-                  tickOffset: tickOffsetUnits === "Ticks" ? tickOffsetTicks : "TODO", 
-                  percentage: tickOffsetTrigger, 
-                  rfs: referenceStrategyId
+                  percentageTrigger: tickOffsetTrigger, 
                 }
 
                 onChangeTickOffsetList(newTickOffset);

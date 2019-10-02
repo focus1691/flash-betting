@@ -9,7 +9,7 @@ const initialState = {
   },
   executionTime: "Before",
   selections: null,
-  list: {} // {selectionId(parameter): [{executionTime: Before, timeOffset: (seconds) , size: (2) , price: (750) },]  }
+  list: {} // {selectionId(parameter): [{executionTime: Before, timeOffset: (seconds) , size: (2) , price: (750) }, rfs: ]  }
 };
 initialState.text = `${initialState.stake} @ ${initialState.price}`;
 

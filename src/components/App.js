@@ -247,7 +247,7 @@ const App = props => {
               
               // if the strategies are the same and enough of the order has been matched (TICK OFFSET)
               const tickOffsetItem = props.tickOffsetList[order.rfs]
-              if (tickOffsetItem !== undefined && order.rfs.sm / tickOffsetItem.size >= tickOffsetItem.percentage / 100) {
+              if (tickOffsetItem !== undefined && order.rfs.sm / tickOffsetItem.size >= tickOffsetItem.percentageTrigger / 100) {
                 props.onPlaceOrder({
                   marketId: tickOffsetItem.marketId,
                   selectionId: tickOffsetItem.selectionId,
@@ -268,6 +268,8 @@ const App = props => {
       props.socket.off("ocm");
     });
   }, [props.ladders]);
+
+  console.log(props.backList)
 
   const renderView = () => {
     switch (props.view) {

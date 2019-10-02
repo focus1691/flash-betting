@@ -13,6 +13,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
+import crypto from 'crypto'
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -58,29 +59,48 @@ const Lay = props => {
   };
 
   // Handle Submit click to place an order
-  const placeOrder = () => {
+  const placeOrder = async () => {
 
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
     const newLayList = Object.assign({}, props.list)
 
-    selections.map(selection => {
+    await Promise.all(selections.map(async (selection, index) => {
+      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
+          strategy: "Lay",
+          marketId: props.market.marketId, 
+          selectionId: convertedSelection,
           executionTime: props.executionTime,
           timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
           size: props.stake,
-          price: formatPrice(props.price)
+          price: formatPrice(props.price),
+          rfs: referenceStrategyId
       };
 
-      if (newLayList[convertedSelection] === undefined) {
-        newLayList[convertedSelection] = [addedOrder]
-      } else {
-        newLayList[convertedSelection] = newLayList[convertedSelection].concat(addedOrder)
-      }
-    })
+      // make sure request is processed before saving it
+      
+      await fetch('/api/save-order', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(addedOrder)
+      }).then(() => {
+        if (newLayList[convertedSelection] === undefined) {
+          newLayList[convertedSelection] = [addedOrder]
+        } else {
+          newLayList[convertedSelection] = newLayList[convertedSelection].concat(addedOrder)
+        }
+      })
+    }))
+
+    
 
     props.onUpdateLayList(newLayList);
+    
   };
 
   
@@ -237,6 +257,7 @@ const mapStateToProps = state => {
     minutes: state.lay.offset.minutes,
     seconds: state.lay.offset.seconds,
     executionTime: state.lay.executionTime,
+    market: state.market.currentMarket,
     runners: state.market.runners,
     selections: state.lay.selections,
     list: state.lay.list

@@ -41,7 +41,7 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [], st
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder}
-            isStopLoss = {stopLoss !== undefined ? 
+            isStopLoss = {stopLoss !== undefined && stopLoss.side == "BACK" ? 
                           stopLoss.units == "Ticks" ? findStopPosition(stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
                           findStopPositionForPercent(stopLoss.size, stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                            : false}
@@ -56,7 +56,7 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [], st
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder} // We swap the formatPrice(key), stopLoss.matchedPrice, because it is in a different order if lay
-            isStopLoss = {stopLoss !== undefined ? 
+            isStopLoss = {stopLoss !== undefined && stopLoss.side == "LAY" ? 
               stopLoss.units == "Ticks" ? findStopPosition(stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
               findStopPositionForPercent(stopLoss.size, stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                : false}

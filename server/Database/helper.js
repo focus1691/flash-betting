@@ -102,9 +102,9 @@ class DatabaseHelper extends Database {
             .then(user => {
                 user.orders.push(order);
                 user.save();
-                res(true)
+                res(200)
             }).catch(err => {
-                rej(false);
+                rej(400);
             });
         });
     }

@@ -13,6 +13,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
+import crypto from 'crypto'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -62,29 +63,46 @@ const Back = props => {
   };
 
   // Handle Submit click to place an order
-  const placeOrder = () => {
+  const placeOrder = async () => {
 
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
     const newBackList = Object.assign({}, props.list)
 
-    selections.map(selection => {
+    await Promise.all(selections.map(async (selection, index) => {
+      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
+          strategy: "Back",
+          marketId: props.market.marketId, 
+          selectionId: convertedSelection,
           executionTime: props.executionTime,
           timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
           size: props.stake,
-          price: formatPrice(props.price)
+          price: formatPrice(props.price),
+          rfs: referenceStrategyId
       };
 
-      if (newBackList[convertedSelection] === undefined) {
-        newBackList[convertedSelection] = [addedOrder]
-      } else {
-        newBackList[convertedSelection] = newBackList[convertedSelection].concat(addedOrder)
-      }
-    })
+      // make sure request is processed before saving it
+      
+      await fetch('/api/save-order', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(addedOrder)
+      }).then(() => {
+        if (newBackList[convertedSelection] === undefined) {
+          newBackList[convertedSelection] = [addedOrder]
+        } else {
+          newBackList[convertedSelection] = newBackList[convertedSelection].concat(addedOrder)
+        }
+      })
+    }))
 
     props.onUpdateBackList(newBackList);
+ 
   };
 
   return (
@@ -248,6 +266,7 @@ const mapStateToProps = state => {
     seconds: state.back.offset.seconds,
     executionTime: state.back.executionTime,
     runners: state.market.runners,
+    market: state.market.currentMarket,
     selections: state.back.selections,
     list: state.back.list
   };
