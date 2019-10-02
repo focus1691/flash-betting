@@ -24,18 +24,24 @@ const useStyles = makeStyles(theme => ({
 const Ladder = props => {
   const classes = useStyles();
 
-  const getLadderData = ladder => {
+  const deconstructLadder = ladder => {
 
     if (ladder === undefined) {
       return {}
     }
 
     const data = {
-      ltp: ladder.ltp
+      ltp: null,
+      color: "#FFFFFF"
     };
 
-    data.atb = ladder.atb ? ladder.atb[0][0] : null;
-    data.atl = ladder.atl ? ladder.atl[0][0] : null;
+    if (ladder.ltp && ladder.ltp[0]) {
+      data.ltp = ladder.ltp[0];
+      data.color = ladder.ltp[0] < ladder.ltp[1] ? "#0AFD03" : ladder.ltp[0] > ladder.ltp[1] ? "#FC0700" : "#FFFF00";
+    }
+
+    data.atb = ladder.atb && ladder.atb[0] ? ladder.atb[0][0] : null;
+    data.atl = ladder.atl && ladder.atl[0] ? ladder.atl[0][0] : null;
 
     return data;
   };
@@ -44,16 +50,13 @@ const Ladder = props => {
     // values of ladder order are the keys of props.ladder
     return Object.values(props.ladderOrder).map(value => {
       
-      const { atb, atl, ltp } = getLadderData(props.ladder[value]);
+      const { atb, atl, ltp, color } = deconstructLadder(props.ladder[value]);
 
-      var color =
-        !ltp || !ltp[0] ? "#FFFFFF" : ltp[0] < ltp[1] ? "#0AFD03" : ltp[0] > ltp[1] ? "#FC0700" : "#FFFF00";
-        
       return (
         <tr>
           <td>{props.runners[value].runnerName}</td>
           <td>{atl}</td>
-          <td style={{ background: color }}>{ltp && ltp[0] ? ltp[0] : null}</td>
+          <td style={{ background: color }}>{ltp}</td>
           <td>{atb}</td>
           <td>
             <input 
