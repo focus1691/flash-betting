@@ -112,9 +112,7 @@ const StopEntry = props => {
 
     props.onUpdateStopEntryList(newStopEntryList);
   };
-
-  console.log(props.list)
-
+  
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="Device settings">

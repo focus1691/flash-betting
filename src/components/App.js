@@ -21,6 +21,7 @@ import { updateBackList } from "../actions/back";
 import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
 import { placeOrder } from "../actions/order";
 import { stopEntryCheck } from '../utils/TradingStategy/StopEntry'
+import { updateFillOrKillList } from "../actions/fillOrKill";
 
 const App = props => {
 
@@ -114,6 +115,7 @@ const App = props => {
         let loadedLayOrders = {};
         let loadedStopEntryOrders = {};
         let loadedTickOffsetOrders = {};
+        let loadedFillOrKillOrders = {};
 
         fetch(`/api/get-all-orders`)
         .then(res => res.json())
@@ -132,7 +134,10 @@ const App = props => {
                   loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
                   break;
                 case "Tick Offset":
-                    loadedTickOffsetOrders[order.rfs] = loadedTickOffsetOrders[order.rfs] === undefined ? [order] : loadedTickOffsetOrders[order.rfs].concat(order);
+                  loadedTickOffsetOrders[order.rfs] = loadedTickOffsetOrders[order.rfs] === undefined ? [order] : loadedTickOffsetOrders[order.rfs].concat(order);
+                  break;
+                case "Fill Or Kill":
+                  loadedFillOrKillOrders[order.betId] = loadedFillOrKillOrders[order.betId] === undefined ? [order] : loadedFillOrKillOrders[order.betId].concat(order);
                   break;
                 default: 
                   break;
@@ -144,6 +149,7 @@ const App = props => {
           props.onChangeLayList(loadedLayOrders)
           props.onChangeStopEntryList(loadedStopEntryOrders)
           props.onChangeTickOffsetList(loadedTickOffsetOrders)
+          props.onChangeFillOrKillList(loadedFillOrKillOrders)
         })
 
     }
@@ -339,7 +345,7 @@ const App = props => {
     }
   };
 
-  console.log(props.tickOffsetList)
+  console.log(props.fillOrKillList)
 
   return (
     <div className="horizontal-scroll-wrapper">
@@ -386,6 +392,7 @@ const mapStateToProps = state => {
     stopLossList: state.stopLoss.list,
     tickOffsetList: state.tickOffset.list,
     stopEntryList: state.stopEntry.list,
+    fillOrKillList: state.fillOrKill.list,
     layList: state.lay.list,
     backList: state.back.list
   };
@@ -418,6 +425,7 @@ const mapDispatchToProps = dispatch => {
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
+    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list))
   };
 };
 

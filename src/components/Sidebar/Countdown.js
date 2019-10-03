@@ -5,6 +5,7 @@ import { placeOrder, cancelOrder } from "../../actions/order";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
+import { updateTickOffsetList } from "../../actions/tickOffset";
 import { checkTimeListsBefore } from '../../utils/TradingStategy/BackLay'
 
 
@@ -23,7 +24,11 @@ const Countdown = props => {
     const newLayList = await checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY")
     props.onUpdateLayList(newLayList)
 
+
     const newFillOrKillList = {};
+    const adjustedTickOffsetList = Object.assign({}, props.tickOffsetList);
+    let ordersToRemove = [];
+    
     Object.keys(props.fillOrKillList).map((betId, index) => {
       const order = props.fillOrKillList[betId]; 
       if ((Date.now() / 1000) - (order.startTime / 1000) >= order.seconds) {
@@ -32,11 +37,33 @@ const Countdown = props => {
           betId: betId,
           sizeReduction: null
         })
+
+        ordersToRemove = ordersToRemove.concat(order);
+
+        Object.values(props.tickOffsetList).map(tickOffsetOrder => {
+          if (tickOffsetOrder.rfs === order.rfs) {
+            ordersToRemove = ordersToRemove.concat(adjustedTickOffsetList[tickOffsetOrder.rfs]);
+            delete adjustedTickOffsetList[tickOffsetOrder.rfs];
+          }
+        })
+
       } else {
         newFillOrKillList[betId] = props.fillOrKillList[betId]
       }
     })
 
+    if (ordersToRemove.length > 0) {
+      await fetch('/api/remove-orders', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(ordersToRemove)
+      })
+    }
+
+    props.onUpdateTickOffsetList(adjustedTickOffsetList)
     props.onUpdateFillOrKillList(newFillOrKillList);
 
   }, ONE_SECOND);
@@ -88,7 +115,8 @@ const mapStateToProps = state => {
     market: state.market.currentMarket,
     layList: state.lay.list,
     backList: state.back.list,
-    fillOrKillList: state.fillOrKill.list
+    fillOrKillList: state.fillOrKill.list,
+    tickOffsetList: state.tickOffset.list
   };
 };
 
@@ -98,7 +126,8 @@ const matchDispatchToProps = dispatch => {
     onCancelOrder: order => dispatch(cancelOrder(order)),
     onUpdateLayList: list => dispatch(updateLayList(list)),
     onUpdateBackList: list => dispatch(updateBackList(list)),
-    onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list))
+    onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list)),
+    onUpdateTickOffsetList: list => dispatch(updateTickOffsetList(list))
   }
 }
 
