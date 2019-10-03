@@ -5,7 +5,7 @@ const initialState = {
   stake: 2,
   price: 750,
   side: 'BACK',
-  list: {}, // {selectionId(parameter): [{targetLTP: , condition: , side: , size: , price: },]  }
+  list: {}, // {selectionId(parameter): [{targetLTP: , stopEntryCondition: , side: , size: , price: },]  }
   selections: null
 };
 

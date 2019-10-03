@@ -14,6 +14,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
+import crypto from 'crypto'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -73,30 +74,46 @@ const StopEntry = props => {
   };
 
   // Handle Submit click to place an order
-  const placeOrder = () => {
+  const placeOrder = async () => {
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
     const newStopEntryList = Object.assign({}, props.stopEntryList)
 
-    selections.map(selection => {
+    await Promise.all(selections.map(async selection => {
+      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
+          strategy: "Stop Entry",
+          marketId: props.market.marketId, 
+          selectionId: convertedSelection,
           targetLTP: props.ticks,
-          condition: props.operator,
+          stopEntryCondition: props.operator,
           side: props.side,
           size: props.stake,
-          price: formatPrice(props.price)
+          price: formatPrice(props.price),
+          rfs: referenceStrategyId
       };
 
-      if (newStopEntryList[convertedSelection] === undefined) {
-        newStopEntryList[convertedSelection] = [addedOrder]
-      } else {
-        newStopEntryList[convertedSelection] = newStopEntryList[convertedSelection].concat(addedOrder)
-      }
-    })
+      await fetch('/api/save-order', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(addedOrder)
+      }).then(() => {
+        if (newStopEntryList[convertedSelection] === undefined) {
+          newStopEntryList[convertedSelection] = [addedOrder]
+        } else {
+          newStopEntryList[convertedSelection] = newStopEntryList[convertedSelection].concat(addedOrder)
+        }
+      })
+    }))
 
     props.onUpdateStopEntryList(newStopEntryList);
   };
+
+  console.log(props.list)
 
   return (
     <div className={classes.root}>
@@ -231,6 +248,7 @@ const mapStateToProps = state => {
     runners: state.market.runners,
     side: state.stopEntry.side,
     stopEntryList: state.stopEntry.list,
+    market: state.market.currentMarket,
     selections: state.stopEntry.selections
   };
 };

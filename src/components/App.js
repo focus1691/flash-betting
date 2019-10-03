@@ -20,6 +20,7 @@ import { updateLayList } from "../actions/lay";
 import { updateBackList } from "../actions/back";
 import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
 import { placeOrder } from "../actions/order";
+import { stopEntryCheck } from '../utils/TradingStategy/StopEntry'
 
 const App = props => {
 
@@ -111,6 +112,7 @@ const App = props => {
 
         let loadedBackOrders = {};
         let loadedLayOrders = {};
+        let loadedStopEntryOrders = {};
 
         fetch(`/api/get-all-orders`)
         .then(res => res.json())
@@ -119,12 +121,14 @@ const App = props => {
             if (order.marketId === marketId) {
               switch (order.strategy) {
                 case "Back" || "Lay":
-                    const toConcat = { executionTime: order.executionTime, timeOffset: order.timeOffset, size: order.size, price: order.price, rfs: order.rfs }
                     if (order.strategy === "Back") {
-                      loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [toConcat] : loadedBackOrders[order.selectionId].concat(toConcat)
+                      loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
                     } else {
-                      loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [toConcat] : loadedLayOrders[order.selectionId].concat(toConcat)
+                      loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
                     }
+                  break;
+                case "Stop Entry":
+                  loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
                   break;
                 default: 
                   break;
@@ -134,6 +138,7 @@ const App = props => {
         }).then(() => {
           props.onChangeBackList(loadedBackOrders)
           props.onChangeLayList(loadedLayOrders)
+          props.onChangeStopEntryList(loadedStopEntryOrders)
         })
 
     }
@@ -145,6 +150,7 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     
+
     props.socket.on("mcm", async data => {
 
       // Update the market status
@@ -184,27 +190,9 @@ const App = props => {
 
           // stop Entry
           const stopEntryArray = props.stopEntryList[key]
-          let indexesToRemove = []
           
-
           if (stopEntryArray !== undefined) {
-            
-            // eslint-disable-next-line no-loop-func
-            stopEntryArray.map((item, index) => {
-                if ((data.rc[i].ltp < item.targetLTP && item.condition == '<' ) || (data.rc[i].ltp == item.targetLTP && item.condition == '=' ) || (data.rc[i].ltp > item.targetLTP && item.condition == '>' )) {
-                  props.onPlaceOrder({
-                    marketId: marketId,
-                    selectionId: key,
-                    side: item.side,
-                    size: item.size,
-                    price: item.price
-                  })
-
-                  indexesToRemove = indexesToRemove.concat(index);
-                }  
-              }
-            )
-
+            let indexesToRemove = stopEntryCheck(data.rc[i].ltp, stopEntryArray, props.onPlaceOrder);
             if (stopEntryArray.length < indexesToRemove.length) {
               newStopEntryList[key] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
             }
@@ -329,6 +317,7 @@ const App = props => {
         return <HomeView />;
     }
   };
+
   return (
     <div className="horizontal-scroll-wrapper">
       <div className="root">
@@ -352,6 +341,8 @@ const App = props => {
     </div>
   );
 };
+
+
 
 
 const AppWithSocket = props => (
