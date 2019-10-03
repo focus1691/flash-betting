@@ -6,12 +6,12 @@ import GridHeader from "./GridHeader";
 import GridDetailCell from "./GridDetailCell";
 import EmptyCell from "./EmptyCell";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
+import { DeconstructRunner } from "../../utils/DeconstructRunner";
 import { formatCurrency } from "../../utils/NumberFormat";
 import {
 	calcBackProfit,
 	calcLiability,
-	colorForBack,
-	colorForLay
+	colorForBack, colorForLay,
 } from "../../utils/PriceCalculator";
 import Draggable from "react-draggable";
 import DraggableGraph from "../DraggableGraph";
@@ -19,8 +19,12 @@ import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 
 const Grid = props => {
-	const [cellHovered, setCellHovered] = useState(false);
+	// const [priceHovered, setpriceHovered] = useState(false);
+	const [rowHovered, setRowHovered] = useState(null);
 	const [stakeSelected, setStakeSelected] = useState(null);
+	const [activeOrder, setActiveOrder] = useState(null);
+	const [rowSelected, setRowSelected] = useState(null);
+	const [ordersVisible, setOrdersVisible] = useState(0);
 	const oneClickRef = createRef();
 
 	const renderRow = (betOdds, bestOdds, key, backLay) => {
@@ -44,10 +48,14 @@ const Grid = props => {
 			<td
 				className="grid-cell"
 				onMouseEnter={e => {
-					setCellHovered(true);
+					setRowHovered(key);
+					// setpriceHovered(true);
+					// setRowNameHovered(key);
 
 					$(e.currentTarget).one("mouseleave", e => {
-						setCellHovered(false);
+						setRowHovered(null);
+						// setpriceHovered(false);
+						// setRowNameHovered(null);
 					});
 				}}
 				onClick={() => {
@@ -58,6 +66,8 @@ const Grid = props => {
 							backLay: backLay,
 							price: odds
 						});
+						setOrdersVisible(ordersVisible + 1);
+						// setRowSelected(key);
 					}
 				}}
 			>
@@ -69,10 +79,10 @@ const Grid = props => {
 
 	const renderTableData = () => {
 		return Object.keys(props.ladder).map(key => {
-			const { atb, atl, batb, batl, ltp, tv } = DeconstructLadder(
+			const { atb, atl, batb, batl, ltp, tv, bg } = DeconstructLadder(
 				props.ladder[key]
 			);
-			const order = props.runners[key].order;
+			const { name, number, logo, order } = DeconstructRunner(props.runners[key]);
 
 			const orderProps =
 				order.stakeLiability === 0
@@ -95,24 +105,16 @@ const Grid = props => {
 					<tr>
 						<GridDetailCell
 							runner={props.runners[key]}
-							name={props.runners[key].runnerName}
-							number={
-								props.runners[key].metadata.CLOTH_NUMBER
-									? props.runners[key].metadata.CLOTH_NUMBER + ". "
-									: ""
-							}
-							logo={
-								props.runners[key].metadata.COLOURS_FILENAME
-									? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.runners[key].metadata.COLOURS_FILENAME}`
-									: `${window.location.origin}/images/baseball-player.png`
-							}
+							name={name}
+							number={number}
+							logo={logo}
 							selectRunner={e => {
 								props.onSelectRunner(props.runners[key]);
 							}}
 							ltp={ltp}
 							tv={tv}
 							PL={
-								order.visible
+								order.visible && rowHovered === key && activeOrder
 									? {
 										val: formatCurrency(
 											props.localeCode,
@@ -121,26 +123,20 @@ const Grid = props => {
 										),
 										color: colorForBack(order.backLay)
 									}
-									: !order.visible && cellHovered
+									: rowHovered && rowHovered !== key && activeOrder
 										? {
 											val: formatCurrency(
 												props.localeCode,
 												props.currencyCode,
-												calcLiability(stakeSelected, order.backLay)
+												calcLiability(activeOrder.stake, activeOrder.backLay & 1)
 											),
-											color: colorForLay(order.backLay)
+											color: colorForBack(activeOrder.backLay ^ 1)
 										}
-										: { val: "", color: "" }
+										:
+										
+										{ val: "", color: "" }
 							}
-							bg={
-								ltp[0] < ltp[1] // #0AFD03 (Green Lower LTP)
-									? "#0AFD03"
-									: ltp[0] > ltp[1] // #FC0700 (Red Higher LTP)
-										? "#FC0700"
-										: ltp[0] === ltp[1] // #FFFF00 (Yellow Same LTP)
-											? "#FFFF00"
-											: "#FFF" // #FFF (No Value)
-							}
+							bg={bg}
 						/>
 						{renderRow(atb, batb, key, 0).reverse()}
 						{renderRow(atl, batl, key, 1)}
@@ -151,16 +147,20 @@ const Grid = props => {
 						runnerId={key}
 						order={order}
 						orderProps={orderProps}
-						toggleStakeAndLiability={stakeLiability => { props.onToggleStakeAndLiability(stakeLiability) }}
-						toggleBackAndLay={side => { props.onToggleBackAndLay(side) }}
+						toggleStakeAndLiability={stakeLiability => {props.onToggleStakeAndLiability(stakeLiability) }}
+						toggleBackAndLay={side => {
+							props.onToggleBackAndLay(side);
+							setActiveOrder(Object.assign(activeOrder, {backLay: side.backLay}));
+						}}
 						updateOrderValue={orderValue => {
 							props.onUpdateOrderValue(orderValue);
-							setStakeSelected(orderValue.stake);
+							setActiveOrder(orderValue);
 						}}
 						updateOrderPrice={price => { props.onUpdateOrderPrice(price) }}
 						updateOrderVisibility={visibility => {
 							props.onUpdateOrderVisibility(visibility);
-							setStakeSelected(null);
+							setActiveOrder(null);
+							setOrdersVisible(ordersVisible - 1);
 						}}
 					/>
 				</React.Fragment>

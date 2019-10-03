@@ -1,5 +1,5 @@
 import React from "react";
-import GridPriceRow from "./GridPriceRow";
+import { LightenDarkenColor } from "../../utils/ColorManipulator";
 
 export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, toggleBackAndLay, updateOrderValue, updateOrderPrice, updateOrderVisibility }) => {
     return (
@@ -27,22 +27,29 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                             {orderProps.text}
                         </li>
 
-                        <GridPriceRow
-                            name={name}
-                            runnerId={runnerId}
-                            orderProps={orderProps}
-                            onUpdateOrderValue={stake => {
-                                updateOrderValue({
-                                    id: runnerId,
-                                    stake: stake
-                                });
-                            }}
-                        />
+                        {orderProps.prices.map(price => {
+                            return (
+                                <li
+                                    style={{ background: price === order.stake ? LightenDarkenColor(orderProps.bg, -20) : "" }}
+                                    onClick={() => {
+                                        updateOrderValue({
+                                            id: runnerId,
+                                            backLay: order.backLay,
+                                            stake: price
+                                        });
+                                    }}
+                                >
+                                    {price}
+                                </li>
+                            );
+                        })}
                         <span
                             className={"toggle-back-lay"}
                             onClick={() => {
-                                let backLay = order.backLay === 0 ? 1 : 0;
-                                toggleBackAndLay({ id: runnerId, backLay: backLay });
+                                toggleBackAndLay({
+                                    id: runnerId,
+                                    backLay: order.backLay ^ 1
+                                });
                             }}
                         >
                             {orderProps.text2}
@@ -55,6 +62,7 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                             onChange={e => {
                                 updateOrderValue({
                                     id: runnerId,
+                                    backLay: order.backLay,
                                     stake: e.target.value
                                 });
                             }}

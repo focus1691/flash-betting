@@ -1,5 +1,4 @@
 import React from "react";
-import { formatCurrency } from "../../utils/NumberFormat";
 
 export default ({ name, number, logo, selectRunner, ltp, tv, PL, bg }) => (
   <td
