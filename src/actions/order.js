@@ -8,7 +8,6 @@ export const updateOrders = order => {
 };
 
 export const placeOrder = order => {
-
   return dispatch => {
     return fetch('/api/place-order', {
       headers: {
@@ -23,14 +22,11 @@ export const placeOrder = order => {
         
         const betId = json.instructionReports[0].betId;
 
-        if (betId !== undefined && order.fillOrKill) {
-          const newFillOrKillList = Object.assign({}, order.fillOrKillList, {betId: {seconds: order.fillOrKillSeconds, startTime: Date.now()}})
-          dispatch(updateFillOrKillList(newFillOrKillList))
-        }
-
+        order.orderCompleteCallBack(betId);
         dispatch(updateOrders("adad"));
       });
   };
+
 };
 
 export const cancelOrder = order => {

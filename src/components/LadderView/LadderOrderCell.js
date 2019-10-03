@@ -4,10 +4,11 @@ import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import crypto from 'crypto'
+import { updateFillOrKillList } from '../../actions/fillOrKill';
 
 const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, 
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger,
-                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList }) => {
+                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList }) => {
 
       
     
@@ -28,35 +29,64 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
                 price: formatPrice(cell.odds),
                 selectionId: selectionId,
                 customerStrategyRef: referenceStrategyId,
-                fillOrKill: !stopLossSelected && fillOrKillSelected ? true : false,
-                fillOrKillSeconds: fillOrKillSeconds,
-                fillOrKillList: fillOrKillList
+                orderCompleteCallBack: async betId => {
+
+                  if (stopLossSelected && stopLossData === undefined) {
+                    changeStopLossList({
+                      side: side === "BACK" ? "LAY" : "BACK",
+                      price: formatPrice(cell.odds),
+                      custom: false,
+                      units: stopLossUnits,
+                      rfs: referenceStrategyId,
+                      assignedIsOrderMatched: false,
+                    })
+                  } else if (tickOffsetSelected) {
+                    const newTickOffset = Object.assign({}, tickOffsetList)
+                    const addedOrder = {
+                      strategy: "Tick Offset",
+                      marketId: marketId, 
+                      selectionId: selectionId, 
+                      price: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
+                      size: 5, // TODO WE NEED TO PUT A SIZE!
+                      side: side, 
+                      percentageTrigger: tickOffsetTrigger,
+                      rfs: referenceStrategyId
+                    };
+    
+                    newTickOffset[referenceStrategyId] = addedOrder
+    
+                    await fetch('/api/save-order', {
+                      headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                      },
+                      method: "POST",
+                      body: JSON.stringify(addedOrder)
+                    })
+                    onChangeTickOffsetList(newTickOffset);
+                    
+                  }
+
+                  if (!stopLossSelected && fillOrKillSelected) {
+                    const addedFillOrKillOrder = {strategy: "Fill Or Kill", marketId: marketId, selectionId: selectionId, seconds: fillOrKillSeconds, startTime: Date.now(), betId: betId, rfs: referenceStrategyId};
+                    const newFillOrKillList = Object.assign({}, fillOrKillList);
+                    newFillOrKillList[betId] = addedFillOrKillOrder;
+
+                    await fetch('/api/save-order', {
+                      headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                      },
+                      method: "POST",
+                      body: JSON.stringify(addedFillOrKillOrder)
+                    })
+                    onUpdateFillOrKillList(newFillOrKillList);
+                  }
+
+                },
               })
 
-              if (stopLossSelected && stopLossData === undefined) {
-                changeStopLossList({
-                  side: side === "BACK" ? "LAY" : "BACK",
-                  price: formatPrice(cell.odds),
-                  custom: false,
-                  units: stopLossUnits,
-                  rfs: referenceStrategyId,
-                  assignedIsOrderMatched: false,
-                })
-              } else if (tickOffsetSelected) {
-                const newTickOffset = Object.assign({}, tickOffsetList)
-
-                newTickOffset[referenceStrategyId] = {
-                  marketId: marketId, 
-                  selectionId: selectionId, 
-                  newPrice: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
-                  size: 5, // TODO WE NEED TO PUT A SIZE!
-                  side: side, 
-                  percentageTrigger: tickOffsetTrigger, 
-                }
-
-                onChangeTickOffsetList(newTickOffset);
-              }
-
+              
 
             }}
             onContextMenu = { e => {
@@ -90,13 +120,14 @@ const mapStateToProps = state => {
     tickOffsetTrigger: state.tickOffset.percentTrigger,
     fillOrKillSelected: state.fillOrKill.selected,
     fillOrKillSeconds: state.fillOrKill.seconds,
-    fillOrKillList: state.fillOrKill.list
+    fillOrKillList: state.fillOrKill.list,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list))
+    onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
+    onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list))
   }
 }
 

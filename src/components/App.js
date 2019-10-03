@@ -113,6 +113,7 @@ const App = props => {
         let loadedBackOrders = {};
         let loadedLayOrders = {};
         let loadedStopEntryOrders = {};
+        let loadedTickOffsetOrders = {};
 
         fetch(`/api/get-all-orders`)
         .then(res => res.json())
@@ -130,6 +131,9 @@ const App = props => {
                 case "Stop Entry":
                   loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
                   break;
+                case "Tick Offset":
+                    loadedTickOffsetOrders[order.rfs] = loadedTickOffsetOrders[order.rfs] === undefined ? [order] : loadedTickOffsetOrders[order.rfs].concat(order);
+                  break;
                 default: 
                   break;
               }
@@ -139,6 +143,7 @@ const App = props => {
           props.onChangeBackList(loadedBackOrders)
           props.onChangeLayList(loadedLayOrders)
           props.onChangeStopEntryList(loadedStopEntryOrders)
+          props.onChangeTickOffsetList(loadedTickOffsetOrders)
         })
 
     }
@@ -263,10 +268,11 @@ const App = props => {
      * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
      * @param {obj} data The order change message data:
      */
-    props.socket.on("ocm", data => {
+    props.socket.on("ocm", async data => {
 
       const checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
       const checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
+      let stopLossOrdersToRemove = [];
 
       data.oc.map(changes => {
         changes.orc.map(runner => { 
@@ -284,14 +290,29 @@ const App = props => {
                   selectionId: tickOffsetItem.selectionId,
                   side: tickOffsetItem.side === "BACK" ? "LAY" : "BACK",
                   size: tickOffsetItem.size,
-                  price: tickOffsetItem.newPrice, 
+                  price: tickOffsetItem.price, // this is the new price
                 })
+
+                stopLossOrdersToRemove = stopLossOrdersToRemove.concat(checkForMatchInTickOffset[order.rfs])
+
                 delete checkForMatchInTickOffset[order.rfs];
               }
             
           })
         })
       })
+      
+
+      if (stopLossOrdersToRemove.length > 0) {
+        await fetch('/api/remove-orders', {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify(stopLossOrdersToRemove)
+        })
+      }
       
       if (Object.keys(props.stopLossList).length > 0) {
         props.onChangeStopLossList(checkForMatchInStopLoss);
@@ -317,6 +338,8 @@ const App = props => {
         return <HomeView />;
     }
   };
+
+  console.log(props.tickOffsetList)
 
   return (
     <div className="horizontal-scroll-wrapper">

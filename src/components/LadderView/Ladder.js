@@ -88,9 +88,7 @@ const Ladder = props => {
                                 price: data.price,
                                 selectionId: data.selectionId,
                                 customerStrategyRef: data.customerStrategyRef,
-                                fillOrKill: data.fillOrKill,
-                                fillOrKillSeconds: data.fillOrKillSeconds,
-                                fillOrKillList: data.fillOrKillList
+                                orderCompleteCallBack: data.orderCompleteCallBack
                             });
                         }}
                         ltp = {ladder[id].ltp[0]}

@@ -4,7 +4,7 @@ const initialState = {
   units: "Ticks",
   percentTrigger: 2,
   hedged: false,
-  list: {} // rfs: {marketId: , selectionId: , newPrice: , size: , side: , percentageTrigger: , rfs:}
+  list: {} // rfs: {marketId: , selectionId: , price: , size: , side: , percentageTrigger: , rfs:}
 };
 initialState.text = `${initialState.ticks} ${initialState.units} [${
   initialState.hedged ? "x" : "-"
