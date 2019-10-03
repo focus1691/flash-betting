@@ -129,6 +129,12 @@ app.post("/api/save-user-settings", (request, response) => {
   });
 });
 
+app.get("/api/get-all-orders", (request, response) => {
+  database.getAllOrders(session.email).then(res => {
+    response.json(res);
+  });
+});
+
 app.post("/api/save-order", (request, response) => {
 
   database.saveOrder(session.email, request.body).then(res => {

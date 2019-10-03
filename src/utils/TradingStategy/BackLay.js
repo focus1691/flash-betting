@@ -48,9 +48,10 @@ const checkTimeListsBefore = async (list, marketStartTime, onPlaceOrder, marketI
     return newList
 }
 
-const checkTimeListAfter = (list, selectionId, marketStartTime, onPlaceOrder, marketId, side) => {
+const checkTimeListAfter = async (list, selectionId, marketStartTime, onPlaceOrder, marketId, side) => {
   
   const newSelectionArray = list;
+  let ordersToRemove = []
   let indexesToRemove = []
   
   newSelectionArray.map((order, index) => {
@@ -70,8 +71,20 @@ const checkTimeListAfter = (list, selectionId, marketStartTime, onPlaceOrder, ma
       })
       
       indexesToRemove = indexesToRemove.concat(index)
+      ordersToRemove = ordersToRemove.concat(order)
     }
   })
+  
+  if (ordersToRemove.length > 0) {
+    await fetch('/api/remove-orders', {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(ordersToRemove)
+    })
+  }
 
   return newSelectionArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
 

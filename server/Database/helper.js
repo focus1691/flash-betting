@@ -94,6 +94,19 @@ class DatabaseHelper extends Database {
             });
         });
     }
+
+    getAllOrders(user) {
+        // Create the object with our Order Schema
+        return new Promise((res, rej) => {
+            User.findOne({email: user},)
+            .then(user => {
+                res(user.orders)
+            }).catch(err => {
+                rej(err);
+            });
+        });
+    }
+
     saveOrder(user, order) {
         // Create the object with our Order Schema
         order = new Order(order);

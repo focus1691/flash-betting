@@ -64,6 +64,7 @@ const App = props => {
       .then(premiumStatus => {
         props.setPremiumStatus(premiumStatus);
       });
+
   }, []);
 
   useEffect(() => {
@@ -101,6 +102,40 @@ const App = props => {
             });
           }
         });
+
+        fetch(`/api/premium-status`)
+        .then(res => res.json())
+        .then(premiumStatus => {
+          props.setPremiumStatus(premiumStatus);
+        });
+
+        let loadedBackOrders = {};
+        let loadedLayOrders = {};
+
+        fetch(`/api/get-all-orders`)
+        .then(res => res.json())
+        .then(orders => {
+          orders.map(order => {
+            if (order.marketId === marketId) {
+              switch (order.strategy) {
+                case "Back" || "Lay":
+                    const toConcat = { executionTime: order.executionTime, timeOffset: order.timeOffset, size: order.size, price: order.price, rfs: order.rfs }
+                    if (order.strategy === "Back") {
+                      loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [toConcat] : loadedBackOrders[order.selectionId].concat(toConcat)
+                    } else {
+                      loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [toConcat] : loadedLayOrders[order.selectionId].concat(toConcat)
+                    }
+                  break;
+                default: 
+                  break;
+              }
+            }
+          })
+        }).then(() => {
+          props.onChangeBackList(loadedBackOrders)
+          props.onChangeLayList(loadedLayOrders)
+        })
+
     }
   }, []);
 
@@ -110,7 +145,7 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     
-    props.socket.on("mcm", data => {
+    props.socket.on("mcm", async data => {
 
       // Update the market status
       if (data.marketDefinition) {
@@ -136,17 +171,15 @@ const App = props => {
           
           // Back and Lay
           if (props.marketStatus === "RUNNING") {
-            
-            const adjustedBackOrderArray = checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
+            const adjustedBackOrderArray = await checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
             if (adjustedBackOrderArray.length > 0) {
               adjustedBackList[key] = adjustedBackOrderArray; 
             }
 
-            const adjustedLayOrderArray = checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY")
+            const adjustedLayOrderArray = await checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY")
             if (adjustedLayOrderArray.length > 0) {
               adjustedLayList[key] = adjustedLayOrderArray;
             }
-
           }
 
           // stop Entry
@@ -213,14 +246,24 @@ const App = props => {
         } else {
           // Runner not found so we create the new object with the raw data
           ladders[key] = AddRunner(key, data.rc[i]);
+          
         }
       }
 
-      props.onChangeBackList(adjustedBackList);  
-      props.onChangeLayList(adjustedLayList);  
-      props.onChangeStopEntryList(newStopEntryList);          
-      props.onChangeStopLossList(adjustedStopLossList);
-
+      // so it doesn't mess up the loading of the orders
+      if (Object.keys(props.backList).length > 0) {
+        props.onChangeBackList(adjustedBackList);  
+      }
+      if (Object.keys(props.layList).length > 0) {
+        props.onChangeLayList(adjustedLayList);  
+      }
+      if (Object.keys(props.stopEntryList).length > 0) {
+        props.onChangeStopEntryList(newStopEntryList);    
+      }
+      if (Object.keys(props.stopLossList).length > 0) {
+        props.onChangeStopLossList(adjustedStopLossList);
+      }
+      
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
 
@@ -262,9 +305,14 @@ const App = props => {
         })
       })
       
-      props.onChangeStopLossList(checkForMatchInStopLoss);
-      props.onChangeTickOffsetList(checkForMatchInTickOffset);
+      if (Object.keys(props.stopLossList).length > 0) {
+        props.onChangeStopLossList(checkForMatchInStopLoss);
+      }
 
+      if (Object.keys(props.tickOffsetList).length > 0) {
+        props.onChangeTickOffsetList(checkForMatchInTickOffset);
+      }
+    
       props.socket.off("ocm");
     });
   }, [props.ladders]);
