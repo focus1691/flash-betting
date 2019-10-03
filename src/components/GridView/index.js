@@ -11,7 +11,7 @@ import { formatCurrency } from "../../utils/NumberFormat";
 import {
 	calcBackProfit,
 	calcLiability,
-	colorForBack, colorForLay,
+	colorForBack
 } from "../../utils/PriceCalculator";
 import Draggable from "react-draggable";
 import DraggableGraph from "../DraggableGraph";
@@ -19,11 +19,8 @@ import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 
 const Grid = props => {
-	// const [priceHovered, setpriceHovered] = useState(false);
 	const [rowHovered, setRowHovered] = useState(null);
-	const [stakeSelected, setStakeSelected] = useState(null);
 	const [activeOrder, setActiveOrder] = useState(null);
-	const [rowSelected, setRowSelected] = useState(null);
 	const [ordersVisible, setOrdersVisible] = useState(0);
 	const oneClickRef = createRef();
 
@@ -49,13 +46,8 @@ const Grid = props => {
 				className="grid-cell"
 				onMouseEnter={e => {
 					setRowHovered(key);
-					// setpriceHovered(true);
-					// setRowNameHovered(key);
-
 					$(e.currentTarget).one("mouseleave", e => {
 						setRowHovered(null);
-						// setpriceHovered(false);
-						// setRowNameHovered(null);
 					});
 				}}
 				onClick={() => {
@@ -67,7 +59,6 @@ const Grid = props => {
 							price: odds
 						});
 						setOrdersVisible(ordersVisible + 1);
-						// setRowSelected(key);
 					}
 				}}
 			>
@@ -133,7 +124,7 @@ const Grid = props => {
 											color: colorForBack(activeOrder.backLay ^ 1)
 										}
 										:
-										
+
 										{ val: "", color: "" }
 							}
 							bg={bg}
@@ -147,10 +138,10 @@ const Grid = props => {
 						runnerId={key}
 						order={order}
 						orderProps={orderProps}
-						toggleStakeAndLiability={stakeLiability => {props.onToggleStakeAndLiability(stakeLiability) }}
+						toggleStakeAndLiability={stakeLiability => { props.onToggleStakeAndLiability(stakeLiability) }}
 						toggleBackAndLay={side => {
 							props.onToggleBackAndLay(side);
-							setActiveOrder(Object.assign(activeOrder, {backLay: side.backLay}));
+							setActiveOrder(Object.assign(activeOrder, { backLay: side.backLay }));
 						}}
 						updateOrderValue={orderValue => {
 							props.onUpdateOrderValue(orderValue);
