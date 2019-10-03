@@ -119,7 +119,7 @@ const Grid = props => {
 											val: formatCurrency(
 												props.localeCode,
 												props.currencyCode,
-												calcLiability(activeOrder.stake, activeOrder.backLay & 1)
+												calcLiability(activeOrder.stake, activeOrder.backLay)
 											),
 											color: colorForBack(activeOrder.backLay ^ 1)
 										}
