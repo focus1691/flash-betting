@@ -26,7 +26,7 @@ const Account = props => {
   } else {
     return (
       <div id="sidebar-header">
-        <p id="flag-name" paragraph>
+        <p id="flag-name">
           {props.name}
           <button id="logout" onClick={e => setLoggedIn(false)}>
             <img
@@ -35,7 +35,7 @@ const Account = props => {
             />
           </button>
         </p>
-        <p paragraph>
+        <p>
           <FlagIcon code={props.countryCode || "gb"} />{" "}
           {formatCurrency(props.localeCode, props.currencyCode, props.balance)}
         </p>

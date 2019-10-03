@@ -30,7 +30,6 @@ const StyledTableCell = withStyles(theme => ({
     fontSize: 14,
     border: 0
   },
-  width: 100
 }))(TableCell);
 
 const StyledTableRow = withStyles(theme => ({

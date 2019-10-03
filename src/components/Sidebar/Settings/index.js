@@ -359,7 +359,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="One"
-				value={props.stakeBtns[0]}
+				value={`${props.stakeBtns[0]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateStakeBtn({id: 0, value: e.target.value})}}
 				margin="normal"
@@ -369,7 +369,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Two"
-				value={props.stakeBtns[1]}
+				value={`${props.stakeBtns[1]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateStakeBtn({id: 1, value: e.target.value})}}
 				margin="normal"
@@ -379,7 +379,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Three"
-				value={props.stakeBtns[2]}
+				value={`${props.stakeBtns[2]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateStakeBtn({id: 2, value: e.target.value})}}
 				margin="normal"
@@ -389,7 +389,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Four"
-				value={props.stakeBtns[3]}
+				value={`${props.stakeBtns[3]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateStakeBtn({id: 3, value: e.target.value})}}
 				margin="normal"
@@ -399,7 +399,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Five"
-				value={props.stakeBtns[4]}
+				value={`${props.stakeBtns[4]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateStakeBtn({id: 4, value: e.target.value})}}
 				margin="normal"
@@ -409,7 +409,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Six"
-				value={props.stakeBtns[5]}
+				value={`${props.stakeBtns[5]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateStakeBtn({id: 5, value: e.target.value})}}
 				margin="normal"
@@ -419,7 +419,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Seven"
-				value={props.stakeBtns[6]}
+				value={`${props.stakeBtns[6]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateStakeBtn({id: 6, value: e.target.value})}}
 				margin="normal"
@@ -443,7 +443,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="One"
-				value={props.layBtns[0]}
+				value={`${props.layBtns[0]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateLayBtn({id: 0, value: e.target.value})}}
 				margin="normal"
@@ -453,7 +453,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Two"
-				value={props.layBtns[1]}
+				value={`${props.layBtns[1]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateLayBtn({id: 1, value: e.target.value})}}
 				margin="normal"
@@ -463,7 +463,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Three"
-				value={props.layBtns[2]}
+				value={`${props.layBtns[2]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateLayBtn({id: 2, value: e.target.value})}}
 				margin="normal"
@@ -473,7 +473,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Four"
-				value={props.layBtns[3]}
+				value={`${props.layBtns[3]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateLayBtn({id: 3, value: e.target.value})}}
 				margin="normal"
@@ -483,7 +483,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Five"
-				value={props.layBtns[4]}
+				value={`${props.layBtns[4]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateLayBtn({id: 4, value: e.target.value})}}
 				margin="normal"
@@ -493,7 +493,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Six"
-				value={props.layBtns[5]}
+				value={`${props.layBtns[5]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateLayBtn({id: 5, value: e.target.value})}}
 				margin="normal"
@@ -503,7 +503,7 @@ const Settings = props => {
 				className={classes.textField}
 				type="number"
 				label="Seven"
-				value={props.layBtns[6]}
+				value={`${props.layBtns[6]}`}
 				inputProps={{ min: "1" }}
 				onChange={e => { props.onUpdateLayBtn({id: 6, value: e.target.value})}}
 				margin="normal"
