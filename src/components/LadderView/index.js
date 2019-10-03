@@ -40,15 +40,26 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             order = {index}
             ladderOrderList = {ladderOrder}
             stopLoss = { stopLossList[value] }
-            changeStopLossList = {newStopLoss => {
+            changeStopLossList = {async newStopLoss => {
 
               const adjustedNewStopLoss = {...newStopLoss, 
+                strategy: "Stop Loss",
                 tickOffset: newStopLoss.customStopLoss ? 0 : stopLossOffset,
                 trailing: newStopLoss.customStopLoss ? false : stopLossTrailing
               }
 
               const newStopLossList = Object.assign({}, stopLossList) 
               newStopLossList[newStopLoss.selectionId] = adjustedNewStopLoss
+
+              await fetch('/api/save-order', {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify(adjustedNewStopLoss)
+              })
+
               onChangeStopLossList(newStopLossList);
 
             }}

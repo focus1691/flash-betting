@@ -116,6 +116,7 @@ const App = props => {
         let loadedStopEntryOrders = {};
         let loadedTickOffsetOrders = {};
         let loadedFillOrKillOrders = {};
+        let loadedStopLossOrders = {};
 
         fetch(`/api/get-all-orders`)
         .then(res => res.json())
@@ -134,10 +135,13 @@ const App = props => {
                   loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
                   break;
                 case "Tick Offset":
-                  loadedTickOffsetOrders[order.rfs] = loadedTickOffsetOrders[order.rfs] === undefined ? [order] : loadedTickOffsetOrders[order.rfs].concat(order);
+                  loadedTickOffsetOrders[order.rfs] = order
                   break;
                 case "Fill Or Kill":
-                  loadedFillOrKillOrders[order.betId] = loadedFillOrKillOrders[order.betId] === undefined ? [order] : loadedFillOrKillOrders[order.betId].concat(order);
+                  loadedFillOrKillOrders[order.betId] = order
+                  break;
+                case "Stop Loss":
+                  loadedStopLossOrders[order.selectionId] = order
                   break;
                 default: 
                   break;
@@ -150,6 +154,7 @@ const App = props => {
           props.onChangeStopEntryList(loadedStopEntryOrders)
           props.onChangeTickOffsetList(loadedTickOffsetOrders)
           props.onChangeFillOrKillList(loadedFillOrKillOrders)
+          props.onChangeStopLossList(loadedStopLossOrders);
         })
 
     }
@@ -177,6 +182,8 @@ const App = props => {
       const adjustedBackList = {}
       const adjustedLayList = {}
       const newStopEntryList = {};
+
+      let stopLossOrdersToRemove = [];
 
       for (var i = 0; i < length; i++) {
         let key = [data.rc[i].id];
@@ -218,7 +225,7 @@ const App = props => {
           
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
             if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
-              const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.matchedPrice, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, adjustedStopLoss.units.toLowerCase());
+              const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, adjustedStopLoss.units.toLowerCase());
               if (stopLossCheck.targetMet) {
                 props.onPlaceOrder({
                   marketId: adjustedStopLoss.marketId,
@@ -227,6 +234,9 @@ const App = props => {
                   size: adjustedStopLoss.size,
                   price: stopLossCheck.priceReached,
                 })
+
+                stopLossOrdersToRemove = stopLossOrdersToRemove.concat(adjustedStopLoss);
+
                 adjustedStopLoss = null;
                 
               }
@@ -234,11 +244,14 @@ const App = props => {
 
             if (adjustedStopLoss == null) {
               delete adjustedStopLossList[key];
+
+              
             } else {
               adjustedStopLossList[key] = adjustedStopLoss;
             }
             
           } 
+
 
           
 
@@ -247,6 +260,17 @@ const App = props => {
           ladders[key] = AddRunner(key, data.rc[i]);
           
         }
+      }
+
+      if (stopLossOrdersToRemove.length > 0) {
+        await fetch('/api/remove-orders', {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify(stopLossOrdersToRemove)
+        })
       }
 
       // so it doesn't mess up the loading of the orders
@@ -286,6 +310,15 @@ const App = props => {
               // if the strategies are the same and all the order has been matched (STOPLOSS)
               if (props.stopLossList[runner.id] !== undefined && props.stopLossList[runner.id].rfs === order.rfs && order.sr === 0) {
                 checkForMatchInStopLoss[runner.id].assignedIsOrderMatched = true;
+
+                fetch('/api/update-order', {
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                  },
+                  method: "POST",
+                  body: JSON.stringify(checkForMatchInStopLoss[runner.id])
+                })
               }
               
               // if the strategies are the same and enough of the order has been matched (TICK OFFSET)
@@ -344,8 +377,6 @@ const App = props => {
         return <HomeView />;
     }
   };
-
-  console.log(props.fillOrKillList)
 
   return (
     <div className="horizontal-scroll-wrapper">

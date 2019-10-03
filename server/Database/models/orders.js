@@ -31,6 +31,10 @@ const ordersSchema = mongoose.Schema({
         default: false
     },
     tickOffset: Number,
+    units: {
+        type: String,
+        default: "Ticks"
+    },
 
     // tickOffset (newPrice = price)
     percentageTrigger: Number,

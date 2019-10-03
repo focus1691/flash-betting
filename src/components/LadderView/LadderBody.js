@@ -42,8 +42,8 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [], st
             selectionId = {selectionId}
             placeOrder = {placeOrder}
             isStopLoss = {stopLoss !== undefined && stopLoss.side == "BACK" ? 
-                          stopLoss.units == "Ticks" ? findStopPosition(stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
-                          findStopPositionForPercent(stopLoss.size, stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
+                          stopLoss.units == "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
+                          findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                            : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
@@ -55,10 +55,10 @@ export default ({ ladder, selectionId, placeOrder, ltp, ltpRef, ltpList = [], st
             side = {"LAY"}
             cell = {ladder[key]}
             selectionId = {selectionId}
-            placeOrder = {placeOrder} // We swap the formatPrice(key), stopLoss.matchedPrice, because it is in a different order if lay
+            placeOrder = {placeOrder} 
             isStopLoss = {stopLoss !== undefined && stopLoss.side == "LAY" ? 
-              stopLoss.units == "Ticks" ? findStopPosition(stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
-              findStopPositionForPercent(stopLoss.size, stopLoss.matchedPrice, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
+              stopLoss.units == "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
+              findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}

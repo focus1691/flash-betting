@@ -136,8 +136,13 @@ app.get("/api/get-all-orders", (request, response) => {
 });
 
 app.post("/api/save-order", (request, response) => {
-
   database.saveOrder(session.email, request.body).then(res => {
+    response.sendStatus(res);
+  });
+});
+
+app.post("/api/update-order", (request, response) => {
+  database.updateOrderKey(session.email, request.body).then(res => {
     response.sendStatus(res);
   });
 });

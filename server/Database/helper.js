@@ -122,6 +122,22 @@ class DatabaseHelper extends Database {
         });
     }
 
+    updateOrder(user, newOrder) {
+        // Create the object with our Order Schema
+        newOrder = new Order(newOrder);
+        return new Promise((res, rej) => {
+            User.findOne({email: user},)
+            .then(user => {
+                const index = user.orders.find(item => item.rfs === newOrder.rfs);
+                user.orders[index] = newOrder;
+                user.save();
+                res(200)
+            }).catch(err => {
+                rej(400);
+            });
+        });
+    }
+
     removeOrders(user, orders) {
         // Create the object with our Order Schema
         const formattedOrders = orders.map(order => new Order(order))

@@ -33,6 +33,7 @@ const Ladder = props => {
   }, [ltpRef]);
   
   const { id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList } = props;
+
   // remove adjacent LTP values
   const filteredLTPs = 
   ladder[id] !== undefined ? 
@@ -101,7 +102,7 @@ const Ladder = props => {
                                 selectionId: parseInt(id),
                                 side: data.side,
                                 size: 5,
-                                matchedPrice: data.price, 
+                                price: data.price, 
                                 trailing: false,
                                 customStopLoss: data.custom, 
                                 units: data.units,

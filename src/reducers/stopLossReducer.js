@@ -4,7 +4,7 @@ const initialState = {
   units: "Ticks",
   trailing: true,
   hedged: true,
-  list: {}, // {marketId: , selectionId: , matchedPrice: , side: , size: , tickOffset: , trailing: , units: , rfs(reference strategy): , assignedIsOrderMatched: false}
+  list: {}, // {marketId: , selectionId: , price(matchedPrice): , side: , size: , tickOffset: , trailing: , units: , rfs(reference strategy): , assignedIsOrderMatched: false}
   selections: null
 };
 initialState.text = `${initialState.offset} ${initialState.units} [${
