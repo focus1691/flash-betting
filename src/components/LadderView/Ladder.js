@@ -89,7 +89,9 @@ const Ladder = props => {
                                 price: data.price,
                                 selectionId: data.selectionId,
                                 customerStrategyRef: data.customerStrategyRef,
-                                orderCompleteCallBack: data.orderCompleteCallBack
+                                orderCompleteCallBack: data.orderCompleteCallBack,
+                                unmatchedBets: data.unmatchedBets,
+                                matchedBets: data.matchedBets
                             });
                         }}
                         ltp = {ladder[id].ltp[0]}
@@ -107,7 +109,8 @@ const Ladder = props => {
                                 customStopLoss: data.custom, 
                                 units: data.units,
                                 rfs: data.rfs,
-                                assignedIsOrderMatched: data.assignedIsOrderMatched
+                                assignedIsOrderMatched: data.assignedIsOrderMatched,
+                                betId: data.betId
                             })
                         }}
                     />

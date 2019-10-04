@@ -317,6 +317,14 @@ app.post("/api/place-order", (request, response) => {
   );
 });
 
+app.get("/api/listCurrentOrders", (request, response) => {
+  session.listCurrentOrders({}, 
+    (err, res) => {
+      response.json(res.result)
+    })
+});
+
+
 app.post("/api/cancel-order", (request, response) => {
   console.log(request.body);
   session.cancelOrders(

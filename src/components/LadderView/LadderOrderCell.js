@@ -6,7 +6,7 @@ import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import crypto from 'crypto'
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 
-const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, 
+const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, 
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger,
                           fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList }) => {
 
@@ -29,6 +29,8 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
                 price: formatPrice(cell.odds),
                 selectionId: selectionId,
                 customerStrategyRef: referenceStrategyId,
+                unmatchedBets: unmatchedBets,
+                matchedBets: matchedBets, 
                 orderCompleteCallBack: async betId => {
 
                   if (stopLossSelected && stopLossData === undefined) {
@@ -39,6 +41,7 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
                       units: stopLossUnits,
                       rfs: referenceStrategyId,
                       assignedIsOrderMatched: false,
+                      betId: betId
                     })
                   } else if (tickOffsetSelected) {
                     const newTickOffset = Object.assign({}, tickOffsetList)
@@ -50,7 +53,8 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
                       size: 5, // TODO WE NEED TO PUT A SIZE!
                       side: side, 
                       percentageTrigger: tickOffsetTrigger,
-                      rfs: referenceStrategyId
+                      rfs: referenceStrategyId,
+                      betId: betId
                     };
     
                     newTickOffset[referenceStrategyId] = addedOrder
@@ -111,6 +115,8 @@ const LadderOrderCell = ({side, cell, price, marketId, selectionId, placeOrder, 
 const mapStateToProps = state => {
   return {
     marketId: state.market.currentMarket.marketId,
+    unmatchedBets: state.order.bets.unmatched,
+    matchedBets: state.order.bets.matched,
     stopLossSelected: state.stopLoss.selected,
     stopLossUnits: state.stopLoss.units,
     tickOffsetList: state.tickOffset.list,

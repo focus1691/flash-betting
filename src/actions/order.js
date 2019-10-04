@@ -18,12 +18,35 @@ export const placeOrder = order => {
       body: JSON.stringify(order)
     })
       .then(res => res.json())
-      .then(json => {
-        
+      .then(async json => {
+
         const betId = json.instructionReports[0].betId;
 
+        const adjustedOrder = Object.assign({}, order);
+        adjustedOrder.rfs = order.customerStrategyRef;
+        adjustedOrder.betId = betId;
+        
+        const newUnmatchedBets = Object.assign({}, order.unmatchedBets)
+        newUnmatchedBets[betId] = adjustedOrder;
+        
+        const newBets = {
+          unmatched: newUnmatchedBets,
+          matched: order.matchedBets
+        }
+
+        await fetch('/api/save-order', {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify(adjustedOrder)
+        })
+
         order.orderCompleteCallBack(betId);
-        dispatch(updateOrders("adad"));
+
+        dispatch(updateOrders(newBets));
+        
       });
   };
 

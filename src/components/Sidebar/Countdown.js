@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import useInterval from "react-useinterval";
-import { placeOrder, cancelOrder } from "../../actions/order";
+import { placeOrder, cancelOrder, updateOrders } from "../../actions/order";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
@@ -27,6 +27,7 @@ const Countdown = props => {
 
     const newFillOrKillList = {};
     const adjustedTickOffsetList = Object.assign({}, props.tickOffsetList);
+    const adjustedUnmatchedBets = Object.assign({}, props.bets.unmatched)
     let ordersToRemove = [];
     
     Object.keys(props.fillOrKillList).map((betId, index) => {
@@ -40,12 +41,19 @@ const Countdown = props => {
 
         ordersToRemove = ordersToRemove.concat(order);
 
+        if (adjustedUnmatchedBets[betId] !== undefined) {
+          ordersToRemove = ordersToRemove.concat(adjustedUnmatchedBets[betId])
+          delete adjustedUnmatchedBets[betId];
+        }
+
         Object.values(props.tickOffsetList).map(tickOffsetOrder => {
           if (tickOffsetOrder.rfs === order.rfs) {
             ordersToRemove = ordersToRemove.concat(adjustedTickOffsetList[tickOffsetOrder.rfs]);
             delete adjustedTickOffsetList[tickOffsetOrder.rfs];
           }
         })
+
+
 
       } else {
         newFillOrKillList[betId] = props.fillOrKillList[betId]
@@ -63,6 +71,10 @@ const Countdown = props => {
       })
     }
 
+    props.onChangeOrders({
+      unmatched: adjustedUnmatchedBets,
+      matched: props.bets.matched
+    })
     props.onUpdateTickOffsetList(adjustedTickOffsetList)
     props.onUpdateFillOrKillList(newFillOrKillList);
 
@@ -116,7 +128,8 @@ const mapStateToProps = state => {
     layList: state.lay.list,
     backList: state.back.list,
     fillOrKillList: state.fillOrKill.list,
-    tickOffsetList: state.tickOffset.list
+    tickOffsetList: state.tickOffset.list,
+    bets: state.order.bets
   };
 };
 
@@ -127,7 +140,8 @@ const matchDispatchToProps = dispatch => {
     onUpdateLayList: list => dispatch(updateLayList(list)),
     onUpdateBackList: list => dispatch(updateBackList(list)),
     onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list)),
-    onUpdateTickOffsetList: list => dispatch(updateTickOffsetList(list))
+    onUpdateTickOffsetList: list => dispatch(updateTickOffsetList(list)),
+    onChangeOrders: orders => dispatch(updateOrders(orders))
   }
 }
 

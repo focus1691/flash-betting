@@ -19,7 +19,7 @@ import { checkStopLossHit } from "../utils/TradingStategy/StopLoss";
 import { updateLayList } from "../actions/lay";
 import { updateBackList } from "../actions/back";
 import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
-import { placeOrder } from "../actions/order";
+import { placeOrder, updateOrders } from "../actions/order";
 import { stopEntryCheck } from '../utils/TradingStategy/StopEntry'
 import { updateFillOrKillList } from "../actions/fillOrKill";
 
@@ -66,6 +66,7 @@ const App = props => {
       .then(premiumStatus => {
         props.setPremiumStatus(premiumStatus);
       });
+
 
   }, []);
 
@@ -117,19 +118,27 @@ const App = props => {
         let loadedTickOffsetOrders = {};
         let loadedFillOrKillOrders = {};
         let loadedStopLossOrders = {};
+        let loadedUnmatchedOrders = {};
+        let loadedMatchedOrders = {};
 
+      
         fetch(`/api/get-all-orders`)
         .then(res => res.json())
-        .then(orders => {
-          orders.map(order => {
+        .then(async orders => {
+          const currentOrders = await fetch(`/api/listCurrentOrders`).then(res => res.json()).then(res => res.currentOrders);
+          const currentOrdersObject = {};
+          currentOrders.map(item => {
+            currentOrdersObject[item.betId] = item.status;
+          })
+          orders.map(async order => {
+
             if (order.marketId === marketId) {
               switch (order.strategy) {
-                case "Back" || "Lay":
-                    if (order.strategy === "Back") {
-                      loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
-                    } else {
-                      loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
-                    }
+                case "Back":
+                  loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
+                  break;
+                case "Lay":
+                  loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
                   break;
                 case "Stop Entry":
                   loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
@@ -138,10 +147,20 @@ const App = props => {
                   loadedTickOffsetOrders[order.rfs] = order
                   break;
                 case "Fill Or Kill":
-                  loadedFillOrKillOrders[order.betId] = order
+                  // this should only keep the fill or kill if the order isn't completed already
+                  if (currentOrdersObject[order.betId] === "EXECUTABLE") {
+                    loadedFillOrKillOrders[order.betId] = order
+                  }
                   break;
                 case "Stop Loss":
                   loadedStopLossOrders[order.selectionId] = order
+                  break;
+                case "None": 
+                  if (currentOrdersObject[order.betId] === "EXECUTION_COMPLETE") {
+                    loadedMatchedOrders[order.betId] = order;
+                  } else if (currentOrdersObject[order.betId] === "EXECUTABLE") {
+                    loadedUnmatchedOrders[order.betId] = order;
+                  } 
                   break;
                 default: 
                   break;
@@ -149,6 +168,10 @@ const App = props => {
             }
           })
         }).then(() => {
+          props.onChangeOrders({
+            matched: loadedMatchedOrders,
+            unmatched: loadedUnmatchedOrders
+          })
           props.onChangeBackList(loadedBackOrders)
           props.onChangeLayList(loadedLayOrders)
           props.onChangeStopEntryList(loadedStopEntryOrders)
@@ -299,7 +322,10 @@ const App = props => {
      * @param {obj} data The order change message data:
      */
     props.socket.on("ocm", async data => {
+      console.log(data)
 
+      const newUnmatchedBets = Object.assign({}, props.unmatchedBets)
+      const newMatchedBets = Object.assign({}, props.matchedBets);
       const checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
       const checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
       let stopLossOrdersToRemove = [];
@@ -307,6 +333,11 @@ const App = props => {
       data.oc.map(changes => {
         changes.orc.map(runner => { 
           runner.uo.map(order => {
+              if (newUnmatchedBets[order.id] !== undefined) {
+                delete newUnmatchedBets[order.id];
+                
+              }
+
               // if the strategies are the same and all the order has been matched (STOPLOSS)
               if (props.stopLossList[runner.id] !== undefined && props.stopLossList[runner.id].rfs === order.rfs && order.sr === 0) {
                 checkForMatchInStopLoss[runner.id].assignedIsOrderMatched = true;
@@ -425,7 +456,9 @@ const mapStateToProps = state => {
     stopEntryList: state.stopEntry.list,
     fillOrKillList: state.fillOrKill.list,
     layList: state.lay.list,
-    backList: state.back.list
+    backList: state.back.list,
+    unmatchedBets: state.order.bets.unmatched,
+    matchedBets: state.order.bets.matched,
   };
 };
 
@@ -456,7 +489,8 @@ const mapDispatchToProps = dispatch => {
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
-    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list))
+    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
+    onChangeOrders: orders => dispatch(updateOrders(orders)),
   };
 };
 
