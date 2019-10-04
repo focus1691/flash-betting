@@ -1,6 +1,6 @@
 
 import { SearchInsert } from "../SearchInsert";
-import { formatPriceKey } from "../ladder/CreateFullLadder";
+import { formatPriceKey, calcBackLayPercentages } from "../ladder/CreateFullLadder";
 
 const UpdateRunner = (ladder, rawData) => {
 
@@ -74,6 +74,8 @@ const UpdateRunner = (ladder, rawData) => {
         }
       }
     }
+
+    ladder.percent = calcBackLayPercentages(ladder.fullLadder, ladder.ltp[0]);
 
     return ladder;
 }

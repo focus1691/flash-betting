@@ -2,16 +2,16 @@
  * Used in the stop loss check function below
  */
 const ALL_PRICES = Array(100).fill()
-.map((a, l) => parseFloat((l / 100 + 1.01).toFixed(2)))
-.concat(Array(50).fill().map((a, l) => parseFloat((l / 50 + 2.02).toFixed(2))))
-.concat(Array(20).fill().map((a, l) => parseFloat((l / 20 + 3.05).toFixed(2))))
-.concat(Array(20).fill().map((a, l) => parseFloat((l / 10 + 4.1).toFixed(1))))
-.concat(Array(20).fill().map((a, l) => parseFloat((l / 5 + 6.2).toFixed(1))))
-.concat(Array(19).fill().map((a, l) => parseFloat((l / 2 + 10.5).toFixed(1))))
-.concat(Array(11).fill().map((a, l) => parseFloat((l + 20).toFixed(0))))
-.concat(Array(10).fill().map((a, l) => parseFloat((2 * l + 32).toFixed(0))))
-.concat(Array(10).fill().map((a, l) => parseFloat((5 * l + 55).toFixed(0))))
-.concat(Array(90).fill().map((a, l) => parseFloat((10 * l + 110).toFixed(0))));
+  .map((a, l) => parseFloat((l / 100 + 1.01).toFixed(2)))
+  .concat(Array(50).fill().map((a, l) => parseFloat((l / 50 + 2.02).toFixed(2))))
+  .concat(Array(20).fill().map((a, l) => parseFloat((l / 20 + 3.05).toFixed(2))))
+  .concat(Array(20).fill().map((a, l) => parseFloat((l / 10 + 4.1).toFixed(1))))
+  .concat(Array(20).fill().map((a, l) => parseFloat((l / 5 + 6.2).toFixed(1))))
+  .concat(Array(19).fill().map((a, l) => parseFloat((l / 2 + 10.5).toFixed(1))))
+  .concat(Array(11).fill().map((a, l) => parseFloat((l + 20).toFixed(0))))
+  .concat(Array(10).fill().map((a, l) => parseFloat((2 * l + 32).toFixed(0))))
+  .concat(Array(10).fill().map((a, l) => parseFloat((5 * l + 55).toFixed(0))))
+  .concat(Array(90).fill().map((a, l) => parseFloat((10 * l + 110).toFixed(0))));
 
 const createFullLadder = () => {
   const Ladders = {};
@@ -127,7 +127,7 @@ const getFiveDeviationBackLayPrices = ltp => {
  */
 const calcBackLayPercentages = (ladder, ltp) => {
   if (ltp === null || ltp == undefined) {
-    return { backPercent: 0, layPercent: 0 };
+    return { back: 0, lay: 0 };
   }
 
   // Get the prices for both back/lay trading 5 places either side of the LTP
@@ -152,7 +152,7 @@ const calcBackLayPercentages = (ladder, ltp) => {
   const backPercent = Math.round((backMatched / total) * 100);
   const layPercent = Math.round((layMatched / total) * 100);
 
-  return { back: isNaN(backPercent) ? 0 : backPercent, lay: isNaN(layPercent) ? 0 : layPercent };
+  return { back: backPercent ? 0 : backPercent, lay: layPercent ? 0 : layPercent };
 };
 
 
