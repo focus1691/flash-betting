@@ -35,16 +35,14 @@ const Settings = props => {
 	const classes = useStyles();
 
 	const saveSetting = setting => {
-		fetch(`/api/save-user-settings`,
-			{
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				method: 'POST',
-				body: JSON.stringify(setting)
-			})
-			.then(res => { })
+		fetch(`/api/save-user-settings`, {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			method: 'POST',
+			body: JSON.stringify(setting)
+		});
 	};
 
 	const handleChange = () => {
@@ -364,7 +362,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({id: 0, value: e.target.value})
+						props.onUpdateStakeBtn({ id: 0, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -379,7 +377,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({id: 1, value: e.target.value})
+						props.onUpdateStakeBtn({ id: 1, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -394,7 +392,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({id: 2, value: e.target.value})
+						props.onUpdateStakeBtn({ id: 2, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -409,7 +407,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({id: 3, value: e.target.value})
+						props.onUpdateStakeBtn({ id: 3, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -424,7 +422,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({id: 4, value: e.target.value})
+						props.onUpdateStakeBtn({ id: 4, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -439,7 +437,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({id: 5, value: e.target.value})
+						props.onUpdateStakeBtn({ id: 5, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -454,7 +452,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({id: 6, value: e.target.value})
+						props.onUpdateStakeBtn({ id: 6, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -483,7 +481,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({id: 0, value: e.target.value})
+						props.onUpdateLayBtn({ id: 0, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -498,7 +496,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({id: 1, value: e.target.value})
+						props.onUpdateLayBtn({ id: 1, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -513,7 +511,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({id: 2, value: e.target.value})
+						props.onUpdateLayBtn({ id: 2, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -528,7 +526,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({id: 3, value: e.target.value})
+						props.onUpdateLayBtn({ id: 3, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -543,7 +541,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({id: 4, value: e.target.value})
+						props.onUpdateLayBtn({ id: 4, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -558,7 +556,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({id: 5, value: e.target.value})
+						props.onUpdateLayBtn({ id: 5, value: e.target.value })
 					}
 				}}
 				margin="normal"
@@ -573,7 +571,7 @@ const Settings = props => {
 				onChange={e => {
 					let val = parseInt(e.target.value);
 					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({id: 6, value: e.target.value})
+						props.onUpdateLayBtn({ id: 6, value: e.target.value })
 					}
 				}}
 				margin="normal"

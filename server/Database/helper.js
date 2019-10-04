@@ -3,6 +3,7 @@ const Database = require('./database');
 const User = require('./models/users');
 const Settings = require('./models/settings');
 const Order = require('./models/orders');
+const Transaction = require('./models/transaction');
 
 class DatabaseHelper extends Database {
     constructor() {
@@ -20,13 +21,20 @@ class DatabaseHelper extends Database {
                 });
                 const settings = new Settings();
                 user.settings = settings;
-                user.save()
-                    .then(result => {
-                        console.log(result);
-                    })
-                    .catch(err => console.log(err));
+                user.save().then(result => {
+                    console.log(result);
+                }).catch(err => console.log(err));
             }
         })
+    }
+    // Save a PayPal payment
+    saveTransaction(user, json) {
+        return new Promise((res, rej) => {
+            const transaction = new Transaction(json);
+            transaction.save().then(result => {
+                return this.setPremium(user);
+            }).catch(err => console.log(err));
+        });
     }
     getPremiumStatus(user) {
         return new Promise((res, rej) => {
@@ -34,22 +42,13 @@ class DatabaseHelper extends Database {
                 email: user
             }).then(doc => {
                 res(doc.premiumMember);
-            }).catch(err => {
-                rej(err);
-            });
+            }).catch(err => rej(err));
         });
     }
     getSettings(user) {
         return new Promise((res, rej) => {
-            User.findOne({
-                email: user
-            })
-            .then(doc => {
-                res(doc.settings);
-            })
-            .catch(err => {
-                rej(err);
-            });
+            User.findOne({email: user}).then(doc => res(doc.settings))
+            .catch(err => rej(err));
         });
     }
     updateSettings(user, settings) {
@@ -68,15 +67,29 @@ class DatabaseHelper extends Database {
                 })
             });
     }
+    setPremium(user) {
+        console.log('set prem');
+        return new Promise((res, rej) => {
+            User.findOneAndUpdate(
+                { email: user },
+                {premiumMember: true},
+                { new: true, useFindAndModify: false},
+                (err, doc) => {
+                    if (err) {
+                        rej(404);
+                    }
+                    res(200);
+                })
+            });
+    }
     setToken(user, tokenInfo) {
         return new Promise((res, rej) => {
-            User.findOneAndUpdate({
-                email: user
-            }, tokenInfo, {
-                new: true,
-                runValidators: true,
-                useFindAndModify: false
-            }).then(user => {
+            User.findOneAndUpdate({email: user},
+                tokenInfo, {
+                    new: true,
+                    runValidators: true,
+                    useFindAndModify: false
+                }).then(user => {
                 res(true);
             }).catch(err => {
                 rej(false);

@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/settings';
 
 const Toolbar = props => {
-
-	const premium = false;
-
+	
 	const handleClick = (view) => {
 		props.onViewChange(view);
 	};
