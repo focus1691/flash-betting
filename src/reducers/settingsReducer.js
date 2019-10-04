@@ -1,3 +1,5 @@
+import update from 'immutability-helper';
+
 const initialState = {
   view: "GridView",
   premiumMember: false,
@@ -74,18 +76,9 @@ const reducer = (state = initialState, action) => {
     case "SET_LAY_BUTTONS":
       return { ...state, layBtns: action.payload };
     case "UPDATE_STAKE_BUTTON":
-      return {
-        ...state, stakeBtns: {
-          ...state.stakeBtns,
-          [action.payload.id]: action.payload.value
-        }
-      };
+      return update(state, { stakeBtns: { [action.payload.id]: { $set: action.payload.value } } });
     case "UPDATE_LAY_BUTTON":
-      return {
-        ...state, layBtns: {
-          [action.payload.id]: action.payload.value
-        }
-      };
+      return update(state, { layBtns: { [action.payload.id]: { $set: action.payload.value } } });
     default:
       return state;
   }
