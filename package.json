@@ -13,6 +13,7 @@
     "faker": "^4.1.0",
     "html-react-parser": "^0.9.1",
     "immutability-helper": "^3.0.1",
+    "jest": "^24.7.1",
     "jquery": "^3.4.1",
     "material-ui-icons": "^1.0.0-beta.36",
     "mongoose": "^5.6.11",
@@ -38,7 +39,7 @@
     "validator": "^11.1.0"
   },
   "scripts": {
-    "start": "set HTTPS=true && PORT=8080 react-scripts start",
+    "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

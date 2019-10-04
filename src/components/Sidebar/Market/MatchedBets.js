@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { calcBackProfit } from "../../../utils/PriceCalculator";
 
 const MatchedBets = props => {
 
@@ -45,38 +46,42 @@ const MatchedBets = props => {
                     <td>{selectionObject.runnerName}</td>
                   </tr>
                   {
-                    filteredOrders.map(order => 
-                      <React.Fragment>
-                          <tr
-                          id="menu-unmatched-bet"
-                          style={{
-                            backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
-                          }}
-                        >
-                          <td>
-                            <button style={{ height: "22px", width: "auto", visibility: 'collapse' }}>
-                              
-                            </button>
-                          </td>
+                    filteredOrders.map(order => { 
+                        const PL = calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)
+                        return (
+                          <React.Fragment>
+                              <tr
+                              id="menu-unmatched-bet"
+                              style={{
+                                backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
+                              }}
+                            >
+                              <td>
+                                <button style={{ height: "22px", width: "auto", visibility: 'collapse' }}>
+                                  
+                                </button>
+                              </td>
 
-                          <td>{order.price}</td>
-                          <td>{order.size}</td>
-                          <td
-                            id="pl-style"
-                            style={{
-                              color:
-                                order.PL === "0.00"
-                                  ? "black"
-                                  : order.PL > 0
-                                  ? "green"
-                                  : "red"
-                            }}
-                          >
-                            {order.PL == "TODO PL" ? 0 : 0}
-                          </td>
-                        </tr>
- 
-                      </React.Fragment>  
+                              <td>{order.price}</td>
+                              <td>{order.size}</td>
+                              <td
+                                id="pl-style"
+                                style={{
+                                  color:
+                                  PL === "0.00"
+                                      ? "black"
+                                      : PL > 0
+                                      ? "green"
+                                      : "red"
+                                }}
+                              >
+                                {PL}
+                              </td>
+                            </tr>
+    
+                          </React.Fragment>  
+                        )
+                      }
                     )
                   }
                 </React.Fragment>

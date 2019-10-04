@@ -22,6 +22,7 @@ import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
 import { placeOrder, updateOrders } from "../actions/order";
 import { stopEntryCheck } from '../utils/TradingStategy/StopEntry'
 import { updateFillOrKillList } from "../actions/fillOrKill";
+import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/OCMHelper";
 
 const App = props => {
 
@@ -267,16 +268,11 @@ const App = props => {
 
             if (adjustedStopLoss == null) {
               delete adjustedStopLossList[key];
-
               
             } else {
               adjustedStopLossList[key] = adjustedStopLoss;
             }
-            
           } 
-
-
-          
 
         } else {
           // Runner not found so we create the new object with the raw data
@@ -326,61 +322,40 @@ const App = props => {
 
       const newUnmatchedBets = Object.assign({}, props.unmatchedBets)
       const newMatchedBets = Object.assign({}, props.matchedBets);
-      const checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
-      const checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
-      let stopLossOrdersToRemove = [];
+      let checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
+      let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
+      let tickOffsetOrdersToRemove = [];
 
       data.oc.map(changes => {
         changes.orc.map(runner => { 
           runner.uo.map(order => {
+              // If the bet isn't in here, we should delete it.
               if (newUnmatchedBets[order.id] !== undefined) {
                 delete newUnmatchedBets[order.id];
-                
               }
 
-              // if the strategies are the same and all the order has been matched (STOPLOSS)
-              if (props.stopLossList[runner.id] !== undefined && props.stopLossList[runner.id].rfs === order.rfs && order.sr === 0) {
-                checkForMatchInStopLoss[runner.id].assignedIsOrderMatched = true;
+              // TODO add functionality for newUnmatchedBets
 
-                fetch('/api/update-order', {
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                  },
-                  method: "POST",
-                  body: JSON.stringify(checkForMatchInStopLoss[runner.id])
-                })
-              }
-              
-              // if the strategies are the same and enough of the order has been matched (TICK OFFSET)
-              const tickOffsetItem = props.tickOffsetList[order.rfs]
-              if (tickOffsetItem !== undefined && order.rfs.sm / tickOffsetItem.size >= tickOffsetItem.percentageTrigger / 100) {
-                props.onPlaceOrder({
-                  marketId: tickOffsetItem.marketId,
-                  selectionId: tickOffsetItem.selectionId,
-                  side: tickOffsetItem.side === "BACK" ? "LAY" : "BACK",
-                  size: tickOffsetItem.size,
-                  price: tickOffsetItem.price, // this is the new price
-                })
+              checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
 
-                stopLossOrdersToRemove = stopLossOrdersToRemove.concat(checkForMatchInTickOffset[order.rfs])
-
-                delete checkForMatchInTickOffset[order.rfs];
-              }
+              // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
+              const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset)
+              checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
+              tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
             
           })
         })
       })
       
 
-      if (stopLossOrdersToRemove.length > 0) {
+      if (tickOffsetOrdersToRemove.length > 0) {
         await fetch('/api/remove-orders', {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
           },
           method: "POST",
-          body: JSON.stringify(stopLossOrdersToRemove)
+          body: JSON.stringify(tickOffsetOrdersToRemove)
         })
       }
       
@@ -390,6 +365,13 @@ const App = props => {
 
       if (Object.keys(props.tickOffsetList).length > 0) {
         props.onChangeTickOffsetList(checkForMatchInTickOffset);
+      }
+
+      if (Object.keys(props.unmatchedBets).length > 0) {
+        props.onChangeOrders({
+          unmatched: newUnmatchedBets,
+          matched: props.matchedBets
+        });
       }
     
       props.socket.off("ocm");
@@ -408,6 +390,8 @@ const App = props => {
         return <HomeView />;
     }
   };
+
+  // console.log(props.tickOffsetList)
 
   return (
     <div className="horizontal-scroll-wrapper">

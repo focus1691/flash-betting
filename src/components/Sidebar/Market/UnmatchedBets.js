@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { updateOrders } from "../../../actions/order";
 import { combineUnmatchedOrders } from '../../../utils/combineUnmatchedOrders'
+import { calcBackProfit } from "../../../utils/PriceCalculator";
 
 const UnmatchedBets = props => {
   
@@ -38,6 +39,8 @@ const UnmatchedBets = props => {
                 const selectionObject = props.market.runners.find(runner => runner.selectionId == selection);
                 if (selectionObject === undefined) return null;
                 
+                
+
                 return (
                   <React.Fragment>
                     <tr className="menu-bets-selection" colSpan={4}>
@@ -46,6 +49,7 @@ const UnmatchedBets = props => {
                     {
                       Object.values(allOrders[selection]).map(rfs => 
                         rfs.map(order => {
+                          const PL = calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)
                           return (
                             <tr
                               id="menu-unmatched-bet"
@@ -68,14 +72,14 @@ const UnmatchedBets = props => {
                                 id="pl-style"
                                 style={{
                                   color:
-                                    order.PL === "0.00"
+                                  PL === "0.00"
                                       ? "black"
-                                      : order.PL > 0
+                                      : PL > 0
                                       ? "green"
                                       : "red"
                                 }}
                               >
-                                {order.PL == "TODO PL" ? 0 : 0}
+                                {PL}
                               </td>
                             </tr>
                           )
