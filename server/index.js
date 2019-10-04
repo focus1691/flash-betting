@@ -124,7 +124,6 @@ app.get("/api/get-user-settings", (request, response) => {
 });
 
 app.post("/api/save-user-settings", (request, response) => {
-  console.log(request.body);
   database.updateSettings(session.email, request.body).then(res => {
     response.sendStatus(res);
   });
@@ -312,7 +311,6 @@ app.post("/api/place-order", (request, response) => {
       customerStrategyRef: request.body.customerStrategyRef
     },
     (err, res) => {
-      // console.log(res);
       response.json(res.result);
     }
   );
@@ -327,7 +325,6 @@ app.get("/api/listCurrentOrders", (request, response) => {
 
 
 app.post("/api/cancel-order", (request, response) => {
-  console.log(request.body);
   session.cancelOrders(
     {
       marketId: request.body.marketId,
@@ -340,7 +337,6 @@ app.post("/api/cancel-order", (request, response) => {
       customerRef: request.body.customerRef
     },
     (err, res) => {
-      // console.log(res);
       response.json(res.result);
     }
   );
