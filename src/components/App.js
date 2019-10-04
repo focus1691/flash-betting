@@ -96,9 +96,6 @@ const App = props => {
               };
             }
 
-
-            console.log(data);
-
             props.onUpdateRunners(runners);
             props.onReceiveMarket(data.result[0]);
             props.onSelectRunner(data.result[0].runners[0]);
@@ -321,8 +318,6 @@ const App = props => {
      * @param {obj} data The order change message data:
      */
     props.socket.on("ocm", async data => {
-      console.log(data)
-
       const newUnmatchedBets = Object.assign({}, props.unmatchedBets)
       const newMatchedBets = Object.assign({}, props.matchedBets);
       let checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
@@ -393,8 +388,6 @@ const App = props => {
         return <HomeView />;
     }
   };
-
-  // console.log(props.tickOffsetList)
 
   return (
     <div className="horizontal-scroll-wrapper">

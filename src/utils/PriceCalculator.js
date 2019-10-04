@@ -43,7 +43,6 @@ const calcLiability = (stake, side) => {
 const colorForBack = side => {
   if (side === 0) return "#01CC41";
   else if (side === 1) return "red";
-  // return side === 0 ? "#01CC41" : "red";
 };
 
 const colorForLay = side => {
