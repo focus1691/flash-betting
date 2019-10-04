@@ -1,4 +1,4 @@
-import { checkStopLossForMatch, checkTickOffsetForMatch } from './OCMHelper'
+import { checkStopLossForMatch, checkTickOffsetForMatch } from '../utils/OCMHelper';
 
 test('stopLossList should match when sr == 0', () => {
     const stopLossList = {
