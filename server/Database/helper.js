@@ -159,9 +159,10 @@ class DatabaseHelper extends Database {
             User.findOne({email: user},)
             .then(user => {
                 formattedOrders.find(order => {
-                    const index = user.orders.find(item => item.rfs === order.rfs);
+                    const index = user.orders.findIndex(item => item.rfs === order.rfs);
                     user.orders.splice(index, 1);
                 })
+                
                 user.save();
                 res(200)
             }).catch(err => {

@@ -18,16 +18,16 @@ const Countdown = props => {
       props.market ? new Date(props.market.marketStartTime) - new Date() : "--"
     );
     
-    const newBackList = await checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK")
+    const newBackList = await checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK", props.bets.matched, props.bets.unmatched)
     props.onUpdateBackList(newBackList)
 
-    const newLayList = await checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY")
+    const newLayList = await checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY", props.bets.matched, props.bets.unmatched)
     props.onUpdateLayList(newLayList)
 
 
     const newFillOrKillList = {};
     const adjustedTickOffsetList = Object.assign({}, props.tickOffsetList);
-    const adjustedUnmatchedBets = Object.assign({}, props.bets.unmatched)
+    const adjustedUnmatchedBets = Object.assign({}, props.bets.unmatched);
     let ordersToRemove = [];
     
     Object.keys(props.fillOrKillList).map((betId, index) => {

@@ -10,7 +10,6 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger,
                           fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList }) => {
 
-      
     
     return (
         <td
@@ -50,7 +49,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                       marketId: marketId, 
                       selectionId: selectionId, 
                       price: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
-                      size: 5, // TODO WE NEED TO PUT A SIZE!
+                      size: 2, // TODO WE NEED TO PUT A SIZE!
                       side: side, 
                       percentageTrigger: tickOffsetTrigger,
                       rfs: referenceStrategyId,
@@ -96,6 +95,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
             onContextMenu = { e => {
               e.preventDefault()
 
+              // TODO we have to update or save the order if we change it
               changeStopLossList({
                   side: side,
                   price: formatPrice(cell.odds),

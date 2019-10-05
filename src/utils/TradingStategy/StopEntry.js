@@ -1,4 +1,4 @@
-const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder) => {
+const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets) => {
 
     let indexesToRemove = [];
     let ordersToRemove = [];
@@ -6,7 +6,7 @@ const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder) => {
     // eslint-disable-next-line no-loop-func
     stopEntryArray.map((item, index) => {
         if ((currentLTP < item.targetLTP && item.stopEntryCondition == '<' ) || (currentLTP == item.targetLTP && item.stopEntryCondition == '=' ) || (currentLTP > item.targetLTP && item.stopEntryCondition == '>' )) {
-            onPlaceOrder(item);
+            onPlaceOrder(Object.assign({}, item, {unmatchedBets: unmatchedBets, matchedBets: matchedBets}));
             
             indexesToRemove = indexesToRemove.concat(index);
             ordersToRemove = ordersToRemove.concat(item);

@@ -8,6 +8,14 @@ export const updateOrders = order => {
 };
 
 export const placeOrder = order => {
+
+  if (order.unmatchedBets === undefined || order.matchedBets === undefined) {
+    return
+  }
+
+  order.size = parseFloat(order.size)
+  order.price = parseFloat(order.price)
+
   return dispatch => {
     return fetch('/api/place-order', {
       headers: {
@@ -19,19 +27,26 @@ export const placeOrder = order => {
     })
       .then(res => res.json())
       .then(async json => {
+        console.log(json)
 
+        if (json.errorCode == "BET_ACTION_ERROR") return;
         const betId = json.instructionReports[0].betId;
+        
 
         const adjustedOrder = Object.assign({}, order);
         adjustedOrder.rfs = order.customerStrategyRef;
         adjustedOrder.betId = betId;
+
+        if (betId === undefined) {
+          return;
+        }
         
         const newUnmatchedBets = Object.assign({}, order.unmatchedBets)
         newUnmatchedBets[betId] = adjustedOrder;
         
         const newBets = {
           unmatched: newUnmatchedBets,
-          matched: order.matchedBets
+          matched: order.matchedBets == undefined ? {} : order.matchedBets
         }
 
         await fetch('/api/save-order', {
@@ -43,7 +58,8 @@ export const placeOrder = order => {
           body: JSON.stringify(adjustedOrder)
         })
 
-        order.orderCompleteCallBack(betId);
+        if (order.orderCompleteCallBack !== undefined)
+          order.orderCompleteCallBack(betId);
 
         dispatch(updateOrders(newBets));
         

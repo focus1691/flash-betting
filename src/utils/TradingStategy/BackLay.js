@@ -1,4 +1,4 @@
-const checkTimeListsBefore = async (list, marketStartTime, onPlaceOrder, marketId, side) => {
+const checkTimeListsBefore = async (list, marketStartTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
 
     const newList = Object.assign({}, list)
     let ordersToRemove = []
@@ -18,7 +18,9 @@ const checkTimeListsBefore = async (list, marketStartTime, onPlaceOrder, marketI
             selectionId: parseInt(selectionId),
             side: side,
             size: order.size,
-            price: order.price
+            price: order.price,
+            matchedBets: matchedBets,
+            unmatchedBets: unmatchedBets
           })
 
           
@@ -48,8 +50,8 @@ const checkTimeListsBefore = async (list, marketStartTime, onPlaceOrder, marketI
     return newList
 }
 
-const checkTimeListAfter = async (list, selectionId, marketStartTime, onPlaceOrder, marketId, side) => {
-  
+const checkTimeListAfter = async (list, selectionId, marketStartTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
+
   const newSelectionArray = list;
   let ordersToRemove = []
   let indexesToRemove = []
@@ -67,7 +69,9 @@ const checkTimeListAfter = async (list, selectionId, marketStartTime, onPlaceOrd
         selectionId: parseInt(selectionId),
         side: side,
         size: order.size,
-        price: order.price
+        price: order.price,
+        matchedBets: matchedBets,
+        unmatchedBets: unmatchedBets
       })
       
       indexesToRemove = indexesToRemove.concat(index)

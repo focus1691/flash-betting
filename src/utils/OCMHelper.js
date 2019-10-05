@@ -37,9 +37,11 @@ export const checkStopLossForMatch = (stopLossList, selectionId, order, previous
  * @param {function} onPlaceOrder - The function we call when it matches the percentage needed.
  * @param {array} previousTickOffsetOrdersToRemove - The array we have to add the order to when it matches the percentage needed. 
  * @param {object} previousCheckForMatchInTickOffset - The object we have to remove the order from when it reaches the percentage needed.
+ * @param {object} unmatchedBets - The unmatchedBets that has to be passed into onPlaceOrder.
+ * @param {object} matchedBets - The matchedBets that has to be passed into onPlaceOrder.
  * @return {object} The new {tickOffsetOrdersToRemove, checkForMatchInTickOffset}.
  */
-export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, previousTickOffsetOrdersToRemove, previousCheckForMatchInTickOffset) => {
+export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, previousTickOffsetOrdersToRemove, previousCheckForMatchInTickOffset, unmatchedBets, matchedBets) => {
 
     // if the strategies are the same and enough of the order has been matched (TICK OFFSET)
     const tickOffsetItem = tickOffsetList[order.rfs]
@@ -53,6 +55,8 @@ export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, pre
             side: tickOffsetItem.side === "BACK" ? "LAY" : "BACK",
             size: tickOffsetItem.size,
             price: tickOffsetItem.price, // this is the new price
+            unmatchedBets: unmatchedBets,
+            matchedBets: matchedBets
         })
 
         tickOffsetOrdersToRemove = tickOffsetOrdersToRemove.concat(checkForMatchInTickOffset[order.rfs])

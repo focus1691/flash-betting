@@ -85,7 +85,7 @@ const Ladder = props => {
                             onPlaceOrder({
                                 marketId: market.marketId,
                                 side: data.side,
-                                size: 5,
+                                size: 2,
                                 price: data.price,
                                 selectionId: data.selectionId,
                                 customerStrategyRef: data.customerStrategyRef,
@@ -103,7 +103,7 @@ const Ladder = props => {
                                 marketId: market.marketId,
                                 selectionId: parseInt(id),
                                 side: data.side,
-                                size: 5,
+                                size: 2,
                                 price: data.price, 
                                 trailing: false,
                                 customStopLoss: data.custom, 

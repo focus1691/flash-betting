@@ -15,16 +15,15 @@ import getQueryVariable from "../utils/GetQueryVariable";
 import { AddRunner } from "../utils/ladder/AddRunner";
 import { UpdateRunner } from "../utils/ladder/UpdateRunner";
 import PremiumPopup from "./PremiumPopup";
-import { checkStopLossHit } from "../utils/TradingStategy/StopLoss";
 import { updateLayList } from "../actions/lay";
 import { updateBackList } from "../actions/back";
 import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
 import { placeOrder, updateOrders } from "../actions/order";
-import { stopEntryCheck } from '../utils/TradingStategy/StopEntry'
 import { updateFillOrKillList } from "../actions/fillOrKill";
 import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/OCMHelper";
 import Draggable from "react-draggable";
 import DraggableGraph from "./DraggableGraph";
+import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/MCMHelper";
 
 const App = props => {
 
@@ -133,6 +132,9 @@ const App = props => {
           currentOrders.map(item => {
             currentOrdersObject[item.betId] = item.status;
           })
+
+          console.log(currentOrders)
+
           orders.map(async order => {
 
             if (order.marketId === marketId) {
@@ -194,26 +196,32 @@ const App = props => {
 
 
     props.socket.on("mcm", async data => {
-
+      
       // Update the market status
       if (data.marketDefinition) {
         props.onMarketStatusChange(data.marketDefinition.status);
       }
 
       var ladders = Object.assign({}, props.ladders);
-
+      
+      if (data.rc === undefined) {
+        return
+      }
+      
       const length = data.rc.length;
 
-      const adjustedStopLossList = Object.assign({}, props.stopLossList)
+      let adjustedStopLossList = Object.assign({}, props.stopLossList)
       const adjustedBackList = {}
       const adjustedLayList = {}
-      const newStopEntryList = {};
+      let newStopEntryList = {};
 
       let stopLossOrdersToRemove = [];
 
       for (var i = 0; i < length; i++) {
         let key = [data.rc[i].id];
         if (key in props.ladders) {
+          
+
           // Runner found so we update our object with the raw data
           ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
 
@@ -221,59 +229,31 @@ const App = props => {
 
           // Back and Lay
           if (props.marketStatus === "RUNNING") {
-            const adjustedBackOrderArray = await checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
+            const adjustedBackOrderArray = await checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
             if (adjustedBackOrderArray.length > 0) {
               adjustedBackList[key] = adjustedBackOrderArray;
             }
 
-            const adjustedLayOrderArray = await checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY")
+            const adjustedLayOrderArray = await checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets)
             if (adjustedLayOrderArray.length > 0) {
               adjustedLayList[key] = adjustedLayOrderArray;
             }
           }
 
           // stop Entry
-          const stopEntryArray = props.stopEntryList[key]
 
-          if (stopEntryArray !== undefined) {
-            let indexesToRemove = stopEntryCheck(data.rc[i].ltp, stopEntryArray, props.onPlaceOrder);
-            if (stopEntryArray.length < indexesToRemove.length) {
-              newStopEntryList[key] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
-            }
-          }
+          newStopEntryList = stopEntryListChange(props.stopEntryList, key, data.rc[i].ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
 
           // We increment and check the stoplosses
           if (props.stopLossList[key] !== undefined) {
-            let adjustedStopLoss = Object.assign({}, props.stopLossList[key])
-            if (props.stopLossList[key].trailing && data.rc[i].ltp > props.ladders[key].ltp[0]) {
-              adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1;
-            }
-
+            // if it's trailing and the highest LTP went up, then we add a tickoffset
+            const maxLTP = props.ladders[key].ltp.sort((a, b) => b - a)[0];
+            let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, key, data.rc[i].ltp, maxLTP))
+            
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
-            if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
-              const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, adjustedStopLoss.units.toLowerCase());
-              if (stopLossCheck.targetMet) {
-                props.onPlaceOrder({
-                  marketId: adjustedStopLoss.marketId,
-                  selectionId: adjustedStopLoss.selectionId,
-                  side: adjustedStopLoss.side,
-                  size: adjustedStopLoss.size,
-                  price: stopLossCheck.priceReached,
-                })
-
-                stopLossOrdersToRemove = stopLossOrdersToRemove.concat(adjustedStopLoss);
-
-                adjustedStopLoss = null;
-
-              }
-            }
-
-            if (adjustedStopLoss == null) {
-              delete adjustedStopLossList[key];
-
-            } else {
-              adjustedStopLossList[key] = adjustedStopLoss;
-            }
+            const stopLossMatched = stopLossCheck(adjustedStopLoss, key, data.rc[i].ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)
+            adjustedStopLossList = stopLossMatched.adjustedStopLossList;
+            stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
           }
 
         } else {
@@ -326,20 +306,23 @@ const App = props => {
       let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
       let tickOffsetOrdersToRemove = [];
 
+      console.log(data)
       data.oc.map(changes => {
         changes.orc.map(runner => {
           runner.uo.map(order => {
-            // If the bet isn't in here, we should delete it.
+            // If the bet isn't in the unmatchedBets, we should delete it.
             if (newUnmatchedBets[order.id] !== undefined) {
               delete newUnmatchedBets[order.id];
+            } else if (order.sr == 0) {
+              newMatchedBets[order.id] = newUnmatchedBets[order.id];
+              delete newUnmatchedBets[order.id];
             }
-
-            // TODO add functionality for newUnmatchedBets
+            
 
             checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
 
             // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
-            const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset)
+            const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets)
             checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
             tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
 
@@ -370,7 +353,7 @@ const App = props => {
       if (Object.keys(props.unmatchedBets).length > 0) {
         props.onChangeOrders({
           unmatched: newUnmatchedBets,
-          matched: props.matchedBets
+          matched: newMatchedBets,
         });
       }
 

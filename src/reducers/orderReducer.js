@@ -6,6 +6,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
+
   switch (action.type) {
     case "PLACE_ORDER":
       return { ...state, bets: action.payload };
