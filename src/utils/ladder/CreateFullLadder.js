@@ -152,7 +152,7 @@ const calcBackLayPercentages = (ladder, ltp) => {
   const backPercent = Math.round((backMatched / total) * 100);
   const layPercent = Math.round((layMatched / total) * 100);
 
-  return { back: backPercent ? 0 : backPercent, lay: layPercent ? 0 : layPercent };
+  return { back: backPercent ? backPercent : 0 , lay: layPercent ? layPercent : 0 };
 };
 
 
