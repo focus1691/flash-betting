@@ -13,8 +13,6 @@ import {
 	calcLiability,
 	colorForBack
 } from "../../utils/PriceCalculator";
-import Draggable from "react-draggable";
-import DraggableGraph from "../DraggableGraph";
 import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 
@@ -174,14 +172,6 @@ const Grid = props => {
 
 	return (
 		<div id="grid-container">
-			<Draggable bounds="body">
-				<div
-					className="box"
-					style={{ position: "absolute", top: "25%", left: "50%" }}
-				>
-					<DraggableGraph />
-				</div>
-			</Draggable>
 			<table
 				style={props.marketStatus === "SUSPENDED" ? { opacity: 0.75 } : {}}
 				className={"grid-view"}

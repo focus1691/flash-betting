@@ -23,6 +23,8 @@ import { placeOrder, updateOrders } from "../actions/order";
 import { stopEntryCheck } from '../utils/TradingStategy/StopEntry'
 import { updateFillOrKillList } from "../actions/fillOrKill";
 import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/OCMHelper";
+import Draggable from "react-draggable";
+import DraggableGraph from "./DraggableGraph";
 
 const App = props => {
 
@@ -107,23 +109,23 @@ const App = props => {
           }
         });
 
-        fetch(`/api/premium-status`)
+      fetch(`/api/premium-status`)
         .then(res => res.json())
         .then(premiumStatus => {
           props.setPremiumStatus(premiumStatus);
         });
 
-        let loadedBackOrders = {};
-        let loadedLayOrders = {};
-        let loadedStopEntryOrders = {};
-        let loadedTickOffsetOrders = {};
-        let loadedFillOrKillOrders = {};
-        let loadedStopLossOrders = {};
-        let loadedUnmatchedOrders = {};
-        let loadedMatchedOrders = {};
+      let loadedBackOrders = {};
+      let loadedLayOrders = {};
+      let loadedStopEntryOrders = {};
+      let loadedTickOffsetOrders = {};
+      let loadedFillOrKillOrders = {};
+      let loadedStopLossOrders = {};
+      let loadedUnmatchedOrders = {};
+      let loadedMatchedOrders = {};
 
-      
-        fetch(`/api/get-all-orders`)
+
+      fetch(`/api/get-all-orders`)
         .then(res => res.json())
         .then(async orders => {
           const currentOrders = await fetch(`/api/listCurrentOrders`).then(res => res.json()).then(res => res.currentOrders);
@@ -156,14 +158,14 @@ const App = props => {
                 case "Stop Loss":
                   loadedStopLossOrders[order.selectionId] = order
                   break;
-                case "None": 
+                case "None":
                   if (currentOrdersObject[order.betId] === "EXECUTION_COMPLETE") {
                     loadedMatchedOrders[order.betId] = order;
                   } else if (currentOrdersObject[order.betId] === "EXECUTABLE") {
                     loadedUnmatchedOrders[order.betId] = order;
-                  } 
+                  }
                   break;
-                default: 
+                default:
                   break;
               }
             }
@@ -189,7 +191,7 @@ const App = props => {
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
-    
+
 
     props.socket.on("mcm", async data => {
 
@@ -216,12 +218,12 @@ const App = props => {
           ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
 
           const marketId = getQueryVariable("marketId");
-          
+
           // Back and Lay
           if (props.marketStatus === "RUNNING") {
             const adjustedBackOrderArray = await checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK")
             if (adjustedBackOrderArray.length > 0) {
-              adjustedBackList[key] = adjustedBackOrderArray; 
+              adjustedBackList[key] = adjustedBackOrderArray;
             }
 
             const adjustedLayOrderArray = await checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY")
@@ -232,7 +234,7 @@ const App = props => {
 
           // stop Entry
           const stopEntryArray = props.stopEntryList[key]
-          
+
           if (stopEntryArray !== undefined) {
             let indexesToRemove = stopEntryCheck(data.rc[i].ltp, stopEntryArray, props.onPlaceOrder);
             if (stopEntryArray.length < indexesToRemove.length) {
@@ -244,9 +246,9 @@ const App = props => {
           if (props.stopLossList[key] !== undefined) {
             let adjustedStopLoss = Object.assign({}, props.stopLossList[key])
             if (props.stopLossList[key].trailing && data.rc[i].ltp > props.ladders[key].ltp[0]) {
-              adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1; 
+              adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1;
             }
-          
+
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
             if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
               const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, data.rc[i].ltp, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, adjustedStopLoss.units.toLowerCase());
@@ -262,22 +264,22 @@ const App = props => {
                 stopLossOrdersToRemove = stopLossOrdersToRemove.concat(adjustedStopLoss);
 
                 adjustedStopLoss = null;
-                
+
               }
             }
 
             if (adjustedStopLoss == null) {
               delete adjustedStopLossList[key];
-              
+
             } else {
               adjustedStopLossList[key] = adjustedStopLoss;
             }
-          } 
+          }
 
         } else {
           // Runner not found so we create the new object with the raw data
           ladders[key] = AddRunner(key, data.rc[i]);
-          
+
         }
       }
 
@@ -294,18 +296,18 @@ const App = props => {
 
       // so it doesn't mess up the loading of the orders
       if (Object.keys(props.backList).length > 0) {
-        props.onChangeBackList(adjustedBackList);  
+        props.onChangeBackList(adjustedBackList);
       }
       if (Object.keys(props.layList).length > 0) {
-        props.onChangeLayList(adjustedLayList);  
+        props.onChangeLayList(adjustedLayList);
       }
       if (Object.keys(props.stopEntryList).length > 0) {
-        props.onChangeStopEntryList(newStopEntryList);    
+        props.onChangeStopEntryList(newStopEntryList);
       }
       if (Object.keys(props.stopLossList).length > 0) {
         props.onChangeStopLossList(adjustedStopLossList);
       }
-      
+
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
 
@@ -325,26 +327,26 @@ const App = props => {
       let tickOffsetOrdersToRemove = [];
 
       data.oc.map(changes => {
-        changes.orc.map(runner => { 
+        changes.orc.map(runner => {
           runner.uo.map(order => {
-              // If the bet isn't in here, we should delete it.
-              if (newUnmatchedBets[order.id] !== undefined) {
-                delete newUnmatchedBets[order.id];
-              }
+            // If the bet isn't in here, we should delete it.
+            if (newUnmatchedBets[order.id] !== undefined) {
+              delete newUnmatchedBets[order.id];
+            }
 
-              // TODO add functionality for newUnmatchedBets
+            // TODO add functionality for newUnmatchedBets
 
-              checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
+            checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
 
-              // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
-              const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset)
-              checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
-              tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
-            
+            // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
+            const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset)
+            checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
+            tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
+
           })
         })
       })
-      
+
 
       if (tickOffsetOrdersToRemove.length > 0) {
         await fetch('/api/remove-orders', {
@@ -356,7 +358,7 @@ const App = props => {
           body: JSON.stringify(tickOffsetOrdersToRemove)
         })
       }
-      
+
       if (Object.keys(props.stopLossList).length > 0) {
         props.onChangeStopLossList(checkForMatchInStopLoss);
       }
@@ -371,7 +373,7 @@ const App = props => {
           matched: props.matchedBets
         });
       }
-    
+
       props.socket.off("ocm");
     });
   }, [props.ladders]);
@@ -383,7 +385,7 @@ const App = props => {
       case "LadderView":
         return <LadderView />;
       case "GridView":
-        return <GridView/>;
+        return <GridView />;
       default:
         return <HomeView />;
     }
@@ -393,20 +395,28 @@ const App = props => {
     <div className="horizontal-scroll-wrapper">
       <div className="root">
         {props.marketOpen ? (
-            <Helmet>
-              <title>
-                {`${new Date(
-                  props.market.marketStartTime
-                ).toLocaleTimeString()} ${props.market.marketName}  ${
-                  props.market.event.venue
+          <Helmet>
+            <title>
+              {`${new Date(
+                props.market.marketStartTime
+              ).toLocaleTimeString()} ${props.market.marketName}  ${
+                props.market.event.venue
                 }`}
-              </title>
-            </Helmet>
+            </title>
+          </Helmet>
         ) : null}
         <Siderbar />
         <main className="content">
-        {renderView()}
-        {<PremiumPopup/>}
+          <Draggable bounds="body">
+            <div
+              className="box"
+              style={{ position: "absolute", top: "25%", left: "50%", zIndex: 9999 }}
+            >
+              <DraggableGraph />
+            </div>
+          </Draggable>
+          {renderView()}
+          <PremiumPopup />
         </main>
       </div>
     </div>
@@ -454,8 +464,8 @@ const mapDispatchToProps = dispatch => {
     onToggleMarketInformation: settings =>
       dispatch(actions.toggleMarketInformation(settings)),
     onToggleRules: settings => dispatch(actions.toggleRules(settings)),
-		onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
-		onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
+    onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
+    onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
     onReceiveMarket: market => dispatch(actions2.loadMarket(market)),
     onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
     onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),

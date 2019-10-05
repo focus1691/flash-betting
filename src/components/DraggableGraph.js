@@ -6,6 +6,7 @@ const DraggableGraph = props => {
   return props.selection && props.graph.open ? (
     <img
       alt={"Chart"}
+      style={{pointerEvents: 'none'}}
       src={`https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${props.market.marketId.slice(
         2,
         props.market.marketId.length
