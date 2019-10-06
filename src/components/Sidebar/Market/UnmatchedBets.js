@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { updateOrders } from "../../../actions/order";
+import { updateOrders, cancelOrder } from "../../../actions/order";
 import { combineUnmatchedOrders } from '../../../utils/combineUnmatchedOrders'
 import { calcBackProfit } from "../../../utils/PriceCalculator";
 import { updateStopLossList } from "../../../actions/stopLoss";
@@ -16,7 +16,7 @@ const UnmatchedBets = props => {
   const allOrders = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, props.bets.unmatched)
   const selections = Object.keys(allOrders)  
 
-
+  
   return (
     <div>
       <table className="menu-bets">
@@ -46,8 +46,6 @@ const UnmatchedBets = props => {
                 const selectionObject = props.market.runners.find(runner => runner.selectionId == selection);
                 if (selectionObject === undefined) return null;
                 
-                
-
                 return (
                   <React.Fragment>
                     <tr className="menu-bets-selection" colSpan={4}>
@@ -56,7 +54,6 @@ const UnmatchedBets = props => {
                     {
                       Object.values(allOrders[selection]).map(rfs => 
                         rfs.map(order => {
-                          
                           //const marketStart new Date(props.market.marketStartTime).valueOf() / 1000
                           const remainingTime = order.strategy == "Back" || order.strategy == "Lay" ? (new Date(props.market.marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000) : 0
                           const remainingMinutes = order.strategy == "Back" || order.strategy == "Lay" ? Math.floor((remainingTime - order.timeOffset) / 60) : 0
@@ -85,6 +82,7 @@ const UnmatchedBets = props => {
                               <button 
                                 style={{ height: "22px", width: "auto" }} 
                                 onClick={() => {
+                                  let ordersToRemove = [];
                                   // figure out which strategy it's using and make a new array without it
                                   switch(order.strategy) {
                                     case "Back":
@@ -107,18 +105,50 @@ const UnmatchedBets = props => {
                                       delete newTickOffsetList[order.rfs]
                                       props.onChangeTickOffsetList(newTickOffsetList)
                                       break;
-                                    case "Fill Or Kill":
-                                      
-                                      
-                                      break;
                                     case "Stop Loss":
-                                      
+                                      const newStopLossList = Object.assign({}, props.stopLossList);
+                                      delete newStopLossList[order.selectionId];
+                                      props.onChangeStopLossList(newStopLossList)
                                       break;
                                     case "None":
-                                      
+                                      // if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
+                                      if (props.fillOrKillList[order.betId] !== undefined) {
+                                        const newFillOrKill = Object.assign({}, props.fillOrKillList)
+                                        ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId])
+                                        delete newFillOrKill[order.betId];
+                                        props.onChangeFillOrKillList(newFillOrKill)
+                                        
+                                      }
+
+                                      // cancel order
+                                      props.onCancelOrder({
+                                        marketId: order.marketId,
+                                        betId: order.betId,
+                                        sizeReduction: null,
+                                        matchedBets: props.bets.matched,
+                                        unmatchedBets: props.bets.unmatched
+                                      })
+
+
                                       break;
                                     default:
                                       break;
+                                  }
+
+                                  ordersToRemove = ordersToRemove.concat(order)
+
+                                  // delete from database
+                                  try {
+                                    fetch('/api/remove-orders', {
+                                      headers: {
+                                        Accept: "application/json",
+                                        "Content-Type": "application/json"
+                                      },
+                                      method: "POST",
+                                      body: JSON.stringify(ordersToRemove)
+                                    })
+                                  } catch (e) {
+
                                   }
 
                                 }}
@@ -164,6 +194,7 @@ const mapStateToProps = state => {
     stopEntryList: state.stopEntry.list,
     layList: state.lay.list,
     backList: state.back.list,
+    fillOrKillList: state.fillOrKill.list,
     bets: state.order.bets
   };
 };
@@ -177,6 +208,7 @@ const mapDispatchToProps = dispatch => {
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
+    onCancelOrder: order => dispatch(cancelOrder(order)),
   };
 };
 

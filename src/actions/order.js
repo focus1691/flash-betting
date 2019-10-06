@@ -34,6 +34,7 @@ export const placeOrder = order => {
         const adjustedOrder = Object.assign({}, order);
         adjustedOrder.rfs = order.customerStrategyRef;
         adjustedOrder.betId = betId;
+        adjustedOrder.strategy = "None";
         if (betId === undefined) {
           return;
         }
