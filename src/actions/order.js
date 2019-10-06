@@ -1,5 +1,3 @@
-import { updateFillOrKillList } from "./fillOrKill";
-
 export const updateOrders = order => {
   return {
     type: "UPDATE_BET",
@@ -36,7 +34,6 @@ export const placeOrder = order => {
         const adjustedOrder = Object.assign({}, order);
         adjustedOrder.rfs = order.customerStrategyRef;
         adjustedOrder.betId = betId;
-
         if (betId === undefined) {
           return;
         }
@@ -48,7 +45,6 @@ export const placeOrder = order => {
           unmatched: newUnmatchedBets,
           matched: order.matchedBets == undefined ? {} : order.matchedBets
         }
-
         await fetch('/api/save-order', {
           headers: {
             Accept: "application/json",
@@ -59,7 +55,7 @@ export const placeOrder = order => {
         })
 
         if (order.orderCompleteCallBack !== undefined)
-          order.orderCompleteCallBack(betId);
+          await order.orderCompleteCallBack(betId);
 
         dispatch(updateOrders(newBets));
         
@@ -69,6 +65,10 @@ export const placeOrder = order => {
 };
 
 export const cancelOrder = order => {
+
+  if (order.unmatchedBets === undefined || order.matchedBets === undefined) {
+    return
+  }
 
   return dispatch => {
     return fetch('/api/cancel-order', {
@@ -81,8 +81,19 @@ export const cancelOrder = order => {
     })
       .then(res => res.json())
       .then(json => {
+        const newUnmatchedBets = {};
+        for (const key in order.unmatchedBets) {
+          if (key !== order.betId) {
+            newUnmatchedBets[key] = order.unmatchedBets[key] 
+          }
+        }
 
-        dispatch(updateOrders("adad"));
+        const newBets = {
+          unmatched: newUnmatchedBets,
+          matched: order.matchedBets == undefined ? {} : order.matchedBets
+        }
+
+        dispatch(updateOrders(newBets));
       });
   };
 };

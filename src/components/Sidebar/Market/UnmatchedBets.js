@@ -58,11 +58,10 @@ const UnmatchedBets = props => {
                         rfs.map(order => {
                           
                           //const marketStart new Date(props.market.marketStartTime).valueOf() / 1000
-                          const remainingTime = (new Date(props.market.marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000) 
-                          const remainingMinutes = Math.floor((remainingTime - order.timeOffset) / 60)
-                          const remainingSeconds = Math.floor((remainingTime - order.timeOffset) % 60)
-                          console.log(remainingSeconds)
-                          
+                          const remainingTime = order.strategy == "Back" || order.strategy == "Lay" ? (new Date(props.market.marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000) : 0
+                          const remainingMinutes = order.strategy == "Back" || order.strategy == "Lay" ? Math.floor((remainingTime - order.timeOffset) / 60) : 0
+                          const remainingSeconds = order.strategy == "Back" || order.strategy == "Lay" ? Math.floor((remainingTime - order.timeOffset) % 60) : 0
+
                           let suffix = "";
                           if (order.trailing && order.hedged) suffix = "th"
                           else if (!order.trailing && order.hedged) suffix = "h"
@@ -79,7 +78,7 @@ const UnmatchedBets = props => {
                             <tr
                               id="menu-unmatched-bet"
                               style={{
-                                backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
+                                backgroundColor: order.side === "BACK" ? "#FAC9D7" : "#A6D8FF"
                               }}
                             >
                             
@@ -89,16 +88,24 @@ const UnmatchedBets = props => {
                                   // figure out which strategy it's using and make a new array without it
                                   switch(order.strategy) {
                                     case "Back":
-                                      
+                                      const newBackList = Object.assign({}, props.backList);
+                                      newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs)
+                                      props.onChangeBackList(newBackList);
                                       break;
                                     case "Lay":
-                                      
+                                      const newLayList = Object.assign({}, props.layList);
+                                      newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs)
+                                      props.onChangeLayList(newLayList);
                                       break;
                                     case "Stop Entry":
-                                      
+                                      const newStopEntryList = Object.assign({}, props.stopEntryList);
+                                      newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs)
+                                      props.onChangeStopEntryList(newStopEntryList);
                                       break;
                                     case "Tick Offset":
-                                      
+                                      const newTickOffsetList = Object.assign({}, props.tickOffsetList);
+                                      delete newTickOffsetList[order.rfs]
+                                      props.onChangeTickOffsetList(newTickOffsetList)
                                       break;
                                     case "Fill Or Kill":
                                       

@@ -36,7 +36,9 @@ const Countdown = props => {
         props.onCancelOrder({
           marketId: props.market.marketId,
           betId: betId,
-          sizeReduction: null
+          sizeReduction: null,
+          matchedBets: props.bets.matched,
+          unmatchedBets: props.bets.unmatched
         })
 
         ordersToRemove = ordersToRemove.concat(order);
