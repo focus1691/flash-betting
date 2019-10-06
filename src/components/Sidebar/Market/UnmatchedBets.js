@@ -3,6 +3,13 @@ import { connect } from "react-redux";
 import { updateOrders } from "../../../actions/order";
 import { combineUnmatchedOrders } from '../../../utils/combineUnmatchedOrders'
 import { calcBackProfit } from "../../../utils/PriceCalculator";
+import { updateStopLossList } from "../../../actions/stopLoss";
+import { updateTickOffsetList } from "../../../actions/tickOffset";
+import { updateStopEntryList } from "../../../actions/stopEntry";
+import { updateLayList } from "../../../actions/lay";
+import { updateBackList } from "../../../actions/back";
+import { updateFillOrKillList } from "../../../actions/fillOrKill";
+import { formatPrice } from "../../../utils/ladder/CreateFullLadder";
 
 const UnmatchedBets = props => {
   
@@ -49,7 +56,25 @@ const UnmatchedBets = props => {
                     {
                       Object.values(allOrders[selection]).map(rfs => 
                         rfs.map(order => {
-                          const PL = calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)
+                          
+                          //const marketStart new Date(props.market.marketStartTime).valueOf() / 1000
+                          const remainingTime = (new Date(props.market.marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000) 
+                          const remainingMinutes = Math.floor((remainingTime - order.timeOffset) / 60)
+                          const remainingSeconds = Math.floor((remainingTime - order.timeOffset) % 60)
+                          console.log(remainingSeconds)
+                          
+                          let suffix = "";
+                          if (order.trailing && order.hedged) suffix = "th"
+                          else if (!order.trailing && order.hedged) suffix = "h"
+                          else if (order.trailing && !order.hedged) suffix = "t"
+
+                          const PL = 
+                            (order.strategy == "Stop Loss" ? "SL " :
+                            order.strategy == "Tick Offset" ? "T.O." :
+                            order.strategy == "Back" || order.strategy == "Lay" ? remainingMinutes + ":" + remainingSeconds + 's' + (order.executionTime == "Before" ? "-" : "+")  :
+                            order.strategy == "Stop Entry" ? order.stopEntryCondition + formatPrice(order.targetLTP) + "SE" :
+                            calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)) + suffix
+
                           return (
                             <tr
                               id="menu-unmatched-bet"
@@ -61,7 +86,34 @@ const UnmatchedBets = props => {
                               <button 
                                 style={{ height: "22px", width: "auto" }} 
                                 onClick={() => {
-                                  
+                                  // figure out which strategy it's using and make a new array without it
+                                  switch(order.strategy) {
+                                    case "Back":
+                                      
+                                      break;
+                                    case "Lay":
+                                      
+                                      break;
+                                    case "Stop Entry":
+                                      
+                                      break;
+                                    case "Tick Offset":
+                                      
+                                      break;
+                                    case "Fill Or Kill":
+                                      
+                                      
+                                      break;
+                                    case "Stop Loss":
+                                      
+                                      break;
+                                    case "None":
+                                      
+                                      break;
+                                    default:
+                                      break;
+                                  }
+
                                 }}
                               >
                                 {/* <img src = {require('./CancelIcon.svg')} alt="" style = {{height: "100%", width: "auto"}} /> In Progress */}
@@ -111,7 +163,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeOrders: orders => dispatch(updateOrders(orders))
+    onChangeOrders: orders => dispatch(updateOrders(orders)),
+    onChangeStopLossList: list => dispatch(updateStopLossList(list)),
+    onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
+    onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
+    onChangeLayList: list => dispatch(updateLayList(list)),
+    onChangeBackList: list => dispatch(updateBackList(list)),
+    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
   };
 };
 

@@ -206,7 +206,6 @@ const App = props => {
             }
           })
         }).then(() => {
-          console.log(loadedMatchedOrders)
           props.onChangeOrders({
             matched: loadedMatchedOrders,
             unmatched: loadedUnmatchedOrders
