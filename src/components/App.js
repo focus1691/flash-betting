@@ -127,13 +127,11 @@ const App = props => {
       fetch(`/api/get-all-orders`)
         .then(res => res.json())
         .then(async orders => {
-          const currentOrders = await fetch(`/api/listCurrentOrders`).then(res => res.json()).then(res => res.currentOrders);
+          const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
           const currentOrdersObject = {};
           currentOrders.map(item => {
-            currentOrdersObject[item.betId] = item.status;
+            currentOrdersObject[item.betId] = item;
           })
-
-          console.log(currentOrders)
 
           orders.map(async order => {
 
@@ -161,18 +159,54 @@ const App = props => {
                   loadedStopLossOrders[order.selectionId] = order
                   break;
                 case "None":
-                  if (currentOrdersObject[order.betId] === "EXECUTION_COMPLETE") {
+                  if (currentOrdersObject[order.betId] === undefined) break;
+                  if (currentOrdersObject[order.betId].status === "EXECUTION_COMPLETE") {
                     loadedMatchedOrders[order.betId] = order;
-                  } else if (currentOrdersObject[order.betId] === "EXECUTABLE") {
+                    delete currentOrdersObject[order.betId]
+                  } else if (currentOrdersObject[order.betId].status === "EXECUTABLE") {
                     loadedUnmatchedOrders[order.betId] = order;
+                    delete currentOrdersObject[order.betId]
                   }
                   break;
                 default:
                   break;
               }
+
+            }
+          })
+
+          // handle orders not in the there
+          Object.keys(currentOrdersObject).map(async betId => {
+            const order = currentOrdersObject[betId];
+            const orderData = {
+              strategy: "None",
+              marketId: order.marketId,
+              side: order.side,
+              price: order.priceSize.price,
+              size: order.priceSize.size,
+              selectionId: order.selectionId,
+              rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
+              betId: betId
+            }
+            if (order.status === "EXECUTION_COMPLETE" || order.status === "EXECUTABLE") {
+              await fetch('/api/save-order', {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify(orderData)
+              })
+            }
+
+            if (order.status === "EXECUTION_COMPLETE") {
+              loadedMatchedOrders[order.betId] = orderData;
+            } else if (order.status === "EXECUTABLE") {
+              loadedUnmatchedOrders[order.betId] = orderData;
             }
           })
         }).then(() => {
+          console.log(loadedMatchedOrders)
           props.onChangeOrders({
             matched: loadedMatchedOrders,
             unmatched: loadedUnmatchedOrders

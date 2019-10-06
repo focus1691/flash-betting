@@ -290,7 +290,7 @@ app.get("/api/get-market-info", (request, response) => {
 });
 
 app.post("/api/place-order", (request, response) => {
-  console.log(request.body);
+  
   session.placeOrders(
     {
       marketId: request.body.marketId,
@@ -317,7 +317,9 @@ app.post("/api/place-order", (request, response) => {
 });
 
 app.get("/api/listCurrentOrders", (request, response) => {
-  session.listCurrentOrders({}, 
+  session.listCurrentOrders({
+    marketIds: [request.query.marketId]
+  }, 
     (err, res) => {
       response.json(res.result)
     })
