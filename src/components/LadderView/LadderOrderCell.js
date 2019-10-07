@@ -6,7 +6,8 @@ import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import crypto from 'crypto'
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 
-const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, 
+const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, 
+                          isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList,
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger,
                           fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList }) => {
 
@@ -92,18 +93,28 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
               
 
             }}
-            onContextMenu = { e => {
+            onContextMenu = { async e => {
               e.preventDefault()
 
-              // TODO we have to update or save the order if we change it
-              changeStopLossList({
-                  side: side,
-                  price: formatPrice(cell.odds),
-                  custom: true,
-                  rfs: undefined,
-                  assignedIsOrderMatched: false,
-              })
+              if (stopLossList[selectionId] !== undefined) {
+                await fetch('/api/remove-orders', {
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                  },
+                  method: "POST",
+                  body: JSON.stringify([stopLossList[selectionId]])
+                })
+              }
               
+              changeStopLossList({
+                side: side,
+                price: formatPrice(cell.odds),
+                custom: true,
+                rfs: undefined,
+                assignedIsOrderMatched: false,
+              })
+
               return false;
             }}
           >
@@ -118,6 +129,7 @@ const mapStateToProps = state => {
     unmatchedBets: state.order.bets.unmatched,
     matchedBets: state.order.bets.matched,
     stopLossSelected: state.stopLoss.selected,
+    stopLossList: state.stopLoss.list,
     stopLossUnits: state.stopLoss.units,
     tickOffsetList: state.tickOffset.list,
     tickOffsetSelected: state.tickOffset.selected,
