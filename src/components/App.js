@@ -248,6 +248,8 @@ const App = props => {
       const adjustedLayList = {}
       let newStopEntryList = {};
 
+      console.log(data);
+
       let stopLossOrdersToRemove = [];
 
       for (var i = 0; i < length; i++) {

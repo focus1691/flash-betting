@@ -1,4 +1,5 @@
 import React from "react";
+import { renderRaceStatus } from "./RaceStatus";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
 import { formatCurrency } from "./../../utils/NumberFormat";
 
@@ -72,31 +73,7 @@ export default ({
               </div>
             </React.Fragment>
           ) : null}
-          {marketOpen && status === "OPEN" ? (
-            <div className={"in-play"}>
-              <span className={"in-play"}>Going in-play</span>
-              <img
-                src={window.location.origin + "/icons/checked.png"}
-                alt={"active"}
-              />
-            </div>
-          ) : marketOpen && status === "SUSPENDED" ? (
-            <div className={"in-play"}>
-              <span>In-play</span>
-              <img
-                src={window.location.origin + "/icons/checked.png"}
-                alt={"in-play"}
-              />
-            </div>
-          ) : (
-                <div className={"in-play"}>
-                  <span className={"in-play"}>Not Going in-play</span>
-                  <img
-                    src={window.location.origin + "/icons/error.png"}
-                    alt={"Not active"}
-                  />
-                </div>
-              )}
+          {renderRaceStatus(marketOpen, status)}
           <span id="matched-bets">
             {marketOpen
               ? `Matched: ${formatCurrency(
