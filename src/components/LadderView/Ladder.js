@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect, createRef } from "react";
 import LadderContainer from './LadderContainer'
 import LadderHeader from "./LadderHeader";
-import LadderBody from "./LadderBody";
 import PercentageRow from "./PercentageRow";
 import PriceRow from "./PriceRow";
 import OrderRow from "./OrderRow";
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
@@ -24,14 +23,20 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
             if (listRef.current !== null && ltpIndex !== -1) {
                 listRef.current.scrollToItem(ltpIndex, 'center')
-                setlistRefSet(true)
                 clearInterval(interval)
+                setlistRefSet(true)
             } 
         }, 1000)
     }, [listRef]);
+
+    useEffect(() => {
+        if (listRef.current !== undefined) {
+            listRef.current.scrollToItem(0)
+        }
+    }, [order])
   
    
-
+    console.log(listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : 0)
   
 
   // remove adjacent LTP values
