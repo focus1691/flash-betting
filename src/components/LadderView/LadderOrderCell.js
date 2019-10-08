@@ -13,7 +13,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
 
     
     return (
-        <td
+        <div className = 'td'
             style={
                 isStopLoss ? {background: "yellow"} :
                 cell.backMatched && side === "BACK" ? {background: "#F694AA"} : 
@@ -119,7 +119,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
             }}
           >
             { isStopLoss ? stopLossData.size : cell[`${side.toLowerCase()}Matched`] }
-        </td>
+        </div>
     )
 }
 

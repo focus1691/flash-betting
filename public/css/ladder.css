@@ -60,7 +60,7 @@
 .ladder {
 	position: relative;
 	width: 100%;
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
 	height: 75%;
 }
@@ -71,31 +71,37 @@
 	height: 5%;
 }
 
-.ladder table {
+.ladder > div > .List {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	table-layout: fixed;
 	border: 1px solid rgb(178, 181, 181);
 	width: 100%;
+	box-sizing: content-box; 
 }
 
-.ladder td {
+.ladder .tr {
+	display: flex;
+}
+
+.ladder .td {
 	font-size: x-small;
 	text-align: right;
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
+	width: 12.5%;
 }
-
-.ladder td:nth-child(3) {background-color: #FCC9D3; }
-.ladder td:nth-child(4) {
+.ladder .td:nth-child(1) {width: 100%}
+.ladder .td:nth-child(3) {background-color: #FCC9D3; }
+.ladder .td:nth-child(4) {
 	font-weight: bold;
 	background: #BBBBBB;
 }
 
-.ladder td:nth-child(5) { background-color: #BCE4FC; }
+.ladder .td:nth-child(5) { background-color: #BCE4FC; }
 
-.ladder tr:not(:first-child) td:not(:first-child) {
+.ladder .td:not(:first-child) {
 	text-align: center;
 	font-family: "Open Sans";
 	font-weight: 600;
@@ -103,7 +109,7 @@
 	border: 1px solid rgb(178, 181, 181);
 	padding: 2px;
 	cursor: pointer;
-	width: 20%;
+	width: 30%;
 	overflow: hidden;
 }
 
@@ -223,29 +229,33 @@
 	font-family: "Open Sans";
 	font-weight: 600;
 	font-size: x-small;
+	display: flex;
+	flex-direction: row;
 }
 
-.percentage-row th:first-child {
+.percentage-row .th:first-child {
 	background: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
 	color: white;
 	z-index: 99999;
+	width: 85%;
 }
 
-.percentage-row th {
+.percentage-row .th {
 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 	outline: 1px solid rgb(178, 181, 181); 
+	width: 30%
 }
 
-.percentage-row th:not(:first-child) {
+.percentage-row .th:not(:first-child) {
 	background-color: white;
 
 }
 
-.percentage-row th:nth-child(3) {
+.percentage-row .th:nth-child(3) {
 	background-color: #FCC9D3;
 }
 
-.percentage-row th:nth-child(5) {
+.percentage-row .th:nth-child(5) {
 	background-color: #BCE4FC;
 }
 

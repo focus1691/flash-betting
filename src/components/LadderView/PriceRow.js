@@ -17,13 +17,13 @@ const PriceRow = ({ ltp, tv, priceType, stake, lay }) => {
   
 
   return (
-    <tr className="price-row">
-      <th colspan="8">
+    <div className="price-row">
+      <div colspan="8">
         {castedPrices.map(price => (
           <th style={{background: getBG(price)}} onClick={e => setStakeVal(price)}>{price}</th>
         ))}
-      </th>
-    </tr>
+      </div>
+    </div>
   );
 };
 

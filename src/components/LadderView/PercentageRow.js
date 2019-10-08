@@ -1,11 +1,12 @@
 import React from "react";
 
 export default ({ ltp, tv, percent }) => (
-  <tr className = {"percentage-row"}>
-    <th colSpan={3}>{tv}</th>
-    <th></th>
-    <th>{`${percent.back}%`}</th>
-    <th style={{
+  <div className = {"percentage-row"}>
+    <div colSpan={3} className={'th'}>{tv}</div>
+    <div className = {"th"}></div>
+    <div className = {"th"}>{`${percent.back}%`}</div>
+    <div className = {"th"} 
+      style={{
           background:
             ltp[0] < ltp[1]
               ? "#0AFD03"
@@ -14,8 +15,8 @@ export default ({ ltp, tv, percent }) => (
               : "#FFFF00"
         }}>
           {ltp[0]}
-        </th>
-    <th>{`${percent.lay}%`}</th>
-    <th></th>
-  </tr>
+        </div>
+    <div className = {"th"}>{`${percent.lay}%`}</div>
+    <div className = {"th"}></div>
+  </div>
 );
