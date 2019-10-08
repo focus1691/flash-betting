@@ -248,8 +248,6 @@ const App = props => {
       const adjustedLayList = {}
       let newStopEntryList = {};
 
-      console.log(data);
-
       let stopLossOrdersToRemove = [];
 
       for (var i = 0; i < length; i++) {
@@ -341,7 +339,6 @@ const App = props => {
       let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
       let tickOffsetOrdersToRemove = [];
 
-      console.log(data)
       data.oc.map(changes => {
         changes.orc.map(runner => {
           runner.uo.map(order => {
