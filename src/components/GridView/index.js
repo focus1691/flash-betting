@@ -169,7 +169,6 @@ const Grid = props => {
 			/>
 		);
 	};
-
 	return (
 		<div id="grid-container">
 			<table
@@ -201,10 +200,10 @@ const Grid = props => {
 						}}
 					/>
 					{props.marketOpen
-						? props.marketStatus === "OPEN"
-							? renderTableData()
-							: props.marketStatus === "SUSPENDED"
-								? renderSuspended()
+						? props.marketStatus === "SUSPENDED"
+							? renderSuspended()
+							: props.marketStatus === "OPEN" || props.marketStatus === "RUNNING"
+								? renderTableData()
 								: null
 						: null}
 				</tbody>
