@@ -19,7 +19,9 @@ const ExpansionPanel = withStyles({
       },
       backgroundColor: "#fff",
       color: "orange",
-      fontWeight: "900"
+      fontWeight: "900",
+      fontSize: "0.8em",
+      display: "block",
     },
     expanded: {}
   })(MultiExpansionPanel);
