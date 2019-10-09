@@ -11,16 +11,17 @@ const renderContent = (text, img, alt) => {
     );
 };
 
-const renderRaceStatus = (marketOpen, status) => {
+const renderRaceStatus = (marketOpen, status, inPlay) => {
+    console.log(inPlay);
+
     if (!marketOpen) return null;
+    if (inPlay) return renderContent("Going in-play", "/icons/checked.png", "Active");
 
     switch (status) {
         case "OPEN":
             return renderContent("Going in-play", "/icons/inactive.png", "Active");
         case "SUSPENDED":
             return renderContent("Not Going in-play", "/icons/error.png", "Suspended");
-        case "RUNNING":
-            return renderContent("Going in-play", "/icons/checked.png", "Active");
         default:
             return null;
     }

@@ -111,7 +111,7 @@ const Countdown = props => {
   return (
     <div>
       {props.marketOpen
-        ? props.marketStatus === "OPEN"
+        ? props.marketStatus === "OPEN" && !props.inPlay
           ? msToHMS(timeRemaining)
           : props.marketStatus === "SUSPENDED" ||
             props.marketStatus === "CLOSED"
@@ -126,6 +126,7 @@ const mapStateToProps = state => {
   return {
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
+    inPlay: state.market.inPlay,
     market: state.market.currentMarket,
     layList: state.lay.list,
     backList: state.back.list,

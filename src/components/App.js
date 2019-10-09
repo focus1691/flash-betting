@@ -231,6 +231,7 @@ const App = props => {
       // Update the market status
       if (data.marketDefinition) {
         props.onMarketStatusChange(data.marketDefinition.status);
+        props.setInPlay(data.marketDefinition.inPlay);
       }
 
       var ladders = Object.assign({}, props.ladders);
@@ -485,6 +486,7 @@ const mapDispatchToProps = dispatch => {
     onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders)),
     onChangeExcludedLadders: excludedLadders => dispatch(actions2.updateExcludedLadders(excludedLadders)),
     onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen)),
+    setInPlay: inPlay => dispatch(actions2.setInPlay(inPlay)),
     setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),

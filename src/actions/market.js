@@ -1,7 +1,14 @@
-export const setMarketStatus = isOpen => {
+export const setInPlay = inPlay => {
+  return {
+    type: "SET_IN_PLAY",
+    payload: inPlay
+  }
+}
+
+export const setMarketStatus = status => {
   return {
     type: "NEW_MARKET_STATUS",
-    payload: isOpen
+    payload: status
   }
 }
 

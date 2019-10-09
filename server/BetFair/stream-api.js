@@ -42,6 +42,7 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
+						console.log(result.mc);
 						openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];
 					}

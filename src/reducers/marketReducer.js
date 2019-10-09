@@ -1,5 +1,6 @@
 const initialState = {
   marketOpen: false,
+  inPlay: false,
   status: 'OPEN',
   currentMarket: {},
   runnerSelection: 0,
@@ -15,6 +16,8 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "NEW_MARKET_STATUS":
       return { ...state, status: action.payload };
+    case "SET_IN_PLAY":
+      return { ...state, inPlay: action.payload };
     case "LOAD_MARKET":
       return { ...state, currentMarket: action.payload };
     case "LOAD_LADDER":

@@ -7,6 +7,7 @@ export default ({
   market,
   ladder,
   marketOpen,
+  inPlay,
   status,
   country,
   oneClickRef,
@@ -73,7 +74,7 @@ export default ({
               </div>
             </React.Fragment>
           ) : null}
-          {renderRaceStatus(marketOpen, status)}
+          {renderRaceStatus(marketOpen, status, inPlay)}
           <span id="matched-bets">
             {marketOpen
               ? `Matched: ${formatCurrency(

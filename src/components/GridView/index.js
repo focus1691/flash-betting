@@ -187,6 +187,7 @@ const Grid = props => {
 						market={props.market}
 						ladder={props.ladder}
 						marketOpen={props.marketOpen}
+						inPlay={props.inPlay}
 						status={props.marketStatus}
 						country={{
 							localeCode: props.localeCode,
@@ -219,6 +220,7 @@ const mapStateToProps = state => {
 		currentEvent: state.sports.currentSport.currentEvent,
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
+		inPlay: state.market.inPlay,
 		market: state.market.currentMarket,
 		selection: state.market.runnerSelection,
 		ladder: state.market.ladder,
