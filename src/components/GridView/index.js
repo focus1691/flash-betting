@@ -71,7 +71,6 @@ const Grid = props => {
 			const { atb, atl, batb, batl, ltp, tv, bg } = DeconstructLadder(
 				props.ladder[key]
 			);
-			console.log(props.market);
 			const { name, number, logo, order } = DeconstructRunner(props.runners[key], props.market.eventType.id);
 
 			const orderProps =

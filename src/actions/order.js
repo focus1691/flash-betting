@@ -25,7 +25,6 @@ export const placeOrder = order => {
     })
       .then(res => res.json())
       .then(async json => {
-        console.log(json)
 
         if (json.errorCode == "BET_ACTION_ERROR") return;
         const betId = json.instructionReports[0].betId;

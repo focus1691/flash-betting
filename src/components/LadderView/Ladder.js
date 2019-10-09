@@ -34,10 +34,6 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             listRef.current.scrollToItem(0)
         }
     }, [order])
-  
-   
-    console.log(listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : 0)
-  
 
   // remove adjacent LTP values
     const filteredLTPs = 

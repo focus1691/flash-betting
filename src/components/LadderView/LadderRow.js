@@ -7,7 +7,6 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
     
     const key = Object.keys(ladder)[index]
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
-    // console.log(data[index])
     return (
         <div key={ladder[key].odds}  onContextMenu = { (e) => { e.preventDefault(); return false } } class = 'tr' style = {style} >
           <div className={"candle-stick-col td"} colSpan={3}  >
