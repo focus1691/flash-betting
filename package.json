@@ -41,7 +41,7 @@
     "validator": "^11.1.0"
   },
   "scripts": {
-    "start": "set HTTPS=true&&react-scripts start",
+    "start": "export HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

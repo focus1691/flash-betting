@@ -1,6 +1,7 @@
 import React, {useState} from "react";
+import { iconForEvent } from "../../utils/EventIcons";
 
-export default ({ runner, runnerClick, setLadderDown }) => {
+export default ({ sportId, runner, runnerClick, setLadderDown, sportID }) => {
 
   return (
     <div className={"ladder-header"}>
@@ -13,13 +14,17 @@ export default ({ runner, runnerClick, setLadderDown }) => {
           <img
             className={"contender-image"}
             src={
-              runner.metadata.COLOURS_FILENAME
+              runner.metadata.COLOURS_FILENAME && parseInt(sportId) === 7
                 ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${runner.metadata.COLOURS_FILENAME}`
-                : `${window.location.origin}/images/baseball-player.png`
+                : iconForEvent(sportId)
             }
             alt={"Colours"}
             onClick={e => {
               runnerClick();
+            }}
+            onError={e => {
+              e.target.onerror = null;
+              e.target.src = iconForEvent(parseInt(sportId));
             }}
           />
         }

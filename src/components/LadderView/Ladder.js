@@ -79,6 +79,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             setLadderDown = {setLadderDown}
         >
             <LadderHeader
+                sportId={market.eventType.id}
                 runner={runners[id]}
                 runnerClick={e => {
                     onSelectRunner(runners[id]);

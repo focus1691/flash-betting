@@ -71,7 +71,8 @@ const Grid = props => {
 			const { atb, atl, batb, batl, ltp, tv, bg } = DeconstructLadder(
 				props.ladder[key]
 			);
-			const { name, number, logo, order } = DeconstructRunner(props.runners[key]);
+			console.log(props.market);
+			const { name, number, logo, order } = DeconstructRunner(props.runners[key], props.market.eventType.id);
 
 			const orderProps =
 				order.stakeLiability === 0
@@ -93,6 +94,7 @@ const Grid = props => {
 				<React.Fragment>
 					<tr>
 						<GridDetailCell
+							sportId={props.market.eventType.id}
 							runner={props.runners[key]}
 							name={name}
 							number={number}
