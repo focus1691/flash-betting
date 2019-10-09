@@ -18,6 +18,10 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    premiumSubscription: {
+        type: Date,
+        default: new Date()
+    },
     settings: Settings.schema,
     strategies: Strategies.schema,
     orders: [{ type: Orders.schema }]

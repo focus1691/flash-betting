@@ -32,7 +32,7 @@ class DatabaseHelper extends Database {
         return new Promise((res, rej) => {
             const transaction = new Transaction(json);
             transaction.save().then(result => {
-                return this.setPremium(user);
+                return this.setPremium(user, transaction.expiresIn);
             }).catch(err => console.log(err));
         });
     }
@@ -41,7 +41,7 @@ class DatabaseHelper extends Database {
             User.findOne({
                 email: user
             }).then(doc => {
-                res(doc.premiumMember);
+                res(doc.premiumSubscription);
             }).catch(err => rej(err));
         });
     }
@@ -67,13 +67,13 @@ class DatabaseHelper extends Database {
                 })
             });
     }
-    setPremium(user) {
-        console.log('set prem');
+    setPremium(user, expiresIn) {
+        
         return new Promise((res, rej) => {
             User.findOneAndUpdate(
                 { email: user },
-                {premiumMember: true},
-                { new: true, useFindAndModify: false},
+                { premiumSubscription: expiresIn },
+                { new: true, useFindAndModify: false },
                 (err, doc) => {
                     if (err) {
                         rej(404);

@@ -111,8 +111,8 @@ app.get("/api/get-account-details", (request, response) => {
 });
 
 app.get("/api/premium-status", (request, response) => {
-  database.getPremiumStatus(session.email).then(premiumStatus => {
-    response.json(premiumStatus);
+  database.getPremiumStatus(session.email).then(expiryDate => {
+    response.json(expiryDate);
   });
 });
 

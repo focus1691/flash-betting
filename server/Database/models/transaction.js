@@ -15,7 +15,8 @@ const transactionSchema = mongoose.Schema({
     payerID: String,
     paymentID: String,
     paymentToken: String,
-    returnUrl: String
+    returnUrl: String,
+    expiresIn: Date
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);

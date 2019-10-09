@@ -14,6 +14,7 @@ import { Helmet } from "react-helmet";
 import getQueryVariable from "../utils/GetQueryVariable";
 import { AddRunner } from "../utils/ladder/AddRunner";
 import { UpdateRunner } from "../utils/ladder/UpdateRunner";
+import { isPremiumActive } from "../utils/DateCalculator";
 import PremiumPopup from "./PremiumPopup";
 import { updateLayList } from "../actions/lay";
 import { updateBackList } from "../actions/back";
@@ -65,8 +66,10 @@ const App = props => {
      */
     fetch(`/api/premium-status`)
       .then(res => res.json())
-      .then(premiumStatus => {
-        props.setPremiumStatus(premiumStatus);
+      .then(expiryDate => {
+        let now = new Date();
+        const isActive = isPremiumActive(now, expiryDate);
+        props.setPremiumStatus(isActive);
       });
 
 
@@ -106,12 +109,6 @@ const App = props => {
               marketId: data.result[0].marketId
             });
           }
-        });
-
-      fetch(`/api/premium-status`)
-        .then(res => res.json())
-        .then(premiumStatus => {
-          props.setPremiumStatus(premiumStatus);
         });
 
       let loadedBackOrders = {};

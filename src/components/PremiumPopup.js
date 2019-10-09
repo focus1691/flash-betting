@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import PaypalExpressBtn from 'react-paypal-express-checkout';
+import { getDate30DaysAhead } from "../utils/DateCalculator";
 
 
 const useStyles = makeStyles(theme => ({
@@ -82,6 +83,7 @@ const FullScreenDialog = props => {
               // Congratulation, it came here means everything's fine!
               props.setPremiumStatus(true);
               props.openPremiumDialog(false);
+              payment.expiresIn = getDate30DaysAhead();
               return fetch("/paypal-transaction-complete", {
                 headers: {
                   'Accept': 'application/json',
