@@ -11,7 +11,7 @@ const Event = props => {
   const renderTitle = () => {
     if (props.marketOpen) return new Date(
       props.market.marketStartTime
-    ).toLocaleTimeString() + " " + props.market.marketName + " " + props.market.event.venue;
+    ).toLocaleTimeString() + " " + props.market.marketName + (props.market.event.venue ? ` ${props.market.event.venue}` : '');
     return "No Event Selected";
   }
 

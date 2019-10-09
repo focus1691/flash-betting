@@ -28,19 +28,20 @@ import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../u
 
 const App = props => {
 
-  /**
-   * Send the session key to the server to login to BetFair
-   */
-  let sessionKey = localStorage.getItem("sessionKey");
-  let email = localStorage.getItem("username");
-
-  fetch(
-    `/api/load-session?sessionKey=${encodeURIComponent(
-      sessionKey
-    )}&email=${encodeURIComponent(email)}`
-  );
-
   useEffect(() => {
+
+    /**
+     * Send the session key to the server to login to BetFair
+     */
+    let sessionKey = localStorage.getItem("sessionKey");
+    let email = localStorage.getItem("username");
+
+    fetch(
+      `/api/load-session?sessionKey=${encodeURIComponent(
+        sessionKey
+      )}&email=${encodeURIComponent(email)}`
+    );
+
     /**
      * Fetch settings from the database and load them into redux state
      * @return {Object} settings
