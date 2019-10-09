@@ -14,10 +14,6 @@ const userSchema = mongoose.Schema({
     expiresIn: Number,
     refreshToken: String,
     markets: Array,
-    premiumMember: {
-        type: Boolean,
-        default: false
-    },
     premiumSubscription: {
         type: Date,
         default: new Date()
