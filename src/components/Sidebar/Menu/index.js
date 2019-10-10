@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import UserMarkets from "./UserMarkets";
 import AllSports from "./AllSports";
 import UserBets from "./UserBets";
-import SearchResults from "./SearchResults";
 import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import AppBar from "@material-ui/core/AppBar";
@@ -88,14 +87,6 @@ const Menu = () => {
           >
             {createExpansionPanelSummary("Active Bets")}
             <UserBets />
-          </ExpansionPanel>
-
-          <ExpansionPanel
-            expanded={expanded === "search_results"}
-            onChange={handleChange("search_results")}
-          >
-            {createExpansionPanelSummary("Search Results")}
-            <SearchResults />
           </ExpansionPanel>
         </React.Fragment>
       );
