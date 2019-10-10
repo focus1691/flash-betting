@@ -33,6 +33,13 @@ export const loadRunners = runners => {
   };
 };
 
+export const loadNonRunners = nonRunners => {
+  return {
+    type: "LOAD_NON_RUNNERS",
+    payload: nonRunners
+  }
+};
+
 export const updateExcludedLadders = ladders => {
   return {
     type: "EXCLUDE_LADDERS",

@@ -1,10 +1,10 @@
 import React from "react";
 import GridDetailSuspCell from "./GridDetailSuspCell";
 
-export default ({ladder, runners, selectRunner}) => {
-    return Object.keys(ladder).map(key => {
+export default ({nonRunners, runners, selectRunner}) => {
+    return Object.keys(nonRunners).map(key => {
         return (
-            <tr>
+            <tr className={"grid-non-runner"}>
                 <GridDetailSuspCell
                     name={runners[key].runnerName}
                     number={runners[key].metadata.CLOTH_NUMBER}

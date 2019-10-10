@@ -14,6 +14,7 @@ import {
 	calcLiability,
 	colorForBack
 } from "../../utils/PriceCalculator";
+import NonRunners from "./NonRunner";
 import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 
@@ -64,6 +65,33 @@ const Grid = props => {
 				<span>{odds}</span>
 				<span>{matched}</span>
 			</td>
+		);
+	};
+
+	const renderNonRunners = () => {
+		return (
+			<NonRunners
+				nonRunners={props.nonRunners}
+				runners={props.runners}
+				selectRunner={runner => {
+					props.onSelectRunner(runner);
+				}}
+			/>
+		);
+	};
+
+	const test = () => {
+		return (
+			<React.Fragment>
+				{renderTableData()}
+				<NonRunners
+					nonRunners={props.nonRunners}
+					runners={props.runners}
+					selectRunner={runner => {
+						props.onSelectRunner(runner);
+					}}
+				/>
+			</React.Fragment>
 		);
 	};
 
@@ -212,7 +240,7 @@ const Grid = props => {
 						? props.marketStatus === "SUSPENDED"
 							? renderSuspended()
 							: props.marketStatus === "OPEN" || props.marketStatus === "RUNNING"
-								? renderTableData()
+								? test()
 								: null
 						: null}
 				</tbody>
@@ -233,6 +261,7 @@ const mapStateToProps = state => {
 		selection: state.market.runnerSelection,
 		ladder: state.market.ladder,
 		runners: state.market.runners,
+		nonRunners: state.market.nonRunners,
 		stakeBtns: state.settings.stakeBtns,
 		layBtns: state.settings.layBtns,
 		countryCode: state.account.countryCode,

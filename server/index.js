@@ -288,6 +288,32 @@ app.get("/api/get-market-info", (request, response) => {
 	);
 });
 
+// test
+app.post("/api/todays-card", (request, response) => {
+	session.listMarketCatalogue({
+		filter: {
+			"eventTypeIds": [
+				7
+			],
+			"marketCountries": [
+				"GB"
+			],
+			"marketTypeCodes": [
+				"WIN"
+			],
+			"marketStartTime": {
+				"from": new Date().toJSON(),
+				"to": new Date()
+			}
+		},
+		"sort": "FIRST_TO_START",
+		"maxResults": "1000"
+	}, function (err, res) {
+		console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
+		response.json(res.result);
+	});
+});
+
 app.post("/api/place-order", (request, response) => {
 
 	session.placeOrders(

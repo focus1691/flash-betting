@@ -224,8 +224,6 @@ const App = props => {
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
-
-
     props.socket.on("mcm", async data => {
 
       // Update the market status
@@ -235,12 +233,7 @@ const App = props => {
       }
 
       var ladders = Object.assign({}, props.ladders);
-
-      if (data.rc === undefined) {
-        return
-      }
-
-      const length = data.rc.length;
+      var nonRunners = Object.assign({}, props.nonRunners);
 
       let adjustedStopLossList = Object.assign({}, props.stopLossList)
       const adjustedBackList = {}
@@ -249,50 +242,59 @@ const App = props => {
 
       let stopLossOrdersToRemove = [];
 
-      for (var i = 0; i < length; i++) {
-        let key = [data.rc[i].id];
-        if (key in props.ladders) {
-
-
+      data.rc.map(async rc => {
+        if (rc.id in props.ladders) {
           // Runner found so we update our object with the raw data
-          ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
+          ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
 
           const marketId = getQueryVariable("marketId");
 
           // Back and Lay
           if (props.marketStatus === "RUNNING") {
-            const adjustedBackOrderArray = await checkTimeListAfter(props.backList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
+            const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
             if (adjustedBackOrderArray.length > 0) {
-              adjustedBackList[key] = adjustedBackOrderArray;
+              adjustedBackList[rc.id] = adjustedBackOrderArray;
             }
 
-            const adjustedLayOrderArray = await checkTimeListAfter(props.layList[key], key, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets)
+            const adjustedLayOrderArray = await checkTimeListAfter(props.layList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets)
             if (adjustedLayOrderArray.length > 0) {
-              adjustedLayList[key] = adjustedLayOrderArray;
+              adjustedLayList[rc.id] = adjustedLayOrderArray;
             }
           }
 
           // stop Entry
 
-          newStopEntryList = stopEntryListChange(props.stopEntryList, key, data.rc[i].ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
+          newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, rc.ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
 
           // We increment and check the stoplosses
-          if (props.stopLossList[key] !== undefined) {
+          if (props.stopLossList[rc.id] !== undefined) {
             // if it's trailing and the highest LTP went up, then we add a tickoffset
-            const maxLTP = props.ladders[key].ltp.sort((a, b) => b - a)[0];
-            let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, key, data.rc[i].ltp, maxLTP))
+            const maxLTP = props.ladders[rc.id].ltp.sort((a, b) => b - a)[0];
+            let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, rc.ltp, maxLTP))
 
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
-            const stopLossMatched = stopLossCheck(adjustedStopLoss, key, data.rc[i].ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)
+            const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)
             adjustedStopLossList = stopLossMatched.adjustedStopLossList;
             stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
           }
 
         } else {
           // Runner not found so we create the new object with the raw data
-          ladders[key] = AddRunner(key, data.rc[i]);
-
+          ladders[rc.id] = AddRunner(rc.id, rc);
         }
+      });
+
+      if (data.marketDefinition) {
+        // Event status? In Play?
+        props.onMarketStatusChange(data.marketDefinition.status);
+        props.setInPlay(data.marketDefinition.inPlay);
+
+        data.marketDefinition.runners.map(runner => {
+          if (runner.status === "REMOVED" && runner.id in ladders) {
+            nonRunners[runner.id] = ladders[runner.id];
+            delete ladders[runner.id];
+          }
+        });
       }
 
       if (stopLossOrdersToRemove.length > 0) {
@@ -324,6 +326,7 @@ const App = props => {
       props.socket.off("mcm");
 
       props.onReceiverLadders(ladders);
+      props.onReceiveNonRunners(nonRunners);
       props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length))
     });
 
@@ -453,6 +456,7 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
     ladders: state.market.ladder,
+    nonRunners: state.market.nonRunners,
     premiumMember: state.settings.premiumMember,
     premiumPopup: state.settings.premiumPopupOpen,
     stopLossList: state.stopLoss.list,
@@ -484,6 +488,7 @@ const mapDispatchToProps = dispatch => {
     onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
     onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),
     onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders)),
+    onReceiveNonRunners: nonRunners => dispatch(actions2.loadNonRunners(nonRunners)),
     onChangeExcludedLadders: excludedLadders => dispatch(actions2.updateExcludedLadders(excludedLadders)),
     onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen)),
     setInPlay: inPlay => dispatch(actions2.setInPlay(inPlay)),

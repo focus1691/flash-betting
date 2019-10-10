@@ -4,6 +4,7 @@ const initialState = {
   status: 'OPEN',
   currentMarket: {},
   runnerSelection: 0,
+  nonRunners: {},
   runners: {},
   ladder: {},
   excludedLadders: [], 
@@ -22,6 +23,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, currentMarket: action.payload };
     case "LOAD_LADDER":
       return { ...state, marketOpen: true, ladder: action.payload };
+    case "LOAD_NON_RUNNERS":
+      return { ...state, nonRunners: action.payload };
     case "LOAD_RUNNERS":
       return { ...state, runners: action.payload };
     case "EXCLUDE_LADDERS":
