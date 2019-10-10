@@ -26,9 +26,6 @@ const AllSports = props => {
       });
   }, []);
 
-  useEffect(() => {
-  }, [props.sports.currentSport]);
-
   const handleClick = async (
     result,
     currentObjectSelector,
