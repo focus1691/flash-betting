@@ -25,7 +25,6 @@ app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
 const database = require("./Database/helper");
-const PayPal = require("./PayPal");
 
 // Load the session key from localStorage into the database and session object
 app.get("/api/load-session", (request, response) => {
