@@ -416,7 +416,7 @@ const App = props => {
               {`${new Date(
                 props.market.marketStartTime
               ).toLocaleTimeString()} ${props.market.marketName}  ${
-                props.market.event.venue
+                props.market.event.venue || ""
                 }`}
             </title>
           </Helmet>
