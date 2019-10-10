@@ -144,3 +144,10 @@ export const updateLayBtn = data => {
         payload: data
     }
 };
+
+export const setStakeInOneClick = stake => {
+    return {
+        type: "SET_STAKE_IN_ONE_CLICK_MODE",
+        payload: stake
+    }
+};

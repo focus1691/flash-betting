@@ -38,7 +38,8 @@ const initialState = {
     unmatchedBetsHedge: false
   },
   stakeBtns: [2, 4, 6, 8, 10, 12, 14],
-  layBtns: [2.5, 5, 7.5, 10, 12.5, 15, 17.5]
+  layBtns: [2.5, 5, 7.5, 10, 12.5, 15, 17.5],
+  stake: 8
 };
 
 const reducer = (state = initialState, action) => {
@@ -79,6 +80,8 @@ const reducer = (state = initialState, action) => {
       return update(state, { stakeBtns: { [action.payload.id]: { $set: action.payload.value } } });
     case "UPDATE_LAY_BUTTON":
       return update(state, { layBtns: { [action.payload.id]: { $set: action.payload.value } } });
+    case "SET_STAKE_IN_ONE_CLICK_MODE":
+      return { ...state, stake: action.payload };
     default:
       return state;
   }

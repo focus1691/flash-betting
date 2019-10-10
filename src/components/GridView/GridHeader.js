@@ -2,6 +2,7 @@ import React from "react";
 import { renderRaceStatus } from "./RaceStatus";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
 import { formatCurrency } from "./../../utils/NumberFormat";
+import { getOrderBtnBG } from "../../utils/ColorManipulator";
 
 export default ({
   market,
@@ -12,7 +13,11 @@ export default ({
   country,
   oneClickRef,
   oneClickOn,
-  toggleOneClick
+  toggleOneClick,
+  stake,
+  setStake,
+  stakeBtns,
+  layBtns
 }) => (
     <React.Fragment>
       <tr id="grid-header">
@@ -53,24 +58,24 @@ export default ({
             <React.Fragment>
               <div id="one-click-stake">
                 <button>Stake</button>
-                <button>2</button>
-                <button>4</button>
-                <button>6</button>
-                <button>8</button>
-                <button>10</button>
-                <button>12</button>
-                <button>14</button>
+                {stakeBtns.map(price => (
+                  <button
+                    style={{background: getOrderBtnBG("STAKE", price, stake, -70)}}
+                    onClick={e => setStake(price)}>
+                    {price}
+                  </button>
+                ))}
               </div>
               <br />
               <div id="one-click-liability">
                 <button>Liability</button>
-                <button>5</button>
-                <button>7.50</button>
-                <button>10</button>
-                <button>12.50</button>
-                <button>15</button>
-                <button>17.50</button>
-                <button>20</button>
+                {layBtns.map(price => (
+                  <button
+                  style={{background: getOrderBtnBG("LAY", price, stake, -70)}}
+                  onClick={e => setStake(price)}>
+                  {price}
+                </button>
+                ))}
               </div>
             </React.Fragment>
           ) : null}

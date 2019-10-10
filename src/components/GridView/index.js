@@ -2,6 +2,7 @@ import React, { useState, createRef } from "react";
 import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
+import { setStakeInOneClick } from "../../actions/settings";
 import GridHeader from "./GridHeader";
 import GridDetailCell from "./GridDetailCell";
 import EmptyCell from "./EmptyCell";
@@ -200,6 +201,12 @@ const Grid = props => {
 							const node = oneClickRef.current;
 							props.oneClickOn ? node.blur() : node.focus();
 						}}
+						stake={props.oneClickStake}
+						setStake={stake => {
+							props.setStakeInOneClick(stake);
+						}}
+						stakeBtns={props.stakeBtns}
+						layBtns={props.layBtns}
 					/>
 					{props.marketOpen
 						? props.marketStatus === "SUSPENDED"
@@ -217,6 +224,7 @@ const Grid = props => {
 const mapStateToProps = state => {
 	return {
 		oneClickOn: state.market.oneClickOn,
+		oneClickStake: state.settings.stake,
 		currentEvent: state.sports.currentSport.currentEvent,
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
@@ -246,7 +254,8 @@ const mapDispatchToProps = dispatch => {
 		onToggleStakeAndLiability: value =>
 			dispatch(actions.toggleStakeAndLiability(value)),
 		onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value)),
-		onToggleOneClick: active => dispatch(actions.toggleOneClick(active))
+		onToggleOneClick: active => dispatch(actions.toggleOneClick(active)),
+		setStakeInOneClick: stake => dispatch(setStakeInOneClick(stake))
 	};
 };
 

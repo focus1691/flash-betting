@@ -56,10 +56,6 @@ const AllSports = props => {
       newSport[currentObjectSelector] = undefined;
       newSport[currentObjectArraySelector] = undefined;
 
-      console.log(props.sports.currentSport);
-      console.log(newSport[currentObjectArraySelector]);
-      console.log(newSport[currentObjectSelector]);
-
       props.onUpdateCurrentSport(newSport);
       return;
     }
