@@ -28,6 +28,7 @@ import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../u
 
 const App = props => {
 
+  useEffect(() => {
     /**
      * Send the session key to the server to login to BetFair
      */
@@ -39,6 +40,7 @@ const App = props => {
         sessionKey
       )}&email=${encodeURIComponent(email)}`
     );
+  });
 
   useEffect(() => {
 

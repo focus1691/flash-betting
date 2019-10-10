@@ -12,10 +12,11 @@ const renderContent = (text, img, alt) => {
 };
 
 const renderRaceStatus = (marketOpen, status, inPlay) => {
-    console.log(inPlay);
 
     if (!marketOpen) return null;
-    if (inPlay) return renderContent("Going in-play", "/icons/checked.png", "Active");
+    if (inPlay && status !== "CLOSED") {
+        return renderContent("Going in-play", "/icons/checked.png", "Active");
+    }
 
     switch (status) {
         case "OPEN":
