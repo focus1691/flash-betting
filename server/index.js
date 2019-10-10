@@ -183,7 +183,6 @@ app.get("/api/get-all-sports", (request, response) => {
       filter: {}
     },
     (err, res) => {
-      console.log(res.result);
       response.json(res.result);
     }
   );
