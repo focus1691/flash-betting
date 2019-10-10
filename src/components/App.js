@@ -28,19 +28,17 @@ import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../u
 
 const App = props => {
 
-  useEffect(() => {
-    /**
-     * Send the session key to the server to login to BetFair
-     */
-    let sessionKey = localStorage.getItem("sessionKey");
-    let email = localStorage.getItem("username");
+  /**
+   * Send the session key to the server to login to BetFair
+   */
+  let sessionKey = localStorage.getItem("sessionKey");
+  let email = localStorage.getItem("username");
 
-    fetch(
-      `/api/load-session?sessionKey=${encodeURIComponent(
-        sessionKey
-      )}&email=${encodeURIComponent(email)}`
-    );
-  });
+  fetch(
+    `/api/load-session?sessionKey=${encodeURIComponent(
+      sessionKey
+    )}&email=${encodeURIComponent(email)}`
+  );
 
   useEffect(() => {
 
@@ -229,7 +227,7 @@ const App = props => {
 
 
     props.socket.on("mcm", async data => {
-      
+
       // Update the market status
       if (data.marketDefinition) {
         props.onMarketStatusChange(data.marketDefinition.status);
@@ -237,11 +235,11 @@ const App = props => {
       }
 
       var ladders = Object.assign({}, props.ladders);
-      
+
       if (data.rc === undefined) {
         return
       }
-      
+
       const length = data.rc.length;
 
       let adjustedStopLossList = Object.assign({}, props.stopLossList)
@@ -254,7 +252,7 @@ const App = props => {
       for (var i = 0; i < length; i++) {
         let key = [data.rc[i].id];
         if (key in props.ladders) {
-          
+
 
           // Runner found so we update our object with the raw data
           ladders[key] = UpdateRunner(props.ladders[key], data.rc[i]);
@@ -283,7 +281,7 @@ const App = props => {
             // if it's trailing and the highest LTP went up, then we add a tickoffset
             const maxLTP = props.ladders[key].ltp.sort((a, b) => b - a)[0];
             let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, key, data.rc[i].ltp, maxLTP))
-            
+
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
             const stopLossMatched = stopLossCheck(adjustedStopLoss, key, data.rc[i].ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)
             adjustedStopLossList = stopLossMatched.adjustedStopLossList;
@@ -350,7 +348,7 @@ const App = props => {
               newMatchedBets[order.id] = newUnmatchedBets[order.id];
               delete newUnmatchedBets[order.id];
             }
-            
+
 
             checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
 

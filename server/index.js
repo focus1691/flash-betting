@@ -38,7 +38,7 @@ app.get("/api/load-session", (request, response) => {
 app.get("/api/get-subscription-status", (request, response) => {
   session.isAccountSubscribedToWebApp(
     {
-      vendorId: "74333"
+      vendorId: process.env.APP_ID
     },
     (err, res) => {
       response.json({
