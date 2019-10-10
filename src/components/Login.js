@@ -58,19 +58,6 @@ const Login = props => {
 
   props.onLogin(false);
 
-  useEffect(() => {
-    if (!!localStorage.getItem("sessionKey")) {
-      let sessionKey = localStorage.getItem("sessionKey");
-      let email = localStorage.getItem("username");
-
-      fetch(
-        `/api/load-session?sessionKey=${encodeURIComponent(
-          sessionKey
-        )}&email=${encodeURIComponent(email)}`
-      );
-    }
-  });
-
   const handleSubmit = e => {
     fetch(`/api/login?user=${username}&pass=${password}`)
       .then(res => res.json())
