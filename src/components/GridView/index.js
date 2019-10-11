@@ -68,22 +68,10 @@ const Grid = props => {
 		);
 	};
 
-	const renderNonRunners = () => {
-		return (
-			<NonRunners
-				nonRunners={props.nonRunners}
-				runners={props.runners}
-				selectRunner={runner => {
-					props.onSelectRunner(runner);
-				}}
-			/>
-		);
-	};
-
-	const test = () => {
+	const renderTableData = () => {
 		return (
 			<React.Fragment>
-				{renderTableData()}
+				{renderRunners()}
 				<NonRunners
 					nonRunners={props.nonRunners}
 					runners={props.runners}
@@ -95,7 +83,7 @@ const Grid = props => {
 		);
 	};
 
-	const renderTableData = () => {
+	const renderRunners = () => {
 		return Object.keys(props.ladder).map(key => {
 			const { atb, atl, batb, batl, ltp, tv, bg } = DeconstructLadder(
 				props.ladder[key]
@@ -240,7 +228,7 @@ const Grid = props => {
 						? props.marketStatus === "SUSPENDED"
 							? renderSuspended()
 							: props.marketStatus === "OPEN" || props.marketStatus === "RUNNING"
-								? test()
+								? renderTableData()
 								: null
 						: null}
 				</tbody>
