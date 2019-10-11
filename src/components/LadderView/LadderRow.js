@@ -3,7 +3,7 @@ import LadderOrderCell from './LadderOrderCell'
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findStopPosition, findStopPositionForPercent } from "../../utils/TradingStategy/StopLoss";
 
-export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList }, style, index}) => {
+export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize }, style, index}) => {
     
     const key = Object.keys(ladder)[index]
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
@@ -19,7 +19,21 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
             }
             
           </div>
-          <div className = 'td'>{ladder[key].backProfit}</div>
+          <div 
+            className = 'td'
+            style = {{color: `${ladder[key].backProfit >= 0 ? "green" : 'red'}`}}
+            onClick = {() => {
+              const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
+
+              placeOrder({
+                side: "BACK",
+                price: formatPrice(ladder[key].odds),
+                selectionId: selectionId,
+                customerStrategyRef: referenceStrategyId,
+                size: hedgeSize + parseFloat(ladder[key].backProfit)
+              })
+            }}
+          >{ladder[key].backProfit}</div>
           <LadderOrderCell 
             side = {"BACK"}
             cell = {ladder[key]}
@@ -31,6 +45,7 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
                            : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
+            hedgeSize = {hedgeSize}
           />
           <div style = {{
             background: key == ltp ? 'yellow' : '#BBBBBB'
@@ -46,8 +61,23 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
                : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
+            hedgeSize = {hedgeSize}
           />
-          <div className = 'td'>{ladder[key].layProfit}</div>
+          <div 
+            className = 'td'
+            style = {{color: `${ladder[key].layProfit >= 0 ? "green" : 'red'}`}}
+            onClick = {() => {
+              const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
+
+              placeOrder({
+                side: "LAY",
+                price: formatPrice(ladder[key].odds),
+                selectionId: selectionId,
+                customerStrategyRef: referenceStrategyId,
+                size: hedgeSize + parseFloat(ladder[key].layProfit)
+              })
+            }}
+          >{ladder[key].layProfit}</div>
         </div>
     )
 }

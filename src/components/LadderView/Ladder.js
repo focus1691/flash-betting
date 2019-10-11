@@ -8,8 +8,9 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
+import { calcHedgedPL, calcLiability } from "../../utils/TradingStategy/HedingCalculator";
 
-const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList }) => {
+const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -27,6 +28,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                 setlistRefSet(true)
             } 
         }, 1000)
+        
     }, [listRef]);
 
     useEffect(() => {
@@ -60,6 +62,26 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
         }
     })
 
+
+    const fullLadderWithProfit = {};
+    Object.values(ladder[id].fullLadder).map(item => {
+        // if lay, flip
+        fullLadderWithProfit[item.odds] = {...item}
+
+        if (selectionMatchedBets !== undefined) {
+            const profitArray = selectionMatchedBets.map(bet => calcHedgedPL(parseFloat(bet.size), calcLiability(bet.side === "BACK" ? "LAY" : "BACK", parseFloat(bet.size), parseFloat(bet.price)), parseFloat(item.odds)));
+            const profit = (-1 * profitArray.reduce((a, b) => a + b, 0)).toFixed(2);
+            
+            fullLadderWithProfit[item.odds]['backProfit'] = profit
+        }
+    })
+    const hedgeSize = selectionMatchedBets !== undefined ?
+        selectionMatchedBets.reduce((a, b) => {
+            // console.log(a, b)
+            return a + b.size
+        }, 0) : 0
+    
+    
     return (
         <LadderContainer
             isReferenceSet = {isReferenceSet}
@@ -103,20 +125,21 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                             width={width}
                             ref = {listRef}
                             style = {{paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px`}}
+                            hedgeSize = {hedgeSize}
                             itemData = {{
-                                ladder: ladder[id].fullLadder,
+                                ladder: fullLadderWithProfit,
                                 selectionId: id,
                                 placeOrder: data => {
                                     onPlaceOrder({
                                         marketId: market.marketId,
                                         side: data.side,
-                                        size: 2,
+                                        size: data.size,
                                         price: data.price,
                                         selectionId: data.selectionId,
                                         customerStrategyRef: data.customerStrategyRef,
                                         orderCompleteCallBack: data.orderCompleteCallBack,
-                                        unmatchedBets: data.unmatchedBets,
-                                        matchedBets: data.matchedBets
+                                        unmatchedBets: unmatchedBets,
+                                        matchedBets: matchedBets,
                                     });
                                 },
                                 ltp: ladder[id].ltp[0],
@@ -127,14 +150,15 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                                         marketId: market.marketId,
                                         selectionId: parseInt(id),
                                         side: data.side,
-                                        size: 2,
+                                        size: data.size,
                                         price: data.price, 
                                         trailing: false,
                                         customStopLoss: data.custom, 
                                         units: data.units,
                                         rfs: data.rfs,
                                         assignedIsOrderMatched: data.assignedIsOrderMatched,
-                                        betId: data.betId
+                                        betId: data.betId,
+                                        hedged: data.hedged
                                     })
                                 },
                             }}

@@ -25,6 +25,8 @@ import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/OCMHelp
 import Draggable from "react-draggable";
 import DraggableGraph from "./DraggableGraph";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/MCMHelper";
+import { calcHedgedPL } from "../utils/TradingStategy/HedingCalculator";
+import { calcLiability } from "../utils/PriceCalculator";
 
 const App = props => {
 
@@ -129,6 +131,7 @@ const App = props => {
           const currentOrdersObject = {};
           currentOrders.map(item => {
             currentOrdersObject[item.betId] = item;
+            currentOrdersObject[item.betId].price = item.averagePriceMatched;
           })
 
           orders.map(async order => {
@@ -180,7 +183,7 @@ const App = props => {
               strategy: "None",
               marketId: order.marketId,
               side: order.side,
-              price: order.priceSize.price,
+              price: order.price,
               size: order.priceSize.size,
               selectionId: order.selectionId,
               rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
@@ -271,6 +274,21 @@ const App = props => {
             // if it's trailing and the highest LTP went up, then we add a tickoffset
             const maxLTP = props.ladders[rc.id].ltp.sort((a, b) => b - a)[0];
             let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, rc.ltp, maxLTP))
+
+            // if hedged, get size (price + hedged profit/loss)
+            if (adjustedStopLoss.hedged) {
+              const newMatchedBets = Object.values(props.bets.matched).filter(bet => bet.selectionId == adjustedStopLoss.selectionId);
+              
+              const combinedSize = 
+              newMatchedBets.reduce((a, b) => {
+                  // console.log(a, b)
+                  return a + b.size
+              }, 0)
+
+              const profitArray = newMatchedBets.map(bet => calcHedgedPL(parseFloat(bet.size), calcLiability(bet.side === "BACK" ? "LAY" : "BACK", parseFloat(bet.size), parseFloat(bet.price)), parseFloat(adjustedStopLoss.price)));
+              const profit = (-1 * profitArray.reduce((a, b) => a + b, 0));
+              adjustedStopLoss.size = combinedSize + profit
+            }
 
             // if it doesn't have a reference or the order has been matched (STOP LOSS)
             const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)

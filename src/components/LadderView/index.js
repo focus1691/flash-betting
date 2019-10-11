@@ -6,7 +6,7 @@ import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
 const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
-                  stopLossOffset, stopLossUnits, stopLossTrailing, stopLossHedged , onChangeStopLossList}) => {
+                  stopLossOffset, stopLossTrailing, stopLossHedged , onChangeStopLossList, bets}) => {
 
   useEffect(() => {
     if (Object.keys(ladderOrder).length === 0 && Object.keys(ladder).length > 0) {
@@ -20,7 +20,16 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
         onChangeLadderOrder(newOrderList);
     }
   }, [ladder])
-  
+
+  const newMatchedBets = {}; //selectionId: [{}]
+  Object.values(bets.matched).map(bet => {
+    if (newMatchedBets[bet.selectionId] === undefined) {
+      newMatchedBets[bet.selectionId] = [bet];
+    } else {
+      newMatchedBets[bet.selectionId] = newMatchedBets[bet.selectionId].concat(bet);
+    }
+  });
+
   return (
     <div className={"ladder-container"}
       onContextMenu = { (e) => { e.preventDefault(); return false } }
@@ -39,7 +48,10 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             key = {value}
             order = {index}
             ladderOrderList = {ladderOrder}
-            stopLoss = { stopLossList[value] }
+            stopLoss = {stopLossList[value]}
+            selectionMatchedBets = {newMatchedBets[value]}
+            unmatchedBets = {bets.unmatched}
+            matchedBets = {bets.matched}
             changeStopLossList = {async newStopLoss => {
 
               const adjustedNewStopLoss = {...newStopLoss, 
@@ -94,7 +106,6 @@ const mapStateToProps = state => {
     stopLossUnits: state.stopLoss.ticks,
     stopLossTrailing: state.stopLoss.trailing,
     stopLossHedged: state.stopLoss.hedged,
-
   };
 };
 

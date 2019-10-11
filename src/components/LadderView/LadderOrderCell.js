@@ -7,9 +7,9 @@ import crypto from 'crypto'
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 
 const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, 
-                          isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList,
-                          onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger,
-                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList }) => {
+                          isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged,
+                          onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged,
+                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize }) => {
 
     
     return (
@@ -31,6 +31,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                 customerStrategyRef: referenceStrategyId,
                 unmatchedBets: unmatchedBets,
                 matchedBets: matchedBets, 
+                size: 2,
                 orderCompleteCallBack: async betId => {
 
                   if (stopLossSelected && stopLossData === undefined) {
@@ -41,7 +42,9 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                       units: stopLossUnits,
                       rfs: referenceStrategyId,
                       assignedIsOrderMatched: false,
-                      betId: betId
+                      size: 2,
+                      betId: betId,
+                      hedged: stopLossHedged
                     })
                   } else if (tickOffsetSelected) {
                     const newTickOffset = Object.assign({}, tickOffsetList)
@@ -50,11 +53,12 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                       marketId: marketId, 
                       selectionId: selectionId, 
                       price: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
-                      size: 2, // TODO WE NEED TO PUT A SIZE!
+                      size: tickOffsetHedged ? hedgeSize : 2, // TODO WE NEED TO PUT A SIZE!
                       side: side, 
                       percentageTrigger: tickOffsetTrigger,
                       rfs: referenceStrategyId,
-                      betId: betId
+                      betId: betId,
+                      hedged: tickOffsetHedged
                     };
     
                     newTickOffset[referenceStrategyId] = addedOrder
@@ -118,7 +122,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
               return false;
             }}
           >
-            { isStopLoss ? stopLossData.size : cell[`${side.toLowerCase()}Matched`] }
+            { isStopLoss ? stopLossData.hedged ? "H" : stopLossData.size : cell[`${side.toLowerCase()}Matched`] }
         </div>
     )
 }
@@ -131,11 +135,13 @@ const mapStateToProps = state => {
     stopLossSelected: state.stopLoss.selected,
     stopLossList: state.stopLoss.list,
     stopLossUnits: state.stopLoss.units,
+    stopLossHedged: state.stopLoss.hedged, 
     tickOffsetList: state.tickOffset.list,
     tickOffsetSelected: state.tickOffset.selected,
     tickOffsetTicks: state.tickOffset.ticks,
     tickOffsetUnits: state.tickOffset.units,
     tickOffsetTrigger: state.tickOffset.percentTrigger,
+    tickOffsetHedged: state.tickOffset.hedged, 
     fillOrKillSelected: state.fillOrKill.selected,
     fillOrKillSeconds: state.fillOrKill.seconds,
     fillOrKillList: state.fillOrKill.list,

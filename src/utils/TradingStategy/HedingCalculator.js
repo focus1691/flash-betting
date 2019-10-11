@@ -35,7 +35,7 @@ const calcHedgedBetAmount = (stake, liability, exitPrice) => {
  * @return {number} The Profit or loss.
  */
 const calcHedgedPL = (stake, liability, exitPrice) => {
-    return parseFloat((calcHedgedBetAmount(stake, liability, exitPrice) - liability).toFixed(2));
+    return parseFloat(stake - (calcHedgedBetAmount(stake, liability, exitPrice)).toFixed(2));
 };
 
 export { calcLiability, calcHedgedBetAmount, calcHedgedPL };
