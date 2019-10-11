@@ -1,4 +1,14 @@
 
+/**
+ * This function is used to calculate the total of a bet.
+ * @param {string} price - The side i.e. BACK or LAY.
+ * @param {number} stake - The stake.
+ * @return {number} The bet total.
+ */
+const calcBetTotal = (price, stake) => {
+    return price * stake;
+};
+
 
 /**
  * This function is used to calculate liability of a bet.
@@ -38,4 +48,15 @@ const calcHedgedPL = (stake, liability, exitPrice) => {
     return parseFloat(stake - (calcHedgedBetAmount(stake, liability, exitPrice)).toFixed(2));
 };
 
-export { calcLiability, calcHedgedBetAmount, calcHedgedPL };
+/**
+ * Another function to calculate the profit/loss from a hedged position using the back price instead of liability.
+ * @param {string} stake - The amount the bet was placed at.
+ * @param {number} backPrice - The odds the bet was placed at.
+ * @param {string} exitPrice - The odds the bet will be exited at.
+ * @return {number} The Profit or loss.
+ */
+const calcHedgedPL2 = (stake, backPrice, exitPrice) => {
+    return parseFloat( ((stake * backPrice ) / exitPrice - stake).toFixed(2));
+};
+
+export { calcLiability, calcHedgedBetAmount, calcHedgedPL, calcHedgedPL2 };
