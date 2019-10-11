@@ -30,7 +30,7 @@ const calcPercentDifference = (size, matchedPrice, currentPrice) => {
 };
 
 const calcBackProfit = (stake, price, side) => {
-  const profit = stake * price - stake;
+  const profit = parseFloat((stake * price - stake).toFixed(2));
   if (side === 0) return profit || 0;
   else if (side === 1) return -profit || 0;
 };
