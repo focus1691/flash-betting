@@ -137,7 +137,6 @@
 
 .menu-bets-heading {
 	background: #ff6600;
-
 }
 
 .menu-bets-heading > td {
@@ -165,4 +164,9 @@
 
 #pl-style {
 	font-weight: bold;
+}
+
+#menu-unmatched-bet td, #menu-matched-bet td {
+	border-bottom: 1px solid #fff;
+	font-size: small;
 }

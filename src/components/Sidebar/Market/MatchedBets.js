@@ -51,7 +51,7 @@ const MatchedBets = props => {
                         return (
                           <React.Fragment>
                               <tr
-                              id="menu-unmatched-bet"
+                              id="menu-matched-bet"
                               style={{
                                 backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
                               }}
@@ -62,7 +62,7 @@ const MatchedBets = props => {
                                 </button>
                               </td>
 
-                              <td>{order.price}</td>
+                              <td>{(parseFloat(order.price).toFixed(2))}</td>
                               <td>{order.size}</td>
                               <td
                                 id="pl-style"

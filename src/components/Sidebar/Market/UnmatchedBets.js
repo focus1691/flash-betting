@@ -155,7 +155,7 @@ const UnmatchedBets = props => {
                               >
                                 {/* <img src = {require('./CancelIcon.svg')} alt="" style = {{height: "100%", width: "auto"}} /> In Progress */}
                               </button>
-                              <td>{order.price}</td>
+                              <td>{(parseFloat(order.price).toFixed(2))}</td>
                               <td>{order.size}</td>
                               <td
                                 id="pl-style"
