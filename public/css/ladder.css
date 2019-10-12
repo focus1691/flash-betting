@@ -134,10 +134,9 @@
 
 .order-row {
 	bottom: 0;
-	height: 15%;
+	height: 10%;
 	background: #fff;
 	display: block;
-	overflow-y: scroll;
 	width: 100%;
 	float: left;
 }
@@ -147,11 +146,8 @@
 }
 
 .order-row td:nth-child(2) {
-	top: 0;
-	position: absolute;
-	background: orange;
-	height: 100%;
-	width: 20%;
+	display: block;
+	width: 100%;
 }
 
 .order-row table {
@@ -170,9 +166,10 @@
 }
 
 .order-row button {
+	position: sticky;
 	display: block;
 	width: 100%;
-	height: 33.33%;
+	height: 100%;
 	background-color: Transparent;
 	background-repeat: no-repeat;
 	border: 1px solid;
@@ -200,6 +197,7 @@
 	border-spacing: 0;
 	border-collapse: collapse;
 	white-space: nowrap;
+	overflow-y: scroll;
 }
 
 .lay-table tr {
@@ -213,14 +211,14 @@
 .lay-table td {
 	width: 30px;
 	border-bottom: 1px solid;
-
+	font-size: x-small;
 	text-align: center;
 	overflow: scroll;
 }
 
 .lay-table tr:nth-child(odd) {
 	width: 100%;
-	background: #FCC9D3;;
+	background: #FCC9D3;
 }
 
 /** PERCENTAGE ROW **/
