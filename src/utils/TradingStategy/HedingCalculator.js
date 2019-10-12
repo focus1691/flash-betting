@@ -26,6 +26,10 @@ const calcLiability = (side, backStake, layOdds) => {
     return parseFloat(backStake * (layOdds - 1).toFixed(2));
 };
 
+const calcBackBet = (odds, stake) => {
+    return stake * odds - stake;
+}
+
 const calcLayBet = (odds, stake) => {
     const backersStake = parseFloat((stake / odds).toFixed(2));
     return {
