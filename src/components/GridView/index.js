@@ -25,7 +25,8 @@ const Grid = props => {
 	const oneClickRef = createRef();
 
 	const renderRow = (betOdds, bestOdds, key, backLay) => {
-		if (!betOdds) return Array(4).fill(<EmptyCell />);
+		// Fill all empty cells if no data found
+		if (!betOdds) return Array(5).fill(<EmptyCell />);
 
 		const rows = [];
 
@@ -33,6 +34,8 @@ const Grid = props => {
 			rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
 			if (i === 4) break;
 		}
+
+		// Fill the remaining columns with empty cells
 		while (rows.length < 5) {
 			rows.push(<EmptyCell />);
 		}
