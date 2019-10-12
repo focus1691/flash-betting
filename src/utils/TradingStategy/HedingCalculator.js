@@ -26,6 +26,14 @@ const calcLiability = (side, backStake, layOdds) => {
     return parseFloat(backStake * (layOdds - 1).toFixed(2));
 };
 
+const calcLayBet = (odds, stake) => {
+    const backersStake = parseFloat((stake / odds).toFixed(2));
+    return {
+      backersStake: backersStake,
+      liability: backersStake * odds - backersStake
+    }
+  }
+
 /**
  * This function is used to calculate the amount you need to place the hedged bet for.
  * @param {string} stake - The amount the bet was placed at.
