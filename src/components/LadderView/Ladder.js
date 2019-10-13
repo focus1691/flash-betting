@@ -8,7 +8,8 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { calcHedgedPL, calcLiability } from "../../utils/TradingStategy/HedingCalculator";
+import { calcHedgedPL, calcLiability, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
+import { calcBackProfit } from "../../utils/PriceCalculator";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets }) => {
     const containerRef = useRef(null);
@@ -18,6 +19,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
     const [isReferenceSet, setIsReferenceSet] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
     const [isLadderDown, setLadderDown] = useState(false);
+    const [oddsHovered, setOddsHovered] = useState({odds: 0, side: "BACK"})
   
     useEffect(() => {
         const interval = setInterval(() => {
@@ -62,25 +64,39 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
         }
     })
 
+    const PL = Object.values(matchedBets).reduce((a, b) => {
+        if (b.selectionId == id) {
+            return a - calcBackProfit(parseFloat(b.size), parseFloat(b.price), b.side === "BACK" ? 0 : 1)
+        } else {
+            return a + calcBackProfit(parseFloat(b.size), parseFloat(b.price), b.side === "BACK" ? 0 : 1)
+        }
+    }, 0).toFixed(2)
+    
+
 
     const fullLadderWithProfit = {};
+    let ladderLTPHedge = 0;
     Object.values(ladder[id].fullLadder).map(item => {
         // if lay, flip
         fullLadderWithProfit[item.odds] = {...item}
 
         if (selectionMatchedBets !== undefined) {
-            const profitArray = selectionMatchedBets.map(bet => calcHedgedPL(parseFloat(bet.size), calcLiability(bet.side === "BACK" ? "LAY" : "BACK", parseFloat(bet.size), parseFloat(bet.price)), parseFloat(item.odds)));
-            const profit = (-1 * profitArray.reduce((a, b) => a + b, 0)).toFixed(2);
+            const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(item.odds)));
+            const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
             
-            fullLadderWithProfit[item.odds]['backProfit'] = profit
+            if (parseFloat(item.odds).toFixed(2) == parseFloat(ladder[id].ltp[0]).toFixed(2)) {
+                ladderLTPHedge = profit;
+            }
+
+            fullLadderWithProfit[item.odds]['backProfit'] = 0
         }
     })
     const hedgeSize = selectionMatchedBets !== undefined ?
-        selectionMatchedBets.reduce((a, b) => {
-            // console.log(a, b)
-            return a + b.size
-        }, 0) : 0
-    
+    selectionMatchedBets.reduce((a, b) => {
+        return a + b.size
+    }, 0) : 0
+
+    const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0
     
     return (
         <LadderContainer
@@ -103,6 +119,10 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                     onSelectRunner(runners[id]);
                 }}
                 setLadderDown = {setLadderDown}
+                PL = {PL}
+                ladderLTPHedge = {ladderLTPHedge}
+                newStake = {newStake}
+                oddsHovered = {oddsHovered}
             />
             
             <div className={"ladder"} onContextMenu = { () => false }>
@@ -125,7 +145,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                             width={width}
                             ref = {listRef}
                             style = {{paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px`}}
-                            hedgeSize = {hedgeSize}
+                            
                             itemData = {{
                                 ladder: fullLadderWithProfit,
                                 selectionId: id,
@@ -161,6 +181,8 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                                         hedged: data.hedged
                                     })
                                 },
+                                hedgeSize: hedgeSize,
+                                setOddsHovered: setOddsHovered
                             }}
                         >
                             {LadderRow}

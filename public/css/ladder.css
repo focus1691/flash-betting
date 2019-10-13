@@ -24,7 +24,25 @@
 * Top part of the ladder view where the details of the contender is displayed.
 **/
 .ladder-header {
+	display: flex !important;
+	flex-direction: row;
+	height: auto !important;
 
+}
+
+.ladder-header > div:nth-child(1) {
+	width: 70%;
+} 
+
+.ladder-header> div:nth-child(2) {
+	width: 30%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: rgb(106, 177, 79);
+	font-weight: bold;
+	text-align: left;
 }
 
 .contender-name {
@@ -43,14 +61,19 @@
 	cursor: url('../icons/faq.png'), auto;
 }
 
+.contender-odds-container {
+	display: flex;
+	flex-direction: row;
+}
+
 .contender-odds {
 	color: rgb(106, 177, 79);
 	font-weight: bold;
-	text-align: left;
 	display: block;
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
+	width: 50%;
 }
 
 /**

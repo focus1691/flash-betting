@@ -25,7 +25,7 @@ import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/OCMHelp
 import Draggable from "react-draggable";
 import DraggableGraph from "./DraggableGraph";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/MCMHelper";
-import { calcHedgedPL } from "../utils/TradingStategy/HedingCalculator";
+import { calcHedgedPL, calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 import { calcLiability } from "../utils/PriceCalculator";
 
 const App = props => {
@@ -281,11 +281,10 @@ const App = props => {
               
               const combinedSize = 
               newMatchedBets.reduce((a, b) => {
-                  // console.log(a, b)
                   return a + b.size
               }, 0)
 
-              const profitArray = newMatchedBets.map(bet => calcHedgedPL(parseFloat(bet.size), calcLiability(bet.side === "BACK" ? "LAY" : "BACK", parseFloat(bet.size), parseFloat(bet.price)), parseFloat(adjustedStopLoss.price)));
+              const profitArray = newMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(adjustedStopLoss.price)));
               const profit = (-1 * profitArray.reduce((a, b) => a + b, 0));
               adjustedStopLoss.size = combinedSize + profit
             }

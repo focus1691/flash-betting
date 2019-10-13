@@ -9,7 +9,7 @@ import { updateFillOrKillList } from '../../actions/fillOrKill';
 const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, 
                           isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged,
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged,
-                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize }) => {
+                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave }) => {
 
     
     return (
@@ -19,6 +19,8 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                 cell.backMatched && side === "BACK" ? {background: "#F694AA"} : 
                 cell.layMatched && side === "LAY" ? {background: "#75C2FD"} : null
             }
+            onMouseEnter = {onHover}
+            onMouseLeave = {onLeave}
             onClick={e => {
 
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)

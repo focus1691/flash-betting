@@ -1,3 +1,5 @@
+import { calcLayBet } from '../utils/TradingStategy/HedingCalculator'
+
 export const updateOrders = order => {
   return {
     type: "UPDATE_BET",
@@ -11,7 +13,7 @@ export const placeOrder = order => {
     return
   }
 
-  order.size = parseFloat(order.size)
+  order.size = order.size === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
   order.price = parseFloat(order.price)
 
   return dispatch => {
@@ -25,6 +27,8 @@ export const placeOrder = order => {
     })
       .then(res => res.json())
       .then(async json => {
+
+        console.log(json)
 
         if (json.errorCode == "BET_ACTION_ERROR") return;
         const betId = json.instructionReports[0].betId;
