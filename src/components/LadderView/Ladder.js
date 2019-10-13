@@ -88,7 +88,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                 ladderLTPHedge = profit;
             }
 
-            fullLadderWithProfit[item.odds]['backProfit'] = 0
+            fullLadderWithProfit[item.odds]['backProfit'] = profit
         }
     })
     const hedgeSize = selectionMatchedBets !== undefined ?
