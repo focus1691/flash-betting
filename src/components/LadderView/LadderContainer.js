@@ -68,13 +68,14 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
 
             // we have to find the actual id if one of the ladders are hidden
 
-            const thisLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == containerRef.current.children[0].children[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()) // ladder header -> contender name -> name 
+            
+            const thisLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == containerRef.current.children[0].children[0].childNodes[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()) // ladder header -> contender name -> name 
             const thisLadderId = Object.keys(runners)[thisLadderIndex]
             
             const thisLadderOrder = Object.values(ladderOrderList).findIndex(item => item == thisLadderId)
             if (thisLadderOrder === -1) break;
 
-            const otherLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == otherNodes[key].children[0].children[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()) // ladder header -> contender name -> name 
+            const otherLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == otherNodes[key].children[0].children[0].childNodes[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()) // ladder header -> contender name -> name 
             const otherLadderId = Object.keys(runners)[otherLadderIndex]
             
             const otherLadderOrder = Object.values(ladderOrderList).findIndex(item => item == otherLadderId)
