@@ -11,9 +11,9 @@ const OrderRow = props => {
     <div className={"order-row"}>
       <table>
         <tbody>
-          <td colSpan={3} rowSpan={4}>
+          <td colSpan={3} rowSpan={4} style={{verticalAlign: 'top'}}>
             <table className="lay-table">
-              <tbody>
+              <tbody className={unMatchedBets.length > 0 ? "lay-body" : ""}>
                 {unMatchedBets.map(bet => {
                   return (
                     <tr
@@ -28,7 +28,7 @@ const OrderRow = props => {
               </tbody>
             </table>
           </td>
-          <td colSpan={1} rowSpan={4}>
+          <td colSpan={1} rowSpan={4} style={{verticalAlign: 'top'}}>
             <button>0</button>
             <button onClick={() => {
               props.onChangePriceType(props.priceType === "STAKE" ? "LIABILITY" : "STAKE")
@@ -37,9 +37,9 @@ const OrderRow = props => {
             </button>
             <button>K</button>
           </td>
-          <td colSpan={3} rowSpan={4}>
+          <td colSpan={3} rowSpan={4} style={{verticalAlign: 'top'}}>
             <table className="lay-table">
-              <tbody>
+              <tbody className={matchedBets.length > 0 ? "lay-body" : ""}>
                 {matchedBets.map(bet => {
                   return (
                     <tr
