@@ -186,6 +186,12 @@
 	background: #FCC9D3;
 }
 
+#market-cashout span {
+	font-size: x-small;
+	display: inline-block;
+	vertical-align: middle;
+}
+
 /** GRID ORDER ROW **/
 
 .grid-order-row {

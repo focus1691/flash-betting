@@ -25,8 +25,7 @@ import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/Exchang
 import Draggable from "react-draggable";
 import DraggableGraph from "./DraggableGraph";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
-import { calcHedgedPL, calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
-import { calcLiability } from "../utils/PriceCalculator";
+import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 
 const App = props => {
 

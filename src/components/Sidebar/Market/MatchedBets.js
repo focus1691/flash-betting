@@ -99,8 +99,7 @@ const mapStateToProps = state => {
   return {
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
-    bets: state.order.bets,
-
+    bets: state.order.bets
   };
 };
 

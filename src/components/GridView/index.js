@@ -226,6 +226,7 @@ const Grid = props => {
 						}}
 						stakeBtns={props.stakeBtns}
 						layBtns={props.layBtns}
+						bets={props.bets}
 					/>
 					{props.marketOpen
 						? props.marketStatus === "SUSPENDED"
@@ -258,7 +259,8 @@ const mapStateToProps = state => {
 		countryCode: state.account.countryCode,
 		currencyCode: state.account.currencyCode,
 		localeCode: state.account.localeCode,
-		graph: state.graph
+		graph: state.graph,
+		bets: state.order.bets
 	};
 };
 

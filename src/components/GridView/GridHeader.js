@@ -3,6 +3,8 @@ import { renderRaceStatus } from "./RaceStatus";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
 import { formatCurrency } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
+import getQueryVariable from "../../utils/GetQueryVariable";
+import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 
 export default ({
   market,
@@ -17,7 +19,8 @@ export default ({
   stake,
   setStake,
   stakeBtns,
-  layBtns
+  layBtns,
+  bets
 }) => (
     <React.Fragment>
       <tr id="grid-header">
@@ -95,7 +98,15 @@ export default ({
         <th>
           <span>Market Cashout</span>
         </th>
-        <th colSpan="1"></th>
+        {/* The Cash out figure simply adds all current profit and losses together
+            If you click it, then it should place N bets (or how ever many you need)
+            to close those positions/
+        */}
+        <th id="market-cashout" colSpan="1" onClick={() => {
+
+        }}>
+          <span>{getMarketCashout(getQueryVariable("marketId"), bets)}</span>
+        </th>
 
         <th colSpan="1"></th>
         <th></th>
