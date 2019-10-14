@@ -24,6 +24,7 @@ app.use(
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
+
 const database = require("./Database/helper");
 
 // Load the session key from localStorage into the database and session object
@@ -42,10 +43,50 @@ app.get("/api/get-subscription-status", (request, response) => {
 		},
 		(err, res) => {
 			response.json({
-				val: res.result
+				isSubscribed: res.result
 			});
 		}
 	);
+});
+
+app.get("/api/request-access-token", (request, response) => {
+
+	const params = {
+		client_id: process.env.APP_ID,
+		grant_type: request.query.tokenType,
+		client_secret: process.env.APP_SECRET
+	}
+
+	const setupTokenInfo = async () => {
+		if (request.query.tokenType === "REFRESH_TOKEN") {
+			storedTokenData = await database.getTokenData(session.email);
+	
+			if (storedTokenData.expiresIn < new Date()) {
+				params.refresh_token = storedTokenData.refreshToken;
+				token();
+			} else {
+				response.json(storedTokenData);
+			}
+		} else if (request.query.tokenType === "AUTHORIZATION_CODE") {
+			params.code = request.query.code;
+			token();
+		}
+	};
+
+	const token = async () => {
+		session.token(params, (err, res) => {
+				var tokenInfo = {
+					accessToken: res.result.access_token,
+					expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
+					refreshToken: res.result.refresh_token
+				};
+				// Update the user details with the token information
+				database.setToken(session.email, tokenInfo).then(() => { response.json(tokenInfo)});
+			}
+		);
+	}
+
+	setupTokenInfo();
 });
 
 app.get("/api/login", (request, response) => {
@@ -150,30 +191,6 @@ app.post("/api/remove-orders", (request, response) => {
 	database.removeOrders(session.email, request.body).then(res => {
 		response.sendStatus(res);
 	});
-});
-
-app.get("/api/request-access-token", (request, response) => {
-	// This call can be used for the refresh token
-	// by changing the "grant type" to "REFRESH_TOKEN"
-	session.token(
-		{
-			client_id: process.env.APP_ID,
-			grant_type: "AUTHORIZATION_CODE",
-			client_secret: process.env.APP_SECRET,
-			code: request.query.code
-		},
-		(err, res) => {
-			var tokenInfo = {
-				accessToken: res.result.access_token,
-				expiresIn: res.result.expires_in,
-				refreshToken: res.result.refresh_token
-			};
-			// Update the user details with the token information
-			database.setToken(session.email, tokenInfo).then(status => {
-				response.json(tokenInfo);
-			});
-		}
-	);
 });
 
 app.get("/api/get-all-sports", (request, response) => {
@@ -286,32 +303,6 @@ app.get("/api/get-market-info", (request, response) => {
 			response.json(res);
 		}
 	);
-});
-
-// test
-app.post("/api/todays-card", (request, response) => {
-	session.listMarketCatalogue({
-		filter: {
-			"eventTypeIds": [
-				7
-			],
-			"marketCountries": [
-				"GB"
-			],
-			"marketTypeCodes": [
-				"WIN"
-			],
-			"marketStartTime": {
-				"from": new Date().toJSON(),
-				"to": new Date()
-			}
-		},
-		"sort": "FIRST_TO_START",
-		"maxResults": "1000"
-	}, function (err, res) {
-		console.log("Response:%s\n", JSON.stringify(res.response, null, 2));
-		response.json(res.result);
-	});
 });
 
 app.post("/api/place-order", (request, response) => {

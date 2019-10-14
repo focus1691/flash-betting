@@ -11,7 +11,10 @@ const userSchema = mongoose.Schema({
     },
     sessionKey: String,
     accessToken: String,
-    expiresIn: Number,
+    expiresIn: {
+        type: Date,
+        default: new Date()
+    },
     refreshToken: String,
     markets: Array,
     premiumSubscription: {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../actions/account";
@@ -81,10 +81,6 @@ const Login = props => {
       });
   };
 
-  const handleRememberMe = checked => {
-    setRememberMe(checked);
-  };
-
   return (
     <>
       {props.loggedIn && !!sessionKey ? <Redirect to="/authentication" /> : null}
@@ -134,7 +130,7 @@ const Login = props => {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
               checked={rememberMe}
-              onChange={(e, checked) => handleRememberMe(checked)}
+              onChange={(e, checked) => setRememberMe(checked)}
             />
             <Button
               onClick={e => handleSubmit(e)}

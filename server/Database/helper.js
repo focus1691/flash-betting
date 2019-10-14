@@ -107,7 +107,17 @@ class DatabaseHelper extends Database {
             });
         });
     }
-
+    async getTokenData(user) {
+        return User.findOne({email: user})
+        .then(doc => {
+            return {
+                accessToken: doc.accessToken,
+                refreshToken: doc.refreshToken,
+                expiresIn: doc.expiresIn
+            }
+        })
+        .catch(err => {return err});
+    }
     getAllOrders(user) {
         // Create the object with our Order Schema
         return new Promise((res, rej) => {
