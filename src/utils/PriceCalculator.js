@@ -29,6 +29,10 @@ const calcPercentDifference = (size, matchedPrice, currentPrice) => {
   return percentDifference;
 };
 
+const twoDecimalPlaces = num => {
+  return parseFloat((Math.round(num * 100) / 100).toFixed(2));
+};
+
 const calcBackProfit = (stake, price, side) => {
   const profit = parseFloat((stake * price - stake).toFixed(2));
   if (side === 0) return profit || 0;
@@ -49,4 +53,4 @@ const colorForLay = side => {
   return side === 0 ? "red" : "#01CC41";
 };
 
-export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay };
+export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay, twoDecimalPlaces };

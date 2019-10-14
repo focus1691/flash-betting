@@ -1,5 +1,5 @@
-import { checkStopLossHit } from './TradingStategy/StopLoss'
-import { stopEntryCheck } from './TradingStategy/StopEntry'
+import { checkStopLossHit } from '../TradingStategy/StopLoss'
+import { stopEntryCheck } from '../TradingStategy/StopEntry'
 
 /**
  * This function checks if the LTP reaches the threshold that the stopEntry has.

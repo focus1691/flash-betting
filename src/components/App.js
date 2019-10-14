@@ -21,10 +21,10 @@ import { updateBackList } from "../actions/back";
 import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
 import { placeOrder, updateOrders } from "../actions/order";
 import { updateFillOrKillList } from "../actions/fillOrKill";
-import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/OCMHelper";
+import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/ExchangeStreaming/OCMHelper";
 import Draggable from "react-draggable";
 import DraggableGraph from "./DraggableGraph";
-import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/MCMHelper";
+import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
 import { calcHedgedPL, calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 import { calcLiability } from "../utils/PriceCalculator";
 
