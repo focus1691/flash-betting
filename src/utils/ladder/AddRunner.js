@@ -1,5 +1,5 @@
 import { createFullLadder, formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
-import { sortAsc, sortDes } from "../Sort";
+import { sortAsc, sortDes } from "../Algorithms/Sort";
 
 const AddRunner = (key, data) => {
   const runner = data;

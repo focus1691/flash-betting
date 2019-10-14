@@ -1,5 +1,5 @@
 
-import { SearchInsert } from "../SearchInsert";
+import { SearchInsert } from "../Algorithms/SearchInsert";
 import { formatPriceKey, calcBackLayPercentages } from "../ladder/CreateFullLadder";
 
 const UpdateRunner = (ladder, rawData) => {
