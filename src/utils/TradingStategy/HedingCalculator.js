@@ -71,4 +71,9 @@ const calcHedgedPL2 = (stake, backPrice, exitPrice) => {
     return parseFloat(((stake * backPrice) / exitPrice - stake).toFixed(2));
 };
 
-export { calcLiability, calcHedgedBetAmount, calcHedgedPL, calcHedgedPL2, calcBackBet, calcLayBet };
+const netProfitOnHedge = (stake, hedgedPL) => {
+    return twoDecimalPlaces(stake - hedgedPL);
+  }
+  
+
+export { calcLiability, calcHedgedBetAmount, calcHedgedPL, calcHedgedPL2, twoDecimalPlaces, calcBackBet, calcLayBet };
