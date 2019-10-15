@@ -38,7 +38,7 @@ const MatchedBets = props => {
               if (selectionObject === undefined) return null;
 
               const filteredOrders = Object.values(props.bets.matched).filter(order => order.selectionId === selection);
-              
+              console.log(filteredOrders);
               return (
             
                 <React.Fragment>

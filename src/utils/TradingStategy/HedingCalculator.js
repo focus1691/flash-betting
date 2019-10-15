@@ -31,12 +31,12 @@ const calcBackBet = (odds, stake) => {
 }
 
 const calcLayBet = (odds, stake) => {
-    const backersStake = parseFloat((stake / odds).toFixed(2));
+    const backersStake = parseFloat((stake / (odds - 1)).toFixed(2));
     return {
-      backersStake: backersStake,
-      liability: backersStake * odds - backersStake
+        backersStake: backersStake,
+        liability: calcLiability("LAY", backersStake, odds).toFixed(2)
     }
-  }
+}
 
 /**
  * This function is used to calculate the amount you need to place the hedged bet for.
@@ -68,7 +68,7 @@ const calcHedgedPL = (stake, liability, exitPrice) => {
  * @return {number} The Profit or loss.
  */
 const calcHedgedPL2 = (stake, backPrice, exitPrice) => {
-    return parseFloat( ((stake * backPrice ) / exitPrice - stake).toFixed(2));
+    return parseFloat(((stake * backPrice) / exitPrice - stake).toFixed(2));
 };
 
 export { calcLiability, calcHedgedBetAmount, calcHedgedPL, calcHedgedPL2, calcBackBet, calcLayBet };
