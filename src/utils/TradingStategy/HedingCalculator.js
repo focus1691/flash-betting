@@ -1,4 +1,6 @@
 
+import { twoDecimalPlaces } from "../PriceCalculator";
+
 /**
  * This function is used to calculate the total of a bet.
  * @param {string} price - The side i.e. BACK or LAY.

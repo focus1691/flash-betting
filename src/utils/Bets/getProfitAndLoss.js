@@ -16,11 +16,11 @@ const getPLForRunner = (marketId, selectionId, bets) => {
                         return -calcBackBet(order.price, order.size);
                 }
             } else {
-                switch (side) {
+                switch (order.side) {
                     case "BACK":
-                        return -stake;
+                        return -order.size;
                     case "LAY":
-                        return stake;
+                        return order.size;
                 }
             }
         })
