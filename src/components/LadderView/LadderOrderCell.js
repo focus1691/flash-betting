@@ -9,7 +9,7 @@ import { updateFillOrKillList } from '../../actions/fillOrKill';
 const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, 
                           isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged,
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged,
-                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave }) => {
+                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal }) => {
 
     
     return (
@@ -33,7 +33,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                 customerStrategyRef: referenceStrategyId,
                 unmatchedBets: unmatchedBets,
                 matchedBets: matchedBets, 
-                size: 2,
+                size: stakeVal[selectionId],
                 orderCompleteCallBack: async betId => {
 
                   if (stopLossSelected && stopLossData === undefined) {
@@ -44,7 +44,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                       units: stopLossUnits,
                       rfs: referenceStrategyId,
                       assignedIsOrderMatched: false,
-                      size: 2,
+                      size: stakeVal[selectionId],
                       betId: betId,
                       hedged: stopLossHedged
                     })
@@ -55,12 +55,13 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                       marketId: marketId, 
                       selectionId: selectionId, 
                       price: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
-                      size: tickOffsetHedged ? hedgeSize : 2, // TODO WE NEED TO PUT A SIZE!
+                      size: tickOffsetHedged ? hedgeSize : stakeVal[selectionId], 
                       side: side, 
                       percentageTrigger: tickOffsetTrigger,
                       rfs: referenceStrategyId,
                       betId: betId,
-                      hedged: tickOffsetHedged
+                      hedged: tickOffsetHedged,
+                      minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1
                     };
     
                     newTickOffset[referenceStrategyId] = addedOrder
@@ -147,6 +148,7 @@ const mapStateToProps = state => {
     fillOrKillSelected: state.fillOrKill.selected,
     fillOrKillSeconds: state.fillOrKill.seconds,
     fillOrKillList: state.fillOrKill.list,
+    stakeVal: state.settings.stake
   };
 };
 

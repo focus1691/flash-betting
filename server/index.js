@@ -319,7 +319,7 @@ app.post("/api/place-order", (request, response) => {
 						size: request.body.size,
 						price: request.body.price,
 						persistenceType: "PERSIST",
-
+						minFillSize: request.body.minFillSize || 1
 					}
 				}
 			],

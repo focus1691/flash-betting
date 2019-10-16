@@ -1,7 +1,8 @@
 import React from "react";
 import { LightenDarkenColor } from "../../utils/ColorManipulator";
+import crypto from 'crypto'
 
-export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, toggleBackAndLay, updateOrderValue, updateOrderPrice, updateOrderVisibility }) => {
+export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, toggleBackAndLay, updateOrderValue, updateOrderPrice, updateOrderVisibility, onPlaceOrder, market, bets, price, side, size }) => {
     return (
         <tr style={{
             background: orderProps.bg
@@ -82,7 +83,21 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                             }}
                         ></input>
 
-                        <button className={"execute-order-btn"}>Submit</button>
+                        <button className={"execute-order-btn"}
+                            onClick = {() => {
+                                const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
+                                onPlaceOrder({
+                                    marketId: market.marketId,
+                                    side: side,
+                                    size: size,
+                                    price: price,
+                                    selectionId: runnerId,
+                                    customerStrategyRef: referenceStrategyId,
+                                    unmatchedBets: bets.unmatchedBets,
+                                    matchedBets: bets.matched,
+                                })
+                            }}
+                        >Submit</button>
 
                         <span className={"grid-img-container"}>
                             <a

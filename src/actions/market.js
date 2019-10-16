@@ -82,24 +82,24 @@ export const updateOrderValue = val => {
     }
 };
 
-export const updateOrderPrice = price => {
+export const updateOrderPrice = ({price, id}) => {
   return {
     type: "UPDATE_ORDER_PRICE",
-    payload: price
+    payload: {price, id}
   };
 };
 
-export const toggleStakeAndLiability = val => {
+export const toggleStakeAndLiability = ({val, id}) => {
   return {
     type: "TOGGLE_STAKE_AND_LIABILITY",
-    payload: val
+    payload: {stakeLiability: val, id}
   };
 };
 
-export const toggleBackAndLay = val => {
+export const toggleBackAndLay = ({val, id}) => {
     return {
         type: "TOGGLE_BACK_AND_LAY",
-        payload: val
+        payload: {backLay: val, id}
     }
 };
 

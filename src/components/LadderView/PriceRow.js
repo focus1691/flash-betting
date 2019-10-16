@@ -1,22 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
+import { setStakeInOneClick } from "../../actions/settings";
 
-const PriceRow = ({ ltp, tv, buttonType, stake, lay }) => {
+const PriceRow = ({ selectionId, ltp, tv, buttonType, stake, lay, stakeVal, onSetStake }) => {
 
-  const [stakeVal, setStakeVal] = useState(null);
 
   const buttons = buttonType === "STAKE" ? stake : lay;
 
   const castedPrices = Array.isArray(buttons) ? buttons : Object.values(buttons)  
 
+  useEffect(() => {
+    if (stakeVal[selectionId] == undefined) {
+      onSetStake({selectionId, price: 2})
+    }
+  }, [])
+  
   return (
     <div className="price-row">
       <div colspan="8">
         {castedPrices.map(price => (
           <th
-            style={{background: getOrderBtnBG(buttonType, price, stakeVal, -20)}}
-            onClick={e => setStakeVal(price)}>{price}
+            style={{background: getOrderBtnBG(buttonType, parseFloat(price), stakeVal[selectionId], -20)}}
+            onClick={e => onSetStake({selectionId, price: parseFloat(price)})}>{price}
           </th>
         ))}
       </div>
@@ -28,8 +34,15 @@ const mapStateToProps = state => {
   return {
     buttonType: state.market.priceType,
     stake: state.settings.stakeBtns,
-    lay: state.settings.layBtns
+    lay: state.settings.layBtns,
+    stakeVal: state.settings.stake
   };
 };
 
-export default connect(mapStateToProps)(PriceRow); 
+const mapDispatchToProps = dispatch => {
+  return {
+    onSetStake: stake => dispatch(setStakeInOneClick(stake))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PriceRow); 

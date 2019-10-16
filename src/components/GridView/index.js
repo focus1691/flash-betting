@@ -1,4 +1,4 @@
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
@@ -14,8 +14,10 @@ import { marketHasBets, getPLForRunner } from "../../utils/Bets/getProfitAndLoss
 import NonRunners from "./NonRunner";
 import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
+import { placeOrder } from "../../actions/order";
 
 const Grid = props => {
+	
 	const [rowHovered, setRowHovered] = useState(null);
 	const [activeOrder, setActiveOrder] = useState(null);
 	const [ordersVisible, setOrdersVisible] = useState(0);
@@ -39,6 +41,11 @@ const Grid = props => {
 
 		return rows;
 	};
+
+	useEffect(() => {
+		console.log(activeOrder)
+		console.log(props.market)
+	}, [activeOrder])
 
 	const createCell = (odds, matched, key, backLay) => {
 		return (
@@ -173,6 +180,12 @@ const Grid = props => {
 							setActiveOrder(null);
 							setOrdersVisible(ordersVisible - 1);
 						}}
+						onPlaceOrder = {props.onPlaceOrder}
+						market = {props.market}
+						bets={props.bets}
+						price = {props.market.runners[key].order.price}
+						side = {activeOrder.side == 0 ? "BACK" : "LAY"}
+						size = {activeOrder.stake}
 					/>
 				</React.Fragment>
 			);
@@ -228,6 +241,7 @@ const Grid = props => {
 						stakeBtns={props.stakeBtns}
 						layBtns={props.layBtns}
 						bets={props.bets}
+						
 					/>
 					{props.marketOpen
 						? props.marketStatus === "SUSPENDED"
@@ -261,7 +275,7 @@ const mapStateToProps = state => {
 		currencyCode: state.account.currencyCode,
 		localeCode: state.account.localeCode,
 		graph: state.graph,
-		bets: state.order.bets
+		bets: state.order.bets,
 	};
 };
 
@@ -278,7 +292,8 @@ const mapDispatchToProps = dispatch => {
 			dispatch(actions.toggleStakeAndLiability(value)),
 		onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value)),
 		onToggleOneClick: active => dispatch(actions.toggleOneClick(active)),
-		setStakeInOneClick: stake => dispatch(setStakeInOneClick(stake))
+		setStakeInOneClick: stake => dispatch(setStakeInOneClick(stake)),
+		onPlaceOrder: order => dispatch(placeOrder(order)),
 	};
 };
 

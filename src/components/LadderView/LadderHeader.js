@@ -2,8 +2,7 @@ import React, {useState} from "react";
 import { iconForEvent } from "../../utils/EventIcons";
 import { calcBackBet } from "../../utils/TradingStategy/HedingCalculator";
 
-export default ({ sportId, runner, runnerClick, setLadderDown, PL, ladderLTPHedge, newStake, oddsHovered }) => {
-
+export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, ladderLTPHedge, newStake, oddsHovered }) => {
   return (
     <div className={"ladder-header"}>
       <div>
@@ -37,8 +36,9 @@ export default ({ sportId, runner, runnerClick, setLadderDown, PL, ladderLTPHedg
         <div className = "contender-odds-container">
           <span className="contender-odds">{PL}</span>
           <span className="contender-odds" style = {{visibility: oddsHovered.odds > 0 ? 'visible' : 'hidden'}}>
-            {(oddsHovered.side == "LAY" ? -1 : 1) * parseFloat(calcBackBet(oddsHovered.odds, 2) + 
-             (oddsHovered.side == "LAY" ? -1 : 1) * parseFloat(PL)).toFixed(2)}
+            {/* calculates what to add or subtract based on odds hovered */}
+            {((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) + 
+             ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2)} 
           </span>
         </div>
       </div>

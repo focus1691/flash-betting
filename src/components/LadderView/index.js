@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { placeOrder } from "../../actions/order";
 import { setRunner, updateLadderOrder } from "../../actions/market";
@@ -6,7 +6,9 @@ import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
 const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
-                  stopLossOffset, stopLossTrailing, stopLossHedged , onChangeStopLossList, bets}) => {
+                  stopLossOffset, stopLossTrailing, onChangeStopLossList, bets}) => {
+
+  const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
 
   useEffect(() => {
     if (Object.keys(ladderOrder).length === 0 && Object.keys(ladder).length > 0) {
@@ -52,6 +54,8 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             selectionMatchedBets = {newMatchedBets[value]}
             unmatchedBets = {bets.unmatched}
             matchedBets = {bets.matched}
+            setOddsHovered = {setOddsHovered}
+            oddsHovered = {oddsHovered}
             changeStopLossList = {async newStopLoss => {
 
               const adjustedNewStopLoss = {...newStopLoss, 

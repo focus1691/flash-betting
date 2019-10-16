@@ -10,8 +10,10 @@ import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { calcHedgedPL, calcLiability, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { calcBackProfit } from "../../utils/PriceCalculator";
+import { getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
 
-const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets }) => {
+const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
+                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -19,7 +21,6 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
     const [isReferenceSet, setIsReferenceSet] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
     const [isLadderDown, setLadderDown] = useState(false);
-    const [oddsHovered, setOddsHovered] = useState({odds: 0, side: "BACK"})
   
     useEffect(() => {
         const interval = setInterval(() => {
@@ -64,13 +65,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
         }
     })
 
-    const PL = Object.values(matchedBets).reduce((a, b) => {
-        if (b.selectionId == id) {
-            return a - calcBackProfit(parseFloat(b.size), parseFloat(b.price), b.side === "BACK" ? 0 : 1)
-        } else {
-            return a + calcBackProfit(parseFloat(b.size), parseFloat(b.price), b.side === "BACK" ? 0 : 1)
-        }
-    }, 0).toFixed(2)
+    const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), {matched: matchedBets}).toFixed(2) : 0
     
 
 
@@ -114,6 +109,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
         >
             <LadderHeader
                 sportId={market.eventType.id}
+                selectionId={id}
                 runner={runners[id]}
                 runnerClick={e => {
                     onSelectRunner(runners[id]);
@@ -160,6 +156,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                                         orderCompleteCallBack: data.orderCompleteCallBack,
                                         unmatchedBets: unmatchedBets,
                                         matchedBets: matchedBets,
+                                        minFillSize: data.minFillSize
                                     });
                                 },
                                 ltp: ladder[id].ltp[0],
@@ -191,7 +188,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                     </AutoSizer>
                     
             </div>
-            <PriceRow />
+            <PriceRow selectionId={id} />
             <OrderRow selectionId={id} />
         </LadderContainer>
     );

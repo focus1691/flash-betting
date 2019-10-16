@@ -67,6 +67,7 @@ const reducer = (state = initialState, action) => {
         }
       };
     case "UPDATE_ORDER_PRICE":
+      console.log(state.runners)
       return {
         ...state,
         runners: {
