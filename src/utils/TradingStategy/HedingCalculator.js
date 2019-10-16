@@ -2,16 +2,6 @@
 import { twoDecimalPlaces } from "../PriceCalculator";
 
 /**
- * This function is used to calculate the total of a bet.
- * @param {string} price - The side i.e. BACK or LAY.
- * @param {number} stake - The stake.
- * @return {number} The bet total.
- */
-const calcBetTotal = (price, stake) => {
-    return price * stake;
-};
-
-/**
  * This function is used to calculate liability of a bet.
  * Source: https://help.smarkets.com/hc/en-gb/articles/115003381865-How-to-calculate-the-liability-of-a-lay-bet
  * @param {string} side - The side i.e. BACK or LAY
@@ -39,15 +29,14 @@ const calcLayBet = (odds, stake) => {
     }
 }
 
-/**
- * This function is used to calculate the amount you need to place the hedged bet for.
- * @param {string} stake - The amount the bet was placed at.
- * @param {number} liability - The amount deducted from the balance if the bet loses.
- * @param {string} exitPrice - The price the bet will be exited at.
- * @return {number} The amount you need to place the bet.
- */
-const calcHedgedBetAmount = (stake, liability, exitPrice) => {
-    return parseFloat(((stake + liability) / exitPrice).toFixed(2));
+const calcHedge = (size, price, side, ltp, exitPrice) => {
+    var PL = twoDecimalPlaces((size * price) / exitPrice);
+    const PLAtLTP = calcHedgedPL2(size, price, ltp);
+
+    return {
+        hedgePL: PLAtLTP,
+        hedgeStake: side === "BACK" ? PL : -PL
+    }
 };
 
 /**
@@ -58,12 +47,7 @@ const calcHedgedBetAmount = (stake, liability, exitPrice) => {
  * @return {number} The Profit or loss.
  */
 const calcHedgedPL2 = (stake, backPrice, exitPrice) => {
-    return parseFloat(((stake * backPrice) / exitPrice - stake).toFixed(2));
+    return twoDecimalPlaces(((stake * backPrice) / exitPrice - stake));
 };
 
-const netProfitOnHedge = (stake, hedgedPL) => {
-    return twoDecimalPlaces(stake - hedgedPL);
-  }
-  
-
-export { calcLiability, calcHedgedBetAmount, calcHedgedPL2, twoDecimalPlaces, calcBackBet, calcLayBet };
+export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet };
