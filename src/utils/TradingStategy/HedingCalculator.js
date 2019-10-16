@@ -11,7 +11,6 @@ const calcBetTotal = (price, stake) => {
     return price * stake;
 };
 
-
 /**
  * This function is used to calculate liability of a bet.
  * Source: https://help.smarkets.com/hc/en-gb/articles/115003381865-How-to-calculate-the-liability-of-a-lay-bet
@@ -52,17 +51,6 @@ const calcHedgedBetAmount = (stake, liability, exitPrice) => {
 };
 
 /**
- * This function is used to calculate the profit/loss from a hedged position.
- * @param {string} stake - The amount the bet was placed at.
- * @param {number} liability - The amount deducted from the balance if the bet loses.
- * @param {string} exitPrice - The price the bet will be exited at.
- * @return {number} The Profit or loss.
- */
-const calcHedgedPL = (stake, liability, exitPrice) => {
-    return parseFloat(stake - (calcHedgedBetAmount(stake, liability, exitPrice)).toFixed(2));
-};
-
-/**
  * Another function to calculate the profit/loss from a hedged position using the back price instead of liability.
  * @param {string} stake - The amount the bet was placed at.
  * @param {number} backPrice - The odds the bet was placed at.
@@ -78,4 +66,4 @@ const netProfitOnHedge = (stake, hedgedPL) => {
   }
   
 
-export { calcLiability, calcHedgedBetAmount, calcHedgedPL, calcHedgedPL2, twoDecimalPlaces, calcBackBet, calcLayBet };
+export { calcLiability, calcHedgedBetAmount, calcHedgedPL2, twoDecimalPlaces, calcBackBet, calcLayBet };
