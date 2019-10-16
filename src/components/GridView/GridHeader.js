@@ -103,7 +103,7 @@ export default ({
             to close those positions/
         */}
         <th id="market-cashout" colSpan="1" onClick={() => {
-
+          
         }}>
           <span>{getMarketCashout(getQueryVariable("marketId"), bets)}</span>
         </th>
