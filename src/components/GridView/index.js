@@ -183,9 +183,9 @@ const Grid = props => {
 						onPlaceOrder = {props.onPlaceOrder}
 						market = {props.market}
 						bets={props.bets}
-						price = {props.market.runners[key].order.price}
-						side = {activeOrder.side == 0 ? "BACK" : "LAY"}
-						size = {activeOrder.stake}
+						price = {props.runners[key].order.price}
+						side = {activeOrder ? activeOrder.side == 0 ? "BACK" : "LAY" : "BACK"}
+						size = {activeOrder ? activeOrder.stake : 0}
 					/>
 				</React.Fragment>
 			);
