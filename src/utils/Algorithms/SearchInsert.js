@@ -1,9 +1,12 @@
 const SearchInsert = (nums, target, reversed) => {
+    if (!nums) {
+        return 0;
+    }
+
     var start = 0;
     var end = nums.length - 1;
 
     if (reversed) {
-        let temp = start;
         start = end;
         end = start;
     }
