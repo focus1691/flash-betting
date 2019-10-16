@@ -3,6 +3,12 @@
 import { twoDecimalPlaces } from "../PriceCalculator";
 import { calcBackBet } from "../TradingStategy/HedingCalculator";
 
+const marketHasBets = (marketId, bets) => {
+    return (Object.values(bets.matched))
+        .filter(order => order.marketId === marketId)
+        .length > 0;
+};
+
 const getPLForRunner = (marketId, selectionId, bets) => {
     return twoDecimalPlaces(Object.values(bets.matched)
         .filter(order => order.marketId === marketId)
@@ -29,4 +35,4 @@ const getPLForRunner = (marketId, selectionId, bets) => {
         }, 0));
 };
 
-export { getPLForRunner };
+export { marketHasBets, getPLForRunner };

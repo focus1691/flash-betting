@@ -187,6 +187,7 @@
 }
 
 #market-cashout span {
+	cursor: pointer;
 	font-size: x-small;
 	display: inline-block;
 	vertical-align: middle;

@@ -9,11 +9,8 @@ import EmptyCell from "./EmptyCell";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 import { DeconstructRunner } from "../../utils/DeconstructRunner";
 import { formatCurrency } from "../../utils/NumberFormat";
-import {
-	calcBackProfit,
-	calcLiability,
-	colorForBack
-} from "../../utils/PriceCalculator";
+import { calcBackProfit, calcLiability, colorForBack } from "../../utils/PriceCalculator";
+import { marketHasBets, getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
 import NonRunners from "./NonRunner";
 import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
@@ -71,6 +68,17 @@ const Grid = props => {
 		);
 	};
 
+	const renderProfitAndLossAndHedge = (order, color) => {
+		return {
+			val: formatCurrency(
+				props.localeCode,
+				props.currencyCode,
+				calcBackProfit(order.stake, order.price, order.backLay)
+			),
+			color: color
+		}
+	};
+
 	const renderTableData = () => {
 		return (
 			<React.Fragment>
@@ -118,34 +126,27 @@ const Grid = props => {
 							name={name}
 							number={number}
 							logo={logo}
-							selectRunner={e => {
-								props.onSelectRunner(props.runners[key]);
-							}}
 							ltp={ltp}
 							tv={tv}
 							PL={
-								order.visible && rowHovered === key && activeOrder
-									? {
+								marketHasBets(props.market.marketId, props.bets) ?
+									{
 										val: formatCurrency(
 											props.localeCode,
 											props.currencyCode,
-											calcBackProfit(order.stake, order.price, order.backLay)
+											getPLForRunner(props.market.marketId, parseInt(key), props.bets)
 										),
 										color: colorForBack(order.backLay)
 									}
-									: rowHovered && rowHovered !== key && activeOrder
-										? {
-											val: formatCurrency(
-												props.localeCode,
-												props.currencyCode,
-												calcLiability(activeOrder.stake, activeOrder.backLay)
-											),
-											color: colorForBack(activeOrder.backLay ^ 1)
-										}
-										:
-
-										{ val: "", color: "" }
-							}
+									:
+									order.visible && rowHovered === key && activeOrder
+										? renderProfitAndLossAndHedge(order, colorForBack(order.backLay))
+										: rowHovered && rowHovered !== key && activeOrder
+											?
+											renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
+											:
+											{ val: "", color: "" }
+								}
 							bg={bg}
 						/>
 						{renderRow(atb, batb, key, 0).reverse()}
