@@ -83,7 +83,6 @@ const reducer = (state = initialState, action) => {
     case "SET_STAKE_IN_ONE_CLICK_MODE":
       const newStake = Object.assign({}, state.stake);
       newStake[action.payload.selectionId] = action.payload.price
-      console.log(newStake)
       return { ...state, stake: newStake };
     default:
       return state;

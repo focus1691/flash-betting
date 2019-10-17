@@ -3,6 +3,7 @@ const SearchInsert = (nums, target, reversed) => {
     var end = nums.length - 1;
 
     if (reversed) {
+        let temp = start;
         start = end;
         end = start;
     }

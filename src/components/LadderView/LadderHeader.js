@@ -3,6 +3,10 @@ import { iconForEvent } from "../../utils/EventIcons";
 import { calcBackBet } from "../../utils/TradingStategy/HedingCalculator";
 
 export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, ladderLTPHedge, newStake, oddsHovered }) => {
+  
+  const oddsHoveredCalc = ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) + 
+  ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2);
+
   return (
     <div className={"ladder-header"}>
       <div>
@@ -34,17 +38,24 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
           }${runner.runnerName}`}
         </h2>
         <div className = "contender-odds-container">
-          <span className="contender-odds">{PL}</span>
-          <span className="contender-odds" style = {{visibility: oddsHovered.odds > 0 ? 'visible' : 'hidden'}}>
+          <span className="contender-odds"
+            style = {{color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'}}
+          >{PL}</span>
+          <span className="contender-odds" 
+            style = {{visibility: oddsHovered.odds > 0 ? 'visible' : 'hidden',
+                      color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'}}>
             {/* calculates what to add or subtract based on odds hovered */}
-            {((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) + 
-             ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2)} 
+            {oddsHoveredCalc} 
           </span>
         </div>
       </div>
       <div>
-        <span style={{visibility: ladderLTPHedge === 0 ? 'hidden' : 'visible' }}>{parseFloat(ladderLTPHedge).toFixed(2)}</span>
-        <span style={{visibility: newStake === 0 ? 'hidden' : 'visible' }}>{parseFloat(newStake).toFixed(2)}</span>
+        <span style={{visibility: ladderLTPHedge === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red'}}>
+          {parseFloat(ladderLTPHedge).toFixed(2)}
+        </span>
+        <span style={{visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
+          {parseFloat(newStake).toFixed(2)}
+        </span>
       </div>
     </div>
   )

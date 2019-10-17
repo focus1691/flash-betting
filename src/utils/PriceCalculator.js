@@ -44,9 +44,9 @@ const calcLiability = (stake, side) => {
   return Math.abs(stake);
 };
 
-const colorForBack = side => {
-  if (side === 0) return "#01CC41";
-  else if (side === 1) return "red";
+const colorForBack = (side, pl = 0) => {
+  if (side === 0 && pl > 0) return "#01CC41";
+  else return 'red';
 };
 
 const colorForLay = side => {

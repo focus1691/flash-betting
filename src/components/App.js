@@ -102,6 +102,8 @@ const App = props => {
               };
             }
 
+            console.log(data.result[0]);
+
             props.onUpdateRunners(runners);
             props.onReceiveMarket(data.result[0]);
             props.onSelectRunner(data.result[0].runners[0]);

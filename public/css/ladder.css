@@ -233,15 +233,18 @@
 
 
 .lay-table tr {
-	width: 30px;
 	border-bottom: 1px solid #fff;
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 }
 
-.lay-table td {
+.lay-table tr:nth-child(1) {
 	width: 30px;
+}
+
+.lay-table td {
+	width: 100vw !important;
 	font-size: x-small;
 	text-align: center;
 	overflow: scroll;
