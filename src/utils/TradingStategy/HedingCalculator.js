@@ -1,5 +1,6 @@
 
 import { twoDecimalPlaces } from "../PriceCalculator";
+import { getOppositeSide } from "../Bets/getOppositeSide";
 
 /**
  * This function is used to calculate liability of a bet.
@@ -29,13 +30,15 @@ const calcLayBet = (odds, stake) => {
     }
 }
 
-const calcHedge = (size, price, side, ltp, exitPrice) => {
-    var PL = twoDecimalPlaces((size * price) / exitPrice);
-    const PLAtLTP = calcHedgedPL2(size, price, ltp);
+const calcHedgeStake = (size, price, exitPrice, side) => {
+    const PL = twoDecimalPlaces((size * price) / exitPrice);
+    return side === "BACK" ? PL : -PL
+};
 
+const calcHedge = (size, price, side, ltp, exitPrice) => {
     return {
-        hedgePL: PLAtLTP,
-        hedgeStake: side === "BACK" ? PL : -PL
+        hedgePL: calcHedgedPL2(size, price, ltp),
+        hedgeStake: calcHedgeStake(size, price, exitPrice, side)
     }
 };
 
@@ -50,4 +53,45 @@ const calcHedgedPL2 = (stake, backPrice, exitPrice) => {
     return twoDecimalPlaces(((stake * backPrice) / exitPrice - stake));
 };
 
-export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet };
+const getHedgedBets = (betsToMake, ltp) => {
+    return betsToMake.map(bets =>
+        bets.reduce(({ prices, stake }, { price, size, side }) => ({
+            buyPrice: ltp,
+            stake: twoDecimalPlaces(stake + calcHedgeStake(size, price, ltp, side)),
+            side: getOppositeSide(side)
+        }), { prices: [], stake: [] }))
+};
+
+const getHedgedBetsToMake = (marketId, bets, ltp) => {
+    const selections = Object.values(bets.matched).reduce((acc, cur) =>
+        acc.indexOf(cur.selectionId) === -1 ? acc.concat(cur.selectionId) : acc, []);
+
+    var betsToMake = selections.map(selection => {
+        if (isHedgingOnSelectionAvailable(marketId, selection, bets)) {
+
+            return Object.values(bets.matched)
+                .filter(bet => bet.marketId === marketId && bet.selectionId == selection)
+        }
+    });
+    return getHedgedBets(betsToMake, ltp);
+};
+
+const isHedgingOnSelectionAvailable = (marketId, selectionId, bets) => {
+    const counter = [0, 0];
+
+    Object.values(bets.matched)
+        .filter(bet => bet.marketId === marketId && bet.selectionId == selectionId)
+        .map(bet => {
+            switch (bet.side) {
+                case "BACK":
+                    counter[0]++;
+                    break;
+                case "LAY":
+                    counter[1]++;
+                    break;
+            }
+        });
+    return counter[0] > 0 && counter[1] === 0 || counter[0] === 0 && counter[1] > 0;
+}
+
+export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets };
