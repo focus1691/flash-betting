@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UserMarkets from "./UserMarkets";
 import AllSports from "./AllSports";
-import UserBets from "./UserBets";
+import ActiveBets from "./ActiveBets";
 import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import AppBar from "@material-ui/core/AppBar";
@@ -86,7 +86,7 @@ const Menu = () => {
             onChange={handleChange("active_bets")}
           >
             {createExpansionPanelSummary("Active Bets")}
-            <UserBets />
+            <ActiveBets />
           </ExpansionPanel>
         </React.Fragment>
       );

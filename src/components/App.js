@@ -29,198 +29,195 @@ import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 
 const App = props => {
 
-  useEffect(async () => {
+  /**
+   * Send the session key to the server to login to BetFair
+   */
+  let sessionKey = localStorage.getItem("sessionKey");
+  let email = localStorage.getItem("username");
+
+  fetch(
+    `/api/load-session?sessionKey=${encodeURIComponent(
+      sessionKey
+    )}&email=${encodeURIComponent(email)}`
+  );
+
+  useEffect(() => {
+    /**
+     * Fetch settings from the database and load them into redux state
+     * @return {Object} settings
+     *   User settings.
+     */
+    fetch(`/api/get-user-settings`)
+      .then(res => res.json())
+      .then(settings => {
+        props.onToggleSounds(settings.sounds);
+        props.onToggleTools(settings.tools);
+        props.onToggleUnmatchedBets(settings.unmatchedBets);
+        props.onToggleMatchedBets(settings.matchedBets);
+        props.onToggleGraph(settings.graphs);
+        props.onToggleMarketInformation(settings.marketInfo);
+        props.onToggleRules(settings.rules);
+        props.onReceiveStakeBtns(settings.stakeBtns);
+        props.onReceiveLayBtns(settings.layBtns);
+      });
 
     /**
-     * Send the session key to the server to login to BetFair
+     * @return {Boolean} premiumStatus
+     *   Premium membership status required to access the LadderView.
      */
-    let sessionKey = localStorage.getItem("sessionKey");
-    let email = localStorage.getItem("username");
+    fetch(`/api/premium-status`)
+      .then(res => res.json())
+      .then(expiryDate => {
+        let now = new Date();
+        const isActive = isPremiumActive(now, expiryDate);
+        props.setPremiumStatus(isActive);
+      });
+  });
 
-    await fetch(
-      `/api/load-session?sessionKey=${encodeURIComponent(
-        sessionKey
-      )}&email=${encodeURIComponent(email)}`
-    ).then(status => {
+  useEffect(async () => {
+    let marketId = getQueryVariable("marketId");
 
-      /**
-       * Fetch settings from the database and load them into redux state
-       * @return {Object} settings
-       *   User settings.
-       */
-      fetch(`/api/get-user-settings`)
+    // Check if the page has query parameter 'marketId'
+    // Load the market if found
+    if (marketId !== false) {
+      fetch(`/api/get-market-info?marketId=${marketId}`)
         .then(res => res.json())
-        .then(settings => {
-          props.onToggleSounds(settings.sounds);
-          props.onToggleTools(settings.tools);
-          props.onToggleUnmatchedBets(settings.unmatchedBets);
-          props.onToggleMatchedBets(settings.matchedBets);
-          props.onToggleGraph(settings.graphs);
-          props.onToggleMarketInformation(settings.marketInfo);
-          props.onToggleRules(settings.rules);
-          props.onReceiveStakeBtns(settings.stakeBtns);
-          props.onReceiveLayBtns(settings.layBtns);
-        });
+        .then(data => {
+          if (data.result.length > 0) {
+            const runners = {};
+            for (let i = 0; i < data.result[0].runners.length; i++) {
+              let selectionId = data.result[0].runners[i].selectionId;
+              runners[selectionId] = data.result[0].runners[i];
 
-      /**
-       * @return {Boolean} premiumStatus
-       *   Premium membership status required to access the LadderView.
-       */
-      fetch(`/api/premium-status`)
-        .then(res => res.json())
-        .then(expiryDate => {
-          let now = new Date();
-          const isActive = isPremiumActive(now, expiryDate);
-          props.setPremiumStatus(isActive);
-        });
-
-      let marketId = getQueryVariable("marketId");
-
-      // Check if the page has query parameter 'marketId'
-      // Load the market if found
-      if (marketId !== false) {
-        fetch(`/api/get-market-info?marketId=${marketId}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.result.length > 0) {
-              const runners = {};
-              for (let i = 0; i < data.result[0].runners.length; i++) {
-                let selectionId = data.result[0].runners[i].selectionId;
-                runners[selectionId] = data.result[0].runners[i];
-
-                // The Stake/Liability buttons for the GridView
-                runners[selectionId].order = {
-                  visible: false,
-                  backLay: 0,
-                  stakeLiability: 0,
-                  stake: 2,
-                  price: 0
-                };
-              }
-
-              console.log(data.result[0]);
-
-              props.onUpdateRunners(runners);
-              props.onReceiveMarket(data.result[0]);
-              props.onSelectRunner(data.result[0].runners[0]);
-
-              // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-              props.socket.emit("market-subscription", {
-                marketId: data.result[0].marketId
-              });
+              // The Stake/Liability buttons for the GridView
+              runners[selectionId].order = {
+                visible: false,
+                backLay: 0,
+                stakeLiability: 0,
+                stake: 2,
+                price: 0
+              };
             }
-          });
 
-        let loadedBackOrders = {};
-        let loadedLayOrders = {};
-        let loadedStopEntryOrders = {};
-        let loadedTickOffsetOrders = {};
-        let loadedFillOrKillOrders = {};
-        let loadedStopLossOrders = {};
-        let loadedUnmatchedOrders = {};
-        let loadedMatchedOrders = {};
+            console.log(data.result[0]);
+
+            props.onUpdateRunners(runners);
+            props.onReceiveMarket(data.result[0]);
+            props.onSelectRunner(data.result[0].runners[0]);
+
+            // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+            props.socket.emit("market-subscription", {
+              marketId: data.result[0].marketId
+            });
+          }
+        });
+
+      let loadedBackOrders = {};
+      let loadedLayOrders = {};
+      let loadedStopEntryOrders = {};
+      let loadedTickOffsetOrders = {};
+      let loadedFillOrKillOrders = {};
+      let loadedStopLossOrders = {};
+      let loadedUnmatchedOrders = {};
+      let loadedMatchedOrders = {};
 
 
-        fetch(`/api/get-all-orders`)
-          .then(res => res.json())
-          .then(async orders => {
-            const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-            const currentOrdersObject = {};
-            currentOrders.map(item => {
-              currentOrdersObject[item.betId] = item;
-              currentOrdersObject[item.betId].price = item.averagePriceMatched;
-            })
-
-            orders.map(async order => {
-
-              if (order.marketId === marketId) {
-                switch (order.strategy) {
-                  case "Back":
-                    loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
-                    break;
-                  case "Lay":
-                    loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
-                    break;
-                  case "Stop Entry":
-                    loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
-                    break;
-                  case "Tick Offset":
-                    loadedTickOffsetOrders[order.rfs] = order
-                    break;
-                  case "Fill Or Kill":
-                    // this should only keep the fill or kill if the order isn't completed already
-                    if (currentOrdersObject[order.betId] === "EXECUTABLE") {
-                      loadedFillOrKillOrders[order.betId] = order
-                    }
-                    break;
-                  case "Stop Loss":
-                    loadedStopLossOrders[order.selectionId] = order
-                    break;
-                  case "None":
-                    if (currentOrdersObject[order.betId] === undefined) break;
-                    if (currentOrdersObject[order.betId].status === "EXECUTION_COMPLETE") {
-                      loadedMatchedOrders[order.betId] = order;
-                      delete currentOrdersObject[order.betId]
-                    } else if (currentOrdersObject[order.betId].status === "EXECUTABLE") {
-                      loadedUnmatchedOrders[order.betId] = order;
-                      delete currentOrdersObject[order.betId]
-                    }
-                    break;
-                  default:
-                    break;
-                }
-
-              }
-            })
-
-            // handle orders not in the there
-            Object.keys(currentOrdersObject).map(async betId => {
-              const order = currentOrdersObject[betId];
-              const orderData = {
-                strategy: "None",
-                marketId: order.marketId,
-                side: order.side,
-                price: order.price,
-                size: order.priceSize.size,
-                selectionId: order.selectionId,
-                rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
-                betId: betId
-              }
-              if (order.status === "EXECUTION_COMPLETE" || order.status === "EXECUTABLE") {
-                await fetch('/api/save-order', {
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                  },
-                  method: "POST",
-                  body: JSON.stringify(orderData)
-                })
-              }
-
-              if (order.status === "EXECUTION_COMPLETE") {
-                loadedMatchedOrders[order.betId] = orderData;
-              } else if (order.status === "EXECUTABLE") {
-                loadedUnmatchedOrders[order.betId] = orderData;
-              }
-            })
-          }).then(() => {
-            props.onChangeOrders({
-              matched: loadedMatchedOrders,
-              unmatched: loadedUnmatchedOrders
-            })
-            props.onChangeBackList(loadedBackOrders)
-            props.onChangeLayList(loadedLayOrders)
-            props.onChangeStopEntryList(loadedStopEntryOrders)
-            props.onChangeTickOffsetList(loadedTickOffsetOrders)
-            props.onChangeFillOrKillList(loadedFillOrKillOrders)
-            props.onChangeStopLossList(loadedStopLossOrders);
+      fetch(`/api/get-all-orders`)
+        .then(res => res.json())
+        .then(async orders => {
+          const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+          const currentOrdersObject = {};
+          currentOrders.map(item => {
+            currentOrdersObject[item.betId] = item;
+            currentOrdersObject[item.betId].price = item.averagePriceMatched;
           })
 
-      }
+          orders.map(async order => {
 
-    });
+            if (order.marketId === marketId) {
+              switch (order.strategy) {
+                case "Back":
+                  loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
+                  break;
+                case "Lay":
+                  loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
+                  break;
+                case "Stop Entry":
+                  loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
+                  break;
+                case "Tick Offset":
+                  loadedTickOffsetOrders[order.rfs] = order
+                  break;
+                case "Fill Or Kill":
+                  // this should only keep the fill or kill if the order isn't completed already
+                  if (currentOrdersObject[order.betId] === "EXECUTABLE") {
+                    loadedFillOrKillOrders[order.betId] = order
+                  }
+                  break;
+                case "Stop Loss":
+                  loadedStopLossOrders[order.selectionId] = order
+                  break;
+                case "None":
+                  if (currentOrdersObject[order.betId] === undefined) break;
+                  if (currentOrdersObject[order.betId].status === "EXECUTION_COMPLETE") {
+                    loadedMatchedOrders[order.betId] = order;
+                    delete currentOrdersObject[order.betId]
+                  } else if (currentOrdersObject[order.betId].status === "EXECUTABLE") {
+                    loadedUnmatchedOrders[order.betId] = order;
+                    delete currentOrdersObject[order.betId]
+                  }
+                  break;
+                default:
+                  break;
+              }
 
+            }
+          })
 
+          // handle orders not in the there
+          Object.keys(currentOrdersObject).map(async betId => {
+            const order = currentOrdersObject[betId];
+            const orderData = {
+              strategy: "None",
+              marketId: order.marketId,
+              side: order.side,
+              price: order.price,
+              size: order.priceSize.size,
+              selectionId: order.selectionId,
+              rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
+              betId: betId
+            }
+            if (order.status === "EXECUTION_COMPLETE" || order.status === "EXECUTABLE") {
+              await fetch('/api/save-order', {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify(orderData)
+              })
+            }
+
+            if (order.status === "EXECUTION_COMPLETE") {
+              loadedMatchedOrders[order.betId] = orderData;
+            } else if (order.status === "EXECUTABLE") {
+              loadedUnmatchedOrders[order.betId] = orderData;
+            }
+          })
+        }).then(() => {
+          props.onChangeOrders({
+            matched: loadedMatchedOrders,
+            unmatched: loadedUnmatchedOrders
+          })
+          props.onChangeBackList(loadedBackOrders)
+          props.onChangeLayList(loadedLayOrders)
+          props.onChangeStopEntryList(loadedStopEntryOrders)
+          props.onChangeTickOffsetList(loadedTickOffsetOrders)
+          props.onChangeFillOrKillList(loadedFillOrKillOrders)
+          props.onChangeStopLossList(loadedStopLossOrders);
+        })
+
+    }
   }, []);
 
   // useEffect(() => {

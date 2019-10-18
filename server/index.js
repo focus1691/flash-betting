@@ -15,7 +15,6 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 
-app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json()); // to support JSON-encoded bodies
@@ -103,7 +102,7 @@ app.get("/api/login", (request, response) => {
 });
 
 app.get("/api/logout", (request, response) => {
-	session
+	betfair
 		.logout()
 		.then(res => {
 			response.json(res);
@@ -141,6 +140,34 @@ app.get("/api/get-account-details", (request, response) => {
 				currencyCode: res.result.currencyCode,
 				localeCode: res.result.localeCode
 			});
+		}
+	);
+});
+
+app.get("/api/get-events-with-active-bets", (request, response) => {
+	betfair.listCurrentOrders(
+		{
+			filter: {}
+		},
+		(err, res) => {
+			const filteredOrders = res.result.currentOrders = res.result.currentOrders.filter((data, index, order) =>
+			index === order.findIndex((t) => (
+			  
+			  t.marketId === data.marketId
+			))
+		  )
+		  .map(order => order.marketId);
+			betfair.listMarketCatalogue(
+				{
+					filter: {
+						marketIds: filteredOrders
+					},
+					maxResults: 100
+				},
+				(err, res) => {
+					response.json(res.result);
+				}
+			)
 		}
 	);
 });
