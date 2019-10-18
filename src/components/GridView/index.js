@@ -91,6 +91,7 @@ const Grid = props => {
 			<React.Fragment>
 				{renderRunners()}
 				<NonRunners
+					sportId={props.market.eventType.id}
 					nonRunners={props.nonRunners}
 					runners={props.runners}
 					selectRunner={runner => {

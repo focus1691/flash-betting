@@ -15,16 +15,12 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 
+app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 app.use(bodyParser.json()); // to support JSON-encoded bodies
-app.use(
-	bodyParser.urlencoded({
-		// to support URL-encoded bodies
-		extended: true
-	})
-);
-
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+
 const database = require("./Database/helper");
 
 // Load the session key from localStorage into the database and session object
@@ -32,7 +28,7 @@ app.get("/api/load-session", (request, response) => {
 	betfair.setActiveSession(request.query.sessionKey);
 	betfair.setEmailAddress(request.query.email);
 
-	response.send("sent");
+	response.sendStatus(200);
 });
 
 app.get("/api/get-subscription-status", (request, response) => {

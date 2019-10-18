@@ -1,13 +1,17 @@
 import React from "react";
+import { iconForEvent } from "../../utils/EventIcons";
 
-export default ({ name, number, logo, onSelectRunner }) => (
-    <td
+export default ({ sportId, name, number, logo, onSelectRunner }) => (
+  <td
     className="grid-runner-details"
     onClick={e => {
-        onSelectRunner();
+      onSelectRunner();
     }}
   >
-    <img src={`https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${logo}`} alt={"Runner"} />
+    <img src={logo} onError={e => {
+      e.target.onerror = null;
+      e.target.src = iconForEvent(parseInt(sportId));
+    }} />
     <span>{`${number}. ${name}`}</span>
   </td>
 );
