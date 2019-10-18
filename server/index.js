@@ -7,7 +7,9 @@ require("dotenv").config();
 const BetFairSession = require("./BetFair/session.js");
 const ExchangeStream = require("./BetFair/stream-api.js");
 
-const session = new BetFairSession(process.env.APP_KEY);
+const betfair = new BetFairSession(process.env.APP_KEY);
+
+const session = require('express-session');
 
 const express = require("express");
 const app = express();
@@ -23,20 +25,18 @@ app.use(
 
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
-
 const database = require("./Database/helper");
 
 // Load the session key from localStorage into the database and session object
 app.get("/api/load-session", (request, response) => {
-
-	session.setActiveSession(request.query.sessionKey);
-	session.setEmailAddress(request.query.email);
+	betfair.setActiveSession(request.query.sessionKey);
+	betfair.setEmailAddress(request.query.email);
 
 	response.send("sent");
 });
 
 app.get("/api/get-subscription-status", (request, response) => {
-	session.isAccountSubscribedToWebApp(
+	betfair.isAccountSubscribedToWebApp(
 		{
 			vendorId: process.env.APP_ID
 		},
@@ -58,7 +58,7 @@ app.get("/api/request-access-token", (request, response) => {
 
 	const setupTokenInfo = async () => {
 		if (request.query.tokenType === "REFRESH_TOKEN") {
-			storedTokenData = await database.getTokenData(session.email);
+			storedTokenData = await database.getTokenData(betfair.email);
 
 			if (storedTokenData.expiresIn < new Date()) {
 				params.refresh_token = storedTokenData.refreshToken;
@@ -73,14 +73,14 @@ app.get("/api/request-access-token", (request, response) => {
 	};
 
 	const token = async () => {
-		session.token(params, (err, res) => {
+		betfair.token(params, (err, res) => {
 			var tokenInfo = {
 				accessToken: res.result.access_token,
 				expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
 				refreshToken: res.result.refresh_token
 			};
 			// Update the user details with the token information
-			database.setToken(session.email, tokenInfo).then(() => { response.json(tokenInfo) });
+			database.setToken(betfair.email, tokenInfo).then(() => { response.json(tokenInfo) });
 		}
 		);
 	}
@@ -89,7 +89,7 @@ app.get("/api/request-access-token", (request, response) => {
 });
 
 app.get("/api/login", (request, response) => {
-	session
+	betfair
 		.login(request.query.user, request.query.pass)
 		.then(res => {
 			response.json({
@@ -121,7 +121,7 @@ app.get("/api/logout", (request, response) => {
 });
 
 app.get("/api/get-account-balance", (request, response) => {
-	session.getAccountFunds(
+	betfair.getAccountFunds(
 		{
 			filter: {}
 		},
@@ -134,7 +134,7 @@ app.get("/api/get-account-balance", (request, response) => {
 });
 
 app.get("/api/get-account-details", (request, response) => {
-	session.getAccountDetails(
+	betfair.getAccountDetails(
 		{
 			filter: {}
 		},
@@ -150,50 +150,50 @@ app.get("/api/get-account-details", (request, response) => {
 });
 
 app.get("/api/premium-status", (request, response) => {
-	database.getPremiumStatus(session.email).then(expiryDate => {
+	database.getPremiumStatus(betfair.email).then(expiryDate => {
 		response.json(expiryDate);
 	});
 });
 
 
 app.get("/api/get-user-settings", (request, response) => {
-	database.getSettings(session.email).then(settings => {
+	database.getSettings(betfair.email).then(settings => {
 		response.json(settings);
 	});
 });
 
 app.post("/api/save-user-settings", (request, response) => {
-	database.updateSettings(session.email, request.body).then(res => {
+	database.updateSettings(betfair.email, request.body).then(res => {
 		response.sendStatus(res);
 	});
 });
 
 app.get("/api/get-all-orders", (request, response) => {
-	database.getAllOrders(session.email).then(res => {
+	database.getAllOrders(betfair.email).then(res => {
 		response.json(res);
 	});
 });
 
 app.post("/api/save-order", (request, response) => {
-	database.saveOrder(session.email, request.body).then(res => {
+	database.saveOrder(betfair.email, request.body).then(res => {
 		response.sendStatus(res);
 	});
 });
 
 app.post("/api/update-order", (request, response) => {
-	database.updateOrderKey(session.email, request.body).then(res => {
+	database.updateOrderKey(betfair.email, request.body).then(res => {
 		response.sendStatus(res);
 	});
 });
 
 app.post("/api/remove-orders", (request, response) => {
-	database.removeOrders(session.email, request.body).then(res => {
+	database.removeOrders(betfair.email, request.body).then(res => {
 		response.sendStatus(res);
 	});
 });
 
 app.get("/api/get-all-sports", (request, response) => {
-	session.listEventTypes(
+	betfair.listEventTypes(
 		{
 			filter: {}
 		},
@@ -204,7 +204,7 @@ app.get("/api/get-all-sports", (request, response) => {
 });
 
 app.get("/api/list-countries", (request, response) => {
-	session.listCountries(
+	betfair.listCountries(
 		{
 			filter: {
 				eventTypeIds: [request.query.sportId]
@@ -217,7 +217,7 @@ app.get("/api/list-countries", (request, response) => {
 });
 
 app.get("/api/list-competitions", (request, response) => {
-	session.listCompetitions(
+	betfair.listCompetitions(
 		{
 			filter: {
 				eventTypeIds: [request.query.sportId],
@@ -231,7 +231,7 @@ app.get("/api/list-competitions", (request, response) => {
 });
 
 app.get("/api/list-events", (request, response) => {
-	session.listEvents(
+	betfair.listEvents(
 		{
 			filter: {
 				eventTypeIds: [request.query.sportId],
@@ -245,7 +245,7 @@ app.get("/api/list-events", (request, response) => {
 });
 
 app.get("/api/list-competition-events", (request, response) => {
-	session.listEvents(
+	betfair.listEvents(
 		{
 			filter: {
 				competitionIds: [request.query.competitionId],
@@ -269,7 +269,7 @@ app.get("/api/list-markets", (request, response) => {
 			filter.marketTypeCodes = ["WIN"];
 	}
 
-	session.listMarketCatalogue(
+	betfair.listMarketCatalogue(
 		{
 			filter,
 			sort: "MAXIMUM_TRADED",
@@ -282,7 +282,7 @@ app.get("/api/list-markets", (request, response) => {
 });
 
 app.get("/api/get-market-info", (request, response) => {
-	session.listMarketCatalogue(
+	betfair.listMarketCatalogue(
 		{
 			filter: {
 				marketIds: [request.query.marketId]
@@ -306,7 +306,7 @@ app.get("/api/get-market-info", (request, response) => {
 
 app.post("/api/place-order", (request, response) => {
 
-	session.placeOrders(
+	betfair.placeOrders(
 		{
 			marketId: request.body.marketId,
 			instructions: [
@@ -332,7 +332,7 @@ app.post("/api/place-order", (request, response) => {
 });
 
 app.get("/api/listCurrentOrders", (request, response) => {
-	session.listCurrentOrders({
+	betfair.listCurrentOrders({
 		marketIds: [request.query.marketId]
 	},
 		(err, res) => {
@@ -342,7 +342,7 @@ app.get("/api/listCurrentOrders", (request, response) => {
 
 
 app.post("/api/cancel-order", (request, response) => {
-	session.cancelOrders(
+	betfair.cancelOrders(
 		{
 			marketId: request.body.marketId,
 			instructions: [
@@ -360,14 +360,14 @@ app.post("/api/cancel-order", (request, response) => {
 });
 
 app.post("/paypal-transaction-complete", (request, response) => {
-	database.saveTransaction(session.email, request.body).then(res => {
+	database.saveTransaction(betfair.email, request.body).then(res => {
 		response.sendStatus(res);
 	});
 });
 
 // A call to get required params for O-auth (vendorId, vendorSecret)
 app.get("/api/get-developer-application-keys", (request, response) => {
-	session.getDeveloperAppKeys(
+	betfair.getDeveloperAppKeys(
 		{
 			filter: {}
 		},
@@ -431,21 +431,19 @@ process.on(
 );
 
 const io = require("socket.io")(8000);
-io.on("connection", client => {
+io.on("connection", async client => {
 	const exchangeStream = new ExchangeStream(client);
 
 	// Subscribe to market
-	client.on("market-subscription", data => {
-		database.getToken(session.email).then(accessToken => {
-			const subscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
-			exchangeStream.authenticate(subscription, accessToken);
-		});
+	client.on("market-subscription", async data => {
+		const accessToken = await database.getToken(betfair.email);
+		const subscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
+		exchangeStream.authenticate(subscription, accessToken);
 	});
 	// Subscribe to orders
-	client.on("order-subscription", data => {
-		database.getToken(session.email).then(accessToken => {
-			const subscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":["${data.strategyRef}"]},"segmentationEnabled":true}\r\n`;
-			exchangeStream.authenticate(subscription, accessToken);
-		});
+	client.on("order-subscription", async data => {
+		const accessToken = await database.getToken(betfair.email);
+		const subscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":["${data.strategyRef}"]},"segmentationEnabled":true}\r\n`;
+		exchangeStream.authenticate(subscription, accessToken);
 	});
 });

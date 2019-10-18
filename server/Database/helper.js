@@ -96,15 +96,12 @@ class DatabaseHelper extends Database {
             });
         });
     }
-    getToken(user) {
-        return new Promise((res, rej) => {
-            User.findOne({
-                email: user
-            }).then(doc => {
-                res(doc.accessToken)
-            }).catch(err => {
-                rej(err);
-            });
+    async getToken(user) {
+        return User.findOne({email: user})
+        .then(doc => {
+            return doc.accessToken;
+        }).catch(err => {
+            return err;
         });
     }
     async getTokenData(user) {
