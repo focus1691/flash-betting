@@ -59,7 +59,7 @@ app.get("/api/request-access-token", (request, response) => {
 	const setupTokenInfo = async () => {
 		if (request.query.tokenType === "REFRESH_TOKEN") {
 			storedTokenData = await database.getTokenData(session.email);
-	
+
 			if (storedTokenData.expiresIn < new Date()) {
 				params.refresh_token = storedTokenData.refreshToken;
 				token();
@@ -74,14 +74,14 @@ app.get("/api/request-access-token", (request, response) => {
 
 	const token = async () => {
 		session.token(params, (err, res) => {
-				var tokenInfo = {
-					accessToken: res.result.access_token,
-					expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
-					refreshToken: res.result.refresh_token
-				};
-				// Update the user details with the token information
-				database.setToken(session.email, tokenInfo).then(() => { response.json(tokenInfo)});
-			}
+			var tokenInfo = {
+				accessToken: res.result.access_token,
+				expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
+				refreshToken: res.result.refresh_token
+			};
+			// Update the user details with the token information
+			database.setToken(session.email, tokenInfo).then(() => { response.json(tokenInfo) });
+		}
 		);
 	}
 
@@ -432,10 +432,20 @@ process.on(
 
 const io = require("socket.io")(8000);
 io.on("connection", client => {
+	const exchangeStream = new ExchangeStream(client);
+
+	// Subscribe to market
 	client.on("market-subscription", data => {
 		database.getToken(session.email).then(accessToken => {
-			const exchangeStream = new ExchangeStream(accessToken);
-			exchangeStream.authenticate(data, client);
+			const subscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
+			exchangeStream.authenticate(subscription, accessToken);
+		});
+	});
+	// Subscribe to orders
+	client.on("order-subscription", data => {
+		database.getToken(session.email).then(accessToken => {
+			const subscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":["${data.strategyRef}"]},"segmentationEnabled":true}\r\n`;
+			exchangeStream.authenticate(subscription, accessToken);
 		});
 	});
 });

@@ -5,14 +5,13 @@ const decoder = new StringDecoder('utf8');
 const tls = require('tls');
 
 class BetFairStreamAPI {
-	constructor (sessionKey) {
-		this.sessionKey = sessionKey;
+	constructor (openSocket) {
 		this.client = null;
-		this.openSocket = null;
+		this.openSocket = openSocket;
 		this.bufferedStr = '';
 		this.chunks = [];
 	}
-	authenticate (data, openSocket) {
+	authenticate (subscription, sessionKey) {
 
 		let options = {
 			host: 'stream-api.betfair.com',
@@ -23,9 +22,9 @@ class BetFairStreamAPI {
 
 			this.client.setEncoding('utf8');
 
-			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + this.sessionKey + '"}\r\n');
+			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 
-			this.client.write(`{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`);
+			this.client.write(subscription);
 
 			this.client.on('data', data => {
 				// console.log('Received: ' + data);
@@ -42,12 +41,12 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						openSocket.emit('mcm', result.mc[0]);
+						this.openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];
 					}
 					// Order Change Message Data Found
 					else if (result.op === 'ocm') {
-						openSocket.emit('ocm', result);
+						this.openSocket.emit('ocm', result);
 						this.chunks = [];
 					} else {
 						this.chunks = [];
@@ -69,13 +68,6 @@ class BetFairStreamAPI {
 				console.log('Error:' + err);
 			});
 		});
-	}
-	subscribeToMarket (data) {
-		this.client.write(`{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`);
-	}
-
-	subscribeToOrder (data) { 
-		this.client.write(`{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":["${data.strategyRef}"]},"segmentationEnabled":true}\r\n`);
 	}
 }
 
