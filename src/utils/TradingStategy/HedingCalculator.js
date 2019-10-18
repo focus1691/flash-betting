@@ -55,14 +55,15 @@ const calcHedgedPL2 = (stake, backPrice, exitPrice) => {
 
 const getHedgedBets = (betsToMake, ltp) => {
     return betsToMake.map(bets =>
-        bets.reduce(({ prices, stake }, { price, size, side }) => ({
-            buyPrice: ltp,
-            stake: twoDecimalPlaces(stake + calcHedgeStake(size, price, ltp, side)),
-            side: getOppositeSide(side)
+        bets.reduce(({ stake }, { price, size, side, selectionId }) => ({
+            buyPrice: ltp[selectionId],
+            stake: twoDecimalPlaces(stake + calcHedgeStake(size, price, ltp[selectionId], side)),
+            side: getOppositeSide(side),
+            selectionId: selectionId
         }), { prices: [], stake: [] }))
 };
 
-const getHedgedBetsToMake = (marketId, bets, ltp) => {
+const getHedgedBetsToMake = (marketId, bets, ltps) => {
     const selections = Object.values(bets.matched).reduce((acc, cur) =>
         acc.indexOf(cur.selectionId) === -1 ? acc.concat(cur.selectionId) : acc, []);
 
@@ -73,7 +74,8 @@ const getHedgedBetsToMake = (marketId, bets, ltp) => {
                 .filter(bet => bet.marketId === marketId && bet.selectionId == selection)
         }
     });
-    return getHedgedBets(betsToMake, ltp);
+
+    return getHedgedBets(betsToMake, ltps);
 };
 
 const isHedgingOnSelectionAvailable = (marketId, selectionId, bets) => {
