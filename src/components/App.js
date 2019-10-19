@@ -50,6 +50,7 @@ const App = props => {
     fetch(`/api/get-user-settings`)
       .then(res => res.json())
       .then(settings => {
+        console.log(settings);
         props.onToggleSounds(settings.sounds);
         props.onToggleTools(settings.tools);
         props.onToggleUnmatchedBets(settings.unmatchedBets);
@@ -57,6 +58,7 @@ const App = props => {
         props.onToggleGraph(settings.graphs);
         props.onToggleMarketInformation(settings.marketInfo);
         props.onToggleRules(settings.rules);
+        props.onToggleLadderUnmatched(settings.ladderUnmatched);
         props.onReceiveStakeBtns(settings.stakeBtns);
         props.onReceiveLayBtns(settings.layBtns);
       });
@@ -72,7 +74,7 @@ const App = props => {
         const isActive = isPremiumActive(now, expiryDate);
         props.setPremiumStatus(isActive);
       });
-  });
+  }, []);
 
   useEffect(async () => {
     let marketId = getQueryVariable("marketId");
@@ -501,6 +503,7 @@ const mapDispatchToProps = dispatch => {
     onToggleMarketInformation: settings =>
       dispatch(actions.toggleMarketInformation(settings)),
     onToggleRules: settings => dispatch(actions.toggleRules(settings)),
+    onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
     onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
     onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
     onReceiveMarket: market => dispatch(actions2.loadMarket(market)),

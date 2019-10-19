@@ -320,27 +320,38 @@ const Settings = props => {
 					Ladder Unmatched Column
 				</Typography>
 			</AppBar>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					"settings.ladderUnmatched": props.ladderUnmatched
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
 			<RadioGroup
 				aria-label="gender"
 				name="gender2"
 				className={classes.group}
-				value={34}
-				onChange={handleChange}
+				value={props.ladderUnmatched}
+				onChange={e => {
+					console.log(e.target.value);
+					props.onToggleLadderUnmatched(e.target.value);
+				}}
 			>
 				<FormControlLabel
-					value="female"
+					value="blank"
 					control={<Radio color="primary" />}
 					label="Unmatched Bets Only"
 					labelPlacement="end"
 				/>
 				<FormControlLabel
-					value="male"
+					value="pl"
 					control={<Radio color="primary" />}
 					label="Umatched Bets + P/L"
 					labelPlacement="end"
 				/>
 				<FormControlLabel
-					value="other"
+					value="hedged"
 					control={<Radio color="primary" />}
 					label="Unmatched Bets + Hedge"
 					labelPlacement="end"
@@ -615,7 +626,7 @@ const mapDispatchToProps = dispatch => {
 		onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
 		onToggleRules: settings => dispatch(actions.toggleRules(settings)),
 		onToggleTrainingLadderAutoCenter: settings => dispatch(actions.toggleTrainingLadderAutoCenter(settings)),
-		onToggleLadderUnmatched: isSelected => dispatch(actions.toggleLadderUnmatched(isSelected)),
+		onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
 		onUpdateStakeBtn: data => dispatch(actions.updateStakeBtn(data)),
 		onUpdateLayBtn: data => dispatch(actions.updateLayBtn(data))
 	}

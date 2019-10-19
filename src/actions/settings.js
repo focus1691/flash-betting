@@ -110,10 +110,10 @@ export const toggleTrainingLadderAutoCenter = isSelected => {
     }
 }
 
-export const toggleLadderUnmatched = settings => {
+export const toggleLadderUnmatched = unmatchedColumn => {
     return {
         type: "TOGGLE_LADDER_UNMATCHED_COLUMN",
-        payload: settings
+        payload: unmatchedColumn
     }
 }
 

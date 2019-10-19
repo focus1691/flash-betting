@@ -32,11 +32,7 @@ const initialState = {
     open: false
   },
   trainingLadderAutoCenter: false,
-  ladderUnmatched: {
-    unmatchedBets: false,
-    unmatchedBetsPL: false,
-    unmatchedBetsHedge: false
-  },
+  ladderUnmatched: "hedged",
   stakeBtns: [2, 4, 6, 8, 10, 12, 14],
   layBtns: [2.5, 5, 7.5, 10, 12.5, 15, 17.5],
   stake: {}

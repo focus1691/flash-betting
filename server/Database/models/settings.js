@@ -71,18 +71,8 @@ const settingsSchema = mongoose.Schema({
     },
     trainingLadderAutoCenter: false,
     ladderUnmatched: {
-        unmatchedBets: {
-            type: Boolean,
-            default: false
-        },
-        unmatchedBetsPL: {
-            type: Boolean,
-            default: false
-        },
-        unmatchedBetsHedge: {
-            type: Boolean,
-            default: false
-        }
+        type: String,
+        default: "hedged"
     },
     stakeBtns: {
         type: Array,

@@ -171,7 +171,7 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 		}
 	);
 });
-
+//
 app.get("/api/premium-status", (request, response) => {
 	database.getPremiumStatus(betfair.email).then(expiryDate => {
 		response.json(expiryDate);
