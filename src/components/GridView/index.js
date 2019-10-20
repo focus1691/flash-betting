@@ -15,6 +15,7 @@ import NonRunners from "./NonRunner";
 import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 import { placeOrder } from "../../actions/order";
+import { calcHedge, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 
 const Grid = props => {
 	
@@ -125,17 +126,23 @@ const Grid = props => {
 			orderProps.text2 = order.backLay === 0 ? "BACK" : "LAY";
 			orderProps.bg = order.backLay === 0 ? "#DBEFFF" : "#FEE9EE";
 
+
+			const profitArray = Object.values(props.bets.matched).filter(bet => bet.selectionId == props.runners[key].selectionId).map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
+			const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
+            
 			return (
 				<React.Fragment>
 					<tr>
 						<GridDetailCell
 							sportId={props.market.eventType.id}
+							market={props.market}
 							runner={props.runners[key]}
 							name={name}
 							number={number}
 							logo={logo}
 							ltp={ltp}
 							tv={tv}
+							bets={props.bets}
 							PL={
 								marketHasBets(props.market.marketId, props.bets) ?
 									{
@@ -154,7 +161,8 @@ const Grid = props => {
 											renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
 											:
 											{ val: "", color: "" }
-								}
+							}
+							hedge = {profit}
 							bg={bg}
 						/>
 						{renderRow(atb, batb, key, 0).reverse()}
@@ -205,6 +213,19 @@ const Grid = props => {
 			/>
 		);
 	};
+
+
+	const ltpSelectionIdObject = {}
+
+	Object.keys(props.ladder).map(key => {
+		const { ltp, } = DeconstructLadder(
+			props.ladder[key]
+		);
+		ltpSelectionIdObject[key] = ltp[0]
+	})
+	
+
+
 	return (
 		<div id="grid-container">
 			<table
@@ -242,8 +263,9 @@ const Grid = props => {
 						stakeBtns={props.stakeBtns}
 						layBtns={props.layBtns}
 						bets={props.bets}
-						
-					/>
+						ltpList={ltpSelectionIdObject}
+						onPlaceOrder={props.onPlaceOrder}
+					/>	
 					{props.marketOpen
 						? props.marketStatus === "SUSPENDED"
 							? renderSuspended()

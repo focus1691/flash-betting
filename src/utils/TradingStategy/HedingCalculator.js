@@ -64,6 +64,7 @@ const getHedgedBets = (betsToMake, ltp) => {
 };
 
 const getHedgedBetsToMake = (marketId, bets, ltps) => {
+
     const selections = Object.values(bets.matched).reduce((acc, cur) =>
         acc.indexOf(cur.selectionId) === -1 ? acc.concat(cur.selectionId) : acc, []);
 
@@ -73,7 +74,8 @@ const getHedgedBetsToMake = (marketId, bets, ltps) => {
             return Object.values(bets.matched)
                 .filter(bet => bet.marketId === marketId && bet.selectionId == selection)
         }
-    });
+    }).filter(selection => selection !== undefined);
+
 
     return getHedgedBets(betsToMake, ltps);
 };

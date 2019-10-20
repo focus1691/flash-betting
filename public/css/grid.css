@@ -84,6 +84,13 @@
 }
 
 .grid-runner-details span:nth-child(5) {
+	float: left;
+	color: #01CC41;
+	margin-left: 5px;
+	font-size: x-small;
+}
+
+.grid-runner-details span:nth-child(6) {
 	float: right;
 	clear: right;
 	font-size: x-small;

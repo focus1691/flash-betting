@@ -28,7 +28,7 @@ const OrderRow = props => {
               </tbody>
             </table>
           </td>
-          <td colSpan={1} rowSpan={4} style={{verticalAlign: 'top'}}>
+          <td colSpan={1} rowSpan={4} style={{verticalAlign: 'top', minHeight: '1.675em'}}>
             <button>0</button>
             <button onClick={() => {
               props.onChangePriceType(props.priceType === "STAKE" ? "LIABILITY" : "STAKE")

@@ -218,6 +218,7 @@
 /** LAY TABLE **/
 
 .lay-table {
+	border: unset !important;
 	width: 100%;
 	border-spacing: 0;
 	border-collapse: collapse;
@@ -228,7 +229,8 @@
 .lay-body {
 	overflow-y: scroll;
 	display: block;
-	max-height: 9em;
+	min-height: 5em;
+	max-height: 5em;
 }
 
 

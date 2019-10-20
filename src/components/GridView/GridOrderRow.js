@@ -93,7 +93,7 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                                     price: price,
                                     selectionId: runnerId,
                                     customerStrategyRef: referenceStrategyId,
-                                    unmatchedBets: bets.unmatchedBets,
+                                    unmatchedBets: bets.unmatched,
                                     matchedBets: bets.matched,
                                 })
                             }}

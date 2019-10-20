@@ -67,6 +67,37 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
 
     const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), {matched: matchedBets}).toFixed(2) : 0
     
+    const placeOrder = data => {
+        onPlaceOrder({
+            marketId: market.marketId,
+            side: data.side,
+            size: data.size,
+            price: data.price,
+            selectionId: data.selectionId,
+            customerStrategyRef: data.customerStrategyRef,
+            orderCompleteCallBack: data.orderCompleteCallBack,
+            unmatchedBets: unmatchedBets,
+            matchedBets: matchedBets,
+            minFillSize: data.minFillSize
+        });
+    }
+
+    const placeStopLossOrder = data => {
+        changeStopLossList({
+            marketId: market.marketId,
+            selectionId: parseInt(id),
+            side: data.side,
+            size: data.size,
+            price: data.price, 
+            trailing: false,
+            customStopLoss: data.custom, 
+            units: data.units,
+            rfs: data.rfs,
+            assignedIsOrderMatched: data.assignedIsOrderMatched,
+            betId: data.betId,
+            hedged: data.hedged
+        })
+    }
 
 
     const fullLadderWithProfit = {};
@@ -145,39 +176,11 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                             itemData = {{
                                 ladder: fullLadderWithProfit,
                                 selectionId: id,
-                                placeOrder: data => {
-                                    onPlaceOrder({
-                                        marketId: market.marketId,
-                                        side: data.side,
-                                        size: data.size,
-                                        price: data.price,
-                                        selectionId: data.selectionId,
-                                        customerStrategyRef: data.customerStrategyRef,
-                                        orderCompleteCallBack: data.orderCompleteCallBack,
-                                        unmatchedBets: unmatchedBets,
-                                        matchedBets: matchedBets,
-                                        minFillSize: data.minFillSize
-                                    });
-                                },
+                                placeOrder: placeOrder,
                                 ltp: ladder[id].ltp[0],
                                 ltpList: coloredLTPList,
                                 stopLoss: stopLoss,
-                                changeStopLossList: data => {
-                                    changeStopLossList({
-                                        marketId: market.marketId,
-                                        selectionId: parseInt(id),
-                                        side: data.side,
-                                        size: data.size,
-                                        price: data.price, 
-                                        trailing: false,
-                                        customStopLoss: data.custom, 
-                                        units: data.units,
-                                        rfs: data.rfs,
-                                        assignedIsOrderMatched: data.assignedIsOrderMatched,
-                                        betId: data.betId,
-                                        hedged: data.hedged
-                                    })
-                                },
+                                changeStopLossList: placeStopLossOrder,
                                 hedgeSize: hedgeSize,
                                 setOddsHovered: setOddsHovered
                             }}

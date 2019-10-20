@@ -5,6 +5,8 @@ import { formatCurrency } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
 import getQueryVariable from "../../utils/GetQueryVariable";
 import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
+import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
+import crypto from 'crypto'
 
 export default ({
   market,
@@ -20,7 +22,9 @@ export default ({
   setStake,
   stakeBtns,
   layBtns,
-  bets
+  bets,
+  ltpList,
+  onPlaceOrder
 }) => (
     <React.Fragment>
       <tr id="grid-header">
@@ -105,7 +109,33 @@ export default ({
         <th id="market-cashout" colSpan="1" onClick={() => {
           
         }}>
-          <span>{getMarketCashout(getQueryVariable("marketId"), bets)}</span>
+          <span
+            onClick = {() => {
+              const hedgedBets = getHedgedBetsToMake(getQueryVariable("marketId"), bets, ltpList)
+
+              if (hedgedBets.length > 0) {
+                const recursivePlaceHedge = (index, unmatchedBets) => {
+
+                  const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
+
+                  onPlaceOrder({
+                    marketId: market.marketId,
+                    side: hedgedBets[index].side,
+                    size: hedgedBets[index].stake,
+                    price: hedgedBets[index].buyPrice,
+                    selectionId: hedgedBets[index].selectionId,
+                    customerStrategyRef: referenceStrategyId,
+                    unmatchedBets: unmatchedBets,
+                    matchedBets: bets.matched,
+                    orderCompleteCallBack: (betId, newUnmatchedBets) => recursivePlaceHedge(index + 1, newUnmatchedBets)
+                  })
+                }
+
+                recursivePlaceHedge(0, bets.unmatched)
+                
+              }
+            }}
+          >{getMarketCashout(getQueryVariable("marketId"), bets)}</span>
         </th>
 
         <th colSpan="1"></th>

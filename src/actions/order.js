@@ -13,6 +13,8 @@ export const placeOrder = order => {
     return
   }
 
+  console.log(order)
+
   order.size = order.size === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
   order.price = parseFloat(order.price)
 
@@ -59,7 +61,7 @@ export const placeOrder = order => {
         })
 
         if (order.orderCompleteCallBack !== undefined)
-          await order.orderCompleteCallBack(betId);
+          await order.orderCompleteCallBack(betId, newUnmatchedBets);
 
         dispatch(updateOrders(newBets));
         
