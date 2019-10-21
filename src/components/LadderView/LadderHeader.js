@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { iconForEvent } from "../../utils/EventIcons";
 import { calcBackBet } from "../../utils/TradingStategy/HedingCalculator";
 
-export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, ladderLTPHedge, newStake, oddsHovered }) => {
+export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, ladderLTPHedge, newStake, oddsHovered, ordersOnMarket }) => {
   
   const oddsHoveredCalc = ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) + 
   ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2);
@@ -39,10 +39,13 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
         </h2>
         <div className = "contender-odds-container">
           <span className="contender-odds"
-            style = {{color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'}}
+            style = {{
+              visibility: ordersOnMarket ? 'visible' : 'hidden',
+              color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'
+            }}
           >{PL}</span>
           <span className="contender-odds" 
-            style = {{visibility: oddsHovered.odds > 0 ? 'visible' : 'hidden',
+            style = {{visibility: oddsHovered.odds > 0 && ordersOnMarket ? 'visible' : 'hidden',
                       color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'}}>
             {/* calculates what to add or subtract based on odds hovered */}
             {oddsHoveredCalc} 

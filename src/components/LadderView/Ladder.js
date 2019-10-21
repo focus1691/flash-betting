@@ -150,6 +150,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                 ladderLTPHedge = {ladderLTPHedge}
                 newStake = {newStake}
                 oddsHovered = {oddsHovered}
+                ordersOnMarket = {(Object.keys(unmatchedBets).length + Object.keys(matchedBets).length) > 0}
             />
             
             <div className={"ladder"} onContextMenu = { () => false }>
