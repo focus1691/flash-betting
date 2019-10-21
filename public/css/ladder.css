@@ -229,8 +229,8 @@
 .lay-body {
 	overflow-y: scroll;
 	display: block;
-	min-height: 5em;
-	max-height: 5em;
+	min-height: 3.5em;
+	max-height: 3.5em;
 }
 
 
