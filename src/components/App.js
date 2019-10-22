@@ -76,150 +76,148 @@ const App = props => {
       });
   }, []);
 
-  useEffect(async () => {
-    let marketId = getQueryVariable("marketId");
+  useEffect(() => {
+    
+    const load = async () => {
+      let marketId = getQueryVariable("marketId");
 
-    // Check if the page has query parameter 'marketId'
-    // Load the market if found
-    if (marketId !== false) {
-      fetch(`/api/get-market-info?marketId=${marketId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.result.length > 0) {
-            const runners = {};
-            for (let i = 0; i < data.result[0].runners.length; i++) {
-              let selectionId = data.result[0].runners[i].selectionId;
-              runners[selectionId] = data.result[0].runners[i];
+      // Check if the page has query parameter 'marketId'
+      // Load the market if found
+      if (marketId !== false) {
+        fetch(`/api/get-market-info?marketId=${marketId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.result.length > 0) {
+              const runners = {};
+              for (let i = 0; i < data.result[0].runners.length; i++) {
+                let selectionId = data.result[0].runners[i].selectionId;
+                runners[selectionId] = data.result[0].runners[i];
 
-              // The Stake/Liability buttons for the GridView
-              runners[selectionId].order = {
-                visible: false,
-                backLay: 0,
-                stakeLiability: 0,
-                stake: 2,
-                price: 0
-              };
-            }
-
-            console.log(data.result[0]);
-
-            props.onUpdateRunners(runners);
-            props.onReceiveMarket(data.result[0]);
-            props.onSelectRunner(data.result[0].runners[0]);
-
-            // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-            props.socket.emit("market-subscription", {
-              marketId: data.result[0].marketId
-            });
-          }
-        });
-
-      let loadedBackOrders = {};
-      let loadedLayOrders = {};
-      let loadedStopEntryOrders = {};
-      let loadedTickOffsetOrders = {};
-      let loadedFillOrKillOrders = {};
-      let loadedStopLossOrders = {};
-      let loadedUnmatchedOrders = {};
-      let loadedMatchedOrders = {};
-
-
-      fetch(`/api/get-all-orders`)
-        .then(res => res.json())
-        .then(async orders => {
-          const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-          const currentOrdersObject = {};
-          currentOrders.map(item => {
-            currentOrdersObject[item.betId] = item;
-            currentOrdersObject[item.betId].price = item.averagePriceMatched;
-          })
-
-          orders.map(async order => {
-
-            if (order.marketId === marketId) {
-              switch (order.strategy) {
-                case "Back":
-                  loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
-                  break;
-                case "Lay":
-                  loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
-                  break;
-                case "Stop Entry":
-                  loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
-                  break;
-                case "Tick Offset":
-                  loadedTickOffsetOrders[order.rfs] = order
-                  break;
-                case "Fill Or Kill":
-                  // this should only keep the fill or kill if the order isn't completed already
-                  if (currentOrdersObject[order.betId] === "EXECUTABLE") {
-                    loadedFillOrKillOrders[order.betId] = order
-                  }
-                  break;
-                case "Stop Loss":
-                  loadedStopLossOrders[order.selectionId] = order
-                  break;
-                case "None":
-                  if (currentOrdersObject[order.betId] === undefined) break;
-                  if (currentOrdersObject[order.betId].status === "EXECUTION_COMPLETE") {
-                    loadedMatchedOrders[order.betId] = order;
-                    delete currentOrdersObject[order.betId]
-                  } else if (currentOrdersObject[order.betId].status === "EXECUTABLE") {
-                    loadedUnmatchedOrders[order.betId] = order;
-                    delete currentOrdersObject[order.betId]
-                  }
-                  break;
-                default:
-                  break;
+                // The Stake/Liability buttons for the GridView
+                runners[selectionId].order = {
+                  visible: false,
+                  backLay: 0,
+                  stakeLiability: 0,
+                  stake: 2,
+                  price: 0
+                };
               }
 
+              console.log(data.result[0]);
+
+              props.onUpdateRunners(runners);
+              props.onReceiveMarket(data.result[0]);
+              props.onSelectRunner(data.result[0].runners[0]);
+
+              // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+              props.socket.emit("market-subscription", {
+                marketId: data.result[0].marketId
+              });
             }
+          });
+
+        let loadedBackOrders = {};
+        let loadedLayOrders = {};
+        let loadedStopEntryOrders = {};
+        let loadedTickOffsetOrders = {};
+        let loadedFillOrKillOrders = {};
+        let loadedStopLossOrders = {};
+        let loadedUnmatchedOrders = {};
+        let loadedMatchedOrders = {};
+
+
+        fetch(`/api/get-all-orders`)
+          .then(res => res.json())
+          .then(orders => {
+                const loadOrders = async orders => {
+                  const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+                  const currentOrdersObject = {};
+                  currentOrders.map(item => {
+                    currentOrdersObject[item.betId] = item;
+                    currentOrdersObject[item.betId].price = item.averagePriceMatched;
+                  })
+                  
+                  orders.map(async order => {
+
+                    if (order.marketId === marketId) {
+                      switch (order.strategy) {
+                        case "Back":
+                          loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
+                          break;
+                        case "Lay":
+                          loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
+                          break;
+                        case "Stop Entry":
+                          loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
+                          break;
+                        case "Tick Offset":
+                          loadedTickOffsetOrders[order.rfs] = order
+                          break;
+                        case "Fill Or Kill":
+                          // this should only keep the fill or kill if the order isn't completed already
+                          if (currentOrdersObject[order.betId] === "EXECUTABLE") {
+                            loadedFillOrKillOrders[order.betId] = order
+                          }
+                          break;
+                        case "Stop Loss":
+                          loadedStopLossOrders[order.selectionId] = order
+                          break;
+                        default:
+                          break;
+                      }
+
+                    }
+                  })
+
+                  // handle orders not in the there
+                  Object.keys(currentOrdersObject).map(async betId => {
+                    const order = currentOrdersObject[betId];
+                    const orderData = {
+                      strategy: "None",
+                      marketId: order.marketId,
+                      side: order.side,
+                      price: order.price,
+                      size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
+                      selectionId: order.selectionId,
+                      rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
+                      betId: betId
+                    }
+                    if (order.status === "EXECUTION_COMPLETE" || order.status === "EXECUTABLE") {
+                      await fetch('/api/save-order', {
+                        headers: {
+                          Accept: "application/json",
+                          "Content-Type": "application/json"
+                        },
+                        method: "POST",
+                        body: JSON.stringify(orderData)
+                      })
+                    }
+
+                    if (order.status === "EXECUTION_COMPLETE") {
+                      loadedMatchedOrders[order.betId] = orderData;
+                    } else if (order.status === "EXECUTABLE") {
+                      loadedUnmatchedOrders[order.betId] = orderData;
+                    }
+                  })
+                }
+                loadOrders(orders);
+            }
+          ).then(() => {
+            props.onChangeOrders({
+              matched: loadedMatchedOrders,
+              unmatched: loadedUnmatchedOrders
+            })
+            props.onChangeBackList(loadedBackOrders)
+            props.onChangeLayList(loadedLayOrders)
+            props.onChangeStopEntryList(loadedStopEntryOrders)
+            props.onChangeTickOffsetList(loadedTickOffsetOrders)
+            props.onChangeFillOrKillList(loadedFillOrKillOrders)
+            props.onChangeStopLossList(loadedStopLossOrders);
           })
 
-          // handle orders not in the there
-          Object.keys(currentOrdersObject).map(async betId => {
-            const order = currentOrdersObject[betId];
-            const orderData = {
-              strategy: "None",
-              marketId: order.marketId,
-              side: order.side,
-              price: order.price,
-              size: order.priceSize.size,
-              selectionId: order.selectionId,
-              rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
-              betId: betId
-            }
-            if (order.status === "EXECUTION_COMPLETE" || order.status === "EXECUTABLE") {
-              await fetch('/api/save-order', {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify(orderData)
-              })
-            }
-
-            if (order.status === "EXECUTION_COMPLETE") {
-              loadedMatchedOrders[order.betId] = orderData;
-            } else if (order.status === "EXECUTABLE") {
-              loadedUnmatchedOrders[order.betId] = orderData;
-            }
-          })
-        }).then(() => {
-          props.onChangeOrders({
-            matched: loadedMatchedOrders,
-            unmatched: loadedUnmatchedOrders
-          })
-          props.onChangeBackList(loadedBackOrders)
-          props.onChangeLayList(loadedLayOrders)
-          props.onChangeStopEntryList(loadedStopEntryOrders)
-          props.onChangeTickOffsetList(loadedTickOffsetOrders)
-          props.onChangeFillOrKillList(loadedFillOrKillOrders)
-          props.onChangeStopLossList(loadedStopLossOrders);
-        })
-
+      }
     }
+  load();
   }, []);
 
   // useEffect(() => {

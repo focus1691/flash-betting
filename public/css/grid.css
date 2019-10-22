@@ -84,6 +84,7 @@
 }
 
 .grid-runner-details span:nth-child(5) {
+	cursor: pointer;
 	float: left;
 	color: #01CC41;
 	margin-left: 5px;
