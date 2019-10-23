@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UserMarkets from "./UserMarkets";
+import MyMarkets from "./MyMarkets";
 import AllSports from "./AllSports";
 import ActiveBets from "./ActiveBets";
 import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
@@ -70,7 +70,7 @@ const Menu = () => {
             onChange={handleChange("my_markets")}
           >
             {createExpansionPanelSummary("My Markets")}
-            <UserMarkets />
+            <MyMarkets />
           </ExpansionPanel>
 
           <ExpansionPanel

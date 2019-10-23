@@ -68,6 +68,13 @@ export const toggleOneClick = active => {
     }
 }
 
+export const loadMyMarkets = markets => {
+  return {
+    type: "LOAD_MY_MARKETS",
+    payload: markets
+  }
+};
+
 export const updateOrder = order => {
   return {
     type: "UPDATE_ORDER",
