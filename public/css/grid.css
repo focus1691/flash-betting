@@ -76,26 +76,18 @@
 	font-weight: normal;
 }
 
-.grid-runner-details span:nth-child(4) {
-	float: left;
-	color: #01CC41;
-	margin-left: 5px;
-	font-size: x-small;
+.grid-pl {
+	clear: both;
+	font-size: small;
+	text-align: center;
 }
 
-.grid-runner-details span:nth-child(5) {
+.grid-pl span:nth-child(1) {
 	cursor: pointer;
-	float: left;
-	color: #01CC41;
-	margin-left: 5px;
-	font-size: x-small;
 }
 
-.grid-runner-details span:nth-child(6) {
-	float: right;
-	clear: right;
-	font-size: x-small;
-	font-weight: normal;
+.grid-pl span:nth-child(2) {
+	margin-left: 10%;
 }
 
 .grid-non-runner {

@@ -30,7 +30,8 @@ const GridDetailCell = props => {
       }} />
       <span>{`${props.number}${props.name}`}</span>
       <span style={{ background: props.bg }}>{props.ltp[0] ? props.ltp[0] : ""}</span>
-      <span style={{ color: props.PL.color }}>{props.PL.val}</span>
+
+      <div className={"grid-pl"}>
       <span style={{ color: props.hedge < 0 ? "red" : "#01CC41" }}
         onClick={() => {
           const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
@@ -47,7 +48,9 @@ const GridDetailCell = props => {
         }}>
         {props.ltp[0] ? props.hedge : ''}
       </span>
+      <span style={{ color: props.PL.color }}>{props.PL.val}</span>
       <span>{props.tv[0] ? Math.floor(props.tv[0]).toLocaleString() : ""}</span>
+      </div>
     </td>
   );
 };
