@@ -209,7 +209,7 @@ const Grid = props => {
 				selectRunner={runner => {
 					props.onSelectRunner(runner);
 				}}
-
+				eventId={props.market.eventType.id}
 			/>
 		);
 	};
