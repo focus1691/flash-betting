@@ -99,18 +99,13 @@ export default ({
         </th>
       </tr>
       <tr id="grid-subheader">
-        <th>
-          <span>Market Cashout</span>
-        </th>
         {/* The Cash out figure simply adds all current profit and losses together
             If you click it, then it should place N bets (or how ever many you need)
             to close those positions/
         */}
-        <th id="market-cashout" colSpan="1" onClick={() => {
-          
-        }}>
-          <span
-            onClick = {() => {
+        <th>
+          <span>Market Cashout</span>
+          <span id="market-cashout" onClick = {() => {
               const hedgedBets = getHedgedBetsToMake(getQueryVariable("marketId"), bets, ltpList)
 
               if (hedgedBets.length > 0) {
@@ -134,11 +129,9 @@ export default ({
                 recursivePlaceHedge(0, bets.unmatched)
                 
               }
-            }}
-          >{getMarketCashout(getQueryVariable("marketId"), bets)}</span>
+            }}>{getMarketCashout(getQueryVariable("marketId"), bets)}</span>
         </th>
-
-        <th colSpan="1"></th>
+        <th colSpan="2"></th>
         <th></th>
         <th></th>
         <th>

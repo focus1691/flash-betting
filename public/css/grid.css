@@ -182,15 +182,15 @@
 	background: #BCE4FC;
 }
 
-#grid-subheader th:nth-child(n+7) {
+#grid-subheader th:nth-child(n+6) {
 	background: #FCC9D3;
 }
 
-#market-cashout span {
+#market-cashout {
 	cursor: pointer;
 	font-size: x-small;
-	display: inline-block;
-	vertical-align: middle;
+	float: right;
+	display:table-cell;
 }
 
 /** GRID ORDER ROW **/
