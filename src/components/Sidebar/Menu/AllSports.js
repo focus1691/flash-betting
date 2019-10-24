@@ -20,37 +20,36 @@ const AllSports = props => {
             return 1
           return 0 //default return value (no sorting)
         });
-        console.log(sports);
         props.onReceiveAllSports(sports);
       });
   }, []);
 
   const handleClick = async (
-    result,
-    currentObjectSelector,
-    currentObjectArraySelector,
+    marketSelection,
+    currentMarket,
+    marketList,
     api,
     sportId = "",
     country = "",
     competition = "",
     event = "",
-    dataFormatter = data => data
+    mapMarkets = data => data
   ) => {
     /*
-			result - button click
-			currentObjectSelector - variable that is associated with result
-			currentObjectArraySelector - array that is associated with result (we can also use this to reset an array associated with the result)
+			marketSelection - button click
+			currentMarket - key for the market that is currently selected
+			marketList - key for array that is associated with the market (we can also use this to reset an array associated with the marketSelection)
 			api - where we should fetch
 			sports, country, competition, event - api information,
-			dataFormatter - formats the data we get from the api
+			mapMarkets - map the data we get from the api call
 		*/
 
     // set back to undefined if they don't want to see the menu anymore, click on the same button another time
-    if (props.sports.currentSport[currentObjectSelector] === result) {
+    if (props.sports.currentSport[currentMarket] === marketSelection) {
       const newSport = Object.assign({}, props.sports.currentSport);
 
-      newSport[currentObjectSelector] = undefined;
-      newSport[currentObjectArraySelector] = undefined;
+      newSport[currentMarket] = undefined;
+      newSport[marketList] = undefined;
 
       props.onUpdateCurrentSport(newSport);
       return;
@@ -63,8 +62,8 @@ const AllSports = props => {
 
     const newSport = Object.assign({}, props.sports.currentSport);
 
-    newSport[currentObjectSelector] = result;
-    newSport[currentObjectArraySelector] = dataFormatter(data);
+    newSport[currentMarket] = marketSelection;
+    newSport[marketList] = mapMarkets(data);
     props.onUpdateCurrentSport(newSport);
 
     return data;
@@ -80,6 +79,8 @@ const AllSports = props => {
     currentEvent,
     eventMarkets
   } = props.sports.currentSport;
+
+  console.log(props.sports.currentSport);
 
   return (
     <div>

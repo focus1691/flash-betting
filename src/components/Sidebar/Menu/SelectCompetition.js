@@ -2,7 +2,7 @@ import React from "react";
 import SportsClickList from "./SportsClickList";
 
 export default ({ country, competitions, handleClick, currentSportId }) => (
-    <SportsClickList
+  <SportsClickList
     currentItem={country}
     newArray={competitions}
     currentItemName={"currentCountry"}
