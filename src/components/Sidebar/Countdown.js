@@ -13,11 +13,23 @@ const Countdown = props => {
   const ONE_SECOND = 1000;
   const [timeRemaining, setTimeRemaining] = useState("--");
 
+  const calculateTime = () => {
+    if (!props.market) {
+      return "--";
+    }
+    if (new Date() < new Date(props.market.marketStartTime)) {
+      return new Date(props.market.marketStartTime) - new Date();
+    }
+    else if (new Date() > new Date(props.market.marketStartTime)) {;
+      return Math.abs(new Date(props.market.marketStartTime) - new Date());
+    } else {
+      return "--";
+    }
+  }
+
   useInterval(async () => {
-    setTimeRemaining(
-      props.market ? new Date(props.market.marketStartTime) - new Date() : "--"
-    );
-    
+    setTimeRemaining(calculateTime());
+
     const newBackList = await checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK", props.bets.matched, props.bets.unmatched)
     props.onUpdateBackList(newBackList)
 
@@ -29,9 +41,9 @@ const Countdown = props => {
     const adjustedTickOffsetList = Object.assign({}, props.tickOffsetList);
     const adjustedUnmatchedBets = Object.assign({}, props.bets.unmatched);
     let ordersToRemove = [];
-    
+
     Object.keys(props.fillOrKillList).map((betId, index) => {
-      const order = props.fillOrKillList[betId]; 
+      const order = props.fillOrKillList[betId];
       if ((Date.now() / 1000) - (order.startTime / 1000) >= order.seconds) {
         props.onCancelOrder({
           marketId: props.market.marketId,
@@ -111,12 +123,12 @@ const Countdown = props => {
   return (
     <div>
       {props.marketOpen
-        ? props.marketStatus === "OPEN" && !props.inPlay
+        ? props.marketStatus === "OPEN"
           ? msToHMS(timeRemaining)
           : props.marketStatus === "SUSPENDED" ||
             props.marketStatus === "CLOSED"
-          ? props.marketStatus
-          : "00:00:00"
+            ? props.marketStatus
+            : "00:00:00"
         : null}
     </div>
   );
