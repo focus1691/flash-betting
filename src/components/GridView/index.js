@@ -9,13 +9,13 @@ import EmptyCell from "./EmptyCell";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 import { DeconstructRunner } from "../../utils/DeconstructRunner";
 import { formatCurrency } from "../../utils/NumberFormat";
-import { calcBackProfit, calcLiability, colorForBack } from "../../utils/PriceCalculator";
+import { calcBackProfit, colorForBack } from "../../utils/PriceCalculator";
 import { marketHasBets, getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
 import NonRunners from "./NonRunner";
 import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 import { placeOrder } from "../../actions/order";
-import { calcHedge, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
+import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 
 const Grid = props => {
 	
@@ -23,6 +23,25 @@ const Grid = props => {
 	const [activeOrder, setActiveOrder] = useState(null);
 	const [ordersVisible, setOrdersVisible] = useState(0);
 	const oneClickRef = createRef();
+
+	const handlePriceClick = (key, backLay, odds) => e => {
+		if (!props.oneClickOn) {
+			props.onUpdateOrder({
+				id: key,
+				visible: true,
+				backLay: backLay,
+				price: odds
+			});
+			setOrdersVisible(ordersVisible + 1);
+		}
+	};
+
+	const handlePriceHover = key => e => {
+		setRowHovered(key);
+		$(e.currentTarget).one("mouseleave", e => {
+			setRowHovered(null);
+		});
+	}
 
 	const renderRow = (betOdds, bestOdds, key, backLay) => {
 		// Fill all empty cells if no data found
@@ -43,32 +62,12 @@ const Grid = props => {
 		return rows;
 	};
 
-	useEffect(() => {
-		console.log(activeOrder)
-		console.log(props.market)
-	}, [activeOrder])
-
 	const createCell = (odds, matched, key, backLay) => {
 		return (
 			<td
 				className="grid-cell"
-				onMouseEnter={e => {
-					setRowHovered(key);
-					$(e.currentTarget).one("mouseleave", e => {
-						setRowHovered(null);
-					});
-				}}
-				onClick={() => {
-					if (!props.oneClickOn) {
-						props.onUpdateOrder({
-							id: key,
-							visible: true,
-							backLay: backLay,
-							price: odds
-						});
-						setOrdersVisible(ordersVisible + 1);
-					}
-				}}
+				onMouseEnter={handlePriceHover(key)}
+				onClick={handlePriceClick(key, backLay, odds)}
 			>
 				<span>{odds}</span>
 				<span>{matched}</span>
@@ -209,7 +208,7 @@ const Grid = props => {
 				selectRunner={runner => {
 					props.onSelectRunner(runner);
 				}}
-				eventId={props.market.eventType.id}
+
 			/>
 		);
 	};
