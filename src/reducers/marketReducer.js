@@ -95,13 +95,12 @@ const reducer = (state = initialState, action) => {
             ...state.runners[action.payload.id],
             order: {
               ...state.runners[action.payload.id].order,
-              stakeLiability: action.payload.stakeLiability
+              stakeLiability: state.runners[action.payload.id].order.stakeLiability ^ 1
             }
           }
         }
       };
       case "TOGGLE_BACK_AND_LAY":
-        console.log(action.payload);
       return {
         ...state,
         runners: {
@@ -110,7 +109,7 @@ const reducer = (state = initialState, action) => {
             ...state.runners[action.payload.id],
             order: {
               ...state.runners[action.payload.id].order,
-              backLay: action.payload.backLay
+              backLay: state.runners[action.payload.id].order.backLay ^ 1
             }
           }
         }

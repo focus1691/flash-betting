@@ -334,7 +334,6 @@ const Settings = props => {
 				className={classes.group}
 				value={props.ladderUnmatched}
 				onChange={e => {
-					console.log(e.target.value);
 					props.onToggleLadderUnmatched(e.target.value);
 				}}
 			>

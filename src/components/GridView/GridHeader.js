@@ -19,7 +19,7 @@ export default ({
   oneClickRef,
   oneClickOn,
   toggleOneClick,
-  stake,
+  oneClickStake,
   setStakeOneClick,
   stakeBtns,
   layBtns,
@@ -58,22 +58,22 @@ export default ({
             <React.Fragment>
               <div id="one-click-stake">
                 <button>Stake</button>
-                {stakeBtns.map(price => (
+                {stakeBtns.map(stake => (
                   <button
-                    style={{background: getOrderBtnBG("STAKE", price, stake, -70)}}
-                    onClick={setStakeOneClick(price)}>
-                    {price}
+                    style={{background: getOrderBtnBG("STAKE", stake, oneClickStake, -70)}}
+                    onClick={setStakeOneClick(stake)}>
+                    {stake}
                   </button>
                 ))}
               </div>
               <br />
               <div id="one-click-liability">
                 <button>Liability</button>
-                {layBtns.map(price => (
+                {layBtns.map(stake => (
                   <button
-                  style={{background: getOrderBtnBG("LAY", price, stake, -70)}}
-                  onClick={setStakeOneClick(price)}>
-                  {price}
+                  style={{background: getOrderBtnBG("LAY", stake, oneClickStake, -70)}}
+                  onClick={setStakeOneClick(stake)}>
+                  {stake}
                 </button>
                 ))}
               </div>

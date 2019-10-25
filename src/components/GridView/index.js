@@ -45,7 +45,7 @@ const Grid = props => {
 	}
 
 	const toggleBackAndLay = (order) => e => {
-		props.onToggleBackAndLay({id: order.id, backLay: order.backLay});
+		props.onToggleBackAndLay({id: order.id});
 		setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
 	};
 
@@ -66,6 +66,7 @@ const Grid = props => {
 	};
 
 	const setStakeInOneClick = stake => e => {
+		console.log(stake);
 		props.setStakeInOneClick(stake);
 	};
 
@@ -282,7 +283,7 @@ const Grid = props => {
 						oneClickRef={oneClickRef}
 						oneClickOn={props.oneClickOn}
 						toggleOneClick={toggleOneClick}
-						stake={props.oneClickStake}
+						oneClickStake={props.oneClickStake}
 						setStakeOneClick={setStakeInOneClick}
 						stakeBtns={props.stakeBtns}
 						layBtns={props.layBtns}

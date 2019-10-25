@@ -50,7 +50,6 @@ const App = props => {
     fetch(`/api/get-user-settings`)
       .then(res => res.json())
       .then(settings => {
-        console.log(settings);
         props.onToggleSounds(settings.sounds);
         props.onToggleTools(settings.tools);
         props.onToggleUnmatchedBets(settings.unmatchedBets);
@@ -102,8 +101,6 @@ const App = props => {
                   price: 0
                 };
               }
-
-              console.log(data.result[0]);
 
               props.onUpdateRunners(runners);
               props.onReceiveMarket(data.result[0]);

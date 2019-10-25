@@ -13,8 +13,6 @@ export const placeOrder = order => {
     return
   }
 
-  console.log(order)
-
   order.size = order.size === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
   order.price = parseFloat(order.price)
 
@@ -29,8 +27,6 @@ export const placeOrder = order => {
     })
       .then(res => res.json())
       .then(async json => {
-
-        console.log(json)
 
         if (json.errorCode == "BET_ACTION_ERROR") return;
         const betId = json.instructionReports[0].betId;

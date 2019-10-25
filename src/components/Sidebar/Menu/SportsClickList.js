@@ -29,8 +29,6 @@ export default ({
     currentItemFull = currentItem;
   }
 
-  console.log(newArray, listSelector);
-
   return (
     <div>
       <React.Fragment>

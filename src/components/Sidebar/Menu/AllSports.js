@@ -79,9 +79,7 @@ const AllSports = props => {
     currentEvent,
     eventMarkets
   } = props.sports.currentSport;
-
-  console.log(props.sports.currentSport);
-
+  
   return (
     <div>
       <table id="all-sports">

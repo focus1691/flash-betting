@@ -21,9 +21,7 @@ class DatabaseHelper extends Database {
                 });
                 const settings = new Settings();
                 user.settings = settings;
-                user.save().then(result => {
-                    console.log(result);
-                }).catch(err => console.log(err));
+                user.save();
             }
         })
     }
@@ -173,7 +171,6 @@ class DatabaseHelper extends Database {
                 user.save();
                 res(200)
             }).catch(err => {
-                console.log(err)
                 rej(400);
             });
         });

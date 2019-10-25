@@ -12,14 +12,7 @@ export default ({ runnerId, order, orderProps, toggleStakeAndLiabilityButtons, t
                     <ul
                         className={"grid-order-row"}
                     >
-                        <li
-                            onClick={
-                                toggleStakeAndLiabilityButtons({
-                                    id: runnerId,
-                                    stakeLiability: order.stakeLiability === 0 ? 1 : 0
-                                })
-                            }
-                        >
+                        <li onClick={toggleStakeAndLiabilityButtons({ id: runnerId })}>
                             <img
                                 src={`${window.location.origin}/icons/change.png`}
                                 alt={"Toggle"}
