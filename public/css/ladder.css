@@ -277,7 +277,8 @@
 .percentage-row .th {
 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 	outline: 1px solid rgb(178, 181, 181); 
-	width: 30%
+	width: 30%;
+	text-align: center;
 }
 
 .percentage-row .th:not(:first-child) {
