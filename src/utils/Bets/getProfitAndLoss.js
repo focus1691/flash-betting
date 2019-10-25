@@ -20,6 +20,8 @@ const getPLForRunner = (marketId, selectionId, bets) => {
                         return calcBackBet(order.price, order.size);
                     case "LAY":
                         return -calcBackBet(order.price, order.size);
+                    default:
+                        return calcBackBet(order.price, order.size);
                 }
             } else {
                 switch (order.side) {
@@ -27,6 +29,8 @@ const getPLForRunner = (marketId, selectionId, bets) => {
                         return -order.size;
                     case "LAY":
                         return order.size;
+                    default:
+                        return -order.size;
                 }
             }
         })

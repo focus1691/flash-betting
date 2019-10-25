@@ -126,7 +126,7 @@ const getFiveDeviationBackLayPrices = ltp => {
  * @return {object} The back/lay percentages
  */
 const calcBackLayPercentages = (ladder, ltp) => {
-  if (ltp === null || ltp == undefined) {
+  if (!ltp) {
     return { back: 0, lay: 0 };
   }
 
@@ -134,15 +134,16 @@ const calcBackLayPercentages = (ladder, ltp) => {
   const indices = getFiveDeviationBackLayPrices(ltp);
 
   var backMatched = 0, layMatched = 0;
+  var i;
 
   // Add the back total
-  for (var i = 0; i < indices.back.length; i++) {
+  for (i = 0; i < indices.back.length; i++) {
     let data = ladder[indices.back[i]];
     backMatched += ((data) && data.backMatched) ? data.backMatched : 0;
   }
 
   // Add the lay total
-  for (var i = 0; i < indices.lay.length; i++) {
+  for (i = 0; i < indices.lay.length; i++) {
     let data = ladder[indices.lay[i]];
     layMatched += ((data) && data.layMatched) ? data.layMatched : 0;
   }

@@ -10,7 +10,7 @@ const MarketInfo = props => {
   const racerDetails = () => {
     const rows = [
       createData("Selection", props.selection.metadata.runnerId),
-      createData("Silk", <img src={`https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.selection.metadata.COLOURS_FILENAME}`} />),
+      createData("Silk", <img src={`https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.selection.metadata.COLOURS_FILENAME}`} alt="" />),
       createData("Trainer Name", props.selection.metadata.TRAINER_NAME),
       createData("Age & Weight", `${props.selection.metadata.AGE} years / ${props.selection.metadata.WEIGHT_VALUE} ${props.selection.metadata.WEIGHT_UNITS}`),
       createData("Form", props.selection.metadata.FORM),

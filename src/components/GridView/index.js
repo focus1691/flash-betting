@@ -17,6 +17,7 @@ import GridOrderRow from "./GridOrderRow";
 import { placeOrder } from "../../actions/order";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { isValidPrice } from "../../utils/Bets/Validator";
+import SuspendedWarning from "./SuspendedWarning";
 
 const Grid = props => {
 	
@@ -263,12 +264,7 @@ const Grid = props => {
 				style={props.marketStatus === "SUSPENDED" ? { opacity: 0.75 } : {}}
 				className={"grid-view"}
 			>
-				<p
-					style={props.marketStatus !== "SUSPENDED" ? { display: "none" } : {}}
-					id="suspended-message"
-				>
-					{props.marketStatus}
-				</p>
+				<SuspendedWarning marketStatus={props.marketStatus} />
 				<tbody>
 					<GridHeader
 						market={props.market}
