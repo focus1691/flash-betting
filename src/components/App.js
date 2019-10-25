@@ -179,16 +179,6 @@ const App = props => {
                       rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
                       betId: betId
                     }
-                    if (order.status === "EXECUTION_COMPLETE" || order.status === "EXECUTABLE") {
-                      await fetch('/api/save-order', {
-                        headers: {
-                          Accept: "application/json",
-                          "Content-Type": "application/json"
-                        },
-                        method: "POST",
-                        body: JSON.stringify(orderData)
-                      })
-                    }
 
                     if (order.status === "EXECUTION_COMPLETE") {
                       loadedMatchedOrders[order.betId] = orderData;
