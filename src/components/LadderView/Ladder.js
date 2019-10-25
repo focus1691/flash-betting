@@ -13,7 +13,7 @@ import { calcBackProfit } from "../../utils/PriceCalculator";
 import { getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
-                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered }) => {
+                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -99,6 +99,11 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
         })
     }
 
+    // const testVol = [{"price":4.1,"size":30.4},{"price":4.2,"size":47.12},{"price":4.4,"size":35.5},{"price":4.5,"size":171.58},{"price":4.6,"size":61.1},{"price":4.7,"size":1880.56},{"price":4.8,"size":4811.76},{"price":4.9,"size":2449.31},{"price":5.0,"size":2817.75},{"price":5.1,"size":5016.76},{"price":5.2,"size":4601.6},{"price":5.3,"size":1685.85},{"price":5.4,"size":405.59},{"price":5.5,"size":1906.15},{"price":5.6,"size":2372.16},{"price":5.7,"size":5238.67},{"price":5.8,"size":1915.15},{"price":5.9,"size":3313.69},{"price":6.0,"size":721.29}]
+    const parsedVolume = {};
+    volume.map(vol => {
+        parsedVolume[formatPrice(vol.price)] = Math.floor(vol.size / 100) / 10
+    })
 
     const fullLadderWithProfit = {};
     let ladderLTPHedge = 0;
@@ -183,7 +188,8 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                                 stopLoss: stopLoss,
                                 changeStopLossList: placeStopLossOrder,
                                 hedgeSize: hedgeSize,
-                                setOddsHovered: setOddsHovered
+                                setOddsHovered: setOddsHovered,
+                                volume: parsedVolume
                             }}
                         >
                             {LadderRow}

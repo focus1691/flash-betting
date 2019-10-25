@@ -142,6 +142,15 @@
 	position: relative;
 }
 
+.volume-col {
+	height: '100%'; 
+	background-color: '#f4b563';
+	max-width: '100%'; 
+	color: 'white'; 
+	font-size: '0.7rem'; 
+	font-weight: 'bold';
+}
+
 .candle-stick {
 	display: block;
 	position: absolute;

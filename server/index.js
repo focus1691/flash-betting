@@ -9,6 +9,8 @@ const ExchangeStream = require("./BetFair/stream-api.js");
 
 const betfair = new BetFairSession(process.env.APP_KEY);
 
+const session = require('express-session');
+
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -19,7 +21,6 @@ app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
 const database = require("./Database/helper");
-const User = require('./Database/models/users');
 
 // Load the session key from localStorage into the database and session object
 app.get("/api/load-session", (request, response) => {
@@ -225,13 +226,6 @@ app.get("/api/get-all-sports", (request, response) => {
 	);
 });
 
-app.get("/api/get-my-markets", (request, response) => {
-	return new Promise((res, rej) => {
-		User.findOne({email: betfair.email}).then(doc => response.json(doc.markets))
-		.catch(err => response.sendStatus(400));
-	});
-});
-
 app.get("/api/list-countries", (request, response) => {
 	betfair.listCountries(
 		{
@@ -272,7 +266,7 @@ app.get("/api/list-events", (request, response) => {
 		}
 	);
 });
-//
+
 app.get("/api/list-competition-events", (request, response) => {
 	betfair.listEvents(
 		{
@@ -332,6 +326,19 @@ app.get("/api/get-market-info", (request, response) => {
 		}
 	);
 });
+
+app.get("/api/list-market-book", (request, response) => {
+	betfair.listMarketBook(
+		{			
+			marketIds: [request.query.marketId],
+			priceProjection: {priceData:["EX_TRADED","EX_ALL_OFFERS"]}
+		},
+		(err, res) => {
+			response.json(res);
+		}
+	);
+});
+
 
 app.post("/api/place-order", (request, response) => {
 
@@ -472,7 +479,7 @@ io.on("connection", async client => {
 	// Subscribe to orders
 	client.on("order-subscription", async data => {
 		const accessToken = await database.getToken(betfair.email);
-		const subscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":["${data.strategyRef}"]},"segmentationEnabled":true}\r\n`;
+		const subscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
 		exchangeStream.authenticate(subscription, accessToken);
 	});
 });

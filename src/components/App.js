@@ -220,9 +220,13 @@ const App = props => {
   load();
   }, []);
 
-  // useEffect(() => {
-
-  // }, []);
+  useEffect(() => {
+      if (Object.keys(props.unmatchedBets).length > 0) {
+        props.socket.emit("order-subscription", {
+          customerStrategyRefs: JSON.stringify(Object.values(props.unmatchedBets).map(bet => bet.rfs))
+        });
+      }
+  }, [Object.keys(props.unmatchedBets).length]);
 
   useEffect(() => {
     /**
@@ -347,6 +351,20 @@ const App = props => {
       props.onReceiverLadders(ladders);
       props.onReceiveNonRunners(nonRunners);
       props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length))
+
+
+      const marketId = getQueryVariable("marketId");
+      try {
+        const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
+        const data = marketBook;
+        const marketVolume = {};
+        Object.values(data.result[0].runners).map(selection => {
+          marketVolume[selection.selectionId] = selection.ex.tradedVolume
+        })
+
+        props.onSetMarketVolume(marketVolume)
+      } catch (e) {}
+
     });
 
     /**
@@ -354,62 +372,65 @@ const App = props => {
      * @param {obj} data The order change message data:
      */
     props.socket.on("ocm", async data => {
-      const newUnmatchedBets = Object.assign({}, props.unmatchedBets)
-      const newMatchedBets = Object.assign({}, props.matchedBets);
-      let checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
-      let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
-      let tickOffsetOrdersToRemove = [];
 
-      data.oc.map(changes => {
-        changes.orc.map(runner => {
-          runner.uo.map(order => {
-            // If the bet isn't in the unmatchedBets, we should delete it.
-            if (newUnmatchedBets[order.id] !== undefined) {
-              delete newUnmatchedBets[order.id];
-            } else if (order.sr == 0) {
-              newMatchedBets[order.id] = newUnmatchedBets[order.id];
-              delete newUnmatchedBets[order.id];
-            }
+      
+      if (data.oc) {
+        const newUnmatchedBets = Object.assign({}, props.unmatchedBets)
+        const newMatchedBets = Object.assign({}, props.matchedBets);
+        let checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
+        let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
+        let tickOffsetOrdersToRemove = [];
+        
+        data.oc.map(changes => {
+          changes.orc.map(runner => {
+            runner.uo.map(order => {
+              // If the bet isn't in the unmatchedBets, we should delete it.
+              if (newUnmatchedBets[order.id] !== undefined) {
+                delete newUnmatchedBets[order.id];
+              } else if (order.sr == 0) {
+                newMatchedBets[order.id] = newUnmatchedBets[order.id];
+                delete newUnmatchedBets[order.id];
+              }
 
 
-            checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
+              checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
 
-            // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
-            const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets)
-            checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
-            tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
+              // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
+              const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets)
+              checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
+              tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
 
+            })
           })
         })
-      })
 
 
-      if (tickOffsetOrdersToRemove.length > 0) {
-        await fetch('/api/remove-orders', {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          method: "POST",
-          body: JSON.stringify(tickOffsetOrdersToRemove)
-        })
+        if (tickOffsetOrdersToRemove.length > 0) {
+          await fetch('/api/remove-orders', {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify(tickOffsetOrdersToRemove)
+          })
+        }
+
+        if (Object.keys(props.stopLossList).length > 0) {
+          props.onChangeStopLossList(checkForMatchInStopLoss);
+        }
+
+        if (Object.keys(props.tickOffsetList).length > 0) {
+          props.onChangeTickOffsetList(checkForMatchInTickOffset);
+        }
+
+        if (Object.keys(props.unmatchedBets).length > 0) {
+          props.onChangeOrders({
+            unmatched: newUnmatchedBets,
+            matched: newMatchedBets,
+          });
+        }
       }
-
-      if (Object.keys(props.stopLossList).length > 0) {
-        props.onChangeStopLossList(checkForMatchInStopLoss);
-      }
-
-      if (Object.keys(props.tickOffsetList).length > 0) {
-        props.onChangeTickOffsetList(checkForMatchInTickOffset);
-      }
-
-      if (Object.keys(props.unmatchedBets).length > 0) {
-        props.onChangeOrders({
-          unmatched: newUnmatchedBets,
-          matched: newMatchedBets,
-        });
-      }
-
       props.socket.off("ocm");
     });
   }, [props.ladders]);
@@ -521,6 +542,7 @@ const mapDispatchToProps = dispatch => {
     onPlaceOrder: order => dispatch(placeOrder(order)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
     onChangeOrders: orders => dispatch(updateOrders(orders)),
+    onSetMarketVolume: volume => dispatch(actions2.setMarketVolume(volume))
   };
 };
 

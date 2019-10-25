@@ -4,12 +4,14 @@ import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findStopPosition, findStopPositionForPercent } from "../../utils/TradingStategy/StopLoss";
 import crypto from 'crypto'
 
-export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered }, style, index}) => {
+export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume }, style, index}) => {
     const key = Object.keys(ladder)[index]
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
+    const volumeVal = volume[formatPrice(ladder[key].odds)] ? volume[formatPrice(ladder[key].odds)] : 0
     return (
         <div key={ladder[key].odds}  onContextMenu = { (e) => { e.preventDefault(); return false } } class = 'tr' style = {style} >
-          <div className={"candle-stick-col td"} colSpan={3}  >
+          
+          <div className={"candle-stick-col td"} colSpan={3}>
             {
               indexInLTPList >= 0 ? 
               <img 
@@ -17,7 +19,9 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
                 className={"candle-stick"} alt = "" style = {{right: indexInLTPList * 2}} /> 
               : null
             }
-            
+            <div className={"volume-col"} style={{width: `${volumeVal * 10}px`}}>
+              {volumeVal === 0 ? null : volumeVal}
+            </div>
           </div>
           <div 
             className = 'td'

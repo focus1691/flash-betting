@@ -19,6 +19,13 @@ export const loadMarket = market => {
   };
 };
 
+export const setMarketVolume = volume => {
+  return {
+    type: "SET_MARKET_VOLUME",
+    payload: volume
+  };
+};
+
 export const loadLadder = ladder => {
   return {
     type: "LOAD_LADDER",
