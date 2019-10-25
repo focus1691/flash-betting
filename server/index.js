@@ -21,6 +21,7 @@ app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
 const database = require("./Database/helper");
+const User = require('./Database/models/users');
 
 // Load the session key from localStorage into the database and session object
 app.get("/api/load-session", (request, response) => {
@@ -224,6 +225,13 @@ app.get("/api/get-all-sports", (request, response) => {
 			response.json(res.result);
 		}
 	);
+});
+
+app.get("/api/get-my-markets", (request, response) => {
+	return new Promise((res, rej) => {
+		User.findOne({email: betfair.email}).then(doc => response.json(doc.markets))
+		.catch(err => response.sendStatus(400));
+	});
 });
 
 app.get("/api/list-countries", (request, response) => {
