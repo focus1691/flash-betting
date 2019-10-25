@@ -101,6 +101,7 @@ const reducer = (state = initialState, action) => {
         }
       };
       case "TOGGLE_BACK_AND_LAY":
+        console.log(action.payload);
       return {
         ...state,
         runners: {

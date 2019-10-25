@@ -6,6 +6,7 @@ import { getOrderBtnBG } from "../../utils/ColorManipulator";
 import getQueryVariable from "../../utils/GetQueryVariable";
 import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
+import { openLiveStream } from "../../utils/Video";
 import crypto from 'crypto'
 
 export default ({
@@ -19,7 +20,7 @@ export default ({
   oneClickOn,
   toggleOneClick,
   stake,
-  setStake,
+  setStakeOneClick,
   stakeBtns,
   layBtns,
   bets,
@@ -32,9 +33,7 @@ export default ({
           <button
             id="one-click-btn"
             ref={oneClickRef}
-            onClick={e => {
-              toggleOneClick();
-            }}
+            onClick={toggleOneClick()}
           >
             {`Turn One click ${oneClickOn ? "off" : "on"}`}
           </button>
@@ -43,13 +42,7 @@ export default ({
             <img
               src={window.location.origin + "/icons/youtube.png"}
               alt={"Video"}
-              onClick={e => {
-                window.open(
-                  `https://videoplayer.betfair.com/GetPlayer.do?tr=1&mID=${market.event.marketId}&allowPopup=false`,
-                  market.event.name,
-                  "width=500,height=500"
-                );
-              }}
+              onClick={openLiveStream(market)}
             />
           </span>
           <h1>
@@ -68,7 +61,7 @@ export default ({
                 {stakeBtns.map(price => (
                   <button
                     style={{background: getOrderBtnBG("STAKE", price, stake, -70)}}
-                    onClick={e => setStake(price)}>
+                    onClick={setStakeOneClick(price)}>
                     {price}
                   </button>
                 ))}
@@ -79,7 +72,7 @@ export default ({
                 {layBtns.map(price => (
                   <button
                   style={{background: getOrderBtnBG("LAY", price, stake, -70)}}
-                  onClick={e => setStake(price)}>
+                  onClick={setStakeOneClick(price)}>
                   {price}
                 </button>
                 ))}

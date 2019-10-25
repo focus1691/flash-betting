@@ -1,8 +1,8 @@
 import React from "react";
 import { LightenDarkenColor } from "../../utils/ColorManipulator";
-import crypto from 'crypto'
+import crypto from 'crypto';
 
-export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, toggleBackAndLay, updateOrderValue, updateOrderPrice, updateOrderVisibility, onPlaceOrder, market, bets, price, side, size }) => {
+export default ({ runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, market, bets, price, side, size }) => {
     return (
         <tr style={{
             background: orderProps.bg
@@ -13,13 +13,12 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                         className={"grid-order-row"}
                     >
                         <li
-                            onClick={() => {
-                                let stakeLiability = order.stakeLiability === 0 ? 1 : 0;
-                                toggleStakeAndLiability({
+                            onClick={
+                                toggleStakeAndLiabilityButtons({
                                     id: runnerId,
-                                    stakeLiability: stakeLiability
-                                });
-                            }}
+                                    stakeLiability: order.stakeLiability === 0 ? 1 : 0
+                                })
+                            }
                         >
                             <img
                                 src={`${window.location.origin}/icons/change.png`}
@@ -28,30 +27,28 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                             {orderProps.text}
                         </li>
 
-                        {orderProps.prices.map(price => {
+                        {orderProps.prices.map(size => {
                             return (
                                 <li
-                                    style={{ background: price === order.stake ? LightenDarkenColor(orderProps.bg, -20) : "" }}
-                                    onClick={() => {
-                                        updateOrderValue({
+                                    style={{ background: size === order.stake ? LightenDarkenColor(orderProps.bg, -20) : "" }}
+                                    onClick={
+                                        updateOrderSize({
                                             id: runnerId,
                                             backLay: order.backLay,
-                                            stake: price
-                                        });
-                                    }}
+                                            stake: size
+                                        })
+                                    }
                                 >
-                                    {price}
+                                    {size}
                                 </li>
                             );
                         })}
                         <span
                             className={"toggle-back-lay"}
-                            onClick={() => {
-                                toggleBackAndLay({
-                                    id: runnerId,
-                                    backLay: order.backLay ^ 1
-                                });
-                            }}
+                            onClick={toggleBackAndLay({
+                                id: runnerId,
+                                backLay: order.backLay ^ 1
+                            })}
                         >
                             {orderProps.text2}
                         </span>
@@ -60,31 +57,29 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                             type="text"
                             name="stake"
                             value={order.stake}
-                            onChange={e => {
-                                updateOrderValue({
+                            onChange={
+                                updateOrderSize({
                                     id: runnerId,
-                                    backLay: order.backLay,
-                                    stake: e.target.value
-                                });
-                            }}
+                                    backLay: order.backLay
+                                })
+                            }
                         ></input>
                         <span>@</span>
                         <input
                             type="number"
                             name="price"
                             min="1"
-                            max="10000"
+                            max="1000"
                             value={order.price}
-                            onChange={e => {
+                            onChange={
                                 updateOrderPrice({
-                                    id: runnerId,
-                                    price: e.target.value
+                                    id: runnerId
                                 })
-                            }}
+                            }
                         ></input>
 
                         <button className={"execute-order-btn"}
-                            onClick = {() => {
+                            onClick={() => {
                                 const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
                                 onPlaceOrder({
                                     marketId: market.marketId,
@@ -109,12 +104,12 @@ export default ({ name, runnerId, order, orderProps, toggleStakeAndLiability, to
                                 <img
                                     src={window.location.origin + "/icons/error.png"}
                                     alt={"Close"}
-                                    onClick={() => {
-                                        updateOrderVisibility({
+                                    onClick={
+                                        toggleOrderRowVisibility({
                                             id: runnerId,
                                             visible: false
-                                        });
-                                    }}
+                                        })
+                                    }
                                 />
                             </a>
                         </span>

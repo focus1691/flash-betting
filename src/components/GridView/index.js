@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from "react";
+import React, { useState, createRef } from "react";
 import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
@@ -16,6 +16,7 @@ import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 import { placeOrder } from "../../actions/order";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
+import { isValidPrice } from "../../utils/Bets/Validator";
 
 const Grid = props => {
 	
@@ -42,6 +43,53 @@ const Grid = props => {
 			setRowHovered(null);
 		});
 	}
+
+	const toggleBackAndLay = (order) => e => {
+		props.onToggleBackAndLay({id: order.id, backLay: order.backLay});
+		setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
+	};
+
+	const toggleOneClick = () => e => {
+		props.onToggleOneClick(!props.oneClickOn);
+		const node = oneClickRef.current;
+		props.oneClickOn ? node.blur() : node.focus();
+	};
+
+	const toggleStakeAndLiabilityButtons = data => e => {
+		props.onToggleStakeAndLiability(data);
+	};
+
+	const toggleOrderRowVisibility = data => e => {
+		props.onUpdateOrderVisibility(data);
+		setActiveOrder(null);
+		setOrdersVisible(ordersVisible - 1);
+	};
+
+	const setStakeInOneClick = stake => e => {
+		props.setStakeInOneClick(stake);
+	};
+
+	const updateOrderSize = data => e => {
+		// Size comes from the textfield input from event if not sent from the button
+		if (!data.stake) {
+			data.stake = e.target.value;
+		}
+
+		props.onUpdateOrderValue(data);
+		setActiveOrder(data);
+	};
+
+	const updateOrderPrice = data => e => {
+		data.price = parseInt(e.target.value);
+		
+		if (isValidPrice(data.price)) {
+			props.onUpdateOrderPrice(data);
+		}
+	};
+
+	const selectRunner = runner => e => {
+		props.onSelectRunner(runner);
+	};
 
 	const renderRow = (betOdds, bestOdds, key, backLay) => {
 		// Fill all empty cells if no data found
@@ -94,9 +142,7 @@ const Grid = props => {
 					sportId={props.market.eventType.id}
 					nonRunners={props.nonRunners}
 					runners={props.runners}
-					selectRunner={runner => {
-						props.onSelectRunner(runner);
-					}}
+					selectRunner={selectRunner}
 				/>
 			</React.Fragment>
 		);
@@ -169,25 +215,14 @@ const Grid = props => {
 					</tr>
 
 					<GridOrderRow
-						name={props.runners[key].runnerName}
 						runnerId={key}
 						order={order}
 						orderProps={orderProps}
-						toggleStakeAndLiability={stakeLiability => { props.onToggleStakeAndLiability(stakeLiability) }}
-						toggleBackAndLay={side => {
-							props.onToggleBackAndLay(side);
-							setActiveOrder(Object.assign(activeOrder, { backLay: side.backLay }));
-						}}
-						updateOrderValue={orderValue => {
-							props.onUpdateOrderValue(orderValue);
-							setActiveOrder(orderValue);
-						}}
-						updateOrderPrice={price => { props.onUpdateOrderPrice(price) }}
-						updateOrderVisibility={visibility => {
-							props.onUpdateOrderVisibility(visibility);
-							setActiveOrder(null);
-							setOrdersVisible(ordersVisible - 1);
-						}}
+						toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
+						toggleBackAndLay={toggleBackAndLay}
+						updateOrderSize={updateOrderSize}
+						updateOrderPrice={updateOrderPrice}
+						toggleOrderRowVisibility={toggleOrderRowVisibility}
 						onPlaceOrder = {props.onPlaceOrder}
 						market = {props.market}
 						bets={props.bets}
@@ -205,9 +240,7 @@ const Grid = props => {
 			<SuspendedGrid
 				ladder={props.ladder}
 				runners={props.runners}
-				selectRunner={runner => {
-					props.onSelectRunner(runner);
-				}}
+				selectRunner={selectRunner}
 
 			/>
 		);
@@ -223,8 +256,6 @@ const Grid = props => {
 		ltpSelectionIdObject[key] = ltp[0]
 	})
 	
-
-
 	return (
 		<div id="grid-container">
 			<table
@@ -250,15 +281,9 @@ const Grid = props => {
 						}}
 						oneClickRef={oneClickRef}
 						oneClickOn={props.oneClickOn}
-						toggleOneClick={e => {
-							props.onToggleOneClick(!props.oneClickOn);
-							const node = oneClickRef.current;
-							props.oneClickOn ? node.blur() : node.focus();
-						}}
+						toggleOneClick={toggleOneClick}
 						stake={props.oneClickStake}
-						setStake={stake => {
-							props.setStakeInOneClick(stake);
-						}}
+						setStakeOneClick={setStakeInOneClick}
 						stakeBtns={props.stakeBtns}
 						layBtns={props.layBtns}
 						bets={props.bets}

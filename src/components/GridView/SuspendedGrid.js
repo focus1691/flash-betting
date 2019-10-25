@@ -11,9 +11,7 @@ export default ({ladder, runners, selectRunner, eventId}) => {
                     name={name}
                     number={number}
                     logo={logo}
-                    onSelectRunner={e => {
-                        selectRunner(runners[key]);
-                    }}
+                    onSelectRunner={selectRunner(runners[key])}
                 />
                 {Array(10).fill(<td></td>)}
             </tr>

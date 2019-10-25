@@ -1,12 +1,10 @@
 import React from "react";
 import { iconForEvent } from "../../utils/EventIcons";
 
-export default ({ sportId, name, number, logo, onSelectRunner }) => (
+export default ({ sportId, name, number, logo, selectRunner }) => (
   <td
     className="grid-runner-details"
-    onClick={e => {
-      onSelectRunner();
-    }}
+    onClick={selectRunner()}
   >
     <img src={logo} onError={e => {
       e.target.onerror = null;

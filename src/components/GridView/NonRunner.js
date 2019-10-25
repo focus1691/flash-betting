@@ -12,9 +12,7 @@ export default ({sportId, nonRunners, runners, selectRunner}) => {
                     name={runners[key].runnerName}
                     number={runners[key].metadata.CLOTH_NUMBER}
                     logo={logo}
-                    onSelectRunner={e => {
-                        selectRunner(runners[key]);
-                    }}
+                    onSelectRunner={selectRunner(runners[key])}
                 />
                 {Array(10).fill(<td></td>)}
             </tr>
