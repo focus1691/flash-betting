@@ -67,12 +67,17 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
         }
     }
 
-    // find the mid way point of the other nodes
-    const relativeCursorPosition = cursorPosition - containerRef.current.offsetParent.offsetLeft
+    // find our relative cursor positionn 
+    const relativeCursorPosition = containerRef.current.offsetParent.scrollLeft + cursorPosition - containerRef.current.offsetParent.offsetLeft
+
     for (const key in otherNodes) {
+        // find the mid way point of the other nodes
         const midPoint = parseInt(otherNodes[key].style.left, 10) + otherNodes[key].clientWidth / 2
 
-        if ((relativeCursorPosition > midPoint && order < key) || (relativeCursorPosition < midPoint && order > key)) {  // move right or left
+        // move right or left
+        if ((relativeCursorPosition > midPoint && order < key) || (relativeCursorPosition < midPoint && order > key)) { 
+
+            console.log(relativeCursorPosition, midPoint)
 
             // we have to find the actual id if one of the ladders are hidden
 
