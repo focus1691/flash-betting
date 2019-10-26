@@ -96,6 +96,6 @@ const isHedgingOnSelectionAvailable = (marketId, selectionId, bets) => {
             }
         });
     return counter[0] > 0 && counter[1] === 0 || counter[0] === 0 && counter[1] > 0;
-}
+};
 
 export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets };
