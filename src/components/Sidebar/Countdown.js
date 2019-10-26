@@ -85,10 +85,12 @@ const Countdown = props => {
       })
     }
 
-    props.onChangeOrders({
-      unmatched: adjustedUnmatchedBets,
-      matched: props.bets.matched
-    })
+    if (Object.values(adjustedUnmatchedBets).length !== Object.values(props.bets.unmatched).length) {
+      props.onChangeOrders({
+        unmatched: adjustedUnmatchedBets,
+        matched: props.bets.matched
+      })
+    }
     props.onUpdateTickOffsetList(adjustedTickOffsetList)
     props.onUpdateFillOrKillList(newFillOrKillList);
 

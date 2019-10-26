@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, createRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import LadderContainer from './LadderContainer'
 import LadderHeader from "./LadderHeader";
 import PercentageRow from "./PercentageRow";
@@ -35,8 +35,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
     }, [listRef]);
 
     useEffect(() => {
+        const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
         if (listRef.current !== undefined) {
-            listRef.current.scrollToItem(0)
+            listRef.current.scrollToItem(ltpIndex, 'center')
         }
     }, [order])
 
@@ -202,10 +203,6 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             <OrderRow selectionId={id} />
         </LadderContainer>
     );
-
-
-  
-
 };
 
 export default Ladder;

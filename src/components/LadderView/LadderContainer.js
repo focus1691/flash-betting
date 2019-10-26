@@ -81,7 +81,7 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
             const otherLadderOrder = Object.values(ladderOrderList).findIndex(item => item == otherLadderId)
             if (otherLadderOrder === -1) break;
 
-            swapLadders(order, otherLadderOrder);
+            swapLadders(thisLadderOrder, otherLadderOrder);
 
             otherNodes[key].style.left = `${order * containerRef.current.clientWidth}px`
             

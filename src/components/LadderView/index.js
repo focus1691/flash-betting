@@ -32,6 +32,15 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
     }
   });
 
+  const swapLadders = (fromIndex, toIndex) => {
+    const newOrderList = Object.assign({}, ladderOrder);
+
+    newOrderList[fromIndex] = ladderOrder[toIndex];
+    newOrderList[toIndex] = ladderOrder[fromIndex];
+
+    onChangeLadderOrder(newOrderList);
+  }
+
   return (
     <div className={"ladder-container"}
       onContextMenu = { (e) => { e.preventDefault(); return false } }
@@ -80,14 +89,7 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
               onChangeStopLossList(newStopLossList);
 
             }}
-            swapLadders = {(fromIndex, toIndex) => {
-              const newOrderList = Object.assign({}, ladderOrder);
-
-              newOrderList[fromIndex] = ladderOrder[toIndex];
-              newOrderList[toIndex] = ladderOrder[fromIndex];
-
-              onChangeLadderOrder(newOrderList);
-            }}
+            swapLadders = {swapLadders}
           />
           ))
       : null } 
