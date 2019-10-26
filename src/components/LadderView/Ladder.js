@@ -13,7 +13,7 @@ import { calcBackProfit } from "../../utils/PriceCalculator";
 import { getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
-                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume }) => {
+                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume = [] }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
