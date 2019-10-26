@@ -40,3 +40,9 @@ html, body, #root, #root > div {
  ::-webkit-scrollbar {
     display: none;
 }
+
+#spinner {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+}

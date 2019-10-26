@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
 import { updateStopLossList } from '../actions/stopLoss'
 import { updateTickOffsetList } from "../actions/tickOffset";
 import { updateStopEntryList } from "../actions/stopEntry";
+import Loader from 'react-loader-spinner'
 import Siderbar from "./Sidebar";
 import HomeView from "./HomeView/";
 import LadderView from "./LadderView/";
@@ -28,27 +29,28 @@ import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../u
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 
 const App = props => {
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const loadSession = async () => {
     /**
      * Send the session key to the server to login to BetFair
      */
     let sessionKey = localStorage.getItem("sessionKey");
     let email = localStorage.getItem("username");
-    fetch(
+    await fetch(
       `/api/load-session?sessionKey=${encodeURIComponent(
         sessionKey
       )}&email=${encodeURIComponent(email)}`
     );
-  }, []);
+  };
 
-  useEffect(() => {
+  const loadSettings = async () => {
     /**
      * Fetch settings from the database and load them into redux state
      * @return {Object} settings
      *   User settings.
      */
-    fetch(`/api/get-user-settings`)
+    await fetch(`/api/get-user-settings`)
       .then(res => res.json())
       .then(settings => {
         props.onToggleSounds(settings.sounds);
@@ -67,145 +69,147 @@ const App = props => {
      * @return {Boolean} premiumStatus
      *   Premium membership status required to access the LadderView.
      */
-    fetch(`/api/premium-status`)
+    await fetch(`/api/premium-status`)
       .then(res => res.json())
       .then(expiryDate => {
         let now = new Date();
         const isActive = isPremiumActive(now, expiryDate);
         props.setPremiumStatus(isActive);
       });
-  }, []);
+  };
 
-  useEffect(() => {
+  const loadMarket = async () => {
+    let marketId = getQueryVariable("marketId");
 
-    const load = async () => {
-      let marketId = getQueryVariable("marketId");
+    // Check if the page has query parameter 'marketId'
+    // Load the market if found
+    if (marketId !== false) {
+      await fetch(`/api/get-market-info?marketId=${marketId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.result.length > 0) {
+            const runners = {};
+            for (let i = 0; i < data.result[0].runners.length; i++) {
+              let selectionId = data.result[0].runners[i].selectionId;
+              runners[selectionId] = data.result[0].runners[i];
 
-      // Check if the page has query parameter 'marketId'
-      // Load the market if found
-      if (marketId !== false) {
-        fetch(`/api/get-market-info?marketId=${marketId}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.result.length > 0) {
-              const runners = {};
-              for (let i = 0; i < data.result[0].runners.length; i++) {
-                let selectionId = data.result[0].runners[i].selectionId;
-                runners[selectionId] = data.result[0].runners[i];
+              // The Stake/Liability buttons for the GridView
+              runners[selectionId].order = {
+                visible: false,
+                backLay: 0,
+                stakeLiability: 0,
+                stake: 2,
+                price: 0
+              };
+            }
 
-                // The Stake/Liability buttons for the GridView
-                runners[selectionId].order = {
-                  visible: false,
-                  backLay: 0,
-                  stakeLiability: 0,
-                  stake: 2,
-                  price: 0
-                };
+            props.onUpdateRunners(runners);
+            props.onReceiveMarket(data.result[0]);
+            props.onSelectRunner(data.result[0].runners[0]);
+
+            // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+            props.socket.emit("market-subscription", {
+              marketId: data.result[0].marketId
+            });
+          }
+        });
+
+      let loadedBackOrders = {};
+      let loadedLayOrders = {};
+      let loadedStopEntryOrders = {};
+      let loadedTickOffsetOrders = {};
+      let loadedFillOrKillOrders = {};
+      let loadedStopLossOrders = {};
+      let loadedUnmatchedOrders = {};
+      let loadedMatchedOrders = {};
+
+
+      await fetch(`/api/get-all-orders`)
+        .then(res => res.json())
+        .then(orders => {
+          const loadOrders = async orders => {
+            const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+            const currentOrdersObject = {};
+            currentOrders.map(item => {
+              currentOrdersObject[item.betId] = item;
+              currentOrdersObject[item.betId].price = item.averagePriceMatched;
+            })
+
+            orders.map(async order => {
+
+              if (order.marketId === marketId) {
+                switch (order.strategy) {
+                  case "Back":
+                    loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
+                    break;
+                  case "Lay":
+                    loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
+                    break;
+                  case "Stop Entry":
+                    loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
+                    break;
+                  case "Tick Offset":
+                    loadedTickOffsetOrders[order.rfs] = order
+                    break;
+                  case "Fill Or Kill":
+                    // this should only keep the fill or kill if the order isn't completed already
+                    if (currentOrdersObject[order.betId] === "EXECUTABLE") {
+                      loadedFillOrKillOrders[order.betId] = order
+                    }
+                    break;
+                  case "Stop Loss":
+                    loadedStopLossOrders[order.selectionId] = order
+                    break;
+                  default:
+                    break;
+                }
+
+              }
+            })
+
+            // handle orders not in the there
+            Object.keys(currentOrdersObject).map(async betId => {
+              const order = currentOrdersObject[betId];
+              const orderData = {
+                strategy: "None",
+                marketId: order.marketId,
+                side: order.side,
+                price: order.price,
+                size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
+                selectionId: order.selectionId,
+                rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
+                betId: betId
               }
 
-              props.onUpdateRunners(runners);
-              props.onReceiveMarket(data.result[0]);
-              props.onSelectRunner(data.result[0].runners[0]);
-
-              // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-              props.socket.emit("market-subscription", {
-                marketId: data.result[0].marketId
-              });
-            }
-          });
-
-        let loadedBackOrders = {};
-        let loadedLayOrders = {};
-        let loadedStopEntryOrders = {};
-        let loadedTickOffsetOrders = {};
-        let loadedFillOrKillOrders = {};
-        let loadedStopLossOrders = {};
-        let loadedUnmatchedOrders = {};
-        let loadedMatchedOrders = {};
-
-
-        fetch(`/api/get-all-orders`)
-          .then(res => res.json())
-          .then(orders => {
-            const loadOrders = async orders => {
-              const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-              const currentOrdersObject = {};
-              currentOrders.map(item => {
-                currentOrdersObject[item.betId] = item;
-                currentOrdersObject[item.betId].price = item.averagePriceMatched;
-              })
-
-              orders.map(async order => {
-
-                if (order.marketId === marketId) {
-                  switch (order.strategy) {
-                    case "Back":
-                      loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
-                      break;
-                    case "Lay":
-                      loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
-                      break;
-                    case "Stop Entry":
-                      loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
-                      break;
-                    case "Tick Offset":
-                      loadedTickOffsetOrders[order.rfs] = order
-                      break;
-                    case "Fill Or Kill":
-                      // this should only keep the fill or kill if the order isn't completed already
-                      if (currentOrdersObject[order.betId] === "EXECUTABLE") {
-                        loadedFillOrKillOrders[order.betId] = order
-                      }
-                      break;
-                    case "Stop Loss":
-                      loadedStopLossOrders[order.selectionId] = order
-                      break;
-                    default:
-                      break;
-                  }
-
-                }
-              })
-
-              // handle orders not in the there
-              Object.keys(currentOrdersObject).map(async betId => {
-                const order = currentOrdersObject[betId];
-                const orderData = {
-                  strategy: "None",
-                  marketId: order.marketId,
-                  side: order.side,
-                  price: order.price,
-                  size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
-                  selectionId: order.selectionId,
-                  rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
-                  betId: betId
-                }
-
-                if (order.status === "EXECUTION_COMPLETE") {
-                  loadedMatchedOrders[order.betId] = orderData;
-                } else if (order.status === "EXECUTABLE") {
-                  loadedUnmatchedOrders[order.betId] = orderData;
-                }
-              })
-            }
-            loadOrders(orders);
-          }
-          ).then(() => {
-            props.onChangeOrders({
-              matched: loadedMatchedOrders,
-              unmatched: loadedUnmatchedOrders
+              if (order.status === "EXECUTION_COMPLETE") {
+                loadedMatchedOrders[order.betId] = orderData;
+              } else if (order.status === "EXECUTABLE") {
+                loadedUnmatchedOrders[order.betId] = orderData;
+              }
             })
-            props.onChangeBackList(loadedBackOrders)
-            props.onChangeLayList(loadedLayOrders)
-            props.onChangeStopEntryList(loadedStopEntryOrders)
-            props.onChangeTickOffsetList(loadedTickOffsetOrders)
-            props.onChangeFillOrKillList(loadedFillOrKillOrders)
-            props.onChangeStopLossList(loadedStopLossOrders);
+          }
+          loadOrders(orders);
+        }
+        ).then(() => {
+          props.onChangeOrders({
+            matched: loadedMatchedOrders,
+            unmatched: loadedUnmatchedOrders
           })
-
-      }
+          props.onChangeBackList(loadedBackOrders)
+          props.onChangeLayList(loadedLayOrders)
+          props.onChangeStopEntryList(loadedStopEntryOrders)
+          props.onChangeTickOffsetList(loadedTickOffsetOrders)
+          props.onChangeFillOrKillList(loadedFillOrKillOrders)
+          props.onChangeStopLossList(loadedStopLossOrders);
+        })
     }
-    load();
+  }
+
+  useEffect(async () => {
+    await loadSession();
+    await loadSettings();
+    await loadMarket();
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -436,36 +440,49 @@ const App = props => {
     }
   };
 
-  return (
-    <div className="horizontal-scroll-wrapper">
-      <div className="root">
-        {props.marketOpen ? (
-          <Helmet>
-            <title>
-              {`${new Date(
-                props.market.marketStartTime
-              ).toLocaleTimeString()} ${props.market.marketName}  ${
-                props.market.event.venue || ""
-                }`}
-            </title>
-          </Helmet>
-        ) : null}
-        <Siderbar />
-        <main className="content">
-          <Draggable bounds="body">
-            <div
-              className="box"
-              style={{ position: "absolute", top: "25%", left: "50%", zIndex: 9999 }}
-            >
-              <DraggableGraph />
-            </div>
-          </Draggable>
-          {renderView()}
-          <PremiumPopup />
-        </main>
+  if (isLoading) {
+    return (
+      <div id="spinner">
+        <Loader
+          type="Puff"
+          color="#00BFFF"
+          height={100}
+          width={100}
+        />
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className="horizontal-scroll-wrapper">
+        <div className="root">
+          {props.marketOpen ? (
+            <Helmet>
+              <title>
+                {`${new Date(
+                  props.market.marketStartTime
+                ).toLocaleTimeString()} ${props.market.marketName}  ${
+                  props.market.event.venue || ""
+                  }`}
+              </title>
+            </Helmet>
+          ) : null}
+          <Siderbar />
+          <main className="content">
+            <Draggable bounds="body">
+              <div
+                className="box"
+                style={{ position: "absolute", top: "25%", left: "50%", zIndex: 9999 }}
+              >
+                <DraggableGraph />
+              </div>
+            </Draggable>
+            {renderView()}
+            <PremiumPopup />
+          </main>
+        </div>
+      </div>
+    );
+  }
 };
 
 
