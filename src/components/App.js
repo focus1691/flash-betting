@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
@@ -29,17 +29,18 @@ import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 
 const App = props => {
 
-  /**
-   * Send the session key to the server to login to BetFair
-   */
-  let sessionKey = localStorage.getItem("sessionKey");
-  let email = localStorage.getItem("username");
-
-  fetch(
-    `/api/load-session?sessionKey=${encodeURIComponent(
-      sessionKey
-    )}&email=${encodeURIComponent(email)}`
-  );
+  useEffect(() => {
+    /**
+     * Send the session key to the server to login to BetFair
+     */
+    let sessionKey = localStorage.getItem("sessionKey");
+    let email = localStorage.getItem("username");
+    fetch(
+      `/api/load-session?sessionKey=${encodeURIComponent(
+        sessionKey
+      )}&email=${encodeURIComponent(email)}`
+    );
+  }, []);
 
   useEffect(() => {
     /**
@@ -76,7 +77,7 @@ const App = props => {
   }, []);
 
   useEffect(() => {
-    
+
     const load = async () => {
       let marketId = getQueryVariable("marketId");
 
@@ -126,69 +127,69 @@ const App = props => {
         fetch(`/api/get-all-orders`)
           .then(res => res.json())
           .then(orders => {
-                const loadOrders = async orders => {
-                  const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-                  const currentOrdersObject = {};
-                  currentOrders.map(item => {
-                    currentOrdersObject[item.betId] = item;
-                    currentOrdersObject[item.betId].price = item.averagePriceMatched;
-                  })
-                  
-                  orders.map(async order => {
+            const loadOrders = async orders => {
+              const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+              const currentOrdersObject = {};
+              currentOrders.map(item => {
+                currentOrdersObject[item.betId] = item;
+                currentOrdersObject[item.betId].price = item.averagePriceMatched;
+              })
 
-                    if (order.marketId === marketId) {
-                      switch (order.strategy) {
-                        case "Back":
-                          loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
-                          break;
-                        case "Lay":
-                          loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
-                          break;
-                        case "Stop Entry":
-                          loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
-                          break;
-                        case "Tick Offset":
-                          loadedTickOffsetOrders[order.rfs] = order
-                          break;
-                        case "Fill Or Kill":
-                          // this should only keep the fill or kill if the order isn't completed already
-                          if (currentOrdersObject[order.betId] === "EXECUTABLE") {
-                            loadedFillOrKillOrders[order.betId] = order
-                          }
-                          break;
-                        case "Stop Loss":
-                          loadedStopLossOrders[order.selectionId] = order
-                          break;
-                        default:
-                          break;
+              orders.map(async order => {
+
+                if (order.marketId === marketId) {
+                  switch (order.strategy) {
+                    case "Back":
+                      loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
+                      break;
+                    case "Lay":
+                      loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
+                      break;
+                    case "Stop Entry":
+                      loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
+                      break;
+                    case "Tick Offset":
+                      loadedTickOffsetOrders[order.rfs] = order
+                      break;
+                    case "Fill Or Kill":
+                      // this should only keep the fill or kill if the order isn't completed already
+                      if (currentOrdersObject[order.betId] === "EXECUTABLE") {
+                        loadedFillOrKillOrders[order.betId] = order
                       }
+                      break;
+                    case "Stop Loss":
+                      loadedStopLossOrders[order.selectionId] = order
+                      break;
+                    default:
+                      break;
+                  }
 
-                    }
-                  })
-
-                  // handle orders not in the there
-                  Object.keys(currentOrdersObject).map(async betId => {
-                    const order = currentOrdersObject[betId];
-                    const orderData = {
-                      strategy: "None",
-                      marketId: order.marketId,
-                      side: order.side,
-                      price: order.price,
-                      size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
-                      selectionId: order.selectionId,
-                      rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
-                      betId: betId
-                    }
-
-                    if (order.status === "EXECUTION_COMPLETE") {
-                      loadedMatchedOrders[order.betId] = orderData;
-                    } else if (order.status === "EXECUTABLE") {
-                      loadedUnmatchedOrders[order.betId] = orderData;
-                    }
-                  })
                 }
-                loadOrders(orders);
+              })
+
+              // handle orders not in the there
+              Object.keys(currentOrdersObject).map(async betId => {
+                const order = currentOrdersObject[betId];
+                const orderData = {
+                  strategy: "None",
+                  marketId: order.marketId,
+                  side: order.side,
+                  price: order.price,
+                  size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
+                  selectionId: order.selectionId,
+                  rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
+                  betId: betId
+                }
+
+                if (order.status === "EXECUTION_COMPLETE") {
+                  loadedMatchedOrders[order.betId] = orderData;
+                } else if (order.status === "EXECUTABLE") {
+                  loadedUnmatchedOrders[order.betId] = orderData;
+                }
+              })
             }
+            loadOrders(orders);
+          }
           ).then(() => {
             props.onChangeOrders({
               matched: loadedMatchedOrders,
@@ -204,15 +205,15 @@ const App = props => {
 
       }
     }
-  load();
+    load();
   }, []);
 
   useEffect(() => {
-      if (Object.keys(props.unmatchedBets).length > 0) {
-        props.socket.emit("order-subscription", {
-          customerStrategyRefs: JSON.stringify(Object.values(props.unmatchedBets).map(bet => bet.rfs))
-        });
-      }
+    if (Object.keys(props.unmatchedBets).length > 0) {
+      props.socket.emit("order-subscription", {
+        customerStrategyRefs: JSON.stringify(Object.values(props.unmatchedBets).map(bet => bet.rfs))
+      });
+    }
   }, [Object.keys(props.unmatchedBets).length]);
 
   useEffect(() => {
@@ -350,7 +351,7 @@ const App = props => {
         })
 
         props.onSetMarketVolume(marketVolume)
-      } catch (e) {}
+      } catch (e) { }
 
     });
 
@@ -360,14 +361,14 @@ const App = props => {
      */
     props.socket.on("ocm", async data => {
 
-      
+
       if (data.oc) {
         const newUnmatchedBets = Object.assign({}, props.unmatchedBets)
         const newMatchedBets = Object.assign({}, props.matchedBets);
         let checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
         let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
         let tickOffsetOrdersToRemove = [];
-        
+
         data.oc.map(changes => {
           changes.orc.map(runner => {
             runner.uo.map(order => {
