@@ -143,12 +143,13 @@
 }
 
 .volume-col {
-	height: '100%'; 
-	background-color: '#f4b563';
-	max-width: '100%'; 
-	color: 'white'; 
-	font-size: '0.7rem'; 
-	font-weight: 'bold';
+	height: 100%; 
+	background-color: rgb(255, 255, 255, 0.75);
+	max-width: 100%; 
+	font-family: "Open Sans";
+	font-size: 0.7rem; 
+	font-weight: bold;
+	text-align: left;
 }
 
 .candle-stick {
