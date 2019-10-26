@@ -11,7 +11,108 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged,
                           fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal }) => {
 
-    
+                        
+    const handleClick = () => async e => {
+      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
+              
+      // stoploss and fill or kill can't be together, stoploss takes priority
+      placeOrder({
+        side: side,
+        price: formatPrice(cell.odds),
+        selectionId: selectionId,
+        customerStrategyRef: referenceStrategyId,
+        unmatchedBets: unmatchedBets,
+        matchedBets: matchedBets, 
+        size: stakeVal[selectionId],
+        orderCompleteCallBack: async betId => {
+
+          if (stopLossSelected && stopLossData === undefined) {
+            changeStopLossList({
+              side: side === "BACK" ? "LAY" : "BACK",
+              price: formatPrice(cell.odds),
+              custom: false,
+              units: stopLossUnits,
+              rfs: referenceStrategyId,
+              assignedIsOrderMatched: false,
+              size: stakeVal[selectionId],
+              betId: betId,
+              hedged: stopLossHedged
+            })
+          } else if (tickOffsetSelected) {
+            const newTickOffset = Object.assign({}, tickOffsetList)
+            const addedOrder = {
+              strategy: "Tick Offset",
+              marketId: marketId, 
+              selectionId: selectionId, 
+              price: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
+              size: tickOffsetHedged ? hedgeSize : stakeVal[selectionId], 
+              side: side, 
+              percentageTrigger: tickOffsetTrigger,
+              rfs: referenceStrategyId,
+              betId: betId,
+              hedged: tickOffsetHedged,
+              minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1
+            };
+
+            newTickOffset[referenceStrategyId] = addedOrder
+
+            await fetch('/api/save-order', {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              method: "POST",
+              body: JSON.stringify(addedOrder)
+            })
+            onChangeTickOffsetList(newTickOffset);
+            
+          }
+
+          if (!stopLossSelected && fillOrKillSelected) {
+            const addedFillOrKillOrder = {strategy: "Fill Or Kill", marketId: marketId, selectionId: selectionId, seconds: fillOrKillSeconds, startTime: Date.now(), betId: betId, rfs: referenceStrategyId};
+            const newFillOrKillList = Object.assign({}, fillOrKillList);
+            newFillOrKillList[betId] = addedFillOrKillOrder;
+
+            await fetch('/api/save-order', {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              method: "POST",
+              body: JSON.stringify(addedFillOrKillOrder)
+            })
+            onUpdateFillOrKillList(newFillOrKillList);
+          }
+
+        },
+      });
+    };
+
+    const handleRightClick = () => async e => {
+      e.preventDefault()
+
+      if (stopLossList[selectionId] !== undefined) {
+        await fetch('/api/remove-orders', {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify([stopLossList[selectionId]])
+        })
+      }
+      
+      changeStopLossList({
+        side: side,
+        price: formatPrice(cell.odds),
+        custom: true,
+        rfs: undefined,
+        assignedIsOrderMatched: false,
+      })
+
+      return false;
+    };
+
     return (
         <div className = 'td'
             style={
@@ -21,109 +122,8 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
             }
             onMouseEnter = {onHover}
             onMouseLeave = {onLeave}
-            onClick={e => {
-
-              const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
-              
-              // stoploss and fill or kill can't be together, stoploss takes priority
-              placeOrder({
-                side: side,
-                price: formatPrice(cell.odds),
-                selectionId: selectionId,
-                customerStrategyRef: referenceStrategyId,
-                unmatchedBets: unmatchedBets,
-                matchedBets: matchedBets, 
-                size: stakeVal[selectionId],
-                orderCompleteCallBack: async betId => {
-
-                  if (stopLossSelected && stopLossData === undefined) {
-                    changeStopLossList({
-                      side: side === "BACK" ? "LAY" : "BACK",
-                      price: formatPrice(cell.odds),
-                      custom: false,
-                      units: stopLossUnits,
-                      rfs: referenceStrategyId,
-                      assignedIsOrderMatched: false,
-                      size: stakeVal[selectionId],
-                      betId: betId,
-                      hedged: stopLossHedged
-                    })
-                  } else if (tickOffsetSelected) {
-                    const newTickOffset = Object.assign({}, tickOffsetList)
-                    const addedOrder = {
-                      strategy: "Tick Offset",
-                      marketId: marketId, 
-                      selectionId: selectionId, 
-                      price: findTickOffset(formatPrice(cell.odds), side.toLowerCase(), tickOffsetTicks, tickOffsetUnits === "Percent").priceReached,
-                      size: tickOffsetHedged ? hedgeSize : stakeVal[selectionId], 
-                      side: side, 
-                      percentageTrigger: tickOffsetTrigger,
-                      rfs: referenceStrategyId,
-                      betId: betId,
-                      hedged: tickOffsetHedged,
-                      minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1
-                    };
-    
-                    newTickOffset[referenceStrategyId] = addedOrder
-    
-                    await fetch('/api/save-order', {
-                      headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                      },
-                      method: "POST",
-                      body: JSON.stringify(addedOrder)
-                    })
-                    onChangeTickOffsetList(newTickOffset);
-                    
-                  }
-
-                  if (!stopLossSelected && fillOrKillSelected) {
-                    const addedFillOrKillOrder = {strategy: "Fill Or Kill", marketId: marketId, selectionId: selectionId, seconds: fillOrKillSeconds, startTime: Date.now(), betId: betId, rfs: referenceStrategyId};
-                    const newFillOrKillList = Object.assign({}, fillOrKillList);
-                    newFillOrKillList[betId] = addedFillOrKillOrder;
-
-                    await fetch('/api/save-order', {
-                      headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                      },
-                      method: "POST",
-                      body: JSON.stringify(addedFillOrKillOrder)
-                    })
-                    onUpdateFillOrKillList(newFillOrKillList);
-                  }
-
-                },
-              })
-
-              
-
-            }}
-            onContextMenu = { async e => {
-              e.preventDefault()
-
-              if (stopLossList[selectionId] !== undefined) {
-                await fetch('/api/remove-orders', {
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                  },
-                  method: "POST",
-                  body: JSON.stringify([stopLossList[selectionId]])
-                })
-              }
-              
-              changeStopLossList({
-                side: side,
-                price: formatPrice(cell.odds),
-                custom: true,
-                rfs: undefined,
-                assignedIsOrderMatched: false,
-              })
-
-              return false;
-            }}
+            onClick={handleClick()}
+            onContextMenu = {handleRightClick()}
           >
             { isStopLoss ? stopLossData.hedged ? "H" : stopLossData.size : cell[`${side.toLowerCase()}Matched`] }
         </div>

@@ -8,8 +8,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { calcHedgedPL, calcLiability, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
-import { calcBackProfit } from "../../utils/PriceCalculator";
+import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
@@ -64,7 +63,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             color: item < filteredLTPs[index + 1] ? 'R' : 'G'
             }
         }
-    })
+    });
 
     const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), {matched: matchedBets}).toFixed(2) : 0
     
@@ -148,9 +147,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                 sportId={market.eventType.id}
                 selectionId={id}
                 runner={runners[id]}
-                runnerClick={e => {
-                    onSelectRunner(runners[id]);
-                }}
+                runnerClick={onSelectRunner(runners[id])}
                 setLadderDown = {setLadderDown}
                 PL = {PL}
                 ladderLTPHedge = {ladderLTPHedge}

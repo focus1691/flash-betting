@@ -1,7 +1,31 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 
 
 export default ({isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners, ladderOrderList, swapLadders, setIsMoving, setLadderDown, children}) => {
+
+    const onLoad = () => e => {
+        setIsReferenceSet(true);
+    };
+
+    const handleMouseMove = () => e => {
+        if (containerRef.current === null) return;
+        if (!isLadderDown) return;
+        moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, swapLadders, setIsMoving);
+    };
+
+    const handleMouseUp= () => e => {
+        if (containerRef.current === null) return;
+        if (!isLadderDown) return;
+        setLadderDown(false);
+        returnToOrderedPos(containerRef, order, setIsMoving);
+    };
+
+    const handleMouseLeave = () => e => {
+        if (containerRef.current === null) return;
+        if (!isLadderDown) return;
+        setLadderDown(false);
+        returnToOrderedPos(containerRef, order, setIsMoving); 
+    };
 
     return (
         <div 
@@ -13,26 +37,10 @@ export default ({isReferenceSet, order, containerRef, isMoving, isLadderDown, se
                 cursor: isLadderDown ? 'move' : 'default'
             }} 
             ref = {containerRef}
-            onLoad={() => {
-                setIsReferenceSet(true);
-            }}
-            onMouseMove = {(e) => {
-                if (containerRef.current === null) return;
-                if (!isLadderDown) return;
-                moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, swapLadders, setIsMoving)
-            }}
-            onMouseUp={() => {
-                if (containerRef.current === null) return;
-                if (!isLadderDown) return;
-                setLadderDown(false);
-                returnToOrderedPos(containerRef, order, setIsMoving);
-            }}
-            onMouseLeave = {() => {
-                if (containerRef.current === null) return;
-                if (!isLadderDown) return;
-                setLadderDown(false);
-                returnToOrderedPos(containerRef, order, setIsMoving); 
-            }}
+            onLoad={onLoad()}
+            onMouseMove = {handleMouseMove()}
+            onMouseUp={handleMouseUp()}
+            onMouseLeave = {handleMouseLeave()}
         >
             {children}
         </div>

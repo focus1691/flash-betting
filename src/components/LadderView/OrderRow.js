@@ -30,9 +30,7 @@ const OrderRow = props => {
           </td>
           <td colSpan={1} rowSpan={4} style={{verticalAlign: 'top', minHeight: '1.675em'}}>
             <button>0</button>
-            <button onClick={() => {
-              props.onChangePriceType(props.priceType === "STAKE" ? "LIABILITY" : "STAKE")
-            }}>
+            <button onClick={props.onChangePriceType(props.priceType === "STAKE" ? "LIABILITY" : "STAKE")}>
               {props.priceType === "STAKE" ? "S" : "L"}
             </button>
             <button>K</button>
@@ -70,7 +68,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangePriceType: priceType => dispatch(changePriceType(priceType))
+    onChangePriceType: priceType => e => dispatch(changePriceType(priceType))
   }
 }
 

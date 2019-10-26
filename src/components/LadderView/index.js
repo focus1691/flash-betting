@@ -119,7 +119,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectRunner: runner => dispatch(setRunner(runner)),
+    onSelectRunner: runner => e => dispatch(setRunner(runner)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
     onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list))

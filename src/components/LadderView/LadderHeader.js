@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import { iconForEvent } from "../../utils/EventIcons";
 import { calcBackBet } from "../../utils/TradingStategy/HedingCalculator";
 
@@ -7,13 +7,15 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
   const oddsHoveredCalc = ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) + 
   ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2);
 
+  const handleMouseDown = () => e => {
+    setLadderDown(true);
+  };
+
   return (
     <div className={"ladder-header"}>
       <div>
         <h2 className="contender-name"
-          onMouseDown = {() => {
-            setLadderDown(true)
-          }} 
+          onMouseDown = {handleMouseDown()} 
         >
           {
             <img
@@ -24,9 +26,7 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
                   : iconForEvent(sportId)
               }
               alt={"Colours"}
-              onClick={e => {
-                runnerClick();
-              }}
+              onClick={runnerClick}
               onError={e => {
                 e.target.onerror = null;
                 e.target.src = iconForEvent(parseInt(sportId));
