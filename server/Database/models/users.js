@@ -2,6 +2,7 @@ const mongoose = require('mongoose'), Schema = mongoose.Schema;
 const Settings = require('./settings');
 const Strategies = require('./trading');
 const Orders = require('./orders');
+const Markets = require('./markets');
 
 const userSchema = mongoose.Schema({
     email: {
@@ -16,7 +17,7 @@ const userSchema = mongoose.Schema({
         default: new Date()
     },
     refreshToken: String,
-    markets: Array,
+    markets: [{ type: Markets.schema }],
     premiumSubscription: {
         type: Date,
         default: new Date()

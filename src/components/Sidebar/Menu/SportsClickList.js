@@ -13,6 +13,7 @@ import SportsFilterList from "./SportsFilterList";
     reverseClickHandler - function for what happens on the click of the currentItem
     clickHandler - function for what happens on item in list click,
     currentItemFull - full item for comparison in reverse click handler
+    idSelector - what we use to try and get the Id from the list
 */
 
 export default ({
@@ -23,7 +24,11 @@ export default ({
   listSelector,
   reverseClickHandler,
   clickHandler,
-  currentItemFull
+  currentItemFull,
+  myMarkets,
+  idSelector,
+  currentSportId,
+  updateMyMarkets
 }) => {
   if (currentItemFull === undefined) {
     currentItemFull = currentItem;
@@ -45,6 +50,10 @@ export default ({
           list={newArray}
           itemSelector={listSelector}
           clickHandler={data => clickHandler(data)}
+          myMarkets={myMarkets}
+          idSelector={idSelector}
+          currentSportId={currentSportId}
+          updateMyMarkets={updateMyMarkets}
         />
     </div>
   );

@@ -234,6 +234,18 @@ app.get("/api/get-my-markets", (request, response) => {
 	});
 });
 
+app.post("/api/save-market", (request, response) => {
+	database.saveMarket(betfair.email, request.body).then(res => {
+		response.json(res);
+	});
+});
+
+app.post("/api/remove-market", (request, response) => {
+	database.removeMarket(betfair.email, request.body).then(res => {
+		response.json(res);
+	});
+});
+
 app.get("/api/list-countries", (request, response) => {
 	betfair.listCountries(
 		{

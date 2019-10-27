@@ -5,7 +5,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from "@material-ui/core/Divider";
 
-export default ({ sports, currentSportId, countries, handleClick, myMarkets }) => {
+export default ({ sports, currentSportId, countries, handleClick, myMarkets, updateMyMarkets }) => {
 
     return (
         // Used for selecting sport and country
@@ -19,21 +19,21 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets }) =
             }
 
 
-            const marketItemSaved = myMarkets.find(item => item.sport.type === "Sport" && item.sport.id == sport.eventType.id) !== undefined
-            
-
-
+            const marketItemSaved = myMarkets.find(item => item.type === "Sport" && item.id == sport.eventType.id) !== undefined
+            const updateMyMarketSports = () => updateMyMarkets(myMarkets, marketItemSaved ? 'sub' : 'add', sport.eventType.id, sport.eventType.name, sport.eventType.id, "Sport")
+            const updateMyMarketCountry = (marketItemSaved, id, name, sportId) => updateMyMarkets(myMarkets, marketItemSaved ? 'sub' : 'add', id, name, sportId, "Country")
             return (
                 <React.Fragment>
                     <tr style={Object.assign({ paddingBottom: "2px", marginTop: '0.5em'}, 
                                  currentSportId === undefined ? {display: 'flex', flexDirection: 'row', height: "3em", marginLeft: '1rem', width: '100%'} : 
                                                                 { display: 'flex', flexDirection: 'column'})}>
                         {currentSportId === undefined ?
-                            <ListItemIcon style={{minWidth: '0px'}}>
+                            <ListItemIcon style={{minWidth: '0px'}} onClick={updateMyMarketSports}>
                                 <img
                                     src={window.location.origin + (marketItemSaved ? "/icons/rounded-remove-button.png" : "/icons/add-button-inside-black-circle.png") }
-                                    alt={"Expand"}
-                                    style = {{height: '16px', width: 'auto', alignSelf: 'center', cursor: 'pointer'}}
+                                    alt={"Add"}
+                                    style = {{height: '16px', width: 'auto', alignSelf: 'center', cursor: 'pointer',
+                                              filter: marketItemSaved ? 'invert(22%) sepia(92%) saturate(6689%) hue-rotate(358deg) brightness(91%) contrast(121%)' : 'none'}}
                                 />
                             </ListItemIcon>
                             : null
@@ -87,6 +87,10 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets }) =
                                                     );
                                                 }
                                             }}
+                                            currentSportId={currentSportId}
+                                            myMarkets={myMarkets}
+                                            idSelector={'countryCode'}
+                                            updateMyMarkets={updateMyMarketCountry}
                                         />
                                     
                                 ) : null}
