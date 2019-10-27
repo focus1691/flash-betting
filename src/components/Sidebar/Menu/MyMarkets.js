@@ -28,7 +28,7 @@ const MyMarkets = props => {
 							alt={"Expand"}
 						/>
 					</ListItemIcon>
-					<ListItemText>{market.sport.name}</ListItemText>
+					<ListItemText>{market.name}</ListItemText>
 				</ListItem>
 			)
 		});
