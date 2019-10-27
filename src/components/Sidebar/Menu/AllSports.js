@@ -91,7 +91,7 @@ const AllSports = props => {
                 eventMarkets.length > 0 ?
                 <SelectMarket
                   name={currentEvent.name}
-                  markets={eventMarkets}
+                  markets={eventMarkets.sort((a, b) => a.marketName.localeCompare(b.marketName))}
                   handleClick={handleClick}
                   event={currentEvent}
                 />
@@ -103,7 +103,7 @@ const AllSports = props => {
                   <SelectEvent
                     currentCompetition={currentCompetition}
                     currentCountry={currentCountry}
-                    competitionEvents={competitionEvents}
+                    competitionEvents={competitionEvents.sort((a, b) => Date.parse(a.openDate) - Date.parse(b.openDate) || a.name.localeCompare(b.name))}
                     handleClick={handleClick}
                   />
                   : // Selecting Competition

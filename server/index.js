@@ -238,7 +238,8 @@ app.get("/api/list-countries", (request, response) => {
 	betfair.listCountries(
 		{
 			filter: {
-				eventTypeIds: [request.query.sportId]
+				eventTypeIds: [request.query.sportId],
+				turnInPlayEnabled: true,
 			}
 		},
 		(err, res) => {
@@ -252,7 +253,8 @@ app.get("/api/list-competitions", (request, response) => {
 		{
 			filter: {
 				eventTypeIds: [request.query.sportId],
-				marketCountries: [request.query.country]
+				marketCountries: [request.query.country],
+				turnInPlayEnabled: true,
 			}
 		},
 		(err, res) => {
@@ -266,7 +268,8 @@ app.get("/api/list-events", (request, response) => {
 		{
 			filter: {
 				eventTypeIds: [request.query.sportId],
-				marketCountries: [request.query.country]
+				marketCountries: [request.query.country],
+				turnInPlayEnabled: true
 			}
 		},
 		(err, res) => {

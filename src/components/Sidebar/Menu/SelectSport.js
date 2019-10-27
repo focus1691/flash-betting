@@ -44,7 +44,7 @@ export default ({ sports, currentSportId, countries, handleClick }) => {
                             {currentSportId !== undefined &&
                                 sport.eventType.id === currentSportId ? (
                                     <SportsFilterList
-                                        list={countries}
+                                        list={countries.sort((a, b) => a.countryCode.localeCompare(b.countryCode))}
                                         itemSelector={"countryCode"}
                                         clickHandler={async data => {
                                             const competitions = await handleClick(
