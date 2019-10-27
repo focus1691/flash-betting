@@ -25,9 +25,19 @@
 	padding: 5px;
 }
 
-.grid-view td:nth-child(1) {width: 30%;}
-.grid-view td:nth-child(6){background-color: #BCE4FC;}
-.grid-view td:nth-child(7){background-color: #FCC9D3;}
+.grid-view td:nth-child(5) {
+	border-right: 1px solid #a6a6a6;
+}
+
+.grid-view td:nth-child(6) {
+	background-color: #BCE4FC;
+	border: 1px solid #a6a6a6;
+}
+
+.grid-view td:nth-child(7) {
+	background-color: #FCC9D3;
+	border: 1px solid #a6a6a6;
+}
 
 .grid-view img {
 	float: left;
