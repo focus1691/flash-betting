@@ -4,9 +4,10 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from '@material-ui/core/Divider';
 
 export default ({ list, itemSelector, clickHandler }) => {
+    console.log(list)
     return (   
         list.map((item, index) =>
-            <React.Fragment >
+            <tr style={{display: 'flex', flexDirection: 'row', height: "3em", paddingBottom: "2px", marginTop: '0.5em', marginLeft: '2rem'}}>
                 <ListItemIcon style={{minWidth: 'auto', cursor: 'pointer'}} onClick={() => {}}>
                     <img
                         src={window.location.origin + "/icons/add-button-inside-black-circle.png"}
@@ -21,7 +22,7 @@ export default ({ list, itemSelector, clickHandler }) => {
                 </ListItem>
                 {/* If last one don't make divider */}
                 {index === list.length - 1 ? null : <Divider style={{ marginLeft: '4rem', width: "100%" }} />}
-            </React.Fragment>
+            </tr>
         )
     )
 };

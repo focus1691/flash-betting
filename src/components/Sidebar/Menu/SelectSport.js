@@ -21,6 +21,8 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets }) =
 
             const marketItemSaved = myMarkets.find(item => item.sport.type === "Sport" && item.sport.id == sport.eventType.id) !== undefined
             
+
+
             return (
                 <React.Fragment>
                     <tr style={Object.assign({ paddingBottom: "2px", marginTop: '0.5em'}, 
@@ -51,43 +53,45 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets }) =
                         
                         <ListItemText style={{marginLeft: 0}}>{sport.eventType.name}</ListItemText>
                         </ListItem>
-                        <tr style={{display: 'flex', flexDirection: 'row', height: "3em", paddingBottom: "2px", marginTop: '0.5em', marginLeft: '2rem'}}>
+                        
                             {currentSportId !== undefined &&
                                 sport.eventType.id === currentSportId ? (
-                                    <SportsFilterList
-                                        list={countries.sort((a, b) => a.countryCode.localeCompare(b.countryCode))}
-                                        itemSelector={"countryCode"}
-                                        clickHandler={async data => {
-                                            const competitions = await handleClick(
-                                                data.countryCode,
-                                                "currentCountry",
-                                                "countryCompetitions",
-                                                "list-competitions",
-                                                currentSportId,
-                                                data.countryCode,
-                                                "",
-                                                "",
-                                                data => data.map(item => item.competition)
-                                            );
-
-                                            if (competitions.length === 0) {
-                                                await handleClick(
+                                   
+                                        <SportsFilterList
+                                            list={countries.sort((a, b) => a.countryCode.localeCompare(b.countryCode))}
+                                            itemSelector={"countryCode"}
+                                            clickHandler={async data => {
+                                                const competitions = await handleClick(
                                                     data.countryCode,
                                                     "currentCountry",
-                                                    "competitionEvents",
-                                                    "list-events",
+                                                    "countryCompetitions",
+                                                    "list-competitions",
                                                     currentSportId,
                                                     data.countryCode,
                                                     "",
                                                     "",
-                                                    data => data.map(item => item.event)
+                                                    data => data.map(item => item.competition)
                                                 );
-                                            }
-                                        }}
-                                    />
+
+                                                if (competitions.length === 0) {
+                                                    await handleClick(
+                                                        data.countryCode,
+                                                        "currentCountry",
+                                                        "competitionEvents",
+                                                        "list-events",
+                                                        currentSportId,
+                                                        data.countryCode,
+                                                        "",
+                                                        "",
+                                                        data => data.map(item => item.event)
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                    
                                 ) : null}
                         </tr>
-                    </tr>
+                    
                     <Divider style = {{marginTop: '0.5em'}}/>
                 </React.Fragment>
             );

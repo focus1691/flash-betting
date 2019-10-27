@@ -239,7 +239,7 @@ app.get("/api/list-countries", (request, response) => {
 		{
 			filter: {
 				eventTypeIds: [request.query.sportId],
-				turnInPlayEnabled: true,
+
 			}
 		},
 		(err, res) => {
@@ -254,7 +254,7 @@ app.get("/api/list-competitions", (request, response) => {
 			filter: {
 				eventTypeIds: [request.query.sportId],
 				marketCountries: [request.query.country],
-				turnInPlayEnabled: true,
+
 			}
 		},
 		(err, res) => {
@@ -269,7 +269,7 @@ app.get("/api/list-events", (request, response) => {
 			filter: {
 				eventTypeIds: [request.query.sportId],
 				marketCountries: [request.query.country],
-				turnInPlayEnabled: true
+
 			}
 		},
 		(err, res) => {
@@ -284,7 +284,7 @@ app.get("/api/list-competition-events", (request, response) => {
 			filter: {
 				competitionIds: [request.query.competitionId],
 				marketCountries: [request.query.country],
-				turnInPlayEnabled: true,
+
 			}
 		},
 		(err, res) => {
@@ -296,7 +296,7 @@ app.get("/api/list-competition-events", (request, response) => {
 app.get("/api/list-markets", (request, response) => {
 	const filter = {
 		eventIds: [request.query.eventId],
-		turnInPlayEnabled: true,
+		
 	};
 	switch (request.query.eventId) {
 		case 1:
