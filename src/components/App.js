@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
@@ -29,8 +29,6 @@ import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../u
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 
 const App = props => {
-  const [isLoading, setIsLoading] = useState(true);
-
   const loadSession = async () => {
     /**
      * Send the session key to the server to login to BetFair
@@ -205,11 +203,16 @@ const App = props => {
     }
   }
 
-  useEffect(async () => {
+  const loadData = async () => {
     await loadSession();
     await loadSettings();
     await loadMarket();
-    setIsLoading(false);
+    props.setLoading(false);
+  };
+
+  useEffect(() => {
+
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -440,7 +443,7 @@ const App = props => {
     }
   };
 
-  if (isLoading) {
+  if (props.isLoading) {
     return (
       <div id="spinner">
         <Loader
@@ -497,6 +500,7 @@ const AppWithSocket = props => (
 const mapStateToProps = state => {
   return {
     view: state.settings.view,
+    isLoading: state.settings.isLoading,
     market: state.market.currentMarket,
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
@@ -517,6 +521,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    setLoading: isLoading => dispatch(actions.setIsLoading(isLoading)),
     onToggleSounds: isSelected => dispatch(actions.toggleSound(isSelected)),
     onToggleTools: settings => dispatch(actions.toggleTools(settings)),
     onToggleUnmatchedBets: settings =>

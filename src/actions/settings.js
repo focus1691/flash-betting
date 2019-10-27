@@ -5,6 +5,13 @@ export const setActiveView = view => {
     }
 };
 
+export const setIsLoading = isLoading => {
+    return {
+        type: "SET_LOADING",
+        payload: isLoading
+    }
+};
+
 export const openPremiumDialog = open => {
     return {
         type: "TOGGLE_POPUP",

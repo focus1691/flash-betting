@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import SocketContext from "../../SocketContext";
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
@@ -10,10 +12,10 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
-  chip: {
-    marginRight: theme.spacing(1),
-    textAlign: "right",
-  },
+  subscription: props => ({
+    background: props.subscribed ? "#4CAF50" : "#F44336",
+    color: "#FFF",
+  }),
   section1: {
     margin: theme.spacing(3, 2),
   },
@@ -25,8 +27,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default () => {
-  const classes = useStyles();
+const HomeView = props => {
+
+  props.setLoading(true);
+
+  const styleProps = { subscribed: props.premiumMember };
+
+  const classes = useStyles(styleProps);
 
   return (
     <div id="home-view-container" className={classes.root}>
@@ -35,12 +42,33 @@ export default () => {
           <Grid item xs>
             <Typography gutterBottom variant="h4">
               Welcome to Trader Pro
-              <Chip className={classes.chip} color="primary" label="Soft" />
             </Typography>
+          </Grid>
+          <Grid item lg>
+            <Chip className={classes.chip} color="primary" label="joshbetting30@yahoo.com | Support ID 24442" />
+            <Chip className={classes.subscription} color="#F44336" label="Subscription: Expired" />
           </Grid>
         </Grid>
         <Divider variant="middle" />
+        <Grid container alignItems="center">
+        </Grid>
       </div>
     </div>
   );
 };
+
+const HomeViewWithSocket = props => (
+  <SocketContext.Consumer>
+    {socket => <HomeView {...props} socket={socket} />}
+  </SocketContext.Consumer>
+);
+
+const mapStateToProps = state => {
+  return {
+    premiumMember: state.settings.premiumMember
+  };
+};
+
+export default connect(
+  mapStateToProps
+)(HomeViewWithSocket);

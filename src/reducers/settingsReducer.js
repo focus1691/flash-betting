@@ -2,6 +2,7 @@ import update from 'immutability-helper';
 
 const initialState = {
   view: "GridView",
+  isLoading: true,
   premiumMember: false,
   premiumPopupOpen: false,
   fullscreen: false,
@@ -42,6 +43,8 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "ACTIVE_VIEW":
       return { ...state, view: action.payload };
+    case "SET_LOADING":
+      return { ...state, isLoading: action.payload };
     case "SET_PREMIUM_STATUS":
       return { ...state, premiumMember: action.payload };
     case "TOGGLE_POPUP":
