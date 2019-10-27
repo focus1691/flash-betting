@@ -41,13 +41,11 @@ export default ({
           <ListItemText>{currentItem}</ListItemText>
         </ListItem>
       </React.Fragment>
-      <tr style={{display: 'flex', flexDirection: 'row', marginLeft: '2rem', height: "3em", paddingBottom: "2px" }}>
         <SportsFilterList
           list={newArray}
           itemSelector={listSelector}
           clickHandler={data => clickHandler(data)}
         />
-      </tr>
     </div>
   );
 };
