@@ -29,8 +29,6 @@ const useStyles = makeStyles(theme => ({
 
 const HomeView = props => {
 
-  props.setLoading(true);
-
   const styleProps = { subscribed: props.premiumMember };
 
   const classes = useStyles(styleProps);
