@@ -1,16 +1,27 @@
 import React from "react";
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from '@material-ui/core/Divider';
 
-export default ({ list, itemSelector, clickHandler }) => (
-    list.map((item, index) =>
-        <React.Fragment>
-            <ListItem button style={{ marginLeft: '4rem', paddingTop: "2px", paddingBottom: "2px" }} onClick={(e) => clickHandler(item)}>
-                <p>{item[itemSelector]}</p>
+export default ({ list, itemSelector, clickHandler }) => {
+    return (   
+        list.map((item, index) =>
+            <React.Fragment >
+                <ListItemIcon style={{minWidth: 'auto', cursor: 'pointer'}} onClick={() => {}}>
+                    <img
+                        src={window.location.origin + "/icons/add-button-inside-black-circle.png"}
+                        alt={"Add"}
+                        style = {{height: '16px', width: 'auto', alignSelf: 'center'}}
+                    />
+                </ListItemIcon>
+                <ListItem button style={{ }} onClick={(e) => clickHandler(item)}>
+                    
+                    <p style={{minWidth: `250px`}}>{item[itemSelector]}</p>
 
-            </ListItem>
-            {/* If last one don't make divider */}
-            {index === list.length - 1 ? null : <Divider style={{ marginLeft: '4rem', width: "100%" }} />}
-        </React.Fragment>
+                </ListItem>
+                {/* If last one don't make divider */}
+                {index === list.length - 1 ? null : <Divider style={{ marginLeft: '4rem', width: "100%" }} />}
+            </React.Fragment>
+        )
     )
-);
+};

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../actions/sport";
+import { loadMyMarkets } from "../../../actions/market";
 import List from "@material-ui/core/List";
 import SelectSport from "./SelectSport";
 import SelectCompetition from "./SelectCompetition";
@@ -123,6 +124,8 @@ const AllSports = props => {
                       currentSportId={currentSportId}
                       countries={sportCountries}
                       handleClick={handleClick}
+                      myMarkets = {props.myMarkets}
+                      updateMyMarkets = {4}
                     />
             }
           </List>
@@ -135,14 +138,16 @@ const AllSports = props => {
 const mapStateToProps = state => {
   return {
     sports: state.sports,
-    currentSport: state.currentSport
+    currentSport: state.currentSport,
+    myMarkets: state.market.myMarkets,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onReceiveAllSports: sports => dispatch(actions.setAllSports(sports)),
-    onUpdateCurrentSport: sport => dispatch(actions.setCurrentSport(sport))
+    onUpdateCurrentSport: sport => dispatch(actions.setCurrentSport(sport)),
+    onUpdateMyMarkets: markets => dispatch(loadMyMarkets(markets))
   };
 };
 

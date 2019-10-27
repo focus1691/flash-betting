@@ -1,7 +1,7 @@
 import React from "react";
 import SportsClickList from "./SportsClickList";
 
-export default ({ country, competitions, handleClick, currentSportId }) => (
+export default ({ country, competitions, handleClick, currentSportId, }) => (
   <SportsClickList
     currentItem={country}
     newArray={competitions}

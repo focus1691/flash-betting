@@ -38,16 +38,10 @@ export default ({
             reverseClickHandler(currentItemFull, currentItemName, newArrayName)
           }
         >
-          <ListItemIcon>
-            <img
-              src={window.location.origin + "/icons/expand.png"}
-              alt={"Expand"}
-            />
-          </ListItemIcon>
           <ListItemText>{currentItem}</ListItemText>
         </ListItem>
       </React.Fragment>
-      <tr>
+      <tr style={{display: 'flex', flexDirection: 'row', marginLeft: '2rem', height: "3em", paddingBottom: "2px" }}>
         <SportsFilterList
           list={newArray}
           itemSelector={listSelector}

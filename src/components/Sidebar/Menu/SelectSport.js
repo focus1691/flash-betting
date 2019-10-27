@@ -5,7 +5,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from "@material-ui/core/Divider";
 
-export default ({ sports, currentSportId, countries, handleClick }) => {
+export default ({ sports, currentSportId, countries, handleClick, myMarkets }) => {
+
     return (
         // Used for selecting sport and country
         sports.sports.map(sport => {
@@ -17,9 +18,24 @@ export default ({ sports, currentSportId, countries, handleClick }) => {
                 return null;
             }
 
+
+            const marketItemSaved = myMarkets.find(item => item.sport.type === "Sport" && item.sport.id == sport.eventType.id) !== undefined
+            
             return (
                 <React.Fragment>
-                    <tr>
+                    <tr style={Object.assign({ paddingBottom: "2px", marginTop: '0.5em'}, 
+                                 currentSportId === undefined ? {display: 'flex', flexDirection: 'row', height: "3em", marginLeft: '1rem', width: '100%'} : 
+                                                                { display: 'flex', flexDirection: 'column'})}>
+                        {currentSportId === undefined ?
+                            <ListItemIcon style={{minWidth: '0px'}}>
+                                <img
+                                    src={window.location.origin + (marketItemSaved ? "/icons/rounded-remove-button.png" : "/icons/add-button-inside-black-circle.png") }
+                                    alt={"Expand"}
+                                    style = {{height: '16px', width: 'auto', alignSelf: 'center', cursor: 'pointer'}}
+                                />
+                            </ListItemIcon>
+                            : null
+                        }
                         <ListItem
                             button
                             onClick={e =>
@@ -32,15 +48,10 @@ export default ({ sports, currentSportId, countries, handleClick }) => {
                                 )
                             }
                         >
-                            <ListItemIcon>
-                                <img
-                                    src={window.location.origin + "/icons/expand.png"}
-                                    alt={"Expand"}
-                                />
-                            </ListItemIcon>
-                            <ListItemText>{sport.eventType.name}</ListItemText>
+                        
+                        <ListItemText style={{marginLeft: 0}}>{sport.eventType.name}</ListItemText>
                         </ListItem>
-                        <tr>
+                        <tr style={{display: 'flex', flexDirection: 'row', height: "3em", paddingBottom: "2px", marginTop: '0.5em', marginLeft: '2rem'}}>
                             {currentSportId !== undefined &&
                                 sport.eventType.id === currentSportId ? (
                                     <SportsFilterList
@@ -77,7 +88,7 @@ export default ({ sports, currentSportId, countries, handleClick }) => {
                                 ) : null}
                         </tr>
                     </tr>
-                    <Divider />
+                    <Divider style = {{marginTop: '0.5em'}}/>
                 </React.Fragment>
             );
         })
