@@ -283,7 +283,8 @@ app.get("/api/list-competition-events", (request, response) => {
 		{
 			filter: {
 				competitionIds: [request.query.competitionId],
-				marketCountries: [request.query.country]
+				marketCountries: [request.query.country],
+				turnInPlayEnabled: true,
 			}
 		},
 		(err, res) => {
@@ -294,7 +295,8 @@ app.get("/api/list-competition-events", (request, response) => {
 
 app.get("/api/list-markets", (request, response) => {
 	const filter = {
-		eventIds: [request.query.eventId]
+		eventIds: [request.query.eventId],
+		turnInPlayEnabled: true,
 	};
 	switch (request.query.eventId) {
 		case 1:
