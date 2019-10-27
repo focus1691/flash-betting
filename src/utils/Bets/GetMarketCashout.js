@@ -1,14 +1,18 @@
 
 
-import { calcBackProfit, twoDecimalPlaces } from "../PriceCalculator";
+import { twoDecimalPlaces } from "../PriceCalculator";
+import { calcHedgedPL2 } from "../TradingStategy/HedingCalculator";
 
-const getMarketCashout = (marketId, bets) => {
-    return twoDecimalPlaces(Object.values(bets.matched)
-        .filter(order => order.marketId === marketId)
-        .map(order => calcBackProfit(order.size, parseFloat(order.price), order.side === "BACK" ? 0 : 1))
-        .reduce((acc, total) => {
-            return acc + total;
-        }, 0));
+const getMarketCashout = (marketId, bets, ladder) => {
+
+    const reducer = (acc, cur) => acc.indexOf(cur.selectionId) === -1 ? acc.concat(cur.selectionId) : acc; 
+    const selections = Object.values(bets.matched).reduce(reducer, []);
+
+    return twoDecimalPlaces(selections.map(selection =>
+        Object.values(bets.matched).filter(bet => bet.selectionId === selection && bet.marketId === marketId)
+        .map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ladder[bet.selectionId].ltp[0]) ))
+        .reduce((acc, tot) => acc + tot))
+        .reduce((acc, tot) => acc + tot, 0));
 };
 
 export { getMarketCashout };

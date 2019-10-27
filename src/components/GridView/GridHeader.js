@@ -4,7 +4,6 @@ import { sumMatchedBets } from "../../utils/PriceCalculator";
 import { formatCurrency } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
 import getQueryVariable from "../../utils/GetQueryVariable";
-import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
 import { openLiveStream } from "../../utils/Video";
 import crypto from 'crypto'
@@ -25,7 +24,8 @@ export default ({
   layBtns,
   bets,
   ltpList,
-  onPlaceOrder
+  onPlaceOrder,
+  marketCashout
 }) => (
     <React.Fragment>
       <tr id="grid-header">
@@ -96,10 +96,10 @@ export default ({
             If you click it, then it should place N bets (or how ever many you need)
             to close those positions/
         */}
-        <th>
+        <th id="market-cashout">
           <span>Market Cashout</span>
-          <span id="market-cashout" onClick = {() => {
-              const hedgedBets = getHedgedBetsToMake(getQueryVariable("marketId"), bets, ltpList)
+          <span style={{ color: marketCashout < 0 ? "red" : marketCashout > 0 ? "#01CC41" : "#D3D3D3" }} onClick = {() => {
+              const hedgedBets = getHedgedBetsToMake(market.marketId, bets, ltpList)
 
               if (hedgedBets.length > 0) {
                 const recursivePlaceHedge = (index, unmatchedBets) => {
@@ -122,7 +122,7 @@ export default ({
                 recursivePlaceHedge(0, bets.unmatched)
                 
               }
-            }}>{getMarketCashout(getQueryVariable("marketId"), bets)}</span>
+            }}>{marketCashout}</span>
         </th>
         <th colSpan="2"></th>
         <th></th>

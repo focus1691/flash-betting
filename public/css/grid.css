@@ -186,11 +186,12 @@
 	background: #FCC9D3;
 }
 
-#market-cashout {
+#market-cashout span:nth-child(2) {
 	cursor: pointer;
-	font-size: x-small;
+	font-size: small;
+	font-weight: bold;
 	float: right;
-	display:table-cell;
+	line-height: 20px;
 }
 
 /** GRID ORDER ROW **/

@@ -15,6 +15,7 @@ import NonRunners from "./NonRunner";
 import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 import { placeOrder } from "../../actions/order";
+import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { isValidPrice } from "../../utils/Bets/Validator";
 import SuspendedWarning from "./SuspendedWarning";
@@ -249,14 +250,16 @@ const Grid = props => {
 	};
 
 
-	const ltpSelectionIdObject = {}
+	const ltpSelectionIdObject = {};
 
 	Object.keys(props.ladder).map(key => {
 		const { ltp, } = DeconstructLadder(
 			props.ladder[key]
 		);
 		ltpSelectionIdObject[key] = ltp[0]
-	})
+	});
+
+	const marketCashout = getMarketCashout(props.market.marketId, props.bets, props.ladder)
 	
 	return (
 		<div id="grid-container">
@@ -286,6 +289,7 @@ const Grid = props => {
 						bets={props.bets}
 						ltpList={ltpSelectionIdObject}
 						onPlaceOrder={props.onPlaceOrder}
+						marketCashout={marketCashout}
 					/>	
 					{props.marketOpen
 						? props.marketStatus === "SUSPENDED"
