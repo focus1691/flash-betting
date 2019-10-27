@@ -70,6 +70,34 @@ const AllSports = props => {
     return data;
   };
 
+
+  const updateMyMarkets = (myMarkets, action, id, name, sportId, type, ) => {
+    /*
+			myMarkets - myMarkets that will be edited
+			action - add to my markets, or remove
+			id - id for the selection
+			name - name displayed on myMarkets
+			sportId - the sport that the selection is associated with
+			type - the type of the selection (sport, country, competition, event, market)
+    */
+    const marketSelection = {id, name, sportId, type};
+    
+    fetch(`/api/${action == "add" ? 'save-market' : 'remove-market'}`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(marketSelection)
+    })
+    .then(res => res.json())
+    .then(res => {
+      props.onUpdateMyMarkets(res)
+    })
+    .catch(res => {})
+    
+  }
+
   const {
     currentSportId,
     sportCountries,
@@ -91,10 +119,13 @@ const AllSports = props => {
                 eventMarkets !== undefined &&
                 eventMarkets.length > 0 ?
                 <SelectMarket
+                  currentSportId={currentSportId}
                   name={currentEvent.name}
                   markets={eventMarkets.sort((a, b) => a.marketName.localeCompare(b.marketName))}
                   handleClick={handleClick}
                   event={currentEvent}
+                  myMarkets = {props.myMarkets}
+                  updateMyMarkets = {updateMyMarkets}
                 />
                 : // Selecting Event
                 currentCountry !== undefined &&
@@ -102,10 +133,13 @@ const AllSports = props => {
                   competitionEvents.length > 0 &&
                   currentEvent === undefined ?
                   <SelectEvent
+                    currentSportId={currentSportId}
                     currentCompetition={currentCompetition}
                     currentCountry={currentCountry}
                     competitionEvents={competitionEvents.sort((a, b) => Date.parse(a.openDate) - Date.parse(b.openDate) || a.name.localeCompare(b.name))}
                     handleClick={handleClick}
+                    myMarkets = {props.myMarkets}
+                    updateMyMarkets = {updateMyMarkets}
                   />
                   : // Selecting Competition
                   currentCountry !== undefined &&
@@ -117,6 +151,8 @@ const AllSports = props => {
                       competitions={countryCompetitions}
                       handleClick={handleClick}
                       currentSportId={currentSportId}
+                      myMarkets = {props.myMarkets}
+                      updateMyMarkets = {updateMyMarkets}
                     />
                     : // Selecting Sport
                     <SelectSport
@@ -125,7 +161,7 @@ const AllSports = props => {
                       countries={sportCountries}
                       handleClick={handleClick}
                       myMarkets = {props.myMarkets}
-                      updateMyMarkets = {4}
+                      updateMyMarkets = {updateMyMarkets}
                     />
             }
           </List>

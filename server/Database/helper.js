@@ -3,6 +3,7 @@ const Database = require('./database');
 const User = require('./models/users');
 const Settings = require('./models/settings');
 const Order = require('./models/orders');
+const Market = require('./models/markets')
 const Transaction = require('./models/transaction');
 
 class DatabaseHelper extends Database {
@@ -113,8 +114,37 @@ class DatabaseHelper extends Database {
         })
         .catch(err => {return err});
     }
-    getAllOrders(user) {
+
+    saveMarket(user, newMarket) {
         // Create the object with our Order Schema
+        newMarket = new Market(newMarket);
+        return new Promise((res, rej) => {
+            User.findOne({email: user},)
+            .then(user => {
+                user.markets.push(newMarket)
+                user.save();
+                res(user.markets)
+            }).catch(err => {
+                rej(400);
+            });
+        });
+    }
+
+    removeMarket(user, marketToRemove) {
+        return new Promise((res, rej) => {
+            User.findOne({email: user},)
+            .then(user => {
+                const index = user.markets.findIndex(item => item.id === marketToRemove.id && item.sportId === marketToRemove.sportId && item.type === marketToRemove.type && item.name === marketToRemove.name);
+                user.markets = user.markets.filter((item, itemIndex) => itemIndex !== index);
+                user.save();
+                res(user.markets)
+            }).catch(err => {
+                rej(400);
+            });
+        });
+    }
+
+    getAllOrders(user) {
         return new Promise((res, rej) => {
             User.findOne({email: user},)
             .then(user => {
