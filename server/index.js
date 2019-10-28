@@ -54,7 +54,7 @@ app.get("/api/request-access-token", (request, response) => {
 
 	const setupTokenInfo = async () => {
 		if (request.query.tokenType === "REFRESH_TOKEN") {
-			storedTokenData = await database.getTokenData(betfair.email);
+			var storedTokenData = await database.getTokenData(betfair.email);
 
 			if (storedTokenData.expiresIn < new Date()) {
 				params.refresh_token = storedTokenData.refreshToken;
@@ -243,6 +243,39 @@ app.post("/api/save-market", (request, response) => {
 app.post("/api/remove-market", (request, response) => {
 	database.removeMarket(betfair.email, request.body).then(res => {
 		response.json(res);
+	});
+});
+
+app.get("/api/list-todays-card", (request, response) => {
+	betfair.listMarketCatalogue({
+		filter: {
+			"eventTypeIds": [
+				// 7
+				request.query.sportId
+			],
+			"marketCountries": [
+				// "GB"
+				request.query.countries
+			],
+			"marketTypeCodes": [
+				// "WIN"
+				request.query.marketTypes
+			],
+			"marketStartTime": {
+				"from": new Date().toJSON(),
+				"to": new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON()
+			}
+		},
+		"sort": "FIRST_TO_START",
+		"maxResults": "1000",
+		"marketProjection": [
+			"COMPETITION",
+			"EVENT",
+			"EVENT_TYPE",
+			"MARKET_START_TIME"
+		]
+	}, (err, res) => {
+		response.json(res.result);
 	});
 });
 

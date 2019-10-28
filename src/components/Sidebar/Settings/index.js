@@ -256,6 +256,31 @@ const Settings = props => {
 
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
+					Win Markets
+				</Typography>
+			</AppBar>
+			<FormControlLabel
+				control={
+					<Checkbox
+						value="checkedB"
+						color="primary"
+						checked={props.trainingLadderAutoCenter}
+						// onChange={val => props.onToggleTrainingLadderAutoCenter(!props.trainingLadderAutoCenter)}
+					/>
+				}
+				label="Win Markets Only"
+			/>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					"settings.trainingLadderAutoCenter": props.trainingLadderAutoCenter
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
+
+			<AppBar className={classes.appBar} position="static">
+				<Typography variant="h6" className={classes.title}>
 					Rules
 				</Typography>
 			</AppBar>
