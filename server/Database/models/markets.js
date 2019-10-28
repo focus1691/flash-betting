@@ -5,6 +5,7 @@ const marketsSchema = mongoose.Schema({
     name: String,
     sportId: String,
     type: String,
+    country: String,
     filter: {
         type: Object,
         default: {}

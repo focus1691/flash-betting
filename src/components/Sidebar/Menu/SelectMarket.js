@@ -2,7 +2,7 @@ import React from "react";
 import SportsClickList from "./SportsClickList";
 
 export default ({name, markets, handleClick, event, myMarkets, currentSportId, updateMyMarkets}) => {
-  const updateMyMarketMarkets = (marketItemSaved, id, name, sportId) => updateMyMarkets(myMarkets, marketItemSaved ? 'sub' : 'add', id, name, sportId, "Market")
+  const updateMyMarketMarkets = (marketItemSaved, id, name, sportId) => updateMyMarkets(marketItemSaved ? 'sub' : 'add', id, name, sportId, "Market")
   return (
     <SportsClickList
       currentItem={name}

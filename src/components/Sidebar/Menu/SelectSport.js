@@ -20,8 +20,8 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
 
 
             const marketItemSaved = myMarkets.find(item => item.type === "Sport" && item.id == sport.eventType.id) !== undefined
-            const updateMyMarketSports = () => updateMyMarkets(myMarkets, marketItemSaved ? 'sub' : 'add', sport.eventType.id, sport.eventType.name, sport.eventType.id, "Sport")
-            const updateMyMarketCountry = (marketItemSaved, id, name, sportId) => updateMyMarkets(myMarkets, marketItemSaved ? 'sub' : 'add', id, name, sportId, "Country")
+            const updateMyMarketSports = () => updateMyMarkets(marketItemSaved ? 'sub' : 'add', sport.eventType.id, sport.eventType.name, sport.eventType.id, "Sport")
+            const updateMyMarketCountry = (marketItemSaved, id, name, sportId) => updateMyMarkets(marketItemSaved ? 'sub' : 'add', id, name, sportId, "Country")
             return (
                 <React.Fragment>
                     <tr style={Object.assign({ paddingBottom: "2px", marginTop: '0.5em'}, 

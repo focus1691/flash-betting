@@ -43,7 +43,7 @@ const AllSports = props => {
 			api - where we should fetch
 			sports, country, competition, event - api information,
 			mapMarkets - map the data we get from the api call
-		*/
+    */
 
     // set back to undefined if they don't want to see the menu anymore, click on the same button another time
     if (props.sports.currentSport[currentMarket] === marketSelection) {
@@ -71,16 +71,17 @@ const AllSports = props => {
   };
 
 
-  const updateMyMarkets = (myMarkets, action, id, name, sportId, type, ) => {
+  const updateMyMarkets = (action, id, name, sportId, type, country) => {
     /*
 			myMarkets - myMarkets that will be edited
 			action - add to my markets, or remove
 			id - id for the selection
 			name - name displayed on myMarkets
 			sportId - the sport that the selection is associated with
-			type - the type of the selection (sport, country, competition, event, market)
+      type - the type of the selection (sport, country, competition, event, market)
+      currentCountry - the currentCountry, only applies to (country, competition, event) for lookup purposes
     */
-    const marketSelection = {id, name, sportId, type};
+    const marketSelection = {id, name, sportId, type, country};
     
     fetch(`/api/${action == "add" ? 'save-market' : 'remove-market'}`, {
       headers: {
@@ -108,6 +109,7 @@ const AllSports = props => {
     currentEvent,
     eventMarkets
   } = props.sports.currentSport;
+
   
   return (
     <div>
@@ -147,7 +149,7 @@ const AllSports = props => {
                     countryCompetitions.length > 0 &&
                     currentEvent === undefined ?
                     <SelectCompetition
-                      country={currentCountry}
+                      currentCountry={currentCountry}
                       competitions={countryCompetitions}
                       handleClick={handleClick}
                       currentSportId={currentSportId}
