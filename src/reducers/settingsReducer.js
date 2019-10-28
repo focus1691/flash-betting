@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 
 const initialState = {
-  view: "GridView",
+  view: "HomeView",
   isLoading: true,
   premiumMember: false,
   premiumPopupOpen: false,
