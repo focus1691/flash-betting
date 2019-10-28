@@ -110,6 +110,7 @@ const AllSports = props => {
     eventMarkets
   } = props.sports.currentSport;
 
+  console.log(props.sports.currentSport)
   
   return (
     <div>

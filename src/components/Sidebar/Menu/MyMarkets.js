@@ -211,7 +211,7 @@ const MyMarkets = props => {
                     countryCompetitions.length > 0 &&
                     currentEvent === undefined ?
 					<SelectCompetition
-					  country={currentCountry}
+					  currentCountry={currentCountry.id}
                       competitions={countryCompetitions === undefined ? [] : countryCompetitions}
                       handleClick={handleMarketClick}
                       currentSportId={currentSportId}
