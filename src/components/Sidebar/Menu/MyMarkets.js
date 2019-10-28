@@ -9,12 +9,13 @@ import SelectSport from "./SelectSport";
 import SelectCompetition from "./SelectCompetition";
 import SelectEvent from "./SelectEvent";
 import SelectMarket from "./SelectMarket";
-import { setCurrentSport } from "../../../actions/sport";
+import Divider from '@material-ui/core/Divider';
 
 const MyMarkets = props => {
 
 	const [selectedMarket, setSelectedMarket] = useState({})
 
+	const [currentSport, setCurrentSport] = useState({});
 	const {
 		currentSportId,
 		sportCountries,
@@ -24,7 +25,7 @@ const MyMarkets = props => {
 		competitionEvents,
 		currentEvent,
 		eventMarkets
-	} = props.sports.currentSport;
+	} = currentSport;
 
 	const handleMarketClick = async (
 		marketSelection,
@@ -47,18 +48,20 @@ const MyMarkets = props => {
 		*/
 	
 		// if the button we pressed matches the selectedMarket, we want to go back to myMarkets
-		if (marketSelection === selectedMarket.id) {
+		if (marketSelection === selectedMarket.id || marketSelection.id === selectedMarket.id) {
 			setSelectedMarket({});
+			setCurrentSport({});
+			return;
 		}
 
 		// set back to undefined if they don't want to see the menu anymore, click on the same button another time
-		if (props.sports.currentSport[currentMarket] === marketSelection) {
-		  const newSport = Object.assign({}, props.sports.currentSport);
+		if (currentSport[currentMarket] === marketSelection) {
+		  const newSport = Object.assign({}, currentSport);
 	
 		  newSport[currentMarket] = undefined;
 		  newSport[marketList] = undefined;
 	
-		  props.onUpdateCurrentSport(newSport);
+		  setCurrentSport(newSport);
 		  return;
 		}
 	
@@ -66,34 +69,41 @@ const MyMarkets = props => {
 		  `/api/${api}?sportId=${sportId}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
 		);
 		const data = await response.json();
-	
-		const newSport = Object.assign({}, props.sports.currentSport);
-	
+		
+		const newSport = Object.assign({}, currentSport);
+
 		newSport[currentMarket] = marketSelection;
 		newSport[marketList] = mapMarkets(data);
-		props.onUpdateCurrentSport(newSport);
+		if (newSport.currentSportId === undefined) newSport.currentSportId = sportId;
+		if (newSport.currentCountry === undefined) newSport.currentCountry = country;
+
+		setCurrentSport(newSport);
 	
 		return data;
 	};
 
-	const handleSelectMyMarket = (id, name, sportId, type) => {
+	const handleSelectMyMarket = (id, name, sportId, type, country) => {
 		/*
 			id - id for the selection
 			name - name displayed on myMarkets
 			sportId - the sport that the selection is associated with
 			type - the type of the selection (sport, country, competition, event, market)
 		*/
-		setSelectedMarket({id, name, sportId, type})
+	
+		setSelectedMarket({id, name, sportId, type, country})
+		
 		switch (type) {
 			case "Sport":
-				handleMarketClick(id, 'currentSportId', 'sportCountries', 'list-countries', sportId)
+				handleMarketClick({id}, 'currentSportId', 'sportCountries', 'list-countries', sportId)
 				break;
 			case "Country":
-				handleMarketClick(id, 'currentCountry', 'countryCompetitions', 'list-competitions', sportId, id, '', '', data => data.map(item => item.competition))
+				handleMarketClick({id}, 'currentCountry', 'countryCompetitions', 'list-competitions', sportId, id, '', '', data => data.map(item => item.competition))
 				break;
 			case "Competition":
+				handleMarketClick({id, name}, 'currentCompetition', 'competitionEvents', 'list-competition-events', sportId, country, id, '', data => data.map(item => item.event))
 				break;
 			case "Event":
+				handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-markets', '', '', '', id, data => data.result)
 				break;
 			default:
 				break;
@@ -106,7 +116,7 @@ const MyMarkets = props => {
 			.then(markets => props.onReceiveMyMarkets(markets));
 	}, []);
 
-	const updateMyMarkets = (action, id, name, sportId, type) => {
+	const updateMyMarkets = (action, id, name, sportId, type, country) => {
 		/*
 			myMarkets - myMarkets that will be edited
 			action - add to my markets, or remove
@@ -114,9 +124,10 @@ const MyMarkets = props => {
 			name - name displayed on myMarkets
 			sportId - the sport that the selection is associated with
 			type - the type of the selection (sport, country, competition, event, market)
+			currentCountry - the currentCountry, only applies to (country, competition, event) for lookup purposes
 		*/
-		const marketSelection = {id, name, sportId, type};
-		
+		const marketSelection = {id, name, sportId, type, country};
+
 		fetch(`/api/${action == "add" ? 'save-market' : 'remove-market'}`, {
 		  headers: {
 			Accept: "application/json",
@@ -133,18 +144,30 @@ const MyMarkets = props => {
 	}
 
 	const renderMarkets = () => {
-		return props.myMarkets.map(market => {
+		return props.myMarkets.map((market, index) => {
 			return (
-				<ListItem onClick={() => handleSelectMyMarket(market.id, market.name, market.sportId, market.type)} button>
-					<ListItemIcon>
-						<img
-							src={window.location.origin + "/icons/rounded-remove-button.png"}
-							alt={"Remove"}
-							style = {{filter: 'invert(22%) sepia(92%) saturate(6689%) hue-rotate(358deg) brightness(91%) contrast(121%)'}}
-						/>
-					</ListItemIcon>
-					<ListItemText>{market.name}</ListItemText>
-				</ListItem>
+				<React.Fragment>
+					<tr style={{display: 'flex', flexDirection: 'row', height: "3em", paddingBottom: "2px", marginTop: '0.5em', marginLeft: '1rem'}}>
+						<ListItemIcon 
+							style={{minWidth: 'auto', cursor: 'pointer'}}
+							onClick={() => updateMyMarkets('sub', market.id, market.name, market.sportId, market.type, market.country)}
+						>
+							<img
+								src={window.location.origin + "/icons/rounded-remove-button.png"}
+								alt={"Remove"}
+								style = {{height: '16px', width: 'auto', alignSelf: 'center', 
+										filter: 'invert(22%) sepia(92%) saturate(6689%) hue-rotate(358deg) brightness(91%) contrast(121%)'}}
+							/>
+						</ListItemIcon>
+						<ListItem 
+							onClick={() => market.type === "Market" ? window.open(`/dashboard?marketId=${market.id}`) : handleSelectMyMarket(market.id, market.name, market.sportId, market.type, market.country)} button>
+
+							<ListItemText style={{minWidth: `250px`}}>{market.name}</ListItemText>
+						</ListItem>
+					</tr>
+				{/* If last one don't make divider */}
+				{index === props.myMarkets.length - 1 ? null : <Divider style={{ width: "100%" }} />}
+				</React.Fragment>
 			)
 		});
 	}
@@ -188,7 +211,7 @@ const MyMarkets = props => {
                     countryCompetitions.length > 0 &&
                     currentEvent === undefined ?
 					<SelectCompetition
-                      country={currentCountry}
+					  country={currentCountry}
                       competitions={countryCompetitions === undefined ? [] : countryCompetitions}
                       handleClick={handleMarketClick}
                       currentSportId={currentSportId}
@@ -213,14 +236,12 @@ const mapStateToProps = state => {
 	return {
 		myMarkets: state.market.myMarkets,
 		sports: state.sports,
-		currentSport: state.currentSport
 	};
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
 		onReceiveMyMarkets: markets => dispatch(actions.loadMyMarkets(markets)),
-		onUpdateCurrentSport: sport => dispatch(setCurrentSport(sport)),
 	};
 };
 
