@@ -57,6 +57,7 @@ const App = props => {
         props.onToggleMatchedBets(settings.matchedBets);
         props.onToggleGraph(settings.graphs);
         props.onToggleMarketInformation(settings.marketInfo);
+        props.onUpdateWinMarketsOnly(settings.winMarketsOnly);
         props.onToggleRules(settings.rules);
         props.onToggleLadderUnmatched(settings.ladderUnmatched);
         props.onReceiveStakeBtns(settings.stakeBtns);
@@ -531,6 +532,7 @@ const mapDispatchToProps = dispatch => {
     onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
     onToggleMarketInformation: settings =>
       dispatch(actions.toggleMarketInformation(settings)),
+    onUpdateWinMarketsOnly: isChecked => dispatch(actions.setWinMarketsOnly(isChecked)),
     onToggleRules: settings => dispatch(actions.toggleRules(settings)),
     onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
     onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),

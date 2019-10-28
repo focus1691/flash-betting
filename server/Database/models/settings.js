@@ -59,6 +59,10 @@ const settingsSchema = mongoose.Schema({
             default: false
         }
     },
+    winMarketsOnly: {
+        type: Boolean,
+        default: true
+    },
     rules: {
         visible: {
             type: Boolean,

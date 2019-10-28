@@ -28,6 +28,7 @@ const initialState = {
     visible: false,
     open: false
   },
+  winMarketsOnly: true,
   rules: {
     visible: false,
     open: false
@@ -65,6 +66,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, graphs: action.payload };
     case "TOGGLE_MARKET_INFORMATION":
       return { ...state, marketInfo: action.payload };
+    case "SET_WIN_MARKETS":
+      return { ...state, winMarketsOnly: action.payload };
     case "TOGGLE_RULES":
       return { ...state, rules: action.payload };
     case "TOGGLE_TRAINING_LADDER_AUTO_CENTER":

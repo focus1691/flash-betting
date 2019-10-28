@@ -264,8 +264,8 @@ const Settings = props => {
 					<Checkbox
 						value="checkedB"
 						color="primary"
-						checked={props.trainingLadderAutoCenter}
-						// onChange={val => props.onToggleTrainingLadderAutoCenter(!props.trainingLadderAutoCenter)}
+						checked={props.winMarketsOnly}
+						onChange={val => props.onUpdateWinMarketsOnly(!props.winMarketsOnly)}
 					/>
 				}
 				label="Win Markets Only"
@@ -273,12 +273,11 @@ const Settings = props => {
 			<button
 				className={"save-btn"}
 				onClick={e => saveSetting({
-					"settings.trainingLadderAutoCenter": props.trainingLadderAutoCenter
+					"settings.winMarketsOnly": props.winMarketsOnly
 				})}
 			>
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
 			</button>
-
 			<AppBar className={classes.appBar} position="static">
 				<Typography variant="h6" className={classes.title}>
 					Rules
@@ -631,6 +630,7 @@ const mapStateToProps = state => {
 		matchedBets: state.settings.matchedBets,
 		graphs: state.settings.graphs,
 		marketInfo: state.settings.marketInfo,
+		winMarketsOnly: state.settings.winMarketsOnly,
 		rules: state.settings.rules,
 		trainingLadderAutoCenter: state.settings.trainingLadderAutoCenter,
 		ladderUnmatched: state.settings.ladderUnmatched,
@@ -648,6 +648,7 @@ const mapDispatchToProps = dispatch => {
 		onToggleMatchedBets: settings => dispatch(actions.toggleMatchedBets(settings)),
 		onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
 		onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
+		onUpdateWinMarketsOnly: isChecked => dispatch(actions.setWinMarketsOnly(isChecked)),
 		onToggleRules: settings => dispatch(actions.toggleRules(settings)),
 		onToggleTrainingLadderAutoCenter: settings => dispatch(actions.toggleTrainingLadderAutoCenter(settings)),
 		onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
