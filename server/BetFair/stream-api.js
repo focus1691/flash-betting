@@ -18,7 +18,7 @@ class BetFairStreamAPI {
 			port: 443
 		}
 		this.client = tls.connect(options, () => {
-			console.log("Connected");
+			// console.log("Connected");
 
 			this.client.setEncoding('utf8');
 
@@ -41,7 +41,6 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						console.log(result.mc);
 						this.openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];
 					}
