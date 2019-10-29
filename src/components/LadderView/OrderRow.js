@@ -1,30 +1,35 @@
 import React from "react";
 import { connect } from "react-redux";
 import { changePriceType } from '../../actions/market'
+import { combineUnmatchedOrders } from "../../utils/combineUnmatchedOrders";
 
 const OrderRow = props => {
 
   const matchedBets = Object.values(props.bets.matched).filter(order => parseFloat(order.selectionId) === parseFloat(props.selectionId));
-  const unMatchedBets = Object.values(props.bets.unmatched).filter(order => parseFloat(order.selectionId) === parseFloat(props.selectionId));
-
+  const allUnmatchedBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, props.bets.unmatched)[props.selectionId]
+  const unmatchedBetsArr = allUnmatchedBets ? Object.values(allUnmatchedBets) : []
+  
   return (
     <div className={"order-row"}>
       <table>
         <tbody>
           <td colSpan={3} rowSpan={4} style={{verticalAlign: 'top'}}>
             <table className="lay-table">
-              <tbody className={unMatchedBets.length > 0 ? "lay-body" : ""}>
-                {unMatchedBets.map(bet => {
-                  return (
-                    <tr
-                      style={{
-                        backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
-                      }}
-                    >
-                      <td>{`${bet.size} @ ${bet.price}`}</td>
-                    </tr>
-                  );
-                })}
+              <tbody className={unmatchedBetsArr.length > 0 ? "lay-body" : ""}>
+                {unmatchedBetsArr.map(rfs => 
+                  rfs.map(bet => {
+                    return (
+                      <tr
+                        style={{
+                          backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
+                        }}
+                      >
+                        <td>{`${bet.size} @ ${bet.price}`}</td>
+                      </tr>
+                    );
+                  })
+                  
+                )}
               </tbody>
             </table>
           </td>
@@ -62,7 +67,13 @@ const mapStateToProps = state => {
   return {
     priceType: state.market.priceType,
     market: state.market.currentMarket,
-    bets: state.order.bets
+    bets: state.order.bets,
+    stopLossList: state.stopLoss.list,
+    tickOffsetList: state.tickOffset.list,
+    stopEntryList: state.stopEntry.list,
+    layList: state.lay.list,
+    backList: state.back.list,
+    fillOrKillList: state.fillOrKill.list,
   };
 };
 
