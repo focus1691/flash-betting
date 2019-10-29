@@ -63,7 +63,7 @@ const AllSports = props => {
     
 
     const response = await fetch(
-      `/api/${api}?sportId=${sportId}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
+      `/api/${api}?sportId=${sportId}&&winMarketsOnly=${props.winMarketsOnly}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
     );
     const data = await response.json();
     console.log(data)
@@ -185,6 +185,7 @@ const mapStateToProps = state => {
     sports: state.sports,
     currentSport: state.currentSport,
     myMarkets: state.market.myMarkets,
+    winMarketsOnly: state.settings.winMarketsOnly
   };
 };
 
