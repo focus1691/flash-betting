@@ -19,7 +19,7 @@ export default ({ list, itemSelector, clickHandler, myMarkets, idSelector, curre
                         </ListItemIcon>
                         <ListItem button style={{ }} onClick={(e) => clickHandler(item)}>
                             
-                            <p style={{minWidth: `250px`}}>{item[itemSelector]}</p>
+                            <p style={{minWidth: `13em`}}>{item[itemSelector]}</p>
 
                         </ListItem>
                         {/* If last one don't make divider */}

@@ -82,6 +82,13 @@ const MyMarkets = props => {
 		return data;
 	};
 
+	const getNewName = item => {
+        const marketStartTime = new Date(item.marketStartTime)
+
+        const marketStartDate = marketStartTime.toLocaleString('en-us', { timeZone: 'UTC', hour12: false  })
+        return Object.assign(item, {marketName: marketStartDate + ' ' + item.event.venue + ' ' + item.marketName})
+    }
+
 	const handleSelectMyMarket = (id, name, sportId, type, country) => {
 		/*
 			id - id for the selection
@@ -94,6 +101,11 @@ const MyMarkets = props => {
 		
 		switch (type) {
 			case "Sport":
+				// its a today's card
+				if (/TC-/gm.test(id)) {
+					handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-todays-card', id.replace(/TC-/, ''), '', '', '', data => data.map(item => getNewName(item)))
+					break;
+				}
 				handleMarketClick({id}, 'currentSportId', 'sportCountries', 'list-countries', sportId)
 				break;
 			case "Country":
@@ -162,7 +174,7 @@ const MyMarkets = props => {
 						<ListItem 
 							onClick={() => market.type === "Market" ? window.open(`/dashboard?marketId=${market.id}`) : handleSelectMyMarket(market.id, market.name, market.sportId, market.type, market.country)} button>
 
-							<ListItemText style={{minWidth: `250px`}}>{market.name}</ListItemText>
+							<ListItemText style={{minWidth: `13em`}}>{market.name}</ListItemText>
 						</ListItem>
 					</tr>
 				{/* If last one don't make divider */}

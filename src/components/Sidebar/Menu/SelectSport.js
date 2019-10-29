@@ -7,6 +7,41 @@ import Divider from "@material-ui/core/Divider";
 
 export default ({ sports, currentSportId, countries, handleClick, myMarkets, updateMyMarkets }) => {
 
+    const getNewName = item => {
+        const marketStartTime = new Date(item.marketStartTime)
+
+        const marketStartDate = marketStartTime.toLocaleString('en-us', { timeZone: 'UTC', hour12: false  })
+        return Object.assign(item, {marketName: marketStartDate + ' ' + item.event.venue + ' ' + item.marketName})
+    }
+
+    const selectSportClick = (sport) =>{
+
+        // check if its a todays card
+        if (/TC-/gm.test(sport.eventType.id)) {
+            handleClick(
+                sport.eventType,
+                "currentEvent",
+                "eventMarkets",
+                "list-todays-card",
+                sport.eventType.id.replace(/TC-/, ''),
+                '',
+                '',
+                '',
+                data => data.map(item => getNewName(item))
+            )
+        }  
+        else {
+            handleClick(
+                sport.eventType.id,
+                "currentSportId",
+                "sportCountries",
+                "list-countries",
+                sport.eventType.id
+            )
+        }
+        
+    }
+
     return (
         // Used for selecting sport and country
         sports.sports.map(sport => {
@@ -17,8 +52,6 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
             ) {
                 return null;
             }
-
-
             const marketItemSaved = myMarkets.find(item => item.type === "Sport" && item.id == sport.eventType.id) !== undefined
             const updateMyMarketSports = () => updateMyMarkets(marketItemSaved ? 'sub' : 'add', sport.eventType.id, sport.eventType.name, sport.eventType.id, "Sport")
             const updateMyMarketCountry = (marketItemSaved, id, name, sportId) => updateMyMarkets(marketItemSaved ? 'sub' : 'add', id, name, sportId, "Country")
@@ -40,15 +73,7 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
                         }
                         <ListItem
                             button
-                            onClick={e =>
-                                handleClick(
-                                    sport.eventType.id,
-                                    "currentSportId",
-                                    "sportCountries",
-                                    "list-countries",
-                                    sport.eventType.id
-                                )
-                            }
+                            onClick={e => selectSportClick(sport)}
                         >
                         
                         <ListItemText style={{marginLeft: 0}}>{sport.eventType.name}</ListItemText>

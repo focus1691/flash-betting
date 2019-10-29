@@ -253,10 +253,6 @@ app.get("/api/list-todays-card", (request, response) => {
 				// 7
 				request.query.sportId
 			],
-			"marketCountries": [
-				// "GB"
-				request.query.countries
-			],
 			"marketTypeCodes": [
 				// "WIN"
 				request.query.marketTypes

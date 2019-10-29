@@ -13,6 +13,9 @@ const AllSports = props => {
     fetch(`/api/get-all-sports`)
       .then(res => res.json())
       .then(sports => {
+        sports.push({eventType: {id: "TC-7", name: "Horse Racing - Today's Card"}})
+        sports.push({eventType: {id: "TC-4339", name: "Greyhound Racing - Today's Card"}})
+        
         sports.sort((a, b) => {
           var nameA = a.eventType.name.toLowerCase(), nameB = b.eventType.name.toLowerCase()
           if (nameA < nameB) //sort string ascending
@@ -21,6 +24,7 @@ const AllSports = props => {
             return 1
           return 0 //default return value (no sorting)
         });
+
         props.onReceiveAllSports(sports);
       });
   }, []);
@@ -56,13 +60,15 @@ const AllSports = props => {
       return;
     }
 
+    
+
     const response = await fetch(
       `/api/${api}?sportId=${sportId}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
     );
     const data = await response.json();
-
+    console.log(data)
     const newSport = Object.assign({}, props.sports.currentSport);
-
+    
     newSport[currentMarket] = marketSelection;
     newSport[marketList] = mapMarkets(data);
     props.onUpdateCurrentSport(newSport);
