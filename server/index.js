@@ -14,7 +14,7 @@ const app = express();
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.json()); // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
@@ -150,12 +150,12 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 		},
 		(err, res) => {
 			const filteredOrders = res.result.currentOrders = res.result.currentOrders.filter((data, index, order) =>
-			index === order.findIndex((t) => (
-			  
-			  t.marketId === data.marketId
-			))
-		  )
-		  .map(order => order.marketId);
+				index === order.findIndex((t) => (
+
+					t.marketId === data.marketId
+				))
+			)
+				.map(order => order.marketId);
 			betfair.listMarketCatalogue(
 				{
 					filter: {
@@ -227,8 +227,8 @@ app.get("/api/get-all-sports", (request, response) => {
 
 app.get("/api/get-my-markets", (request, response) => {
 	return new Promise((res, rej) => {
-		User.findOne({email: betfair.email}).then(doc => response.json(doc.markets))
-		.catch(err => response.sendStatus(400));
+		User.findOne({ email: betfair.email }).then(doc => response.json(doc.markets))
+			.catch(err => response.sendStatus(400));
 	});
 });
 
@@ -335,13 +335,16 @@ app.get("/api/list-competition-events", (request, response) => {
 app.get("/api/list-markets", (request, response) => {
 	const filter = {
 		eventIds: [request.query.eventId],
-		
+
 	};
 	switch (request.query.eventId) {
 		case 1:
 			filter.marketTypeCodes = ["MATCH_ODDS"];
+			break;
 		case 7:
 			filter.marketTypeCodes = ["WIN"];
+			break;
+		default: break;
 	}
 
 	betfair.listMarketCatalogue(
@@ -381,9 +384,9 @@ app.get("/api/get-market-info", (request, response) => {
 
 app.get("/api/list-market-book", (request, response) => {
 	betfair.listMarketBook(
-		{			
+		{
 			marketIds: [request.query.marketId],
-			priceProjection: {priceData:["EX_TRADED","EX_ALL_OFFERS"]}
+			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS"] }
 		},
 		(err, res) => {
 			response.json(res);
