@@ -3,7 +3,6 @@ import { renderRaceStatus } from "./RaceStatus";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
 import { formatCurrency } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
-import getQueryVariable from "../../utils/GetQueryVariable";
 import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
 import { openLiveStream } from "../../utils/Video";
 import crypto from 'crypto'

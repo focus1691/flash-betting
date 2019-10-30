@@ -1,5 +1,7 @@
 const findTickOffset = (matchedPrice, side, offset, percent=false) => {
 
+    var i;
+
     var arr =
     Array(100).fill().map((v,i)=> (i/100 + 1.01).toFixed(2) )
     .concat(Array(50).fill().map((v,i)=> (i/50 + 2.02).toFixed(2) ))
@@ -26,7 +28,7 @@ const findTickOffset = (matchedPrice, side, offset, percent=false) => {
     }
 
     if (side === 'back') {
-        for (var i = arr.indexOf(matchedPrice); i <= 1000; i++) {
+        for (i = arr.indexOf(matchedPrice); i <= 1000; i++) {
             target = arr[i];
             if (offset-- <= 0 || i === 1000) {
                 break;
@@ -35,7 +37,7 @@ const findTickOffset = (matchedPrice, side, offset, percent=false) => {
         
     }
     else if (side === 'lay') {
-        for (var i = arr.indexOf(matchedPrice); i >= 0; i--) {
+        for (i = arr.indexOf(matchedPrice); i >= 0; i--) {
             target = arr[i];
             if (offset-- <= 0 || i === 0) {
                 break;

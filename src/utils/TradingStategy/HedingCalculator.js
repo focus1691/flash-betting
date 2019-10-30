@@ -93,6 +93,8 @@ const isHedgingOnSelectionAvailable = (marketId, selectionId, bets) => {
                 case "LAY":
                     counter[1]++;
                     break;
+                default:
+                    break;
             }
         });
     return counter[0] > 0 && counter[1] === 0 || counter[0] === 0 && counter[1] > 0;

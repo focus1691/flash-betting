@@ -14,7 +14,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
-import crypto from 'crypto'
+import crypto from 'crypto';
 
 const useStyles = makeStyles(theme => ({
   root: {

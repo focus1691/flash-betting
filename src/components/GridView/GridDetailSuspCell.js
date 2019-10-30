@@ -6,7 +6,7 @@ export default ({ sportId, name, number, logo, onSelectRunner }) => (
     className="grid-runner-details"
     onClick={onSelectRunner}
   >
-    <img src={logo} onError={e => {
+    <img src={logo} alt={""} onError={e => {
       e.target.onerror = null;
       e.target.src = iconForEvent(parseInt(sportId));
     }} />

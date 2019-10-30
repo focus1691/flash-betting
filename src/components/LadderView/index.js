@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { placeOrder } from "../../actions/order";
 import { setRunner, updateLadderOrder } from "../../actions/market";

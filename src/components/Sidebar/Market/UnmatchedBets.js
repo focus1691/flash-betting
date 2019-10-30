@@ -123,7 +123,6 @@ const UnmatchedBets = props => {
                   {
                     Object.values(allOrders[selection]).map(rfs =>
                       rfs.map(order => {
-                        //const marketStart new Date(props.market.marketStartTime).valueOf() / 1000
                         const remainingTime = order.strategy == "Back" || order.strategy == "Lay" ? (new Date(props.market.marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000) : 0
                         const remainingMinutes = order.strategy == "Back" || order.strategy == "Lay" ? Math.floor((remainingTime - order.timeOffset) / 60) : 0
                         const remainingSeconds = order.strategy == "Back" || order.strategy == "Lay" ? Math.floor((remainingTime - order.timeOffset) % 60) : 0
@@ -152,7 +151,6 @@ const UnmatchedBets = props => {
                               style={{ height: "22px", width: "auto" }}
                               onClick={cancelOrder(order)}
                             >
-                              {/* <img src = {require('./CancelIcon.svg')} alt="" style = {{height: "100%", width: "auto"}} /> In Progress */}
                             </button>
                             <td>{(parseFloat(order.price).toFixed(2))}</td>
                             <td>{order.size}</td>

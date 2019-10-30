@@ -34,7 +34,7 @@ const GetClosedMarketStats = () => {
             
         }
         getBets();
-    }, [])
+    }, []);
 
     return (
         <div style={{padding: '2%'}}>

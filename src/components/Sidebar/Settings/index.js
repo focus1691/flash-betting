@@ -45,10 +45,6 @@ const Settings = props => {
 		});
 	};
 
-	const handleChange = () => {
-
-	};
-
 	return (
 		<div>
 

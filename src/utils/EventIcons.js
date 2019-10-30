@@ -1,5 +1,3 @@
-
-
 const iconForEvent = sportID => {
     switch (parseInt(sportID)) {
         case 1:

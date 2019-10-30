@@ -17,7 +17,7 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
     matchedPrice = parseFloat(matchedPrice);
     currentPrice = parseFloat(currentPrice);
   
-  if (side === 'back' && currentPrice < matchedPrice || side === 'lay' && currentPrice > matchedPrice) {
+  if ((side === 'back' && currentPrice < matchedPrice) || (side === 'lay' && currentPrice > matchedPrice)) {
 		// The price is trading in our favour so no need for further checks
 		return { targetMet: false, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
 	}
@@ -61,10 +61,11 @@ const findStopPosition = (matchedPrice, ticks, side) => {
  * @return {string} The price at which the trade will stop
  */
 const findStopPositionForPercent = (size, matchedPrice, percent, side) => {
-	matchedPrice = parseFloat(matchedPrice);
+  matchedPrice = parseFloat(matchedPrice);
+  var i;
 
   if (side === "back") {
-    for (var i = ALL_PRICES.indexOf(matchedPrice); i <= 1000; i++) {
+    for (i = ALL_PRICES.indexOf(matchedPrice); i <= 1000; i++) {
       let percentIncrease = calcPercentDifference(size, matchedPrice, ALL_PRICES[i]);
 
       if (percentIncrease >= percent) {
@@ -73,7 +74,7 @@ const findStopPositionForPercent = (size, matchedPrice, percent, side) => {
     }
   }
   else if (side === "lay") {
-    for (var i = ALL_PRICES.indexOf(matchedPrice); i >= 0; i--) {
+    for (i = ALL_PRICES.indexOf(matchedPrice); i >= 0; i--) {
       let percentIncrease = calcPercentDifference(size, matchedPrice, ALL_PRICES[i]);
 
       if (percentIncrease >= percent) {
