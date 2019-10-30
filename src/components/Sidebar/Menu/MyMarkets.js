@@ -36,7 +36,8 @@ const MyMarkets = props => {
 		country = "",
 		competition = "",
 		event = "",
-		mapMarkets = data => data
+		mapMarkets = data => data,
+		sortMarkets = data => data
 	  ) => {
 		/*
 			marketSelection - button click
@@ -73,7 +74,7 @@ const MyMarkets = props => {
 		const newSport = Object.assign({}, currentSport);
 
 		newSport[currentMarket] = marketSelection;
-		newSport[marketList] = mapMarkets(data);
+		newSport[marketList] = sortMarkets(mapMarkets(data));
 		if (newSport.currentSportId === undefined) newSport.currentSportId = sportId;
 		if (newSport.currentCountry === undefined) newSport.currentCountry = country;
 
@@ -84,9 +85,20 @@ const MyMarkets = props => {
 
 	const getNewName = item => {
         const marketStartTime = new Date(item.marketStartTime)
+        const currentDay = new Date(Date.now()).getDay()
+        const marketStartDay = marketStartTime.getDay()
+        const marketStartOnDiffDay = marketStartDay > currentDay || marketStartDay < currentDay
 
-        const marketStartDate = marketStartTime.toLocaleString('en-us', { timeZone: 'UTC', hour12: false  })
+        const dateSettings = { timeZone: 'UTC', hour12: false };
+        if (marketStartOnDiffDay) {
+            dateSettings['weekday'] = 'short';
+        }
+        const marketStartDate = marketStartTime.toLocaleTimeString('en-us', dateSettings)
         return Object.assign(item, {marketName: marketStartDate + ' ' + item.event.venue + ' ' + item.marketName})
+    }
+
+    const sortByTime = (a, b) => {
+        return Date.parse(a.marketStartTime) - Date.parse(b.marketStartTime)
     }
 
 	const handleSelectMyMarket = (id, name, sportId, type, country) => {
@@ -103,7 +115,7 @@ const MyMarkets = props => {
 			case "Sport":
 				// its a today's card
 				if (/TC-/gm.test(id)) {
-					handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-todays-card', id.replace(/TC-/, ''), '', '', '', data => data.map(item => getNewName(item)))
+					handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-todays-card', id.replace(/TC-/, ''), '', '', '', data => data.map(item => getNewName(item)), data => data.sort(sortByTime))
 					break;
 				}
 				handleMarketClick({id}, 'currentSportId', 'sportCountries', 'list-countries', sportId)

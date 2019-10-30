@@ -38,7 +38,8 @@ const AllSports = props => {
     country = "",
     competition = "",
     event = "",
-    mapMarkets = data => data
+    mapMarkets = data => data,
+    sortMarkets = data => data
   ) => {
     /*
 			marketSelection - button click
@@ -70,7 +71,7 @@ const AllSports = props => {
     const newSport = Object.assign({}, props.sports.currentSport);
     
     newSport[currentMarket] = marketSelection;
-    newSport[marketList] = mapMarkets(data);
+    newSport[marketList] = sortMarkets(mapMarkets(data));
     props.onUpdateCurrentSport(newSport);
 
     return data;

@@ -9,9 +9,20 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
 
     const getNewName = item => {
         const marketStartTime = new Date(item.marketStartTime)
+        const currentDay = new Date(Date.now()).getDay()
+        const marketStartDay = marketStartTime.getDay()
+        const marketStartOnDiffDay = marketStartDay > currentDay || marketStartDay < currentDay
 
-        const marketStartDate = marketStartTime.toLocaleString('en-us', { timeZone: 'UTC', hour12: false  })
+        const dateSettings = { timeZone: 'UTC', hour12: false };
+        if (marketStartOnDiffDay) {
+            dateSettings['weekday'] = 'short';
+        }
+        const marketStartDate = marketStartTime.toLocaleTimeString('en-us', dateSettings)
         return Object.assign(item, {marketName: marketStartDate + ' ' + item.event.venue + ' ' + item.marketName})
+    }
+
+    const sortByTime = (a, b) => {
+        return Date.parse(a.marketStartTime) - Date.parse(b.marketStartTime)
     }
 
     const selectSportClick = (sport) =>{
@@ -27,7 +38,8 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
                 '',
                 '',
                 '',
-                data => data.map(item => getNewName(item))
+                data => data.map(item => getNewName(item)),
+                data => data.sort(sortByTime)
             )
         }  
         else {
