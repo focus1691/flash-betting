@@ -125,7 +125,7 @@ const App = props => {
 
       await fetch(`/api/get-all-orders`)
         .then(res => res.json())
-        .then(orders => {
+        .then(async orders => {
           const loadOrders = async orders => {
             const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
             const currentOrdersObject = {};
@@ -187,7 +187,7 @@ const App = props => {
               }
             })
           }
-          loadOrders(orders);
+          await loadOrders(orders);
         }
         ).then(() => {
           props.onChangeOrders({

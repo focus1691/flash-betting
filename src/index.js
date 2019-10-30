@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
 import App from "./components/App";
+import GetClosedMarketStats from "./components/GetClosedMarketStats";
 import Authentication from "./components/Authentication";
 import OAuthRedirect from "./components/OAuthRedirect";
 import openSocket from "socket.io-client";
@@ -31,6 +32,7 @@ ReactDOM.render(
         <Switch>
           <Route path="/" exact component={Login} />
           <Route path="/dashboard" component={App} />
+          <Route path="/getClosedMarketStats" component={GetClosedMarketStats} />
           <Route path="/authentication" exact component={Authentication} />
           <Route path="/validation" exact component={OAuthRedirect} />
           <Route path="/logout" exact component={Logout} />
