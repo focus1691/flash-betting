@@ -9,8 +9,6 @@ const ExchangeStream = require("./BetFair/stream-api.js");
 
 const betfair = new BetFairSession(process.env.APP_KEY);
 
-const session = require('express-session');
-
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
