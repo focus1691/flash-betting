@@ -11,6 +11,13 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({width: 900, height: 680});
   mainWindow.loadURL(isDev ? 'http://localhost:8080' : `file://${path.join(__dirname, '../build/index.html')}`);
+  mainWindow.webContents.openDevTools();
+  mainWindow.webContents.on('devtools-opened', () => {
+      setImmediate(() => {
+          // do whatever you want to do after dev tool completely opened here
+          mainWindow.focus();
+      });
+  });
   mainWindow.on('closed', () => mainWindow = null);
 }
 
