@@ -67,7 +67,6 @@ const AllSports = props => {
       `/api/${api}?sportId=${sportId}&&winMarketsOnly=${props.winMarketsOnly}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
     );
     const data = await response.json();
-    console.log(data)
     const newSport = Object.assign({}, props.sports.currentSport);
     
     newSport[currentMarket] = marketSelection;
@@ -116,8 +115,6 @@ const AllSports = props => {
     currentEvent,
     eventMarkets
   } = props.sports.currentSport;
-
-  console.log(props.sports.currentSport)
   
   return (
     <div>

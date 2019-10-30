@@ -77,8 +77,6 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
         // move right or left
         if ((relativeCursorPosition > midPoint && order < key) || (relativeCursorPosition < midPoint && order > key)) { 
 
-            console.log(relativeCursorPosition, midPoint)
-
             // we have to find the actual id if one of the ladders are hidden
 
             

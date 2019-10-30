@@ -32,7 +32,7 @@ class DatabaseHelper extends Database {
             const transaction = new Transaction(json);
             transaction.save().then(result => {
                 return this.setPremium(user, transaction.expiresIn);
-            }).catch(err => console.log(err));
+            });
         });
     }
     getPremiumStatus(user) {

@@ -68,7 +68,6 @@ const Grid = props => {
 	};
 
 	const setStakeInOneClick = stake => e => {
-		console.log(stake);
 		props.setStakeInOneClick(stake);
 	};
 
