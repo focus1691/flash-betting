@@ -10,6 +10,7 @@ import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
+import { calcBackProfit } from "../../utils/PriceCalculator";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
                   ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume = [] }) => {
@@ -119,7 +120,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                 ladderLTPHedge = profit;
             }
 
-            fullLadderWithProfit[item.odds]['backProfit'] = profit
+            const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) > 0 ? "BACK" : "LAY"
+
+            fullLadderWithProfit[item.odds][side == "BACK" ? 'backProfit' : "layProfit"] = profit
         }
     });
     const hedgeSize = selectionMatchedBets !== undefined ?
