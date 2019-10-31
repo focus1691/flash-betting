@@ -13,7 +13,7 @@ import { getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
 import { calcBackProfit } from "../../utils/PriceCalculator";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
-                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume = [] }) => {
+                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume = [], ladderUnmatched, stake }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -108,11 +108,12 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
 
     const fullLadderWithProfit = {};
     let ladderLTPHedge = 0;
+    
     Object.values(ladder[id].fullLadder).map(item => {
         // if lay, flip
         fullLadderWithProfit[item.odds] = {...item}
-
-        if (selectionMatchedBets !== undefined) {
+        
+        if (selectionMatchedBets !== undefined && ladderUnmatched === "hedged") {
             const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(item.odds)));
             const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
             
@@ -124,7 +125,12 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
 
             fullLadderWithProfit[item.odds][side == "BACK" ? 'backProfit' : "layProfit"] = profit
         }
+
+        if (ladderUnmatched === "pl") {
+            fullLadderWithProfit[item.odds]['backProfit'] = parseFloat(calcBackProfit(parseFloat(stake), item.odds, 0)) + parseFloat(PL);
+        }
     });
+    
     const hedgeSize = selectionMatchedBets !== undefined ?
     selectionMatchedBets.reduce((a, b) => {
         return a + b.size

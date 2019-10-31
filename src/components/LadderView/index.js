@@ -6,7 +6,7 @@ import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
 const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
-                  stopLossOffset, stopLossTrailing, onChangeStopLossList, marketVolume, bets,}) => {
+                  stopLossOffset, stopLossTrailing, onChangeStopLossList, marketVolume, bets, ladderUnmatched, stakeVal}) => {
 
   const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
 
@@ -66,6 +66,8 @@ const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excluded
             setOddsHovered = {setOddsHovered}
             oddsHovered = {oddsHovered}
             volume = {marketVolume[value]}
+            ladderUnmatched = {ladderUnmatched}
+            stake = {stakeVal[value]}
             changeStopLossList = {async newStopLoss => {
 
               const adjustedNewStopLoss = {...newStopLoss, 
@@ -114,6 +116,8 @@ const mapStateToProps = state => {
     stopLossUnits: state.stopLoss.ticks,
     stopLossTrailing: state.stopLoss.trailing,
     stopLossHedged: state.stopLoss.hedged,
+    ladderUnmatched: state.settings.ladderUnmatched,
+    stakeVal: state.settings.stake
   };
 };
 

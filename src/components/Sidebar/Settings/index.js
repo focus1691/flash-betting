@@ -366,7 +366,7 @@ const Settings = props => {
 				<FormControlLabel
 					value="pl"
 					control={<Radio color="primary" />}
-					label="Umatched Bets + P/L"
+					label="Unmatched Bets + P/L"
 					labelPlacement="end"
 				/>
 				<FormControlLabel

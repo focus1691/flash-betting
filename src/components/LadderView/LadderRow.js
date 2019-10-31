@@ -6,6 +6,7 @@ import crypto from 'crypto'
 
 export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume }, style, index}) => {
     const key = Object.keys(ladder)[index]
+    console.log(Object.keys(ladder))
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
     const volumeVal = volume[formatPrice(ladder[key].odds)] ? volume[formatPrice(ladder[key].odds)] : 0
     return (
@@ -29,6 +30,7 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
             onClick = {() => {
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
 
+              if (hedgeSize > 0)
               placeOrder({
                 side: "BACK",
                 price: formatPrice(ladder[key].odds),
@@ -77,6 +79,7 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
             onClick = {() => {
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
 
+              if (hedgeSize > 0)
               placeOrder({
                 side: "LAY",
                 price: formatPrice(ladder[key].odds),
