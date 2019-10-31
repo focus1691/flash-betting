@@ -1,15 +1,11 @@
-const mongoose = require('mongoose'), Schema = mongoose.Schema;
 const Database = require('./database');
 const User = require('./models/users');
 const Settings = require('./models/settings');
 const Order = require('./models/orders');
-const Market = require('./models/markets')
+const Market = require('./models/markets');
 const Transaction = require('./models/transaction');
 
 class DatabaseHelper extends Database {
-    constructor() {
-        super();
-    }
     setUser(username, sessionKey) {
         User.findOne({
             email: username

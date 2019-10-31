@@ -16,7 +16,7 @@ const Authentication = props => {
             .then(res => {
               setSubscribed(res.isSubscribed);
 
-              if (isSubscribed === false) {
+              if (isSubscribed === false || !res.accessToken) {
                 window.location = "http://identitysso.betfair.com/view/vendor-login?client_id=74333&response_type=code&redirect_uri=validation";
               } else {
                 fetch("/api/request-access-token?tokenType=REFRESH_TOKEN")

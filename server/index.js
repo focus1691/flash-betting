@@ -11,6 +11,7 @@ const betfair = new BetFairSession(process.env.APP_KEY);
 
 const express = require("express");
 const app = express();
+
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.json()); // to support JSON-encoded bodies
@@ -28,15 +29,23 @@ app.get("/api/load-session", (request, response) => {
 
 	response.sendStatus(200);
 });
+//
+// async function test() { 
+// 	var token = await database.getToken('traderjosh');	
+// 	console.log(token);
+// }
+
+// test();
 
 app.get("/api/get-subscription-status", (request, response) => {
 	betfair.isAccountSubscribedToWebApp(
 		{
 			vendorId: process.env.APP_ID
 		},
-		(err, res) => {
+		async (err, res) => {
 			response.json({
-				isSubscribed: res.result
+				isSubscribed: res.result,
+				accessToken: await database.getToken(betfair.email)
 			});
 		}
 	);
@@ -170,7 +179,7 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 		}
 	);
 });
-//
+
 app.get("/api/premium-status", (request, response) => {
 	database.getPremiumStatus(betfair.email).then(expiryDate => {
 		response.json(expiryDate);
@@ -248,11 +257,9 @@ app.get("/api/list-todays-card", (request, response) => {
 	betfair.listMarketCatalogue({
 		filter: {
 			"eventTypeIds": [
-				// 7
 				request.query.sportId
 			],
 			"marketTypeCodes": [
-				// "WIN"
 				request.query.marketTypes
 			],
 			"marketStartTime": {

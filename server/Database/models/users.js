@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'), Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 const Settings = require('./settings');
 const Strategies = require('./trading');
 const Orders = require('./orders');
@@ -10,8 +10,14 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true,
     },
-    sessionKey: String,
-    accessToken: String,
+    sessionKey: {
+        type: String,
+        default: null
+    },
+    accessToken: {
+        type: String,
+        default: null
+    },
     expiresIn: {
         type: Date,
         default: new Date()
