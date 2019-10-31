@@ -7,7 +7,8 @@ import BetsPlaced from "./ClosedMarketView/BetsPlaced";
 
 
 const GetClosedMarketStats = () => {
-    const [matchedBets, getMatchedBets] = useState([]);
+    const [completedOrders, setCompletedOrders] = useState([]);
+    const [marketInfo, setMarketInfo] = useState({});
     const marketId = getQueryVariable("marketId");
 
     const loadSession = async () => {
@@ -25,23 +26,25 @@ const GetClosedMarketStats = () => {
     };
     
     useEffect(() => {
-        const getBets = async () => {
+        const getMarketInfo = async () => {
             await loadSession();
-            // this isn't being called
+            
             const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-            console.log(currentOrders)
-            
-            
+            const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE")
+            setCompletedOrders(completedOrders)
+
+            const marketInfo = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json()).then(res => res.response.result[0])
+            setMarketInfo(marketInfo)
         }
-        getBets();
+        getMarketInfo();
     }, []);
 
     return (
         <div style={{padding: '2%'}}>
             <MarketSettlement />
             <div style={{width: '100%', height: '60%', marginTop: '1.5%', display: 'flex', justifyContent: 'space-between'}}>
-                <ClosedMarketReport />
-                <BetsPlaced matchedBets = {matchedBets} />
+                <ClosedMarketReport matchedBets = {completedOrders} runners = {marketInfo.runners ? marketInfo.runners : []}/>
+                <BetsPlaced matchedBets = {completedOrders} runners = {marketInfo.runners ? marketInfo.runners : []}/>
             </div>
         </div>
     )

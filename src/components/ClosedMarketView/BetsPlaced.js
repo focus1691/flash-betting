@@ -18,22 +18,27 @@ const useStyles = makeStyles({
 });
 
 const columns = [
-    { id: 'placed', label: 'Placed', minWidth: 75 },
+    { id: 'placedDate', label: 'Placed', minWidth: 75 },
     { id: 'selection', label: 'Selection', minWidth: 75 },
-    { id: 'odds', label: 'Odds', minWidth: 75 },
-    { id: 'size', label: 'Stake / (Liability)', minWidth: 200 },
-    { id: 'status', label: 'Status', minWidth: 75 },
+    { id: 'averagePriceMatched', label: 'Odds', minWidth: 75 },
+    { id: 'sizeMatched', label: 'Stake / (Liability)', minWidth: 200 },
+    { id: 'win', label: 'Status', minWidth: 75 },
 ];
 
-export default ({matchedBets}) => {
+export default ({matchedBets, runners = []}) => {
 
-    function createData(placed, selection, odds, size, status) {
-        return { placed, selection, odds, size, status };
-    }
-    
-    const rows = [
-        
-    ];
+    const runnersObject = {};
+    runners.map(runner => {
+        runnersObject[runner.selectionId] = runner.runnerName
+    })
+
+    const sortedMatchedBets = matchedBets.sort((a, b) => Date.parse(b.placedDate) - Date.parse(a.placedDate));
+    const matchedBetsAdjustments = sortedMatchedBets.map(bet => getStatus(getRunner(calculateNewPlacedDate(bet), runnersObject)))
+
+    console.log(runners)
+
+
+    const rows = matchedBetsAdjustments
 
     const classes = useStyles();
 
@@ -60,18 +65,21 @@ export default ({matchedBets}) => {
                                 </TableHead>
                                 <TableBody>
                                     {rows.map(row => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                        {columns.map(column => {
-                                            const value = row[column.id];
-                                            return (
-                                            <TableCell key={column.id} align={column.align}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                            </TableCell>
-                                            );
-                                        })}
-                                        </TableRow>
-                                    );
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                            {columns.map(column => {
+                                                const value = row[column.id];
+                                                const isSideBack = row.side === 'BACK'
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {column.id === "sizeMatched" ? <span style={{backgroundColor: isSideBack ? 'rgb(114, 187, 239)' : 'rgb(250, 169, 186)', padding: '2px', paddingLeft: '4px', width: '20%', borderRadius: '2px', marginRight: '2%', display: 'inline-block', color: 'white'}}>{(isSideBack ? "BACK" : "LAY")}</span> : null}
+                                                        {column.id === "win" ? <span style={{display: 'inline-block', width: '35%', padding: '3px', borderRadius: '3px', textAlign: 'center', color: 'white', backgroundColor: column.win ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)'}}>{column.win ? "Won" : "Lost"}</span> : null}
+                                                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                            </TableRow>
+                                        );
                                     })}
                                 </TableBody>
                             </Table>
@@ -79,4 +87,33 @@ export default ({matchedBets}) => {
                     </Paper>
                 </div>
     )
+}
+
+const calculateNewPlacedDate = bet => {
+    const betPlacedDate = new Date(bet.placedDate)
+    const currentDate = new Date(Date.now()).getDate()
+    const placedDate = betPlacedDate.getDate()
+
+    const currentMonth = new Date(Date.now()).getMonth()
+    const placedMonth = betPlacedDate.getMonth()
+
+    const betPlacedOnDiffDay = currentMonth !== placedMonth || placedDate > currentDate || placedDate < currentDate 
+
+    const newPlacedDate = betPlacedOnDiffDay ? 
+                            betPlacedDate.toLocaleString('en-GB', { timeZone: 'UTC', hour12: false }) :
+                            betPlacedDate.toLocaleTimeString(betPlacedDate, { timeZone: 'UTC', hour12: false })
+                            
+    return Object.assign({}, bet, {placedDate: newPlacedDate})
+}
+
+const getRunner = (bet, runners) => {
+    return Object.assign({}, bet, {selection: runners[bet.selectionId]})
+}
+
+const getStatus = (bet, runners) => {
+    if (runners) {
+        return Object.assign({}, bet, {win: runners[bet.selectionId].status === "WINNER"})
+    } else {
+        return bet;
+    }
 }

@@ -25,11 +25,18 @@ const columns = [
     { id: 'result', label: 'Result', minWidth: 50 },
 ];
 
-export default () => {
+export default ({matchedBets, runners}) => {
 
     function createData(selection, win, lose, settled, result) {
         return { selection, win, lose, settled, result };
     }
+
+    const selectionWithBets = {};
+
+    matchedBets.map(bet => {
+        if (selectionWithBets[bet.selectionId]) selectionWithBets[bet.selectionId].push(bet)
+        else selectionWithBets[bet.selectionId] = [bet]
+    })
     
     const rows = [];
 
