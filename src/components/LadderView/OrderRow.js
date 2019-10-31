@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { changePriceType } from '../../actions/market'
 import { combineUnmatchedOrders } from "../../utils/combineUnmatchedOrders";
+import { formatPrice } from "../../utils/ladder/CreateFullLadder";
+import { calcBackProfit } from "../../utils/PriceCalculator";
 
 const OrderRow = props => {
 
@@ -18,13 +20,26 @@ const OrderRow = props => {
               <tbody className={unmatchedBetsArr.length > 0 ? "lay-body" : ""}>
                 {unmatchedBetsArr.map(rfs => 
                   rfs.map(bet => {
+
+                    let specialSuffix = "";
+                    if (bet.trailing && bet.hedged) specialSuffix = "th"
+                    else if (!bet.trailing && bet.hedged) specialSuffix = "h"
+                    else if (bet.trailing && !bet.hedged) specialSuffix = "t"
+
+                    const suffix = (bet.strategy == "Stop Loss" ? "SL " :
+                    bet.strategy === "Tick Offset" ? "T.O." :
+                    bet.strategy === "Back" ? "B" : 
+                    bet.strategy === "Lay" ? "L" :
+                    bet.strategy === "Stop Entry" ? bet.stopEntryCondition + formatPrice(bet.targetLTP) + "SE" :
+                          calcBackProfit(bet.size, bet.price, bet.side === "BACK" ? 0 : 1)) + specialSuffix
+
                     return (
                       <tr
                         style={{
                           backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
                         }}
                       >
-                        <td>{`${bet.size} @ ${bet.price}`}</td>
+                        <td>{`${bet.size} @ ${bet.price} ${suffix}`}</td>
                       </tr>
                     );
                   })
