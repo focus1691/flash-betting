@@ -3,32 +3,31 @@ import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import * as actions from "../actions/account";
 import getQueryVariable from "../utils/GetQueryVariable";
+import { useCookies } from 'react-cookie';
 
 const OAuthRedirect = props => {
-  console.log(22444224);
+    const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
     useEffect(() => {
         var code = getQueryVariable("code");
-        console.log(code);
 
-        var sessionKey = localStorage.getItem("sessionKey");
-        if (!!sessionKey) {
-          console.log(sessionKey);
-            fetch(`/api/load-session?sessionKey=${encodeURIComponent(localStorage.getItem("sessionKey"))}&email=${encodeURIComponent(localStorage.getItem("username"))}`)
+        // var sessionKey =  localStorage.getItem("sessionKey");
+        if (cookies.sessionKey) {
+            fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`)
             .then(res => {
               if (code && res.status === 200) {
                 fetch(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`)
                 .then(res => res.json())
                 .then(data => {
-                    localStorage.setItem("accessToken", data.accessToken);
-                    localStorage.setItem("refreshToken", data.refreshToken);
-                    localStorage.setItem("expiresIn", data.expiresIn);
-                    // setAccessToken(data.accessToken);
-                    props.onLogin(true);
+                  setCookie('accessToken', data.accessToken);
+                  setCookie('refreshToken', data.refreshToken);
+                  setCookie('expiresIn', data.expiresIn);
+                  
+                  props.onLogin(true);
                 });
             }
         });
       }
-    });
+    }, []);
 
     if (props.loggedIn) {
         return <Redirect to='/dashboard' />

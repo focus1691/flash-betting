@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 
 const Authentication = props => {
-
+  const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
   const [isSubscribed, setSubscribed] = useState(null);
   const [tokenGranted, setTokenGranted] = useState(null);
 
   useEffect(() => {
-    if (!!localStorage.getItem("sessionKey")) {
-      fetch(`/api/load-session?sessionKey=${encodeURIComponent(localStorage.getItem("sessionKey"))}&email=${localStorage.getItem("username")}`)
+    if (cookies.sessionKey) {
+      fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${cookies.username}`)
         .then(res => {
           fetch("/api/get-subscription-status")
             .then(res => res.json())
@@ -22,9 +23,10 @@ const Authentication = props => {
                 fetch("/api/request-access-token?tokenType=REFRESH_TOKEN")
                   .then(res => res.json())
                   .then(res => {
-                    localStorage.setItem("accessToken", res.accessToken);
-                    localStorage.setItem("refreshToken", res.refreshToken);
-                    localStorage.setItem("expiresIn", res.expiresIn);
+                    setCookie('accessToken', res.accessToken);
+                    setCookie('refreshToken', res.refreshToken);
+                    setCookie('expiresIn', res.expiresIn);
+                    
                     setTokenGranted(true);
                   });
               }

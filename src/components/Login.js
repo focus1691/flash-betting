@@ -10,6 +10,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { useCookies } from 'react-cookie';
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -41,40 +42,32 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Login = props => {
-  const [username, setUsername] = useState(
-    localStorage.getItem("username") || ""
-  );
-  const [password, setPassword] = useState(
-    localStorage.getItem("password") || ""
-  );
-  const [rememberMe, setRememberMe] = useState(
-    !!localStorage.getItem("rememberMe") || false
-  );
-  const [sessionKey, setSessionKey] = useState(
-    !!localStorage.getItem("sessionKey")
-  );
+  const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'username', 'password', 'rememberMe']);
+
+  const [rememberMe, setRememberMe] = useState(cookies.rememberMe && cookies.rememberMe === 'yes' ? true : false );
 
   const classes = useStyles();
 
   props.onLogin(false);
 
   const handleSubmit = e => {
-    fetch(`/api/login?user=${username}&pass=${password}`)
+    fetch(`/api/login?user=${cookies.username}&pass=${cookies.password}`)
       .then(res => res.json())
       .then(res => {
         if (res.error) {
-          localStorage.removeItem("sessionKey", false);
-          localStorage.removeItem("username");
-          localStorage.removeItem("password");
-          localStorage.removeItem("rememberMe");
+          removeCookie('sessionKey');
+          removeCookie('username');
+          removeCookie('password');
+          setCookie('rememberMe', 'no');
+
+          setRememberMe(false);
         } else {
-          localStorage.setItem("sessionKey", res.sessionKey);
-          localStorage.setItem("username", username);
-          localStorage.setItem("password", password);
+          setCookie('sessionKey', res.sessionKey);
+          setCookie('username', cookies.username);
+          setCookie('password', cookies.password);
+          setCookie('rememberMe', 'yes');
 
-          if (rememberMe) localStorage.setItem("rememberMe", "yes");
-
-          setSessionKey(res.sessionKey);
+          setRememberMe(true);
 
           props.onLogin(true);
         }
@@ -83,7 +76,7 @@ const Login = props => {
 
   return (
     <>
-      {props.loggedIn && !!sessionKey ? <Redirect to="/authentication" /> : null}
+      {props.loggedIn && cookies.sessionKey ? <Redirect to="/authentication" /> : null}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
@@ -104,9 +97,9 @@ const Login = props => {
               id="email"
               label="Email Address"
               name="email"
-              value={username}
+              value={cookies.username}
               onChange={e => {
-                setUsername(e.target.value);
+                setCookie('username', e.target.value);
               }}
               autoComplete="email"
               autoFocus
@@ -117,9 +110,9 @@ const Login = props => {
               required
               fullWidth
               name="password"
-              value={password}
+              value={cookies.password}
               onChange={e => {
-                setPassword(e.target.value);
+                setCookie('password', e.target.value);
               }}
               label="Password"
               type="password"

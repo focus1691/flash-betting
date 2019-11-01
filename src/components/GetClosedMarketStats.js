@@ -1,33 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { useCookies } from 'react-cookie';
 import getQueryVariable from "../utils/GetQueryVariable";
 import MarketSettlement from "./ClosedMarketView/MarketSettlement";
 import ClosedMarketReport from './ClosedMarketView/ClosedMarketReport'
 import BetsPlaced from "./ClosedMarketView/BetsPlaced";
 
-
 const GetClosedMarketStats = () => {
+    const [cookies] = useCookies(['sessionKey', 'username']);
     const [completedOrders, setCompletedOrders] = useState([]);
     const [marketInfo, setMarketInfo] = useState({});
     const marketId = getQueryVariable("marketId");
 
     const loadSession = async () => {
-        /**
-         * Send the session key to the server to login to BetFair
-         */
-        let sessionKey = localStorage.getItem("sessionKey");
-        let email = localStorage.getItem("username");
         await fetch(
           `/api/load-session?sessionKey=${encodeURIComponent(
-            sessionKey
-          )}&email=${encodeURIComponent(email)}`
+            cookies.sessionKey
+          )}&email=${encodeURIComponent(cookies.email)}`
         );
-        
     };
     
     useEffect(() => {
         const getMarketInfo = async () => {
-            await loadSession();
+            // await loadSession();
             
             const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
             const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE")

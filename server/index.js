@@ -14,28 +14,21 @@ const app = express();
 
 const bodyParser = require("body-parser");
 
-app.use(bodyParser.json()); // to support JSON-encoded bodies
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json()); // to support JSON-encoded bodies
-app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const database = require("./Database/helper");
 const User = require('./Database/models/users');
 
-// Load the session key from localStorage into the database and session object
 app.get("/api/load-session", (request, response) => {
 	betfair.setActiveSession(request.query.sessionKey);
+
 	betfair.setEmailAddress(request.query.email);
 
 	response.sendStatus(200);
 });
-//
-// async function test() { 
-// 	var token = await database.getToken('traderjosh');	
-// 	console.log(token);
-// }
-
-// test();
 
 app.get("/api/get-subscription-status", (request, response) => {
 	betfair.isAccountSubscribedToWebApp(
@@ -84,39 +77,32 @@ app.get("/api/request-access-token", (request, response) => {
 			};
 			// Update the user details with the token information
 			database.setToken(betfair.email, tokenInfo).then(() => { response.json(tokenInfo) });
-		}
-		);
+		});
 	}
-
 	setupTokenInfo();
 });
 
 app.get("/api/login", (request, response) => {
-	betfair
-		.login(request.query.user, request.query.pass)
-		.then(res => {
-			response.json({
-				sessionKey: res.sessionKey
-			});
-			// Check if user exists, if doesn't exist, then create a new user
-			database.setUser(request.query.user, res.sessionKey);
-		})
-		.bind(this)
-		.catch(err =>
-			response.json({
-				error: err
-			})
-		);
+	console.log('login 1');
+	betfair.login(request.query.user, request.query.pass)
+	.then(res => {
+		response.json({
+			sessionKey: res.sessionKey
+		});
+		// Check if user exists, if doesn't exist, then create a new user
+		database.setUser(request.query.user, res.sessionKey);
+	}).bind(this)
+	.catch(err =>
+		response.json({
+			error: err
+		}));
 });
 
 app.get("/api/logout", (request, response) => {
-	betfair
-		.logout()
+	betfair.logout()
 		.then(res => {
 			response.json(res);
-		})
-		.bind(this)
-		.catch(err =>
+		}).bind(this).catch(err =>
 			response.json({
 				error: err
 			})
@@ -479,9 +465,6 @@ app.get("/api/get-developer-application-keys", (request, response) => {
 		}
 	);
 });
-//
-const port = 3001;
-app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 process.stdin.resume(); //so the program will not close instantly
 
@@ -527,6 +510,9 @@ process.on(
 		exit: true
 	})
 );
+
+const port = 3001;
+app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 const io = require("socket.io")(8000);
 io.on("connection", async client => {

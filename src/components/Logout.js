@@ -2,16 +2,19 @@ import React, { useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../actions/account";
+import { useCookies } from 'react-cookie';
 
 const Logout = props => {
+  const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'accessToken', 'refreshToken', 'expiresIn']);
   useEffect(() => {
     fetch("/api/logout")
       .then(res => res.json())
       .then(logout => {
-        localStorage.removeItem("sessionKey");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("expiresIn");
+        removeCookie('sessionKey');
+        removeCookie('accessToken');
+        removeCookie('refreshToken');
+        removeCookie('expiresIn');
+
         props.onLogout(false);
       });
   }, []);

@@ -13,6 +13,7 @@ import Authentication from "./components/Authentication";
 import OAuthRedirect from "./components/OAuthRedirect";
 import openSocket from "socket.io-client";
 import SocketContext from "./SocketContext";
+import { CookiesProvider } from 'react-cookie';
 
 const socket = openSocket("http://localhost:8000");
 
@@ -27,18 +28,20 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <SocketContext.Provider value={socket}>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" exact component={Login} />
-          <Route path="/dashboard" component={App} />
-          <Route path="/getClosedMarketStats" component={GetClosedMarketStats} />
-          <Route path="/authentication" exact component={Authentication} />
-          <Route path="/validation" exact component={OAuthRedirect} />
-          <Route path="/logout" exact component={Logout} />
-        </Switch>
-      </BrowserRouter>
-    </SocketContext.Provider>
+    <CookiesProvider>
+      <SocketContext.Provider value={socket}>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" exact component={Login} />
+            <Route path="/dashboard" component={App} />
+            <Route path="/getClosedMarketStats" component={GetClosedMarketStats} />
+            <Route path="/authentication" exact component={Authentication} />
+            <Route path="/validation" exact component={OAuthRedirect} />
+            <Route path="/logout" exact component={Logout} />
+          </Switch>
+        </BrowserRouter>
+      </SocketContext.Provider>
+    </CookiesProvider>
   </Provider>,
   document.getElementById("root")
 );

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
 import * as actions2 from "../actions/market";
@@ -29,16 +30,13 @@ import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../u
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 
 const App = props => {
+  const [cookies] = useCookies(['sessionKey', 'username']);
+
   const loadSession = async () => {
-    /**
-     * Send the session key to the server to login to BetFair
-     */
-    let sessionKey = localStorage.getItem("sessionKey");
-    let email = localStorage.getItem("username");
     await fetch(
       `/api/load-session?sessionKey=${encodeURIComponent(
-        sessionKey
-      )}&email=${encodeURIComponent(email)}`
+        cookies.sessionKey
+      )}&email=${encodeURIComponent(cookies.username)}`
     );
   };
 
@@ -373,10 +371,10 @@ const App = props => {
 
 
       if (data.oc) {
-        const newUnmatchedBets = Object.assign({}, props.unmatchedBets)
+        const newUnmatchedBets = Object.assign({}, props.unmatchedBets);
         const newMatchedBets = Object.assign({}, props.matchedBets);
-        let checkForMatchInStopLoss = Object.assign({}, props.stopLossList)
-        let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList)
+        let checkForMatchInStopLoss = Object.assign({}, props.stopLossList);
+        let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList);
         let tickOffsetOrdersToRemove = [];
 
         data.oc.map(changes => {

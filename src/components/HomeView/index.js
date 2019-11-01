@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import SocketContext from "../../SocketContext";
+import { useCookies } from 'react-cookie';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -44,6 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 const HomeView = props => {
 
+  const [cookies] = useCookies(['username']);
   const styleProps = { subscribed: props.premiumMember };
   const [data, setData] = useState({});
 
@@ -66,7 +68,7 @@ const HomeView = props => {
   return (
     <div id="home-view-container" className={classes.root}>
       <div className={classes.section2} id="home-view">
-        <Header premiumMember={props.premiumMember} classes={classes} />
+        <Header username={cookies.username} premiumMember={props.premiumMember} classes={classes} />
         <Divider className={classes.divider} variant="middle" />
         <Grid container alignItems="center">
           <Typography className={classes.subheading} style={{ whiteSpace: 'pre-wrap' }} variant="h5">
