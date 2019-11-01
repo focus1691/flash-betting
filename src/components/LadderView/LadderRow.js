@@ -6,7 +6,7 @@ import crypto from 'crypto'
 
 export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume }, style, index}) => {
     const key = Object.keys(ladder)[index]
-    console.log(Object.keys(ladder))
+    
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
     const volumeVal = volume[formatPrice(ladder[key].odds)] ? volume[formatPrice(ladder[key].odds)] : 0
     return (

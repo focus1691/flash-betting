@@ -13,6 +13,7 @@
 export const checkStopLossForMatch = (stopLossList, selectionId, order, previousCheckForMatchArray) => {
     const checkForMatchInStopLoss = Object.assign({}, previousCheckForMatchArray)
     // if the strategies are the same and all the order has been matched (STOPLOSS)
+
     if (stopLossList[selectionId] !== undefined && stopLossList[selectionId].rfs === order.rfs && order.sr === 0) {
         checkForMatchInStopLoss[selectionId].assignedIsOrderMatched = true;
 
@@ -49,6 +50,7 @@ export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, pre
     let checkForMatchInTickOffset = Object.assign({}, previousCheckForMatchInTickOffset);
 
     if (tickOffsetItem !== undefined && order.sm / tickOffsetItem.size >= tickOffsetItem.percentageTrigger / 100) {
+
         onPlaceOrder({
             marketId: tickOffsetItem.marketId,
             selectionId: tickOffsetItem.selectionId,
@@ -62,6 +64,7 @@ export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, pre
         tickOffsetOrdersToRemove = tickOffsetOrdersToRemove.concat(checkForMatchInTickOffset[order.rfs])
 
         delete checkForMatchInTickOffset[order.rfs];
+        console.log(tickOffsetOrdersToRemove)
     }
 
     return {

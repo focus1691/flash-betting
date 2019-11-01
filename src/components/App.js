@@ -238,16 +238,18 @@ const App = props => {
       }
 
       var ladders = Object.assign({}, props.ladders);
+      
       var nonRunners = Object.assign({}, props.nonRunners);
 
       let adjustedStopLossList = Object.assign({}, props.stopLossList)
       const adjustedBackList = {}
       const adjustedLayList = {}
-      let newStopEntryList = {};
+      let newStopEntryList = Object.assign({}, props.stopEntryList);
 
       let stopLossOrdersToRemove = [];
 
-      data.rc.map(async rc => {
+      await Promise.all(data.rc.map(async rc => {
+        
         if (rc.id in props.ladders) {
           // Runner found so we update our object with the raw data
           ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
@@ -255,7 +257,7 @@ const App = props => {
           const marketId = getQueryVariable("marketId");
 
           // Back and Lay
-          if (props.marketStatus === "RUNNING") {
+          if (props.marketDefinition.marketStatus === "RUNNING") {
             const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
             if (adjustedBackOrderArray.length > 0) {
               adjustedBackList[rc.id] = adjustedBackOrderArray;
@@ -270,7 +272,7 @@ const App = props => {
           // stop Entry
 
           newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, rc.ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
-
+          console.log(rc.id)
           // We increment and check the stoplosses
           if (props.stopLossList[rc.id] !== undefined) {
             // if it's trailing and the highest LTP went up, then we add a tickoffset
@@ -301,7 +303,7 @@ const App = props => {
           // Runner not found so we create the new object with the raw data
           ladders[rc.id] = AddRunner(rc.id, rc);
         }
-      });
+      }));
 
       if (data.marketDefinition) {
         // Event status? In Play?
@@ -379,26 +381,27 @@ const App = props => {
 
         data.oc.map(changes => {
           changes.orc.map(runner => {
-            runner.uo.map(order => {
-              // If the bet isn't in the unmatchedBets, we should delete it.
-              if (newUnmatchedBets[order.id] !== undefined) {
-                delete newUnmatchedBets[order.id];
-              } else if (order.sr == 0) {
-                newMatchedBets[order.id] = newUnmatchedBets[order.id];
-                delete newUnmatchedBets[order.id];
-              }
+            if (runner.uo) {
+              runner.uo.map(order => {
+                // If the bet isn't in the unmatchedBets, we should delete it.
+                if (newUnmatchedBets[order.id] !== undefined) {
+                  delete newUnmatchedBets[order.id];
+                } else if (order.sr == 0) {
+                  newMatchedBets[order.id] = newUnmatchedBets[order.id];
+                  delete newUnmatchedBets[order.id];
+                }
 
+                checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
 
-              checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
-
-              // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
-              const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets)
-              checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
-              tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
+                // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
+                const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets)
+                checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
+                tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
 
             })
-          })
+          }
         })
+      })
 
 
         if (tickOffsetOrdersToRemove.length > 0) {
