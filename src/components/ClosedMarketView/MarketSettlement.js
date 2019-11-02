@@ -12,7 +12,7 @@ export default () => {
                     <em style={{color: 'gray',  fontWeight: '200'}}>Created Sat 26 Oct 2019 at 18:47 (commission not included)</em>
                 </div>
                 
-                <a href="http://localhost:8080/dashboard" style={{marginTop: '2%', backgroundColor: 'rgb(38, 194, 129)', width: 'max-content', padding: '0.75% 1%', textDecoration: 'none', color: 'white'}}>Back To Dashboard →</a>
+                <a onClick={() => {window.location.href = `${window.location.origin}/dashboard`}} style={{marginTop: '2%', backgroundColor: 'rgb(38, 194, 129)', width: 'max-content', padding: '0.75% 1%', textDecoration: 'none', color: 'white'}}>Back To Dashboard →</a>
             </div>
         </div>
     )

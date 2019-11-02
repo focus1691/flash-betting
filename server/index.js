@@ -31,6 +31,23 @@ app.get('/', (req, res) => {
     res.sendFile(publicPath + 'build/index.html');
 });
 
+app.get('/dashboard', (req, res) => {
+    res.sendFile(publicPath + 'build/index.html');
+});
+app.get('/getClosedMarketStats', (req, res) => {
+    res.sendFile(publicPath + 'build/index.html');
+});
+app.get('/authentication', (req, res) => {
+    res.sendFile(publicPath + 'build/index.html');
+});
+app.get('/validation', (req, res) => {
+    res.sendFile(publicPath + 'build/index.html');
+});
+app.get('/logout', (req, res) => {
+    res.sendFile(publicPath + 'build/index.html');
+});
+
+
 app.get("/api/load-session", (request, response) => {
 	betfair.setActiveSession(request.query.sessionKey);
 
@@ -520,7 +537,7 @@ process.on(
 	})
 );
 
-const port = process.env.PORT || 80;
+const port = 8080;
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 const io = require("socket.io")(8000);
