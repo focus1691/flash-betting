@@ -1,5 +1,6 @@
 {
   "name": "sports-trading-app",
+  "author": "sh00ks & DragonFyZex",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,8 +9,6 @@
     "bluebird": "^3.5.5",
     "classnames": "^2.2.6",
     "dotenv": "^8.1.0",
-    "electron": "^7.0.0",
-    "electron-builder": "^21.2.0",
     "electron-is-dev": "^1.1.0",
     "express-session": "^1.17.0",
     "html-react-parser": "^0.9.1",
@@ -44,8 +43,31 @@
     "validator": "^11.1.0",
     "wait-on": "^3.3.0"
   },
+  "homepage": "./",
+  "build": {
+    "appId": "com.traderpro.app",
+    "files": [
+      "./build/**/*",
+      "./public/electron.js",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    }
+  },
   "scripts": {
-    "start": "cross-env HTTPS=true&&react-scripts start",
+    "start": "node server/index.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -53,9 +75,10 @@
     "server": "nodemon server/index.js",
     "proxy": "local-ssl-proxy --source 8080 --target 3002",
     "dev": "concurrently \"npm run start\" \"npm run server\" \"npm run proxy\"",
-    "electron-dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on http://localhost:3002 && electron .\""
+    "electron-dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on http://localhost:3002 && electron .\"",
+	  "dist": "electron-builder"
   },
-  "main": "public/electron.js",
+  "main": "server/index.js",
   "proxy": "http://localhost:3001",
   "eslintConfig": {
     "extends": "react-app"
@@ -76,12 +99,15 @@
     "body-parser": "^1.19.0",
     "concurrently": "^4.1.2",
     "cross-env": "^5.2.0",
+    "electron": "^7.0.0",
+    "electron-builder": "^21.2.0",
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "gulp": "^4.0.2",
     "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.1",
     "gulp-minify": "^3.1.0",
+    "local-ssl-proxy": "^1.3.0",
     "node-env-run": "^3.0.2",
     "nodemon": "^1.19.1",
     "npm-run-all": "^4.1.5",

@@ -1,0 +1,10 @@
+.save-btn {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    float: right;
+}

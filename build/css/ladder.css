@@ -1,0 +1,326 @@
+.ladder-container {
+	position: relative;
+	height: 100%;
+	overflow-x:scroll;
+	overflow-y: hidden;
+	white-space:nowrap;
+}
+
+.odds-table {
+	position: absolute;
+    width: 16.5rem;
+    height: 100%;
+	float: left;
+	padding: 0;
+	border: 2px solid #d8d9d9;
+	visibility: collapse;
+	z-index: 0;
+	opacity: 1.0;
+	transition: opacity 0.25s ease-in-out 0s;
+}
+
+/** 
+* Ladder View Detail
+* Top part of the ladder view where the details of the contender is displayed.
+**/
+.ladder-header {
+	display: flex !important;
+	flex-direction: row;
+	height: auto !important;
+
+}
+
+.ladder-header > div:nth-child(1) {
+	width: 70%;
+} 
+
+.ladder-header> div:nth-child(2) {
+	width: 30%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: rgb(106, 177, 79);
+	font-weight: bold;
+	text-align: left;
+}
+
+.contender-name {
+	font-size: 1em;
+	text-align: left;
+	color: #350505;
+	font-family: "Open Sans";
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	cursor: move;
+}
+
+.contender-image {
+	vertical-align: middle;
+	cursor: url('../icons/faq.png'), auto;
+}
+
+.contender-odds-container {
+	display: flex;
+	flex-direction: row;
+}
+
+.contender-odds {
+	color: rgb(106, 177, 79);
+	font-weight: bold;
+	display: block;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	width: 50%;
+}
+
+/**
+* The ladder view for a contender in a sporting event, such as
+* horse racing, football team, cricket team.
+**/
+.ladder {
+	position: relative;
+	width: 100%;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	height: 75%;
+}
+
+.ladder-header {
+	display: inline-block;
+	width: 100%;
+	height: 5%;
+}
+
+.ladder > div > .List {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	table-layout: fixed;
+	border: 1px solid rgb(178, 181, 181);
+	width: 100%;
+	box-sizing: content-box; 
+}
+
+.ladder .tr {
+	display: flex;
+}
+
+.ladder .td {
+	font-size: x-small;
+	text-align: right;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	width: 12.5%;
+}
+.ladder .td:nth-child(1) {width: 100%}
+.ladder .td:nth-child(3) {background-color: #FCC9D3; }
+.ladder .td:nth-child(4) {
+	font-weight: bold;
+	background: #BBBBBB;
+}
+
+.ladder .td:nth-child(5) { background-color: #BCE4FC; }
+
+.ladder .td:not(:first-child) {
+	text-align: center;
+	font-family: "Open Sans";
+	font-weight: 600;
+	font-size: x-small;
+	border: 1px solid rgb(178, 181, 181);
+	padding: 2px;
+	cursor: pointer;
+	width: 30%;
+	overflow: hidden;
+}
+
+.candle-stick-col {
+	border-right: 2px solid;
+	background-color: #4f4d4f;
+	position: relative;
+}
+
+.volume-col {
+	height: 100%; 
+	background-color: rgb(255, 255, 255, 0.75);
+	max-width: 100%; 
+	font-family: "Open Sans";
+	font-size: 0.7rem; 
+	font-weight: bold;
+	text-align: left;
+}
+
+.candle-stick {
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0px;
+}
+
+.ladder th {
+	position: sticky;
+	top: 0;
+	padding: 0;
+}
+
+.order-row {
+	bottom: 0;
+	height: 10%;
+	background: #fff;
+	display: block;
+	width: 100%;
+	float: left;
+}
+
+.order-row td:nth-child(1), .order-row td:nth-child(3) {
+	width: 40%;
+}
+
+.order-row td:nth-child(2) {
+	display: block;
+	width: 100%;
+}
+
+.order-row table {
+	border-collapse: collapse;
+	table-layout: fixed;
+	border: 1px solid;
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+}
+
+
+
+.order-row td {
+	width: 20%;
+	margin: 0;
+	padding: 0;
+}
+
+.order-row button {
+	position: sticky;
+	display: block;
+	width: 100%;
+	height: 100%;
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	border: 1px solid;
+	cursor: pointer;
+	overflow: hidden;
+	outline: none;
+}
+
+.order-row button:nth-child(1) {
+	background: silver;
+}
+
+.order-row button:nth-child(2) {
+	background: gold;
+}
+
+.order-row button:nth-child(3) {
+	background: crimson;
+}
+
+/** LAY TABLE **/
+
+.lay-table {
+	border: unset !important;
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+	white-space: nowrap;
+	overflow-y: scroll;
+}
+
+.lay-body {
+	overflow-y: scroll;
+	display: block;
+	min-height: 3.5em;
+	max-height: 3.5em;
+}
+
+
+.lay-table tr {
+	border-bottom: 1px solid #fff;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+
+.lay-table tr:nth-child(1) {
+	width: 30px;
+}
+
+.lay-table td {
+	width: 100vw !important;
+	font-size: x-small;
+	text-align: center;
+	overflow: scroll;
+}
+
+.lay-table tr:nth-child(odd) {
+	width: 100%;
+	background: #FCC9D3;
+}
+
+/** PERCENTAGE ROW **/
+
+.percentage-row {
+	font-family: "Open Sans";
+	font-weight: 600;
+	font-size: x-small;
+	display: flex;
+	flex-direction: row;
+}
+
+.percentage-row .th:first-child {
+	background: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+	color: white;
+	z-index: 99999;
+	width: 85%;
+}
+
+.percentage-row .th {
+	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+	outline: 1px solid rgb(178, 181, 181); 
+	width: 30%;
+}
+
+.percentage-row .th:not(:first-child) {
+	background-color: white;
+	text-align: center;
+}
+
+.percentage-row .th:nth-child(3) {
+	background-color: #FCC9D3;
+}
+
+.percentage-row .th:nth-child(5) {
+	background-color: #BCE4FC;
+}
+
+
+/** PRICE ROW **/
+
+.price-row {
+	position: sticky;
+	bottom: 0;
+
+}
+
+.price-row th {
+	position: sticky;
+	bottom: 0;
+	background-color: white;
+	outline: 1px solid rgb(178, 181, 181); 
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	cursor: pointer;
+	font-size: small;
+	width: 14em;
+}

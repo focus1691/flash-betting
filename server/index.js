@@ -22,6 +22,15 @@ app.use(express.urlencoded({ extended: true }));
 const database = require("./Database/helper");
 const User = require('./Database/models/users');
 
+const path = require('path');
+
+const publicPath = path.join(__dirname, '../');
+app.use(express.static(path.join(publicPath, 'build')));
+
+app.get('/', (req, res) => {
+    res.sendFile(publicPath + 'build/index.html');
+});
+
 app.get("/api/load-session", (request, response) => {
 	betfair.setActiveSession(request.query.sessionKey);
 
