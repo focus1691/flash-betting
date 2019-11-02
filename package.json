@@ -71,10 +71,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "react": "npm start",
+    "react": "cross-env PORT=8080 react-scripts start",
     "server": "nodemon server/index.js",
     "proxy": "local-ssl-proxy --source 8080 --target 3002",
-    "dev": "concurrently \"npm run start\" \"npm run server\" \"npm run proxy\"",
+    "dev": "concurrently \"npm run react\" \"npm run server\" \"wait-on http://localhost:8080 && npm run proxy\"",
     "electron-dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on http://localhost:3002 && electron .\"",
 	  "dist": "electron-builder"
   },
