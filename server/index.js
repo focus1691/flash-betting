@@ -520,7 +520,7 @@ process.on(
 	})
 );
 
-const port = 3001;
+const port = process.env.PORT || 80;
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 const io = require("socket.io")(8000);
