@@ -523,7 +523,7 @@ process.on(
 const port = process.env.PORT || 80;
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
-const io = require("socket.io")(process.env.PORT || 80);
+const io = require("socket.io")(8000);
 io.on("connection", async client => {
 	const exchangeStream = new ExchangeStream(client);
 
