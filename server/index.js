@@ -27,7 +27,7 @@ const path = require('path');
 const publicPath = path.join(__dirname, '../');
 app.use(express.static(path.join(publicPath, 'build')));
 
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
     res.sendFile(publicPath + 'build/index.html');
 });
 
@@ -537,7 +537,7 @@ process.on(
 	})
 );
 
-const port = 8080;
+const port = process.env.PORT || 80;
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 const io = require("socket.io")(8000);
