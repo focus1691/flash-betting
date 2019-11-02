@@ -10,7 +10,7 @@ export default ({ username, premiumMember, classes }) => (
                 Welcome to Trader Pro
             </Typography>
         </Grid>
-        <Grid item lg>
+        <Grid item lg container justify="flex-end">
             <Chip className={classes.username} color="primary" label={`${username} | Support ID 24442`} />
             <Chip className={classes.subscription} color="#F44336" label={`Subscription: ${premiumMember ? "Active" : "Expired"}`} />
         </Grid>

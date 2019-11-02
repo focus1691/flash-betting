@@ -15,7 +15,7 @@ import openSocket from "socket.io-client";
 import SocketContext from "./SocketContext";
 import { CookiesProvider } from 'react-cookie';
 
-const socket = openSocket(`${window.location.origin}`);
+const socket = openSocket(`${window.location.origin}${process.env.PORT ? `:${process.env.PORT}`: ""}`);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

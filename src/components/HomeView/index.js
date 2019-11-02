@@ -14,8 +14,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   textMargin: {
-    marginLeft: "10px",
-    padding: "10px",
+    margin: "10px 5px 10px 0px",
   },
   title: {
     marginLeft: "5px",
@@ -28,13 +27,13 @@ const useStyles = makeStyles(theme => ({
   subscription: props => ({
     background: props.subscribed ? "#4CAF50" : "#F44336",
     color: "#000",
+    marginLeft: '10px'
   }),
   subheading: {
-    margin: "10px 5px 10px 5px",
-    padding: "10px",
+    marginTop: '10px'
   },
   premiumStatus: {
-    margin: "10px 5px 10px 5px",
+    margin: "10px 5px 10px 0px",
     fontWeight: "bold",
     textDecoration: "underline",
   },
@@ -69,7 +68,7 @@ const HomeView = props => {
     <div id="home-view-container" className={classes.root}>
       <div className={classes.section2} id="home-view">
         <Header username={cookies.username} premiumMember={props.premiumMember} classes={classes} />
-        <Divider className={classes.divider} variant="middle" />
+        <Divider className={classes.divider} />
         <Grid container alignItems="center">
           <Typography className={classes.subheading} style={{ whiteSpace: 'pre-wrap' }} variant="h5">
             Trader Pro Membership is <span style={{ color: data.color }}>{data.subscribed}</span>
@@ -86,7 +85,7 @@ const HomeView = props => {
             Contact us on <a href={"malito:joshbetting30@yahoo.com"}>joshbetting30@yahoo.com</a> if you experience any issues when using Trader Pro.
           </Typography>
         </Grid>
-        <Divider className={classes.divider} variant="middle" />
+        <Divider className={classes.divider} />
       </div>
     </div>
   );

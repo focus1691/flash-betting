@@ -28,16 +28,16 @@ const GetClosedMarketStats = () => {
             const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE")
             setCompletedOrders(completedOrders)
 
-            const marketInfo = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json()).then(res => res.response.result[0])
+            const marketInfo = await fetch(`/api/get-market-info?marketId=${marketId}`).then(res => res.json()).then(res => res.response.result[0])
             setMarketInfo(marketInfo)
         }
         getMarketInfo();
     }, []);
 
     return (
-        <div style={{padding: '2%'}}>
-            <MarketSettlement />
-            <div style={{width: '100%', height: '60%', marginTop: '1.5%', display: 'flex', justifyContent: 'space-between'}}>
+        <div className={"marketstats-container"}>
+            <MarketSettlement marketInfo = {marketInfo} />
+            <div className={"marketstats-tables"}>
                 <ClosedMarketReport matchedBets = {completedOrders} runners = {marketInfo.runners ? marketInfo.runners : []}/>
                 <BetsPlaced matchedBets = {completedOrders} runners = {marketInfo.runners ? marketInfo.runners : []}/>
             </div>

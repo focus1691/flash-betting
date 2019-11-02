@@ -100,6 +100,8 @@ const App = props => {
               };
             }
 
+            console.log(runners)
+
             props.onUpdateRunners(runners);
             props.onReceiveMarket(data.result[0]);
             props.onSelectRunner(data.result[0].runners[0]);
@@ -229,6 +231,9 @@ const App = props => {
      */
     props.socket.on("mcm", async data => {
 
+
+      const marketId = getQueryVariable("marketId");
+
       // Update the market status
       if (data.marketDefinition) {
         props.onMarketStatusChange(data.marketDefinition.status);
@@ -245,6 +250,10 @@ const App = props => {
       let newStopEntryList = Object.assign({}, props.stopEntryList);
 
       let stopLossOrdersToRemove = [];
+
+      if (data.marketDefinition.status === "CLOSED") {
+        window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
+      }
 
       await Promise.all(data.rc.map(async rc => {
         
@@ -349,7 +358,7 @@ const App = props => {
       props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length))
 
 
-      const marketId = getQueryVariable("marketId");
+      
       try {
         const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
         const data = marketBook;

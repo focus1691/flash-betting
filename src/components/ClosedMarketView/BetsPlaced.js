@@ -35,9 +35,6 @@ export default ({matchedBets, runners = []}) => {
     const sortedMatchedBets = matchedBets.sort((a, b) => Date.parse(b.placedDate) - Date.parse(a.placedDate));
     const matchedBetsAdjustments = sortedMatchedBets.map(bet => getStatus(getRunner(calculateNewPlacedDate(bet), runnersObject)))
 
-    console.log(runners)
-
-
     const rows = matchedBetsAdjustments
 
     const classes = useStyles();
@@ -72,8 +69,13 @@ export default ({matchedBets, runners = []}) => {
                                                 const isSideBack = row.side === 'BACK'
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
-                                                        {column.id === "sizeMatched" ? <span style={{backgroundColor: isSideBack ? 'rgb(114, 187, 239)' : 'rgb(250, 169, 186)', padding: '2px', paddingLeft: '4px', width: '20%', borderRadius: '2px', marginRight: '2%', display: 'inline-block', color: 'white'}}>{(isSideBack ? "BACK" : "LAY")}</span> : null}
-                                                        {column.id === "win" ? <span style={{display: 'inline-block', width: '35%', padding: '3px', borderRadius: '3px', textAlign: 'center', color: 'white', backgroundColor: column.win ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)'}}>{column.win ? "Won" : "Lost"}</span> : null}
+                                                        {column.id === "sizeMatched" ? 
+                                                            <span className = {"marketstats-table-backlay-bet"} style={{backgroundColor: isSideBack ? 'rgb(114, 187, 239)' : 'rgb(250, 169, 186)'}}>
+                                                                {(isSideBack ? "BACK" : "LAY")}
+                                                            </span> : null}
+                                                        {column.id === "win" ? <span className = {"marketstats-table-win-result"} style={{backgroundColor: column.win ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)'}}>
+                                                                                    {column.win ? "Won" : "Lost"}
+                                                                                </span> : null}
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </TableCell>
                                                 );
@@ -100,8 +102,8 @@ const calculateNewPlacedDate = bet => {
     const betPlacedOnDiffDay = currentMonth !== placedMonth || placedDate > currentDate || placedDate < currentDate 
 
     const newPlacedDate = betPlacedOnDiffDay ? 
-                            betPlacedDate.toLocaleString('en-GB', { timeZone: 'UTC', hour12: false }) :
-                            betPlacedDate.toLocaleTimeString(betPlacedDate, { timeZone: 'UTC', hour12: false })
+                            betPlacedDate.toLocaleString('en-GB', {  hour12: false }) :
+                            betPlacedDate.toLocaleTimeString(betPlacedDate, {  hour12: false })
                             
     return Object.assign({}, bet, {placedDate: newPlacedDate})
 }

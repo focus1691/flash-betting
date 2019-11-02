@@ -13,7 +13,7 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
         const marketStartDay = marketStartTime.getDay()
         const marketStartOnDiffDay = marketStartDay > currentDay || marketStartDay < currentDay
 
-        const dateSettings = { timeZone: 'UTC', hour12: false };
+        const dateSettings = { hour12: false };
         if (marketStartOnDiffDay) {
             dateSettings['weekday'] = 'short';
         }

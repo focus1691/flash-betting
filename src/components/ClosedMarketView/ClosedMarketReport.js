@@ -6,6 +6,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { getPLForRunner } from '../../utils/Bets/getProfitAndLoss';
 
 const useStyles = makeStyles({
     root: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles({
 
 const columns = [
     { id: 'selection', label: 'Selection', minWidth: 170 },
-    { id: 'win', label: 'If Win', minWidth: 75 },
+    { id: 'win', label: 'If Win', minWidth: 75, },
     { id: 'lose', label: 'If Lose', minWidth: 75 },
     { id: 'settled', label: 'Settled', minWidth: 75 },
     { id: 'result', label: 'Result', minWidth: 50 },
@@ -34,11 +35,24 @@ export default ({matchedBets, runners}) => {
     const selectionWithBets = {};
 
     matchedBets.map(bet => {
+        bet.price = bet.averagePriceMatched;
+        bet.size = bet.sizeMatched;
+        bet.marketId = runners.marketId;
         if (selectionWithBets[bet.selectionId]) selectionWithBets[bet.selectionId].push(bet)
         else selectionWithBets[bet.selectionId] = [bet]
     })
     
-    const rows = [];
+    const rows = runners.map(runner => {
+        const win = matchedBets !== undefined ? getPLForRunner(runners.marketId, runner.selectionId, {matched: matchedBets}).toFixed(2): 0
+        const lose = 0; //placeholder
+        return {
+            selection: runner.runnerName,
+            win: win,
+            lose: lose,
+            settled: runner.status === "WINNER" ? win : lose,
+            result: runner.status === "WINNER"
+        }
+    });
 
     const classes = useStyles();
 
@@ -48,7 +62,7 @@ export default ({matchedBets, runners}) => {
                         Closed Market Report
                     </div>
                     <Paper className={classes.root} style={{height: '90%'}}>
-                        <div style={{height: '100%', border: 'solid 2px rgb(146, 164, 186)', borderTop: 'none'}} className={classes.tableWrapper}>
+                        <div className={classes.tableWrapper + " marketstats-table-wrapper"}>
                             <Table stickyHeader aria-label="sticky table">
                                 <TableHead>
                                     <TableRow>
@@ -69,9 +83,15 @@ export default ({matchedBets, runners}) => {
                                         <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                         {columns.map(column => {
                                             const value = row[column.id];
+                                            const isProfitOrLoss = column.id === "win" || column.id === "lose" || column.id === "settled" 
+                                            const color = isProfitOrLoss ? parseFloat(value) < 0 ? 'red' : 'green' : 'black'
                                             return (
                                             <TableCell key={column.id} align={column.align}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                {column.id === "result" ? 
+                                                    <span className = {"marketstats-table-win-result"} style={{backgroundColor: column.result ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)'}}>
+                                                        {column.result ? "Won" : "Lost"}
+                                                    </span> : null}
+                                                <span style={{color: color, fontWeight: isProfitOrLoss ? 'bold' : 'normal'}}>{column.format && typeof value === 'number' ? column.format(value) : value}</span>
                                             </TableCell>
                                             );
                                         })}
