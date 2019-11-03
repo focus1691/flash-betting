@@ -78,7 +78,7 @@
     "proxy": "local-ssl-proxy --source 8080 --target 3002",
     "dev": "concurrently \"npm run react\" \"npm run server\" \"wait-on http://localhost:8080 && npm run proxy\"",
     "electron-dev": "cross-env BROWSER=none electron .",
-    "dist": "electron-builder"
+    "dist": "react-scripts build && electron-builder"
   },
   "main": "public/electron.js",
   "proxy": "http://localhost:3001",
