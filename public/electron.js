@@ -573,7 +573,7 @@ io.on("connection", async client => {
 
 function createWindow() {
   mainWindow = new BrowserWindow({width: 900, height: 680});
-  mainWindow.loadURL(`http://localhost:8080`);
+  mainWindow.loadURL(`http://localhost:3001`);
   mainWindow.webContents.openDevTools();
   mainWindow.webContents.on('devtools-opened', () => {
       setImmediate(() => {
