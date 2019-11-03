@@ -38,6 +38,7 @@
     "reactstrap": "^8.0.1",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
+    "socket.io": "^2.3.0",
     "thunk": "0.0.1",
     "typescript": "^3.5.3",
     "validator": "^11.1.0",
@@ -48,6 +49,7 @@
     "appId": "com.traderpro.app",
     "files": [
       "./build/**/*",
+      "./server/**/*",
       "./public/electron.js",
       "node_modules/**/*"
     ],
@@ -76,9 +78,9 @@
     "proxy": "local-ssl-proxy --source 8080 --target 3002",
     "dev": "concurrently \"npm run react\" \"npm run server\" \"wait-on http://localhost:8080 && npm run proxy\"",
     "electron-dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on http://localhost:3002 && electron .\"",
-	  "dist": "electron-builder"
+    "dist": "electron-builder"
   },
-  "main": "server/index.js",
+  "main": "public/electron.js",
   "proxy": "http://localhost:3001",
   "eslintConfig": {
     "extends": "react-app"
@@ -112,7 +114,6 @@
     "nodemon": "^1.19.1",
     "npm-run-all": "^4.1.5",
     "pino-colada": "^1.4.5",
-    "socket.io": "^2.2.0",
     "webpack": "^4.29.6"
   },
   "optionalDependencies": {
