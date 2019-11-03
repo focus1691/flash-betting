@@ -28,6 +28,7 @@ const Authentication = props => {
                     setCookie('expiresIn', res.expiresIn);
                     
                     setTokenGranted(true);
+                    window.location.href = window.location.origin + '/dashboard';
                   });
               }
             });
