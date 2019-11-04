@@ -64,7 +64,6 @@ export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, pre
         tickOffsetOrdersToRemove = tickOffsetOrdersToRemove.concat(checkForMatchInTickOffset[order.rfs])
 
         delete checkForMatchInTickOffset[order.rfs];
-        console.log(tickOffsetOrdersToRemove)
     }
 
     return {

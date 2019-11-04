@@ -109,7 +109,6 @@ app.get("/api/request-access-token", (request, response) => {
 });
 
 app.get("/api/login", (request, response) => {
-	console.log('login 1');
 	betfair.login(request.query.user, request.query.pass)
 	.then(res => {
 		response.json({

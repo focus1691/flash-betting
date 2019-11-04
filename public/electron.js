@@ -105,7 +105,6 @@ app.get("/api/request-access-token", (request, response) => {
 
 	const token = async () => {
 		betfair.token(params, (err, res) => {
-			console.log(res);
 			var tokenInfo = {
 				accessToken: res.result.access_token,
 				expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
@@ -119,7 +118,6 @@ app.get("/api/request-access-token", (request, response) => {
 });
 
 app.get("/api/login", (request, response) => {
-	console.log('login 1');
 	betfair.login(request.query.user, request.query.pass)
 	.then(res => {
 		response.json({

@@ -19,10 +19,8 @@ export const stopEntryListChange = async (stopEntryList, selectionId, currentLTP
     if (stopEntryArray !== undefined) {
         try {
             const indexesToRemove = await stopEntryCheck(currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets, testing);
-            console.log(stopEntryArray.length, indexesToRemove.length)
             // if the array length has some items left, then keep it 
             if (stopEntryArray.length > indexesToRemove.length) {
-                console.log(stopEntryArray)
                 newStopEntryList[selectionId] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
             } else {
                 delete newStopEntryList[selectionId]
