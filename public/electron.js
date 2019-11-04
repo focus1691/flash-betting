@@ -572,15 +572,9 @@ io.on("connection", async client => {
 
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 900, height: 680});
+  mainWindow = new BrowserWindow({width: 1280, height: 1000});
   mainWindow.loadURL('http://localhost:3001');
-  mainWindow.webContents.openDevTools();
-  mainWindow.webContents.on('devtools-opened', () => {
-      setImmediate(() => {
-          // do whatever you want to do after dev tool completely opened here
-          mainWindow.focus();
-      });
-  });
+  mainWindow.maximize();
   mainWindow.on('closed', () => mainWindow = null);
 }
 
