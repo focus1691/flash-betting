@@ -82,7 +82,7 @@ app.get("/api/get-subscription-status", (request, response) => {
 app.get("/api/request-access-token", (request, response) => {
 
 	const params = {
-		client_id: "qI6kop1fEslEArVO",
+		client_id: "74333",
 		grant_type: request.query.tokenType,
 		client_secret: "6d912070-7cda-47c9-819f-20ea616fd35c"
 	}
@@ -105,6 +105,7 @@ app.get("/api/request-access-token", (request, response) => {
 
 	const token = async () => {
 		betfair.token(params, (err, res) => {
+			console.log(res);
 			var tokenInfo = {
 				accessToken: res.result.access_token,
 				expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
