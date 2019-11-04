@@ -22,7 +22,7 @@ class BetFairStreamAPI {
 
 			this.client.setEncoding('utf8');
 
-			this.client.write('{"op": "authentication", "appKey": "' + process.env.APP_KEY + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
+			this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 
 			this.client.write(subscription);
 

@@ -546,7 +546,7 @@ process.on(
 	})
 );
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3001;
 
 const server = require('http').createServer(app);
 const io = require("socket.io")(server);
@@ -573,7 +573,7 @@ io.on("connection", async client => {
 
 function createWindow() {
   mainWindow = new BrowserWindow({width: 900, height: 680});
-  mainWindow.loadURL(`http://localhost:3001`);
+  mainWindow.loadURL('http://localhost:3001');
   mainWindow.webContents.openDevTools();
   mainWindow.webContents.on('devtools-opened', () => {
       setImmediate(() => {
