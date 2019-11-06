@@ -1,22 +1,28 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = mongoose.Schema({
-    address: {
-        city: String,
-        country_code: String,
-        line1: String,
-        postal_code: String,
-        recipient_name: String,
-        state: String
-    },
-    cancelled: Boolean,
-    email: String,
-    paid: Boolean,
-    payerID: String,
-    paymentID: String,
-    paymentToken: String,
-    returnUrl: String,
-    expiresIn: Date
+
+    id: String,
+    status: String,
+    type: String,
+    currencyIsoCode: String,
+    amount: Number,
+    merchantAccountId: String,
+    subMerchantAccountId: String,
+    masterMerchantAccountId: String,
+    orderId: String,
+    createdAt: String,
+    updatedAt: String,
+    customer: { 
+        id: String,
+        firstName: String,
+        lastName: String,
+        company: String,
+        email: String,
+        website: String,
+        phone: String,
+        fax: String
+    }
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
