@@ -99,9 +99,6 @@ const App = props => {
                 price: 0
               };
             }
-
-            console.log(runners)
-
             props.onUpdateRunners(runners);
             props.onReceiveMarket(data.result[0]);
             props.onSelectRunner(data.result[0].runners[0]);
@@ -279,7 +276,6 @@ const App = props => {
           // stop Entry
 
           newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, rc.ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
-          console.log(rc.id)
           // We increment and check the stoplosses
           if (props.stopLossList[rc.id] !== undefined) {
             // if it's trailing and the highest LTP went up, then we add a tickoffset
