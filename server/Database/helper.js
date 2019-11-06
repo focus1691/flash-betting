@@ -27,7 +27,7 @@ class DatabaseHelper extends Database {
         return new Promise((res, rej) => {
             const transaction = new Transaction(json);
             transaction.save().then(result => {
-                return this.setPremium(user, transaction.expiresIn);
+                return this.setPremium(user, json.expiresIn);
             });
         });
     }
