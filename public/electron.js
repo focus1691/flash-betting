@@ -20,8 +20,16 @@ require("dotenv").config();
 const BetFairSession = require("../server/BetFair/session.js");
 const ExchangeStream = require("../server/BetFair/stream-api.js");
 
-const betfair = new BetFairSession("qI6kop1fEslEArVO");
+const betfair = new BetFairSession(process.env.APP_KEY || "qI6kop1fEslEArVO");
 
+var braintree = require("braintree");
+
+var gateway = braintree.connect({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.MERCHANT_ID || "dp55wnmzp8bn9w4k",
+  publicKey: process.env.PUBLIC_KEY || "9xhp89m3jjxbt7b6",
+  privateKey: process.env.PRIVATE_KEY || "f168b4ef387400987a86423ac6beb1a1"
+});
 
 const bodyParser = require("body-parser");
 
@@ -56,6 +64,27 @@ app.get('/logout', (req, res) => {
     res.sendFile(publicPath + 'build/index.html');
 });
 
+app.get("/api/generate-client-token", (request, response) => {
+	gateway.clientToken.generate({
+		customerId: aCustomerId
+	}, (err, res) => {
+		response.send(res.clientToken);
+	});
+});
+
+app.post("/checkout", function (request, result) {
+	var nonceFromTheClient = request.body.payment_method_nonce;
+	
+	gateway.transaction.sale({
+		amount: "9.99",
+		paymentMethodNonce: nonceFromTheClient,
+		options: {
+			submitForSettlement: true
+		}
+	}, (err, res) => {
+		
+	});
+});
 
 app.get("/api/load-session", (request, response) => {
 	betfair.setActiveSession(request.query.sessionKey);

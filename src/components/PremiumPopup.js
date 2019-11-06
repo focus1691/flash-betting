@@ -11,6 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
+import DropIn from "braintree-web-drop-in-react";
 import PaypalExpressBtn from 'react-paypal-express-checkout';
 import { getDate30DaysAhead } from "../utils/DateCalculator";
 
@@ -69,7 +70,13 @@ const FullScreenDialog = props => {
           <DialogContentText>
             You are required to pay the monthly subscription fee of £9.99 in order to access Trader Pro's advanced features.
           </DialogContentText>
-          <PaypalExpressBtn className={classes.paypal} env={'sandbox'} client={{
+            <DropIn
+              options={{ authorization: "ADADADADA" }}
+              onInstance={instance => (this.instance = instance)}
+            />
+            <button onClick={this.buy.bind(this)}>Buy</button>
+          
+          {/* <PaypalExpressBtn className={classes.paypal} env={'sandbox'} client={{
             sandbox: 'ARDKtjP_BpHKUgh58tk1RsXHlxbdlmPC0FVhXRFX2zysVNxBMGnUSTPDAUCkKcQ9pwKYWx4slLhwCSZS',
             production: 'YOUR-PRODUCTION-APP-ID',
           }} currency={'GBP'} total={9.99}
@@ -98,7 +105,7 @@ const FullScreenDialog = props => {
               // User pressed "cancel" or close Paypal's popup!
               return;
               // You can bind the "data" object's value to your state or props or whatever here, please see below for sample returned data
-            }} />
+            }} /> */}
         </DialogContent>
       </Dialog>
   );
