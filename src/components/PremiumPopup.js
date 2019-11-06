@@ -38,7 +38,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const FullScreenDialog = props => {
   const classes = useStyles();
   const [clientToken, setClientToken] = useState(null);
-  var instance;
+  const [instance, setInstance] = useState(null);
 
   const getToken = async () => {
     // Get a client token for authorization from your server
@@ -58,9 +58,19 @@ const FullScreenDialog = props => {
   }, [props.premiumMember]);
 
   const buy = async () => {
+   
     // Send the nonce to your server
-    const { nonce } = await this.instance.requestPaymentMethod();
-    await fetch(`/api/checkout/${nonce}`);
+    const { nonce } = await instance.requestPaymentMethod();
+    await fetch(`/api/checkout/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        payment_method_nonce: nonce
+      })
+    });
   }
 
   const renderForm = () => {
@@ -69,9 +79,9 @@ const FullScreenDialog = props => {
         <React.Fragment>
           <DropIn
             options={{ authorization: clientToken }}
-            onInstance={instance => (this.instance = instance)}
+            onInstance={instance => {setInstance(instance)}}
           />
-          <button onClick={buy()}>Buy</button>
+          <button onClick={buy}>Buy</button>
         </React.Fragment>
       );
     }
