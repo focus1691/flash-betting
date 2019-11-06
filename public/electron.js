@@ -65,10 +65,10 @@ app.get('/logout', (req, res) => {
 });
 
 app.get("/api/generate-client-token", (request, response) => {
-	gateway.clientToken.generate({
-		customerId: aCustomerId
-	}, (err, res) => {
-		response.send(res.clientToken);
+	gateway.clientToken.generate({}, (err, res) => {
+		response.json({
+			clientToken: res.clientToken
+		});
 	});
 });
 
@@ -82,7 +82,7 @@ app.post("/checkout", function (request, result) {
 			submitForSettlement: true
 		}
 	}, (err, res) => {
-		
+
 	});
 });
 

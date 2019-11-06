@@ -58,15 +58,15 @@ app.get('/logout', (req, res) => {
 
 app.get("/api/generate-client-token", (request, response) => {
 	gateway.clientToken.generate({}, (err, res) => {
-		console.log(res);
 		response.json({
 			clientToken: res.clientToken
 		});
 	});
 });
 
-app.post("/checkout", function (request, result) {
+app.post("/api/checkout", function (request, result) {
 	var nonceFromTheClient = request.body.payment_method_nonce;
+	console.log(nonceFromTheClient);
 	
 	gateway.transaction.sale({
 		amount: "9.99",
@@ -75,6 +75,7 @@ app.post("/checkout", function (request, result) {
 			submitForSettlement: true
 		}
 	}, (err, res) => {
+		console.log(res);
 
 	});
 });

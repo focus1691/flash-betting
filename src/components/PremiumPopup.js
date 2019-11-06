@@ -43,8 +43,8 @@ const FullScreenDialog = props => {
   const getToken = async () => {
     // Get a client token for authorization from your server
     await fetch("/api/generate-client-token")
-    .then(res => res.json())
-    .then(data => { console.log(data); setClientToken(data.clientToken) });
+      .then(res => res.json())
+      .then(data => { console.log(data); setClientToken(data.clientToken) });
   };
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const FullScreenDialog = props => {
   const buy = async () => {
     // Send the nonce to your server
     const { nonce } = await this.instance.requestPaymentMethod();
-    await fetch(`server.test/purchase/${nonce}`);
+    await fetch(`/api/checkout/${nonce}`);
   }
 
   const renderForm = () => {
@@ -71,7 +71,7 @@ const FullScreenDialog = props => {
             options={{ authorization: clientToken }}
             onInstance={instance => (this.instance = instance)}
           />
-          <button onClick={buy.bind(this)}>Buy</button>
+          <button onClick={buy()}>Buy</button>
         </React.Fragment>
       );
     }
