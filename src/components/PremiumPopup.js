@@ -68,8 +68,12 @@ const FullScreenDialog = props => {
       },
       method: "POST",
       body: JSON.stringify({
-        payment_method_nonce: nonce
+        payment_method_nonce: nonce,
+        expiresIn: getDate30DaysAhead()
       })
+    }).then(res => {
+      props.setPremiumStatus(true);
+      props.openPremiumDialog(false);
     });
   }
 

@@ -67,7 +67,7 @@ app.get("/api/generate-client-token", (request, response) => {
 app.post("/api/checkout", function (request, result) {
 	var nonceFromTheClient = request.body.payment_method_nonce;
 	console.log(nonceFromTheClient);
-	
+
 	gateway.transaction.sale({
 		amount: "9.99",
 		paymentMethodNonce: nonceFromTheClient,
@@ -75,8 +75,14 @@ app.post("/api/checkout", function (request, result) {
 			submitForSettlement: true
 		}
 	}, (err, res) => {
-		console.log(res);
-
+		
+		database.saveTransaction(betfair.email, Object.assign({}, res.transaction, {expiresIn: request.body.expiresIn}))
+		if (!err && res && res.status == "submitted_for_settlement") {
+			result.sendStatus(200);
+		} else {
+			result.sendStatus(400);
+		}
+		
 	});
 });
 

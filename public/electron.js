@@ -72,9 +72,9 @@ app.get("/api/generate-client-token", (request, response) => {
 	});
 });
 
-app.post("/checkout", function (request, result) {
+app.post("/api/checkout", function (request, result) {
 	var nonceFromTheClient = request.body.payment_method_nonce;
-	
+
 	gateway.transaction.sale({
 		amount: "9.99",
 		paymentMethodNonce: nonceFromTheClient,
@@ -82,7 +82,14 @@ app.post("/checkout", function (request, result) {
 			submitForSettlement: true
 		}
 	}, (err, res) => {
-
+		
+		database.saveTransaction(betfair.email, Object.assign({}, res.transaction, {expiresIn: request.body.expiresIn}))
+		if (!err && res && res.status == "submitted_for_settlement") {
+			result.sendStatus(200);
+		} else {
+			result.sendStatus(400);
+		}
+		
 	});
 });
 
