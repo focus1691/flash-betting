@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import * as actions from '../actions/settings';
 import { makeStyles } from "@material-ui/core/styles";
@@ -14,7 +14,6 @@ import Slide from "@material-ui/core/Slide";
 import DropIn from "braintree-web-drop-in-react";
 import PaypalExpressBtn from 'react-paypal-express-checkout';
 import { getDate30DaysAhead } from "../utils/DateCalculator";
-
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -38,6 +37,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const FullScreenDialog = props => {
   const classes = useStyles();
+  const [clientToken, setClientToken] = useState(null);
+  var instance;
+
+  const getToken = async () => {
+    // Get a client token for authorization from your server
+    await fetch("/api/generate-client-token")
+    .then(res => res.json())
+    .then(data => { console.log(data); setClientToken(data.clientToken) });
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
 
   useEffect(() => {
     if (props.premiumMember) {
@@ -45,38 +57,56 @@ const FullScreenDialog = props => {
     }
   }, [props.premiumMember]);
 
+  const buy = async () => {
+    // Send the nonce to your server
+    const { nonce } = await this.instance.requestPaymentMethod();
+    await fetch(`server.test/purchase/${nonce}`);
+  }
+
+  const renderForm = () => {
+    if (clientToken) {
+      return (
+        <React.Fragment>
+          <DropIn
+            options={{ authorization: clientToken }}
+            onInstance={instance => (this.instance = instance)}
+          />
+          <button onClick={buy.bind(this)}>Buy</button>
+        </React.Fragment>
+      );
+    }
+    return null;
+  }
+
   return (
-      <Dialog
-        open={props.open}
-        onClose={e => props.openPremiumDialog(false)}
-        TransitionComponent={Transition}
-      >
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={e => props.openPremiumDialog()}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              Sports Trader Pro Licence
+    <Dialog
+      open={props.open}
+      onClose={e => props.openPremiumDialog(false)}
+      TransitionComponent={Transition}
+    >
+      <AppBar className={classes.appBar}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={e => props.openPremiumDialog()}
+            aria-label="close"
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Sports Trader Pro Licence
             </Typography>
-          </Toolbar>
-        </AppBar>
-        <DialogContent>
-          <DialogContentText>
-            You are required to pay the monthly subscription fee of £9.99 in order to access Trader Pro's advanced features.
+        </Toolbar>
+      </AppBar>
+      <DialogContent>
+        <DialogContentText>
+          You are required to pay the monthly subscription fee of £9.99 in order to access Trader Pro's advanced features.
           </DialogContentText>
-            <DropIn
-              options={{ authorization: "ADADADADA" }}
-              onInstance={instance => (this.instance = instance)}
-            />
-            <button onClick={this.buy.bind(this)}>Buy</button>
-          
-          {/* <PaypalExpressBtn className={classes.paypal} env={'sandbox'} client={{
+
+        {renderForm()}
+
+        {/* <PaypalExpressBtn className={classes.paypal} env={'sandbox'} client={{
             sandbox: 'ARDKtjP_BpHKUgh58tk1RsXHlxbdlmPC0FVhXRFX2zysVNxBMGnUSTPDAUCkKcQ9pwKYWx4slLhwCSZS',
             production: 'YOUR-PRODUCTION-APP-ID',
           }} currency={'GBP'} total={9.99}
@@ -106,8 +136,8 @@ const FullScreenDialog = props => {
               return;
               // You can bind the "data" object's value to your state or props or whatever here, please see below for sample returned data
             }} /> */}
-        </DialogContent>
-      </Dialog>
+      </DialogContent>
+    </Dialog>
   );
 }
 
