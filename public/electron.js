@@ -138,9 +138,13 @@ app.get("/api/request-access-token", (request, response) => {
 			token();
 		}
 	};
-
+	
 	const token = async () => {
 		betfair.token(params, (err, res) => {
+			if (res.error.code) {
+				response.status(400).json(res)
+				return
+			}
 			var tokenInfo = {
 				accessToken: res.result.access_token,
 				expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),

@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useCookies } from 'react-cookie';
+import getQueryVariable from "../utils/GetQueryVariable";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -87,6 +88,9 @@ const Login = props => {
           />
           <Typography component="h1" variant="h5">
             Sign in
+          </Typography>
+          <Typography component="p" style={{backgroundColor: '#C71585', marginTop: '1%', width: '100%', padding: getQueryVariable("error") ? 2 : 0, textAlign: 'center', color: 'white'}}>
+            { getQueryVariable("error") }
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
