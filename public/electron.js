@@ -25,10 +25,10 @@ const betfair = new BetFairSession(process.env.APP_KEY || "qI6kop1fEslEArVO");
 var braintree = require("braintree");
 
 var gateway = braintree.connect({
-  environment: braintree.Environment.Sandbox,
-  merchantId: process.env.MERCHANT_ID || "dp55wnmzp8bn9w4k",
-  publicKey: process.env.PUBLIC_KEY || "9xhp89m3jjxbt7b6",
-  privateKey: process.env.PRIVATE_KEY || "f168b4ef387400987a86423ac6beb1a1"
+	environment: braintree.Environment.Sandbox,
+	merchantId: process.env.MERCHANT_ID || "dp55wnmzp8bn9w4k",
+	publicKey: process.env.PUBLIC_KEY || "9xhp89m3jjxbt7b6",
+	privateKey: process.env.PRIVATE_KEY || "f168b4ef387400987a86423ac6beb1a1"
 });
 
 const bodyParser = require("body-parser");
@@ -45,23 +45,23 @@ const publicPath = path.join(__dirname, '../');
 app.use(express.static(path.join(publicPath, 'build')));
 
 app.get('/', (req, res) => {
-    res.sendFile(publicPath + 'build/index.html');
+	res.sendFile(publicPath + 'build/index.html');
 });
 
 app.get('/dashboard', (req, res) => {
-    res.sendFile(publicPath + 'build/index.html');
+	res.sendFile(publicPath + 'build/index.html');
 });
 app.get('/getClosedMarketStats', (req, res) => {
-    res.sendFile(publicPath + 'build/index.html');
+	res.sendFile(publicPath + 'build/index.html');
 });
 app.get('/authentication', (req, res) => {
-    res.sendFile(publicPath + 'build/index.html');
+	res.sendFile(publicPath + 'build/index.html');
 });
 app.get('/validation', (req, res) => {
-    res.sendFile(publicPath + 'build/index.html');
+	res.sendFile(publicPath + 'build/index.html');
 });
 app.get('/logout', (req, res) => {
-    res.sendFile(publicPath + 'build/index.html');
+	res.sendFile(publicPath + 'build/index.html');
 });
 
 app.get("/api/generate-client-token", (request, response) => {
@@ -82,14 +82,14 @@ app.post("/api/checkout", function (request, result) {
 			submitForSettlement: true
 		}
 	}, (err, res) => {
-		
-		database.saveTransaction(betfair.email, Object.assign({}, res.transaction, {expiresIn: request.body.expiresIn}))
-		if (!err && res && res.status == "submitted_for_settlement") {
+
+		database.saveTransaction(betfair.email, Object.assign({}, res.transaction, { expiresIn: request.body.expiresIn }))
+		if (!err && res && res.status === "submitted_for_settlement") {
 			result.sendStatus(200);
 		} else {
 			result.sendStatus(400);
 		}
-		
+
 	});
 });
 
@@ -138,20 +138,20 @@ app.get("/api/request-access-token", (request, response) => {
 			token();
 		}
 	};
-	
+
 	const token = async () => {
 		betfair.token(params, (err, res) => {
-			if (res.error.code) {
-				response.status(400).json(res)
-				return
+			if (res.error) {
+				response.status(400).json(res);
+			} else {
+				var tokenInfo = {
+					accessToken: res.result.access_token,
+					expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
+					refreshToken: res.result.refresh_token
+				};
+				// Update the user details with the token information
+				database.setToken(betfair.email, tokenInfo).then(() => { response.json(tokenInfo) });
 			}
-			var tokenInfo = {
-				accessToken: res.result.access_token,
-				expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
-				refreshToken: res.result.refresh_token
-			};
-			// Update the user details with the token information
-			database.setToken(betfair.email, tokenInfo).then(() => { response.json(tokenInfo) });
 		});
 	}
 	setupTokenInfo();
@@ -159,17 +159,17 @@ app.get("/api/request-access-token", (request, response) => {
 
 app.get("/api/login", (request, response) => {
 	betfair.login(request.query.user, request.query.pass)
-	.then(res => {
-		response.json({
-			sessionKey: res.sessionKey
-		});
-		// Check if user exists, if doesn't exist, then create a new user
-		database.setUser(request.query.user, res.sessionKey);
-	}).bind(this)
-	.catch(err =>
-		response.json({
-			error: err
-		}));
+		.then(res => {
+			response.json({
+				sessionKey: res.sessionKey
+			});
+			// Check if user exists, if doesn't exist, then create a new user
+			database.setUser(request.query.user, res.sessionKey);
+		}).bind(this)
+		.catch(err =>
+			response.json({
+				error: err
+			}));
 });
 
 app.get("/api/logout", (request, response) => {
@@ -611,22 +611,22 @@ io.on("connection", async client => {
 
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 1280, height: 1000});
-  mainWindow.loadURL('http://localhost:3001');
-  mainWindow.maximize();
-  mainWindow.on('closed', () => mainWindow = null);
+	mainWindow = new BrowserWindow({ width: 1280, height: 1000 });
+	mainWindow.loadURL('http://localhost:3001');
+	mainWindow.maximize();
+	mainWindow.on('closed', () => mainWindow = null);
 }
 
 electronApp.on('ready', createWindow);
 
 electronApp.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    electronApp.quit();
-  }
+	if (process.platform !== 'darwin') {
+		electronApp.quit();
+	}
 });
 
 electronApp.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
+	if (mainWindow === null) {
+		createWindow();
+	}
 });

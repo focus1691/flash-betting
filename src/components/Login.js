@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useCookies } from 'react-cookie';
 import getQueryVariable from "../utils/GetQueryVariable";
+import { getErrorMessage } from "../utils/ErrorMessages";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -45,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 const Login = props => {
   const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'username', 'password', 'rememberMe']);
 
-  const [rememberMe, setRememberMe] = useState(cookies.rememberMe && cookies.rememberMe === 'yes' ? true : false );
+  const [rememberMe, setRememberMe] = useState(cookies.rememberMe && cookies.rememberMe === 'yes' ? true : false);
 
   const classes = useStyles();
 
@@ -89,8 +90,8 @@ const Login = props => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Typography component="p" style={{backgroundColor: '#C71585', marginTop: '1%', width: '100%', padding: getQueryVariable("error") ? 2 : 0, textAlign: 'center', color: 'white'}}>
-            { getQueryVariable("error") }
+          <Typography component="p" style={{ backgroundColor: '#C71585', marginTop: '1%', width: '100%', padding: getQueryVariable("error") ? 2 : 0, textAlign: 'center', color: 'white' }}>
+            {getErrorMessage(getQueryVariable("error"))}
           </Typography>
           <form className={classes.form} noValidate>
             <TextField

@@ -12,7 +12,6 @@ import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import DropIn from "braintree-web-drop-in-react";
-import PaypalExpressBtn from 'react-paypal-express-checkout';
 import { getDate30DaysAhead } from "../utils/DateCalculator";
 
 const useStyles = makeStyles(theme => ({
@@ -44,7 +43,7 @@ const FullScreenDialog = props => {
     // Get a client token for authorization from your server
     await fetch("/api/generate-client-token")
       .then(res => res.json())
-      .then(data => { console.log(data); setClientToken(data.clientToken) });
+      .then(data => setClientToken(data.clientToken));
   };
 
   useEffect(() => {
@@ -58,7 +57,7 @@ const FullScreenDialog = props => {
   }, [props.premiumMember]);
 
   const buy = async () => {
-   
+
     // Send the nonce to your server
     const { nonce } = await instance.requestPaymentMethod();
     await fetch(`/api/checkout/`, {
@@ -83,7 +82,7 @@ const FullScreenDialog = props => {
         <React.Fragment>
           <DropIn
             options={{ authorization: clientToken }}
-            onInstance={instance => {setInstance(instance)}}
+            onInstance={instance => { setInstance(instance) }}
           />
           <button onClick={buy}>Buy</button>
         </React.Fragment>
@@ -119,37 +118,6 @@ const FullScreenDialog = props => {
           </DialogContentText>
 
         {renderForm()}
-
-        {/* <PaypalExpressBtn className={classes.paypal} env={'sandbox'} client={{
-            sandbox: 'ARDKtjP_BpHKUgh58tk1RsXHlxbdlmPC0FVhXRFX2zysVNxBMGnUSTPDAUCkKcQ9pwKYWx4slLhwCSZS',
-            production: 'YOUR-PRODUCTION-APP-ID',
-          }} currency={'GBP'} total={9.99}
-            onError={err => {
-              // The main Paypal's script cannot be loaded or somethings block the loading of that script!
-              return;
-              // Because the Paypal's main script is loaded asynchronously from "https://www.paypalobjects.com/api/checkout.js"
-              // => sometimes it may take about 0.5 second for everything to get set, or for the button to appear
-            }}
-            onSuccess={payment => {
-              // Congratulation, it came here means everything's fine!
-              props.setPremiumStatus(true);
-              props.openPremiumDialog(false);
-              payment.expiresIn = getDate30DaysAhead();
-              return fetch("/paypal-transaction-complete", {
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                method: 'POST',
-                body: JSON.stringify(payment)
-              });
-              // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
-            }}
-            onCancel={data => {
-              // User pressed "cancel" or close Paypal's popup!
-              return;
-              // You can bind the "data" object's value to your state or props or whatever here, please see below for sample returned data
-            }} /> */}
       </DialogContent>
     </Dialog>
   );

@@ -66,7 +66,6 @@ app.get("/api/generate-client-token", (request, response) => {
 
 app.post("/api/checkout", function (request, result) {
 	var nonceFromTheClient = request.body.payment_method_nonce;
-	console.log(nonceFromTheClient);
 
 	gateway.transaction.sale({
 		amount: "9.99",
@@ -77,7 +76,7 @@ app.post("/api/checkout", function (request, result) {
 	}, (err, res) => {
 		
 		database.saveTransaction(betfair.email, Object.assign({}, res.transaction, {expiresIn: request.body.expiresIn}))
-		if (!err && res && res.status == "submitted_for_settlement") {
+		if (!err && res && res.status === "submitted_for_settlement") {
 			result.sendStatus(200);
 		} else {
 			result.sendStatus(400);
@@ -111,7 +110,7 @@ app.get("/api/get-subscription-status", (request, response) => {
 app.get("/api/request-access-token", (request, response) => {
 
 	const params = {
-		client_id: process.query.APP_ID,
+		client_id: process.env.APP_ID,
 		grant_type: request.query.tokenType,
 		client_secret: process.env.APP_SECRET
 	}
@@ -134,18 +133,17 @@ app.get("/api/request-access-token", (request, response) => {
 
 	const token = async () => {
 		betfair.token(params, (err, res) => {
-			if (res.error.code) {
-				response.status(400).json(res)
-				return
+			if (res.error) {
+				response.status(400).json(res);
+			} else {
+				var tokenInfo = {
+					accessToken: res.result.access_token,
+					expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
+					refreshToken: res.result.refresh_token
+				};
+				// Update the user details with the token information
+				database.setToken(betfair.email, tokenInfo).then(() => { response.json(tokenInfo) });
 			}
-
-			var tokenInfo = {
-				accessToken: res.result.access_token,
-				expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
-				refreshToken: res.result.refresh_token
-			};
-			// Update the user details with the token information
-			database.setToken(betfair.email, tokenInfo).then(() => { response.json(tokenInfo) });
 		});
 	}
 	setupTokenInfo();
