@@ -27,7 +27,6 @@
     "react-flag-icon-css": "^1.0.25",
     "react-helmet": "^5.2.1",
     "react-loader-spinner": "^3.1.4",
-    "react-paypal-express-checkout": "^1.0.5",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
@@ -80,7 +79,6 @@
     "eject": "react-scripts eject",
     "react": "cross-env PORT=8080 react-scripts start",
     "server": "nodemon server/index.js",
-    "proxy": "local-ssl-proxy --source 8080 --target 3002",
     "dev": "concurrently \"npm run react\" \"npm run server\"",
     "electron-dev": "cross-env BROWSER=none electron .",
     "electron-build": "react-scripts build && electron-builder"
