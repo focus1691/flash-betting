@@ -1,6 +1,7 @@
 {
-  "name": "sports-trading-app",
-  "author": "sh00ks & DragonFyZex",
+  "name": "trader-pro",
+  "author": "Trader Pro",
+  "description": "Sports Trading on the BetFair Exchange",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -81,7 +82,7 @@
     "server": "nodemon server/index.js",
     "dev": "concurrently \"npm run react\" \"npm run server\"",
     "electron-dev": "cross-env BROWSER=none electron .",
-    "electron-build": "react-scripts build && electron-builder"
+    "electron-build": "cross-env npm run build && electron-builder"
   },
   "main": "public/electron.js",
   "proxy": "http://localhost:3001",

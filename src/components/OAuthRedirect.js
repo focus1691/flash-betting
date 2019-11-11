@@ -20,7 +20,7 @@ const OAuthRedirect = props => {
 							.then(data => {
 								if (data.error) {
 									props.onLogin(false);
-									window.location.href = window.location.origin + `/?error=${data.error.data.AccountAPINGException.errorCode}`;
+									window.location.href = window.location.origin + "/?error=" + (data.error.data ? data.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
 								} else {
 									setCookie('accessToken', data.accessToken);
 									setCookie('refreshToken', data.refreshToken);

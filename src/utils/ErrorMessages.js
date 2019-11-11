@@ -19,13 +19,14 @@ const ErrorMessages = {
     USER_NOT_SUBSCRIBED: "user making the request is not subscribed to the application key they are trying to perform the action on (e.g. creating an Authorisation Code)",
     INVALID_SECRET: "The vendor making the request has provided a vendor secret that does not match our records",
     INVALID_AUTH_CODE: "The vendor making the request has not provided a valid authorisation code",
-    INVALID_GRANT_TYPE: "The vendor making the request has not provided a valid grant_type, or the grant_type they have passed does not match the parameters (authCode/refreshToken)"
+    INVALID_GRANT_TYPE: "The vendor making the request has not provided a valid grant_type, or the grant_type they have passed does not match the parameters (authCode/refreshToken)",
+    GENERAL_AUTH_ERROR: "Authentication error"
 }
 
 const getErrorMessage = errorCode => {
     if (!errorCode) return null;
 
-    return ErrorMessages[errorCode] || null;
+    return ErrorMessages[errorCode];
 };
 
 export { getErrorMessage };
