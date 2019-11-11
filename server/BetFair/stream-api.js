@@ -1,4 +1,3 @@
-'use strict';
 const { StringDecoder } = require('string_decoder');
 const decoder = new StringDecoder('utf8');
 
@@ -18,7 +17,7 @@ class BetFairStreamAPI {
 			port: 443
 		}
 		this.client = tls.connect(options, () => {
-			// console.log("Connected");
+			console.log("Connected");
 
 			this.client.setEncoding('utf8');
 

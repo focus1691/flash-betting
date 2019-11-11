@@ -10,7 +10,6 @@ const OAuthRedirect = props => {
 
 	useEffect(() => {
 		var code = getQueryVariable("code");
-		// var sessionKey =  localStorage.getItem("sessionKey");
 		if (cookies.sessionKey) {
 			fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`)
 				.then(res => {

@@ -36,6 +36,10 @@ class BetfairInvocation {
         BetfairInvocation.applicationKey = appKey;
     }
 
+    static setAccessToken(accessToken) {
+        BetfairInvocation.accessToken = accessToken;
+    }
+
     static startInvocationLog(logger) {
         BetfairInvocation.logger = logger;
     }
@@ -63,6 +67,7 @@ class BetfairInvocation {
         this.apiEndpoint = BETFAIR_API_ENDPOINTS[api] || BETFAIR_API_ENDPOINTS.betting;
         this.sessionKey = BetfairInvocation.sessionKey;
         this.applicationKey = BetfairInvocation.applicationKey;
+        this.accessToken = BetfairInvocation.accessToken;
         this.service = this.apiEndpoint.service;
         this.request = {
             "jsonrpc": "2.0",
@@ -79,7 +84,8 @@ class BetfairInvocation {
         var httpOptions = {
             headers: {
                 'X-Application': this.applicationKey,
-                'X-Authentication': this.sessionKey,
+                // 'X-Authentication': this.sessionKey,
+                'Authorization': `BEARER ${this.accessToken}`,
                 'Content-Type': 'application/json',
                 'Content-Length': this.jsonRequestBody.length,
                 'Connection': 'keep-alive'
@@ -87,6 +93,7 @@ class BetfairInvocation {
         };
         HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
             if (err) {
+                console.log(err);
                 callback(err);
                 return;
             }

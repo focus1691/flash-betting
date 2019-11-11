@@ -86,10 +86,14 @@ app.post("/api/checkout", function (request, result) {
 	});
 });
 
-app.get("/api/load-session", (request, response) => {
+app.get("/api/load-session", async (request, response) => {
 	betfair.setActiveSession(request.query.sessionKey);
 
 	betfair.setEmailAddress(request.query.email);
+
+	const accessToken = await database.getToken(request.query.email);
+
+	betfair.setAccessToken(accessToken);
 
 	response.sendStatus(200);
 });

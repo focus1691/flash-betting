@@ -64,9 +64,10 @@ const API_SCORES_METHODS = [
 
 class BetfairSession {
     // Constructor
-    constructor(applicationKey, sessionKey=null, options={}) {
+    constructor(applicationKey, sessionKey=null) {
         this.sessionKey = sessionKey;
         this.applicationKey = applicationKey;
+        this.accessToken = null;
         this.email = null;
         BetfairInvocation.setApplicationKey(applicationKey);
 
@@ -76,19 +77,14 @@ class BetfairSession {
         this.createApiMethods('scores', API_SCORES_METHODS);
     }
 
-    startInvocationLog(logger) {
-        auth.startInvocationLog(logger);
-        BetfairInvocation.startInvocationLog(logger);
-    }
-
-    stopInvocationLog() {
-        auth.stopInvocationLog();
-        BetfairInvocation.stopInvocationLog();
-    }
-
     setActiveSession(sessionKey) {
         this.sessionKey = sessionKey;
         BetfairInvocation.setSessionKey(sessionKey);
+    }
+
+    setAccessToken(accessToken) {
+        this.accessToken = accessToken;
+        BetfairInvocation.setAccessToken(accessToken);
     }
 
     setEmailAddress(email) {

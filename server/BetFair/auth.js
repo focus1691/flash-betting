@@ -66,10 +66,6 @@ class BetfairAuth {
         });
     }
 
-    loginBot(login, password, options, cb = ()=> {}) {
-
-    }
-
     logout(sessionKey, cb = ()=> {}) {
         let formData = querystring.stringify({
             product: 'home.betfair.int',
@@ -89,12 +85,12 @@ class BetfairAuth {
                 cb(err);
                 return;
             }
-            if (res.responseBody.status != 'SUCCESS') {
+            if (res.responseBody.status !== 'SUCCESS') {
                 cb(res.responseBody.error);
                 return;
             }
             cb(null, {
-                success: res.responseBody.status == 'SUCCESS',
+                success: res.responseBody.status === 'SUCCESS',
                 duration: res.duration,
                 responseBody: res.responseBody
             });
