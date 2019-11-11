@@ -1,5 +1,3 @@
-'use strict';
-
 const http = require('http');
 const https = require('https');
 const url = require('url');
@@ -101,15 +99,8 @@ class HttpRequest extends Stream {
         request.on('error', (err) => {
             this.callback(err);
         });
-        // request.on('socket', function (socket) {
-        //     socket.setTimeout(MAX_REQUEST_TIMEOUT);
-        //     socket.on('timeout', function() {
-        //         request.abort();
-        //     });
-        // });
         request.setTimeout(MAX_REQUEST_TIMEOUT, () => {
             request.abort();
-            //this.callback('REQUEST_TIMEOUT');
         });
         if (this.method === 'post') {
             request.write(this.options.requestBody);

@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const HttpRequest = require('./http_request.js');
 
@@ -28,8 +26,6 @@ const BETFAIR_API_ENDPOINTS = {
     }
 };
 
-const ORDER_METHODS = ['placeOrders', 'replaceOrders', 'updateOrders', 'cancelOrders'];
-
 // Betfair Exchange JSON-RPC API invocation (excluding Auth stuff)
 class BetfairInvocation {
     static setSessionKey(sessionKey) {
@@ -53,7 +49,7 @@ class BetfairInvocation {
     }
 
     constructor(api, method, params = {}, isEmulated = false) {
-        if (api !== "accounts" && api !== "betting" && api != "heartbeat" && api != "scores") {
+        if (api !== "accounts" && api !== "betting" && api !== "heartbeat" && api !== "scores") {
             throw new Error('Bad api parameter:' + api);
         }
 
@@ -77,64 +73,7 @@ class BetfairInvocation {
         this.response = null;
     }
 
-    _executeEmulatedCall(cb = () => { }) {
-        let result = {};
-        let emulator = BetfairInvocation.emulator;
-
-        let sendResult = (method, error, result, cb = () => { }) => {
-            // log call
-            if (BetfairInvocation.logger) {
-                BetfairInvocation.logger.info(method, {
-                    api: this.api,
-                    duration: result.duration,
-                    isSuccess: !(result.responseBody && result.responseBody.error),
-                    length: 'n/a',
-                    httpStatusCode: 'n/a'
-                });
-            }
-
-            // report result
-            cb(null, {
-                request: this.request,
-                response: { error: error, result: result }, // TODO place response
-                result: result,
-                error: error,
-                duration: 0
-            });
-        };
-
-        switch (this.method) {
-            case 'placeOrders':
-                emulator.placeOrders(this.request.params, (err, result) => {
-                    sendResult('placeOrders', err, result, cb);
-                });
-                break;
-            case 'replaceOrders':
-                sendResult('replaceOrders', { error: 'not supported' }, cb);
-                break;
-            case 'updateOrders':
-                sendResult('updateOrders', { error: 'not supported' }, cb);
-                break;
-            case 'cancelOrders':
-                emulator.cancelOrders(this.request.params, (err, result) => {
-                    sendResult('cancelOrders', err, result, cb);
-                });
-                break;
-        }
-    }
-
     execute(cb = () => { }) {
-        // if emulator is enabled, redirect orders methods there
-        let emulator = BetfairInvocation.emulator;
-        if (emulator && _.indexOf(ORDER_METHODS, this.method) >= 0) {
-            let marketId = this.params.marketId;
-            let isEmulatedMarket = emulator.isEmulatedMarket(marketId);
-            if (isEmulatedMarket) {
-                this._executeEmulatedCall(cb);
-                return;
-            }
-        }
-
         let callback = _.once(cb);
         this.jsonRequestBody = JSON.stringify(this.request);
         var httpOptions = {
@@ -150,11 +89,6 @@ class BetfairInvocation {
             if (err) {
                 callback(err);
                 return;
-            }
-            // provide prices to emulator, updates bets status
-            if (emulator && this.method == 'listMarketBook') {
-                let res = result.responseBody && result.responseBody.result;
-                emulator.onListMarketBook(this.params, res);
             }
             // log invocation
             if (BetfairInvocation.logger) {

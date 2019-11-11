@@ -1,8 +1,5 @@
-'use strict';
-
 let HttpRequest = require('./http_request.js');
 let querystring = require('querystring');
-let cookieJar = require('./cookie_jar.js');
 
 const AUTH_URLS = {
     interactiveLogin: 'https://identitysso.betfair.com:443/api/login',
@@ -12,9 +9,6 @@ const AUTH_URLS = {
 };
 
 class BetfairAuth {
-    constructor() {
-    }
-
     startInvocationLog(logger) {
         this.logger = logger;
     }
@@ -82,7 +76,6 @@ class BetfairAuth {
             url: 'https://www.betfair.com/'
         });
 
-        // {'X-Authentication':sessionKey}
         let options = {
             headers: {
                 "accept": "application/json",
@@ -116,7 +109,6 @@ class BetfairAuth {
             url: 'https://www.betfair.com/'
         });
 
-        // {'X-Authentication':sessionKey}
         let options = {
             headers: {
                 "accept": "application/json",
