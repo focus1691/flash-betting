@@ -1,10 +1,8 @@
-'use strict';
 var Promise = require("bluebird");
 
 let _ = require('lodash');
 let auth = require('./auth.js');
 let BetfairInvocation = require('./invocation.js');
-let Logger = require('./logger.js');
 
 // ************************************************************************
 // * Betting API - https://api.betfair.com:443/exchange/betting/json-rpc/v1/
