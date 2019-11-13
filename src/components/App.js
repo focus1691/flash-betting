@@ -466,7 +466,7 @@ const App = props => {
               <title>
                 {`${new Date(
                   props.market.marketStartTime
-                ).toLocaleTimeString()} ${props.market.marketName}  ${
+                ).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} ${props.market.marketName}  ${
                   props.market.event.venue || ""
                   }`}
               </title>

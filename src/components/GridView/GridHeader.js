@@ -48,7 +48,7 @@ export default ({
             {marketOpen
               ? `${new Date(
                 market.marketStartTime
-              ).toLocaleTimeString()} ${market.marketName} ${
+              ).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} ${market.marketName} ${
               market.event.venue || ""
               }`
               : "No Event Selected"}
