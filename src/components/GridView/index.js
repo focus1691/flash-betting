@@ -19,6 +19,7 @@ import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { isValidPrice } from "../../utils/Bets/Validator";
 import SuspendedWarning from "./SuspendedWarning";
+import { sortLadder } from "../../utils/ladder/SortLadder";
 
 const Grid = props => {
 	
@@ -151,7 +152,7 @@ const Grid = props => {
 	};
 
 	const renderRunners = () => {
-		return Object.keys(props.ladder).map(key => {
+		return sortLadder(props.ladder).map(key => {
 			const { atb, atl, batb, batl, ltp, tv, bg } = DeconstructLadder(
 				props.ladder[key]
 			);

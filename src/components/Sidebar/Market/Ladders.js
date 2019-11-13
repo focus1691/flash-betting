@@ -49,9 +49,8 @@ const Ladder = props => {
 
   const renderRunners = () => {
     // values of ladder order are the keys of props.ladder
-    const sortedIndices = sortLadder(props.ladder);
 
-    return sortedIndices.map(value => {
+    return sortLadder(props.ladder).map(value => {
       
       const { atb, atl, ltp, color } = deconstructLadder(props.ladder[value]);
 
