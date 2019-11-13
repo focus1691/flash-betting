@@ -345,11 +345,11 @@ const App = props => {
 
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
-      const sortedLadderIndices = sortLadder(ladders);
+      var sortedLadderIndices = sortLadder(ladders);
       props.onSortLadder(sortedLadderIndices);
       props.onReceiverLadders(ladders);
       props.onReceiveNonRunners(nonRunners);
-      props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length));
+      props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
       
       try {
         const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
