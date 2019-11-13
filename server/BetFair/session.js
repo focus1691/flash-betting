@@ -140,6 +140,10 @@ class BetfairSession {
                 throw('params should be object');
             }
             let invocation = new BetfairInvocation(api, methodName, params);
+            if (methodName === 'token') {
+                invocation.setIsVendor(true);
+            }
+
             invocation.execute((err, result) => {
                 if (err) {
                     callback(err);

@@ -40,6 +40,10 @@ class BetfairInvocation {
         BetfairInvocation.accessToken = accessToken;
     }
 
+    setIsVendor(isVendor) {
+        this.isVendor = isVendor;
+    }
+
     static startInvocationLog(logger) {
         BetfairInvocation.logger = logger;
     }
@@ -84,16 +88,19 @@ class BetfairInvocation {
         var httpOptions = {
             headers: {
                 'X-Application': this.applicationKey,
-                // 'X-Authentication': this.sessionKey,
-                'Authorization': `BEARER ${this.accessToken}`,
                 'Content-Type': 'application/json',
                 'Content-Length': this.jsonRequestBody.length,
                 'Connection': 'keep-alive'
             }
         };
+        if (this.isVendor) {
+            httpOptions.headers['X-Authentication'] = this.sessionKey;
+        } else {
+            httpOptions.headers['Authorization'] = `BEARER ${this.accessToken}`;
+        }
+
         HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
             if (err) {
-                console.log(err);
                 callback(err);
                 return;
             }
