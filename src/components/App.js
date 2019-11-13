@@ -236,6 +236,10 @@ const App = props => {
       if (data.marketDefinition) {
         props.onMarketStatusChange(data.marketDefinition.status);
         props.setInPlay(data.marketDefinition.inPlay);
+
+        if (data.marketDefinition.status === "CLOSED") {
+          window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
+        }
       }
 
       var ladders = Object.assign({}, props.ladders);
@@ -248,10 +252,6 @@ const App = props => {
       let newStopEntryList = Object.assign({}, props.stopEntryList);
 
       let stopLossOrdersToRemove = [];
-
-      if (data.marketDefinition.status === "CLOSED") {
-        window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
-      }
 
       await Promise.all(data.rc.map(async rc => {
         
@@ -310,10 +310,6 @@ const App = props => {
       }));
 
       if (data.marketDefinition) {
-        // Event status? In Play?
-        props.onMarketStatusChange(data.marketDefinition.status);
-        props.setInPlay(data.marketDefinition.inPlay);
-
         data.marketDefinition.runners.map(runner => {
           if (runner.status === "REMOVED" && runner.id in ladders) {
             nonRunners[runner.id] = ladders[runner.id];
