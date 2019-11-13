@@ -4,6 +4,7 @@ import { updateExcludedLadders } from "../../../actions/market";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
+import { sortLadder } from "../../../utils/ladder/SortLadder";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -48,7 +49,9 @@ const Ladder = props => {
 
   const renderRunners = () => {
     // values of ladder order are the keys of props.ladder
-    return Object.values(props.ladderOrder).map(value => {
+    const sortedIndices = sortLadder(props.ladder);
+
+    return sortedIndices.map(value => {
       
       const { atb, atl, ltp, color } = deconstructLadder(props.ladder[value]);
 
