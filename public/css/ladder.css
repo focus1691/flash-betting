@@ -56,6 +56,12 @@
 	cursor: move;
 }
 
+.contender-details {
+	font-size: small;
+	font-weight: bold;
+	padding: 0 5px;
+}
+
 .contender-image {
 	vertical-align: middle;
 	cursor: url('../icons/faq.png'), auto;

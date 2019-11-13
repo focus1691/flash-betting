@@ -26,7 +26,7 @@ class BetFairStreamAPI {
 			this.client.write(subscription);
 
 			this.client.on('data', data => {
-				// console.log('Received: ' + data);
+				console.log('Received: ' + data);
 
 				// Read the data into Buffer
 				const bufferedData = Buffer.from(data);
