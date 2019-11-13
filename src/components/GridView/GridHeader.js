@@ -1,7 +1,7 @@
 import React from "react";
 import { renderRaceStatus } from "./RaceStatus";
 import { sumMatchedBets } from "../../utils/PriceCalculator";
-import { formatCurrency } from "./../../utils/NumberFormat";
+import { formatTotalMatched } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
 import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
 import { openLiveStream } from "../../utils/Video";
@@ -81,7 +81,7 @@ export default ({
           {renderRaceStatus(marketOpen, status, inPlay)}
           <span id="matched-bets">
             {marketOpen
-              ? `Matched: ${formatCurrency(
+              ? `Matched: ${formatTotalMatched(
                 country.localeCode,
                 country.currencyCode,
                 sumMatchedBets(ladder)

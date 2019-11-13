@@ -5,6 +5,18 @@ const formatCurrency = (localeCode, currencyCode, number) => {
       : "gb-GB",
     {
       style: "currency",
+      currency: currencyCode || "GBP"
+    }
+  ).format(number);
+};
+
+const formatTotalMatched = (localeCode, currencyCode, number) => {
+  return new Intl.NumberFormat(
+    localeCode
+      ? `${localeCode}-${localeCode.toUpperCase()}`
+      : "gb-GB",
+    {
+      style: "currency",
       currency: currencyCode || "GBP",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
@@ -12,4 +24,4 @@ const formatCurrency = (localeCode, currencyCode, number) => {
   ).format(number);
 };
 
-export { formatCurrency };
+export { formatCurrency, formatTotalMatched };
