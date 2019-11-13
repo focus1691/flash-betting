@@ -4,7 +4,6 @@ import { updateExcludedLadders } from "../../../actions/market";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import { sortLadder } from "../../../utils/ladder/SortLadder";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -48,12 +47,8 @@ const Ladder = props => {
   };
 
   const renderRunners = () => {
-    // values of ladder order are the keys of props.ladder
-
-    return sortLadder(props.ladder).map(value => {
-      
+    return props.sortedLadder.map(value => {
       const { atb, atl, ltp, color } = deconstructLadder(props.ladder[value]);
-
       return (
         <tr>
           <td>{props.runners[value].runnerName}</td>
@@ -61,8 +56,8 @@ const Ladder = props => {
           <td style={{ background: color }}>{ltp}</td>
           <td>{atb}</td>
           <td>
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={props.excludedLadders.indexOf(value) === -1} // false automatically omits attribute
               onClick={() => {
                 if (props.excludedLadders.indexOf(value) === -1) {
@@ -85,10 +80,10 @@ const Ladder = props => {
         </Typography>
       </AppBar>
       {props.marketOpen ?
-      <table id="menu-ladder">
-        <tbody>{renderRunners()}</tbody>
-      </table>
-      : null}
+        <table id="menu-ladder">
+          <tbody>{renderRunners()}</tbody>
+        </table>
+        : null}
     </div>
   );
 };
@@ -98,6 +93,7 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
     ladder: state.market.ladder,
+    sortedLadder: state.market.sortedLadder,
     runners: state.market.runners,
     excludedLadders: state.market.excludedLadders,
     ladderOrder: state.market.ladderOrder,

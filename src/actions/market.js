@@ -33,6 +33,13 @@ export const loadLadder = ladder => {
   };
 };
 
+export const setSortedLadder = sortedLadder => {
+  return {
+    type: "SET_SORTED_LADDER",
+    payload: sortedLadder
+  };
+};
+
 export const loadRunners = runners => {
   return {
     type: "LOAD_RUNNERS",

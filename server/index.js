@@ -174,7 +174,7 @@ app.get("/api/logout", (request, response) => {
 	betfair.logout().then(res => response.json(res)).bind(this)
 		.catch(err => response.json({ error: err }));
 });
-
+//
 app.get("/api/get-account-balance", (request, response) => {
 	betfair.getAccountFunds(
 		{

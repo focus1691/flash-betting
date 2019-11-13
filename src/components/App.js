@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
-import * as actions2 from "../actions/market";
+import * as marketActions from "../actions/market";
 import { updateStopLossList } from '../actions/stopLoss'
 import { updateTickOffsetList } from "../actions/tickOffset";
 import { updateStopEntryList } from "../actions/stopEntry";
@@ -28,6 +28,7 @@ import Draggable from "react-draggable";
 import DraggableGraph from "./DraggableGraph";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
+import { sortLadder } from "../utils/ladder/SortLadder";
 
 const App = props => {
   const [cookies] = useCookies(['sessionKey', 'username']);
@@ -348,12 +349,11 @@ const App = props => {
 
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
-
+      const sortedLadderIndices = sortLadder(ladders);
+      props.onSortLadder(sortedLadderIndices);
       props.onReceiverLadders(ladders);
       props.onReceiveNonRunners(nonRunners);
-      props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length))
-
-
+      props.onChangeExcludedLadders(Object.keys(ladders).slice(6, Object.keys(ladders).length));
       
       try {
         const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
@@ -512,6 +512,7 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
     ladders: state.market.ladder,
+    sortedLadded: state.market.sortedLadder,
     nonRunners: state.market.nonRunners,
     premiumMember: state.settings.premiumMember,
     premiumPopup: state.settings.premiumPopupOpen,
@@ -543,14 +544,15 @@ const mapDispatchToProps = dispatch => {
     onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
     onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
     onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
-    onReceiveMarket: market => dispatch(actions2.loadMarket(market)),
-    onSelectRunner: runner => dispatch(actions2.setRunner(runner)),
-    onUpdateRunners: runners => dispatch(actions2.loadRunners(runners)),
-    onReceiverLadders: ladders => dispatch(actions2.loadLadder(ladders)),
-    onReceiveNonRunners: nonRunners => dispatch(actions2.loadNonRunners(nonRunners)),
-    onChangeExcludedLadders: excludedLadders => dispatch(actions2.updateExcludedLadders(excludedLadders)),
-    onMarketStatusChange: isOpen => dispatch(actions2.setMarketStatus(isOpen)),
-    setInPlay: inPlay => dispatch(actions2.setInPlay(inPlay)),
+    onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
+    onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
+    onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
+    onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
+    onSortLadder: sortedLadder => dispatch(marketActions.setSortedLadder(sortedLadder)),
+    onReceiveNonRunners: nonRunners => dispatch(marketActions.loadNonRunners(nonRunners)),
+    onChangeExcludedLadders: excludedLadders => dispatch(marketActions.updateExcludedLadders(excludedLadders)),
+    onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
+    setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
@@ -560,7 +562,7 @@ const mapDispatchToProps = dispatch => {
     onPlaceOrder: order => dispatch(placeOrder(order)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
     onChangeOrders: orders => dispatch(updateOrders(orders)),
-    onSetMarketVolume: volume => dispatch(actions2.setMarketVolume(volume))
+    onSetMarketVolume: volume => dispatch(marketActions.setMarketVolume(volume))
   };
 };
 

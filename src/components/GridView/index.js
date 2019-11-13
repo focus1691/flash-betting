@@ -19,10 +19,9 @@ import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { isValidPrice } from "../../utils/Bets/Validator";
 import SuspendedWarning from "./SuspendedWarning";
-import { sortLadder } from "../../utils/ladder/SortLadder";
 
 const Grid = props => {
-	
+
 	const [rowHovered, setRowHovered] = useState(null);
 	const [activeOrder, setActiveOrder] = useState(null);
 	const [ordersVisible, setOrdersVisible] = useState(0);
@@ -48,7 +47,7 @@ const Grid = props => {
 	}
 
 	const toggleBackAndLay = (order) => e => {
-		props.onToggleBackAndLay({id: order.id});
+		props.onToggleBackAndLay({ id: order.id });
 		setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
 	};
 
@@ -84,7 +83,7 @@ const Grid = props => {
 
 	const updateOrderPrice = data => e => {
 		data.price = parseInt(e.target.value);
-		
+
 		if (isValidPrice(data.price)) {
 			props.onUpdateOrderPrice(data);
 		}
@@ -152,7 +151,7 @@ const Grid = props => {
 	};
 
 	const renderRunners = () => {
-		return sortLadder(props.ladder).map(key => {
+		return props.sortedLadder.map(key => {
 			const { atb, atl, batb, batl, ltp, tv, bg } = DeconstructLadder(
 				props.ladder[key]
 			);
@@ -177,7 +176,7 @@ const Grid = props => {
 
 			const profitArray = Object.values(props.bets.matched).filter(bet => bet.selectionId == props.runners[key].selectionId).map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
 			const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
-            
+
 			return (
 				<React.Fragment>
 					<tr>
@@ -210,7 +209,7 @@ const Grid = props => {
 											:
 											{ val: "", color: "" }
 							}
-							hedge = {profit}
+							hedge={profit}
 							bg={bg}
 						/>
 						{renderRow(atb, batb, key, 0).reverse()}
@@ -226,12 +225,12 @@ const Grid = props => {
 						updateOrderSize={updateOrderSize}
 						updateOrderPrice={updateOrderPrice}
 						toggleOrderRowVisibility={toggleOrderRowVisibility}
-						onPlaceOrder = {props.onPlaceOrder}
-						market = {props.market}
+						onPlaceOrder={props.onPlaceOrder}
+						market={props.market}
 						bets={props.bets}
-						price = {props.market.runners[key] ? props.market.runners[key].order.price : 0}
-						side = {activeOrder && activeOrder.side == 0 ? "BACK" : "LAY"}
-						size = {activeOrder ? activeOrder.stake : 0}
+						price={props.market.runners[key] ? props.market.runners[key].order.price : 0}
+						side={activeOrder && activeOrder.side == 0 ? "BACK" : "LAY"}
+						size={activeOrder ? activeOrder.stake : 0}
 					/>
 				</React.Fragment>
 			);
@@ -260,7 +259,7 @@ const Grid = props => {
 	});
 
 	const marketCashout = getMarketCashout(props.market.marketId, props.bets, props.ladder)
-	
+
 	return (
 		<div id="grid-container">
 			<table
@@ -290,7 +289,7 @@ const Grid = props => {
 						ltpList={ltpSelectionIdObject}
 						onPlaceOrder={props.onPlaceOrder}
 						marketCashout={marketCashout}
-					/>	
+					/>
 					{props.marketOpen
 						? props.marketStatus === "SUSPENDED"
 							? renderSuspended()
@@ -315,6 +314,7 @@ const mapStateToProps = state => {
 		market: state.market.currentMarket,
 		selection: state.market.runnerSelection,
 		ladder: state.market.ladder,
+		sortedLadder: state.market.sortedLadder,
 		runners: state.market.runners,
 		nonRunners: state.market.nonRunners,
 		stakeBtns: state.settings.stakeBtns,

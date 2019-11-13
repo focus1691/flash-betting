@@ -8,6 +8,7 @@ const initialState = {
   nonRunners: {},
   runners: {},
   ladder: {},
+  sortedLadder: [],
   excludedLadders: [], 
   ladderOrder: {},
   oneClickOn: false,
@@ -27,6 +28,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, currentMarketVolume: action.payload };
     case "LOAD_LADDER":
       return { ...state, marketOpen: true, ladder: action.payload };
+    case "SET_SORTED_LADDER":
+      return { ...state, sortedLadder: action.payload };
     case "LOAD_NON_RUNNERS":
       return { ...state, nonRunners: action.payload };
     case "LOAD_RUNNERS":
