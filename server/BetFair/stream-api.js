@@ -5,14 +5,17 @@ const tls = require('tls');
 
 class BetFairStreamAPI {
 	constructor (openSocket) {
-		this.connected = false;
-		this.authenticated = false;
+		this.awaitingAuthentication = false;
 		this.client = null;
 		this.openSocket = openSocket;
 		this.bufferedStr = '';
 		this.chunks = [];
+		this.subscriptions = [];
 	}
-	authenticate (sessionKey, subscription) {
+	connect() {
+
+	}
+	authenticate (sessionKey) {
 
 		let options = {
 			host: 'stream-api.betfair.com',
@@ -21,18 +24,18 @@ class BetFairStreamAPI {
 		this.client = tls.connect(options, () => {
 			console.log("Connected");
 
-			this.connected = true;
-
 			this.client.setEncoding('utf8');
 
-			this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
+			console.log('connecting: ' + this.client.connecting);
+			console.log('authorized: ' + this.client.authorized);
+			// console.log(this.client);
 
-			if (subscription) {
-				this.client.write(subscription);	
+			if (this.client.authorized) {
+				this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 			}
 
 			this.client.on('data', data => {
-				console.log('Received: ' + data);
+				// console.log('Received: ' + data);
 
 				// Read the data into Buffer
 				const bufferedData = Buffer.from(data);
@@ -46,17 +49,24 @@ class BetFairStreamAPI {
 
 					// Connection status
 					if (result.op === 'status') {
-						this.authenticated = result.connectionClosed
+						if (result.connectionClosed === false) {
+							for (var i = 0; i < this.subscriptions.length; i++) {
+								this.client.write(this.subscriptions[i]);
+							}
+						}
+						this.subscriptions = [];
 						this.chunks = [];
 					}
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
+						console.log('mcm');
 						this.openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];
 					}
 					// Order Change Message Data Found
 					else if (result.op === 'ocm') {
+						console.log('ocm');
 						this.openSocket.emit('ocm', result);
 						this.chunks = [];
 					} else {
@@ -73,7 +83,6 @@ class BetFairStreamAPI {
 
 			this.client.on('close', () => {
 				console.log('Connection closed');
-				this.connected = false;
 				this.authenticated = false;
 			});
 
@@ -82,11 +91,12 @@ class BetFairStreamAPI {
 			});
 		});
 	}
-	makeSubscription(accessToken, subscription) {
-		if (this.connected && this.authenticated) {
+	makeSubscription(subscription) {
+		if (!this.client.connecting && this.client.authorized) {
 			this.client.write(subscription);
-		} else {
-			this.authenticate(accessToken, subscription);
+		}
+		else {
+			this.subscriptions.push(subscription);
 		}
 	}
 }
