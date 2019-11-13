@@ -5,12 +5,14 @@ const tls = require('tls');
 
 class BetFairStreamAPI {
 	constructor (openSocket) {
+		this.connected = false;
+		this.authenticated = false;
 		this.client = null;
 		this.openSocket = openSocket;
 		this.bufferedStr = '';
 		this.chunks = [];
 	}
-	authenticate (subscription, sessionKey) {
+	authenticate (sessionKey, subscription) {
 
 		let options = {
 			host: 'stream-api.betfair.com',
@@ -19,11 +21,15 @@ class BetFairStreamAPI {
 		this.client = tls.connect(options, () => {
 			console.log("Connected");
 
+			this.connected = true;
+
 			this.client.setEncoding('utf8');
 
 			this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 
-			this.client.write(subscription);
+			if (subscription) {
+				this.client.write(subscription);	
+			}
 
 			this.client.on('data', data => {
 				console.log('Received: ' + data);
@@ -37,6 +43,12 @@ class BetFairStreamAPI {
 				// Parse the data String into JSON Object
 				try {
 					const result = JSON.parse(this.chunks.join(""));
+
+					// Connection status
+					if (result.op === 'status') {
+						this.authenticated = result.connectionClosed
+						this.chunks = [];
+					}
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
@@ -56,17 +68,26 @@ class BetFairStreamAPI {
 			});
 
 			this.client.on('end', data => {
-				console.log(data);
+				console.log('end: ' + data);
 			});
 
 			this.client.on('close', () => {
 				console.log('Connection closed');
+				this.connected = false;
+				this.authenticated = false;
 			});
 
 			this.client.on('error', err => {
 				console.log('Error:' + err);
 			});
 		});
+	}
+	makeSubscription(accessToken, subscription) {
+		if (this.connected && this.authenticated) {
+			this.client.write(subscription);
+		} else {
+			this.authenticate(accessToken, subscription);
+		}
 	}
 }
 

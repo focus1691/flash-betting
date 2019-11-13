@@ -590,13 +590,17 @@ io.on("connection", async client => {
 	// Subscribe to market
 	client.on("market-subscription", async data => {
 		const accessToken = await database.getToken(betfair.email);
-		const subscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
-		exchangeStream.authenticate(subscription, accessToken);
+
+		const marketSubscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
+
+		exchangeStream.makeSubscription(accessToken, marketSubscription);
 	});
 	// Subscribe to orders
 	client.on("order-subscription", async data => {
 		const accessToken = await database.getToken(betfair.email);
-		const subscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
-		exchangeStream.authenticate(subscription, accessToken);
+
+		const orderSubscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
+		
+		exchangeStream.makeSubscription(accessToken, orderSubscription);
 	});
 });
