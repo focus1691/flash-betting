@@ -73,7 +73,7 @@ const settingsSchema = mongoose.Schema({
             default: true
         }
     },
-    trainingLadderAutoCenter: true,
+    trainingLadderAutoCenter: false,
     ladderUnmatched: {
         type: String,
         default: "hedged"
