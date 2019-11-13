@@ -172,27 +172,15 @@ app.get("/api/request-access-token", async (request, response) => {
 app.get("/api/login", (request, response) => {
 	betfair.login(request.query.user, request.query.pass)
 		.then(res => {
-			response.json({
-				sessionKey: res.sessionKey
-			});
+			response.json({ sessionKey: res.sessionKey });
 			// Check if user exists, if doesn't exist, then create a new user
 			database.setUser(request.query.user, res.sessionKey);
-		}).bind(this)
-		.catch(err =>
-			response.json({
-				error: err
-			}));
+		}).bind(this).catch(err => response.json({ error: err }));
 });
 
 app.get("/api/logout", (request, response) => {
-	betfair.logout()
-		.then(res => {
-			response.json(res);
-		}).bind(this).catch(err =>
-			response.json({
-				error: err
-			})
-		);
+	betfair.logout().then(res => response.json(res)).bind(this)
+		.catch(err => response.json({ error: err }));
 });
 
 app.get("/api/get-account-balance", (request, response) => {
@@ -229,25 +217,29 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 		{
 			filter: {}
 		},
-		(err, res) => {
-			const filteredOrders = res.result.currentOrders = res.result.currentOrders.filter((data, index, order) =>
-				index === order.findIndex((t) => (
+		async (err, res) => {
+			if (!res.result) {
+				response.json({});
+			} else {
+				const filteredOrders = res.result.currentOrders = res.result.currentOrders.filter((data, index, order) =>
+					index === order.findIndex((t) => (
 
-					t.marketId === data.marketId
-				))
-			)
-				.map(order => order.marketId);
-			betfair.listMarketCatalogue(
-				{
-					filter: {
-						marketIds: filteredOrders
+						t.marketId === data.marketId
+					))
+				).map(order => order.marketId);
+				
+				betfair.listMarketCatalogue(
+					{
+						filter: {
+							marketIds: filteredOrders
+						},
+						maxResults: 100
 					},
-					maxResults: 100
-				},
-				(err, res) => {
-					response.json(res.result);
-				}
-			)
+					(err, res) => {
+						response.json(res.result);
+					}
+				);
+			}
 		}
 	);
 });
@@ -606,18 +598,24 @@ server.listen(port, () => console.log(`Server started on port: ${port}`));
 
 io.on("connection", async client => {
 	const exchangeStream = new ExchangeStream(client);
+	const accessToken = await database.getToken(betfair.email);
+	exchangeStream.authenticate(accessToken);
 
 	// Subscribe to market
 	client.on("market-subscription", async data => {
-		const accessToken = await database.getToken(betfair.email);
-		const subscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
-		exchangeStream.authenticate(subscription, accessToken);
+		// const accessToken = await database.getToken(betfair.email);
+
+		const marketSubscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
+
+		exchangeStream.makeSubscription(marketSubscription);
 	});
 	// Subscribe to orders
 	client.on("order-subscription", async data => {
-		const accessToken = await database.getToken(betfair.email);
-		const subscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
-		exchangeStream.authenticate(subscription, accessToken);
+		// const accessToken = await database.getToken(betfair.email);
+
+		const orderSubscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
+
+		exchangeStream.makeSubscription(orderSubscription);
 	});
 });
 

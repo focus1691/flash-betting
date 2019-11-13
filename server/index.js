@@ -230,7 +230,7 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 					(err, res) => {
 						response.json(res.result);
 					}
-				)
+				);
 			}
 		}
 	);
@@ -581,7 +581,7 @@ process.on(
 	})
 );
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3001;
 
 const server = require('http').createServer(app);
 const io = require("socket.io")(server);
