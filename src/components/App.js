@@ -262,7 +262,7 @@ const App = props => {
           const marketId = getQueryVariable("marketId");
 
           // Back and Lay
-          if (props.marketDefinition.marketStatus === "RUNNING") {
+          if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
             const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
             if (adjustedBackOrderArray.length > 0) {
               adjustedBackList[rc.id] = adjustedBackOrderArray;
