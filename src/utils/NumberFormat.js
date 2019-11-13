@@ -5,7 +5,9 @@ const formatCurrency = (localeCode, currencyCode, number) => {
       : "gb-GB",
     {
       style: "currency",
-      currency: currencyCode || "GBP"
+      currency: currencyCode || "GBP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }
   ).format(number);
 };
