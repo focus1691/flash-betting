@@ -209,14 +209,14 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 		{
 			filter: {}
 		},
-		(err, res) => {
-			const filteredOrders = res.result.currentOrders = res.result.currentOrders.filter((data, index, order) =>
+		async (err, res) => {
+			const filteredOrders = res.result.currentOrders = await res.result.currentOrders.filter((data, index, order) =>
 				index === order.findIndex((t) => (
 
 					t.marketId === data.marketId
 				))
-			)
-				.map(order => order.marketId);
+			).map(order => order.marketId);
+
 			betfair.listMarketCatalogue(
 				{
 					filter: {
@@ -225,6 +225,7 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 					maxResults: 100
 				},
 				(err, res) => {
+					console.log(res.result);
 					response.json(res.result);
 				}
 			)
