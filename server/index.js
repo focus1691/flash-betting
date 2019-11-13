@@ -32,30 +32,32 @@ app.use(express.urlencoded({ extended: true }));
 const database = require("./Database/helper");
 const User = require('./Database/models/users');
 
-const path = require('path');
+if (process.env.NODE_ENV === 'production') {
+	const path = require('path');
 
-const publicPath = path.join(__dirname, '../');
-app.use(express.static(path.join(publicPath, 'build')));
-
-app.get('/', (req, res) => {
-	res.sendFile(publicPath + 'build/index.html');
-});
-
-app.get('/dashboard', (req, res) => {
-	res.sendFile(publicPath + 'build/index.html');
-});
-app.get('/getClosedMarketStats', (req, res) => {
-	res.sendFile(publicPath + 'build/index.html');
-});
-app.get('/authentication', (req, res) => {
-	res.sendFile(publicPath + 'build/index.html');
-});
-app.get('/validation', (req, res) => {
-	res.sendFile(publicPath + 'build/index.html');
-});
-app.get('/logout', (req, res) => {
-	res.sendFile(publicPath + 'build/index.html');
-});
+	const publicPath = path.join(__dirname, '../');
+	app.use(express.static(path.join(publicPath, 'build')));
+	
+	app.get('/', (req, res) => {
+		res.sendFile(publicPath + 'build/index.html');
+	});
+	
+	app.get('/dashboard', (req, res) => {
+		res.sendFile(publicPath + 'build/index.html');
+	});
+	app.get('/getClosedMarketStats', (req, res) => {
+		res.sendFile(publicPath + 'build/index.html');
+	});
+	app.get('/authentication', (req, res) => {
+		res.sendFile(publicPath + 'build/index.html');
+	});
+	app.get('/validation', (req, res) => {
+		res.sendFile(publicPath + 'build/index.html');
+	});
+	app.get('/logout', (req, res) => {
+		res.sendFile(publicPath + 'build/index.html');
+	});
+}
 
 app.get("/api/generate-client-token", (request, response) => {
 	gateway.clientToken.generate({}, (err, res) => {
