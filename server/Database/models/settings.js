@@ -3,60 +3,60 @@ const mongoose = require('mongoose');
 const settingsSchema = mongoose.Schema({
     trainingBalance: {
         type: Number,
-        default: false
+        default: true
     },
     sounds: {
         type: Boolean,
-        default: false
+        default: true
     },
     tools: {
         visible: {
             type: Boolean,
-            default: false
+            default: true
         },
         open: {
             type: Boolean,
-            default: false
+            default: true
         }
     },
     unmatchedBets: {
         visible: {
             type: Boolean,
-            default: false
+            default: true
         },
         open: {
             type: Boolean,
-            default: false
+            default: true
         }
     },
     matchedBets: {
         visible: {
             type: Boolean,
-            default: false
+            default: true
         },
         open: {
             type: Boolean,
-            default: false
+            default: true
         }
     },
     graphs: {
         visible: {
             type: Boolean,
-            default: false
+            default: true
         },
         open: {
             type: Boolean,
-            default: false
+            default: true
         }
     },
     marketInfo: {
         visible: {
             type: Boolean,
-            default: false
+            default: true
         },
         open: {
             type: Boolean,
-            default: false
+            default: true
         }
     },
     winMarketsOnly: {
@@ -66,14 +66,14 @@ const settingsSchema = mongoose.Schema({
     rules: {
         visible: {
             type: Boolean,
-            default: false
+            default: true
         },
         open: {
             type: Boolean,
-            default: false
+            default: true
         }
     },
-    trainingLadderAutoCenter: false,
+    trainingLadderAutoCenter: true,
     ladderUnmatched: {
         type: String,
         default: "hedged"
