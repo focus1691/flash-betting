@@ -10,15 +10,15 @@ const OrderRow = props => {
   const matchedBets = Object.values(props.bets.matched).filter(order => parseFloat(order.selectionId) === parseFloat(props.selectionId));
   const allUnmatchedBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, props.bets.unmatched)[props.selectionId]
   const unmatchedBetsArr = allUnmatchedBets ? Object.values(allUnmatchedBets) : []
-  
+
   return (
     <div className={"order-row"}>
       <table>
         <tbody>
-          <td colSpan={3} rowSpan={4} style={{verticalAlign: 'top'}}>
+          <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
             <table className="lay-table">
               <tbody className={unmatchedBetsArr.length > 0 ? "lay-body" : ""}>
-                {unmatchedBetsArr.map(rfs => 
+                {unmatchedBetsArr.map(rfs =>
                   rfs.map(bet => {
 
                     let specialSuffix = "";
@@ -27,11 +27,11 @@ const OrderRow = props => {
                     else if (bet.trailing && !bet.hedged) specialSuffix = "t"
 
                     const suffix = (bet.strategy == "Stop Loss" ? "SL " :
-                    bet.strategy === "Tick Offset" ? "T.O." :
-                    bet.strategy === "Back" ? "B" : 
-                    bet.strategy === "Lay" ? "L" :
-                    bet.strategy === "Stop Entry" ? bet.stopEntryCondition + formatPrice(bet.targetLTP) + "SE" :
-                          calcBackProfit(bet.size, bet.price, bet.side === "BACK" ? 0 : 1)) + specialSuffix
+                      bet.strategy === "Tick Offset" ? "T.O." :
+                        bet.strategy === "Back" ? "B" :
+                          bet.strategy === "Lay" ? "L" :
+                            bet.strategy === "Stop Entry" ? bet.stopEntryCondition + formatPrice(bet.targetLTP) + "SE" :
+                              calcBackProfit(bet.size, bet.price, bet.side === "BACK" ? 0 : 1)) + specialSuffix
 
                     return (
                       <tr
@@ -39,23 +39,31 @@ const OrderRow = props => {
                           backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
                         }}
                       >
-                        <td>{`${bet.size} @ ${bet.price} ${suffix}`}</td>
+                        <td>
+                          <img
+                            className={"cancel-order-btn-2"}
+                            src={`${window.location.origin}/icons/error.png`}
+                            alt="X"
+                          // onClick={cancelOrder(order)}
+                          />
+                          {`${bet.size} @ ${bet.price} ${suffix}`}
+                        </td>
                       </tr>
                     );
                   })
-                  
+
                 )}
               </tbody>
             </table>
           </td>
-          <td colSpan={1} rowSpan={4} style={{verticalAlign: 'top', minHeight: '1.675em'}}>
+          <td colSpan={1} rowSpan={4} style={{ verticalAlign: 'top', minHeight: '1.675em' }}>
             <button>0</button>
             <button onClick={props.onChangePriceType(props.priceType === "STAKE" ? "LIABILITY" : "STAKE")}>
               {props.priceType === "STAKE" ? "S" : "L"}
             </button>
             <button>K</button>
           </td>
-          <td colSpan={3} rowSpan={4} style={{verticalAlign: 'top'}}>
+          <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
             <table className="lay-table">
               <tbody className={matchedBets.length > 0 ? "lay-body" : ""}>
                 {matchedBets.map(bet => {

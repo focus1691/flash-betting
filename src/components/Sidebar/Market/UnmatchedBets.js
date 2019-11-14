@@ -148,9 +148,11 @@ const UnmatchedBets = props => {
                           >
 
                             <button
+                              className={"cancel-order-btn"}
                               style={{ height: "22px", width: "auto" }}
                               onClick={cancelOrder(order)}
                             >
+                              <img src={`${window.location.origin}/icons/error.png`} alt="X"/>
                             </button>
                             <td>{(parseFloat(order.price).toFixed(2))}</td>
                             <td>{order.size}</td>

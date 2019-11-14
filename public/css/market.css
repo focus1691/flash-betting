@@ -137,3 +137,23 @@
 	font-weight: bold;
 	font-size: medium;
 }
+
+.cancel-order-btn {
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	border: none;
+	cursor: pointer;
+	overflow: hidden;
+	outline: none;
+}
+
+.cancel-order-btn img {
+	vertical-align: bottom;
+}
+
+.cancel-order-btn-2 {
+	height: 75%;
+	vertical-align: bottom;
+	float: left;
+	margin-left: 10%;
+}
