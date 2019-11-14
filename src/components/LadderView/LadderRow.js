@@ -41,37 +41,37 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
             }}
           >{ladder[key].backProfit}</div>
           <LadderOrderCell 
-            side = {"BACK"}
+            side = {"LAY"}
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder}
-            isStopLoss = {stopLoss !== undefined && stopLoss.side == "BACK" ? 
-                          stopLoss.units == "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
+            isStopLoss = {stopLoss !== undefined && stopLoss.side === "LAY" ? 
+                          stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
                           findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                            : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
             hedgeSize = {hedgeSize}
-            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: "BACK"})}
-            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: "BACK"})}
+            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: "LAY"})}
+            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: "LAY"})}
           />
           <div style = {{
             background: key == ltp ? 'yellow' : '#BBBBBB'
           }} className = 'td'>{formatPrice(ladder[key].odds)}</div>
           <LadderOrderCell 
-            side = {"LAY"}
+            side = {"BACK"}
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder} 
-            isStopLoss = {stopLoss !== undefined && stopLoss.side == "LAY" ? 
-              stopLoss.units == "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
+            isStopLoss = {stopLoss !== undefined && stopLoss.side == "BACK" ? 
+              stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
               findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
             hedgeSize = {hedgeSize}
-            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: "LAY"})}
-            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: "LAY"})}
+            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: "BACK"})}
+            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: "BACK"})}
           />
           <div 
             className = 'td'

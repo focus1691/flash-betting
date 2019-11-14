@@ -460,6 +460,10 @@ app.get("/api/list-market-book", (request, response) => {
 
 app.post("/api/place-order", (request, response) => {
 
+	console.log(request.body);
+
+	// response.json({});
+
 	betfair.placeOrders(
 		{
 			marketId: request.body.marketId,
@@ -480,7 +484,12 @@ app.post("/api/place-order", (request, response) => {
 			customerStrategyRef: request.body.customerStrategyRef
 		},
 		(err, res) => {
-			response.json(res.result);
+			console.log(res.result);
+			if (res.error) {
+				response.sendStatus(400);
+			} else {
+				response.json(res.result);
+			}
 		}
 	);
 });

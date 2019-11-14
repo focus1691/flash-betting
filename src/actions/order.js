@@ -26,11 +26,11 @@ export const placeOrder = order => {
       body: JSON.stringify(order)
     })
       .then(res => res.json())
-      .then(async json => {
+      .then(async result => {
 
-        if (json.errorCode == "BET_ACTION_ERROR") return;
-        const betId = json.instructionReports[0].betId;
-        
+        if (!result || result.status === "FAILURE") return;
+
+        const betId = result.instructionReports[0].betId;
 
         const adjustedOrder = Object.assign({}, order);
         adjustedOrder.rfs = order.customerStrategyRef;
@@ -39,10 +39,10 @@ export const placeOrder = order => {
         if (betId === undefined) {
           return;
         }
-        
+
         const newUnmatchedBets = Object.assign({}, order.unmatchedBets)
         newUnmatchedBets[betId] = adjustedOrder;
-        
+
         const newBets = {
           unmatched: newUnmatchedBets,
           matched: order.matchedBets == undefined ? {} : order.matchedBets
@@ -60,10 +60,9 @@ export const placeOrder = order => {
           await order.orderCompleteCallBack(betId, newUnmatchedBets);
 
         dispatch(updateOrders(newBets));
-        
+
       });
   };
-
 };
 
 export const cancelOrder = order => {
@@ -86,7 +85,7 @@ export const cancelOrder = order => {
         const newUnmatchedBets = {};
         for (const key in order.unmatchedBets) {
           if (key !== order.betId) {
-            newUnmatchedBets[key] = order.unmatchedBets[key] 
+            newUnmatchedBets[key] = order.unmatchedBets[key]
           }
         }
 
