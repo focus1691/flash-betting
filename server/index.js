@@ -461,39 +461,31 @@ app.get("/api/list-market-book", (request, response) => {
 
 
 app.post("/api/place-order", (request, response) => {
-
-	console.log(request.body);
-
-	// response.json({});
-
-	betfair.placeOrders(
-		{
-			marketId: request.body.marketId,
-			instructions: [
-				{
-					selectionId: request.body.selectionId,
-					handicap: "0",
-					side: request.body.side,
-					orderType: "LIMIT",
-					limitOrder: {
-						size: request.body.size,
-						price: request.body.price,
-						persistenceType: "PERSIST",
-						minFillSize: request.body.minFillSize || 1
-					}
+	betfair.placeOrders({
+		marketId: request.body.marketId,
+		instructions: [
+			{
+				selectionId: request.body.selectionId,
+				handicap: "0",
+				side: request.body.side,
+				orderType: "LIMIT",
+				limitOrder: {
+					size: request.body.size,
+					price: request.body.price,
+					persistenceType: "PERSIST",
+					minFillSize: request.body.minFillSize || 1
 				}
-			],
-			customerStrategyRef: request.body.customerStrategyRef
-		},
-		(err, res) => {
-			console.log(res.result);
-			if (res.error) {
-				response.sendStatus(400);
-			} else {
-				response.json(res.result);
 			}
+		],
+		customerStrategyRef: request.body.customerStrategyRef
+	},
+	(err, res) => {
+		if (res.error) {
+			response.sendStatus(400);
+		} else {
+			response.json(res.result);
 		}
-	);
+	});
 });
 
 app.get("/api/listCurrentOrders", (request, response) => {
