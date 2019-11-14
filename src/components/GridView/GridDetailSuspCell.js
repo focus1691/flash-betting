@@ -10,6 +10,6 @@ export default ({ sportId, name, number, logo, onSelectRunner }) => (
       e.target.onerror = null;
       e.target.src = iconForEvent(parseInt(sportId));
     }} />
-    <span>{`${number}${name}`}</span>
+    <span>{`${number}. ${name}`}</span>
   </td>
 );

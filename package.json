@@ -74,13 +74,12 @@
     }
   },
   "scripts": {
-    "start": "node server/index.js",
+    "start": "cross-env PORT=8080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "react": "cross-env PORT=8080 react-scripts start",
-    "server": "nodemon server/index.js",
-    "dev": "concurrently \"npm run react\" \"npm run server\"",
+    "server": "cross-env NODE_ENV=development nodemon server/index.js",
+    "dev": "cross-env concurrently \"npm run start\" \"npm run server\"",
     "electron-dev": "cross-env BROWSER=none electron .",
     "electron-build": "cross-env npm run build && electron-builder"
   },
