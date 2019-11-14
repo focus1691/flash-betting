@@ -488,7 +488,11 @@ app.post("/api/place-order", (request, response) => {
 			customerStrategyRef: request.body.customerStrategyRef
 		},
 		(err, res) => {
-			response.json(res.result);
+			if (res.error) {
+				response.sendStatus(400);
+			} else {
+				response.json(res.result);
+			}
 		}
 	);
 });
