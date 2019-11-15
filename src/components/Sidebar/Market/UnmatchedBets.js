@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { updateOrders, cancelOrder } from "../../../actions/order";
-import { combineUnmatchedOrders } from '../../../utils/combineUnmatchedOrders'
-import { calcBackProfit } from "../../../utils/PriceCalculator";
+import { combineUnmatchedOrders } from '../../../utils/Bets/CombineUnmatchedOrders'
+import { calcBackProfit } from "../../../utils/Bets/BettingCalculations";
 import { updateStopLossList } from "../../../actions/stopLoss";
 import { updateTickOffsetList } from "../../../actions/tickOffset";
 import { updateStopEntryList } from "../../../actions/stopEntry";

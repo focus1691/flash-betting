@@ -9,8 +9,8 @@ import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
-import { getPLForRunner } from "../../utils/Bets/getProfitAndLoss";
-import { calcBackProfit } from "../../utils/PriceCalculator";
+import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
+import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
                   ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume = [], ladderUnmatched, stake }) => {

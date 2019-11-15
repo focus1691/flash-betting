@@ -1,6 +1,6 @@
 
 
-import { twoDecimalPlaces } from "../PriceCalculator";
+import { twoDecimalPlaces } from "./BettingCalculations";
 import { calcBackBet } from "../TradingStategy/HedingCalculator";
 
 const marketHasBets = (marketId, bets) => {

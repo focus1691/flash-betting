@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import { useCookies } from 'react-cookie';
-import getQueryVariable from "../utils/GetQueryVariable";
+import getQueryVariable from "../utils/market/GetQueryVariable";
 import MarketSettlement from "./ClosedMarketView/MarketSettlement";
 import ClosedMarketReport from './ClosedMarketView/ClosedMarketReport'
 import BetsPlaced from "./ClosedMarketView/BetsPlaced";

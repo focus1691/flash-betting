@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
-import { iconForEvent } from "../../utils/EventIcons";
+import { iconForEvent } from "../../utils/Market/EventIcons";
 import { placeOrder } from "../../actions/order";
-import { calcBackProfit } from "../../utils/PriceCalculator";
+import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 import { isHedgingOnSelectionAvailable } from "../../utils/TradingStategy/HedingCalculator";
 import { selectionHasBets } from "../../utils/Bets/SelectionHasBets";
 import crypto from 'crypto'

@@ -1,6 +1,6 @@
 
-import { twoDecimalPlaces } from "../PriceCalculator";
-import { getOppositeSide } from "../Bets/getOppositeSide";
+import { twoDecimalPlaces } from "../Bets/BettingCalculations";
+import { getOppositeSide } from "../Bets/GetOppositeSide";
 
 /**
  * This function is used to calculate liability of a bet.

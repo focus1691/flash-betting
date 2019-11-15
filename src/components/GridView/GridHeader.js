@@ -1,10 +1,10 @@
 import React from "react";
 import { renderRaceStatus } from "./RaceStatus";
-import { sumMatchedBets } from "../../utils/PriceCalculator";
+import { sumMatchedBets } from "../../utils/Bets/BettingCalculations";
 import { formatTotalMatched } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
 import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
-import { openLiveStream } from "../../utils/Video";
+import { openLiveStream } from "../../utils/Market/LiveStream";
 import crypto from 'crypto'
 
 export default ({

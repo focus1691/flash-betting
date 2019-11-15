@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { changePriceType } from '../../actions/market'
-import { combineUnmatchedOrders } from "../../utils/combineUnmatchedOrders";
+import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { calcBackProfit } from "../../utils/PriceCalculator";
+import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 
 const OrderRow = props => {
 

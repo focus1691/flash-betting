@@ -1,4 +1,4 @@
-import { getPLForRunner } from "../utils/Bets/getProfitAndLoss";
+import { getPLForRunner } from "../utils/Bets/GetProfitAndLoss";
 
 describe('Profit and Loss should add back/lay bets, and return value', () => {
     const bets = {};

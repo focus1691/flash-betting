@@ -1,5 +1,5 @@
 import React from "react";
-import { iconForEvent } from "../../utils/EventIcons";
+import { iconForEvent } from "../../utils/Market/EventIcons";
 import { calcBackBet } from "../../utils/TradingStategy/HedingCalculator";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 

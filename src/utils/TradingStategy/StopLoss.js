@@ -1,4 +1,4 @@
-import { calcPercentDifference } from "../PriceCalculator";
+import { calcPercentDifference } from "../Bets/BettingCalculations";
 import { ALL_PRICES } from "../ladder/CreateFullLadder";
 
 /**

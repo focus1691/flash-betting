@@ -1,6 +1,6 @@
 
 
-import { twoDecimalPlaces } from "../PriceCalculator";
+import { twoDecimalPlaces } from "../Bets/BettingCalculations";
 import { calcHedgedPL2 } from "../TradingStategy/HedingCalculator";
 
 const getMarketCashout = (marketId, bets, ladder) => {

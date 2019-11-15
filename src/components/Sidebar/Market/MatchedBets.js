@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { calcBackProfit } from "../../../utils/PriceCalculator";
+import { calcBackProfit } from "../../../utils/Bets/BettingCalculations";
 
 const MatchedBets = props => {
 

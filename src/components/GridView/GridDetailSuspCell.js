@@ -1,5 +1,5 @@
 import React from "react";
-import { iconForEvent } from "../../utils/EventIcons";
+import { iconForEvent } from "../../utils/Market/EventIcons";
 
 export default ({ sportId, name, number, logo, onSelectRunner }) => (
   <td

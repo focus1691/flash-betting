@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import * as actions from "../actions/account";
-import getQueryVariable from "../utils/GetQueryVariable";
+import getQueryVariable from "../utils/Market/GetQueryVariable";
 import { useCookies } from 'react-cookie';
 
 const OAuthRedirect = props => {
