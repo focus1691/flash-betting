@@ -91,7 +91,7 @@ export const cancelOrder = order => {
 
         const newBets = {
           unmatched: newUnmatchedBets,
-          matched: order.matchedBets == undefined ? {} : order.matchedBets
+          matched: order.matchedBets ? order.matchedBets : {}
         }
 
         dispatch(updateOrders(newBets));

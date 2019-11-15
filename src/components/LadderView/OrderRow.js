@@ -44,7 +44,16 @@ const OrderRow = props => {
                             className={"cancel-order-btn-2"}
                             src={`${window.location.origin}/icons/error.png`}
                             alt="X"
-                          // onClick={cancelOrder(order)}
+                            onClick={
+                              // cancel order
+                              props.onCancelOrder({
+                                marketId: bet.marketId,
+                                betId: bet.betId,
+                                sizeReduction: null,
+                                matchedBets: props.bets.matched,
+                                unmatchedBets: props.bets.unmatched
+                              })
+                            }
                           />
                           {`${bet.size} @ ${bet.price} ${suffix}`}
                         </td>
