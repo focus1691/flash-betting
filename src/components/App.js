@@ -128,11 +128,6 @@ const App = props => {
             const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
             const currentOrdersObject = {};
             currentOrders.map(item => {
-
-              if (item.sizeMatched === 0) {
-                console.log(JSON.stringify(item, null, 2));
-              }
-
               currentOrdersObject[item.betId] = item;
               currentOrdersObject[item.betId].price = item.averagePriceMatched;
             })

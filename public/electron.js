@@ -202,12 +202,15 @@ app.get("/api/get-account-details", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
-			response.json({
-				name: res.result.firstName,
-				countryCode: res.result.countryCode,
-				currencyCode: res.result.currencyCode,
-				localeCode: res.result.localeCode
-			});
+			if (err) response.sendStatus(400).json();
+			else {
+				response.json({
+					name: res.result.firstName,
+					countryCode: res.result.countryCode,
+					currencyCode: res.result.currencyCode,
+					localeCode: res.result.localeCode
+				});
+			}
 		}
 	);
 });
@@ -293,7 +296,8 @@ app.get("/api/get-all-sports", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
-			response.json(res.result);
+			if (res.error) response.sendStatus(400).json();
+			else response.json(res.result);
 		}
 	);
 });

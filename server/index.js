@@ -37,11 +37,11 @@ if (process.env.NODE_ENV === 'production') {
 
 	const publicPath = path.join(__dirname, '../');
 	app.use(express.static(path.join(publicPath, 'build')));
-	
+
 	app.get('/', (req, res) => {
 		res.sendFile(publicPath + 'build/index.html');
 	});
-	
+
 	app.get('/dashboard', (req, res) => {
 		res.sendFile(publicPath + 'build/index.html');
 	});
@@ -195,12 +195,15 @@ app.get("/api/get-account-details", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
-			response.json({
-				name: res.result.firstName,
-				countryCode: res.result.countryCode,
-				currencyCode: res.result.currencyCode,
-				localeCode: res.result.localeCode
-			});
+			if (err) response.sendStatus(400).json();
+			else {
+				response.json({
+					name: res.result.firstName,
+					countryCode: res.result.countryCode,
+					currencyCode: res.result.currencyCode,
+					localeCode: res.result.localeCode
+				});
+			}
 		}
 	);
 });
@@ -286,7 +289,8 @@ app.get("/api/get-all-sports", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
-			response.json(res.result);
+			if (res.error) response.sendStatus(400).json();
+			else response.json(res.result);
 		}
 	);
 });
@@ -478,13 +482,13 @@ app.post("/api/place-order", (request, response) => {
 		],
 		customerStrategyRef: request.body.customerStrategyRef
 	},
-	(err, res) => {
-		if (res.error) {
-			response.sendStatus(400);
-		} else {
-			response.json(res.result);
-		}
-	});
+		(err, res) => {
+			if (res.error) {
+				response.sendStatus(400);
+			} else {
+				response.json(res.result);
+			}
+		});
 });
 
 app.get("/api/listCurrentOrders", (request, response) => {
