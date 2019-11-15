@@ -115,7 +115,6 @@ app.get("/api/get-subscription-status", (request, response) => {
 });
 
 app.get("/api/request-access-token", async (request, response) => {
-
 	const params = {
 		client_id: process.env.APP_ID,
 		grant_type: request.query.tokenType,

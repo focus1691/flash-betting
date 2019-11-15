@@ -117,8 +117,8 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
         <div className = 'td'
             style={
                 isStopLoss ? {background: "yellow"} :
-                cell.backMatched && side === "BACK" ? {background: "#F694AA"} : 
-                cell.layMatched && side === "LAY" ? {background: "#75C2FD"} : null
+                cell.backMatched && side === "BACK" ? {background: "#75C2FD"} : 
+                cell.layMatched && side === "LAY" ? {background: "#F694AA"} : null
             }
             onMouseEnter = {onHover}
             onMouseLeave = {onLeave}

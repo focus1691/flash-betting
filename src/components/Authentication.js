@@ -23,12 +23,17 @@ const Authentication = props => {
                 fetch("/api/request-access-token?tokenType=REFRESH_TOKEN")
                   .then(res => res.json())
                   .then(res => {
-                    setCookie('accessToken', res.accessToken);
-                    setCookie('refreshToken', res.refreshToken);
-                    setCookie('expiresIn', res.expiresIn);
-                    
-                    setTokenGranted(true);
-                    window.location.href = window.location.origin + '/dashboard';
+                    if (res.error) {
+                      props.onLogin(false);
+                      window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
+                    } else {
+                      setCookie('accessToken', res.accessToken);
+                      setCookie('refreshToken', res.refreshToken);
+                      setCookie('expiresIn', res.expiresIn);
+
+                      setTokenGranted(true);
+                      window.location.href = window.location.origin + '/dashboard';
+                    }
                   });
               }
             });
