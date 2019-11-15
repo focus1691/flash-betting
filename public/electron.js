@@ -129,7 +129,7 @@ app.get("/api/request-access-token", async (request, response) => {
 	}
 
 	const token = async () => {
-		vendor.login(process.env.BETFAIR_USER || "traderjosh", process.env.BETFAIR_PASS || "khN.~?%-(aj:@7*p").then(res => {
+		vendor.login(process.env.BETFAIR_USER || "traderjosh", process.env.BETFAIR_PASS || "GdXFsnWvbQn2ujFM").then(res => {
 			if (res.error) {
 				response.status(400).json(res);
 			} else {

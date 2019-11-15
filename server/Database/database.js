@@ -6,7 +6,7 @@ class Database {
     }
 
     _connect() {
-        mongoose.connect(`mongodb+srv://${"admin"}:${"6agNmmoGX4pgB5Ns"}@cluster0-gg0gq.mongodb.net/test?retryWrites=true&w=majority`, {
+        mongoose.connect(`mongodb+srv://${"admin"}:${"Cy9dwtcgVi7EGuuV"}@cluster0-gg0gq.mongodb.net/test?retryWrites=true&w=majority`, {
                 useCreateIndex: true,
                 useNewUrlParser: true
             })
@@ -14,7 +14,7 @@ class Database {
                 console.log('Database connection successful');
             })
             .catch(err => {
-                console.error('Database connection error');
+                console.error('Database connection error: ', err);
             })
     }
 }

@@ -493,7 +493,6 @@ app.get("/api/listCurrentOrders", (request, response) => {
 		marketIds: [request.query.marketId]
 	},
 		(err, res) => {
-			console.log(JSON.stringify(res.result, null, 2));
 			response.json(res.result)
 		})
 });
