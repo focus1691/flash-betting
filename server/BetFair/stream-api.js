@@ -25,11 +25,7 @@ class BetFairStreamAPI {
 			console.log("Connected");
 
 			this.client.setEncoding('utf8');
-
-			console.log('connecting: ' + this.client.connecting);
-			console.log('authorized: ' + this.client.authorized);
-			// console.log(this.client);
-
+			
 			if (this.client.authorized) {
 				this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 			}
@@ -60,21 +56,17 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						console.log('mcm');
 						this.openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];
 					}
 					// Order Change Message Data Found
 					else if (result.op === 'ocm') {
-						console.log('ocm');
 						this.openSocket.emit('ocm', result);
 						this.chunks = [];
 					} else {
 						this.chunks = [];
 					}
-				} catch (e) {
-					// console.log('err', e);
-				}
+				} catch (e) {}
 			});
 
 			this.client.on('end', data => {
