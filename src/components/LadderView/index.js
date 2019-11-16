@@ -5,13 +5,13 @@ import { setRunner, updateLadderOrder } from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
-const Ladders = ({ladderOrder, ladder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
+const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
                   stopLossOffset, stopLossTrailing, onChangeStopLossList, marketVolume, bets, ladderUnmatched, stakeVal}) => {
 
   const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
 
   useEffect(() => {
-    if (Object.keys(ladderOrder).length === 0 && Object.keys(ladder).length > 0) {
+    if (Object.keys(ladderOrder).length === 0 && Object.keys(sortedLadder).length > 0) {
         // initialize the order object
         const newOrderList = {};
 
@@ -107,6 +107,7 @@ const mapStateToProps = state => {
     marketVolume: state.market.currentMarketVolume,
     runners: state.market.runners,
     ladder: state.market.ladder,
+    sortedLadder: state.market.sortedLadder,
     excludedLadders: state.market.excludedLadders,
     ladderOrder: state.market.ladderOrder,
     bets: state.order.bets,
@@ -117,7 +118,7 @@ const mapStateToProps = state => {
     stopLossTrailing: state.stopLoss.trailing,
     stopLossHedged: state.stopLoss.hedged,
     ladderUnmatched: state.settings.ladderUnmatched,
-    stakeVal: state.settings.stake
+    stakeVal: state.settings.stake,
   };
 };
 

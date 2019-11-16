@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { updateExcludedLadders } from "../../../actions/market";
+import { updateExcludedLadders, updateLadderOrder } from "../../../actions/market";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
@@ -60,6 +60,18 @@ const Ladder = props => {
               type="checkbox"
               checked={props.excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
               onClick={() => {
+                if (Object.keys(props.ladderOrder).length > 0) {
+                  // we send it to the end when we select a new ladder
+
+                  const newLadderOrder = Object.values(props.ladderOrder).filter(item => item !== selectionId).concat(selectionId)
+                  // convert it back to an object
+                  const newLadderOrderObject = {};
+                  newLadderOrder.map((item, index) => {
+                    newLadderOrderObject[index] = item;
+                  })
+                  props.onChangeLadderOrder(newLadderOrderObject)
+                }
+
                 if (props.excludedLadders.indexOf(selectionId) === -1) {
                   props.onChangeExcluded(props.excludedLadders.concat(selectionId))
                 } else {
@@ -102,7 +114,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeExcluded: excludedLadders => dispatch(updateExcludedLadders(excludedLadders))
+    onChangeExcluded: excludedLadders => dispatch(updateExcludedLadders(excludedLadders)),
+    onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
   }
 }
 
