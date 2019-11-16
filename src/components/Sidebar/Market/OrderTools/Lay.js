@@ -69,18 +69,18 @@ const Lay = props => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
-          strategy: "Lay",
-          marketId: props.market.marketId, 
-          selectionId: convertedSelection,
-          executionTime: props.executionTime,
-          timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
-          size: props.stake,
-          price: formatPrice(props.price),
-          rfs: referenceStrategyId
+        strategy: "Lay",
+        marketId: props.market.marketId,
+        selectionId: convertedSelection,
+        executionTime: props.executionTime,
+        timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
+        size: props.stake,
+        price: formatPrice(props.price),
+        rfs: referenceStrategyId
       };
 
       // make sure request is processed before saving it
-      
+
       await fetch('/api/save-order', {
         headers: {
           Accept: "application/json",
@@ -94,16 +94,11 @@ const Lay = props => {
         } else {
           newLayList[convertedSelection] = newLayList[convertedSelection].concat(addedOrder)
         }
-      })
-    }))
-
-    
-
+      });
+    }));
     props.onUpdateLayList(newLayList);
-    
   };
 
-  
   return (
     <React.Fragment>
       <List component="nav" aria-label="Device settings">
@@ -173,7 +168,7 @@ const Lay = props => {
           type="number"
           label="stake"
           value={props.stake}
-          inputProps={{ min: "1", style: {fontSize: 10} }}
+          inputProps={{ min: "1", style: { fontSize: 10 } }}
           onChange={e => props.onReceiveStake(e.target.value)}
           margin="normal"
         />
@@ -183,7 +178,7 @@ const Lay = props => {
           type="number"
           label="@"
           value={props.price}
-          inputProps={{ min: "1.01", max: "1000", style: {fontSize: 10} }}
+          inputProps={{ min: "1.01", max: "1000", style: { fontSize: 10 } }}
           onChange={e => props.onReceivePrice(getNextPrice(props.price, e.target.value))}
           margin="normal"
         />
@@ -199,7 +194,7 @@ const Lay = props => {
           type="number"
           label="hh"
           value={props.hours}
-          inputProps={{ min: "0", style: {fontSize: 10} }}
+          inputProps={{ min: "0", style: { fontSize: 10 } }}
           onChange={e => props.onReceiveHours(e.target.value)}
           margin="normal"
         />
@@ -209,7 +204,7 @@ const Lay = props => {
           type="number"
           label="mm"
           value={props.minutes}
-          inputProps={{ min: "0", max: "59", style: {fontSize: 10} }}
+          inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
           onChange={e => props.onReceiveMinutes(e.target.value)}
           margin="normal"
         />
@@ -219,7 +214,7 @@ const Lay = props => {
           type="number"
           label="ss"
           value={props.seconds}
-          inputProps={{ min: "0", max: "59", style: {fontSize: 10} }}
+          inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
           onChange={e => props.onReceiveSeconds(e.target.value)}
           margin="normal"
         />

@@ -445,8 +445,6 @@ app.get("/api/get-market-info", (request, response) => {
 			maxResults: 1
 		},
 		(err, res) => {
-			//
-			console.log(res.error.data);
 			response.json(res);
 		}
 	);

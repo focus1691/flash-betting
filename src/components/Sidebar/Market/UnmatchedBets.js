@@ -207,7 +207,7 @@ const mapDispatchToProps = dispatch => {
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
-    onCancelOrder: order => dispatch(cancelOrder(order)),
+    onCancelOrder: order => dispatch(cancelOrder(order))
   };
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { changePriceType } from '../../actions/market'
+import { changePriceType } from '../../actions/market';
+import { cancelOrder } from "../../actions/order";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
@@ -111,7 +112,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangePriceType: priceType => e => dispatch(changePriceType(priceType))
+    onChangePriceType: priceType => e => dispatch(changePriceType(priceType)),
+    onCancelOrder: order => dispatch(cancelOrder(order))
   }
 }
 

@@ -3,7 +3,7 @@ const initialState = {
   operator: "<",
   ticks: 3,
   stake: 2,
-  price: 750,
+  price: 2,
   side: 'BACK',
   list: {}, // {selectionId(parameter): [{targetLTP: , stopEntryCondition: , side: , size: , price: },]  }
   selections: null

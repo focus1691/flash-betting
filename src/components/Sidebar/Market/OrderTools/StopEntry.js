@@ -51,8 +51,7 @@ const useStyles = makeStyles(theme => ({
 const StopEntry = props => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-
+  
   // Load all the runners / set All / The Field as the default
   React.useEffect(() => {
     props.onSelection(
