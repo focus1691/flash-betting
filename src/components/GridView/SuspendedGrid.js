@@ -1,6 +1,6 @@
 import React from "react";
 import GridDetailSuspCell from "./GridDetailSuspCell";
-import { DeconstructRunner } from "../../utils/DeconstructRunner";
+import { DeconstructRunner } from "../../utils/Market/DeconstructRunner";
 
 export default ({ladder, runners, selectRunner, eventId}) => {
     return Object.keys(ladder).map(key => {

@@ -7,7 +7,7 @@ import GridHeader from "./GridHeader";
 import GridDetailCell from "./GridDetailCell";
 import EmptyCell from "./EmptyCell";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
-import { DeconstructRunner } from "../../utils/DeconstructRunner";
+import { DeconstructRunner } from "../../utils/Market/DeconstructRunner";
 import { formatCurrency } from "../../utils/NumberFormat";
 import { calcBackProfit, colorForBack } from "../../utils/Bets/BettingCalculations";
 import { marketHasBets, getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";

@@ -1,6 +1,6 @@
 import React from "react";
 import GridDetailSuspCell from "./GridDetailSuspCell";
-import { DeconstructRunner } from "../../utils/DeconstructRunner";
+import { DeconstructRunner } from "../../utils/Market/DeconstructRunner";
 
 export default ({sportId, nonRunners, runners, selectRunner}) => {
     return Object.keys(nonRunners).map(key => {
