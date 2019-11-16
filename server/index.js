@@ -457,6 +457,7 @@ app.get("/api/list-market-book", (request, response) => {
 			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS"] }
 		},
 		(err, res) => {
+			console.log(res.result[0].runners);
 			response.json(res);
 		}
 	);

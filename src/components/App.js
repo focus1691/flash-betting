@@ -354,10 +354,13 @@ const App = props => {
       try {
         const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
         const data = marketBook;
+        console.log(data);
         const marketVolume = {};
+
+        
         Object.values(data.result[0].runners).map(selection => {
-          marketVolume[selection.selectionId] = selection.ex.tradedVolume
-        })
+          return marketVolume[selection.selectionId] = selection.ex.availableToBack.concat(selection.ex.availableToLay);
+        });
 
         props.onSetMarketVolume(marketVolume)
       } catch (e) { }
