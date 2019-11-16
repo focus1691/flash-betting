@@ -1,4 +1,4 @@
-import { iconForEvent } from "./Market/EventIcons";
+import { iconForEvent } from "../Market/EventIcons";
 
 /**
  * This function is used to deconstruct the runner's data
