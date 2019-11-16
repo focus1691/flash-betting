@@ -66,7 +66,8 @@ export default ({ runnerId, order, orderProps, toggleStakeAndLiabilityButtons, t
                             value={order.price}
                             onChange={
                                 updateOrderPrice({
-                                    id: runnerId
+                                    id: runnerId,
+                                    price: order.price
                                 })
                             }
                         ></input>

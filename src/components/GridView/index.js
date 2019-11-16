@@ -6,6 +6,7 @@ import { setStakeInOneClick } from "../../actions/settings";
 import GridHeader from "./GridHeader";
 import GridDetailCell from "./GridDetailCell";
 import EmptyCell from "./EmptyCell";
+import { getNextPrice } from "../../utils/ladder/CreateFullLadder";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 import { DeconstructRunner } from "../../utils/Market/DeconstructRunner";
 import { formatCurrency } from "../../utils/NumberFormat";
@@ -82,9 +83,10 @@ const Grid = props => {
 	};
 
 	const updateOrderPrice = data => e => {
-		data.price = parseInt(e.target.value);
+		let val = parseInt(e.target.value);
 
-		if (isValidPrice(data.price)) {
+		if (isValidPrice(val)) {
+			data.price = getNextPrice(data.price, e.target.value);
 			props.onUpdateOrderPrice(data);
 		}
 	};
