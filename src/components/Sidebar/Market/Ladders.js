@@ -47,23 +47,23 @@ const Ladder = props => {
   };
 
   const renderRunners = () => {
-    return props.sortedLadder.map(value => {
-      const { atb, atl, ltp, color } = deconstructLadder(props.ladder[value]);
+    return props.sortedLadder.map(selectionId => {
+      const { atb, atl, ltp, color } = deconstructLadder(props.ladder[selectionId]);
       return (
         <tr>
-          <td>{props.runners[value].runnerName}</td>
+          <td>{props.runners[selectionId].runnerName}</td>
           <td>{atl}</td>
           <td style={{ background: color }}>{ltp}</td>
           <td>{atb}</td>
           <td>
             <input
               type="checkbox"
-              checked={props.excludedLadders.indexOf(value) === -1} // false automatically omits attribute
+              checked={props.excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
               onClick={() => {
-                if (props.excludedLadders.indexOf(value) === -1) {
-                  props.onChangeExcluded(props.excludedLadders.concat(value))
+                if (props.excludedLadders.indexOf(selectionId) === -1) {
+                  props.onChangeExcluded(props.excludedLadders.concat(selectionId))
                 } else {
-                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== value))
+                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== selectionId))
                 }
               }} />
           </td>

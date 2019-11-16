@@ -104,6 +104,18 @@ const formatPrice = odds => {
   }
 };
 
+const getNextPrice = (currentPrice, selectedVal) => {
+  if (currentPrice === selectedVal) return currentPrice;
+  
+  let priceIncreased = currentPrice < selectedVal;
+  let index = ALL_PRICES.indexOf(currentPrice) + (priceIncreased ? 1 : -1);
+
+  let newPrice = ALL_PRICES[index];
+
+  if (newPrice === -1) return currentPrice;
+  return newPrice;
+};
+
 /**
  * This function finds keys of back/lay price objects 5 places either side of the LTP
  * Used to calculate the back/lay percentages for the Ladder View
@@ -172,5 +184,6 @@ export {
   formatPriceKey,
   formatPrice,
   ALL_PRICES,
-  calcBackLayPercentages
+  calcBackLayPercentages,
+  getNextPrice
 };

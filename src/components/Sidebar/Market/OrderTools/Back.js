@@ -12,8 +12,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
-import { formatPrice } from "../../../../utils/ladder/CreateFullLadder";
-import crypto from 'crypto'
+import { formatPrice, getNextPrice } from "../../../../utils/ladder/CreateFullLadder";
+import crypto from 'crypto';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     width: 40,
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
+    fontSize: '1em',
   },
   textField2: {
     width: 30,
@@ -185,8 +186,8 @@ const Back = props => {
           type="number"
           label="@"
           value={props.price}
-          inputProps={{ min: "1" }}
-          onChange={e => props.onReceivePrice(e.target.value)}
+          inputProps={{ min: "1.01", max: "1000" }}
+          onChange={e => props.onReceivePrice(getNextPrice(props.price, e.target.value))}
           margin="normal"
         />
         <Button
