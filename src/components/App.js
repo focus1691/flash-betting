@@ -91,8 +91,10 @@ const App = props => {
               let selectionId = data.result[0].runners[i].selectionId;
               runners[selectionId] = data.result[0].runners[i];
 
-              runners[selectionId].runnerName = runners[selectionId].runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim();
-              
+              if (runners[selectionId].metadata.CLOTH_NUMBER) {
+                runners[selectionId].runnerName = runners[selectionId].runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim();
+              }
+
               // The Stake/Liability buttons for the GridView
               runners[selectionId].order = {
                 visible: false,
