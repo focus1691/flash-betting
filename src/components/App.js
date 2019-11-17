@@ -239,19 +239,23 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     props.socket.on("mcm", async data => {
+      const marketId = getQueryVariable("marketId");
 
-      if (data.rc) {
-        const marketId = getQueryVariable("marketId");
-
-        // Update the market status
-        if (data.marketDefinition) {
-          props.onMarketStatusChange(data.marketDefinition.status);
-          props.setInPlay(data.marketDefinition.inPlay);
-
-          if (data.marketDefinition.status === "CLOSED") {
-            window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
+      // Update the market status
+      if (data.marketDefinition) {
+        if (data.marketDefinition.status === "CLOSED") {
+          window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
+        } else {
+          // Start the in-play clock
+          if (!props.market.inPlayTime && data.marketDefinition.inPlay) {
+            props.setInPlayTime(new Date());
           }
         }
+        props.onMarketStatusChange(data.marketDefinition.status);
+        props.setInPlay(data.marketDefinition.inPlay);
+      }
+
+      if (data.rc) {
 
         var ladders = Object.assign({}, props.ladders);
 
@@ -269,8 +273,6 @@ const App = props => {
           if (rc.id in props.ladders) {
             // Runner found so we update our object with the raw data
             ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
-
-            const marketId = getQueryVariable("marketId");
 
             // Back and Lay
             if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
@@ -556,6 +558,7 @@ const mapDispatchToProps = dispatch => {
     onChangeExcludedLadders: excludedLadders => dispatch(marketActions.updateExcludedLadders(excludedLadders)),
     onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
+    setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
     setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),

@@ -17,12 +17,12 @@ const Countdown = props => {
     if (!props.market) {
       return "--";
     }
-    if (new Date() < new Date(props.market.marketStartTime)) {
-      return new Date(props.market.marketStartTime) - new Date();
+    let currentTime = props.inPlay ? props.inPlayTime : props.market.marketStartTime;
+    if (new Date() < new Date(currentTime)) {
+      return new Date(currentTime) - new Date();
     }
-    else if (new Date() > new Date(props.market.marketStartTime)) {
-      ;
-      return Math.abs(new Date(props.market.marketStartTime) - new Date());
+    else if (new Date() > new Date(currentTime)) {
+      return Math.abs(new Date(currentTime) - new Date());
     } else {
       return "--";
     }
@@ -123,17 +123,26 @@ const Countdown = props => {
       ? "00:00:00"
       : `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
   };
+
+  const renderTime = () => {
+    if (!props.marketOpen) return null;
+
+    switch (props.marketStatus) {
+      case "OPEN":
+        return msToHMS(timeRemaining);
+      case "RUNNING":
+        return msToHMS(timeRemaining)
+      case "SUSPENDED":
+        return props.marketStatus;
+      case "CLOSED":
+        return props.marketStatus;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div>
-      {props.marketOpen
-        ? props.marketStatus === "OPEN"
-          ? msToHMS(timeRemaining)
-          : props.marketStatus === "SUSPENDED" ||
-            props.marketStatus === "CLOSED"
-            ? props.marketStatus
-            : "00:00:00"
-        : null}
-    </div>
+    <div>{renderTime()}</div>
   );
 };
 
@@ -142,6 +151,7 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
     inPlay: state.market.inPlay,
+    inPlayTime: state.market.inPlayTime,
     market: state.market.currentMarket,
     layList: state.lay.list,
     backList: state.back.list,
