@@ -629,10 +629,19 @@ io.on("connection", async client => {
 
 
 function createWindow() {
-	mainWindow = new BrowserWindow({ width: 1280, height: 1000 });
-	mainWindow.loadURL('http://localhost:3001');
-	mainWindow.maximize();
-	mainWindow.on('closed', () => mainWindow = null);
+    mainWindow = new BrowserWindow({
+        width: 800,
+		height: 600,
+		webPreferences: {
+			nodeIntegration: true
+		}
+    });
+
+    mainWindow.loadURL(`file:///${__dirname}/navigation-index.html`);
+
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
 }
 
 electronApp.on('ready', createWindow);

@@ -33,6 +33,9 @@ import { sortLadder } from "../utils/ladder/SortLadder";
 const App = props => {
   const [cookies] = useCookies(['sessionKey', 'username']);
 
+  if (!cookies.sessionKey && !cookies.username) {
+    window.location.href = window.location.origin;
+  }
   const loadSession = async () => {
     await fetch(
       `/api/load-session?sessionKey=${encodeURIComponent(
