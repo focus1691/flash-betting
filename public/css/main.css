@@ -4,6 +4,11 @@ html, body, #root, #root > div {
 	margin: 0;
 }
 
+@media only screen and (max-width: 1200px) {
+    #root > div {
+		overflow: auto;
+	}
+}
 * {
 	font-family: 'Roboto', sans-serif;
 }

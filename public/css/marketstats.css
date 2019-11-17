@@ -53,6 +53,27 @@
     justify-content: space-between;
 }
 
+/*The whole thing, including the title*/
+.marketstats-table-container {
+    width: 49%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+@media only screen and (max-width: 1200px) {
+    .marketstats-table-container {
+        width: 100%;
+        margin-top: 1%;
+    }
+    
+    .marketstats-tables {
+        
+        flex-direction: column;
+    }
+}
+
+/*Just the table part*/
 .marketstats-table-wrapper {
     height: 100%; 
     border: solid 2px #92a4ba; 
@@ -61,7 +82,7 @@
 
 .marketstats-table-win-result {
     display: inline-block; 
-    width: 40%; 
+    min-width: 40%; 
     padding: 3px; 
     border-radius: 3px; 
     text-align: center; 

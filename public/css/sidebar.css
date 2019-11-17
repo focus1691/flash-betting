@@ -98,7 +98,7 @@
 }
 
 #menu-profit-loss td:nth-child(n+2) {
-	width: 40%;
+	min-width: 40%;
 	font-size: small;
 }
 

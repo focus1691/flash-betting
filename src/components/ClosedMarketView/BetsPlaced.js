@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     },
     tableWrapper: {
       maxHeight: '55vh',
-      overflowX: 'hidden'
+      overflowX: 'auto'
     },
 });
 
@@ -40,8 +40,8 @@ export default ({matchedBets, runners = []}) => {
     const classes = useStyles();
 
     return (
-        <div style={{width: '49%', height: '100%', display: 'flex', flexDirection: 'column'}}>
-                    <div style={{height: '10%', backgroundColor: 'rgb(103, 128, 159)', color: 'white', paddingLeft: '2%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontSize: '1.3em', fontWeight: 'bold'}}>
+        <div className = {'marketstats-table-container'}>
+                    <div style={{height: '6vh', backgroundColor: 'rgb(103, 128, 159)', color: 'white', paddingLeft: '2%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', fontSize: '1.3em', fontWeight: 'bold'}}>
                         Bets Placed
                     </div>
                     <Paper className={classes.root} style={{height: '90%'}}>
