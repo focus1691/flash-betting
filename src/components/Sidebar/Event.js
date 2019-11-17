@@ -15,10 +15,22 @@ const Event = props => {
     return "No Event Selected";
   }
 
+  const getClockBG = () => {
+
+    if (props.marketStatus === "SUSPENDED") return "red";
+    else if (props.marketStatus === "CLOSED") return "#303030";
+
+    else if (new Date() > new Date(props.market.marketStartTime)) {
+      return props.inPlay ? "green" : "orange";
+    } else {
+      return "#303030";
+    }
+  };
+
   return (
     <div id="sidebar-event">
       <div id="sidebar-event-section-1">
-        <div id="sidebar-event-section-2">
+        <div id="sidebar-event-section-2" style={{background: getClockBG()}}>
           <span>
             <CountDown />
           </span>
@@ -43,7 +55,8 @@ const mapStateToProps = state => {
   return {
     currentEvent: state.sports.currentSport.currentEvent,
     market: state.market.currentMarket,
-    marketOpen: state.market.marketOpen
+    marketOpen: state.market.marketOpen,
+    inPlay: state.market.inPlay
   };
 };
 

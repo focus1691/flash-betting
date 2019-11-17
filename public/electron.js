@@ -224,7 +224,7 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 			if (!res.result) {
 				response.json({});
 			} else {
-				const filteredOrders = res.result.currentOrders = res.result.currentOrders.filter((data, index, order) =>
+				const filteredOrders = res.result.currentOrders = await res.result.currentOrders.filter((data, index, order) =>
 					index === order.findIndex((t) => (
 
 						t.marketId === data.marketId
@@ -471,7 +471,6 @@ app.get("/api/list-market-book", (request, response) => {
 
 
 app.post("/api/place-order", (request, response) => {
-
 	betfair.placeOrders(
 		{
 			marketId: request.body.marketId,
@@ -611,16 +610,12 @@ io.on("connection", async client => {
 
 	// Subscribe to market
 	client.on("market-subscription", async data => {
-		// const accessToken = await database.getToken(betfair.email);
-
 		const marketSubscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
 
 		exchangeStream.makeSubscription(marketSubscription);
 	});
 	// Subscribe to orders
 	client.on("order-subscription", async data => {
-		// const accessToken = await database.getToken(betfair.email);
-
 		const orderSubscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
 
 		exchangeStream.makeSubscription(orderSubscription);

@@ -3,7 +3,14 @@ export const setInPlay = inPlay => {
     type: "SET_IN_PLAY",
     payload: inPlay
   }
-}
+};
+
+export const setInPlayTime = time => {
+  return {
+    type: "SET_IN_PLAY_TIME",
+    payload: time
+  }
+};
 
 export const setMarketStatus = status => {
   return {
