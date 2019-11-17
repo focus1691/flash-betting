@@ -20,7 +20,8 @@ const Countdown = props => {
     if (new Date() < new Date(props.market.marketStartTime)) {
       return new Date(props.market.marketStartTime) - new Date();
     }
-    else if (new Date() > new Date(props.market.marketStartTime)) {;
+    else if (new Date() > new Date(props.market.marketStartTime)) {
+      ;
       return Math.abs(new Date(props.market.marketStartTime) - new Date());
     } else {
       return "--";
@@ -160,7 +161,7 @@ const matchDispatchToProps = dispatch => {
     onUpdateTickOffsetList: list => dispatch(updateTickOffsetList(list)),
     onChangeOrders: orders => dispatch(updateOrders(orders))
   }
-}
+};
 
 export default connect(mapStateToProps, matchDispatchToProps)(Countdown);
 
