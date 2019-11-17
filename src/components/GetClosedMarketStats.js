@@ -24,9 +24,14 @@ const GetClosedMarketStats = () => {
         const getMarketInfo = async () => {
             // await loadSession();
             
+            const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
+            if (!marketBook || !marketBook.response.result || marketBook.response.result.status !== "CLOSED") {
+                window.location.href = window.location.origin + '/dashboard'
+            }
+
             const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
             const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE")
-            setCompletedOrders(completedOrders)
+            setCompletedOrders(completedOrders);
 
             const marketInfo = await fetch(`/api/get-market-info?marketId=${marketId}`).then(res => res.json()).then(res => res.response.result[0])
             setMarketInfo(marketInfo)
