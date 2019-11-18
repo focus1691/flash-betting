@@ -84,7 +84,7 @@ export const cancelOrder = order => {
       .then(json => {
         const newUnmatchedBets = {};
         for (const key in order.unmatchedBets) {
-          if (key !== order.betId) {
+          if (key != order.betId) {
             newUnmatchedBets[key] = order.unmatchedBets[key]
           }
         }
@@ -93,6 +93,7 @@ export const cancelOrder = order => {
           unmatched: newUnmatchedBets,
           matched: order.matchedBets ? order.matchedBets : {}
         }
+
 
         dispatch(updateOrders(newBets));
       });
