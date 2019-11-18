@@ -15,7 +15,7 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
         // initialize the order object
         const newOrderList = {};
 
-        Object.keys(ladder).map((key, index) => {
+        sortedLadder.map((key, index) => {
           newOrderList[index] = key;
         })
 
