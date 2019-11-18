@@ -6,7 +6,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { getPLForRunner } from '../../utils/Bets/GetProfitAndLoss';
+import { getPLForRunner, getLossForRunner } from '../../utils/Bets/GetProfitAndLoss';
 
 const useStyles = makeStyles({
     root: {
@@ -44,7 +44,7 @@ export default ({matchedBets, runners}) => {
     
     const rows = runners.map(runner => {
         const win = matchedBets !== undefined ? getPLForRunner(runners.marketId, runner.selectionId, {matched: matchedBets}).toFixed(2): 0
-        const lose = 0; //placeholder
+        const lose = matchedBets !== undefined ? getLossForRunner(runners.marketId, runner.selectionId, {matched: matchedBets}).toFixed(2): 0; //placeholder
         return {
             selection: runner.runnerName,
             win: win,
