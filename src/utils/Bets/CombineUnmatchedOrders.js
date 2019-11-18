@@ -30,17 +30,17 @@ const selectionKeyCombinations = (list, allOrders) => {
 const nonSelectionKeyCombinations = (list, allOrders) => {
     const newAllOrders = Object.assign({}, allOrders)
     Object.values(list).map(order => {
-        // find selection Id
-        const selectionInAllOrders = allOrders[order.selectionId] === undefined ? {} : allOrders[order.selectionId];
-    
-        // find and add to rfs 
-        if (selectionInAllOrders[order.rfs] === undefined) {
-          selectionInAllOrders[order.rfs] = [order]
-        } else {
-          selectionInAllOrders[order.rfs] = selectionInAllOrders[order.rfs].concat(order)
-        }
-        
-        newAllOrders[order.selectionId] = selectionInAllOrders
-      })
+      // find selection Id
+      const selectionInAllOrders = newAllOrders[order.selectionId] === undefined ? {} : newAllOrders[order.selectionId];
+      
+      // find and add to rfs 
+      if (selectionInAllOrders[order.rfs] === undefined) {
+        selectionInAllOrders[order.rfs] = [order]
+      } else {
+        selectionInAllOrders[order.rfs] = selectionInAllOrders[order.rfs].concat(order)
+      }
+      
+      newAllOrders[order.selectionId] = selectionInAllOrders
+    })
     return newAllOrders
 }
