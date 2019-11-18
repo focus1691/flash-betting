@@ -16,6 +16,14 @@ export const placeOrder = order => {
   order.size = order.size === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
   order.price = parseFloat(order.price)
 
+  // order without anything that might make the payload too large
+  const minimalOrder = {}
+  Object.keys(order).map((key) => {
+    if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "orderCompleteCallBack") {
+      minimalOrder[key] = order[key]
+    }
+  })
+
   return dispatch => {
     return fetch('/api/place-order', {
       headers: {
@@ -23,7 +31,7 @@ export const placeOrder = order => {
         "Content-Type": "application/json"
       },
       method: "POST",
-      body: JSON.stringify(order)
+      body: JSON.stringify(minimalOrder)
     })
       .then(res => res.json())
       .then(async result => {
@@ -71,6 +79,14 @@ export const cancelOrder = order => {
     return
   }
 
+  // order without anything that might make the payload too large
+  const minimalOrder = {}
+  Object.keys(order).map((key) => {
+    if (key !== "unmatchedBets" && key !== "matchedBets") {
+      minimalOrder[key] = order[key]
+    }
+  })
+
   return dispatch => {
     return fetch('/api/cancel-order', {
       headers: {
@@ -78,7 +94,7 @@ export const cancelOrder = order => {
         "Content-Type": "application/json"
       },
       method: "POST",
-      body: JSON.stringify(order)
+      body: JSON.stringify(minimalOrder)
     })
       .then(res => res.json())
       .then(json => {
