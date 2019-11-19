@@ -239,6 +239,9 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     props.socket.on("mcm", async data => {
+      // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
+      props.socket.off("mcm");
+
       const marketId = getQueryVariable("marketId");
 
       // Update the market status
@@ -370,9 +373,6 @@ const App = props => {
         });
         props.onSetMarketVolume(marketVolume);
       }
-
-      // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
-      props.socket.off("mcm");
     });
 
     /**
