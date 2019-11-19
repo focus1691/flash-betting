@@ -469,14 +469,12 @@ app.post("/api/place-order", (request, response) => {
 		instructions: [
 			{
 				selectionId: request.body.selectionId,
-				handicap: "0",
 				side: request.body.side,
 				orderType: "LIMIT",
 				limitOrder: {
 					size: request.body.size,
 					price: request.body.price,
-					persistenceType: "PERSIST",
-					minFillSize: request.body.minFillSize || 1
+					persistenceType: "PERSIST"
 				}
 			}
 		],
