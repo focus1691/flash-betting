@@ -23,16 +23,16 @@ const UpdateRunner = (ladder, rawData) => {
         if (matched <= 0) {
           if (price === ladder.atb[index][0]) {
             ladder.atb.splice(index, 1);
-            ladder.fullLadder[formatPriceKey(price)].backMatched = null;
+            ladder.fullLadder[formatPriceKey(price)].layMatched = null;
           }
         }
         else if (price === ladder.atb[index][0]) {
           ladder.atb[index][1] = matched;
-          ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
+          ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
         }
         else {
           ladder.atb.splice(index, 0, [price, matched]);
-          ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
+          ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
         } 
       }
     });
@@ -50,16 +50,16 @@ const UpdateRunner = (ladder, rawData) => {
         if (matched <= 0) {
           if (price === ladder.atl[index][0]) {
             ladder.atl.splice(index, 1);
-            ladder.fullLadder[formatPriceKey(price)].layMatched = null;
+            ladder.fullLadder[formatPriceKey(price)].backMatched = null;
           }
         }
         else if (price === ladder.atl[index][0]) {
           ladder.atl[index][1] = matched;
-          ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
+          ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
         }
         else {
           ladder.atl.splice(index, 0, [price, matched]);
-          ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
+          ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
         }
       }
     });

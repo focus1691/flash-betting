@@ -30,7 +30,7 @@ const AddRunner = (key, data) => {
       } else {
         // Update the values in the full ladder: 1.01 - 1000
         runner.fullLadder[price].odds = price;
-        runner.fullLadder[price].backMatched = matched;
+        runner.fullLadder[price].layMatched = matched;
 
         // Alter the value to round down
         runner.atb[i][1] = matched;
@@ -49,7 +49,7 @@ const AddRunner = (key, data) => {
       } else {
         // Update the values in the full ladder: 1.01 - 1000
         runner.fullLadder[price].odds = price;
-        runner.fullLadder[price].layMatched = matched;
+        runner.fullLadder[price].backMatched = matched;
 
         // Alter the value to round down
         runner.atl[i][1] = matched;
