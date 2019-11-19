@@ -21,6 +21,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
     const [isReferenceSet, setIsReferenceSet] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
     const [isLadderDown, setLadderDown] = useState(false);
+    const [ladderSideLeft, setLadderSideLeft] = useState("LAY");
   
     useEffect(() => {
         const interval = setInterval(() => {
@@ -171,6 +172,8 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                         : ""
                     }
                     percent={ladder[id].percent}
+                    setLadderSideLeft = {setLadderSideLeft}
+                    ladderSideLeft = {ladderSideLeft}
                 />
                     <AutoSizer>
                         {({ height, width }) => (
@@ -193,7 +196,8 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                                 changeStopLossList: placeStopLossOrder,
                                 hedgeSize: hedgeSize,
                                 setOddsHovered: setOddsHovered,
-                                volume: parsedVolume
+                                volume: parsedVolume,
+                                ladderSideLeft: ladderSideLeft
                             }}
                         >
                             {LadderRow}

@@ -10,8 +10,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                           isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged,
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged,
                           fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal }) => {
-
-                        
+                            
     const handleClick = () => async e => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
               
@@ -118,7 +117,10 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
             style={
                 isStopLoss ? {background: "yellow"} :
                 cell.backMatched && side === "BACK" ? {background: "#75C2FD"} : 
-                cell.layMatched && side === "LAY" ? {background: "#F694AA"} : null
+                cell.layMatched && side === "LAY" ? {background: "#F694AA"} : 
+                side === "LAY" ? {background: "#FCC9D3"} : 
+                side === "BACK" ? {background: "#BCE4FC"} : 
+                null
             }
             onMouseEnter = {onHover}
             onMouseLeave = {onLeave}

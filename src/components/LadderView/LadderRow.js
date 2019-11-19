@@ -4,11 +4,17 @@ import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findStopPosition, findStopPositionForPercent } from "../../utils/TradingStategy/StopLoss";
 import crypto from 'crypto'
 
-export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume }, style, index}) => {
+export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume, ladderSideLeft }, style, index}) => {
     const key = Object.keys(ladder)[index]
     
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
     const volumeVal = volume[formatPrice(ladder[key].odds)] ? volume[formatPrice(ladder[key].odds)] : 0
+
+    const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK"
+    const leftSideProfit = ladderSideLeft === "LAY" ? 'layProfit' : 'backProfit'
+    const rightSide = ladderSideLeft === "LAY" ? "BACK" : "LAY"
+    const rightSideProfit = ladderSideLeft === "LAY" ? 'backProfit' : 'layProfit'
+
     return (
         <div key={ladder[key].odds}  onContextMenu = { (e) => { e.preventDefault(); return false } } class = 'tr' style = {style} >
           
@@ -24,71 +30,74 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
               {volumeVal === 0 ? null : volumeVal}
             </div>
           </div>
+
           <div 
             className = 'td'
-            style = {{color: `${ladder[key].backProfit >= 0 ? "green" : 'red'}`}}
+            style = {{color: `${ladder[key][leftSideProfit] >= 0 ? "green" : 'red'}`}}
             onClick = {() => {
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
 
               if (hedgeSize > 0)
               placeOrder({
-                side: "BACK",
+                side: leftSide,
                 price: formatPrice(ladder[key].odds),
                 selectionId: selectionId,
                 customerStrategyRef: referenceStrategyId,
-                size: hedgeSize + parseFloat(ladder[key].backProfit)
+                size: hedgeSize + parseFloat(ladder[key][leftSideProfit])
               })
             }}
-          >{ladder[key].backProfit}</div>
+          >{ladder[key][leftSideProfit]}</div>
           <LadderOrderCell 
-            side = {"LAY"}
+            side = {leftSide}
+            ladderSideLeft = {ladderSideLeft}
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder}
-            isStopLoss = {stopLoss !== undefined && stopLoss.side === "LAY" ? 
+            isStopLoss = {stopLoss !== undefined && stopLoss.side === leftSide ? 
                           stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
                           findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                            : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
             hedgeSize = {hedgeSize}
-            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: "LAY"})}
-            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: "LAY"})}
+            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: leftSide})}
+            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: leftSide})}
           />
           <div style = {{
             background: key == ltp ? 'yellow' : '#BBBBBB'
           }} className = 'td'>{formatPrice(ladder[key].odds)}</div>
           <LadderOrderCell 
-            side = {"BACK"}
+            side = {rightSide}
+            ladderSideLeft = {ladderSideLeft}
             cell = {ladder[key]}
             selectionId = {selectionId}
             placeOrder = {placeOrder} 
-            isStopLoss = {stopLoss !== undefined && stopLoss.side == "BACK" ? 
+            isStopLoss = {stopLoss !== undefined && stopLoss.side === rightSide ? 
               stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
               findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
                : false}
             stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
             hedgeSize = {hedgeSize}
-            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: "BACK"})}
-            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: "BACK"})}
+            onHover = {() => setOddsHovered({selectionId, odds: ladder[key].odds, side: rightSide})}
+            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: rightSide})}
           />
           <div 
             className = 'td'
-            style = {{color: `${ladder[key].layProfit >= 0 ? "green" : 'red'}`}}
+            style = {{color: `${ladder[key][rightSideProfit] >= 0 ? "green" : 'red'}`}}
             onClick = {() => {
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
 
               if (hedgeSize > 0)
               placeOrder({
-                side: "LAY",
+                side: rightSide,
                 price: formatPrice(ladder[key].odds),
                 selectionId: selectionId,
                 customerStrategyRef: referenceStrategyId,
-                size: hedgeSize + parseFloat(ladder[key].layProfit)
+                size: hedgeSize + parseFloat(ladder[key][rightSideProfit])
               })
             }}
-          >{ladder[key].layProfit}</div>
+          >{ladder[key][rightSideProfit]}</div>
         </div>
     )
 }
