@@ -286,14 +286,13 @@
 .percentage-row .th:first-child {
 	background: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
 	color: white;
-	z-index: 99999;
-	width: 85%;
+	width: 81%;
 }
 
 .percentage-row .th {
 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 	outline: 1px solid rgb(178, 181, 181); 
-	width: 30%;
+	width: 28%;
 }
 
 .percentage-row .th:not(:first-child) {
