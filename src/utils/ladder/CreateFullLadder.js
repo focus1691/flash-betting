@@ -145,19 +145,19 @@ const calcBackLayPercentages = (ladder, ltp) => {
   // Get the prices for both back/lay trading 5 places either side of the LTP
   const indices = getFiveDeviationBackLayPrices(ltp);
 
-  var backMatched = 0, layMatched = 0;
+  var layMatched = 0, backMatched = 0;
   var i;
 
   // Add the back total
   for (i = 0; i < indices.back.length; i++) {
     let data = ladder[indices.back[i]];
-    backMatched += ((data) && data.backMatched) ? data.backMatched : 0;
+    layMatched += ((data) && data.layMatched) ? data.layMatched : 0;
   }
 
   // Add the lay total
   for (i = 0; i < indices.lay.length; i++) {
     let data = ladder[indices.lay[i]];
-    layMatched += ((data) && data.layMatched) ? data.layMatched : 0;
+    backMatched += ((data) && data.backMatched) ? data.backMatched : 0;
   }
 
   const total = backMatched + layMatched;
