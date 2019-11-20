@@ -12,7 +12,7 @@ import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 
-const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, 
+const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
                   ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, volume = [], ladderUnmatched, stake }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
@@ -21,7 +21,6 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
     const [isReferenceSet, setIsReferenceSet] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
     const [isLadderDown, setLadderDown] = useState(false);
-    const [ladderSideLeft, setLadderSideLeft] = useState("LAY");
   
     useEffect(() => {
         const interval = setInterval(() => {
