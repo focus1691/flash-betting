@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { placeOrder } from "../../actions/order";
-import { setRunner, updateLadderOrder } from "../../actions/market";
+import { setRunner, updateLadderOrder, changeLadderSideLeft } from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
 const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
-                  stopLossOffset, stopLossTrailing, onChangeStopLossList, marketVolume, bets, ladderUnmatched, stakeVal}) => {
+                  stopLossOffset, stopLossTrailing, onChangeStopLossList, marketVolume, bets, ladderUnmatched, stakeVal, ladderSideLeft, onChangeLadderSideLeft}) => {
 
   const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
 
@@ -68,6 +68,8 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
             volume = {marketVolume[value]}
             ladderUnmatched = {ladderUnmatched}
             stake = {stakeVal[value]}
+            ladderSideLeft = {ladderSideLeft}
+            setLadderSideLeft = {onChangeLadderSideLeft}
             changeStopLossList = {async newStopLoss => {
 
               const adjustedNewStopLoss = {...newStopLoss, 
@@ -119,6 +121,7 @@ const mapStateToProps = state => {
     stopLossHedged: state.stopLoss.hedged,
     ladderUnmatched: state.settings.ladderUnmatched,
     stakeVal: state.settings.stake,
+    ladderSideLeft: state.market.ladderSideLeft
   };
 };
 
@@ -127,7 +130,8 @@ const mapDispatchToProps = dispatch => {
     onSelectRunner: runner => e => dispatch(setRunner(runner)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
     onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
-    onChangeStopLossList: list => dispatch(updateStopLossList(list))
+    onChangeStopLossList: list => dispatch(updateStopLossList(list)),
+    onChangeLadderSideLeft: side => dispatch(changeLadderSideLeft(side))
   };
 };
 

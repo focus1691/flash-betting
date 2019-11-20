@@ -14,7 +14,8 @@ const initialState = {
   ladderOrder: {},
   oneClickOn: false,
   priceType: "STAKE",
-  myMarkets: []
+  myMarkets: [],
+  ladderSideLeft: "LAY"
 };
 
 const reducer = (state = initialState, action) => {
@@ -136,6 +137,8 @@ const reducer = (state = initialState, action) => {
       };
     case "SWITCH_PRICE_TYPE":
       return { ...state, priceType: action.payload };
+    case "SWITCH_LADDER_SIDE_LEFT":
+      return { ...state, ladderSideLeft: action.payload };
     default:
       return state;
   }
