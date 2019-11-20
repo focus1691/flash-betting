@@ -516,7 +516,7 @@ app.post("/api/update-orders", (request, response) => {
 });
 
 app.post("/api/replace-orders", (request, response) => {
-	betfair.placeOrders({
+	betfair.replaceOrders({
 		marketId: request.body.marketId,
 		instructions: [{
 			betId: request.body.betId,
