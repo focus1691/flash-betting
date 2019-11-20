@@ -5,7 +5,7 @@ import { setRunner, updateLadderOrder, changeLadderSideLeft } from "../../action
 import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
-const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
+const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
                   stopLossOffset, stopLossTrailing, onChangeStopLossList, marketVolume, bets, ladderUnmatched, stakeVal, ladderSideLeft, onChangeLadderSideLeft}) => {
 
   const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
@@ -41,63 +41,66 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
     onChangeLadderOrder(newOrderList);
   }
 
+  
   return (
-    <div className={"ladder-container"}
-      onContextMenu = { (e) => { e.preventDefault(); return false } }
-    >
-      {marketOpen && ladder
-        ? Object.values(ladderOrder)
-          .filter(value => excludedLadders.indexOf(value) === -1)
-          .map((value, index) => (
-          <Ladder 
-            runners = {runners}
-            ladder = {ladder}
-            market = {market}
-            onPlaceOrder = {onPlaceOrder}
-            onSelectRunner = {onSelectRunner}
-            id = {value}
-            key = {value}
-            order = {index}
-            ladderOrderList = {ladderOrder}
-            stopLoss = {stopLossList[value]}
-            selectionMatchedBets = {newMatchedBets[value]}
-            unmatchedBets = {bets.unmatched}
-            matchedBets = {bets.matched}
-            setOddsHovered = {setOddsHovered}
-            oddsHovered = {oddsHovered}
-            volume = {marketVolume[value]}
-            ladderUnmatched = {ladderUnmatched}
-            stake = {stakeVal[value]}
-            ladderSideLeft = {ladderSideLeft}
-            setLadderSideLeft = {onChangeLadderSideLeft}
-            changeStopLossList = {async newStopLoss => {
+    marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ?                          
+      <div className={"ladder-container"}
+        onContextMenu = { (e) => { e.preventDefault(); return false } }
+      >
+        {marketOpen && ladder
+          ? Object.values(ladderOrder)
+            .filter(value => excludedLadders.indexOf(value) === -1)
+            .map((value, index) => (
+            <Ladder 
+              runners = {runners}
+              ladder = {ladder}
+              market = {market}
+              onPlaceOrder = {onPlaceOrder}
+              onSelectRunner = {onSelectRunner}
+              id = {value}
+              key = {value}
+              order = {index}
+              ladderOrderList = {ladderOrder}
+              stopLoss = {stopLossList[value]}
+              selectionMatchedBets = {newMatchedBets[value]}
+              unmatchedBets = {bets.unmatched}
+              matchedBets = {bets.matched}
+              setOddsHovered = {setOddsHovered}
+              oddsHovered = {oddsHovered}
+              volume = {marketVolume[value]}
+              ladderUnmatched = {ladderUnmatched}
+              stake = {stakeVal[value]}
+              ladderSideLeft = {ladderSideLeft}
+              setLadderSideLeft = {onChangeLadderSideLeft}
+              changeStopLossList = {async newStopLoss => {
 
-              const adjustedNewStopLoss = {...newStopLoss, 
-                strategy: "Stop Loss",
-                tickOffset: newStopLoss.customStopLoss ? 0 : stopLossOffset,
-                trailing: newStopLoss.customStopLoss ? false : stopLossTrailing
-              }
+                const adjustedNewStopLoss = {...newStopLoss, 
+                  strategy: "Stop Loss",
+                  tickOffset: newStopLoss.customStopLoss ? 0 : stopLossOffset,
+                  trailing: newStopLoss.customStopLoss ? false : stopLossTrailing
+                }
 
-              const newStopLossList = Object.assign({}, stopLossList) 
-              newStopLossList[newStopLoss.selectionId] = adjustedNewStopLoss
+                const newStopLossList = Object.assign({}, stopLossList) 
+                newStopLossList[newStopLoss.selectionId] = adjustedNewStopLoss
 
-              await fetch('/api/save-order', {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify(adjustedNewStopLoss)
-              })
+                await fetch('/api/save-order', {
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                  },
+                  method: "POST",
+                  body: JSON.stringify(adjustedNewStopLoss)
+                })
 
-              onChangeStopLossList(newStopLossList);
+                onChangeStopLossList(newStopLossList);
 
-            }}
-            swapLadders = {swapLadders}
-          />
-          ))
-      : null } 
-    </div>
+              }}
+              swapLadders = {swapLadders}
+            />
+            ))
+        : null } 
+      </div>
+    : null
   );
 };
 
@@ -106,6 +109,7 @@ const mapStateToProps = state => {
     currentEvent: state.sports.currentSport.currentEvent,
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
+    marketStatus: state.market.status,
     marketVolume: state.market.currentMarketVolume,
     runners: state.market.runners,
     ladder: state.market.ladder,
