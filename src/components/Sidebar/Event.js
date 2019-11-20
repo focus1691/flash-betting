@@ -56,6 +56,7 @@ const mapStateToProps = state => {
     currentEvent: state.sports.currentSport.currentEvent,
     market: state.market.currentMarket,
     marketOpen: state.market.marketOpen,
+    marketStatus: state.market.status,
     inPlay: state.market.inPlay
   };
 };
