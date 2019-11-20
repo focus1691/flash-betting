@@ -469,7 +469,6 @@ app.get("/api/list-market-book", (request, response) => {
 	);
 });
 
-
 app.post("/api/place-order", (request, response) => {
 	betfair.placeOrders(
 		{
