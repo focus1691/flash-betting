@@ -498,6 +498,23 @@ app.post("/api/place-order", (request, response) => {
 	);
 });
 
+app.post("/api/update-orders", (request, response) => {
+	betfair.placeOrders({
+		marketId: request.body.marketId,
+		instructions: [{
+			betId: request.body.betId,
+			newPersistenceType: "PERSIST"
+		}],
+		customerStrategyRef: request.body.customerStrategyRef
+	}, (err, res) => {
+		if (res.error) {
+			response.sendStatus(400);
+		} else {
+			response.json(res.result);
+		}
+	});
+});
+
 app.get("/api/listCurrentOrders", (request, response) => {
 	betfair.listCurrentOrders({
 		marketIds: [request.query.marketId]
@@ -507,6 +524,17 @@ app.get("/api/listCurrentOrders", (request, response) => {
 		})
 });
 
+app.get("/api/list-order-to-duplicate", (request, response) => {
+	betfair.listCurrentOrders({
+		marketIds: [request.query.marketId],
+		OrderProjection: "EXECUTABLE",
+		SortDir: "LATEST_TO_EARLIEST",
+		
+	},
+		(err, res) => {
+			response.json(res.result)
+		})
+});
 
 app.post("/api/cancel-order", (request, response) => {
 	betfair.cancelOrders(
