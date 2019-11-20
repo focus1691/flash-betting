@@ -506,6 +506,24 @@ app.post("/api/update-orders", (request, response) => {
 	});
 });
 
+app.post("/api/replace-orders", (request, response) => {
+	betfair.placeOrders({
+		marketId: request.body.marketId,
+		instructions: [{
+			betId: request.body.betId,
+			newPrice: request.body.newPrice
+		}],
+		customerStrategyRef: request.body.customerStrategyRef
+	}, (err, res) => {
+		if (res.error) {
+			response.sendStatus(400);
+		} else {
+			response.json(res.result);
+		}
+	});
+});
+
+
 app.get("/api/listCurrentOrders", (request, response) => {
 	betfair.listCurrentOrders({
 		marketIds: [request.query.marketId]
