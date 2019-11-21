@@ -14,8 +14,8 @@ const ActiveBets = () => {
 	useEffect(() => {
 		fetch('/api/get-events-with-active-bets')
 			.then(res => res.json())
-			.then(data => {
-				setEvents(data);
+			.then(async data => {
+				setEvents(await data);
 			})
 	}, []);
 
