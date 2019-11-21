@@ -4,7 +4,7 @@ import { changePriceType, updateOrder } from '../../actions/market';
 import { cancelOrder, cancelOrderAction, updateOrders } from "../../actions/order";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
+import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { updateTickOffsetList } from "../../actions/tickOffset";
 import { updateStopEntryList } from "../../actions/stopEntry";
@@ -152,7 +152,7 @@ const OrderRow = props => {
                               cancelUnmatchedOrder(bet)
                             }}
                           />
-                          {`${bet.size} @ ${bet.price} ${suffix}`}
+                          {`${bet.size} @ ${twoDecimalPlaces(bet.price)} ${suffix}`}
                         </td>
                       </tr>
                     );
@@ -181,7 +181,7 @@ const OrderRow = props => {
                         backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
                       }}
                     >
-                      <td>{`${bet.size} @ ${bet.price}`}</td>
+                      <td>{`${bet.size} @ ${twoDecimalPlaces(bet.price)}`}</td>
                     </tr>
                   );
                 })}

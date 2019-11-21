@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { calcBackProfit } from "../../../utils/Bets/BettingCalculations";
+import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
 
 const MatchedBets = props => {
 
@@ -61,7 +61,7 @@ const MatchedBets = props => {
                                 </button>
                               </td>
 
-                              <td>{(parseFloat(order.price).toFixed(2))}</td>
+                              <td>{twoDecimalPlaces(order.price)}</td>
                               <td>{order.size}</td>
                               <td
                                 id="pl-style"
