@@ -330,6 +330,7 @@ app.get("/api/list-todays-card", (request, response) => {
 			"marketTypeCodes": [
 				request.query.marketTypes
 			],
+			"marketCountries": request.query.marketCountries,
 			"marketStartTime": {
 				"from": new Date().toJSON(),
 				"to": new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON()
