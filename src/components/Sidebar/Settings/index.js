@@ -2,14 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions/settings';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Checkbox from '@material-ui/core/Checkbox';
+import DefaultView from "./DefaultView";
 import TrainingBank from "./TrainingBank";
+import Sounds from "./Sounds";
+import Tools from "./Tools";
+import UnmatchedBets from "./UnmatchedBets";
+import MatchedBets from "./MatchedBets";
+import Graphs from "./Graphs";
+import MarketInformation from './MarketInformation';
+import WinMarkets from "./WinMarkets";
+import Rules from "./Rules";
+import LadderAutoCenter from "./LadderAutoCenter";
+import LadderUnmatchedCol from "./LadderUnmatchedCol";
+import StakeButtons from "./StakeButtons";
+import LayButtons from "./LayButtons";
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -47,614 +53,101 @@ const Settings = props => {
 
 	return (
 		<div>
-
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Default View
-				</Typography>
-			</AppBar>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.defaultView": props.defaultView
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<RadioGroup
-				aria-label="Default View"
-				name="View"
-				className={classes.group}
-				value={props.defaultView}
-				onChange={e => {
-					props.onToggleDefaultView(e.target.value);
-				}}
-			>
-				<FormControlLabel
-					value="LadderView"
-					control={<Radio color="primary" />}
-					label="Ladder"
-					labelPlacement="end"
-				/>
-				<FormControlLabel
-					value="GridView"
-					control={<Radio color="primary" />}
-					label="Grid"
-					labelPlacement="end"
-				/>
-				<FormControlLabel
-					value="HomeView"
-					control={<Radio color="primary" />}
-					label="Home"
-					labelPlacement="end"
-				/>
-			</RadioGroup>
+			<DefaultView
+				defaultView={props.defaultView}
+				toggleDefaultView={props.onToggleDefaultView}
+				saveSetting={saveSetting}
+				classes={classes}
+			/>
 
 			<TrainingBank
 				receiveTrainingBalance={balance => props.onReceiveTrainingBalance(balance)}
 				styles={classes}
 			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Sound
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.sounds}
-						onChange={val => props.onToggleSounds(!props.sounds)}
-					/>
-				}
-				label="Sounds"
-			/>
-			<button className={"save-btn"} onClick={e => saveSetting({ "settings.sounds": props.sounds })}><img alt={"Save"} src={window.location.origin + '/icons/save.png'} /></button>
-
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Tools
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.tools.visible}
-						onChange={val => props.onToggleTools({ visible: !props.tools.visible, open: props.tools.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.tools": { visible: props.tools.visible, open: props.tools.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.tools.open}
-						onChange={val => props.onToggleTools({ visible: props.tools.visible, open: !props.tools.open })}
-					/>
-				}
-				label="Panel Open"
+			<Sounds
+				sounds={props.sounds}
+				toggleSounds={props.onToggleSounds}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Unmatched Bets
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.unmatchedBets.visible}
-						onChange={val => props.onToggleUnmatchedBets({ visible: !props.unmatchedBets.visible, open: props.unmatchedBets.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.unmatchedBets": { visible: props.unmatchedBets.visible, open: props.unmatchedBets.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.unmatchedBets.open}
-						onChange={val => props.onToggleUnmatchedBets({ visible: props.unmatchedBets.visible, open: !props.unmatchedBets.open })}
-					/>
-				}
-				label="Panel Open"
+			<Tools
+				tools={props.tools}
+				toggleTools={props.onToggleTools}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Matched Bets
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.matchedBets.visible}
-						onChange={val => props.onToggleMatchedBets({ visible: !props.matchedBets.visible, open: props.matchedBets.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.matchedBets": { visible: props.matchedBets.visible, open: props.matchedBets.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.matchedBets.open}
-						onChange={val => props.onToggleMatchedBets({ visible: props.matchedBets.visible, open: !props.matchedBets.open })}
-					/>
-				}
-				label="Panel Open"
-			/>
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Graphs
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.graphs.visible}
-						onChange={val => props.onToggleGraph({ visible: !props.graphs.visible, open: props.graphs.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.graphs": { visible: props.graphs.visible, open: props.graphs.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.graphs.open}
-						onChange={val => props.onToggleGraph({ visible: props.graphs.visible, open: !props.graphs.open })}
-					/>
-				}
-				label="Panel Open"
+			<UnmatchedBets
+				unmatchedBets={props.unmatchedBets}
+				toggleUnmatchedBets={props.toggleUnmatchedBets}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Market Information
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.marketInfo.visible}
-						onChange={val => props.onToggleMarketInformation({ visible: !props.marketInfo.visible, open: props.marketInfo.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.marketInfo": { visible: props.marketInfo.visible, open: props.marketInfo.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.marketInfo.open}
-						onChange={val => props.onToggleMarketInformation({ visible: props.marketInfo.visible, open: !props.marketInfo.open })}
-					/>
-				}
-				label="Panel Open"
+			<MatchedBets
+				matchedBets={props.matchedBets}
+				toggleUnmatchedBets={props.toggleMatchedBets}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Win Markets
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.winMarketsOnly}
-						onChange={val => props.onUpdateWinMarketsOnly(!props.winMarketsOnly)}
-					/>
-				}
-				label="Win Markets Only"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.winMarketsOnly": props.winMarketsOnly
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Rules
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.rules.visible}
-						onChange={val => props.onToggleRules({ visible: !props.rules.visible, open: props.rules.open })}
-					/>
-				}
-				label="Show Panel"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.rules": { visible: props.rules.visible, open: props.rules.open }
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.rules.open}
-						onChange={val => props.onToggleRules({ visible: props.rules.visible, open: !props.rules.open })}
-					/>
-				}
-				label="Panel Open"
+			<Graphs
+				graphs={props.graphs}
+				toggleGraph={props.onToggleGraph}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Training Ladder Auto-Center
-				</Typography>
-			</AppBar>
-			<FormControlLabel
-				control={
-					<Checkbox
-						value="checkedB"
-						color="primary"
-						checked={props.trainingLadderAutoCenter}
-						onChange={val => props.onToggleTrainingLadderAutoCenter(!props.trainingLadderAutoCenter)}
-					/>
-				}
-				label="Default to ON"
+			<MarketInformation
+				marketInfo={props.marketInfo}
+				toggleMarketInformation={props.onToggleMarketInformation}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.trainingLadderAutoCenter": props.trainingLadderAutoCenter
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Ladder Unmatched Column
-				</Typography>
-			</AppBar>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({
-					"settings.ladderUnmatched": props.ladderUnmatched
-				})}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
-			<RadioGroup
-				aria-label="Unmatched Column"
-				name="unmatched "
-				className={classes.group}
-				value={props.ladderUnmatched}
-				onChange={e => {
-					props.onToggleLadderUnmatched(e.target.value);
-				}}
-			>
-				<FormControlLabel
-					value="blank"
-					control={<Radio color="primary" />}
-					label="Unmatched Bets Only"
-					labelPlacement="end"
-				/>
-				<FormControlLabel
-					value="pl"
-					control={<Radio color="primary" />}
-					label="Unmatched Bets + P/L"
-					labelPlacement="end"
-				/>
-				<FormControlLabel
-					value="hedged"
-					control={<Radio color="primary" />}
-					label="Unmatched Bets + Hedge"
-					labelPlacement="end"
-				/>
-			</RadioGroup>
+			<WinMarkets
+				winMarketsOnly={props.winMarketsOnly}
+				updateWinMarketsOnly={props.onUpdateWinMarketsOnly}
+				saveSetting={saveSetting}
+				classes={classes}
+			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Stake Button
-				</Typography>
-			</AppBar>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="One"
-				value={`${props.stakeBtns[0]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({ id: 0, value: e.target.value })
-					}
-				}}
-				margin="normal"
+			<Rules
+				rules={props.rules}
+				toggleRules={props.onToggleRules}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Two"
-				value={`${props.stakeBtns[1]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({ id: 1, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Three"
-				value={`${props.stakeBtns[2]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({ id: 2, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Four"
-				value={`${props.stakeBtns[3]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({ id: 3, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Five"
-				value={`${props.stakeBtns[4]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({ id: 4, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Six"
-				value={`${props.stakeBtns[5]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({ id: 5, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Seven"
-				value={`${props.stakeBtns[6]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateStakeBtn({ id: 6, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({ "settings.stakeBtns": props.stakeBtns })}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
 
+			<LadderAutoCenter
+				trainingLadderAutoCenter={props.trainingLadderAutoCenter}
+				toggleTrainingLadderAutoCenter={props.toggleTrainingLadderAutoCenter}
+				saveSetting={saveSetting}
+				classes={classes}
+			/>
 
+			<LadderUnmatchedCol
+				ladderUnmatched={props.ladderUnmatched}
+				toggleLadderUnmatched={props.onToggleLadderUnmatched}
+				saveSetting={saveSetting}
+				classes={classes}
+			/>
 
-			<AppBar className={classes.appBar} position="static">
-				<Typography variant="h6" className={classes.title}>
-					Liability Button
-				</Typography>
-			</AppBar>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="One"
-				value={`${props.layBtns[0]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({ id: 0, value: e.target.value })
-					}
-				}}
-				margin="normal"
+			<StakeButtons
+				stakeBtns={props.stakeBtns}
+				updateStakeBtn={props.onUpdateStakeBtn}
+				saveSetting={saveSetting}
+				classes={classes}
 			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Two"
-				value={`${props.layBtns[1]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({ id: 1, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Three"
-				value={`${props.layBtns[2]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({ id: 2, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Four"
-				value={`${props.layBtns[3]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({ id: 3, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Five"
-				value={`${props.layBtns[4]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({ id: 4, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Six"
-				value={`${props.layBtns[5]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({ id: 5, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<TextField
-				id="standard-number"
-				className={classes.textField}
-				type="number"
-				label="Seven"
-				value={`${props.layBtns[6]}`}
-				inputProps={{ min: "1" }}
-				onChange={e => {
-					let val = parseInt(e.target.value);
-					if (val && typeof val === 'number') {
-						props.onUpdateLayBtn({ id: 6, value: e.target.value })
-					}
-				}}
-				margin="normal"
-			/>
-			<button
-				className={"save-btn"}
-				onClick={e => saveSetting({ "settings.layBtns": props.layBtns })}
-			>
-				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
-			</button>
 
+			<LayButtons
+				layBtns={props.layBtns}
+				updateLayBtn={props.onUpdateLayBtn}
+				saveSetting={saveSetting}
+				classes={classes}
+			/>
 		</div>
 	);
 };
