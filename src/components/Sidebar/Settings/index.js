@@ -16,6 +16,7 @@ import LadderAutoCenter from "./LadderAutoCenter";
 import LadderUnmatchedCol from "./LadderUnmatchedCol";
 import StakeButtons from "./StakeButtons";
 import LayButtons from "./LayButtons";
+import HorseRacing from "./HorseRacing";
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -148,6 +149,13 @@ const Settings = props => {
 				saveSetting={saveSetting}
 				classes={classes}
 			/>
+
+			<HorseRacing
+				horseRaces={props.horseRaces}
+				toggleHorseRaces={props.onUpdateHorseRaces}
+				saveSetting={saveSetting}
+				classes={classes}
+			/>
 		</div>
 	);
 };
@@ -168,7 +176,8 @@ const mapStateToProps = state => {
 		trainingLadderAutoCenter: state.settings.trainingLadderAutoCenter,
 		ladderUnmatched: state.settings.ladderUnmatched,
 		stakeBtns: state.settings.stakeBtns,
-		layBtns: state.settings.layBtns
+		layBtns: state.settings.layBtns,
+		horseRaces: state.settings.horseRaces
 	}
 }
 
@@ -187,7 +196,8 @@ const mapDispatchToProps = dispatch => {
 		onToggleTrainingLadderAutoCenter: settings => dispatch(actions.toggleTrainingLadderAutoCenter(settings)),
 		onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
 		onUpdateStakeBtn: data => dispatch(actions.updateStakeBtn(data)),
-		onUpdateLayBtn: data => dispatch(actions.updateLayBtn(data))
+		onUpdateLayBtn: data => dispatch(actions.updateLayBtn(data)),
+		onUpdateHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces))
 	}
 }
 

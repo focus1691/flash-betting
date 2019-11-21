@@ -172,3 +172,10 @@ export const setStakeInOneClick = stake => {
         payload: stake
     }
 };
+
+export const setHorseRacingCountries = horseRaces => {
+    return {
+        type: "SET_HORSE_RACE_COUNTRIES",
+        payload: horseRaces
+    }
+};

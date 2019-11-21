@@ -89,6 +89,60 @@ const settingsSchema = mongoose.Schema({
     layBtns: {
         type: Array,
         default: [2.5, 5, 7.5, 10, 12.5, 15, 17.5]
+    },
+    horseRaces: {
+        UK: {
+            type: Boolean,
+            default: true
+        },
+        IE: {
+            type: Boolean,
+            default: false
+        },
+        FR: {
+            type: Boolean,
+            default: false
+        },
+        DE: {
+            type: Boolean,
+            default: false
+        },
+        IT: {
+            type: Boolean,
+            default: false
+        },
+        AE: {
+            type: Boolean,
+            default: false
+        },
+        TR: {
+            type: Boolean,
+            default: false
+        },
+        SG: {
+            type: Boolean,
+            default: false
+        },
+        SE: {
+            type: Boolean,
+            default: false
+        },
+        US: {
+            type: Boolean,
+            default: false
+        },
+        AU: {
+            type: Boolean,
+            default: false
+        },
+        NZ: {
+            type: Boolean,
+            default: false
+        },
+        ZA: {
+            type: Boolean,
+            default: false
+        }
     }
 });
 

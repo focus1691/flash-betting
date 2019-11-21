@@ -66,6 +66,7 @@ const App = props => {
         props.onToggleLadderUnmatched(settings.ladderUnmatched);
         props.onReceiveStakeBtns(settings.stakeBtns);
         props.onReceiveLayBtns(settings.layBtns);
+        props.onReceiveHorseRaces(settings.horseRaces);
       });
 
     /**
@@ -553,6 +554,7 @@ const mapDispatchToProps = dispatch => {
     onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
     onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
     onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
+    onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
