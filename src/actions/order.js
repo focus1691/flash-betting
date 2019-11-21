@@ -55,14 +55,6 @@ export const placeOrder = order => {
           unmatched: newUnmatchedBets,
           matched: order.matchedBets == undefined ? {} : order.matchedBets
         }
-        await fetch('/api/save-order', {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          method: "POST",
-          body: JSON.stringify(adjustedOrder)
-        })
 
         if (order.orderCompleteCallBack !== undefined)
           await order.orderCompleteCallBack(betId, newUnmatchedBets);
@@ -79,40 +71,52 @@ export const cancelOrder = order => {
     return
   }
 
-  // order without anything that might make the payload too large
+  return dispatch => {
+    return cancelOrderAction(order).then(newBets => {
+      dispatch(updateOrders(newBets));
+    })
+  };
+};
+
+// TODO, do we need to move this out since it is not an action that has to do with changing state
+export const cancelOrderAction = async (order) => {
+
+  // order with everything removed that might make the payload too large
   const minimalOrder = {}
   Object.keys(order).map((key) => {
-    if (key !== "unmatchedBets" && key !== "matchedBets") {
+    if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "callback") {
       minimalOrder[key] = order[key]
     }
   })
 
-  return dispatch => {
-    return fetch('/api/cancel-order', {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify(minimalOrder)
-    })
-      .then(res => res.json())
-      .then(json => {
-        const newUnmatchedBets = {};
-        for (const key in order.unmatchedBets) {
-          if (key != order.betId) {
-            newUnmatchedBets[key] = order.unmatchedBets[key]
-          }
-        }
+  const cancelOrder = await fetch('/api/cancel-order', {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    method: "POST",
+    body: JSON.stringify(minimalOrder)
+  }).then(res => res.json()).catch(() => false);
 
-        const newBets = {
-          unmatched: newUnmatchedBets,
-          matched: order.matchedBets ? order.matchedBets : {}
-        }
+  if (cancelOrder) {
+    const newUnmatchedBets = {};
+    for (const key in order.unmatchedBets) {
+      if (key != order.betId) {
+        newUnmatchedBets[key] = order.unmatchedBets[key]
+      }
+    }
+    const newBets = {
+      unmatched: newUnmatchedBets,
+      matched: order.matchedBets ? order.matchedBets : {}
+    }
+    return newBets
+  } else {
+    return {
+      unmatched: order.unmatchedBets ? order.unmatchedBets : {},
+      matched: order.matchedBets ? order.matchedBets : {}
+    };
+  }
+  
+}
 
-
-        dispatch(updateOrders(newBets));
-      });
-  };
-};
 

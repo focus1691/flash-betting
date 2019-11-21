@@ -394,7 +394,7 @@ const App = props => {
                 // If the bet isn't in the unmatchedBets, we should delete it.
                 if (newUnmatchedBets[order.id] !== undefined) {
                   delete newUnmatchedBets[order.id];
-                } else if (order.sr == 0) {
+                } else if (order.sr == 0) { // this is what happens when an order is finished
                   newMatchedBets[order.id] = newUnmatchedBets[order.id];
                   delete newUnmatchedBets[order.id];
                 }

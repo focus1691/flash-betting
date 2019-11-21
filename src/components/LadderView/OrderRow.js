@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { changePriceType, updateOrder } from '../../actions/market';
-import { cancelOrder } from "../../actions/order";
+import { cancelOrder, cancelOrderAction, updateOrders } from "../../actions/order";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
@@ -84,6 +84,32 @@ const OrderRow = props => {
     }
   };
 
+  const cancelAllOrdersOnSelection = async (marketId, selectionId, unmatchedBets, matchedBets) => {
+    const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+
+    if (currentOrders) {
+      // filter all the ones out that arent in the same selection or arent unmatched
+      const openSelectedRunnerOrders = currentOrders.filter(order => order.selectionId === parseInt(selectionId) && (order.status === "EXECUTABLE" || order.status === "PENDING"))
+
+      // this is basically calling 1 bet after another and returning the unmatched bets it gets from it
+      const cancelBets = await openSelectedRunnerOrders.reduce(async (previousPromise, nextOrder) => {
+        const previousCancelOrderUnmatchedBets = await previousPromise;
+        return cancelOrderAction({
+          marketId: nextOrder.marketId,
+          betId: nextOrder.betId,
+          sizeReduction: null,
+          matchedBets: matchedBets,
+          unmatchedBets: previousCancelOrderUnmatchedBets && previousCancelOrderUnmatchedBets.unmatched ? previousCancelOrderUnmatchedBets.unmatched : unmatchedBets,
+        });
+      }, Promise.resolve());
+
+      props.onUpdateBets({
+        unmatched: cancelBets.unmatched,
+        matched: cancelBets.matched
+      })
+    }
+  }
+
   const matchedBets = Object.values(props.bets.matched).filter(order => parseFloat(order.selectionId) === parseFloat(props.selectionId));
   const allUnmatchedBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, props.bets.unmatched)[props.selectionId]
   const unmatchedBetsArr = allUnmatchedBets ? Object.values(allUnmatchedBets) : []
@@ -141,7 +167,9 @@ const OrderRow = props => {
             <button onClick={props.onChangePriceType(props.priceType === "STAKE" ? "LIABILITY" : "STAKE")}>
               {props.priceType === "STAKE" ? "S" : "L"}
             </button>
-            <button>K</button>
+            <button onClick={() => cancelAllOrdersOnSelection(props.market.marketId, props.selectionId, props.bets.unmatched, props.bets.matched)}>
+              K
+            </button>
           </td>
           <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
             <table className="lay-table">
@@ -191,6 +219,7 @@ const mapDispatchToProps = dispatch => {
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
+    onUpdateBets: bets => dispatch(updateOrders(bets)), // this is for the bets
   }
 }
 

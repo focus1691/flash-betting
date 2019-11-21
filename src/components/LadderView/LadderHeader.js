@@ -60,10 +60,10 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
       </div>
       <div>
         <span style={{ visibility: ladderLTPHedge === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? '#3692b0' : 'red' }}>
-          {"£" + Math.abs(parseFloat(ladderLTPHedge).toFixed(2))}
+          {"£" + parseFloat(Math.abs(parseFloat(ladderLTPHedge))).toFixed(2)}
         </span>
         <span style={{ visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? '#3692b0' : 'red' }}>
-          {"£" + Math.abs(parseFloat(newStake).toFixed(2))}
+          {"£" + parseFloat(Math.abs(parseFloat(newStake))).toFixed(2)}
         </span>
       </div>
     </div>
