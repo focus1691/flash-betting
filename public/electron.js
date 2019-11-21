@@ -409,23 +409,12 @@ app.get("/api/list-competition-events", (request, response) => {
 });
 
 app.get("/api/list-markets", (request, response) => {
-	const filter = {
-		eventIds: [request.query.eventId],
-
-	};
-	switch (request.query.eventId) {
-		case 1:
-			filter.marketTypeCodes = ["MATCH_ODDS"];
-			break;
-		case 7:
-			filter.marketTypeCodes = ["WIN"];
-			break;
-		default: break;
-	}
-
 	betfair.listMarketCatalogue(
 		{
-			filter,
+			filter: {
+				eventIds: [request.query.eventId],
+				"marketTypeCodes": request.query.marketTypeCodes
+			},
 			sort: "MAXIMUM_TRADED",
 			maxResults: 1000
 		},
