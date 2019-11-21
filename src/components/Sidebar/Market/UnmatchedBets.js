@@ -143,7 +143,7 @@ const UnmatchedBets = props => {
                           <tr
                             id="menu-unmatched-bet"
                             style={{
-                              backgroundColor: order.side === "BACK" ? "#FAC9D7" : "#A6D8FF"
+                              backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
                             }}
                           >
 
