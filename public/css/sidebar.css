@@ -119,6 +119,39 @@
 	border: 0px;
 }
 
+.popup-graph {
+	background: #fff;
+	border: 1px solid;
+	padding: 10px;
+}
+
+.popup-graph img:nth-child(2) {
+	width: 400px;
+	height: 300px;
+}
+
+.popup-graph span {
+	font-size: small;
+	font-weight: bold;
+}
+
+.close-popup-graph {
+	float: right;
+	cursor: pointer;
+}
+
+.popup-graph-toggle-transparency {
+	text-align: center;
+	background: none!important;
+	border: none;
+	padding: 0!important;
+	margin-left: 10%;
+	font-family: arial, sans-serif;
+	color: #069;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 #menu-graph img {
 	width: 100%;
 }

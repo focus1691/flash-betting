@@ -18,9 +18,7 @@ const Graph = props => {
 
   return (
     <div id="menu-graph">
-      {graph ? <img alt={"Chart"} src={graph} onDoubleClick={e => {
-        props.onOpenGraph();
-      }} /> : null}
+      {graph ? <img alt={"Chart"} src={graph} onDoubleClick={props.onOpenGraph()} /> : null}
     </div>
   );
 };
@@ -35,7 +33,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onOpenGraph: () => dispatch(openGraph())
+    onOpenGraph: () => e => dispatch(openGraph())
   };
 };
 
