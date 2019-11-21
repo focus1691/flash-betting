@@ -1,7 +1,8 @@
 import update from 'immutability-helper';
 
 const initialState = {
-  view: "HomeView",
+  defaultView: null,
+  view: null,
   isLoading: true,
   premiumMember: false,
   premiumPopupOpen: false,
@@ -42,6 +43,8 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SET_DEFAULT_VIEW":
+      return { ...state, defaultView: action.payload };
     case "ACTIVE_VIEW":
       return { ...state, view: action.payload };
     case "SET_LOADING":

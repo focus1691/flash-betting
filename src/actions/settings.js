@@ -1,3 +1,10 @@
+export const setDefaultView = view => {
+    return {
+        type: "SET_DEFAULT_VIEW",
+        payload: view
+    }
+};
+
 export const setActiveView = view => {
     return {
         type: "ACTIVE_VIEW",

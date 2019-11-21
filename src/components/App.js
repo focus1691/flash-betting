@@ -53,6 +53,8 @@ const App = props => {
     await fetch(`/api/get-user-settings`)
       .then(res => res.json())
       .then(settings => {
+        props.onToggleDefaultView(settings.defaultView);
+        props.onToggleActiveView(settings.defaultView);
         props.onToggleSounds(settings.sounds);
         props.onToggleTools(settings.tools);
         props.onToggleUnmatchedBets(settings.unmatchedBets);
@@ -535,6 +537,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setLoading: isLoading => dispatch(actions.setIsLoading(isLoading)),
+    onToggleDefaultView: view => dispatch(actions.setDefaultView(view)),
+    onToggleActiveView: view => dispatch(actions.setActiveView(view)),
     onToggleSounds: isSelected => dispatch(actions.toggleSound(isSelected)),
     onToggleTools: settings => dispatch(actions.toggleTools(settings)),
     onToggleUnmatchedBets: settings =>

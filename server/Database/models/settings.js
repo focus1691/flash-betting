@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const settingsSchema = mongoose.Schema({
+    defaultView: {
+        type: String,
+        default: "LadderView"
+    },
     trainingBalance: {
         type: Number,
         default: true

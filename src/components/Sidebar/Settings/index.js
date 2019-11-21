@@ -48,6 +48,48 @@ const Settings = props => {
 	return (
 		<div>
 
+			<AppBar className={classes.appBar} position="static">
+				<Typography variant="h6" className={classes.title}>
+					Default View
+				</Typography>
+			</AppBar>
+			<button
+				className={"save-btn"}
+				onClick={e => saveSetting({
+					"settings.defaultView": props.defaultView
+				})}
+			>
+				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
+			</button>
+			<RadioGroup
+				aria-label="Default View"
+				name="View"
+				className={classes.group}
+				value={props.defaultView}
+				onChange={e => {
+					props.onToggleDefaultView(e.target.value);
+				}}
+			>
+				<FormControlLabel
+					value="LadderView"
+					control={<Radio color="primary" />}
+					label="Ladder"
+					labelPlacement="end"
+				/>
+				<FormControlLabel
+					value="GridView"
+					control={<Radio color="primary" />}
+					label="Grid"
+					labelPlacement="end"
+				/>
+				<FormControlLabel
+					value="HomeView"
+					control={<Radio color="primary" />}
+					label="Home"
+					labelPlacement="end"
+				/>
+			</RadioGroup>
+
 			<TrainingBank
 				receiveTrainingBalance={balance => props.onReceiveTrainingBalance(balance)}
 				styles={classes}
@@ -349,8 +391,8 @@ const Settings = props => {
 				<img alt={"Save"} src={window.location.origin + "/icons/save.png"} />
 			</button>
 			<RadioGroup
-				aria-label="gender"
-				name="gender2"
+				aria-label="Unmatched Column"
+				name="unmatched "
 				className={classes.group}
 				value={props.ladderUnmatched}
 				onChange={e => {
@@ -619,6 +661,8 @@ const Settings = props => {
 
 const mapStateToProps = state => {
 	return {
+		defaultView: state.settings.defaultView,
+		view: state.settings.view,
 		trainingBalance: state.settings.trainingBalance,
 		sounds: state.settings.sounds,
 		tools: state.settings.tools,
@@ -637,6 +681,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
+		onToggleDefaultView: view => dispatch(actions.setDefaultView(view)),
 		onReceiveTrainingBalance: balance => dispatch(actions.setTrainingBalance(balance)),
 		onToggleSounds: isSelected => dispatch(actions.toggleSound(isSelected)),
 		onToggleTools: settings => dispatch(actions.toggleTools(settings)),
