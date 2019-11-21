@@ -7,6 +7,10 @@ const ActiveBets = () => {
 
 	const [events, setEvents] = useState([]);
 
+	const openMarket = marketId => e => {
+		window.open(`/dashboard?marketId=${marketId}`);
+	};
+
 	useEffect(() => {
 		fetch('/api/get-events-with-active-bets')
 			.then(res => res.json())
@@ -21,12 +25,12 @@ const ActiveBets = () => {
 				return (
 					<ListItem
 						button
-						onClick={e => window.open(`/dashboard?marketId=${event.marketId}`)}
+						onClick={openMarket(event.marketId)}
 					>
 						<ListItemText>{event.marketName}</ListItemText>
 					</ListItem>
 				);
-			});	
+			});
 		}
 		return null;
 	}
