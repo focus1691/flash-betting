@@ -16,16 +16,19 @@ const ActiveBets = () => {
 	}, []);
 
 	const renderEvents = () => {
-		return events.map(event => {
-			return (
-				<ListItem
-					button
-					onClick={e => window.open(`/dashboard?marketId=${event.marketId}`)}
-				>
-					<ListItemText>{event.marketName}</ListItemText>
-				</ListItem>
-			);
-		});
+		if (events) {
+			return events.map(event => {
+				return (
+					<ListItem
+						button
+						onClick={e => window.open(`/dashboard?marketId=${event.marketId}`)}
+					>
+						<ListItemText>{event.marketName}</ListItemText>
+					</ListItem>
+				);
+			});	
+		}
+		return null;
 	}
 
 	return (
