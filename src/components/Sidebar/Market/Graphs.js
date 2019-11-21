@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { openGraph } from "../../../actions/graph";
+import { openGraph } from "../../../actions/draggable";
 
 const Graph = props => {
   const [graph, setGraph] = useState(null);

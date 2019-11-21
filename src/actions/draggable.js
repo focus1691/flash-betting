@@ -11,3 +11,10 @@ export const openGraph = () => {
     payload: null
   };
 };
+
+export const openLiveStream = () => {
+  return {
+    type: "OPEN_LIVE_STREAM",
+    payload: null
+  };
+};

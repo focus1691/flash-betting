@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { openGraph } from "../actions/graph";
+import { openGraph } from "../../actions/draggable";
 
 const DraggableGraph = props => {
 
   const [transparent, setTransparent] = useState(false);
 
-  if (props.selection) {
-    console.log(props.selection);
-  }
-
-  return props.selection && props.graph.open ? (
+  return props.selection && props.open ? (
     <div className={"popup-graph"} style={{ opacity: transparent ? 0.5 : 1 }}>
       <div>
         <span>{props.selection.runnerName}</span>
@@ -39,7 +35,7 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     market: state.market.currentMarket,
     selection: state.market.runnerSelection,
-    graph: state.graph
+    open: state.draggable.graphOpen
   };
 };
 

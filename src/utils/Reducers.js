@@ -7,7 +7,7 @@ import stopLossReducer from "../reducers/stopLossReducer";
 import stopEntryReducer from "../reducers/stopEntryReducer";
 import backReducer from "../reducers/backReducer";
 import layReducer from "../reducers/layReducer";
-import graphReducer from "../reducers/graphReducer";
+import draggableReducer from "../reducers/draggableReducer";
 import fillOrKillReducer from "../reducers/fillOrKillReducer";
 import tickOffsetReducer from "../reducers/tickOffsetReducer";
 
@@ -23,5 +23,5 @@ export default {
   lay: layReducer,
   fillOrKill: fillOrKillReducer,
   stopEntry: stopEntryReducer,
-  graph: graphReducer
+  draggable: draggableReducer
 };

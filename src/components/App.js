@@ -25,7 +25,7 @@ import { placeOrder, updateOrders } from "../actions/order";
 import { updateFillOrKillList } from "../actions/fillOrKill";
 import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/ExchangeStreaming/OCMHelper";
 import Draggable from "react-draggable";
-import DraggableGraph from "./DraggableGraph";
+import DraggableGraph from "./Draggable/Graph";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 import { sortLadder } from "../utils/ladder/SortLadder";

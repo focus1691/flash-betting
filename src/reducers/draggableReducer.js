@@ -1,6 +1,7 @@
 const initialState = {
   transparent: false,
-  open: false
+  graphOpen: false,
+  liveStreamOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -8,7 +9,9 @@ const reducer = (state = initialState, action) => {
     case "TOGGLE_GRAPH_TRANSPARENCY":
       return { ...state, transparent: action.payload };
     case "OPEN_GRAPH":
-      return { ...state, open: !state.open };
+      return { ...state, graphOpen: !state.graphOpen };
+    case "OPEN_LIVE_STREAM":
+      return { ...state, liveStreamOpen: !state.liveStreamOpen }
     default:
       return state;
   }
