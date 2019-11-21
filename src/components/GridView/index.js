@@ -29,6 +29,8 @@ const Grid = props => {
 	const oneClickRef = createRef();
 
 	const handlePriceClick = (key, backLay, odds) => e => {
+		e.preventDefault();
+
 		if (!props.oneClickOn) {
 			props.onUpdateOrder({
 				id: key,
@@ -120,6 +122,7 @@ const Grid = props => {
 				className="grid-cell"
 				onMouseEnter={handlePriceHover(key)}
 				onClick={handlePriceClick(key, backLay, odds)}
+				onContextMenu={handlePriceClick(key, backLay === "BACK" ? "LAY" : "BACK", odds)}
 			>
 				<span>{odds}</span>
 				<span>{matched}</span>
