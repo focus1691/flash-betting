@@ -42,28 +42,28 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
           <span className="contender-odds"
             style={{
               visibility: ordersOnMarket ? 'visible' : 'hidden',
-              color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'
+              color: PL > 0 ? '#3692b0' : 'red'
             }}
-          >{PL}</span>
+          >{"£" + Math.abs(PL)}</span>
           <div className={"contender-details"}>
             <span>{getTrainerAndJockey(runner.metadata)}</span>
           </div>
           <span className="contender-odds"
             style={{
               visibility: oddsHovered.odds > 0 && ordersOnMarket ? 'visible' : 'hidden',
-              color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'
+              color: oddsHoveredCalc > 0 ? '#3692b0' : 'red' // green = rgb(106, 177, 79)
             }}>
             {/* calculates what to add or subtract based on odds hovered */}
-            {oddsHoveredCalc}
+            {"£" + Math.abs(oddsHoveredCalc)}
           </span>
         </div>
       </div>
       <div>
-        <span style={{ visibility: ladderLTPHedge === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
-          {parseFloat(ladderLTPHedge).toFixed(2)}
+        <span style={{ visibility: ladderLTPHedge === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? '#3692b0' : 'red' }}>
+          {"£" + Math.abs(parseFloat(ladderLTPHedge).toFixed(2))}
         </span>
-        <span style={{ visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
-          {parseFloat(newStake).toFixed(2)}
+        <span style={{ visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? '#3692b0' : 'red' }}>
+          {"£" + Math.abs(parseFloat(newStake).toFixed(2))}
         </span>
       </div>
     </div>
