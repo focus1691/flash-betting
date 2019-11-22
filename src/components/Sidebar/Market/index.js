@@ -26,7 +26,8 @@ const ExpansionPanel = withStyles({
     border: "1px solid #fff",
     boxShadow: "none",
     "&:not(:last-child)": {
-      borderBottom: 0
+      borderBottom: 0,
+      margin: 0,
     },
   },
   expanded: {}
