@@ -14,6 +14,11 @@ import { updateFillOrKillList } from "../../actions/fillOrKill";
 
 const OrderRow = props => {
 
+  const matchedBets = Object.values(props.bets.matched).filter(order => parseFloat(order.selectionId) === parseFloat(props.selectionId));
+  const allUnmatchedBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, props.bets.unmatched)[props.selectionId]
+  const allUnmatchedSpecialBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, {})[props.selectionId]
+  const unmatchedBetsArr = allUnmatchedBets ? Object.values(allUnmatchedBets) : []
+
   const cancelUnmatchedOrder = order => {
     let ordersToRemove = [];
     // figure out which strategy it's using and make a new array without it
@@ -84,7 +89,77 @@ const OrderRow = props => {
     }
   };
 
-  const cancelAllOrdersOnSelection = async (marketId, selectionId, unmatchedBets, matchedBets) => {
+  const cancelSpecialOrders = orders => {
+
+    let ordersToRemove = [];
+    const newBackList = Object.assign({}, props.backList);
+    const newLayList = Object.assign({}, props.layList);
+    const newStopEntryList = Object.assign({}, props.stopEntryList);
+    const newTickOffsetList = Object.assign({}, props.tickOffsetList);
+    const newStopLossList = Object.assign({}, props.stopLossList);
+    const newFillOrKill = Object.assign({}, props.fillOrKillList)
+    Object.values(orders).map(rfs => {
+      rfs.map(order => {
+        // figure out which strategy it's using and make a new array without it
+        switch (order.strategy) {
+          case "Back":
+            newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            break;
+          case "Lay":
+            newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            break;
+          case "Stop Entry":
+            newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            break;
+          case "Tick Offset":
+            delete newTickOffsetList[order.rfs]
+            break;
+          case "Stop Loss":
+            delete newStopLossList[order.selectionId];
+            break;
+          case "None":
+            // if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
+            if (props.fillOrKillList[order.betId] !== undefined) {
+              ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId])
+              delete newFillOrKill[order.betId];
+              
+            }
+            break;
+          default:
+            break;
+        }
+      
+        ordersToRemove = ordersToRemove.concat(order);
+
+        // delete from database
+        try {
+          fetch('/api/remove-orders', {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify(ordersToRemove)
+          })
+        } catch (e) {
+      
+        }
+      })
+    })
+
+    props.onChangeBackList(newBackList);
+    props.onChangeLayList(newLayList);
+    props.onChangeStopEntryList(newStopEntryList);
+    props.onChangeTickOffsetList(newTickOffsetList)
+    props.onChangeStopLossList(newStopLossList)
+    props.onChangeFillOrKillList(newFillOrKill)
+
+  };
+
+  const cancelAllOrdersOnSelection = async (marketId, selectionId, unmatchedBets, matchedBets, specialBets, betCanceler) => {
+
+    betCanceler(specialBets)
+    
     const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
 
     if (currentOrders) {
@@ -110,11 +185,8 @@ const OrderRow = props => {
         matched: cancelBets.matched
       })
     }
-  }
 
-  const matchedBets = Object.values(props.bets.matched).filter(order => parseFloat(order.selectionId) === parseFloat(props.selectionId));
-  const allUnmatchedBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, props.bets.unmatched)[props.selectionId]
-  const unmatchedBetsArr = allUnmatchedBets ? Object.values(allUnmatchedBets) : []
+  }
 
   return (
     <div className={"order-row"}>
@@ -169,7 +241,7 @@ const OrderRow = props => {
             <button onClick={props.onChangePriceType(props.priceType === "STAKE" ? "LIABILITY" : "STAKE")}>
               {props.priceType === "STAKE" ? "S" : "L"}
             </button>
-            <button onClick={() => cancelAllOrdersOnSelection(props.market.marketId, props.selectionId, props.bets.unmatched, props.bets.matched)}>
+            <button onClick={() => cancelAllOrdersOnSelection(props.market.marketId, props.selectionId, props.bets.unmatched, props.bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}>
               K
             </button>
           </td>

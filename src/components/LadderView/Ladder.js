@@ -13,7 +13,7 @@ import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
-                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, onUpdateBets, 
+                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, 
                   volume = [], ladderUnmatched, stake }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
@@ -172,12 +172,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                         : ""
                     }
                     percent={ladder[id].percent}
-                    onUpdateBets = {onUpdateBets}
                     setLadderSideLeft = {setLadderSideLeft}
                     marketId = {market.marketId}
                     selectionId = {id}
-                    unmatchedBets = {unmatchedBets}
-                    matchedBets = {matchedBets}
                     ladderSideLeft = {ladderSideLeft}
                 />
                     <AutoSizer>
