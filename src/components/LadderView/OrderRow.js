@@ -103,6 +103,8 @@ const OrderRow = props => {
         });
       }, Promise.resolve());
 
+      if (cancelBets === undefined) return;
+
       props.onUpdateBets({
         unmatched: cancelBets.unmatched,
         matched: cancelBets.matched
