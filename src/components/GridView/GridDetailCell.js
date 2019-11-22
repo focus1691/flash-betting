@@ -12,7 +12,7 @@ const GridDetailCell = props => {
 
   const selectionMatchedBets = Object.values(props.bets.matched).filter(bet => parseInt(bet.selectionId) === parseInt(props.runner.selectionId))
 
-  const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) > 0 ? "BACK" : "LAY"
+  const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) <= 0 ? "BACK" : "LAY"
 
   const hedgeSize = selectionMatchedBets !== undefined ?
     selectionMatchedBets.reduce((a, b) => {

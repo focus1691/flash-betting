@@ -119,7 +119,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                 ladderLTPHedge = profit;
             }
 
-            const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) > 0 ? "BACK" : "LAY"
+            const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) <= 0 ? "BACK" : "LAY"
 
             fullLadderWithProfit[item.odds][side == "BACK" ? 'backProfit' : "layProfit"] = profit
         }
