@@ -1,11 +1,92 @@
 import React from "react";
-import { cancelOrderAction } from "../../actions/order";
+import { connect } from "react-redux";
+import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
+import { updateStopLossList } from "../../actions/stopLoss";
+import { updateTickOffsetList } from "../../actions/tickOffset";
+import { updateStopEntryList } from "../../actions/stopEntry";
+import { updateLayList } from "../../actions/lay";
+import { updateBackList } from "../../actions/back";
+import { updateFillOrKillList } from "../../actions/fillOrKill";
+import { cancelOrderAction, updateOrders } from "../../actions/order";
 
-export default ({ ltp, tv, percent, setLadderSideLeft, ladderSideLeft, onUpdateBets, marketId, selectionId, unmatchedBets, matchedBets }) => {
+const PercentageRow = ({ ltp, tv, percent, setLadderSideLeft, ladderSideLeft, onUpdateBets, marketId, selectionId, 
+                         bets, stopLossList, tickOffsetList, stopEntryList, layList, backList, fillOrKillList,
+                         onChangeBackList, onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList}) => {
   
   const leftSide = ladderSideLeft.toLowerCase()
 
-  const cancelAllOrdersOnSide = async (marketId, selectionId, side, unmatchedBets, matchedBets) => {
+  const allUnmatchedSpecialBets = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, {})[selectionId]
+
+  const cancelSpecialOrders = orders => {
+
+    let ordersToRemove = [];
+    const newBackList = Object.assign({}, backList);
+    const newLayList = Object.assign({}, layList);
+    const newStopEntryList = Object.assign({}, stopEntryList);
+    const newTickOffsetList = Object.assign({}, tickOffsetList);
+    const newStopLossList = Object.assign({}, stopLossList);
+    const newFillOrKill = Object.assign({}, fillOrKillList)
+    Object.values(orders).map(rfs => {
+      rfs.map(order => {
+        // figure out which strategy it's using and make a new array without it
+        switch (order.strategy) {
+          case "Back":
+            newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            break;
+          case "Lay":
+            newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            break;
+          case "Stop Entry":
+            newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            break;
+          case "Tick Offset":
+            delete newTickOffsetList[order.rfs]
+            break;
+          case "Stop Loss":
+            delete newStopLossList[order.selectionId];
+            break;
+          case "None":
+            // if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
+            if (fillOrKillList[order.betId] !== undefined) {
+              ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId])
+              delete newFillOrKill[order.betId];
+            }
+            break;
+          default:
+            break;
+        }
+      
+        ordersToRemove = ordersToRemove.concat(order);
+
+        // delete from database
+        try {
+          fetch('/api/remove-orders', {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify(ordersToRemove)
+          })
+        } catch (e) {
+      
+        }
+      })
+    })
+
+    onChangeBackList(newBackList);
+    onChangeLayList(newLayList);
+    onChangeStopEntryList(newStopEntryList);
+    onChangeTickOffsetList(newTickOffsetList)
+    onChangeStopLossList(newStopLossList)
+    onChangeFillOrKillList(newFillOrKill)
+  };
+  
+
+  const cancelAllOrdersOnSide = async (marketId, selectionId, side, unmatchedBets, matchedBets, specialBets, betCanceler) => {
+    
+    betCanceler(specialBets)
+
     const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
 
     if (currentOrders) {
@@ -36,7 +117,11 @@ export default ({ ltp, tv, percent, setLadderSideLeft, ladderSideLeft, onUpdateB
   return (
     <div className = {"percentage-row"}>
       <div colSpan={3} className={'th'}>{tv}</div>
-      <div className = {"th"} style = {{cursor: 'pointer'}} onClick={() => cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'LAY' : 'BACK', unmatchedBets, matchedBets)}/>
+      <div 
+        className = {"th"} 
+        style = {{cursor: 'pointer'}} 
+        onClick={() => cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'LAY' : 'BACK', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
+      />
       <div className = {"th"} style={{backgroundColor: leftSide == 'lay' ? "#FCC9D3" : "#BCE4FC"}}>
         {`${percent[leftSide]}%`}
       </div>
@@ -58,7 +143,39 @@ export default ({ ltp, tv, percent, setLadderSideLeft, ladderSideLeft, onUpdateB
           </div>
       <div className = {"th"} style={{backgroundColor: leftSide == 'lay' ? "#BCE4FC" : "#FCC9D3"}}>
         {`${percent[leftSide === "lay" ? "back" : "lay"]}%`}</div>
-      <div className = {"th"} style = {{cursor: 'pointer'}} onClick={() => cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'BACK' : 'LAY', unmatchedBets, matchedBets)}/>
+      <div 
+        className = {"th"} 
+        style = {{cursor: 'pointer'}} 
+        onClick={() => cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'BACK' : 'LAY', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
+      />
     </div>
   )
 };
+
+const mapStateToProps = state => {
+  return {
+    priceType: state.market.priceType,
+    market: state.market.currentMarket,
+    bets: state.order.bets,
+    stopLossList: state.stopLoss.list,
+    tickOffsetList: state.tickOffset.list,
+    stopEntryList: state.stopEntry.list,
+    layList: state.lay.list,
+    backList: state.back.list,
+    fillOrKillList: state.fillOrKill.list,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onChangeStopLossList: list => dispatch(updateStopLossList(list)),
+    onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
+    onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
+    onChangeLayList: list => dispatch(updateLayList(list)),
+    onChangeBackList: list => dispatch(updateBackList(list)),
+    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
+    onUpdateBets: bets => dispatch(updateOrders(bets)), // this is for the bets
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow)
