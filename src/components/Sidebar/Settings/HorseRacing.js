@@ -18,7 +18,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                     setChangeMade(false);
                     saveSetting({
                         "settings.horseRaces": {
-                            UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                            GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                             IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                             US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                         }
@@ -42,18 +42,18 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                     <Checkbox
                         value="checkedB"
                         color="primary"
-                        checked={horseRaces.UK}
+                        checked={horseRaces.GB}
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: !horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: !horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
                         }}
                     />
                 }
-                label="UK"
+                label="GB"
             />
             {renderSaveBtn()}
             <FormControlLabel
@@ -65,7 +65,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: !horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: !horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -83,7 +83,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: !horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: !horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -101,7 +101,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: !horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: !horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -119,7 +119,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: !horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -137,7 +137,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: !horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -155,7 +155,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: !horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -173,7 +173,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: !horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -191,7 +191,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: !horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -209,7 +209,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: !horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -227,7 +227,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: !horseRaces.AU, NZ: horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -245,7 +245,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: !horseRaces.NZ, ZA: horseRaces.ZA
                             })
@@ -263,7 +263,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         onChange={e => {
                             setChangeMade(true);
                             toggleHorseRaces({
-                                UK: horseRaces.UK, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
+                                GB: horseRaces.GB, IE: horseRaces.IE, FR: horseRaces.FR, DE: horseRaces.DE,
                                 IT: horseRaces.IT, AE: horseRaces.AE, TR: horseRaces.TR, SG: horseRaces.SG, SE: horseRaces.SE,
                                 US: horseRaces.US, AU: horseRaces.AU, NZ: horseRaces.NZ, ZA: !horseRaces.ZA
                             })

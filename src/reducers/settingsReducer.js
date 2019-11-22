@@ -40,7 +40,7 @@ const initialState = {
   layBtns: [2.5, 5, 7.5, 10, 12.5, 15, 17.5],
   stake: {},
   horseRaces: {
-    UK: true,
+    GB: true,
     IE: false,
     FR: false,
     DE: false,

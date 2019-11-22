@@ -91,7 +91,7 @@ const settingsSchema = mongoose.Schema({
         default: [2.5, 5, 7.5, 10, 12.5, 15, 17.5]
     },
     horseRaces: {
-        UK: {
+        GB: {
             type: Boolean,
             default: true
         },
