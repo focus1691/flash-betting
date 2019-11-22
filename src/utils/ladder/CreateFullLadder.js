@@ -116,6 +116,17 @@ const getNextPrice = (currentPrice, selectedVal) => {
   return newPrice;
 };
 
+const getPriceNTicksAway = (price, N) => {
+  if (N === undefined || N === null || typeof "N" != "number") return null;
+  if (N <= 0) return price;
+
+  let index = ALL_PRICES.indexOf(price) + N;
+  let newPrice = ALL_PRICES[index];
+
+  if (newPrice === -1) return price;
+  return newPrice;
+};
+
 /**
  * This function finds keys of back/lay price objects 5 places either side of the LTP
  * Used to calculate the back/lay percentages for the Ladder View
@@ -185,5 +196,6 @@ export {
   formatPrice,
   ALL_PRICES,
   calcBackLayPercentages,
-  getNextPrice
+  getNextPrice,
+  getPriceNTicksAway
 };
