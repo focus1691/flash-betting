@@ -327,10 +327,10 @@ app.get("/api/list-todays-card", (request, response) => {
 			"eventTypeIds": [
 				request.query.sportId
 			],
-			"marketTypeCodes": [
+			"marketTypeCodes": request.query.marketTypes !== 'undefined' ? [
 				request.query.marketTypes
-			],
-			"marketCountries": request.query.marketCountries,
+			] : undefined,
+			"marketCountries": JSON.parse(request.query.country),
 			"marketStartTime": {
 				"from": new Date().toJSON(),
 				"to": new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON()

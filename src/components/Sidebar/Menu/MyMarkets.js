@@ -10,6 +10,7 @@ import SelectCompetition from "./SelectCompetition";
 import SelectEvent from "./SelectEvent";
 import SelectMarket from "./SelectMarket";
 import Divider from '@material-ui/core/Divider';
+import { getHorseRaceCountries } from "../../../utils/Bets/GetHorseRaceCountries";
 
 const MyMarkets = props => {
 
@@ -67,12 +68,11 @@ const MyMarkets = props => {
 		}
 	
 		const response = await fetch(
-		  `/api/${api}?sportId=${sportId}&&winMarketsOnly=${props.winMarketsOnly}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
+		  `/api/${api}?sportId=${sportId}&&marketTypes=${props.winMarketsOnly ? 'WIN' : undefined}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
 		);
 		const data = await response.json();
 		
 		const newSport = Object.assign({}, currentSport);
-
 		newSport[currentMarket] = marketSelection;
 		newSport[marketList] = sortMarkets(mapMarkets(data));
 		if (newSport.currentSportId === undefined) newSport.currentSportId = sportId;
@@ -101,6 +101,8 @@ const MyMarkets = props => {
         return Date.parse(a.marketStartTime) - Date.parse(b.marketStartTime)
     }
 
+	
+	// this handles all the markets no matter what kind it is, we need this at the start for later
 	const handleSelectMyMarket = (id, name, sportId, type, country) => {
 		/*
 			id - id for the selection
@@ -115,7 +117,7 @@ const MyMarkets = props => {
 			case "Sport":
 				// its a today's card
 				if (/TC-/gm.test(id)) {
-					handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-todays-card', id.replace(/TC-/, ''), '', '', '', data => data.map(item => getNewName(item)), data => data.sort(sortByTime))
+					handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-todays-card', id.replace(/TC-/, ''), JSON.stringify(getHorseRaceCountries(props.horseRaces)), '', '', data => data.map(item => getNewName(item)), data => data.sort(sortByTime))
 					break;
 				}
 				handleMarketClick({id}, 'currentSportId', 'sportCountries', 'list-countries', sportId)
@@ -250,6 +252,7 @@ const MyMarkets = props => {
 						handleClick={handleMarketClick}
 						myMarkets = {props.myMarkets}
 						updateMyMarkets = {updateMyMarkets}
+						horseRaces = {props.horseRaces}
 					/>
             }
 		</List>
@@ -260,7 +263,8 @@ const mapStateToProps = state => {
 	return {
 		myMarkets: state.market.myMarkets,
 		sports: state.sports,
-		winMarketsOnly: state.settings.winMarketsOnly
+		winMarketsOnly: state.settings.winMarketsOnly,
+		horseRaces: state.settings.horseRaces
 	};
 };
 

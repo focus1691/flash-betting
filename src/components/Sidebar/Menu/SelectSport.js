@@ -4,8 +4,9 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from "@material-ui/core/Divider";
+import { getHorseRaceCountries } from "../../../utils/Bets/GetHorseRaceCountries";
 
-export default ({ sports, currentSportId, countries, handleClick, myMarkets, updateMyMarkets }) => {
+export default ({ sports, currentSportId, countries, handleClick, myMarkets, updateMyMarkets, horseRaces }) => {
 
     const getNewName = item => {
         const marketStartTime = new Date(item.marketStartTime)
@@ -26,7 +27,6 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
     }
 
     const selectSportClick = (sport) =>{
-
         // check if its a todays card
         if (/TC-/gm.test(sport.eventType.id)) {
             handleClick(
@@ -35,7 +35,7 @@ export default ({ sports, currentSportId, countries, handleClick, myMarkets, upd
                 "eventMarkets",
                 "list-todays-card",
                 sport.eventType.id.replace(/TC-/, ''),
-                '',
+                JSON.stringify(getHorseRaceCountries(horseRaces)),
                 '',
                 '',
                 data => data.map(item => getNewName(item)),
