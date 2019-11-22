@@ -4,8 +4,7 @@ import { sumMatchedBets } from "../../utils/Bets/BettingCalculations";
 import { formatTotalMatched } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
 import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
-import { openLiveStream } from "../../utils/Market/LiveStream";
-import crypto from 'crypto'
+import crypto from 'crypto';
 
 export default ({
   market,
@@ -24,7 +23,8 @@ export default ({
   bets,
   ltpList,
   onPlaceOrder,
-  marketCashout
+  marketCashout,
+  openLiveStream
 }) => (
     <React.Fragment>
       <tr id="grid-header">
@@ -41,7 +41,7 @@ export default ({
             <img
               src={window.location.origin + "/icons/youtube.png"}
               alt={"Video"}
-              onClick={openLiveStream(market)}
+              onClick={openLiveStream()}
             />
           </span>
           <h1>

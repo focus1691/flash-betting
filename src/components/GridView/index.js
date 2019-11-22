@@ -20,6 +20,7 @@ import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { isValidPrice } from "../../utils/Bets/Validator";
 import SuspendedWarning from "./SuspendedWarning";
+import { openLiveStream } from "../../actions/draggable";
 
 const Grid = props => {
 
@@ -294,6 +295,7 @@ const Grid = props => {
 						ltpList={ltpSelectionIdObject}
 						onPlaceOrder={props.onPlaceOrder}
 						marketCashout={marketCashout}
+						openLiveStream={props.onOpenLiveStream}
 					/>
 					{props.marketOpen
 						? props.marketStatus === "SUSPENDED"
@@ -347,6 +349,7 @@ const mapDispatchToProps = dispatch => {
 		onToggleOneClick: active => dispatch(actions.toggleOneClick(active)),
 		setStakeInOneClick: stake => dispatch(setStakeInOneClick(stake)),
 		onPlaceOrder: order => dispatch(placeOrder(order)),
+		onOpenLiveStream: () => e => dispatch(openLiveStream())
 	};
 };
 

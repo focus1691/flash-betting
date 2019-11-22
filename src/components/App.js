@@ -26,6 +26,7 @@ import { updateFillOrKillList } from "../actions/fillOrKill";
 import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/ExchangeStreaming/OCMHelper";
 import Draggable from "react-draggable";
 import DraggableGraph from "./Draggable/Graph";
+import DraggableLiveStream from "./Draggable/LiveStream";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 import { sortLadder } from "../utils/ladder/SortLadder";
@@ -492,6 +493,14 @@ const App = props => {
                 style={{ position: "absolute", top: "25%", left: "50%", zIndex: 9999 }}
               >
                 <DraggableGraph />
+              </div>
+            </Draggable>
+            <Draggable bounds="body">
+              <div
+                className="box"
+                style={{ position: "absolute", top: "25%", left: "50%", zIndex: 9999 }}
+              >
+                <DraggableLiveStream />
               </div>
             </Draggable>
             {renderView()}
