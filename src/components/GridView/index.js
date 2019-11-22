@@ -123,7 +123,7 @@ const Grid = props => {
 				className="grid-cell"
 				onMouseEnter={handlePriceHover(key)}
 				onClick={handlePriceClick(key, backLay, odds)}
-				onContextMenu={handlePriceClick(key, backLay === "BACK" ? "LAY" : "BACK", odds)}
+				onContextMenu={handlePriceClick(key, backLay ^= 1, odds)}
 			>
 				<span>{odds}</span>
 				<span>{matched}</span>
