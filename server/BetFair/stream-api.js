@@ -6,6 +6,7 @@ const tls = require('tls');
 class BetFairStreamAPI {
 	constructor (openSocket) {
 		this.awaitingAuthentication = false;
+		this.connectionClosed = true;
 		this.client = null;
 		this.openSocket = openSocket;
 		this.bufferedStr = '';
@@ -25,10 +26,8 @@ class BetFairStreamAPI {
 			console.log("Connected");
 
 			this.client.setEncoding('utf8');
-			
-			if (this.client.authorized) {
-				this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
-			}
+
+			this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 
 			this.client.on('data', data => {
 				// console.log('Received: ' + data);
@@ -45,10 +44,11 @@ class BetFairStreamAPI {
 
 					// Connection status
 					if (result.op === 'status') {
-						if (result.connectionClosed === false) {
-							for (var i = 0; i < this.subscriptions.length; i++) {
-								this.client.write(this.subscriptions[i]);
-							}
+						this.connectionClosed = this.connectionClosed;
+						if (this.connectionClosed) {
+							this.subscriptions.forEach((subscription => {
+								this.client.write(subscription);
+							}));
 						}
 						this.subscriptions = [];
 						this.chunks = [];
@@ -76,6 +76,7 @@ class BetFairStreamAPI {
 
 			this.client.on('close', () => {
 				console.log('Connection closed');
+				this.connectionClosed = true;
 				this.authenticated = false;
 			});
 
@@ -84,8 +85,12 @@ class BetFairStreamAPI {
 			});
 		});
 	}
-	makeSubscription(subscription) {
-		if (!this.client.connecting && this.client.authorized) {
+	makeSubscription(subscription, accessToken) {
+		if (this.connectionClosed) {
+			this.authenticate(accessToken);
+			this.subscriptions.push(subscription);
+		}
+		else if (!this.client.connecting) {
 			this.client.write(subscription);
 		}
 		else {
