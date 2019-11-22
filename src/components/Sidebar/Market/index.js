@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Ladders from "./Ladders";
 import Tools from "./OrderTools";
@@ -9,7 +9,27 @@ import MarketInfo from "./MarketInfo";
 import Rules from "./Rules";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
+import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+
+const ExpansionPanel = withStyles({
+  root: {
+    border: "1px solid #fff",
+    boxShadow: "none",
+    "&:not(:last-child)": {
+      borderBottom: 0
+    },
+  },
+  expanded: {}
+})(MultiExpansionPanel);
+
+const ExpansionPanelSummary = withStyles({
+  root: {
+    zIndex: "1",
+  },
+  expanded: {}
+})(MultiExpansionPanelSummary);
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -22,14 +42,18 @@ const useStyles = makeStyles(theme => ({
   title: {
     textAlign: "center",
     fontWeight: "bold"
-  },
-  group: {
-    margin: theme.spacing(1, 0)
   }
 }));
 
 const Market = props => {
   const classes = useStyles();
+  const [laddersExpanded, setLaddersExpanded] = useState(true);
+  const [toolsExpanded, setToolsExpanded] = useState(true);
+  const [unmatchedBetsExpanded, setUnmatchedBetsExpanded] = useState(true);
+  const [matchedBetsExpanded, setMatchedBetsExpanded] = useState(true);
+  const [graphExpanded, setGraphExpanded] = useState(true);
+  const [marketInfoExpanded, setMarketInfoExpanded] = useState(true);
+  const [rulesExpanded, setRulesExpanded] = useState(true);
 
   const createTitle = (name, position) => {
     return (
@@ -41,50 +65,85 @@ const Market = props => {
     );
   };
 
+  const createExpansionPanelSummary = name => {
+    return (
+      <ExpansionPanelSummary
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        {createTitle(name)}
+      </ExpansionPanelSummary>
+    );
+  };
+
   return (
     <React.Fragment>
-      <Ladders />
+        <ExpansionPanel
+          expanded={laddersExpanded}
+          onChange={e => setLaddersExpanded(!laddersExpanded)}
+        >
+          {createExpansionPanelSummary("Ladders")}
+          <Ladders />
+        </ExpansionPanel>
 
       {props.tools.visible ? (
-        <React.Fragment>
-          {createTitle("Tools", "static")}
+        <ExpansionPanel
+          expanded={toolsExpanded}
+          onChange={e => setToolsExpanded(!toolsExpanded)}
+        >
+          {createExpansionPanelSummary("Tools")}
           <Tools />
-        </React.Fragment>
+        </ExpansionPanel>
       ) : null}
 
       {props.unmatchedBets.visible ? (
-        <React.Fragment>
-          {createTitle("Unmatched Bets", "static")}
+        <ExpansionPanel
+          expanded={unmatchedBetsExpanded}
+          onChange={e => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}
+        >
+          {createExpansionPanelSummary("Unmatched Bets")}
           <UnmatchedBets />
-        </React.Fragment>
+        </ExpansionPanel>
       ) : null}
 
       {props.matchedBets.visible ? (
-        <React.Fragment>
-          {createTitle("Matched Bets", "static")}
+        <ExpansionPanel
+          expanded={matchedBetsExpanded}
+          onChange={e => setMatchedBetsExpanded(!matchedBetsExpanded)}
+        >
+          {createExpansionPanelSummary("Matched Bets")}
           <MatchedBets />
-        </React.Fragment>
+        </ExpansionPanel>
       ) : null}
 
       {props.graphs.visible ? (
-        <React.Fragment>
-          {createTitle("Graphs", "static")}
+        <ExpansionPanel
+          expanded={graphExpanded}
+          onChange={e => setGraphExpanded(!graphExpanded)}
+        >
+          {createExpansionPanelSummary("Graphs")}
           <Graph />
-        </React.Fragment>
+        </ExpansionPanel>
       ) : null}
 
       {props.marketInfo.visible ? (
-        <React.Fragment>
-          {createTitle("Market Information", "static")}
+        <ExpansionPanel
+          expanded={marketInfoExpanded}
+          onChange={e => setMarketInfoExpanded(!marketInfoExpanded)}
+        >
+          {createExpansionPanelSummary("Market Information")}
           <MarketInfo />
-        </React.Fragment>
+        </ExpansionPanel>
       ) : null}
 
       {props.rules.visible ? (
-        <React.Fragment>
-          {createTitle("Rules", "static")}
+        <ExpansionPanel
+          expanded={rulesExpanded}
+          onChange={e => setRulesExpanded(!rulesExpanded)}
+        >
+          {createExpansionPanelSummary("Rules")}
           <Rules />
-        </React.Fragment>
+        </ExpansionPanel>
       ) : null}
     </React.Fragment>
   );

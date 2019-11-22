@@ -85,18 +85,13 @@ const Ladder = props => {
   };
 
   return (
-    <div>
-      <AppBar className={classes.appBar} position="static">
-        <Typography variant="h6" className={classes.title}>
-          Ladders
-        </Typography>
-      </AppBar>
+    <>
       {props.marketOpen ?
         <table id="menu-ladder">
           <tbody>{renderRunners()}</tbody>
         </table>
         : null}
-    </div>
+    </>
   );
 };
 
