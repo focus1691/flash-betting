@@ -88,7 +88,9 @@ const Market = props => {
             <button
               className={"cancel-order-btn"}
               style={{ height: "22px", width: "auto", display: "inline-block", zIndex: "999" }}
-              onClick={e => setUnmatchedBetsExpanded(unmatchedBetsExpanded)}
+              onClick={e => {
+                e.stopPropagation();
+              }}
             >
               <img src={`${window.location.origin}/icons/error.png`} alt="X" />
             </button>
