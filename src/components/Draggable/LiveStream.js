@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { openLiveStream } from "../../actions/draggable";
 
 const LiveStream = props => {
 
-  const [transparent, setTransparent] = useState(false);
 
   return props.market && props.open ? (
-    <div className={"popup-live-stream"} style={{ opacity: transparent ? 0.5 : 1 }}>
+    <div className={"popup-live-stream"}>
       <div>
-        <span className={"popup-graph-toggle-transparency"} onClick={e => setTransparent(!transparent)}>{transparent ? "Solid" : "Transparent"}</span>
         <img
           alt={"Close"}
           className={"close-popup-graph"}
@@ -22,7 +20,6 @@ const LiveStream = props => {
         height="500px"
         frameBorder='0'
         allow='autoplay; encrypted-media'
-        allowFullScreen
         title='video'
       />
     </div>
