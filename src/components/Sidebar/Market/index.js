@@ -76,15 +76,37 @@ const Market = props => {
     );
   };
 
+  const createExpansionPanelSummaryUnmatchedBets = name => {
+    return (
+      <ExpansionPanelSummary
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <AppBar className={classes.appBar} position={"absolute"}>
+          <Typography variant="h6" className={classes.title}>
+            {name}
+            <button
+              className={"cancel-order-btn"}
+              style={{ height: "22px", width: "auto", display: "inline-block", zIndex: "999" }}
+              onClick={e => setUnmatchedBetsExpanded(unmatchedBetsExpanded)}
+            >
+              <img src={`${window.location.origin}/icons/error.png`} alt="X" />
+            </button>
+          </Typography>
+        </AppBar>
+      </ExpansionPanelSummary>
+    );
+  };
+
   return (
     <React.Fragment>
-        <ExpansionPanel
-          expanded={laddersExpanded}
-          onChange={e => setLaddersExpanded(!laddersExpanded)}
-        >
-          {createExpansionPanelSummary("Ladders")}
-          <Ladders />
-        </ExpansionPanel>
+      <ExpansionPanel
+        expanded={laddersExpanded}
+        onChange={e => setLaddersExpanded(!laddersExpanded)}
+      >
+        {createExpansionPanelSummary("Ladders")}
+        <Ladders />
+      </ExpansionPanel>
 
       {props.tools.visible ? (
         <ExpansionPanel
@@ -101,7 +123,7 @@ const Market = props => {
           expanded={unmatchedBetsExpanded}
           onChange={e => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}
         >
-          {createExpansionPanelSummary("Unmatched Bets")}
+          {createExpansionPanelSummaryUnmatchedBets("Unmatched Bets")}
           <UnmatchedBets />
         </ExpansionPanel>
       ) : null}
