@@ -16,6 +16,7 @@ import LadderAutoCenter from "./LadderAutoCenter";
 import LadderUnmatchedCol from "./LadderUnmatchedCol";
 import StakeButtons from "./StakeButtons";
 import LayButtons from "./LayButtons";
+import RightClickTicks from "./RightClickTicks";
 import HorseRacing from "./HorseRacing";
 
 const useStyles = makeStyles(theme => ({
@@ -150,6 +151,13 @@ const Settings = props => {
 				classes={classes}
 			/>
 
+			<RightClickTicks
+				rightClickTicks={props.rightClickTicks}
+				updateRightClickTicks={props.onUpdateRightClickTicks}
+				saveSetting={saveSetting}
+				classes={classes}
+			/>
+
 			<HorseRacing
 				horseRaces={props.horseRaces}
 				toggleHorseRaces={props.onUpdateHorseRaces}
@@ -177,6 +185,7 @@ const mapStateToProps = state => {
 		ladderUnmatched: state.settings.ladderUnmatched,
 		stakeBtns: state.settings.stakeBtns,
 		layBtns: state.settings.layBtns,
+		rightClickTicks: state.settings.rightClickTicks,
 		horseRaces: state.settings.horseRaces
 	}
 }
@@ -197,6 +206,7 @@ const mapDispatchToProps = dispatch => {
 		onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
 		onUpdateStakeBtn: data => dispatch(actions.updateStakeBtn(data)),
 		onUpdateLayBtn: data => dispatch(actions.updateLayBtn(data)),
+		onUpdateRightClickTicks: ticks => dispatch(actions.updateRightClickTicks(ticks)),
 		onUpdateHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces))
 	}
 }

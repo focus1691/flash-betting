@@ -39,6 +39,7 @@ const initialState = {
   stakeBtns: [2, 4, 6, 8, 10, 12, 14],
   layBtns: [2.5, 5, 7.5, 10, 12.5, 15, 17.5],
   stake: {},
+  rightClickTicks: 1,
   horseRaces: {
     GB: true,
     IE: false,
@@ -104,6 +105,8 @@ const reducer = (state = initialState, action) => {
       const newStake = Object.assign({}, state.stake);
       newStake[action.payload.selectionId] = action.payload.price
       return { ...state, stake: newStake };
+    case "SET_RIGHT_CLICK_TICKS":
+      return { ...state, rightClickTicks: action.payload };
     case "SET_HORSE_RACE_COUNTRIES":
       return { ...state, horseRaces: action.payload };
     default:

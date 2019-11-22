@@ -173,6 +173,13 @@ export const setStakeInOneClick = stake => {
     }
 };
 
+export const updateRightClickTicks = ticks => {
+    return {
+        type: "SET_RIGHT_CLICK_TICKS",
+        payload: ticks
+    }
+};
+
 export const setHorseRacingCountries = horseRaces => {
     return {
         type: "SET_HORSE_RACE_COUNTRIES",

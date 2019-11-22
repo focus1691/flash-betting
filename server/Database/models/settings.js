@@ -90,6 +90,10 @@ const settingsSchema = mongoose.Schema({
         type: Array,
         default: [2.5, 5, 7.5, 10, 12.5, 15, 17.5]
     },
+    rightClickTicks: {
+        type: Number,
+        default: 1
+    },
     horseRaces: {
         GB: {
             type: Boolean,
