@@ -119,6 +119,11 @@
 	border: 0px;
 }
 
+.popup-live-stream {
+	border: 1px solid;
+	padding: 5px;
+}
+
 .popup-graph {
 	background: #fff;
 	border: 1px solid;
