@@ -174,7 +174,9 @@ class DatabaseHelper extends Database {
         return new Promise((res, rej) => {
             User.findOne({email: user},)
             .then(user => {
-                const index = user.orders.find(item => item.rfs === newOrder.rfs);
+                const index = user.orders.findIndex(item => {
+                    return newOrder.strategy === "Stop Loss" ? item.selectionId === newOrder.selectionId : item.rfs === newOrder.rfs
+                });
                 user.orders[index] = newOrder;
                 user.save();
                 res(200)

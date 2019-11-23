@@ -9,7 +9,7 @@ import { updateStopEntryList } from "../../../actions/stopEntry";
 import { updateLayList } from "../../../actions/lay";
 import { updateBackList } from "../../../actions/back";
 import { updateFillOrKillList } from "../../../actions/fillOrKill";
-import { formatPrice } from "../../../utils/ladder/CreateFullLadder";
+import { formatPrice, getPriceNTicksAway } from "../../../utils/ladder/CreateFullLadder";
 
 const UnmatchedBets = props => {
 
@@ -52,7 +52,6 @@ const UnmatchedBets = props => {
           ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId])
           delete newFillOrKill[order.betId];
           props.onChangeFillOrKillList(newFillOrKill)
-
         }
 
         // cancel order
@@ -64,6 +63,8 @@ const UnmatchedBets = props => {
           unmatchedBets: props.bets.unmatched
         });
 
+
+
         break;
       default:
         break;
@@ -73,7 +74,7 @@ const UnmatchedBets = props => {
 
     // delete from database
     try {
-      fetch('/api/remove-orders', {
+      fetch('/api/update-order', {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
@@ -85,6 +86,84 @@ const UnmatchedBets = props => {
 
     }
   };
+
+  const replaceOrderPrice = (order, newPrice) => {
+    const newOrder = Object.assign({}, order, {price: newPrice})
+    switch (order.strategy) {
+      case "Back":
+        const newBackList = Object.assign({}, props.backList);
+        const indexBack = newBackList[order.selectionId].findIndex(item => item.rfs === order.rfs)
+        newBackList[order.selectionId][indexBack].price = newPrice;
+        props.onChangeBackList(newBackList);
+        break;
+      case "Lay":
+        const newLayList = Object.assign({}, props.layList);
+        const indexLay = newLayList[order.selectionId].findIndex(item => item.rfs === order.rfs)
+        newLayList[order.selectionId][indexLay].price = newPrice;
+        props.onChangeLayList(newLayList);
+        break;
+      case "Stop Entry":
+        const newStopEntryList = Object.assign({}, props.stopEntryList);
+        const indexStopEntry = newStopEntryList[order.selectionId].findIndex(item => item.rfs === order.rfs)
+        newStopEntryList[order.selectionId][indexStopEntry].price = newPrice;
+        props.onChangeStopEntryList(newStopEntryList);
+        break;
+      case "Tick Offset":
+        const newTickOffsetList = Object.assign({}, props.tickOffsetList);
+        newTickOffsetList[order.rfs].price = newPrice;
+        props.onChangeTickOffsetList(newTickOffsetList)
+        break;
+      case "Stop Loss":
+        const newStopLossList = Object.assign({}, props.stopLossList);
+        newStopLossList[order.selectionId].price = newPrice;
+        props.onChangeStopLossList(newStopLossList)
+        break;
+      case "None":
+        // if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
+        if (props.fillOrKillList[order.betId] !== undefined) {
+          const newFillOrKill = Object.assign({}, props.fillOrKillList)
+          newFillOrKill[order.betId].price = newPrice;
+          props.onChangeFillOrKillList(newFillOrKill)
+
+        }
+
+        fetch('/api/replace-orders', {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: {
+            marketId: order.marketId,
+            betId: order.betId,
+            newPrice: newPrice
+          }
+        })
+        
+
+        break;
+      default:
+        break;
+    }
+
+    try {
+      fetch('/api/update-order', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(newOrder)
+      })
+    } catch (e) {
+
+    }
+
+  }
+
+  const handleRightClick = order => {
+    replaceOrderPrice(order, getPriceNTicksAway(parseFloat(order.price), props.rightClickTicks))
+  }
 
   return (
     <div>
@@ -143,7 +222,12 @@ const UnmatchedBets = props => {
                           <tr
                             id="menu-unmatched-bet"
                             style={{
-                              backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
+                              backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7",
+                              cursor: 'pointer',
+                            }}
+                            onContextMenu = {e => {
+                              e.preventDefault()
+                              handleRightClick(order)
                             }}
                           >
 
@@ -194,7 +278,8 @@ const mapStateToProps = state => {
     layList: state.lay.list,
     backList: state.back.list,
     fillOrKillList: state.fillOrKill.list,
-    bets: state.order.bets
+    bets: state.order.bets,
+    rightClickTicks: state.settings.rightClickTicks
   };
 };
 

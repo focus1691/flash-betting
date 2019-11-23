@@ -13,7 +13,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
                             
     const handleClick = () => async e => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
-              
+      
       // stoploss and fill or kill can't be together, stoploss takes priority
       placeOrder({
         side: side,
@@ -103,6 +103,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
       
       changeStopLossList({
         side: side,
+        size: stakeVal[selectionId], 
         price: formatPrice(cell.odds),
         custom: true,
         rfs: undefined,

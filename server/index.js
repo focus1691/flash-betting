@@ -272,7 +272,7 @@ app.post("/api/save-order", (request, response) => {
 });
 
 app.post("/api/update-order", (request, response) => {
-	database.updateOrderKey(betfair.email, request.body).then(res => {
+	database.updateOrder(betfair.email, request.body).then(res => {
 		response.sendStatus(res);
 	});
 });
