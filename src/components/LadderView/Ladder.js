@@ -13,8 +13,7 @@ import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
-                  ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, 
-                  volume = [], ladderUnmatched, stake }) => {
+    ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, ladderUnmatched, stake }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -22,7 +21,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
     const [isReferenceSet, setIsReferenceSet] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
     const [isLadderDown, setLadderDown] = useState(false);
-  
+
     useEffect(() => {
         const interval = setInterval(() => {
             const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
@@ -30,9 +29,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                 listRef.current.scrollToItem(ltpIndex, 'center')
                 clearInterval(interval)
                 setlistRefSet(true)
-            } 
+            }
         }, 1000)
-        
+
     }, [listRef]);
 
     useEffect(() => {
@@ -42,33 +41,33 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
         }
     }, [order])
 
-  // remove adjacent LTP values
-    const filteredLTPs = 
-    ladder[id] !== undefined ? 
-        ladder[id].ltp[0] !== undefined ? 
-            ladder[id].ltp.filter((item, pos, arr) => {
-                // Always keep the 0th element as there is nothing before it
-                // Then check if each element is different than the one before it
-                return pos === 0 || item !== arr[pos-1];
-            }) : [] 
-        : []
+    // remove adjacent LTP values
+    const filteredLTPs =
+        ladder[id] !== undefined ?
+            ladder[id].ltp[0] !== undefined ?
+                ladder[id].ltp.filter((item, pos, arr) => {
+                    // Always keep the 0th element as there is nothing before it
+                    // Then check if each element is different than the one before it
+                    return pos === 0 || item !== arr[pos - 1];
+                }) : []
+            : []
 
     const coloredLTPList = filteredLTPs.map((item, index) => {
         if (index === filteredLTPs.length - 1) { // if last element
             return {
-            tick: item,
-            color: item > filteredLTPs[index - 1] || index === 0 ? 'G' : 'R'
-            } 
+                tick: item,
+                color: item > filteredLTPs[index - 1] || index === 0 ? 'G' : 'R'
+            }
         } else {
             return {
-            tick: item,
-            color: item < filteredLTPs[index + 1] ? 'R' : 'G'
+                tick: item,
+                color: item < filteredLTPs[index + 1] ? 'R' : 'G'
             }
         }
     });
 
-    const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), {matched: matchedBets}).toFixed(2) : 0
-    
+    const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), { matched: matchedBets }).toFixed(2) : 0
+
     const placeOrder = data => {
         onPlaceOrder({
             marketId: market.marketId,
@@ -90,9 +89,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             selectionId: parseInt(id),
             side: data.side,
             size: data.size,
-            price: data.price, 
+            price: data.price,
             trailing: false,
-            customStopLoss: data.custom, 
+            customStopLoss: data.custom,
             units: data.units,
             rfs: data.rfs,
             assignedIsOrderMatched: data.assignedIsOrderMatched,
@@ -100,22 +99,20 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             hedged: data.hedged
         })
     }
-
-    console.log(ladder[id]);
     const parsedVolume = {};
-    ladder[id].trd.map(vol => { parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10 });
+    ladder[id].trd.map(vol => { return parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10 });
 
     const fullLadderWithProfit = {};
     let ladderLTPHedge = 0;
-    
+
     Object.values(ladder[id].fullLadder).map(item => {
         // if lay, flip
-        fullLadderWithProfit[item.odds] = {...item}
-        
+        fullLadderWithProfit[item.odds] = { ...item }
+
         if (selectionMatchedBets !== undefined && ladderUnmatched === "hedged") {
             const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(item.odds)));
             const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
-            
+
             if (parseFloat(item.odds).toFixed(2) == parseFloat(ladder[id].ltp[0]).toFixed(2)) {
                 ladderLTPHedge = profit;
             }
@@ -129,67 +126,67 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
             fullLadderWithProfit[item.odds]['backProfit'] = parseFloat(calcBackProfit(parseFloat(stake), item.odds, 0)) + parseFloat(PL);
         }
     });
-    
+
     const hedgeSize = selectionMatchedBets !== undefined ?
-    selectionMatchedBets.reduce((a, b) => {
-        return a + b.size
-    }, 0) : 0
+        selectionMatchedBets.reduce((a, b) => {
+            return a + b.size
+        }, 0) : 0
 
     const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0
-    
+
     return (
         <LadderContainer
-            isReferenceSet = {isReferenceSet}
-            order = {order}
-            containerRef = {containerRef}
-            isMoving = {isMoving}
-            isLadderDown = {isLadderDown}
-            setIsReferenceSet = {setIsReferenceSet}
-            runners = {runners}
-            ladderOrderList = {ladderOrderList}
-            swapLadders = {swapLadders}
-            setIsMoving = {setIsMoving}
-            setLadderDown = {setLadderDown}
+            isReferenceSet={isReferenceSet}
+            order={order}
+            containerRef={containerRef}
+            isMoving={isMoving}
+            isLadderDown={isLadderDown}
+            setIsReferenceSet={setIsReferenceSet}
+            runners={runners}
+            ladderOrderList={ladderOrderList}
+            swapLadders={swapLadders}
+            setIsMoving={setIsMoving}
+            setLadderDown={setLadderDown}
         >
             <LadderHeader
                 sportId={market.eventType.id}
                 selectionId={id}
                 runner={runners[id]}
                 runnerClick={onSelectRunner(runners[id])}
-                setLadderDown = {setLadderDown}
-                PL = {PL}
-                ladderLTPHedge = {ladderLTPHedge}
-                newStake = {newStake}
-                oddsHovered = {oddsHovered}
-                ordersOnMarket = {(Object.keys(unmatchedBets).length + Object.keys(matchedBets).length) > 0}
+                setLadderDown={setLadderDown}
+                PL={PL}
+                ladderLTPHedge={ladderLTPHedge}
+                newStake={newStake}
+                oddsHovered={oddsHovered}
+                ordersOnMarket={(Object.keys(unmatchedBets).length + Object.keys(matchedBets).length) > 0}
             />
-            
-            <div className={"ladder"} onContextMenu = { () => false }>
+
+            <div className={"ladder"} onContextMenu={() => false}>
                 <PercentageRow
                     ltp={ladder[id].ltp}
                     tv={
                         ladder[id].tv[0]
-                        ? ladder[id].tv[0].toLocaleString()
-                        : ""
+                            ? ladder[id].tv[0].toLocaleString()
+                            : ""
                     }
                     percent={ladder[id].percent}
-                    setLadderSideLeft = {setLadderSideLeft}
-                    marketId = {market.marketId}
-                    selectionId = {id}
-                    ladderSideLeft = {ladderSideLeft}
+                    setLadderSideLeft={setLadderSideLeft}
+                    marketId={market.marketId}
+                    selectionId={id}
+                    ladderSideLeft={ladderSideLeft}
                 />
-                    <AutoSizer>
-                        {({ height, width }) => (
+                <AutoSizer>
+                    {({ height, width }) => (
                         <List
                             className="List"
                             height={height}
                             itemCount={Object.keys(ladder[id].fullLadder).length}
                             itemSize={20}
                             width={width}
-                            ref = {listRef}
-                            style = {{paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px`}}
-                            
-                            itemData = {{
+                            ref={listRef}
+                            style={{ paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px` }}
+
+                            itemData={{
                                 ladder: fullLadderWithProfit,
                                 selectionId: id,
                                 placeOrder: placeOrder,
@@ -205,9 +202,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                         >
                             {LadderRow}
                         </List>
-                        )}
-                    </AutoSizer>
-                    
+                    )}
+                </AutoSizer>
+
             </div>
             <PriceRow selectionId={id} />
             <OrderRow selectionId={id} />

@@ -369,14 +369,6 @@ const App = props => {
         props.onReceiverLadders(ladders);
         props.onReceiveNonRunners(nonRunners);
         props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-
-        const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
-        const marketVolume = {};
-
-        Object.values(marketBook.result[0].runners).map(selection => {
-          return marketVolume[selection.selectionId] = selection.ex.availableToBack.concat(selection.ex.availableToLay);
-        });
-        props.onSetMarketVolume(marketVolume);
       }
     });
 
@@ -584,8 +576,7 @@ const mapDispatchToProps = dispatch => {
     onChangeBackList: list => dispatch(updateBackList(list)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
-    onChangeOrders: orders => dispatch(updateOrders(orders)),
-    onSetMarketVolume: volume => dispatch(marketActions.setMarketVolume(volume))
+    onChangeOrders: orders => dispatch(updateOrders(orders))
   };
 };
 
