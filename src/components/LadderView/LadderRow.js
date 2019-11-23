@@ -4,7 +4,7 @@ import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findStopPosition, findStopPositionForPercent } from "../../utils/TradingStategy/StopLoss";
 import crypto from 'crypto'
 
-export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume, ladderSideLeft }, style, index}) => {
+export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume, ladderSideLeft, selectionUnmatched, marketId, matchedBets, unmatchedBets }, style, index}) => {
     const key = Object.keys(ladder)[index]
     
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
@@ -14,6 +14,8 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
     const leftSideProfit = ladderSideLeft === "LAY" ? 'layProfit' : 'backProfit'
     const rightSide = ladderSideLeft === "LAY" ? "BACK" : "LAY"
     const rightSideProfit = ladderSideLeft === "LAY" ? 'backProfit' : 'layProfit'
+
+    const unmatchedBetOnRow = selectionUnmatched[parseFloat(key)];
 
     return (
         <div key={ladder[key].odds}  onContextMenu = { (e) => { e.preventDefault(); return false } } class = 'tr' style = {style} >
@@ -33,11 +35,22 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
 
           <div 
             className = 'td'
-            style = {{color: `${ladder[key][leftSideProfit] >= 0 ? "green" : 'red'}`}}
+            style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? 'black' : `${ladder[key][leftSideProfit] >= 0 ? "green" : 'red'}`}}
             onClick = {() => {
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
 
-              if (hedgeSize > 0)
+              // CANCEL ORDER IF CLICK UNMATCHED BET
+              if (unmatchedBetOnRow) {
+                cancelOrder({
+                  marketId: marketId,
+                  betId: unmatchedBetOnRow.betId,
+                  sizeReduction: null,
+                  matchedBets: matchedBets,
+                  unmatchedBets: unmatchedBets
+                })
+              }
+
+              if (!unmatchedBetOnRow && hedgeSize > 0)
               placeOrder({
                 side: leftSide,
                 price: formatPrice(ladder[key].odds),
@@ -45,8 +58,9 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
                 customerStrategyRef: referenceStrategyId,
                 size: hedgeSize + parseFloat(ladder[key][leftSideProfit])
               })
-            }}
-          >{ladder[key][leftSideProfit]}</div>
+            }}>
+              {unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? unmatchedBetOnRow.size : ladder[key][leftSideProfit]}
+            </div>
           <LadderOrderCell 
             side = {leftSide}
             ladderSideLeft = {ladderSideLeft}
@@ -84,11 +98,21 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
           />
           <div 
             className = 'td'
-            style = {{color: `${ladder[key][rightSideProfit] >= 0 ? "green" : 'red'}`}}
+            style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === rightSide ? 'black' : `${ladder[key][rightSideProfit] >= 0 ? "green" : 'red'}`}}
             onClick = {() => {
               const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
 
-              if (hedgeSize > 0)
+              if (unmatchedBetOnRow) {
+                cancelOrder({
+                  marketId: marketId,
+                  betId: unmatchedBetOnRow.betId,
+                  sizeReduction: null,
+                  matchedBets: matchedBets,
+                  unmatchedBets: unmatchedBets
+                })
+              }
+
+              if (!unmatchedBetOnRow && hedgeSize > 0)
               placeOrder({
                 side: rightSide,
                 price: formatPrice(ladder[key].odds),
@@ -97,7 +121,7 @@ export default ({data: { ladder, selectionId, placeOrder, ltp, ltpList, stopLoss
                 size: hedgeSize + parseFloat(ladder[key][rightSideProfit])
               })
             }}
-          >{ladder[key][rightSideProfit]}</div>
+          >{unmatchedBetOnRow && unmatchedBetOnRow.side === rightSide ? unmatchedBetOnRow.size : ladder[key][rightSideProfit]}</div>
         </div>
     )
 }

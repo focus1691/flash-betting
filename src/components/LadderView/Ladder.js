@@ -12,7 +12,7 @@ import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 
-const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
+const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
     ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, ladderUnmatched, stake }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
@@ -134,6 +134,14 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
 
     const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0
 
+    // gets all the unmatched bets and puts them in the ladder
+    const selectionUnmatched = {};
+    Object.values(unmatchedBets).map(item => {
+        if (parseFloat(item.selectionId) === parseFloat(id)) {
+            selectionUnmatched[item.price] = item;
+        }
+    });
+
     return (
         <LadderContainer
             isReferenceSet={isReferenceSet}
@@ -186,10 +194,14 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                             ref={listRef}
                             style={{ paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px` }}
 
-                            itemData={{
+                            itemData = {{
+                                marketId: market.marketId, 
+                                matchedBets: matchedBets, 
+                                unmatchedBets: unmatchedBets,
                                 ladder: fullLadderWithProfit,
                                 selectionId: id,
                                 placeOrder: placeOrder,
+                                cancelOrder: onCancelOrder,
                                 ltp: ladder[id].ltp[0],
                                 ltpList: coloredLTPList,
                                 stopLoss: stopLoss,
@@ -197,7 +209,8 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
                                 hedgeSize: hedgeSize,
                                 setOddsHovered: setOddsHovered,
                                 volume: parsedVolume,
-                                ladderSideLeft: ladderSideLeft
+                                ladderSideLeft: ladderSideLeft,
+                                selectionUnmatched: selectionUnmatched
                             }}
                         >
                             {LadderRow}

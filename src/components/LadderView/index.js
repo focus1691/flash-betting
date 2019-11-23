@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { placeOrder, updateOrders } from "../../actions/order";
+import { placeOrder, cancelOrder } from "../../actions/order";
 import { setRunner, updateLadderOrder, changeLadderSideLeft } from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
-const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, runners, market, onPlaceOrder, onSelectRunner, stopLossList, 
+const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, runners, market, onPlaceOrder, onCancelOrder, onSelectRunner, stopLossList,
                   stopLossOffset, stopLossTrailing, onChangeStopLossList, bets, ladderUnmatched, stakeVal, ladderSideLeft, onChangeLadderSideLeft}) => {
 
   const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
@@ -70,6 +70,7 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
               ladderUnmatched = {ladderUnmatched}
               stake = {stakeVal[value]}
               ladderSideLeft = {ladderSideLeft}
+              onCancelOrder = {onCancelOrder}
               setLadderSideLeft = {onChangeLadderSideLeft}
               changeStopLossList = {async newStopLoss => {
 
@@ -131,6 +132,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onSelectRunner: runner => e => dispatch(setRunner(runner)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
+    onCancelOrder: order => dispatch(cancelOrder(order)),
     onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeLadderSideLeft: side => dispatch(changeLadderSideLeft(side))

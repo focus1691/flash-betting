@@ -117,7 +117,7 @@ const getNextPrice = (currentPrice, selectedVal) => {
 };
 
 const getPriceNTicksAway = (price, N) => {
-  if (N === undefined || N === null || typeof "N" != "number") return null;
+  if (N === undefined || N === null || typeof N != "number") return null;
   if (N <= 0) return price;
 
   let index = ALL_PRICES.indexOf(price) + N;
