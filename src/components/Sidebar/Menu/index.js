@@ -29,8 +29,13 @@ const ExpansionPanel = withStyles({
 const ExpansionPanelSummary = withStyles({
   root: {
     zIndex: "1",
+    "&$expanded": {
+      minHeight: "0px",
+    },
   },
-  expanded: {}
+  expanded: {
+    minHeight: "0px",
+  },
 })(MultiExpansionPanelSummary);
 
 const Menu = () => {
