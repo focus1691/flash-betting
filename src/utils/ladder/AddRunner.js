@@ -15,6 +15,8 @@ const AddRunner = (key, data) => {
     price: 0
   };
 
+  sortAsc(runner.trd);
+
   sortDes(runner.atb);
   sortAsc(runner.atl);
 

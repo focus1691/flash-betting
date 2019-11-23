@@ -101,8 +101,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onSelectRunner, ord
         })
     }
 
+    console.log(ladder[id]);
     const parsedVolume = {};
-    volume.map(vol => { parsedVolume[formatPrice(vol.price)] = Math.floor(vol.size / 100) / 10 });
+    ladder[id].trd.map(vol => { parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10 });
 
     const fullLadderWithProfit = {};
     let ladderLTPHedge = 0;
