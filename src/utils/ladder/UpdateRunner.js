@@ -11,6 +11,27 @@ const UpdateRunner = (ladder, rawData) => {
     ladder.tv = [rawData.tv, ladder.tv[0]];
   }
 
+  if (rawData.trd) {
+    rawData.trd.forEach(trd => {
+      let price = trd[0];
+      let totalMatched = Math.floor(trd[1]);
+
+      let index = SearchInsert(ladder.trd, price, true);
+
+      if (totalMatched <= 0) {
+        if (price === ladder.trd[index][0]) {
+          ladder.trd.splice(index, 1);
+        }
+      }
+      else if (price === ladder.trd[index][0]) {
+        ladder.trd[index][1] = totalMatched;
+      }
+      else {
+        ladder.trd.splice(index, 0, [price, totalMatched]);
+      }
+    });
+  }
+
   // Update the atb values
   if (rawData.atb) {
     rawData.atb.forEach(atb => {
@@ -33,7 +54,7 @@ const UpdateRunner = (ladder, rawData) => {
         else {
           ladder.atb.splice(index, 0, [price, matched]);
           ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
-        } 
+        }
       }
     });
   }
