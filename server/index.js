@@ -627,14 +627,14 @@ const server = require('http').createServer(app);
 const io = require("socket.io")(server);
 
 server.listen(port, () => console.log(`Server started on port: ${port}`));
-
+var id = 1;
 io.on("connection", async client => {
 	const exchangeStream = new ExchangeStream(client);
 	const accessToken = await database.getToken(betfair.email);
 
 	// Subscribe to market
 	client.on("market-subscription", async data => {
-		const marketSubscription = `{"op":"marketSubscription","id":2,"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
+		const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
 		exchangeStream.makeSubscription(marketSubscription, accessToken);
 	});
 	// Subscribe to orders
