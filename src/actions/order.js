@@ -9,11 +9,13 @@ export const updateOrders = order => {
 
 export const placeOrder = order => {
 
+  const newSize = order.size === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
+
   if (order.unmatchedBets === undefined || order.matchedBets === undefined) {
     return
   }
 
-  order.size = order.size === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
+  order.size = newSize
   order.price = parseFloat(order.price)
 
   // order without anything that might make the payload too large
@@ -24,46 +26,102 @@ export const placeOrder = order => {
     }
   })
 
-  return dispatch => {
-    return fetch('/api/place-order', {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify(minimalOrder)
-    })
-      .then(res => res.json())
-      .then(async result => {
+  if (parseFloat(newSize) < 2.0) {
+    return async dispatch => {
+      const startingOrder = placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: 2, orderCompleteCallBack: undefined}))
+      if (startingOrder === null) return
 
-        if (!result || result.status === "FAILURE") return;
+      dispatch(updateOrders(startingOrder.bets));
+      
+      // add extra bit to it
+      const secondOrder = placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: minimalOrder.size - 2, unmatchedBets: startingOrder.unmatched}))
+      
+      dispatch(updateOrders(secondOrder.bets));
 
-        const betId = result.instructionReports[0].betId;
-
-        const adjustedOrder = Object.assign({}, order);
-        adjustedOrder.rfs = order.customerStrategyRef;
-        adjustedOrder.betId = betId;
-        adjustedOrder.strategy = "None";
-        if (betId === undefined) {
-          return;
-        }
-
-        const newUnmatchedBets = Object.assign({}, order.unmatchedBets)
-        newUnmatchedBets[betId] = adjustedOrder;
-
-        const newBets = {
-          unmatched: newUnmatchedBets,
-          matched: order.matchedBets == undefined ? {} : order.matchedBets
-        }
-
-        if (order.orderCompleteCallBack !== undefined)
-          await order.orderCompleteCallBack(betId, newUnmatchedBets);
-
+      if (secondOrder === null) {
+        // cancel the first one since we don't have enough funds
+        return cancelOrderAction(startingOrder.order).then(newBets => {
+          dispatch(updateOrders(newBets));
+        })
+      }
+      
+      // cancel the first one
+      cancelOrderAction(startingOrder.order).then(newBets => {
         dispatch(updateOrders(newBets));
+      })
 
-      });
+      // replaceOrder, editing the price
+      await fetch('/api/replace-orders', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: {
+          marketId: secondOrder.marketId,
+          betId: secondOrder.betId,
+          newPrice: minimalOrder.price
+        }
+      }).then(() => {
+        const newUnmatchedBets = Object.assign({}, secondOrder.bets.unmatched);
+        newUnmatchedBets[secondOrder.order.betId].price = minimalOrder.price;
+        dispatch(updateOrders({
+          unmatched: newUnmatchedBets,
+          matched: secondOrder.bets.matched
+        }));
+      })
+    }
+  }
+
+  return dispatch => {
+    placeOrderAction(minimalOrder).then(result => {
+      if (result !== null) {
+        dispatch(updateOrders(result.bets));
+      }
+    })
+    
   };
 };
+
+export const placeOrderAction = async (order) => {
+  return fetch('/api/place-order', {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    method: "POST",
+    body: JSON.stringify(order)
+  })
+    .then(res => res.json())
+    .then(async result => {
+
+      if (!result || result.status === "FAILURE") return null;
+
+      const betId = result.instructionReports[0].betId;
+
+      const adjustedOrder = Object.assign({}, order);
+      adjustedOrder.rfs = order.customerStrategyRef;
+      adjustedOrder.betId = betId;
+      adjustedOrder.strategy = "None";
+      if (betId === undefined) {
+        return;
+      }
+
+      const newUnmatchedBets = Object.assign({}, order.unmatchedBets)
+      newUnmatchedBets[betId] = adjustedOrder;
+
+      const newBets = {
+        unmatched: newUnmatchedBets,
+        matched: order.matchedBets == undefined ? {} : order.matchedBets
+      }
+
+      if (order.orderCompleteCallBack !== undefined)
+        await order.orderCompleteCallBack(betId, newUnmatchedBets);
+      
+      return { order: adjustedOrder, bets: newBets }
+
+    });
+}
 
 export const cancelOrder = order => {
 
@@ -78,7 +136,6 @@ export const cancelOrder = order => {
   };
 };
 
-// TODO, do we need to move this out since it is not an action that has to do with changing state
 export const cancelOrderAction = async (order) => {
 
   // order with everything removed that might make the payload too large
