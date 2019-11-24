@@ -28,15 +28,15 @@ export const placeOrder = order => {
 
   if (parseFloat(newSize) < 2.0) {
     return async dispatch => {
-      const startingOrder = placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: 2, orderCompleteCallBack: undefined}))
+      const startingOrder = await placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: 2, orderCompleteCallBack: undefined}))
       if (startingOrder === null) return
 
-      dispatch(updateOrders(startingOrder.bets));
+      await dispatch(updateOrders(startingOrder.bets));
       
       // add extra bit to it
-      const secondOrder = placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: minimalOrder.size - 2, unmatchedBets: startingOrder.unmatched}))
+      const secondOrder = await placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: minimalOrder.size - 2, unmatchedBets: startingOrder.unmatched}))
       
-      dispatch(updateOrders(secondOrder.bets));
+      await dispatch(updateOrders(secondOrder.bets));
 
       if (secondOrder === null) {
         // cancel the first one since we don't have enough funds
@@ -46,8 +46,8 @@ export const placeOrder = order => {
       }
       
       // cancel the first one
-      cancelOrderAction(startingOrder.order).then(newBets => {
-        dispatch(updateOrders(newBets));
+      await cancelOrderAction(startingOrder.order).then(async newBets => {
+        await dispatch(updateOrders(newBets));
       })
 
       // replaceOrder, editing the price
