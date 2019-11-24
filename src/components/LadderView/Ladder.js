@@ -101,7 +101,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
     }
     const parsedVolume = {};
     if (ladder[id].trd) {
-        ladder[id].trd.map(vol => { return parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10 });
+        ladder[id].trd.map(vol => { parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10 });
     }
 
     const fullLadderWithProfit = {};

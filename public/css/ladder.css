@@ -155,6 +155,7 @@
 .volume-col {
 	position: absolute;
 	height: 100%;
+	background: rgba(235, 170, 109, 0.767);
 	color: #fff;
 	max-width: 100%; 
 	font-family: "Open Sans";
