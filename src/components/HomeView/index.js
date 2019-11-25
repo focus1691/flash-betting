@@ -82,7 +82,7 @@ const HomeView = props => {
         </Grid>
         <Grid container alignItems="center">
           <Typography className={`${classes.textMargin}`} gutterBottom variant="p">
-            Contact us on <a href={"malito:joshbetting30@yahoo.com"}>joshbetting30@yahoo.com</a> if you experience any issues when using Trader Pro.
+            Contact us on <a href={"mailto:joshbetting30@yahoo.com"}>joshbetting30@yahoo.com</a> if you experience any issues when using Trader Pro.
           </Typography>
         </Grid>
         <Divider className={classes.divider} />

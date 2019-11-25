@@ -8,17 +8,15 @@
 }
 
 #home-view {
-	background: #ffffff;
-	width: 80%;
-	height: 95%;
+	width: 90%;
+	height: 85%;
 	margin: 0 auto;
 	padding: 25px;
-	border: 2px solid #000;
+	border-radius: 25px;
 	display: table;
 	margin: 0 auto;
 	margin-top: 2%;
-	background: #8e9eab;  /* fallback for old browsers */
-	background: -webkit-linear-gradient(to right, #eef2f3, #8e9eab);  /* Chrome 10-25, Safari 5.1-6 */
-	background: linear-gradient(to right, #eef2f3, #8e9eab); /* W3C, IE 10+ */
+	background: rgb(244, 244, 244);
 	color: #000;
+	box-shadow: 1px 10px 20px 0px rgba(0, 0, 0, 0.4);
 }
