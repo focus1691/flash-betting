@@ -143,7 +143,12 @@ const App = props => {
                     const currentOrdersObject = {};
                     currentOrders.map(item => {
                       currentOrdersObject[item.betId] = item;
-                      currentOrdersObject[item.betId].price = item.averagePriceMatched;
+                      if (item.status === "EXECUTION_COMPLETE") {
+                        currentOrdersObject[item.betId].price = item.averagePriceMatched;
+                      } else {
+                        currentOrdersObject[item.betId].price = item.priceSize.price;
+                      }
+                      
                     })
 
                     orders.map(async order => {
