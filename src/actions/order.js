@@ -18,37 +18,21 @@ export const placeOrder = order => {
   order.size = newSize
   order.price = parseFloat(order.price)
 
-  // order without anything that might make the payload too large
-  const minimalOrder = {}
-  Object.keys(order).map((key) => {
-    if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "orderCompleteCallBack") {
-      minimalOrder[key] = order[key]
-    }
-  })
-
   if (parseFloat(newSize) < 2.0) {
     return async dispatch => {
-      const startingOrder = await placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: 2, orderCompleteCallBack: undefined}))
+      const startingOrder = await placeOrderAction(Object.assign({}, order, {price: 1.01, size: 2, orderCompleteCallBack: undefined}))
       if (startingOrder === null) return
 
       await dispatch(updateOrders(startingOrder.bets));
       
-      // add extra bit to it
-      const secondOrder = await placeOrderAction(Object.assign({}, minimalOrder, {price: 1000, size: minimalOrder.size - 2, unmatchedBets: startingOrder.unmatched}))
-      
-      await dispatch(updateOrders(secondOrder.bets));
+      // cancel part of the first one
+      const reducedOrderBets = await reduceSizeAction(Object.assign({}, startingOrder.order, 
+        { unmatchedBets: startingOrder.bets.unmatched, 
+          matchedBets: startingOrder.bets.matched, 
+          sizeReduction: 0.1
+        }))
 
-      if (secondOrder === null) {
-        // cancel the first one since we don't have enough funds
-        return cancelOrderAction(startingOrder.order).then(newBets => {
-          dispatch(updateOrders(newBets));
-        })
-      }
-      
-      // cancel the first one
-      await cancelOrderAction(startingOrder.order).then(async newBets => {
-        await dispatch(updateOrders(newBets));
-      })
+      await dispatch(updateOrders(reducedOrderBets));
 
       // replaceOrder, editing the price
       await fetch('/api/replace-orders', {
@@ -57,24 +41,26 @@ export const placeOrder = order => {
           "Content-Type": "application/json"
         },
         method: "POST",
-        body: {
-          marketId: secondOrder.marketId,
-          betId: secondOrder.betId,
-          newPrice: minimalOrder.price
-        }
+        body: JSON.stringify({
+          marketId: startingOrder.order.marketId,
+          betId: startingOrder.order.betId,
+          newPrice: order.price,
+          customerStrategyRef: order.customerStrategyRef
+        })
       }).then(() => {
-        const newUnmatchedBets = Object.assign({}, secondOrder.bets.unmatched);
-        newUnmatchedBets[secondOrder.order.betId].price = minimalOrder.price;
+        const newUnmatchedBets = Object.assign({}, reducedOrderBets.unmatched);
+        newUnmatchedBets[startingOrder.order.betId].price = order.price;
         dispatch(updateOrders({
           unmatched: newUnmatchedBets,
-          matched: secondOrder.bets.matched
+          matched: startingOrder.bets.matched
         }));
       })
     }
   }
 
   return dispatch => {
-    placeOrderAction(minimalOrder).then(result => {
+    placeOrderAction(order).then(result => {
+
       if (result !== null) {
         dispatch(updateOrders(result.bets));
       }
@@ -84,13 +70,22 @@ export const placeOrder = order => {
 };
 
 export const placeOrderAction = async (order) => {
+
+  // order without anything that might make the payload too large
+  const minimalOrder = {}
+  Object.keys(order).map((key) => {
+    if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "orderCompleteCallBack") {
+      minimalOrder[key] = order[key]
+    }
+  })
+
   return fetch('/api/place-order', {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
     method: "POST",
-    body: JSON.stringify(order)
+    body: JSON.stringify(minimalOrder)
   })
     .then(res => res.json())
     .then(async result => {
@@ -162,6 +157,42 @@ export const cancelOrderAction = async (order) => {
         newUnmatchedBets[key] = order.unmatchedBets[key]
       }
     }
+    const newBets = {
+      unmatched: newUnmatchedBets,
+      matched: order.matchedBets ? order.matchedBets : {}
+    }
+    return newBets
+  } else {
+    return {
+      unmatched: order.unmatchedBets ? order.unmatchedBets : {},
+      matched: order.matchedBets ? order.matchedBets : {}
+    };
+  }
+  
+}
+
+export const reduceSizeAction = async order => {
+  // order with everything removed that might make the payload too large
+  const minimalOrder = {}
+  Object.keys(order).map((key) => {
+    if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "callback") {
+      minimalOrder[key] = order[key]
+    }
+  })
+
+  const cancelOrder = await fetch('/api/cancel-order', {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    method: "POST",
+    body: JSON.stringify(minimalOrder)
+  }).then(res => res.json()).catch(() => false);
+
+  if (cancelOrder) {
+    const newUnmatchedBets = Object.assign({}, order.unmatchedBets);
+    newUnmatchedBets[order.betId].size = order.size - cancelOrder.instructionReports[0].sizeCancelled;
+
     const newBets = {
       unmatched: newUnmatchedBets,
       matched: order.matchedBets ? order.matchedBets : {}
