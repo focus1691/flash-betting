@@ -2,7 +2,7 @@ import React from "react";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from '@material-ui/core/Divider';
-
+import CountryCodeConverter from '../../../utils/CountryCodeConverter'
 export default ({ list, itemSelector, clickHandler, myMarkets, idSelector, currentSportId, updateMyMarkets }) => {
     return (   
         list.map((item, index) => {
@@ -19,7 +19,7 @@ export default ({ list, itemSelector, clickHandler, myMarkets, idSelector, curre
                         </ListItemIcon>
                         <ListItem button style={{ }} onClick={(e) => clickHandler(item)}>
                             
-                            <p style={{minWidth: `13em`}}>{item[itemSelector]}</p>
+                            <p style={{minWidth: `13em`}}>{CountryCodeConverter(item[itemSelector])}</p>
 
                         </ListItem>
                         {/* If last one don't make divider */}
