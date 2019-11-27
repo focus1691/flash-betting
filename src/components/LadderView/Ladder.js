@@ -11,6 +11,8 @@ import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
+import GetColoredLTPList from "../../utils/ladder/GetColoredLTPList";
+import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
     ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, ladderUnmatched, stake }) => {
@@ -22,6 +24,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
     const [isMoving, setIsMoving] = useState(false);
     const [isLadderDown, setLadderDown] = useState(false);
 
+    // every 1 second, checks if there is an LTP, if there is, we scroll to it and stop the interval
     useEffect(() => {
         const interval = setInterval(() => {
             const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
@@ -34,6 +37,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
 
     }, [listRef]);
 
+    // if the order changes, we scrollback to the ltp 
     useEffect(() => {
         const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
         if (listRef.current !== undefined) {
@@ -41,30 +45,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
         }
     }, [order])
 
-    // remove adjacent LTP values
-    const filteredLTPs =
-        ladder[id] !== undefined ?
-            ladder[id].ltp[0] !== undefined ?
-                ladder[id].ltp.filter((item, pos, arr) => {
-                    // Always keep the 0th element as there is nothing before it
-                    // Then check if each element is different than the one before it
-                    return pos === 0 || item !== arr[pos - 1];
-                }) : []
-            : []
-
-    const coloredLTPList = filteredLTPs.map((item, index) => {
-        if (index === filteredLTPs.length - 1) { // if last element
-            return {
-                tick: item,
-                color: item > filteredLTPs[index - 1] || index === 0 ? 'G' : 'R'
-            }
-        } else {
-            return {
-                tick: item,
-                color: item < filteredLTPs[index + 1] ? 'R' : 'G'
-            }
-        }
-    });
+    const coloredLTPList = GetColoredLTPList(ladder, id)
 
     const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), { matched: matchedBets }).toFixed(2) : 0
 
@@ -104,31 +85,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
         ladder[id].trd.map(vol => { parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10 });
     }
 
-    const fullLadderWithProfit = {};
-    let ladderLTPHedge = 0;
+    const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladder, id, selectionMatchedBets, ladderUnmatched, stake, PL)
 
-    Object.values(ladder[id].fullLadder).map(item => {
-        // if lay, flip
-        fullLadderWithProfit[item.odds] = { ...item }
-
-        if (selectionMatchedBets !== undefined && ladderUnmatched === "hedged") {
-            const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(item.odds)));
-            const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
-
-            if (parseFloat(item.odds).toFixed(2) == parseFloat(ladder[id].ltp[0]).toFixed(2)) {
-                ladderLTPHedge = profit;
-            }
-
-            const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) <= 0 ? "BACK" : "LAY"
-
-            fullLadderWithProfit[item.odds][side == "BACK" ? 'backProfit' : "layProfit"] = profit
-        }
-
-        if (ladderUnmatched === "pl") {
-            fullLadderWithProfit[item.odds]['backProfit'] = parseFloat(calcBackProfit(parseFloat(stake), item.odds, 0)) + parseFloat(PL);
-        }
-    });
-
+    // gets all the bets we made and creates a size to offset
     const hedgeSize = selectionMatchedBets !== undefined ?
         selectionMatchedBets.reduce((a, b) => {
             return a + b.size

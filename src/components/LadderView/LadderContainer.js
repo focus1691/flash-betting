@@ -78,8 +78,6 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
         if ((relativeCursorPosition > midPoint && order < key) || (relativeCursorPosition < midPoint && order > key)) { 
 
             // we have to find the actual id if one of the ladders are hidden
-
-            
             const thisLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == containerRef.current.children[0].children[0].childNodes[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()) // ladder header -> contender name -> name 
             const thisLadderId = Object.keys(runners)[thisLadderIndex]
             
