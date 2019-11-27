@@ -5,6 +5,7 @@ const initialState = {
   view: null,
   isLoading: true,
   premiumMember: false,
+  selectedPremium: 'monthly',
   premiumPopupOpen: false,
   fullscreen: false,
   trainingBalance: 1000,
@@ -69,6 +70,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, premiumMember: action.payload };
     case "TOGGLE_POPUP":
       return { ...state, premiumPopupOpen: action.payload };
+    case "SET_SELECTED_PREMIUM":
+        return { ...state, selectedPremium: action.payload };
     case "FULL_SCREEN":
       return { ...state, fullscreen: action.payload };
     case "SET_TRAINING_BALANCE":

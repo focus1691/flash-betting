@@ -22,4 +22,25 @@ const getDate30DaysAhead = () => {
     }
 }
 
-export { isPremiumActive, getDate30DaysAhead };
+
+const getDate180DaysAhead = () => {
+    const now = new Date();
+
+    if (now.getMonth() == 6) {
+        return new Date(now.getFullYear() + 6, 0, 1);
+    } else {
+        return new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+    }
+}
+
+const getDate1YearAhead = () => {
+    const now = new Date();
+
+    if (now.getMonth() == 12) {
+        return new Date(now.getFullYear() + 12, 0, 1);
+    } else {
+        return new Date(now.getFullYear(), now.getMonth() + 12, now.getDate());
+    }
+}
+
+export { isPremiumActive, getDate30DaysAhead, getDate180DaysAhead, getDate1YearAhead };

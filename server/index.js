@@ -69,9 +69,10 @@ app.get("/api/generate-client-token", (request, response) => {
 
 app.post("/api/checkout", function (request, result) {
 	var nonceFromTheClient = request.body.payment_method_nonce;
+	var amount = request.body.amount;
 
 	gateway.transaction.sale({
-		amount: "9.99",
+		amount: amount,
 		paymentMethodNonce: nonceFromTheClient,
 		options: {
 			submitForSettlement: true

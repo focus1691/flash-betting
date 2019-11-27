@@ -9,7 +9,7 @@
 
 #home-view {
 	width: 90%;
-	height: 85%;
+	height: 50em;
 	margin: 0 auto;
 	padding: 25px;
 	border-radius: 25px;
@@ -19,4 +19,120 @@
 	background: rgb(244, 244, 244);
 	color: #000;
 	box-shadow: 1px 10px 20px 0px rgba(0, 0, 0, 0.4);
+	display: flex;
+	flex-direction: column;
+}
+
+.subscription-list {
+	display: flex;
+	flex-direction: row;
+	width: 70%;
+	justify-content: space-between;
+	align-self: center;
+}
+
+.subscription-container {
+	width: 20rem; 
+	height: 25rem;
+	background: rgb(235, 235, 235);
+	border-radius: 10px;
+	margin-top: 7.5%;
+	box-shadow: 1px 1px 20px 0px rgba(0, 0, 0, 0.3);
+	display: flex;
+	flex-direction: column;
+}
+
+.subscription-header {
+	width: 100%;
+	padding: 5% 0;
+	background: rgb(82, 94, 100);
+	border-radius: 10px 10px 0 0;
+	text-align: center;
+	font-weight: 500;
+	font-size: 1.5rem;
+	font-family: "Open Sans";
+	color: white;
+}
+
+.subscription-price {
+	width: 100%;
+	padding: 5% 0 0 0;
+	margin-top: 10%;
+	margin-bottom: 0;
+	text-align: center;
+	font-size: 4rem;
+	font-family: "Open Sans";
+	color: #34495e;
+}
+
+.subscription-text {
+	width: 100%;
+	margin-top: 1%;
+	text-align: center;
+	font-size: 1rem;
+	font-family: "Open Sans";
+	color: #34495e;
+}
+
+.subscription-button {
+	margin-top: 3%;
+	padding: 3.5% 5%;
+	margin-top: 10%;
+	max-width: 31%;
+	text-align: center;
+	font-size: 1rem;
+	font-family: "Open Sans";
+	align-self: center;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.subscription-gray-button {
+	border: 1px solid #525e64;
+	color: #525e64;
+}
+
+.subscription-gray-button:hover {
+  border-color: transparent;
+  color: white;
+  animation-name: subscription-gray-focus;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes subscription-gray-focus {
+	from {
+		background-color: transparent;
+		border: 1px solid #525e64;
+		color: #525e64;
+	}
+	to {
+		background-color: #525e64;
+		border-color: transparent;
+		color: white;
+	}
+}
+
+.subscription-green-button {
+	border: unset;
+	background: #26C281;
+	color: white;
+	font-weight: 600;
+}
+
+.subscription-green-button:hover {
+  border-color: transparent;
+  color: white;
+  animation-name: subscription-green-focus;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes subscription-green-focus {
+	from {
+		background-color: #26C281;
+	}
+	to {
+		background-color: #1e9765;
+	}
 }

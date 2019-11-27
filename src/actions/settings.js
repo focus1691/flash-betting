@@ -26,6 +26,13 @@ export const openPremiumDialog = open => {
     }
 };
 
+export const setSelectedPremium = premium => {
+    return {
+        type: "SET_SELECTED_PREMIUM",
+        payload: premium
+    }
+};
+
 export const setPremiumStatus = isPremium => {
     return {
         type: "SET_PREMIUM_STATUS",

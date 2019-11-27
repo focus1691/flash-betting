@@ -7,6 +7,8 @@ import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Header from "./Header";
+import SubscriptionContainer from "./SubscriptionContainer";
+import { setPremiumStatus, openPremiumDialog, setSelectedPremium } from "../../actions/settings";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -86,6 +88,17 @@ const HomeView = props => {
           </Typography>
         </Grid>
         <Divider className={classes.divider} />
+        <div className = {"subscription-list"}>
+          {
+            props.premiumMember ? null :
+            <React.Fragment>
+              <SubscriptionContainer openPremiumMenu = {props.openPremiumMenu} setSelectedPremium = {props.setSelectedPlan} />
+              <SubscriptionContainer plan = "Biannually" price = {49.99} color = {'green'} openPremiumMenu = {props.openPremiumMenu} setSelectedPremium = {props.setSelectedPlan} />
+              <SubscriptionContainer plan = "Annually" price = {99.99} openPremiumMenu = {props.openPremiumMenu} setSelectedPremium = {props.setSelectedPlan} />
+            </React.Fragment>
+          }
+          
+        </div>
       </div>
     </div>
   );
@@ -103,6 +116,14 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    openPremiumMenu: isPremium => dispatch(openPremiumDialog(isPremium)),
+    setSelectedPlan: premiumSelected => dispatch(setSelectedPremium(premiumSelected))
+  }
+}
+
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(HomeViewWithSocket);

@@ -12,7 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import DropIn from "braintree-web-drop-in-react";
-import { getDate30DaysAhead } from "../utils/DateCalculator";
+import { getDate30DaysAhead, getDate1YearAhead, getDate180DaysAhead } from "../utils/DateCalculator";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -68,7 +68,8 @@ const FullScreenDialog = props => {
       method: "POST",
       body: JSON.stringify({
         payment_method_nonce: nonce,
-        expiresIn: getDate30DaysAhead()
+        expiresIn: props.selectedPremium === 'monthly' ? getDate30DaysAhead() : props.selectedPremium === 'biannually' ? getDate180DaysAhead() : getDate1YearAhead(),
+        amount: props.selectedPremium === 'monthly' ? 9.99 : props.selectedPremium === 'biannually' ? 49.99 : 99.99
       })
     }).then(res => {
       props.setPremiumStatus(true);
@@ -114,7 +115,7 @@ const FullScreenDialog = props => {
       </AppBar>
       <DialogContent>
         <DialogContentText>
-          You are required to pay the monthly subscription fee of £9.99 in order to access Trader Pro's advanced features.
+          You are required to pay the monthly subscription fee of £{props.selectedPremium === 'monthly' ? 9.99 : props.selectedPremium === 'biannually' ? 49.99 : 99.99} in order to access Trader Pro's advanced features.
           </DialogContentText>
 
         {renderForm()}
@@ -126,7 +127,8 @@ const FullScreenDialog = props => {
 const mapStateToProps = state => {
   return {
     open: state.settings.premiumPopupOpen,
-    premiumMember: state.settings.premiumMember
+    premiumMember: state.settings.premiumMember,
+    selectedPremium: state.settings.selectedPremium
   }
 }
 
