@@ -29,7 +29,7 @@ import DraggableGraph from "./Draggable/Graph";
 import DraggableLiveStream from "./Draggable/LiveStream";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
-import { sortLadder } from "../utils/ladder/SortLadder";
+import { sortLadder, sortGreyHoundMarket } from "../utils/ladder/SortLadder";
 
 const App = props => {
   const [cookies] = useCookies(['sessionKey', 'username']);
@@ -116,6 +116,7 @@ const App = props => {
                   price: 0
                 };
               }
+              props.onSortLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
               props.onUpdateRunners(runners);
               props.onReceiveMarket(data.result[0]);
               props.onSelectRunner(data.result[0].runners[0]);
@@ -342,6 +343,11 @@ const App = props => {
               delete ladders[runner.id];
             }
           });
+          if (data.marketDefinition.eventTypeId !== "4339") {
+            var sortedLadderIndices = sortLadder(ladders);
+            props.onSortLadder(sortedLadderIndices);
+            props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));            
+          }
         }
 
         if (stopLossOrdersToRemove.length > 0) {
@@ -369,11 +375,8 @@ const App = props => {
           props.onChangeStopLossList(adjustedStopLossList);
         }
 
-        var sortedLadderIndices = sortLadder(ladders);
-        props.onSortLadder(sortedLadderIndices);
         props.onReceiverLadders(ladders);
         props.onReceiveNonRunners(nonRunners);
-        props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
       }
     });
 
