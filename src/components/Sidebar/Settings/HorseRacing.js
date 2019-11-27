@@ -53,8 +53,9 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="GB"
+                label="UK Races"
             />
+            <br/>
             {renderSaveBtn()}
             <FormControlLabel
                 control={
@@ -72,7 +73,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="IRE"
+                label="Irish Races"
             />
             <FormControlLabel
                 control={
@@ -90,7 +91,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="FR"
+                label="French Races"
             />
             <FormControlLabel
                 control={
@@ -108,7 +109,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="GER"
+                label="German Races"
             />
             <FormControlLabel
                 control={
@@ -126,8 +127,9 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="IT"
+                label="Italian Races"
             />
+            <br/>
             <FormControlLabel
                 control={
                     <Checkbox
@@ -144,7 +146,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="UAE"
+                label="UAE Races"
             />
             <FormControlLabel
                 control={
@@ -162,7 +164,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="TUR"
+                label="Turkish Races"
             />
             <FormControlLabel
                 control={
@@ -180,7 +182,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="SGP"
+                label="Singaporean Races"
             />
             <FormControlLabel
                 control={
@@ -198,7 +200,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="SWE"
+                label="Swedish Races"
             />
             <FormControlLabel
                 control={
@@ -216,7 +218,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="USA"
+                label="USA Races"
             />
             <FormControlLabel
                 control={
@@ -234,7 +236,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="AUS"
+                label="Australian Races"
             />
             <FormControlLabel
                 control={
@@ -252,7 +254,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="NZ"
+                label="New Zealand Races"
             />
             <FormControlLabel
                 control={
@@ -270,7 +272,7 @@ export default ({ horseRaces, toggleHorseRaces, saveSetting, classes }) => {
                         }}
                     />
                 }
-                label="SA"
+                label="South African Races"
             />
         </>
     );

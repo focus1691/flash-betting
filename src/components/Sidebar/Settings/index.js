@@ -83,14 +83,14 @@ const Settings = props => {
 
 			<UnmatchedBets
 				unmatchedBets={props.unmatchedBets}
-				toggleUnmatchedBets={props.toggleUnmatchedBets}
+				toggleUnmatchedBets={props.onToggleUnmatchedBets}
 				saveSetting={saveSetting}
 				classes={classes}
 			/>
 
 			<MatchedBets
 				matchedBets={props.matchedBets}
-				toggleUnmatchedBets={props.toggleMatchedBets}
+				toggleMatchedBets={props.onToggleMatchedBets}
 				saveSetting={saveSetting}
 				classes={classes}
 			/>
