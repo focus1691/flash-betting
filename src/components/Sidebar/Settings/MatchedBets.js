@@ -15,7 +15,7 @@ export default ({ matchedBets, toggleMatchedBets, saveSetting, classes }) => {
             <button
                 className={"save-btn"}
                 onClick={e => {
-                    setChangeMade(true);
+                    setChangeMade(false);
                     saveSetting({"settings.matchedBets": { visible: matchedBets.visible, open: matchedBets.open }});
                 }}
             >
@@ -46,7 +46,7 @@ export default ({ matchedBets, toggleMatchedBets, saveSetting, classes }) => {
 				}
 				label="Show Panel"
 			/>
-            {saveSetting()}
+            {renderSaveBtn()}
 			<FormControlLabel
 				control={
 					<Checkbox

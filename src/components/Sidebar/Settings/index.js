@@ -90,7 +90,7 @@ const Settings = props => {
 
 			<MatchedBets
 				matchedBets={props.matchedBets}
-				toggleUnmatchedBets={props.onToggleMatchedBets}
+				toggleMatchedBets={props.onToggleMatchedBets}
 				saveSetting={saveSetting}
 				classes={classes}
 			/>
