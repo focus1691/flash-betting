@@ -657,6 +657,8 @@ io.on("connection", async client => {
 		let accessToken = await database.getToken(betfair.email);
 		const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":[""]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
 		exchangeStream.makeSubscription(marketSubscription, accessToken);
+		exchangeStream.client.destroy();
+		
 		exchangeStream = null;
 	});
 });
