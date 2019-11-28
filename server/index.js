@@ -628,19 +628,28 @@ const server = require('http').createServer(app);
 const io = require("socket.io")(server);
 
 server.listen(port, () => console.log(`Server started on port: ${port}`));
+
 var id = 1;
 io.on("connection", async client => {
-	const exchangeStream = new ExchangeStream(client);
-	const accessToken = await database.getToken(betfair.email);
+	var exchangeStream = new ExchangeStream(client);
 
 	// Subscribe to market
 	client.on("market-subscription", async data => {
+		let accessToken = await database.getToken(betfair.email);
 		const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
 		exchangeStream.makeSubscription(marketSubscription, accessToken);
 	});
 	// Subscribe to orders
 	client.on("order-subscription", async data => {
+		let accessToken = await database.getToken(betfair.email);
 		const orderSubscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
 		exchangeStream.makeSubscription(orderSubscription, accessToken);
+	});
+	client.on('disconnect', async () => {
+		console.log('Socket disconnected');
+		let accessToken = await database.getToken(betfair.email);
+		const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":[""]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
+		exchangeStream.makeSubscription(marketSubscription, accessToken);
+		exchangeStream = null;
 	});
 });
