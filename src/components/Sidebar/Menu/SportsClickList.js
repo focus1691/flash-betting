@@ -3,6 +3,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import SportsFilterList from "./SportsFilterList";
+import CountryCodeConverter from '../../../utils/CountryCodeConverter'
 
 /*
     currentItem - Item at the shown
@@ -28,24 +29,24 @@ export default ({
   myMarkets,
   idSelector,
   currentSportId,
-  updateMyMarkets
+  updateMyMarkets,
+  previousItem
 }) => {
   if (currentItemFull === undefined) {
     currentItemFull = currentItem;
   }
-
+  
   return (
-    <div>
-      <React.Fragment>
-        <ListItem
-          button
-          onClick={e =>
-            reverseClickHandler(currentItemFull, currentItemName, newArrayName)
-          }
-        >
-          <ListItemText>{currentItem}</ListItemText>
-        </ListItem>
-      </React.Fragment>
+    <tr>
+        {previousItem !== currentItem ? 
+        <React.Fragment>
+          <ListItem
+            button
+          >
+            <ListItemText>{CountryCodeConverter(currentItem)}</ListItemText>
+          </ListItem>
+        </React.Fragment>
+        : null} 
         <SportsFilterList
           list={newArray}
           itemSelector={listSelector}
@@ -55,6 +56,6 @@ export default ({
           currentSportId={currentSportId}
           updateMyMarkets={updateMyMarkets}
         />
-    </div>
+    </tr>
   );
 };

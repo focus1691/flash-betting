@@ -39,7 +39,8 @@ const AllSports = props => {
     competition = "",
     event = "",
     mapMarkets = data => data,
-    sortMarkets = data => data
+    sortMarkets = data => data,
+    extraRemoval = [],
   ) => {
     /*
 			marketSelection - button click
@@ -52,11 +53,16 @@ const AllSports = props => {
 
     // set back to undefined if they don't want to see the menu anymore, click on the same button another time
     if (props.sports.currentSport[currentMarket] === marketSelection) {
-      const newSport = Object.assign({}, props.sports.currentSport);
-
+      let newSport = Object.assign({}, props.sports.currentSport);
+      console.log(newSport)
+      console.log(props.sports.currentSport[currentMarket], marketSelection)
       newSport[currentMarket] = undefined;
       newSport[marketList] = undefined;
-
+      
+      extraRemoval.map(item => {
+        newSport[item] = undefined;
+      })
+      
       props.onUpdateCurrentSport(newSport);
       return;
     }
@@ -125,6 +131,7 @@ const AllSports = props => {
                 eventMarkets !== undefined &&
                 eventMarkets.length > 0 ?
                 <SelectMarket
+                  sports={props.sports}
                   currentSportId={currentSportId}
                   name={currentEvent.name}
                   markets={eventMarkets.sort((a, b) => a.marketName.localeCompare(b.marketName))}
@@ -132,6 +139,8 @@ const AllSports = props => {
                   event={currentEvent}
                   myMarkets = {props.myMarkets}
                   updateMyMarkets = {updateMyMarkets}
+                  currentCountry = {currentCountry}
+                  currentCompetition = {currentCompetition}
                 />
                 : // Selecting Event
                 currentCountry !== undefined &&
@@ -139,6 +148,7 @@ const AllSports = props => {
                   competitionEvents.length > 0 &&
                   currentEvent === undefined ?
                   <SelectEvent
+                    sports={props.sports}
                     currentSportId={currentSportId}
                     currentCompetition={currentCompetition}
                     currentCountry={currentCountry}
@@ -153,6 +163,7 @@ const AllSports = props => {
                     countryCompetitions.length > 0 &&
                     currentEvent === undefined ?
                     <SelectCompetition
+                      sports={props.sports}
                       currentCountry={currentCountry}
                       competitions={countryCompetitions}
                       handleClick={handleClick}
