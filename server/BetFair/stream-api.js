@@ -83,10 +83,12 @@ class BetFairStreamAPI {
 				console.log('Connection closed');
 				this.connectionClosed = true;
 				this.authenticated = false;
+				this.destroy();
 			});
 
 			this.client.on('error', err => {
 				console.log('Error:' + err);
+				this.destroy();
 			});
 		});
 	}
