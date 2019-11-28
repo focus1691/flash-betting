@@ -27,10 +27,13 @@ class BetFairStreamAPI {
 
 			this.client.setEncoding('utf8');
 
+			console.log(this);
+
 			this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 
 			this.client.on('data', data => {
-				// console.log('Received: ' + data);
+				console.log('Received: ' + data);
+				
 
 				// Read the data into Buffer
 				const bufferedData = Buffer.from(data);
@@ -44,8 +47,9 @@ class BetFairStreamAPI {
 
 					// Connection status
 					if (result.op === 'status') {
-						this.connectionClosed = this.connectionClosed;
-						if (this.connectionClosed) {
+						console.log('session key: ' + sessionKey + '\nStatus: ' + JSON.stringify(result));
+						this.connectionClosed = result.connectionClosed;
+						if (!this.connectionClosed) {
 							this.subscriptions.forEach((subscription => {
 								this.client.write(subscription);
 							}));
@@ -56,7 +60,7 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						console.log(result.id)
+						console.log('New MCM, id: ' + result.id);
 						// console.log(JSON.stringify(result));
 						this.openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];
@@ -87,6 +91,7 @@ class BetFairStreamAPI {
 		});
 	}
 	makeSubscription(subscription, accessToken) {
+		console.log('make subscription');
 		if (this.connectionClosed) {
 			this.authenticate(accessToken);
 			this.subscriptions.push(subscription);
