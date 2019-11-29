@@ -37,7 +37,7 @@ const UpdateRunner = (ladder, rawData) => {
     rawData.atb.forEach(atb => {
       let price = atb[0];
       let matched = Math.floor(atb[1]);
-      let index = SearchInsert(ladder.atb, price, false);
+      let index = SearchInsert(ladder.atb, price, true);
 
       if (matched <= 0) {
         if (price === ladder.atb[index][0] && ladder.atb.length > 0) {
@@ -71,7 +71,7 @@ const UpdateRunner = (ladder, rawData) => {
     rawData.atl.forEach(atl => {
       let price = atl[0];
       let matched = Math.floor(atl[1]);
-      let index = SearchInsert(ladder.atl, price, true);
+      let index = SearchInsert(ladder.atl, price, false);
 
       if (matched <= 0) {
         if (price === ladder.atl[index][0] && ladder.atl.length > 0) {
