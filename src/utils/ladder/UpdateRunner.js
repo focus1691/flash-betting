@@ -1,6 +1,7 @@
 
 import { SearchInsert } from "../Algorithms/SearchInsert";
 import { formatPriceKey, calcBackLayPercentages } from "../ladder/CreateFullLadder";
+import { sortAsc, sortDes } from "../Algorithms/Sort";
 
 const UpdateRunner = (ladder, rawData) => {
 
@@ -15,21 +16,19 @@ const UpdateRunner = (ladder, rawData) => {
     rawData.trd.forEach(trd => {
       let price = trd[0];
       let volumeMatched = Math.floor(trd[1]);
+      let index = ladder.trd.map(trd => trd[0]).findIndex(val => val === price);
 
-      let index = SearchInsert(ladder.trd, price, true);
-
-      if (volumeMatched <= 0 && ladder.trd.length > 0) {
-        if (price === ladder.trd[index][0]) {
-          ladder.trd.splice(index, 1);
-        }
+      if (index === -1 && volumeMatched >= 100) {
+        ladder.trd.push([price, volumeMatched]);
       }
-      else if (price === ladder.trd[index][0]) {
+      else if (volumeMatched < 100) {
+        ladder.trd.splice(index, 1);
+      }
+      else if (volumeMatched >= 100) {
         ladder.trd[index][1] = volumeMatched;
       }
-      else {
-        ladder.trd.splice(index, 0, [price, volumeMatched]);
-      }
     });
+    sortAsc(ladder.trd);
   }
 
   // Update the atb values
@@ -37,33 +36,22 @@ const UpdateRunner = (ladder, rawData) => {
     rawData.atb.forEach(atb => {
       let price = atb[0];
       let matched = Math.floor(atb[1]);
-      let index = SearchInsert(ladder.atb, price, true);
+      let index = ladder.atb.map(atb => atb[0]).findIndex(val => val === price);
 
-      if (matched <= 0) {
-        if (price === ladder.atb[index][0] && ladder.atb.length > 0) {
-          ladder.atb.splice(index, 1);
-          ladder.fullLadder[formatPriceKey(price)].layMatched = null;
-        }
+      if (index === -1 && matched >= 1) {
+        ladder.atb.push([price, matched]);
+        ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
       }
-
       else if (matched >= 1) {
-        if (ladder.atb.length === 0) {
-          ladder.atb.splice(index, 0, [price, matched]);
-        }
-        else if (price === ladder.atb[index][0]) {
-          ladder.atb[index][1] = matched;
-          ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
-        } else {
-          if (ladder.atb.length === 0) {
-            ladder.atb.splice(index, 0, [price, matched]);
-          } else {
-            if (price > ladder.atb[ladder.atb.length - 1][0]) index++;
-            ladder.atb.splice(index, 0, [price, matched]);
-            ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
-          }
-        }
+        ladder.atb[index][1] = matched;
+        ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
+      }
+      else if (matched <= 0) {
+        ladder.atb.splice(index, 1);
+        ladder.fullLadder[formatPriceKey(price)].layMatched = null;
       }
     });
+    sortDes(ladder.atb);
   }
 
   // Update the atl values
@@ -71,33 +59,22 @@ const UpdateRunner = (ladder, rawData) => {
     rawData.atl.forEach(atl => {
       let price = atl[0];
       let matched = Math.floor(atl[1]);
-      let index = SearchInsert(ladder.atl, price, false);
+      let index = ladder.atl.map(atl => atl[0]).findIndex(val => val === price);
 
-      if (matched <= 0) {
-        if (price === ladder.atl[index][0] && ladder.atl.length > 0) {
-          ladder.atl.splice(index, 1);
-          ladder.fullLadder[formatPriceKey(price)].backMatched = null;
-        }
+      if (index === -1 && matched >= 1) {
+        ladder.atl.push([price, matched]);
+        ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
       }
-
       else if (matched >= 1) {
-        if (ladder.atl.length === 0) {
-          ladder.atl.splice(index, 0, [price, matched]);
-        }
-        else if (price === ladder.atl[index][0]) {
-          ladder.atl[index][1] = matched;
-          ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
-        } else {
-          if (ladder.atl.length === 0) {
-            ladder.atl.splice(index, 0, [price, matched]);
-          } else {
-            if (price > ladder.atl[ladder.atl.length - 1][0]) index++;
-            ladder.atl.splice(index, 0, [price, matched]);
-            ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
-          }
-        }
+        ladder.atl[index][1] = matched;
+        ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
+      }
+      else if (matched <= 0) {
+        ladder.atl.splice(index, 1);
+        ladder.fullLadder[formatPriceKey(price)].backMatched = null;
       }
     });
+    sortAsc(ladder.atl);
   }
 
   ladder.percent = calcBackLayPercentages(ladder.fullLadder, ladder.ltp[0]);

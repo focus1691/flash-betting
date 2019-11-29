@@ -29,10 +29,6 @@ const Grid = props => {
 	const [ordersVisible, setOrdersVisible] = useState(0);
 	const oneClickRef = createRef();
 
-	useEffect(() => {
-		renderData();
-	}, [props.ladder]);
-
 	const renderData = () => {
 		return (
 			<>
