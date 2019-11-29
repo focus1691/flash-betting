@@ -51,6 +51,14 @@
 	background: #DFDFDF;
 }
 
+.grid-cell:hover:nth-child(6) {
+	background: #75C2FD;
+}
+
+.grid-cell:hover:nth-child(7) {
+	background: #F694AA;
+}
+
 .grid-cell span:nth-child(1) {
 	width: 100%;
 	float: left;
