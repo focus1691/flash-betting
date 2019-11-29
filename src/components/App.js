@@ -332,7 +332,7 @@ const App = props => {
 
           } else {
             // Runner not found so we create the new object with the raw data
-            ladders[rc.id] = AddRunner(rc.id, rc);
+            ladders[rc.id] = AddRunner(rc);
           }
         }));
 

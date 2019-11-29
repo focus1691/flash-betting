@@ -1,7 +1,7 @@
 import { createFullLadder, formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Algorithms/Sort";
 
-const AddRunner = (key, data) => {
+const AddRunner = (data) => {
   const runner = data;
   runner.ltp = [runner.ltp, runner.ltp];
   runner.tv = [runner.tv, runner.tv];
@@ -17,10 +17,11 @@ const AddRunner = (key, data) => {
 
   sortAsc(runner.trd);
 
-  sortDes(runner.atb);
-  sortAsc(runner.atl);
+  if (!runner.atb) {
+    runner.atb = {};
+  } else {
+    sortDes(runner.atb);
 
-  if (runner.atb) {
     for (var i = 0; i < runner.atb.length; i++) {
 
       let price = formatPriceKey(runner.atb[i][0]);
@@ -39,7 +40,12 @@ const AddRunner = (key, data) => {
       }
     }
   }
-  if (runner.atl) {
+
+  if (!runner.atl) {
+    runner.atl = {};
+  } else {
+    sortAsc(runner.atl);
+
     for (i = 0; i < runner.atl.length; i++) {
 
       let price = formatPriceKey(runner.atl[i][0]);
@@ -58,7 +64,9 @@ const AddRunner = (key, data) => {
       }
     }
   }
+
   runner.percent = calcBackLayPercentages(runner.fullLadder, runner.ltp[0]);
+
   return runner;
 };
 
