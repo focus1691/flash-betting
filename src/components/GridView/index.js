@@ -1,4 +1,4 @@
-import React, { useState, createRef } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
@@ -28,6 +28,24 @@ const Grid = props => {
 	const [activeOrder, setActiveOrder] = useState(null);
 	const [ordersVisible, setOrdersVisible] = useState(0);
 	const oneClickRef = createRef();
+
+	useEffect(() => {
+		renderData();
+	}, [props.ladder]);
+
+	const renderData = () => {
+		return (
+			<>
+			{props.marketOpen
+				? props.marketStatus === "SUSPENDED"
+					? renderSuspended()
+					: props.marketStatus === "OPEN" || props.marketStatus === "RUNNING"
+						? renderTableData()
+						: null
+				: null}
+				</>
+		);
+	};
 
 	const handlePriceClick = (key, backLay, odds) => e => {
 		e.preventDefault();
@@ -297,13 +315,7 @@ const Grid = props => {
 						marketCashout={marketCashout}
 						openLiveStream={props.onOpenLiveStream}
 					/>
-					{props.marketOpen
-						? props.marketStatus === "SUSPENDED"
-							? renderSuspended()
-							: props.marketStatus === "OPEN" || props.marketStatus === "RUNNING"
-								? renderTableData()
-								: null
-						: null}
+					{renderData()}
 				</tbody>
 			</table>
 		</div>
