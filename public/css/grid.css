@@ -51,6 +51,10 @@
 	background: #DFDFDF;
 }
 
+.grid-cell:nth-child(2), .grid-cell:nth-child(11) {
+	opacity: 0.5;
+}
+
 .grid-cell:hover:nth-child(6) {
 	background: #75C2FD;
 }
