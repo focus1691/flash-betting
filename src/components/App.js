@@ -392,10 +392,10 @@ const App = props => {
         let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList);
         let tickOffsetOrdersToRemove = [];
 
-        data.oc.map(changes => {
-          changes.orc.map(runner => {
+        data.oc.forEach(changes => {
+          changes.orc.forEach(runner => {
             if (runner.uo) {
-              runner.uo.map(order => {
+              runner.uo.forEach(order => {
                 // If the bet isn't in the unmatchedBets, we should delete it.
                 if (newUnmatchedBets[order.id] !== undefined) {
                   delete newUnmatchedBets[order.id];
