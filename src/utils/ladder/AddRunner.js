@@ -15,6 +15,9 @@ const AddRunner = (data) => {
     price: 0
   };
 
+  if (!runner.trd) {
+    runner.trd = {};
+  }
   sortAsc(runner.trd);
 
   if (!runner.atb) {

@@ -337,7 +337,7 @@ const App = props => {
         }));
 
         if (data.marketDefinition) {
-          data.marketDefinition.runners.map(runner => {
+          data.marketDefinition.runners.forEach(runner => {
             if (runner.status === "REMOVED" && runner.id in ladders) {
               nonRunners[runner.id] = ladders[runner.id];
               delete ladders[runner.id];
