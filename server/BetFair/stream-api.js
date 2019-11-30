@@ -29,9 +29,8 @@ class BetFairStreamAPI {
 			this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 
 			this.client.on('data', data => {
-				console.log('Received: ' + data);
+				// console.log('Received: ' + data);
 				
-
 				// Read the data into Buffer
 				const bufferedData = Buffer.from(data);
 

@@ -10,16 +10,8 @@ const DeconstructLadder = ladder => {
     tv: ladder.tv ? ladder.tv : null,
     color: "#FFFFFF"
   };
-
-
-  data.bg =
-    data.ltp[0] < data.ltp[1] // #0AFD03 (Green Lower LTP)
-      ? "#0AFD03"
-      : data.ltp[0] > data.ltp[1] // #FC0700 (Red Higher LTP)
-        ? "#FC0700"
-        : data.ltp[0] === data.ltp[1] // #FFFF00 (Yellow Same LTP)
-          ? "#FFFF00"
-          : "#FFF" // #FFF (No Value)
+  
+  data.ltpStyle = getLTPstyle(data.ltp, ladder.ltpDelta);
 
   if (ladder.atb) {
     data.atb = ladder.atb;
@@ -33,8 +25,23 @@ const DeconstructLadder = ladder => {
   if (ladder.batl) {
     data.batl = ladder.batl;
   }
-
   return data;
 };
 
-export { DeconstructLadder };
+const getLTPstyle = (ltp, ltpDelta) => {
+  let now = new Date().getTime();
+
+  if (ltp[0] < ltp[1] && now - ltpDelta.getTime() < 2000) {
+    return { background: "#0AFD03", color: "#000" };
+  }
+  else if (ltp[0] > ltp[1] && now - ltpDelta.getTime() < 2000) {
+    return { background: "#FC0700", color: "#FFFF00" };
+  }
+  else if (ltp[0]) {
+    return { background: "#FFFF00", color: "#000" };
+  } else {
+    return { background: "#FFF", color: "#000" };
+  }
+};
+
+export { DeconstructLadder, getLTPstyle };

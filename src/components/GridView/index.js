@@ -172,7 +172,7 @@ const Grid = props => {
 
 	const renderRunners = () => {
 		return props.sortedLadder.map(key => {
-			const { atb, atl, batb, batl, ltp, tv, bg } = DeconstructLadder(
+			const { atb, atl, batb, batl, ltp, tv, ltpStyle } = DeconstructLadder(
 				props.ladder[key]
 			);
 			const { name, number, logo, order } = DeconstructRunner(props.runners[key], props.market.eventType.id);
@@ -230,7 +230,7 @@ const Grid = props => {
 											{ val: "", color: "" }
 							}
 							hedge={profit}
-							bg={bg}
+							ltpStyle={ltpStyle}
 						/>
 						{renderRow(atb, batb, key, 0).reverse()}
 						{renderRow(atl, batl, key, 1)}

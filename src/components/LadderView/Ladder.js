@@ -8,9 +8,8 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
-import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
+import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
 import GetColoredLTPList from "../../utils/ladder/GetColoredLTPList";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
@@ -43,7 +42,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
         if (listRef.current !== undefined) {
             listRef.current.scrollToItem(ltpIndex, 'center')
         }
-    }, [order])
+    }, [order]);
 
     const coloredLTPList = GetColoredLTPList(ladder, id)
 
@@ -133,6 +132,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
             <div className={"ladder"} onContextMenu={() => false}>
                 <PercentageRow
                     ltp={ladder[id].ltp}
+                    ltpStyle={getLTPstyle(ladder[id].ltp, ladder[id].ltpDelta)}
                     tv={
                         ladder[id].tv[0]
                             ? ladder[id].tv[0].toLocaleString()

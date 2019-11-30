@@ -345,7 +345,7 @@ const App = props => {
 
           } else {
             // Runner not found so we create the new object with the raw data
-            if (rc.id in props.nonRunners === false) {
+            if (rc.id in nonRunners === false) {
               ladders[rc.id] = AddRunner(rc);
             }
           }

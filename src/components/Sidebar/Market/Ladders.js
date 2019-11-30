@@ -1,29 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { updateExcludedLadders, updateLadderOrder } from "../../../actions/market";
-import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
-
-const useStyles = makeStyles(theme => ({
-  appBar: {
-    background: "#303030",
-    color: "orange",
-    fontWeight: "900",
-    border: "2px solid #fff"
-  },
-  title: {
-    textAlign: "center",
-    fontWeight: "bold"
-  },
-  group: {
-    margin: theme.spacing(1, 0)
-  }
-}));
 
 const Ladder = props => {
-  const classes = useStyles();
-
   const deconstructLadder = ladder => {
 
     if (ladder === undefined) {
@@ -35,9 +14,19 @@ const Ladder = props => {
       color: "#FFFFFF"
     };
 
+    let now = new Date().getTime();
+
     if (ladder.ltp && ladder.ltp[0]) {
+      data.ltpStyle =
+        ladder.ltp[0] < ladder.ltp[1] && now - ladder.ltpDelta.getTime() < 2000 // #0AFD03 (Green Lower LTP)
+          ? { background: "#0AFD03", color: "#000" }
+          : ladder.ltp[0] > ladder.ltp[1] && now - ladder.ltpDelta.getTime() < 2000 // #FC0700 (Red Higher LTP)
+            ? { background: "#FC0700", color: "#FFFF00" }
+            : ladder.ltp[0] // #FFFF00 (Yellow Same LTP)
+              ? { background: "#FFFF00", color: "#000" }
+              : { background: "#FFF", color: "#000" } // #FFF (No Value)
+
       data.ltp = ladder.ltp[0];
-      data.color = ladder.ltp[0] < ladder.ltp[1] ? "#0AFD03" : ladder.ltp[0] > ladder.ltp[1] ? "#FC0700" : "#FFFF00";
     }
 
     data.atb = ladder.atb && ladder.atb[0] ? ladder.atb[0][0] : null;
@@ -48,12 +37,12 @@ const Ladder = props => {
 
   const renderRunners = () => {
     return props.sortedLadder.map(selectionId => {
-      const { atb, atl, ltp, color } = deconstructLadder(props.ladder[selectionId]);
+      const { atb, atl, ltp, ltpStyle } = deconstructLadder(props.ladder[selectionId]);
       return (
         <tr>
           <td>{props.runners[selectionId].runnerName}</td>
           <td>{atl}</td>
-          <td style={{ background: color }}>{ltp}</td>
+          <td style={ltpStyle}>{ltp}</td>
           <td>{atb}</td>
           <td>
             <input

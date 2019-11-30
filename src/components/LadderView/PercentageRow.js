@@ -9,7 +9,7 @@ import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { cancelOrderAction, updateOrders } from "../../actions/order";
 
-const PercentageRow = ({ ltp, tv, percent, setLadderSideLeft, ladderSideLeft, onUpdateBets, marketId, selectionId, 
+const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSideLeft, onUpdateBets, marketId, selectionId, 
                          bets, stopLossList, tickOffsetList, stopEntryList, layList, backList, fillOrKillList,
                          onChangeBackList, onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList}) => {
   
@@ -126,15 +126,7 @@ const PercentageRow = ({ ltp, tv, percent, setLadderSideLeft, ladderSideLeft, on
         {`${percent[leftSide]}%`}
       </div>
       <div className = {"th"} 
-        style={{
-            background:
-              ltp[0] < ltp[1]
-                ? "#0AFD03"
-                : ltp[0] > ltp[1]
-                ? "#FC0700"
-                : "#FFFF00",
-            cursor: 'pointer'
-          }}
+        style={ltpStyle}
           onClick = {() => {
             setLadderSideLeft(ladderSideLeft === "LAY" ? "BACK" : "LAY")
           }}

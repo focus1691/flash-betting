@@ -33,7 +33,7 @@ const GridDetailCell = props => {
     >
       <img src={props.logo} alt={""} onError={handleImageError()} />
       <span>{`${props.number}${props.name}`}</span>
-      <span style={{ background: props.bg }}>{props.ltp[0] ? props.ltp[0] : ""}</span>
+      <span style={props.ltpStyle}>{props.ltp[0] ? props.ltp[0] : ""}</span>
 
       <div className={"grid-pl"}>
         <span style={{

@@ -6,6 +6,7 @@ const UpdateRunner = (ladder, rawData) => {
 
   if (rawData.ltp) {
     ladder.ltp = [rawData.ltp, ...ladder.ltp];
+    ladder.ltpDelta = new Date();
   }
   if (rawData.tv) {
     ladder.tv = [rawData.tv, ladder.tv[0]];

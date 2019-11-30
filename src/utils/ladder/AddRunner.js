@@ -4,6 +4,7 @@ import { sortAsc, sortDes } from "../Algorithms/Sort";
 const AddRunner = (data) => {
   const runner = data;
   runner.ltp = [runner.ltp, runner.ltp];
+  runner.ltpDelta = new Date();
   runner.tv = [runner.tv, runner.tv];
   runner.fullLadder = createFullLadder();
 
