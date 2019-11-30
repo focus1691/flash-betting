@@ -11,7 +11,7 @@ const Event = props => {
   const renderTitle = () => {
     if (props.marketOpen) return new Date(
       props.market.marketStartTime
-    ).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'}) + " " + props.market.marketName + (props.market.event.venue ? ` ${props.market.event.venue}` : '');
+    ).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }) + " " + props.market.marketName + (props.market.event.venue ? ` ${props.market.event.venue}` : '');
     return "No Event Selected";
   }
 
@@ -30,11 +30,17 @@ const Event = props => {
   return (
     <div id="sidebar-event">
       <div id="sidebar-event-section-1">
-        <div id="sidebar-event-section-2" style={{background: getClockBG()}}>
+        <div id="sidebar-event-section-2" style={{ background: getClockBG() }}>
           <span>
             <CountDown />
           </span>
         </div>
+        <Typography>
+          Price: <b>{props.market ? props.market.description.marketBaseRate : null}</b>
+        </Typography>
+        <Typography>
+          API: <b>33.87</b>
+        </Typography>
       </div>
       <AppBar className={classes.AppBar} position="static">
         <Typography variant="h6" className={classes.title}>

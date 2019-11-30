@@ -56,9 +56,7 @@
 #sidebar-event-section-2 {
 	margin: 0 auto;
 	display: block;
-	float: left;
-	left: 25%;
-	position: relative;
+	float: right;
 	background: #303030;
 	color: #fff;
 	border-radius: 10px;

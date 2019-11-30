@@ -124,6 +124,7 @@ const App = props => {
                   price: 0
                 };
               }
+              console.log(data.result[0]);
               props.onSortLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
               props.onReceiveEventType(data.result[0].eventType.id);
               props.onUpdateRunners(runners);
