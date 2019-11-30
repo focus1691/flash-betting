@@ -17,8 +17,9 @@ const AddRunner = (data) => {
 
   if (!runner.trd) {
     runner.trd = {};
+  } else {
+    sortAsc(runner.trd);
   }
-  sortAsc(runner.trd);
 
   if (!runner.atb) {
     runner.atb = {};
