@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, createRef } from "react";
 import $ from "jquery";
 import { connect } from "react-redux";
 import * as actions from "../../actions/market";
@@ -260,10 +260,10 @@ const Grid = props => {
 	const renderSuspended = () => {
 		return (
 			<SuspendedGrid
-				ladder={props.ladder}
+				ladder={props.sortedLadder}
 				runners={props.runners}
 				selectRunner={selectRunner}
-
+				eventId={props.market.eventType.id}
 			/>
 		);
 	};

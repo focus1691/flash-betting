@@ -3,7 +3,7 @@ import GridDetailSuspCell from "./GridDetailSuspCell";
 import { DeconstructRunner } from "../../utils/Market/DeconstructRunner";
 
 export default ({ladder, runners, selectRunner, eventId}) => {
-    return Object.keys(ladder).map(key => {
+    return ladder.map(key => {
         const { name, number, logo } = DeconstructRunner(runners[key], eventId);
         return (
             <tr>
