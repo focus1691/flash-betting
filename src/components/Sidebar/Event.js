@@ -35,12 +35,6 @@ const Event = props => {
             <CountDown />
           </span>
         </div>
-        <Typography>
-          Price: <b>5</b>
-        </Typography>
-        <Typography>
-          API: <b>33.87</b>
-        </Typography>
       </div>
       <AppBar className={classes.AppBar} position="static">
         <Typography variant="h6" className={classes.title}>
