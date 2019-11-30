@@ -20,6 +20,10 @@ import { updateLayList } from "../../../actions/lay";
 import { updateBackList } from "../../../actions/back";
 import { updateFillOrKillList } from "../../../actions/fillOrKill";
 import { cancelOrderAction, updateOrders } from "../../../actions/order";
+import {
+  setLaddersExpanded, setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded,
+  setGraphExpanded, setMarketInfoExpanded, setRulesExpanded
+} from "../../../actions/settings";
 
 const ExpansionPanel = withStyles({
   root: {
@@ -40,7 +44,7 @@ const ExpansionPanelSummary = withStyles({
       minHeight: "0px",
     },
   },
-  expanded: { 
+  expanded: {
     minHeight: "0px",
   },
 })(MultiExpansionPanelSummary);
@@ -61,6 +65,15 @@ const useStyles = makeStyles(theme => ({
 
 const Market = props => {
 
+  const classes = useStyles();
+  const [laddersExpanded, setLaddersExpanded] = useState(localStorage.getItem("laddersExpanded") || false);
+  const [toolsExpanded, setToolsExpanded] = useState(true);
+  const [unmatchedBetsExpanded, setUnmatchedBetsExpanded] = useState(true);
+  const [matchedBetsExpanded, setMatchedBetsExpanded] = useState(true);
+  const [graphExpanded, setGraphExpanded] = useState(true);
+  const [marketInfoExpanded, setMarketInfoExpanded] = useState(true);
+  const [rulesExpanded, setRulesExpanded] = useState(true);
+
   const allUnmatchedSpecialBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, {})
 
   const cancelSpecialOrders = orders => {
@@ -72,9 +85,9 @@ const Market = props => {
     const newTickOffsetList = Object.assign({}, props.tickOffsetList);
     const newStopLossList = Object.assign({}, props.stopLossList);
     const newFillOrKill = Object.assign({}, props.fillOrKillList)
-    Object.values(orders).map(selection => {
-      Object.values(selection).map(rfs => {
-        rfs.map(order => {
+    Object.values(orders).forEach(selection => {
+      Object.values(selection).forEach(rfs => {
+        rfs.forEach(order => {
           // figure out which strategy it's using and make a new array without it
           switch (order.strategy) {
             case "Back":
@@ -97,13 +110,13 @@ const Market = props => {
               if (props.fillOrKillList[order.betId] !== undefined) {
                 ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId])
                 delete newFillOrKill[order.betId];
-                
+
               }
               break;
             default:
               break;
           }
-        
+
           ordersToRemove = ordersToRemove.concat(order);
 
           // delete from database
@@ -117,26 +130,25 @@ const Market = props => {
               body: JSON.stringify(ordersToRemove)
             })
           } catch (e) {
-        
+
           }
         })
       })
-    })
+    });
 
-      props.onChangeBackList(newBackList);
-      props.onChangeLayList(newLayList);
-      props.onChangeStopEntryList(newStopEntryList);
-      props.onChangeTickOffsetList(newTickOffsetList)
-      props.onChangeStopLossList(newStopLossList)
-      props.onChangeFillOrKillList(newFillOrKill)
+    props.onChangeBackList(newBackList);
+    props.onChangeLayList(newLayList);
+    props.onChangeStopEntryList(newStopEntryList);
+    props.onChangeTickOffsetList(newTickOffsetList)
+    props.onChangeStopLossList(newStopLossList)
+    props.onChangeFillOrKillList(newFillOrKill)
 
   };
-  
 
   const cancelAllOrdersInMarket = async (marketId, unmatchedBets, matchedBets, specialBets, betCanceler) => {
 
     betCanceler(specialBets)
-    
+
     const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
 
     if (currentOrders) {
@@ -160,21 +172,9 @@ const Market = props => {
       props.onUpdateBets({
         unmatched: cancelBets.unmatched,
         matched: cancelBets.matched
-      })
+      });
     }
-
   }
-
-  const classes = useStyles();
-  const [laddersExpanded, setLaddersExpanded] = useState(true);
-  const [toolsExpanded, setToolsExpanded] = useState(true);
-  const [unmatchedBetsExpanded, setUnmatchedBetsExpanded] = useState(true);
-  const [matchedBetsExpanded, setMatchedBetsExpanded] = useState(true);
-  const [graphExpanded, setGraphExpanded] = useState(true);
-  const [marketInfoExpanded, setMarketInfoExpanded] = useState(true);
-  const [rulesExpanded, setRulesExpanded] = useState(true);
-
-  
 
   const createTitle = (name, position) => {
     return (
@@ -225,8 +225,8 @@ const Market = props => {
   return (
     <React.Fragment>
       <ExpansionPanel
-        expanded={laddersExpanded}
-        onChange={e => setLaddersExpanded(!laddersExpanded)}
+        expanded={props.laddersExpanded}
+        onChange={props.onLaddersExpanded(!props.laddersExpanded)}
       >
         {createExpansionPanelSummary("Ladders")}
         <Ladders />
@@ -234,8 +234,8 @@ const Market = props => {
 
       {props.tools.visible ? (
         <ExpansionPanel
-          expanded={toolsExpanded}
-          onChange={e => setToolsExpanded(!toolsExpanded)}
+          expanded={props.toolsExpanded}
+          onChange={props.onToolsExpanded(!props.toolsExpanded)}
         >
           {createExpansionPanelSummary("Tools")}
           <Tools />
@@ -244,8 +244,8 @@ const Market = props => {
 
       {props.unmatchedBets.visible ? (
         <ExpansionPanel
-          expanded={unmatchedBetsExpanded}
-          onChange={e => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}
+          expanded={props.unmatchedBetsExpanded}
+          onChange={props.onUnmatchedBetsExpanded(!props.unmatchedBetsExpanded)}
         >
           {createExpansionPanelSummaryUnmatchedBets("Unmatched Bets")}
           <UnmatchedBets />
@@ -254,8 +254,8 @@ const Market = props => {
 
       {props.matchedBets.visible ? (
         <ExpansionPanel
-          expanded={matchedBetsExpanded}
-          onChange={e => setMatchedBetsExpanded(!matchedBetsExpanded)}
+          expanded={props.matchedBetsExpanded}
+          onChange={props.onMatchedBetsExpanded(!props.matchedBetsExpanded)}
         >
           {createExpansionPanelSummary("Matched Bets")}
           <MatchedBets />
@@ -264,8 +264,8 @@ const Market = props => {
 
       {props.graphs.visible ? (
         <ExpansionPanel
-          expanded={graphExpanded}
-          onChange={e => setGraphExpanded(!graphExpanded)}
+          expanded={props.graphExpanded}
+          onChange={props.onGraphsExpanded(!props.graphExpanded)}
         >
           {createExpansionPanelSummary("Graphs")}
           <Graph />
@@ -274,8 +274,8 @@ const Market = props => {
 
       {props.marketInfo.visible ? (
         <ExpansionPanel
-          expanded={marketInfoExpanded}
-          onChange={e => setMarketInfoExpanded(!marketInfoExpanded)}
+          expanded={props.marketInfoExpanded}
+          onChange={props.onMarketInfoExpanded(!props.marketInfoExpanded)}
         >
           {createExpansionPanelSummary("Market Information")}
           <MarketInfo />
@@ -284,8 +284,8 @@ const Market = props => {
 
       {props.rules.visible ? (
         <ExpansionPanel
-          expanded={rulesExpanded}
-          onChange={e => setRulesExpanded(!rulesExpanded)}
+          expanded={props.rulesExpanded}
+          onChange={props.onRulesExpanded(!props.rulesExpanded)}
         >
           {createExpansionPanelSummary("Rules")}
           <Rules />
@@ -312,6 +312,13 @@ const mapStateToProps = state => {
     layList: state.lay.list,
     backList: state.back.list,
     fillOrKillList: state.fillOrKill.list,
+    laddersExpanded: state.settings.laddersExpanded,
+    toolsExpanded: state.settings.toolsExpanded,
+    unmatchedBetsExpanded: state.settings.unmatchedBetsExpanded,
+    matchedBetsExpanded: state.settings.matchedBetsExpanded,
+    graphExpanded: state.settings.graphExpanded,
+    marketInfoExpanded: state.settings.marketInfoExpanded,
+    rulesExpanded: state.settings.rulesExpanded
   };
 };
 
@@ -324,6 +331,13 @@ const mapDispatchToProps = dispatch => {
     onChangeBackList: list => dispatch(updateBackList(list)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
     onUpdateBets: bets => dispatch(updateOrders(bets)), // this is for the bets
+    onLaddersExpanded: expanded => e => dispatch(setLaddersExpanded(expanded)),
+    onToolsExpanded: expanded => e => dispatch(setToolsExpanded(expanded)),
+    onUnmatchedBetsExpanded: expanded => e => dispatch(setUnmatchedBetsExpanded(expanded)),
+    onMatchedBetsExpanded: expanded => e => dispatch(setMatchedBetsExpanded(expanded)),
+    onGraphsExpanded: expanded => e => dispatch(setGraphExpanded(expanded)),
+    onMarketInfoExpanded: expanded => e => dispatch(setMarketInfoExpanded(expanded)),
+    onRulesExpanded: expanded => e => dispatch(setRulesExpanded(expanded)),
   }
 }
 

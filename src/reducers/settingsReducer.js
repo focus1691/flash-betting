@@ -55,7 +55,14 @@ const initialState = {
     AU: false,
     NZ: false,
     ZA: false
-  }
+  },
+  laddersExpanded: true,
+  toolsExpanded: true,
+  unmatchedBetsExpanded: true,
+  matchedBetsExpanded: true,
+  graphExpanded: true,
+  marketInfoExpanded: true,
+  rulesExpanded: true
 };
 
 const reducer = (state = initialState, action) => {
@@ -71,7 +78,7 @@ const reducer = (state = initialState, action) => {
     case "TOGGLE_POPUP":
       return { ...state, premiumPopupOpen: action.payload };
     case "SET_SELECTED_PREMIUM":
-        return { ...state, selectedPremium: action.payload };
+      return { ...state, selectedPremium: action.payload };
     case "FULL_SCREEN":
       return { ...state, fullscreen: action.payload };
     case "SET_TRAINING_BALANCE":
@@ -112,6 +119,20 @@ const reducer = (state = initialState, action) => {
       return { ...state, rightClickTicks: action.payload };
     case "SET_HORSE_RACE_COUNTRIES":
       return { ...state, horseRaces: action.payload };
+    case "SET_LADDERS_EXPANDED":
+      return { ...state, laddersExpanded: action.payload };
+    case "SET_TOOLS_EXPANDED":
+      return { ...state, toolsExpanded: action.payload };
+    case "SET_UNMATCHED_BETS_EXPANDED":
+      return { ...state, unmatchedBetsExpanded: action.payload };
+    case "SET_MATCHED_BETS_EXPANDED":
+      return { ...state, matchedBetsExpanded: action.payload };
+    case "SET_GRAPHS_EXPANDED":
+      return { ...state, graphExpanded: action.payload };
+    case "SET_MARKET_INFO_EXPANDED":
+      return { ...state, marketInfoExpanded: action.payload };
+    case "SET_RULES_EXPANDED":
+      return { ...state, rulesExpanded: action.payload };
     default:
       return state;
   }

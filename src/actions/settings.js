@@ -193,3 +193,55 @@ export const setHorseRacingCountries = horseRaces => {
         payload: horseRaces
     }
 };
+
+
+/******** Market panels in sidebar ********/
+
+export const setLaddersExpanded = expanded => {
+    return {
+        type: "SET_LADDERS_EXPANDED",
+        payload: expanded
+    }
+};
+
+export const setToolsExpanded = expanded => {
+    return {
+        type: "SET_TOOLS_EXPANDED",
+        payload: expanded
+    }
+};
+
+export const setUnmatchedBetsExpanded = expanded => {
+    return {
+        type: "SET_UNMATCHED_BETS_EXPANDED",
+        payload: expanded
+    }
+};
+
+export const setMatchedBetsExpanded = expanded => {
+    return {
+        type: "SET_MATCHED_BETS_EXPANDED",
+        payload: expanded
+    }
+};
+
+export const setGraphExpanded = expanded => {
+    return {
+        type: "SET_GRAPHS_EXPANDED",
+        payload: expanded
+    }
+};
+
+export const setMarketInfoExpanded = expanded => {
+    return {
+        type: "SET_MARKET_INFO_EXPANDED",
+        payload: expanded
+    }
+};
+
+export const setRulesExpanded = expanded => {
+    return {
+        type: "SET_RULES_EXPANDED",
+        payload: expanded
+    }
+};
