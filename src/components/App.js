@@ -149,7 +149,7 @@ const App = props => {
                       } else {
                         currentOrdersObject[item.betId].price = item.priceSize.price;
                       }
-                      
+
                     })
 
                     orders.map(async order => {
@@ -254,9 +254,15 @@ const App = props => {
       props.socket.off("mcm");
 
       const marketId = getQueryVariable("marketId");
+      let eventTypeId;
+
+      var ladders = Object.assign({}, props.ladders);
+      var nonRunners = Object.assign({}, props.nonRunners);
 
       // Update the market status
       if (data.marketDefinition) {
+        eventTypeId = data.marketDefinition.eventTypeId;
+
         if (data.marketDefinition.status === "CLOSED") {
           window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
         } else {
@@ -267,14 +273,21 @@ const App = props => {
         }
         props.onMarketStatusChange(data.marketDefinition.status);
         props.setInPlay(data.marketDefinition.inPlay);
+
+        data.marketDefinition.runners.forEach(runner => {
+          if (runner.status === "REMOVED") {
+            if (runner.id in ladders) {
+              delete ladders[runner.id];
+            }
+            if (runner.id in nonRunners === false) {
+              nonRunners[runner.id] = ladders[runner.id];
+            }
+          }
+        });
+        props.onReceiveNonRunners(nonRunners);
       }
 
       if (data.rc) {
-
-        var ladders = Object.assign({}, props.ladders);
-
-        var nonRunners = Object.assign({}, props.nonRunners);
-
         let adjustedStopLossList = Object.assign({}, props.stopLossList)
         const adjustedBackList = {}
         const adjustedLayList = {}
@@ -332,23 +345,11 @@ const App = props => {
 
           } else {
             // Runner not found so we create the new object with the raw data
-            ladders[rc.id] = AddRunner(rc);
+            if (rc.id in props.nonRunners === false) {
+              ladders[rc.id] = AddRunner(rc);
+            }
           }
         }));
-
-        if (data.marketDefinition) {
-          data.marketDefinition.runners.forEach(runner => {
-            if (runner.status === "REMOVED" && runner.id in ladders) {
-              nonRunners[runner.id] = ladders[runner.id];
-              delete ladders[runner.id];
-            }
-          });
-          if (data.marketDefinition.eventTypeId !== "4339") {
-            var sortedLadderIndices = sortLadder(ladders);
-            props.onSortLadder(sortedLadderIndices);
-            props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));            
-          }
-        }
 
         if (stopLossOrdersToRemove.length > 0) {
           await fetch('/api/remove-orders', {
@@ -375,8 +376,13 @@ const App = props => {
           props.onChangeStopLossList(adjustedStopLossList);
         }
 
+        // If it's not a Greyhound Race (4339), we sort by the LTP
+        if (eventTypeId !== "4339") {
+          var sortedLadderIndices = sortLadder(ladders);
+          props.onSortLadder(sortedLadderIndices);
+          props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+        }
         props.onReceiverLadders(ladders);
-        props.onReceiveNonRunners(nonRunners);
       }
     });
 

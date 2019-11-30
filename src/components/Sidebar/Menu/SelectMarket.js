@@ -1,11 +1,11 @@
 import React from "react";
 import SportsClickList from "./SportsClickList";
 import { ListItem, ListItemText } from "@material-ui/core";
-import CountryCodeConverter from '../../../utils/CountryCodeConverter'
+import CountryCodeConverter from '../../../utils/CountryCodeConverter';
 
 export default ({name, markets, handleClick, event, myMarkets, currentSportId, updateMyMarkets, currentCountry, currentCompetition, sports}) => {
-  const updateMyMarketMarkets = (marketItemSaved, id, name, sportId) => updateMyMarkets(marketItemSaved ? 'sub' : 'add', id, name, sportId, "Market")
-  const previousSport = sports.sports.find(item => parseInt(item.eventType.id) === parseInt(currentSportId))
+  const updateMyMarketMarkets = (marketItemSaved, id, name, sportId) => updateMyMarkets(marketItemSaved ? 'sub' : 'add', id, name, sportId, "Market");
+  const previousSport = sports.sports.find(item => parseInt(item.eventType.id) === parseInt(currentSportId));
   return (
     <React.Fragment>
       <React.Fragment>
