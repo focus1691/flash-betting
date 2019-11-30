@@ -3,6 +3,7 @@ const initialState = {
   inPlay: false,
   inPlayTime: null,
   status: 'OPEN',
+  eventType: null,
   currentMarket: {},
   runnerSelection: 0,
   nonRunners: {},
@@ -27,6 +28,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, inPlayTime: action.payload };
     case "LOAD_MARKET":
       return { ...state, currentMarket: action.payload };
+    case "SET_EVENT_TYPE":
+      return { ...state, eventType: action.payload };
     case "LOAD_LADDER":
       return { ...state, marketOpen: true, ladder: action.payload };
     case "SET_SORTED_LADDER":

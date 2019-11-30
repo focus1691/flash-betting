@@ -24,8 +24,6 @@ class BetFairStreamAPI {
 
 			this.client.setEncoding('utf8');
 
-			console.log(this);
-
 			this.client.write('{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
 
 			this.client.on('data', data => {
@@ -56,8 +54,10 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						console.log('New MCM, id: ' + result.id);
-						// console.log(JSON.stringify(result));
+						// console.log('New MCM, id: ' + result.id);
+						if (result.mc[0].marketDefinition) {
+							console.log(result.mc[0].marketDefinition);
+						}
 						this.openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];
 					}

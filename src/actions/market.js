@@ -26,6 +26,13 @@ export const loadMarket = market => {
   };
 };
 
+export const setEventType = eventType => {
+  return {
+    type: "SET_EVENT_TYPE",
+    payload: eventType
+  };
+};
+
 export const loadLadder = ladder => {
   return {
     type: "LOAD_LADDER",

@@ -84,6 +84,14 @@ const App = props => {
       });
   };
 
+  const cleanupOnMarketClose = (marketId) => {
+    props.onUpdateRunners({});
+    props.onReceiveMarket({});
+    props.onSelectRunner({});
+    props.onReceiveNonRunners({});
+    window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
+  }
+
   const loadMarket = async () => {
     let marketId = getQueryVariable("marketId");
 
@@ -117,6 +125,7 @@ const App = props => {
                 };
               }
               props.onSortLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
+              props.onReceiveEventType(data.result[0].eventType.id);
               props.onUpdateRunners(runners);
               props.onReceiveMarket(data.result[0]);
               props.onSelectRunner(data.result[0].runners[0]);
@@ -254,25 +263,26 @@ const App = props => {
       props.socket.off("mcm");
 
       const marketId = getQueryVariable("marketId");
-      let eventTypeId;
+      // let eventTypeId;
+      let eventTypeId = props.eventType;
+      let marketStatus = props.marketStatus;
 
       var ladders = Object.assign({}, props.ladders);
       var nonRunners = Object.assign({}, props.nonRunners);
 
       // Update the market status
       if (data.marketDefinition) {
-        eventTypeId = data.marketDefinition.eventTypeId;
+        marketStatus = data.marketDefinition.status;
 
-        if (data.marketDefinition.status === "CLOSED") {
-          window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
-        } else {
-          // Start the in-play clock
-          if (!props.market.inPlayTime && data.marketDefinition.inPlay) {
-            props.setInPlayTime(new Date());
-          }
-        }
-        props.onMarketStatusChange(data.marketDefinition.status);
+        props.onMarketStatusChange(marketStatus);
         props.setInPlay(data.marketDefinition.inPlay);
+
+        eventTypeId = data.marketDefinition.eventTypeId;
+        
+        if (!props.market.inPlayTime && data.marketDefinition.inPlay) {
+          // Start the in-play clock
+          props.setInPlayTime(new Date());
+        }
 
         data.marketDefinition.runners.forEach(runner => {
           if (runner.status === "REMOVED") {
@@ -287,102 +297,106 @@ const App = props => {
         props.onReceiveNonRunners(nonRunners);
       }
 
-      if (data.rc) {
-        let adjustedStopLossList = Object.assign({}, props.stopLossList)
-        const adjustedBackList = {}
-        const adjustedLayList = {}
-        let newStopEntryList = Object.assign({}, props.stopEntryList);
-
-        let stopLossOrdersToRemove = [];
-
-        await Promise.all(data.rc.map(async rc => {
-
-          if (rc.id in props.ladders) {
-            // Runner found so we update our object with the raw data
-            ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
-
-            // Back and Lay
-            if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
-              const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
-              if (adjustedBackOrderArray.length > 0) {
-                adjustedBackList[rc.id] = adjustedBackOrderArray;
+      if (marketStatus === "CLOSED") {
+        cleanupOnMarketClose(marketId);
+      } else {
+        if (data.rc) {
+          let adjustedStopLossList = Object.assign({}, props.stopLossList)
+          const adjustedBackList = {}
+          const adjustedLayList = {}
+          let newStopEntryList = Object.assign({}, props.stopEntryList);
+  
+          let stopLossOrdersToRemove = [];
+  
+          await Promise.all(data.rc.map(async rc => {
+  
+            if (rc.id in props.ladders) {
+              // Runner found so we update our object with the raw data
+              ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
+  
+              // Back and Lay
+              if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
+                const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
+                if (adjustedBackOrderArray.length > 0) {
+                  adjustedBackList[rc.id] = adjustedBackOrderArray;
+                }
+  
+                const adjustedLayOrderArray = await checkTimeListAfter(props.layList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets)
+                if (adjustedLayOrderArray.length > 0) {
+                  adjustedLayList[rc.id] = adjustedLayOrderArray;
+                }
               }
-
-              const adjustedLayOrderArray = await checkTimeListAfter(props.layList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets)
-              if (adjustedLayOrderArray.length > 0) {
-                adjustedLayList[rc.id] = adjustedLayOrderArray;
+  
+              // stop Entry
+  
+              newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, rc.ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
+              // We increment and check the stoplosses
+              if (props.stopLossList[rc.id] !== undefined) {
+                // if it's trailing and the highest LTP went up, then we add a tickoffset
+                const maxLTP = props.ladders[rc.id].ltp.sort((a, b) => b - a)[0];
+                let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, rc.ltp, maxLTP))
+  
+                // if hedged, get size (price + hedged profit/loss)
+                if (adjustedStopLoss.hedged) {
+                  const newMatchedBets = Object.values(props.bets.matched).filter(bet => bet.selectionId == adjustedStopLoss.selectionId);
+  
+                  const combinedSize =
+                    newMatchedBets.reduce((a, b) => {
+                      return a + b.size
+                    }, 0)
+  
+                  const profitArray = newMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(adjustedStopLoss.price)));
+                  const profit = (-1 * profitArray.reduce((a, b) => a + b, 0));
+                  adjustedStopLoss.size = combinedSize + profit
+                }
+  
+                // if it doesn't have a reference or the order has been matched (STOP LOSS)
+                const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)
+                adjustedStopLossList = stopLossMatched.adjustedStopLossList;
+                stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
+              }
+  
+            } else {
+              // Runner not found so we create the new object with the raw data
+              if (rc.id in nonRunners === false) {
+                ladders[rc.id] = AddRunner(rc);
               }
             }
-
-            // stop Entry
-
-            newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, rc.ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
-            // We increment and check the stoplosses
-            if (props.stopLossList[rc.id] !== undefined) {
-              // if it's trailing and the highest LTP went up, then we add a tickoffset
-              const maxLTP = props.ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-              let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, rc.ltp, maxLTP))
-
-              // if hedged, get size (price + hedged profit/loss)
-              if (adjustedStopLoss.hedged) {
-                const newMatchedBets = Object.values(props.bets.matched).filter(bet => bet.selectionId == adjustedStopLoss.selectionId);
-
-                const combinedSize =
-                  newMatchedBets.reduce((a, b) => {
-                    return a + b.size
-                  }, 0)
-
-                const profitArray = newMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(adjustedStopLoss.price)));
-                const profit = (-1 * profitArray.reduce((a, b) => a + b, 0));
-                adjustedStopLoss.size = combinedSize + profit
-              }
-
-              // if it doesn't have a reference or the order has been matched (STOP LOSS)
-              const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)
-              adjustedStopLossList = stopLossMatched.adjustedStopLossList;
-              stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
-            }
-
-          } else {
-            // Runner not found so we create the new object with the raw data
-            if (rc.id in nonRunners === false) {
-              ladders[rc.id] = AddRunner(rc);
-            }
+          }));
+  
+          if (stopLossOrdersToRemove.length > 0) {
+            await fetch('/api/remove-orders', {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              method: "POST",
+              body: JSON.stringify(stopLossOrdersToRemove)
+            })
           }
-        }));
-
-        if (stopLossOrdersToRemove.length > 0) {
-          await fetch('/api/remove-orders', {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            method: "POST",
-            body: JSON.stringify(stopLossOrdersToRemove)
-          })
+  
+          // so it doesn't mess up the loading of the orders
+          if (Object.keys(props.backList).length > 0) {
+            props.onChangeBackList(adjustedBackList);
+          }
+          if (Object.keys(props.layList).length > 0) {
+            props.onChangeLayList(adjustedLayList);
+          }
+          if (Object.keys(props.stopEntryList).length > 0) {
+            props.onChangeStopEntryList(newStopEntryList);
+          }
+          if (Object.keys(props.stopLossList).length > 0) {
+            props.onChangeStopLossList(adjustedStopLossList);
+          }
+  
+          // If it's not a Greyhound Race (4339), we sort by the LTP
+          if (eventTypeId !== "4339") {
+            var sortedLadderIndices = sortLadder(ladders);
+            props.onSortLadder(sortedLadderIndices);
+            props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+          }
+          props.onReceiverLadders(ladders);
         }
-
-        // so it doesn't mess up the loading of the orders
-        if (Object.keys(props.backList).length > 0) {
-          props.onChangeBackList(adjustedBackList);
-        }
-        if (Object.keys(props.layList).length > 0) {
-          props.onChangeLayList(adjustedLayList);
-        }
-        if (Object.keys(props.stopEntryList).length > 0) {
-          props.onChangeStopEntryList(newStopEntryList);
-        }
-        if (Object.keys(props.stopLossList).length > 0) {
-          props.onChangeStopLossList(adjustedStopLossList);
-        }
-
-        // If it's not a Greyhound Race (4339), we sort by the LTP
-        if (eventTypeId !== "4339") {
-          var sortedLadderIndices = sortLadder(ladders);
-          props.onSortLadder(sortedLadderIndices);
-          props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-        }
-        props.onReceiverLadders(ladders);
       }
     });
 
@@ -451,7 +465,7 @@ const App = props => {
       }
       props.socket.off("ocm");
     });
-  }, [props.ladders]);
+  }, [props.ladders, props.marketStatus]);
 
   const renderView = () => {
     switch (props.view) {
@@ -533,6 +547,7 @@ const mapStateToProps = state => {
     view: state.settings.view,
     isLoading: state.settings.isLoading,
     market: state.market.currentMarket,
+    eventType: state.market.eventType,
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
     ladders: state.market.ladder,
@@ -573,6 +588,7 @@ const mapDispatchToProps = dispatch => {
     onReceiveRightClickTicks: ticks => dispatch(actions.updateRightClickTicks(ticks)),
     onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
+    onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
     onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
