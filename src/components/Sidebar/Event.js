@@ -36,7 +36,7 @@ const Event = props => {
           </span>
         </div>
         <Typography>
-          Price: <b>{props.market ? props.market.description.marketBaseRate : null}</b>
+          Price: <b>{props.market.description ? props.market.description.marketBaseRate : null}</b>
         </Typography>
         <Typography>
           API: <b>33.87</b>
