@@ -23,7 +23,7 @@ const AddRunner = (data) => {
   }
 
   if (!runner.atb) {
-    runner.atb = {};
+    runner.atb = [];
   } else {
     sortDes(runner.atb);
 
@@ -47,7 +47,7 @@ const AddRunner = (data) => {
   }
 
   if (!runner.atl) {
-    runner.atl = {};
+    runner.atl = [];
   } else {
     sortAsc(runner.atl);
 

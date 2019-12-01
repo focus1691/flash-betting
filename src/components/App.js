@@ -256,6 +256,7 @@ const App = props => {
       props.setInPlay(marketDefinition.inPlay);
 
       if (marketDefinition.status === "CLOSED") {
+        props.socket.off("market-definition");
         cleanupOnMarketClose(getQueryVariable("marketId"));
       }
     });
