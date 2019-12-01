@@ -5,11 +5,14 @@ import List from "@material-ui/core/List";
 import getCountryName from "../../../utils/CountryCodeConverter";
 import SelectSubmenu from "./SelectSubmenu";
 import DeselectSport from "./DeselectSport";
+import { updateSubmenuMyMarkets, updateSubmenuListMyMarkets } from "../../../actions/sport";
 
 const MyMarkets = props => {
 
-	const [submenuList, setSubmenuList] = useState({})
-	const [currentSubmenu, setCurrentSubmenu] = useState("");
+	const submenuList = props.submenuListMyMarkets;
+	const setSubmenuList = props.onUpdateSubmenuListMyMarkets;
+	const currentSubmenu = props.currentSubmenuMyMarkets;
+	const setCurrentSubmenu = props.onUpdateSubmenuMyMarkets;
 
 	useEffect(() => {
 		fetch('/api/get-my-markets')
@@ -76,8 +79,6 @@ const MyMarkets = props => {
 		setSubmenuList(newSubmenuList);
 	}
 
-	console.log(props.myMarkets)
-
 	return (
 		<div>
 		  <table id="all-sports">
@@ -115,13 +116,17 @@ const mapStateToProps = state => {
 		myMarkets: state.market.myMarkets,
 		sports: state.sports,
 		winMarketsOnly: state.settings.winMarketsOnly,
-		horseRaces: state.settings.horseRaces
+		horseRaces: state.settings.horseRaces,
+		currentSubmenuMyMarkets: state.sports.currentSubmenuMyMarkets,
+		submenuListMyMarkets: state.sports.submenuListMyMarkets
 	};
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
 		onReceiveMyMarkets: markets => dispatch(actions.loadMyMarkets(markets)),
+		onUpdateSubmenuMyMarkets: submenuCurrent => dispatch(updateSubmenuMyMarkets(submenuCurrent)),
+		onUpdateSubmenuListMyMarkets: submenu => dispatch(updateSubmenuListMyMarkets(submenu))
 	};
 };
 

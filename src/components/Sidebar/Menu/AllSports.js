@@ -121,7 +121,7 @@ const AllSports = props => {
             }
 
             { // Selecting Item
-              submenuList['EVENT_TYPE'] === undefined ? 
+              submenuList['EVENT_TYPE'] === undefined || currentSubmenu === "" ? 
               <SelectSport 
                 sports = {sports}  
                 setSubmenu = {getSportInfo}

@@ -10,7 +10,7 @@ export default ({type, data, isLast, submenuList, deselectSubmenu}) => {
                 onClick={() => deselectSubmenu(type, submenuList)}
                 style={{background: "#f2ececc9"}}
             >
-                <ListItemText style={{zIndex: 500, color: isLast ? 'black' : "orange"}}>
+                <ListItemText style={{zIndex: 500, color: isLast ? 'black' : "#999797"}}>
                     {data.name}
                 </ListItemText>
             </ListItem>

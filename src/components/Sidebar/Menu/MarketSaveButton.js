@@ -26,7 +26,6 @@ const MarketSaveButton = ({sport, myMarkets, onUpdateMyMarkets}) => {
         .then(res => res.json())
         .then(res => {
           onUpdateMyMarkets(res)
-          console.log(res)
         })
         .catch(res => {})
     }

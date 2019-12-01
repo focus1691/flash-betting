@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { connect } from 'react-redux'
 import MyMarkets from "./MyMarkets";
 import AllSports from "./AllSports";
 import ActiveBets from "./ActiveBets";
@@ -8,6 +9,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import useStyles from "../../Styles/Styles";
+import { updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMarkets } from "../../../actions/sport";
 
 const ExpansionPanel = withStyles({
   root: {
@@ -38,13 +40,22 @@ const ExpansionPanelSummary = withStyles({
   },
 })(MultiExpansionPanelSummary);
 
-const Menu = () => {
+const Menu = props => {
 
   const [expanded, setExpanded] = useState("my_markets");
 
   const classes = useStyles();
 
   const handleChange = tab => (event, newExpanded) => {
+    if (expanded === tab && tab === "all_sports") {
+      props.onUpdateSubmenuCurrent("");
+      props.onUpdateSubmenuList({});
+      return;
+    } else if (expanded === tab && tab === "my_markets") {
+      props.onUpdateSubmenuMyMarkets("");
+      props.onUpdateSubmenuListMyMarkets({});
+      return;
+    }
     setExpanded(newExpanded ? tab : false);
   };
 
@@ -98,4 +109,13 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+const mapDispatchToProps = dispatch => {
+  return {
+    onUpdateSubmenuCurrent: submenuCurrent => dispatch(updateCurrentSubmenu(submenuCurrent)),
+    onUpdateSubmenuList: submenuList => dispatch(updateSubmenuList(submenuList)),
+    onUpdateSubmenuMyMarkets: submenuCurrent => dispatch(updateSubmenuMyMarkets(submenuCurrent)),
+    onUpdateSubmenuListMyMarkets: submenu => dispatch(updateSubmenuListMyMarkets(submenu))
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Menu);
