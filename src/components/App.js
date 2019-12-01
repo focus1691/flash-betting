@@ -85,10 +85,6 @@ const App = props => {
   };
 
   const cleanupOnMarketClose = (marketId) => {
-    props.onUpdateRunners({});
-    props.onReceiveMarket({});
-    props.onSelectRunner({});
-    props.onReceiveNonRunners({});
     window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
   }
 
@@ -585,6 +581,7 @@ const mapDispatchToProps = dispatch => {
     onReceiveRightClickTicks: ticks => dispatch(actions.updateRightClickTicks(ticks)),
     onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
+    onMarketClosed: () => dispatch(marketActions.closeMarket()),
     onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),

@@ -26,6 +26,13 @@ export const loadMarket = market => {
   };
 };
 
+export const closeMarket = () => {
+  return {
+    type: "CLOSE_MARKET",
+    payload: true
+  };
+};
+
 export const setEventType = eventType => {
   return {
     type: "SET_EVENT_TYPE",

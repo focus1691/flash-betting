@@ -28,6 +28,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, inPlayTime: action.payload };
     case "LOAD_MARKET":
       return { ...state, currentMarket: action.payload };
+    case "CLOSE_MARKET":
+      return { ...state, marketOpen: action.payload };
     case "SET_EVENT_TYPE":
       return { ...state, eventType: action.payload };
     case "LOAD_LADDER":
