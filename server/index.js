@@ -294,7 +294,8 @@ app.post("/api/fetch-all-sports", (request, response) => {
 			"X-Application": process.env.APP_KEY || "qI6kop1fEslEArVO",
 			"X-Authentication": request.body.sessionKey
 		}
-	}).then(res => res.json())
+	})
+	.then(res => res.json())
 	.then(res => {
 		res.children.map(item => {
 			allSports[item.id] = item.children;
@@ -346,16 +347,18 @@ app.post("/api/remove-market", (request, response) => {
 	});
 });
 
+
 app.get("/api/list-todays-card", (request, response) => {
+	console.log('440304034')
 	betfair.listMarketCatalogue({
 		filter: {
 			"eventTypeIds": [
-				request.query.sportId
+				request.query.id
 			],
 			"marketTypeCodes": request.query.marketTypes !== 'undefined' ? [
 				request.query.marketTypes
 			] : undefined,
-			"marketCountries": JSON.parse(request.query.country),
+			"marketCountries": request.query.country !== 'undefined' ? JSON.parse(request.query.country) : undefined,
 			"marketStartTime": {
 				"from": new Date().toJSON(),
 				"to": new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON()
@@ -370,7 +373,38 @@ app.get("/api/list-todays-card", (request, response) => {
 			"MARKET_START_TIME"
 		]
 	}, (err, res) => {
-		response.json(res.result);
+
+		// if its the next day, we have to put the date
+		const mappedResponseNames = res.result.map(item => {
+			const marketStartTime = new Date(item.marketStartTime)
+			const currentDay = new Date(Date.now()).getDay()
+			const marketStartDay = marketStartTime.getDay()
+			const marketStartOnDiffDay = marketStartDay > currentDay || marketStartDay < currentDay
+		
+			const dateSettings = { hour12: false };
+			if (marketStartOnDiffDay) {
+				dateSettings['weekday'] = 'short';
+			}
+			const marketStartDate = marketStartTime.toLocaleTimeString('en-us', dateSettings)
+			return Object.assign(item, {marketName: marketStartDate + ' ' + item.event.venue + ' ' + item.marketName})
+			
+		})
+
+		const sortByTime = (a, b) => {
+			return Date.parse(a.marketStartTime) - Date.parse(b.marketStartTime)
+		}
+		
+		const sortedResponse = mappedResponseNames.sort(sortByTime);
+
+		const mappedResponse = sortedResponse.map(item => 
+			({
+				id: item.marketId,
+				name: item.marketName,
+				type: "MARKET"
+			})
+		)
+
+		response.json(mappedResponse);
 	});
 });
 

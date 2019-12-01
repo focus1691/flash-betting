@@ -6,16 +6,16 @@ import { loadMyMarkets } from '../../../actions/market';
 const MarketSaveButton = ({sport, myMarkets, onUpdateMyMarkets}) => {
     const marketItemSaved = myMarkets.findIndex(item => item.id === sport.id && item.type == sport.type && item.name == sport.name) !== -1
     
-    const updateMyMarkets = (action, id, name, data) => {
+    const updateMyMarkets = (marketItemSaved, id, name, type, children) => {
         /*
-            action - add to my markets, or remove
+            marketItemSaved - whether it is saved or not
             id - id for the selection
             name - name displayed on myMarkets
             data - the data that the sport contains for the mymarkets so we don't have to go searching for it
         */
-        const marketSelection = {id, name, data};
-        
-        fetch(`/api/${action == "add" ? 'save-market' : 'remove-market'}`, {
+        const marketSelection = {id, name, type, children};
+
+        fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
@@ -26,13 +26,14 @@ const MarketSaveButton = ({sport, myMarkets, onUpdateMyMarkets}) => {
         .then(res => res.json())
         .then(res => {
           onUpdateMyMarkets(res)
+          console.log(res)
         })
         .catch(res => {})
     }
 
     return (
         <ListItemIcon style={{minWidth: 'auto', cursor: 'pointer'}} onClick={() => {
-            // TODO add mymarkets functioanlity
+            updateMyMarkets(marketItemSaved, sport.id, sport.name, sport.type, sport.children)
         }}>
             <img
                 src={window.location.origin + (marketItemSaved ? "/icons/rounded-remove-button.png" : "/icons/add-button-inside-black-circle.png")}

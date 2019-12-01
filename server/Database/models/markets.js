@@ -3,13 +3,8 @@ const mongoose = require('mongoose');
 const marketsSchema = mongoose.Schema({
     id: String,
     name: String,
-    sportId: String,
     type: String,
-    country: String,
-    filter: {
-        type: Object,
-        default: {}
-    }
+    children: Array
 });
 
 module.exports = mongoose.model('Markets', marketsSchema);

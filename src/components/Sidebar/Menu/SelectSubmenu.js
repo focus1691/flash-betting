@@ -3,6 +3,7 @@ import { ListItem, ListItemText, Divider } from "@material-ui/core";
 import MarketSaveButton from './MarketSaveButton'
 
 export default ({data, setSubmenu, submenuList, winMarketsOnly}) => {
+    console.log(data)
     const filteredData = winMarketsOnly ? data.filter(sport => (sport.type === "MARKET" && sport.marketType === "WIN") || sport.type !== "MARKET") : data
     const dataWithoutRaces = filteredData.filter(sport => sport.type !== "RACE")
 
@@ -15,7 +16,7 @@ export default ({data, setSubmenu, submenuList, winMarketsOnly}) => {
                     onClick={() => { 
                         if (sport.type === "MARKET") 
                             window.open(`/dashboard?marketId=${sport.id}`)
-                        else setSubmenu(sport.children, sport.name, sport.type, submenuList)
+                        else setSubmenu(sport.children, sport.name, sport.type, submenuList, sport.id)
                     }}
                 >
                     

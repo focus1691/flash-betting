@@ -9,3 +9,7 @@
 #all-sports tr {
     color: #0000FF;
 }
+
+.MuiTypography-body1 {
+	font-size: 0.8rem !important;
+}

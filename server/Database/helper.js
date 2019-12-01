@@ -116,6 +116,7 @@ class DatabaseHelper extends Database {
     saveMarket(user, newMarket) {
         // Create the object with our Order Schema
         newMarket = new Market(newMarket);
+        console.log(newMarket)
         return new Promise((res, rej) => {
             User.findOne({email: user},)
             .then(user => {

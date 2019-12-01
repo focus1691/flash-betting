@@ -2,139 +2,14 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../actions/market";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import SelectSport from "./SelectSport";
-import SelectCompetition from "./SelectCompetition";
-import SelectEvent from "./SelectEvent";
-import SelectMarket from "./SelectMarket";
-import Divider from '@material-ui/core/Divider';
-import { getHorseRaceCountries } from "../../../utils/Bets/GetHorseRaceCountries";
+import getCountryName from "../../../utils/CountryCodeConverter";
+import SelectSubmenu from "./SelectSubmenu";
+import DeselectSport from "./DeselectSport";
 
 const MyMarkets = props => {
 
-	const [selectedMarket, setSelectedMarket] = useState({})
-
-	const [currentSport, setCurrentSport] = useState({});
-	const {
-		currentSportId,
-		sportCountries,
-		currentCountry,
-		countryCompetitions,
-		currentCompetition,
-		competitionEvents,
-		currentEvent,
-		eventMarkets
-	} = currentSport;
-
-	const handleMarketClick = async (
-		marketSelection,
-		currentMarket,
-		marketList,
-		api,
-		sportId = "",
-		country = "",
-		competition = "",
-		event = "",
-		mapMarkets = data => data,
-		sortMarkets = data => data
-	  ) => {
-		/*
-			marketSelection - button click
-			currentMarket - key for the market that is currently selected
-			marketList - key for array that is associated with the market (we can also use this to reset an array associated with the marketSelection)
-			api - where we should fetch
-			sports, country, competition, event - api information,
-			mapMarkets - map the data we get from the api call
-		*/
-	
-		// if the button we pressed matches the selectedMarket, we want to go back to myMarkets
-		if (marketSelection === selectedMarket.id || marketSelection.id === selectedMarket.id) {
-			setSelectedMarket({});
-			setCurrentSport({});
-			return;
-		}
-
-		// set back to undefined if they don't want to see the menu anymore, click on the same button another time
-		if (currentSport[currentMarket] === marketSelection) {
-		  const newSport = Object.assign({}, currentSport);
-	
-		  newSport[currentMarket] = undefined;
-		  newSport[marketList] = undefined;
-	
-		  setCurrentSport(newSport);
-		  return;
-		}
-	
-		const response = await fetch(
-		  `/api/${api}?sportId=${sportId}&&marketTypes=${props.winMarketsOnly ? 'WIN' : undefined}&&country=${country}&&competitionId=${competition}&&eventId=${event}`
-		);
-		const data = await response.json();
-		
-		const newSport = Object.assign({}, currentSport);
-		newSport[currentMarket] = marketSelection;
-		newSport[marketList] = sortMarkets(mapMarkets(data));
-		if (newSport.currentSportId === undefined) newSport.currentSportId = sportId;
-		if (newSport.currentCountry === undefined) newSport.currentCountry = country;
-
-		setCurrentSport(newSport);
-	
-		return data;
-	};
-
-	const getNewName = item => {
-        const marketStartTime = new Date(item.marketStartTime)
-        const currentDay = new Date(Date.now()).getDay()
-        const marketStartDay = marketStartTime.getDay()
-        const marketStartOnDiffDay = marketStartDay > currentDay || marketStartDay < currentDay
-
-        const dateSettings = { hour12: false };
-        if (marketStartOnDiffDay) {
-            dateSettings['weekday'] = 'short';
-        }
-        const marketStartDate = marketStartTime.toLocaleTimeString('en-us', dateSettings)
-        return Object.assign(item, {marketName: marketStartDate + ' ' + item.event.venue + ' ' + item.marketName})
-    }
-
-    const sortByTime = (a, b) => {
-        return Date.parse(a.marketStartTime) - Date.parse(b.marketStartTime)
-    }
-
-	
-	// this handles all the markets no matter what kind it is, we need this at the start for later
-	const handleSelectMyMarket = (id, name, sportId, type, country) => {
-		/*
-			id - id for the selection
-			name - name displayed on myMarkets
-			sportId - the sport that the selection is associated with
-			type - the type of the selection (sport, country, competition, event, market)
-		*/
-	
-		setSelectedMarket({id, name, sportId, type, country})
-		
-		switch (type) {
-			case "Sport":
-				// its a today's card
-				if (/TC-/gm.test(id)) {
-					handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-todays-card', id.replace(/TC-/, ''), JSON.stringify(getHorseRaceCountries(props.horseRaces)), '', '', data => data.map(item => getNewName(item)), data => data.sort(sortByTime))
-					break;
-				}
-				handleMarketClick({id}, 'currentSportId', 'sportCountries', 'list-countries', sportId)
-				break;
-			case "Country":
-				handleMarketClick({id}, 'currentCountry', 'countryCompetitions', 'list-competitions', sportId, id, '', '', data => data.map(item => item.competition))
-				break;
-			case "Competition":
-				handleMarketClick({id, name}, 'currentCompetition', 'competitionEvents', 'list-competition-events', sportId, country, id, '', data => data.map(item => item.event))
-				break;
-			case "Event":
-				handleMarketClick({id, name}, 'currentEvent', 'eventMarkets', 'list-markets', '', '', '', id, data => data.result)
-				break;
-			default:
-				break;
-		}
-	};
+	const [submenuList, setSubmenuList] = useState({})
+	const [currentSubmenu, setCurrentSubmenu] = useState("");
 
 	useEffect(() => {
 		fetch('/api/get-my-markets')
@@ -142,121 +17,97 @@ const MyMarkets = props => {
 			.then(markets => props.onReceiveMyMarkets(markets));
 	}, []);
 
-	const updateMyMarkets = (action, id, name, sportId, type, country) => {
-		/*
-			myMarkets - myMarkets that will be edited
-			action - add to my markets, or remove
-			id - id for the selection
-			name - name displayed on myMarkets
-			sportId - the sport that the selection is associated with
-			type - the type of the selection (sport, country, competition, event, market)
-			currentCountry - the currentCountry, only applies to (country, competition, event) for lookup purposes
-		*/
-		const marketSelection = {id, name, sportId, type, country};
 
-		fetch(`/api/${action == "add" ? 'save-market' : 'remove-market'}`, {
-		  headers: {
-			Accept: "application/json",
-			"Content-Type": "application/json"
-		  },
-		  method: "POST",
-		  body: JSON.stringify(marketSelection)
-		})
-		.then(res => res.json())
-		.then(res => {
-		  props.onReceiveMyMarkets(res)
-		})
-		.catch(res => {})
+	const getSportInfo = async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {
+		// call the api with the id and get new selections
+		const data = await fetch(`/api/${apiToCall}/?id=${selectedId}
+								&marketTypes=${props.winMarketsOnly === true ? "WIN" : undefined}
+								&country=${name.startsWith("TC") && name.endsWith("7") ? getCountryName(props.horseRaces) : undefined}`)
+							.then(res => res.json()).catch(err => false);
+	
+		
+		// set the old submenu as the newSubmenuType: children we received from the api
+		if (data) {
+		  const newSubmenuList = Object.assign({}, submenuList);
+		  newSubmenuList[newSubmenuType] = {name, data};
+	
+		  setSubmenuList(newSubmenuList);
+		  setCurrentSubmenu(newSubmenuType);
+		}
+		
 	}
 
-	const renderMarkets = () => {
-		return props.myMarkets.map((market, index) => {
-			return (
-				<React.Fragment>
-					<tr style={{display: 'flex', flexDirection: 'row', height: "3em", paddingBottom: "2px", marginTop: '0.5em', marginLeft: '1rem'}}>
-						<ListItemIcon 
-							style={{minWidth: 'auto', cursor: 'pointer'}}
-							onClick={() => updateMyMarkets('sub', market.id, market.name, market.sportId, market.type, market.country)}
-						>
-							<img
-								src={window.location.origin + "/icons/rounded-remove-button.png"}
-								alt={"Remove"}
-								style = {{height: '16px', width: 'auto', alignSelf: 'center', 
-										filter: 'invert(22%) sepia(92%) saturate(6689%) hue-rotate(358deg) brightness(91%) contrast(121%)'}}
-							/>
-						</ListItemIcon>
-						<ListItem 
-							onClick={() => market.type === "Market" ? window.open(`/dashboard?marketId=${market.id}`) : handleSelectMyMarket(market.id, market.name, market.sportId, market.type, market.country)} button>
-
-							<ListItemText style={{minWidth: `13em`}}>{market.name}</ListItemText>
-						</ListItem>
-					</tr>
-				{/* If last one don't make divider */}
-				{index === props.myMarkets.length - 1 ? null : <Divider style={{ width: "100%" }} />}
-				</React.Fragment>
-			)
-		});
+	const setSubmenu = (data, name, newSubmenuType, submenuList, id) => {
+		if (id.startsWith("TC-")) {
+			getSportInfo(name, newSubmenuType, submenuList, id.match(/\d+/)[0], `list-todays-card`);
+		}
+		else if (newSubmenuType === "EVENT_TYPE") {
+			getSportInfo(name, newSubmenuType, submenuList, id, `fetch-sport-data`);
+		} else {
+			const newSubmenuList = Object.assign({}, submenuList);
+			newSubmenuList[newSubmenuType] = {name, data};
+			
+			setSubmenuList(newSubmenuList);
+			setCurrentSubmenu(newSubmenuType);
+		}
 	}
+	
+	const deselectSubmenu = (newSubmenuType, submenuList) => { 
+		const submenuEnum = {
+		  ROOT: 0,
+		  EVENT_TYPE: 1,
+		  GROUP: 2,
+		  EVENT: 3,
+		  RACE: 4,
+		  MARKET: 5
+		}
+	
+		// filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
+		const newSubmenuList = {}
+	
+		const maxSubmenuLevel = submenuEnum[newSubmenuType];
+		Object.keys(submenuList).map(key => {
+		  if (!submenuEnum[key] || submenuEnum[key] <= maxSubmenuLevel) {
+			newSubmenuList[key] = submenuList[key]
+		  }
+		})
+		
+		setCurrentSubmenu(newSubmenuType);
+		setSubmenuList(newSubmenuList);
+	}
+
+	console.log(props.myMarkets)
 
 	return (
-		<List>
-			{!selectedMarket.type ? 
-				// Selecting myMarkets
-				renderMarkets()
-				:
-				// Selecting Market
-				currentEvent !== undefined &&
-					eventMarkets !== undefined &&
-					eventMarkets.length > 0 ?
-					<SelectMarket
-					currentSportId={currentSportId}
-					name={currentEvent.name}
-					markets={eventMarkets.sort((a, b) => a.marketName.localeCompare(b.marketName))}
-					handleClick={handleMarketClick}
-					event={currentEvent}
-					myMarkets = {props.myMarkets}
-					updateMyMarkets = {updateMyMarkets}
+		<div>
+		  <table id="all-sports">
+			<tbody>
+			  <List>
+				{/* { Deselecting Items } */}
+				{ Object.keys(submenuList).map((type, index) => (
+					<DeselectSport 
+					  type = {type}
+					  data = {submenuList[type]}
+					  isLast = {index === Object.keys(submenuList).length - 1}
+					  submenuList = {submenuList}
+					  deselectSubmenu = {deselectSubmenu}
 					/>
-					: // Selecting Event
-					currentCountry !== undefined &&
-					competitionEvents !== undefined &&
-					competitionEvents.length > 0 &&
-					currentEvent === undefined ?
-					<SelectEvent
-						currentSportId={currentSportId}
-						currentCompetition={currentCompetition}
-						currentCountry={currentCountry}
-						competitionEvents={competitionEvents.sort((a, b) => Date.parse(a.openDate) - Date.parse(b.openDate) || a.name.localeCompare(b.name))}
-						handleClick={handleMarketClick}
-						myMarkets = {props.myMarkets}
-						updateMyMarkets = {updateMyMarkets}
+				  ))
+				}
+	
+				{ // Selecting Item
+					<SelectSubmenu 
+						data = {currentSubmenu === "" ? props.myMarkets : submenuList[currentSubmenu].data}
+						setSubmenu = {setSubmenu}
+						submenuList = {submenuList}
+						winMarketsOnly = {props.winMarketsOnly}
 					/>
-					: // Selecting Competition
-					currentCountry !== undefined &&
-                    countryCompetitions !== undefined &&
-                    countryCompetitions.length > 0 &&
-                    currentEvent === undefined ?
-					<SelectCompetition
-					  currentCountry={currentCountry.id}
-                      competitions={countryCompetitions === undefined ? [] : countryCompetitions}
-                      handleClick={handleMarketClick}
-                      currentSportId={currentSportId}
-                      myMarkets = {props.myMarkets}
-                      updateMyMarkets = {updateMyMarkets}
-                    />
-                    : // Selecting Sport
-					<SelectSport
-						sports={props.sports}
-						currentSportId={selectedMarket.id}
-						countries={sportCountries === undefined ? [] : sportCountries}
-						handleClick={handleMarketClick}
-						myMarkets = {props.myMarkets}
-						updateMyMarkets = {updateMyMarkets}
-						horseRaces = {props.horseRaces}
-					/>
-            }
-		</List>
-	);
+				}
+			  </List>
+			</tbody>
+		  </table>
+		</div>
+	)
 }
 
 const mapStateToProps = state => {

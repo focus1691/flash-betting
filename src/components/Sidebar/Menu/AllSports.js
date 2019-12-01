@@ -7,6 +7,7 @@ import SelectSport from "./SelectSport";
 import { useCookies } from 'react-cookie';
 import DeselectSport from "./DeselectSport";
 import SelectSubmenu from "./SelectSubmenu";
+import getCountryName from "../../../utils/CountryCodeConverter";
 
 const AllSports = props => {
 
@@ -26,7 +27,7 @@ const AllSports = props => {
       })
     });
 
-  })
+  }, [])
 
   useEffect(() => {
     fetch(`/api/get-all-sports`)
@@ -56,8 +57,10 @@ const AllSports = props => {
 
   const getSportInfo = async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {
     // call the api with the id and get new selections
-    const data = await fetch(`/api/${apiToCall}/?id=${selectedId}`).then(res => res.json()).catch(err => false);
-
+    const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${props.winMarketsOnly === true ? "WIN" : undefined}
+                              &country=${name.startsWith("TC") && name.endsWith("7") ? getCountryName(props.horseRaces) : undefined}`)
+                            .then(res => res.json()).catch(err => false);
+    
     // set the old submenu as the newSubmenuType: children we received from the api
     if (data) {
       const newSubmenuList = Object.assign({}, submenuList);
