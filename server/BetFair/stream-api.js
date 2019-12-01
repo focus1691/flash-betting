@@ -57,6 +57,7 @@ class BetFairStreamAPI {
 						// console.log('New MCM, id: ' + result.id);
 						if (result.mc[0].marketDefinition) {
 							console.log(result.mc[0].marketDefinition);
+							this.openSocket.emit('market-definition', result.mc[0].marketDefinition);
 						}
 						this.openSocket.emit('mcm', result.mc[0]);
 						this.chunks = [];

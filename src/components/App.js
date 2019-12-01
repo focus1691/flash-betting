@@ -120,7 +120,6 @@ const App = props => {
                   price: 0
                 };
               }
-              console.log(data.result[0]);
               props.onSortLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
               props.onReceiveEventType(data.result[0].eventType.id);
               props.onUpdateRunners(runners);
@@ -250,6 +249,18 @@ const App = props => {
     }
   }, [Object.keys(props.unmatchedBets).length]);
 
+
+  useEffect(() => {
+    props.socket.on("market-definition", async marketDefinition => {
+      props.onMarketStatusChange(marketDefinition.status);
+      props.setInPlay(marketDefinition.inPlay);
+
+      if (marketDefinition.status === "CLOSED") {
+        cleanupOnMarketClose(getQueryVariable("marketId"));
+      }
+    });
+  }, [props.marketStatus]);
+
   useEffect(() => {
     /**
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
@@ -291,10 +302,8 @@ const App = props => {
         });
         props.onReceiveNonRunners(nonRunners);
       }
-
-      if (marketStatus === "CLOSED") {
-        cleanupOnMarketClose(marketId);
-      } else if (data.rc) {
+      
+      if (data.rc) {
         let adjustedStopLossList = Object.assign({}, props.stopLossList)
         const adjustedBackList = {}
         const adjustedLayList = {}
