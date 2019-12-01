@@ -356,7 +356,6 @@ app.post("/api/remove-market", (request, response) => {
 
 
 app.get("/api/list-todays-card", (request, response) => {
-	console.log('440304034')
 	betfair.listMarketCatalogue({
 		filter: {
 			"eventTypeIds": [

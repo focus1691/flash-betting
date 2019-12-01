@@ -349,7 +349,6 @@ app.post("/api/remove-market", (request, response) => {
 
 
 app.get("/api/list-todays-card", (request, response) => {
-	console.log('440304034')
 	betfair.listMarketCatalogue({
 		filter: {
 			"eventTypeIds": [
@@ -373,7 +372,7 @@ app.get("/api/list-todays-card", (request, response) => {
 			"MARKET_START_TIME"
 		]
 	}, (err, res) => {
-
+		console.log(res.result)
 		// if its the next day, we have to put the date
 		const mappedResponseNames = res.result.map(item => {
 			const marketStartTime = new Date(item.marketStartTime)

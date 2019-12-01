@@ -11,7 +11,12 @@ export default ({sports, setSubmenu}) => {
                 <MarketSaveButton sport = {{id: sport.eventType.id, name: sport.eventType.name, type: "EVENT_TYPE", data: {}}} />
                 <ListItem
                     button
-                    onClick={() => setSubmenu(sport.eventType.name, 'EVENT_TYPE', {}, sport.eventType.id, 'fetch-sport-data')}
+                    onClick={() => setSubmenu(
+                                    sport.eventType.name, 
+                                    'EVENT_TYPE', 
+                                    {}, 
+                                    sport.eventType.id.match(/\d+/)[0], 
+                                    sport.eventType.id.startsWith("TC-") ? 'list-todays-card' : 'fetch-sport-data')}
                     >
                     <ListItemText>{sport.eventType.name}</ListItemText>
                 </ListItem>
