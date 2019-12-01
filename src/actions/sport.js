@@ -5,6 +5,20 @@ export const setAllSports = sports => {
     }
 };
 
+export const updateSubmenuList = submenu => {
+    return {
+        type: "UPDATE_SUBMENU_LIST",
+        payload: submenu
+    }
+}
+
+export const updateCurrentSubmenu = submenu => {
+    return {
+        type: "UPDATE_SUBMENU_CURRENT",
+        payload: submenu
+    }
+}
+
 export const setCurrentSport = sport => {
     return {
         type: "SPORTS_CURRENT",

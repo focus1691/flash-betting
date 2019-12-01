@@ -10,6 +10,8 @@ let mainWindow;
 
 const express = require("express");
 
+const fetch = require('node-fetch')
+
 var app = express();
 // This adds environment-specific variables on new lines in the form of NAME=VALUE
 // Access with process.env
@@ -290,6 +292,35 @@ app.post("/api/remove-orders", (request, response) => {
 		response.sendStatus(res);
 	});
 });
+
+const allSports = {};
+
+app.post("/api/fetch-all-sports", (request, response) => {
+	fetch("https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json", {
+		headers: {
+			"X-Application": process.env.APP_KEY || "qI6kop1fEslEArVO",
+			"X-Authentication": request.body.sessionKey
+		}
+	}).then(res => res.json())
+	.then(res => {
+		res.children.map(item => {
+			allSports[item.id] = item.children;
+		})
+		response.sendStatus(200)
+	})
+	.catch(err => {
+		response.sendStatus(400)
+	})
+})
+
+
+app.get("/api/fetch-sport-data", (request, response) => {
+	if (Object.keys(allSports).length) {
+		response.json(allSports[request.query.id])
+	} else {
+		response.sendStatus(400).send("All Sports contains no data")
+	}
+})
 
 app.get("/api/get-all-sports", (request, response) => {
 	betfair.listEventTypes(
