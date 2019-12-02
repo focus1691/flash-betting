@@ -82,7 +82,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "cross-env NODE_ENV=development nodemon server/index.js",
+    "server": "cross-env NODE_ENV=production nodemon server/index.js",
     "dev": "cross-env concurrently \"npm run start\" \"npm run server\"",
     "electron-dev": "cross-env BROWSER=none electron .",
     "electron-build": "cross-env npm run build && electron-builder"
