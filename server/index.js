@@ -372,7 +372,6 @@ app.get("/api/list-todays-card", (request, response) => {
 			"MARKET_START_TIME"
 		]
 	}, (err, res) => {
-		console.log(res.result)
 		// if its the next day, we have to put the date
 		const mappedResponseNames = res.result.map(item => {
 			const marketStartTime = new Date(item.marketStartTime)
@@ -710,7 +709,6 @@ io.on("connection", async client => {
 		exchangeStream.makeSubscription(orderSubscription, accessToken);
 	});
 	client.on('disconnect', async () => {
-		console.log('Socket disconnected');
 		let accessToken = await database.getToken(betfair.email);
 		const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":[""]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
 		exchangeStream.makeSubscription(marketSubscription, accessToken);

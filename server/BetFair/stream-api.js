@@ -41,7 +41,6 @@ class BetFairStreamAPI {
 
 					// Connection status
 					if (result.op === 'status') {
-						console.log('session key: ' + sessionKey + '\nStatus: ' + JSON.stringify(result));
 						this.connectionClosed = result.connectionClosed;
 						if (!this.connectionClosed) {
 							this.subscriptions.forEach((subscription => {
@@ -54,9 +53,7 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						// console.log('New MCM, id: ' + result.id);
 						if (result.mc[0].marketDefinition) {
-							console.log(result.mc[0].marketDefinition);
 							this.openSocket.emit('market-definition', result.mc[0].marketDefinition);
 						}
 						this.openSocket.emit('mcm', result.mc[0]);
@@ -88,7 +85,6 @@ class BetFairStreamAPI {
 		});
 	}
 	makeSubscription(subscription, accessToken) {
-		console.log('make subscription');
 		if (this.connectionClosed) {
 			this.authenticate(accessToken);
 			this.subscriptions.push(subscription);

@@ -717,7 +717,6 @@ io.on("connection", async client => {
 		exchangeStream.makeSubscription(orderSubscription, accessToken);
 	});
 	client.on('disconnect', async () => {
-		console.log('Socket disconnected');
 		let accessToken = await database.getToken(betfair.email);
 		const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":[""]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
 		exchangeStream.makeSubscription(marketSubscription, accessToken);
