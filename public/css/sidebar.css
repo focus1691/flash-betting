@@ -207,3 +207,7 @@
 #menu-unmatched-bet td, #menu-matched-bet td {
 	font-size: small;
 }
+
+.MuiAppBar-root {
+	border: none !important;
+}

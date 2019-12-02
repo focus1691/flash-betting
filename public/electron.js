@@ -576,7 +576,7 @@ app.post("/api/replace-orders", (request, response) => {
 			betId: request.body.betId,
 			newPrice: request.body.newPrice
 		}],
-		customerStrategyRef: request.body.customerStrategyRef
+		customerRef: request.body.customerStrategyRef
 	}, (err, res) => {
 		if (res.error) {
 			response.sendStatus(400);

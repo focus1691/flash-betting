@@ -133,11 +133,11 @@ const UnmatchedBets = props => {
             "Content-Type": "application/json"
           },
           method: "POST",
-          body: {
+          body: JSON.stringify({
             marketId: order.marketId,
             betId: order.betId,
             newPrice: newPrice
-          }
+          })
         })
         
 

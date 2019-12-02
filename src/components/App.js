@@ -30,6 +30,7 @@ import DraggableLiveStream from "./Draggable/LiveStream";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 import { sortLadder, sortGreyHoundMarket } from "../utils/ladder/SortLadder";
+import crypto from 'crypto'
 
 const App = props => {
   const [cookies] = useCookies(['sessionKey', 'username']);
@@ -248,6 +249,53 @@ const App = props => {
       });
     }
   }, [Object.keys(props.unmatchedBets).length]);
+
+  useEffect(() => {
+    setInterval(async () => {
+      const marketId = getQueryVariable("marketId");
+      const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+      const currentOrdersObject = {};
+      currentOrders.map(item => {
+        currentOrdersObject[item.betId] = item;
+        if (item.status === "EXECUTION_COMPLETE") {
+          currentOrdersObject[item.betId].price = item.averagePriceMatched;
+        } else {
+          currentOrdersObject[item.betId] = item;
+          currentOrdersObject[item.betId].price = item.priceSize.price;
+        }
+
+      })
+
+      const loadedUnmatchedOrders = {};
+      const loadedMatchedOrders = {};
+
+      Object.keys(currentOrdersObject).map(async betId => {
+        const order = currentOrdersObject[betId];
+
+        const orderData = {
+          strategy: "None",
+          marketId: order.marketId,
+          side: order.side,
+          price: order.price,
+          size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
+          selectionId: order.selectionId,
+          rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
+          betId: betId
+        }
+
+        if (order.status === "EXECUTION_COMPLETE") {
+          loadedMatchedOrders[order.betId] = orderData;
+        } else if (order.status === "EXECUTABLE") {
+          loadedUnmatchedOrders[order.betId] = orderData;
+        }
+      })
+
+      props.onChangeOrders({
+        matched: loadedMatchedOrders,
+        unmatched: loadedUnmatchedOrders
+      })
+    }, 15000)
+  }, []);
 
 
   useEffect(() => {
