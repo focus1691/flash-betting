@@ -254,7 +254,7 @@ const App = props => {
     setInterval(async () => {
       const marketId = getQueryVariable("marketId");
       if (marketId !== false) { 
-        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json());
+        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
         const currentOrdersObject = {};
         currentOrders.forEach(item => {
           currentOrdersObject[item.betId] = item;
