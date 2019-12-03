@@ -253,7 +253,7 @@ const App = props => {
   useEffect(() => {
     setInterval(async () => {
       const marketId = getQueryVariable("marketId");
-      const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+      const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json());
       const currentOrdersObject = {};
       currentOrders.map(item => {
         currentOrdersObject[item.betId] = item;

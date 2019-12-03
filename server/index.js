@@ -218,6 +218,7 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 		},
 		async (err, res) => {
 			if (!res.result) {
+				console.log(res.result);
 				response.json({});
 			} else {
 				const filteredOrders = res.result.currentOrders = await res.result.currentOrders.filter((data, index, order) =>
@@ -235,6 +236,7 @@ app.get("/api/get-events-with-active-bets", (request, response) => {
 						maxResults: 100
 					},
 					(err, res) => {
+						console.log(res.result);
 						response.json(res.result);
 					}
 				);
