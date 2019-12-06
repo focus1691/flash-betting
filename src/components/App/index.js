@@ -1,35 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
-import * as actions from "../actions/settings";
-import * as marketActions from "../actions/market";
-import { updateStopLossList } from '../actions/stopLoss'
-import { updateTickOffsetList } from "../actions/tickOffset";
-import { updateStopEntryList } from "../actions/stopEntry";
-import Loader from 'react-loader-spinner'
-import Siderbar from "./Sidebar";
-import HomeView from "./HomeView/";
-import LadderView from "./LadderView/";
-import GridView from "./GridView/";
-import SocketContext from "../SocketContext";
-import { Helmet } from "react-helmet";
-import getQueryVariable from "../utils/Market/GetQueryVariable";
-import { AddRunner } from "../utils/ladder/AddRunner";
-import { UpdateRunner } from "../utils/ladder/UpdateRunner";
-import { isPremiumActive } from "../utils/DateCalculator";
-import PremiumPopup from "./PremiumPopup";
-import { updateLayList } from "../actions/lay";
-import { updateBackList } from "../actions/back";
-import { checkTimeListAfter } from "../utils/TradingStategy/BackLay";
-import { placeOrder, updateOrders } from "../actions/order";
-import { updateFillOrKillList } from "../actions/fillOrKill";
-import { checkStopLossForMatch, checkTickOffsetForMatch } from "../utils/ExchangeStreaming/OCMHelper";
-import Draggable from "react-draggable";
-import DraggableGraph from "./Draggable/Graph";
-import DraggableLiveStream from "./Draggable/LiveStream";
-import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
-import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
-import { sortLadder, sortGreyHoundMarket } from "../utils/ladder/SortLadder";
+import * as actions from "../../actions/settings";
+import * as marketActions from "../../actions/market";
+import { updateStopLossList } from '../../actions/stopLoss'
+import { updateTickOffsetList } from "../../actions/tickOffset";
+import { updateStopEntryList } from "../../actions/stopEntry";
+import Spinner from "./Spinner";
+import Siderbar from "../Sidebar";
+import HomeView from "../HomeView/";
+import LadderView from "../LadderView/";
+import GridView from "../GridView/";
+import SocketContext from "../../SocketContext";
+import Title from "./Title";
+import getQueryVariable from "../../utils/Market/GetQueryVariable";
+import { AddRunner } from "../../utils/ladder/AddRunner";
+import { UpdateRunner } from "../../utils/ladder/UpdateRunner";
+import { isPremiumActive } from "../../utils/DateCalculator";
+import PremiumPopup from "../PremiumPopup";
+import { updateLayList } from "../../actions/lay";
+import { updateBackList } from "../../actions/back";
+import { checkTimeListAfter } from "../../utils/TradingStategy/BackLay";
+import { placeOrder, updateOrders } from "../../actions/order";
+import { updateFillOrKillList } from "../../actions/fillOrKill";
+import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
+import Draggable from "../Draggable";
+import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../../utils/ExchangeStreaming/MCMHelper";
+import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
+import { sortLadder, sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 
 const App = props => {
   const [marketId, setMarketId] = useState(null);
@@ -203,7 +201,7 @@ const App = props => {
                             break;
                         }
                       }
-                    })
+                    });
 
                     // handle orders not in the there
                     Object.keys(currentOrdersObject).map(async betId => {
@@ -238,8 +236,7 @@ const App = props => {
                   props.onChangeTickOffsetList(loadedTickOffsetOrders);
                   props.onChangeFillOrKillList(loadedFillOrKillOrders);
                   props.onChangeStopLossList(loadedStopLossOrders);
-                })
-
+                });
             }
           }
         });
@@ -496,11 +493,10 @@ const App = props => {
                 const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets);
                 checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
                 tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove;
-
-              })
+              });
             }
-          })
-        })
+          });
+        });
 
 
         if (tickOffsetOrdersToRemove.length > 0) {
@@ -547,49 +543,15 @@ const App = props => {
   };
 
   if (props.isLoading) {
-    return (
-      <div id="spinner">
-        <Loader
-          type="Puff"
-          color="#00BFFF"
-          height={100}
-          width={100}
-        />
-      </div>
-    );
+    return <Spinner/>;
   } else {
     return (
       <div className="horizontal-scroll-wrapper">
         <div className="root">
-          {props.marketOpen ? (
-            <Helmet>
-              <title>
-                {`${new Date(
-                  props.market.marketStartTime
-                ).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ${props.market.marketName}  ${
-                  props.market.event.venue || ""
-                  }`}
-              </title>
-            </Helmet>
-          ) : null}
+          <Title/>
           <Siderbar />
           <main className="content">
-            <Draggable bounds="body">
-              <div
-                className="box"
-                style={{ position: "absolute", top: "25%", left: "50%", zIndex: 9999 }}
-              >
-                <DraggableGraph />
-              </div>
-            </Draggable>
-            <Draggable bounds="body">
-              <div
-                className="box"
-                style={{ position: "absolute", top: "25%", left: "50%", zIndex: 9999 }}
-              >
-                <DraggableLiveStream />
-              </div>
-            </Draggable>
+            <Draggable />
             {renderView()}
             <PremiumPopup />
           </main>
@@ -598,9 +560,6 @@ const App = props => {
     );
   }
 };
-
-
-
 
 const AppWithSocket = props => (
   <SocketContext.Consumer>

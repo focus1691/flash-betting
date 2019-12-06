@@ -7,7 +7,7 @@ import thunk from "redux-thunk";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
-import App from "./components/App";
+import App from "./components/App/";
 import GetClosedMarketStats from "./components/GetClosedMarketStats";
 import Authentication from "./components/Authentication";
 import OAuthRedirect from "./components/OAuthRedirect";
