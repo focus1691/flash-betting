@@ -8,6 +8,7 @@ import { useCookies } from 'react-cookie';
 import DeselectSport from "./DeselectSport";
 import SelectSubmenu from "./SelectSubmenu";
 import getCountryName from "../../../utils/CountryCodeConverter";
+import { sortSports } from "../../../utils/Algorithms/SortSports";
 
 const AllSports = props => {
 
@@ -27,24 +28,15 @@ const AllSports = props => {
       })
     });
 
-  }, [])
+  }, []);
 
   useEffect(() => {
     fetch(`/api/get-all-sports`)
       .then(res => res.json())
       .then(sports => {
-        sports.push({eventType: {id: "TC-7", name: "Horse Racing - Today's Card"}})
-        sports.push({eventType: {id: "TC-4339", name: "Greyhound Racing - Today's Card"}})
-        
-        sports.sort((a, b) => {
-          var nameA = a.eventType.name.toLowerCase(), nameB = b.eventType.name.toLowerCase()
-          if (nameA < nameB) //sort string ascending
-            return -1
-          if (nameA > nameB)
-            return 1
-          return 0 //default return value (no sorting)
-        });
-
+        sports.push({eventType: {id: "TC-7", name: "Horse Racing - Today's Card"}});
+        sports.push({eventType: {id: "TC-4339", name: "Greyhound Racing - Today's Card"}});
+        sports = sortSports(sports);
         props.onReceiveAllSports(sports);
       });
   }, []);
@@ -68,7 +60,6 @@ const AllSports = props => {
       props.onUpdateSubmenuCurrent(newSubmenuType);
       props.onUpdateSubmenuList(newSubmenuList);
     }
-    
   }
 
   const setSubmenu = (data, name, newSubmenuType, submenuList) => {

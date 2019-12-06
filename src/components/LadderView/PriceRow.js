@@ -5,16 +5,19 @@ import { setStakeInOneClick } from "../../actions/settings";
 
 const PriceRow = ({ selectionId, ltp, tv, buttonType, stake, lay, stakeVal, onSetStake }) => {
 
-
   const buttons = buttonType === "STAKE" ? stake : lay;
 
-  const castedPrices = Array.isArray(buttons) ? buttons : Object.values(buttons)  
+  const castedPrices = Array.isArray(buttons) ? buttons : Object.values(buttons);
+
+  const handleStakeChanged = price => e => {
+    onSetStake({selectionId, price: parseFloat(price)});
+  };
 
   useEffect(() => {
-    if (stakeVal[selectionId] == undefined) {
-      onSetStake({selectionId, price: 2})
+    if (stakeVal[selectionId] === undefined) {
+      onSetStake({selectionId, price: 2});
     }
-  }, [])
+  }, []);
   
   return (
     <div className="price-row">
@@ -22,7 +25,7 @@ const PriceRow = ({ selectionId, ltp, tv, buttonType, stake, lay, stakeVal, onSe
         {castedPrices.map(price => (
           <th
             style={{background: getOrderBtnBG(buttonType, parseFloat(price), stakeVal[selectionId], -20)}}
-            onClick={e => onSetStake({selectionId, price: parseFloat(price)})}>{price}
+            onClick={handleStakeChanged(price)}>{price}
           </th>
         ))}
       </div>

@@ -28,9 +28,9 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
         const interval = setInterval(() => {
             const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
             if (listRef.current !== null && ltpIndex !== -1) {
-                listRef.current.scrollToItem(ltpIndex, 'center')
-                clearInterval(interval)
-                setlistRefSet(true)
+                listRef.current.scrollToItem(ltpIndex, 'center');
+                clearInterval(interval);
+                setlistRefSet(true);
             }
         }, 1000)
 
@@ -40,13 +40,13 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
     useEffect(() => {
         const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
         if (listRef.current !== undefined) {
-            listRef.current.scrollToItem(ltpIndex, 'center')
+            listRef.current.scrollToItem(ltpIndex, 'center');
         }
     }, [order]);
 
     const coloredLTPList = GetColoredLTPList(ladder, id)
 
-    const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), { matched: matchedBets }).toFixed(2) : 0
+    const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), { matched: matchedBets }).toFixed(2) : 0;
 
     const placeOrder = data => {
         onPlaceOrder({
@@ -77,26 +77,28 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
             assignedIsOrderMatched: data.assignedIsOrderMatched,
             betId: data.betId,
             hedged: data.hedged
-        })
+        });
     }
     const parsedVolume = {};
     if (ladder[id].trd) {
-        ladder[id].trd.map(vol => { parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10 });
+        ladder[id].trd.forEach(vol => {
+            parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10;
+        });
     }
 
-    const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladder, id, selectionMatchedBets, ladderUnmatched, stake, PL)
+    const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladder, id, selectionMatchedBets, ladderUnmatched, stake, PL);
 
     // gets all the bets we made and creates a size to offset
     const hedgeSize = selectionMatchedBets !== undefined ?
         selectionMatchedBets.reduce((a, b) => {
-            return a + b.size
-        }, 0) : 0
+            return a + b.size;
+        }, 0) : 0;
 
-    const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0
+    const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0;
 
     // gets all the unmatched bets and puts them in the ladder
     const selectionUnmatched = {};
-    Object.values(unmatchedBets).map(item => {
+    Object.values(unmatchedBets).forEach(item => {
         if (parseFloat(item.selectionId) === parseFloat(id)) {
             selectionUnmatched[item.price] = item;
         }
