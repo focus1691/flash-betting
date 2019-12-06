@@ -23,7 +23,7 @@ const GetClosedMarketStats = () => {
             const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE")
             setCompletedOrders(completedOrders)
 
-            const marketInfo = await fetch(`/api/get-market-info?marketId=${marketId}`).then(res => res.json()).then(res => res.response.result[0])
+            const marketInfo = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then(res => res.json())
             setMarketInfo(marketInfo)
 
             // take the runner status from the marketBook and add it to the marketInfo runners
@@ -33,9 +33,12 @@ const GetClosedMarketStats = () => {
                     runnersStatusObject[item.selectionId] = item.status;
                 })
 
-                const runnersWithStatusArray = marketInfo.runners.map(item => {
+                const marketInfoRunners = Object.keys(marketInfo).map(key => ({selectionId: key, runnerName: marketInfo[key]}))
+
+                const runnersWithStatusArray = marketInfoRunners.map(item => {
                     return Object.assign({}, item, {status: runnersStatusObject[item.selectionId]})
                 })
+                
                 setRunners(runnersWithStatusArray);
             }
             

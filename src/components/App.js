@@ -126,6 +126,23 @@ const App = props => {
               props.onUpdateRunners(runners);
               props.onReceiveMarket(data.result[0]);
               props.onSelectRunner(data.result[0].runners[0]);
+              const selectionNames = {};
+
+              Object.keys(runners).map(selectionId => {
+                selectionNames[selectionId] = runners[selectionId].runnerName;
+              })
+
+              fetch('/api/save-runner-names', {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify({
+                  marketId: marketId,
+                  selectionNames: selectionNames
+                })
+              })
 
               // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
               props.socket.emit("market-subscription", {
@@ -317,6 +334,7 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     props.socket.on("mcm", async data => {
+      console.log(data)
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
 

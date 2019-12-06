@@ -69,6 +69,21 @@ app.get("/api/generate-client-token", (request, response) => {
 	});
 });
 
+// marketId: {
+//	 selectionId: name
+// }
+const runnerNames = {}
+
+app.post("/api/save-runner-names", (request, response) => {
+	runnerNames[request.body.marketId] = request.body.selectionNames
+	response.sendStatus(200)
+});
+
+app.get("/api/fetch-runner-names", (request, response) => {
+	response.json(runnerNames[request.query.marketId])
+})
+
+
 app.post("/api/checkout", function (request, result) {
 	var nonceFromTheClient = request.body.payment_method_nonce;
 	var amount = request.body.amount;
