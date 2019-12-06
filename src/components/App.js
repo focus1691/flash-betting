@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
 import * as actions from "../actions/settings";
@@ -30,9 +30,9 @@ import DraggableLiveStream from "./Draggable/LiveStream";
 import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../utils/ExchangeStreaming/MCMHelper";
 import { calcHedgedPL2 } from "../utils/TradingStategy/HedingCalculator";
 import { sortLadder, sortGreyHoundMarket } from "../utils/ladder/SortLadder";
-import crypto from 'crypto'
 
 const App = props => {
+  const [marketId, setMarketId] = useState(null);
   const [cookies] = useCookies(['sessionKey', 'username']);
 
   if (!cookies.sessionKey && !cookies.username) {
@@ -101,7 +101,7 @@ const App = props => {
           if (data.error) {
             window.location.href = window.location.origin + "/logout";
           } else {
-
+            setMarketId(marketId);
             if (data.result.length > 0) {
               const runners = {};
               for (let i = 0; i < data.result[0].runners.length; i++) {
@@ -128,9 +128,9 @@ const App = props => {
               props.onSelectRunner(data.result[0].runners[0]);
               const selectionNames = {};
 
-              Object.keys(runners).map(selectionId => {
+              Object.keys(runners).forEach(selectionId => {
                 selectionNames[selectionId] = runners[selectionId].runnerName;
-              })
+              });
 
               fetch('/api/save-runner-names', {
                 headers: {
@@ -142,7 +142,7 @@ const App = props => {
                   marketId: marketId,
                   selectionNames: selectionNames
                 })
-              })
+              });
 
               // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
               props.socket.emit("market-subscription", {
@@ -165,40 +165,39 @@ const App = props => {
                   const loadOrders = async orders => {
                     const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
                     const currentOrdersObject = {};
-                    currentOrders.map(item => {
+                    currentOrders.forEach(item => {
                       currentOrdersObject[item.betId] = item;
                       if (item.status === "EXECUTION_COMPLETE") {
                         currentOrdersObject[item.betId].price = item.averagePriceMatched;
                       } else {
                         currentOrdersObject[item.betId].price = item.priceSize.price;
                       }
-
-                    })
+                    });
 
                     orders.map(async order => {
 
                       if (order.marketId === marketId) {
                         switch (order.strategy) {
                           case "Back":
-                            loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order)
+                            loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order);
                             break;
                           case "Lay":
-                            loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order)
+                            loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order);
                             break;
                           case "Stop Entry":
                             loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
                             break;
                           case "Tick Offset":
-                            loadedTickOffsetOrders[order.rfs] = order
+                            loadedTickOffsetOrders[order.rfs] = order;
                             break;
                           case "Fill Or Kill":
                             // this should only keep the fill or kill if the order isn't completed already
                             if (currentOrdersObject[order.betId] === "EXECUTABLE") {
-                              loadedFillOrKillOrders[order.betId] = order
+                              loadedFillOrKillOrders[order.betId] = order;
                             }
                             break;
                           case "Stop Loss":
-                            loadedStopLossOrders[order.selectionId] = order
+                            loadedStopLossOrders[order.selectionId] = order;
                             break;
                           default:
                             break;
@@ -225,19 +224,19 @@ const App = props => {
                       } else if (order.status === "EXECUTABLE") {
                         loadedUnmatchedOrders[order.betId] = orderData;
                       }
-                    })
+                    });
                   }
                   await loadOrders(orders);
                 }).then(() => {
                   props.onChangeOrders({
                     matched: loadedMatchedOrders,
                     unmatched: loadedUnmatchedOrders
-                  })
-                  props.onChangeBackList(loadedBackOrders)
-                  props.onChangeLayList(loadedLayOrders)
-                  props.onChangeStopEntryList(loadedStopEntryOrders)
-                  props.onChangeTickOffsetList(loadedTickOffsetOrders)
-                  props.onChangeFillOrKillList(loadedFillOrKillOrders)
+                  });
+                  props.onChangeBackList(loadedBackOrders);
+                  props.onChangeLayList(loadedLayOrders);
+                  props.onChangeStopEntryList(loadedStopEntryOrders);
+                  props.onChangeTickOffsetList(loadedTickOffsetOrders);
+                  props.onChangeFillOrKillList(loadedFillOrKillOrders);
                   props.onChangeStopLossList(loadedStopLossOrders);
                 })
 
@@ -247,14 +246,13 @@ const App = props => {
     }
   }
 
-  const loadData = async () => {
-    await loadSession();
-    await loadSettings();
-    await loadMarket();
-    props.setLoading(false);
-  };
-
   useEffect(() => {
+    const loadData = async () => {
+      await loadSession();
+      await loadSettings();
+      await loadMarket();
+      props.setLoading(false);
+    };
 
     loadData();
   }, []);
@@ -269,8 +267,7 @@ const App = props => {
 
   useEffect(() => {
     setInterval(async () => {
-      const marketId = getQueryVariable("marketId");
-      if (marketId !== false) { 
+      if (marketId) {
         const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
         const currentOrdersObject = {};
         currentOrders.forEach(item => {
@@ -335,7 +332,6 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
      */
     props.socket.on("mcm", async data => {
-      console.log(data)
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
 
@@ -373,9 +369,9 @@ const App = props => {
       }
       
       if (data.rc) {
-        let adjustedStopLossList = Object.assign({}, props.stopLossList)
-        const adjustedBackList = {}
-        const adjustedLayList = {}
+        let adjustedStopLossList = Object.assign({}, props.stopLossList);
+        const adjustedBackList = {};
+        const adjustedLayList = {};
         let newStopEntryList = Object.assign({}, props.stopEntryList);
 
         let stopLossOrdersToRemove = [];
@@ -406,7 +402,7 @@ const App = props => {
             if (props.stopLossList[rc.id] !== undefined) {
               // if it's trailing and the highest LTP went up, then we add a tickoffset
               const maxLTP = props.ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-              let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, rc.ltp, maxLTP))
+              let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, rc.ltp, maxLTP));
 
               // if hedged, get size (price + hedged profit/loss)
               if (adjustedStopLoss.hedged) {
@@ -414,25 +410,24 @@ const App = props => {
 
                 const combinedSize =
                   newMatchedBets.reduce((a, b) => {
-                    return a + b.size
-                  }, 0)
+                    return a + b.size;
+                  }, 0);
 
                 const profitArray = newMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(adjustedStopLoss.price)));
                 const profit = (-1 * profitArray.reduce((a, b) => a + b, 0));
-                adjustedStopLoss.size = combinedSize + profit
+                adjustedStopLoss.size = combinedSize + profit;
               }
 
               // if it doesn't have a reference or the order has been matched (STOP LOSS)
-              const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets)
+              const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets);
               adjustedStopLossList = stopLossMatched.adjustedStopLossList;
               stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
             }
 
-          } else {
+          }
+          else if (rc.id in nonRunners === false) {
             // Runner found so we create the new object with the raw data
-            if (rc.id in nonRunners === false) {
-              ladders[rc.id] = AddRunner(rc);
-            }
+            ladders[rc.id] = AddRunner(rc);
           }
         }));
 

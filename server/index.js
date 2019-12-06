@@ -594,12 +594,10 @@ app.post("/api/replace-orders", (request, response) => {
 });
 
 app.get("/api/listCurrentOrders", (request, response) => {
-	console.log(request.query);
 	betfair.listCurrentOrders({
 		marketIds: [request.query.marketId]
 	},
 		(err, res) => {
-			console.log(res.result);
 			response.json(res.result)
 		})
 });
