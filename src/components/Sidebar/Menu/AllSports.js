@@ -84,9 +84,10 @@ const AllSports = props => {
       ROOT: 0,
       EVENT_TYPE: 1,
       GROUP: 2,
-      EVENT: 3,
-      RACE: 4,
-      MARKET: 5
+      GROUP_1: 3,
+      EVENT: 4,
+      RACE: 5,
+      MARKET: 6
     }
 
     // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
@@ -102,6 +103,8 @@ const AllSports = props => {
     props.onUpdateSubmenuCurrent(newSubmenuType);
     props.onUpdateSubmenuList(newSubmenuList);
   }
+
+  console.log(submenuList)
 
   return (
     <div>

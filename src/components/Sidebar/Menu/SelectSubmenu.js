@@ -15,7 +15,8 @@ export default ({data, setSubmenu, submenuList, winMarketsOnly}) => {
                     onClick={() => { 
                         if (sport.type === "MARKET") 
                             window.open(`/dashboard?marketId=${sport.id}`)
-                        else setSubmenu(sport.children, sport.name, sport.type, submenuList, sport.id)
+                        // submenuList[sport.type] ? sport.type + "_1" : sport.type -> checks if there is already one with the same type, if yes, it separates it from the other group
+                        else setSubmenu(sport.children, sport.name, submenuList[sport.type] ? sport.type + "_1" : sport.type, submenuList, sport.id)
                     }}
                 >
                     
