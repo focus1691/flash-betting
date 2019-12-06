@@ -48,14 +48,14 @@ export default ({isReferenceSet, order, containerRef, isMoving, isLadderDown, se
 };
 
 const returnToOrderedPos = (containerRef, order, setIsMoving) => {
-    containerRef.current.style.left = `${order * containerRef.current.clientWidth}px`
+    containerRef.current.style.left = `${order * containerRef.current.clientWidth}px`;
     containerRef.current.style['z-index'] = 0;
     setIsMoving(false);
 }
 
 const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, order, runners, ladderOrderList, swapLadders, setIsMoving) => {
-    if (!isReferenceSet) return
-    containerRef.current.style.left = `${parseInt(containerRef.current.style.left, 10) + offsetPos}px`
+    if (!isReferenceSet) return;
+    containerRef.current.style.left = `${parseInt(containerRef.current.style.left, 10) + offsetPos}px`;
     containerRef.current.style['z-index'] = 9999;
     
 
@@ -68,31 +68,31 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
     }
 
     // find our relative cursor positionn 
-    const relativeCursorPosition = containerRef.current.offsetParent.scrollLeft + cursorPosition - containerRef.current.offsetParent.offsetLeft
+    const relativeCursorPosition = containerRef.current.offsetParent.scrollLeft + cursorPosition - containerRef.current.offsetParent.offsetLeft;
 
     for (const key in otherNodes) {
         // find the mid way point of the other nodes
-        const midPoint = parseInt(otherNodes[key].style.left, 10) + otherNodes[key].clientWidth / 2
+        const midPoint = parseInt(otherNodes[key].style.left, 10) + otherNodes[key].clientWidth / 2;
 
         // move right or left
         if ((relativeCursorPosition > midPoint && order < key) || (relativeCursorPosition < midPoint && order > key)) { 
 
             // we have to find the actual id if one of the ladders are hidden
-            const thisLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == containerRef.current.children[0].children[0].childNodes[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()) // ladder header -> contender name -> name 
-            const thisLadderId = Object.keys(runners)[thisLadderIndex]
+            const thisLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == containerRef.current.children[0].children[0].childNodes[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()); // ladder header -> contender name -> name 
+            const thisLadderId = Object.keys(runners)[thisLadderIndex];
             
-            const thisLadderOrder = Object.values(ladderOrderList).findIndex(item => item == thisLadderId)
+            const thisLadderOrder = Object.values(ladderOrderList).findIndex(item => item == thisLadderId);
             if (thisLadderOrder === -1) break;
 
-            const otherLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == otherNodes[key].children[0].children[0].childNodes[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()) // ladder header -> contender name -> name 
-            const otherLadderId = Object.keys(runners)[otherLadderIndex]
+            const otherLadderIndex = Object.values(runners).findIndex(item => item.runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim() == otherNodes[key].children[0].children[0].childNodes[0].childNodes[1].data.replace(/[0-9.]*[.,\s]/g, ' ').trim()); // ladder header -> contender name -> name 
+            const otherLadderId = Object.keys(runners)[otherLadderIndex];
             
-            const otherLadderOrder = Object.values(ladderOrderList).findIndex(item => item == otherLadderId)
+            const otherLadderOrder = Object.values(ladderOrderList).findIndex(item => item == otherLadderId);
             if (otherLadderOrder === -1) break;
 
             swapLadders(thisLadderOrder, otherLadderOrder);
 
-            otherNodes[key].style.left = `${order * containerRef.current.clientWidth}px`
+            otherNodes[key].style.left = `${order * containerRef.current.clientWidth}px`;
             
             break;   
         }

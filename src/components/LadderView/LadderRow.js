@@ -8,17 +8,46 @@ export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpL
     const key = Object.keys(ladder)[index]
     
     const indexInLTPList = ltpList.findIndex(item => item.tick == key);
-    const volumeVal = volume[formatPrice(ladder[key].odds)] ? volume[formatPrice(ladder[key].odds)] : 0
+    const volumeVal = volume[formatPrice(ladder[key].odds)] ? volume[formatPrice(ladder[key].odds)] : 0;
 
-    const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK"
-    const leftSideProfit = ladderSideLeft === "LAY" ? 'layProfit' : 'backProfit'
-    const rightSide = ladderSideLeft === "LAY" ? "BACK" : "LAY"
-    const rightSideProfit = ladderSideLeft === "LAY" ? 'backProfit' : 'layProfit'
+    const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK";
+    const leftSideProfit = ladderSideLeft === "LAY" ? 'layProfit' : 'backProfit';
+    const rightSide = ladderSideLeft === "LAY" ? "BACK" : "LAY";
+    const rightSideProfit = ladderSideLeft === "LAY" ? 'backProfit' : 'layProfit';
 
     const unmatchedBetOnRow = selectionUnmatched[parseFloat(key)];
 
+    const handleContextMenu = () => e => {
+      e.preventDefault();
+      return false;
+    };
+
+    const handleHedgeCellClick = clickSide => e => {
+      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+
+      // CANCEL ORDER IF CLICK UNMATCHED BET
+      if (unmatchedBetOnRow) {
+        cancelOrder({
+          marketId: marketId,
+          betId: unmatchedBetOnRow.betId,
+          sizeReduction: null,
+          matchedBets: matchedBets,
+          unmatchedBets: unmatchedBets
+        })
+      }
+      else if (!unmatchedBetOnRow && hedgeSize > 0) {
+        placeOrder({
+          side: clickSide === 0 ? leftSide : rightSide,
+          price: formatPrice(ladder[key].odds),
+          selectionId: selectionId,
+          customerStrategyRef: referenceStrategyId,
+          size: hedgeSize + parseFloat(ladder[key][clickSide === 0 ? leftSideProfit : rightSideProfit])
+        });
+      }
+    };
+
     return (
-        <div key={ladder[key].odds}  onContextMenu = { (e) => { e.preventDefault(); return false } } class = 'tr' style = {style} >
+        <div key={ladder[key].odds}  onContextMenu = {handleContextMenu()} class = 'tr' style = {style} >
           
           <div className={"candle-stick-col td"} colSpan={3}>
             {
@@ -36,29 +65,7 @@ export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpL
           <div 
             className = 'td'
             style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? 'black' : `${ladder[key][leftSideProfit] >= 0 ? "green" : 'red'}`}}
-            onClick = {() => {
-              const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
-
-              // CANCEL ORDER IF CLICK UNMATCHED BET
-              if (unmatchedBetOnRow) {
-                cancelOrder({
-                  marketId: marketId,
-                  betId: unmatchedBetOnRow.betId,
-                  sizeReduction: null,
-                  matchedBets: matchedBets,
-                  unmatchedBets: unmatchedBets
-                })
-              }
-
-              if (!unmatchedBetOnRow && hedgeSize > 0)
-              placeOrder({
-                side: leftSide,
-                price: formatPrice(ladder[key].odds),
-                selectionId: selectionId,
-                customerStrategyRef: referenceStrategyId,
-                size: hedgeSize + parseFloat(ladder[key][leftSideProfit])
-              })
-            }}>
+            onClick = {handleHedgeCellClick(0)}>
               {unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? unmatchedBetOnRow.size : ladder[key][leftSideProfit]}
             </div>
           <LadderOrderCell 
@@ -99,28 +106,7 @@ export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpL
           <div 
             className = 'td'
             style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === rightSide ? 'black' : `${ladder[key][rightSideProfit] >= 0 ? "green" : 'red'}`}}
-            onClick = {() => {
-              const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
-
-              if (unmatchedBetOnRow) {
-                cancelOrder({
-                  marketId: marketId,
-                  betId: unmatchedBetOnRow.betId,
-                  sizeReduction: null,
-                  matchedBets: matchedBets,
-                  unmatchedBets: unmatchedBets
-                })
-              }
-
-              if (!unmatchedBetOnRow && hedgeSize > 0)
-              placeOrder({
-                side: rightSide,
-                price: formatPrice(ladder[key].odds),
-                selectionId: selectionId,
-                customerStrategyRef: referenceStrategyId,
-                size: hedgeSize + parseFloat(ladder[key][rightSideProfit])
-              })
-            }}
+            onClick = {handleHedgeCellClick(1)}
           >{unmatchedBetOnRow && unmatchedBetOnRow.side === rightSide ? unmatchedBetOnRow.size : ladder[key][rightSideProfit]}</div>
         </div>
     )

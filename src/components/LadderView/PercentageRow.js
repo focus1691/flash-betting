@@ -13,9 +13,9 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
                          bets, stopLossList, tickOffsetList, stopEntryList, layList, backList, fillOrKillList,
                          onChangeBackList, onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList}) => {
   
-  const leftSide = ladderSideLeft.toLowerCase()
+  const leftSide = ladderSideLeft.toLowerCase();
 
-  const allUnmatchedSpecialBets = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, {})[selectionId]
+  const allUnmatchedSpecialBets = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, {})[selectionId];
 
   const cancelSpecialOrders = orders => {
 
@@ -26,21 +26,21 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
     const newTickOffsetList = Object.assign({}, tickOffsetList);
     const newStopLossList = Object.assign({}, stopLossList);
     const newFillOrKill = Object.assign({}, fillOrKillList)
-    Object.values(orders).map(rfs => {
-      rfs.map(order => {
+    Object.values(orders).forEach(rfs => {
+      rfs.forEach(order => {
         // figure out which strategy it's using and make a new array without it
         switch (order.strategy) {
           case "Back":
-            newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs);
             break;
           case "Lay":
-            newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs);
             break;
           case "Stop Entry":
-            newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs)
+            newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs);
             break;
           case "Tick Offset":
-            delete newTickOffsetList[order.rfs]
+            delete newTickOffsetList[order.rfs];
             break;
           case "Stop Loss":
             delete newStopLossList[order.selectionId];
@@ -77,13 +77,13 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
     onChangeBackList(newBackList);
     onChangeLayList(newLayList);
     onChangeStopEntryList(newStopEntryList);
-    onChangeTickOffsetList(newTickOffsetList)
-    onChangeStopLossList(newStopLossList)
-    onChangeFillOrKillList(newFillOrKill)
+    onChangeTickOffsetList(newTickOffsetList);
+    onChangeStopLossList(newStopLossList);
+    onChangeFillOrKillList(newFillOrKill);
   };
   
 
-  const cancelAllOrdersOnSide = async (marketId, selectionId, side, unmatchedBets, matchedBets, specialBets, betCanceler) => {
+  const cancelAllOrdersOnSide = async (marketId, selectionId, side, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
     
     betCanceler(specialBets)
 
@@ -91,7 +91,7 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
 
     if (currentOrders) {
       // filter all the ones out that arent in the same selection or arent unmatched
-      const openSelectedRunnerOrders = currentOrders.filter(order => order.selectionId === parseInt(selectionId) && (order.status === "EXECUTABLE" || order.status === "PENDING") && order.side === side)
+      const openSelectedRunnerOrders = currentOrders.filter(order => order.selectionId === parseInt(selectionId) && (order.status === "EXECUTABLE" || order.status === "PENDING") && order.side === side);
 
       // this is basically calling 1 bet after another and returning the unmatched bets it gets from it
       const cancelBets = await openSelectedRunnerOrders.reduce(async (previousPromise, nextOrder) => {
@@ -120,16 +120,14 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
       <div 
         className = {"th"} 
         style = {{cursor: 'pointer'}} 
-        onClick={() => cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'LAY' : 'BACK', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
+        onClick={cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'LAY' : 'BACK', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
       />
       <div className = {"th"} style={{backgroundColor: leftSide == 'lay' ? "#FCC9D3" : "#BCE4FC"}}>
         {`${percent[leftSide]}%`}
       </div>
       <div className = {"th"} 
         style={ltpStyle}
-          onClick = {() => {
-            setLadderSideLeft(ladderSideLeft === "LAY" ? "BACK" : "LAY")
-          }}
+          onClick = {setLadderSideLeft(ladderSideLeft === "LAY" ? "BACK" : "LAY")}
           >
             {ltp[0]}
           </div>
@@ -138,7 +136,7 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
       <div 
         className = {"th"} 
         style = {{cursor: 'pointer'}} 
-        onClick={() => cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'BACK' : 'LAY', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
+        onClick={cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'BACK' : 'LAY', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
       />
     </div>
   )
@@ -170,4 +168,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow)
+export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow);

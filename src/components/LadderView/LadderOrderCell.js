@@ -38,7 +38,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
               hedged: stopLossHedged
             })
           } else if (tickOffsetSelected) {
-            const newTickOffset = Object.assign({}, tickOffsetList)
+            const newTickOffset = Object.assign({}, tickOffsetList);
             const addedOrder = {
               strategy: "Tick Offset",
               marketId: marketId, 
@@ -82,7 +82,6 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
             })
             onUpdateFillOrKillList(newFillOrKillList);
           }
-
         },
       });
     };
@@ -108,7 +107,7 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
         custom: true,
         rfs: undefined,
         assignedIsOrderMatched: false,
-      })
+      });
 
       return false;
     };

@@ -135,7 +135,7 @@ const mapDispatchToProps = dispatch => {
     onCancelOrder: order => dispatch(cancelOrder(order)),
     onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
-    onChangeLadderSideLeft: side => dispatch(changeLadderSideLeft(side))
+    onChangeLadderSideLeft: side => e => dispatch(changeLadderSideLeft(side))
   };
 };
 

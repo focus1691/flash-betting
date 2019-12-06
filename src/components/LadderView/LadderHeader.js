@@ -12,6 +12,11 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
     setLadderDown(true);
   };
 
+  const handleNoImageError = () => e => {
+    e.target.onerror = null;
+    e.target.src = iconForEvent(parseInt(sportId));
+  };
+
   return (
     <div className={"ladder-header"}>
       <div>
@@ -28,10 +33,7 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
               }
               alt={"Colours"}
               onClick={runnerClick}
-              onError={e => {
-                e.target.onerror = null;
-                e.target.src = iconForEvent(parseInt(sportId));
-              }}
+              onError={handleNoImageError()}
             />
           }
           {`${
@@ -53,7 +55,6 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
               visibility: oddsHovered.odds > 0 && ordersOnMarket ? 'visible' : 'hidden',
               color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'
             }}>
-            {/* calculates what to add or subtract based on odds hovered */}
             {"£" + Math.abs(oddsHoveredCalc)}
           </span>
         </div>
