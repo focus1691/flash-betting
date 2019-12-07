@@ -10,26 +10,29 @@ const PriceRow = ({ selectionId, ltp, tv, buttonType, stake, lay, stakeVal, onSe
   const castedPrices = Array.isArray(buttons) ? buttons : Object.values(buttons);
 
   const handleStakeChanged = price => e => {
-    onSetStake({selectionId, price: parseFloat(price)});
+    onSetStake({ selectionId, price: parseFloat(price) });
   };
 
   useEffect(() => {
     if (stakeVal[selectionId] === undefined) {
-      onSetStake({selectionId, price: 2});
+      onSetStake({ selectionId, price: 2 });
     }
   }, []);
-  
+
   return (
-    <div className="price-row">
-      <div colspan="8">
-        {castedPrices.map(price => (
-          <th
-            style={{background: getOrderBtnBG(buttonType, parseFloat(price), stakeVal[selectionId], -20)}}
-            onClick={handleStakeChanged(price)}>{price}
-          </th>
-        ))}
-      </div>
-    </div>
+    <table className="price-row">
+      <tbody>
+        <tr colSpan="8">
+          {castedPrices.map(price => (
+            <th
+              key={`${selectionId}${price}`}
+              style={{ background: getOrderBtnBG(buttonType, parseFloat(price), stakeVal[selectionId], -20) }}
+              onClick={handleStakeChanged(price)}>{price}
+            </th>
+          ))}
+        </tr>
+      </tbody>
+    </table>
   );
 };
 

@@ -47,7 +47,7 @@ export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpL
     };
 
     return (
-        <div key={ladder[key].odds}  onContextMenu = {handleContextMenu()} class = 'tr' style = {style} >
+        <div key={ladder[key].odds}  onContextMenu = {handleContextMenu()} className={"tr"} style = {style} >
           
           <div className={"candle-stick-col td"} colSpan={3}>
             {
