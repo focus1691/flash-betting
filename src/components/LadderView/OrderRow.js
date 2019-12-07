@@ -156,7 +156,7 @@ const OrderRow = props => {
 
   };
 
-  const cancelAllOrdersOnSelection = async (marketId, selectionId, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
+  const cancelAllOrdersOnSelection = (marketId, selectionId, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
 
     betCanceler(specialBets)
 

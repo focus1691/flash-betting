@@ -83,7 +83,7 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
   };
   
 
-  const cancelAllOrdersOnSide = async (marketId, selectionId, side, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
+  const cancelAllOrdersOnSide = (marketId, selectionId, side, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
     
     betCanceler(specialBets)
 
@@ -152,7 +152,7 @@ const mapStateToProps = state => {
     stopEntryList: state.stopEntry.list,
     layList: state.lay.list,
     backList: state.back.list,
-    fillOrKillList: state.fillOrKill.list,
+    fillOrKillList: state.fillOrKill.list
   };
 };
 
@@ -164,7 +164,7 @@ const mapDispatchToProps = dispatch => {
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
-    onUpdateBets: bets => dispatch(updateOrders(bets)), // this is for the bets
+    onUpdateBets: bets => dispatch(updateOrders(bets))
   }
 }
 
