@@ -1,5 +1,3 @@
-
-
 const findIndex = (ladders, selectionId) => {
    return ladders.findIndex(ladder => ladder.id === selectionId);
 };
