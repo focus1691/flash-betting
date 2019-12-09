@@ -30,7 +30,6 @@ const Grid = props => {
 	const oneClickRef = createRef();
 
 	const renderData = () => {
-		console.log('Market open: ' + props.marketOpen);
 		return (
 			<>
 			{props.marketOpen
@@ -158,7 +157,6 @@ const Grid = props => {
 	};
 
 	const renderTableData = () => {
-		console.log('table table');
 		return (
 			<React.Fragment>
 				{renderRunners()}

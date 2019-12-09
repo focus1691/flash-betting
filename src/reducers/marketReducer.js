@@ -8,7 +8,7 @@ const initialState = {
   eventType: null,
   currentMarket: {},
   runnerSelection: 0,
-  nonRunners: {},
+  nonRunners: [],
   runners: {},
   ladder: [],
   sortedLadder: [],
@@ -36,7 +36,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, eventType: action.payload };
     case "LOAD_LADDER":
       return update(state, { ladder: { $push: [action.payload] } } );
-      // return { ...state, marketOpen: true, ladder: action.payload };
+    case "REMOVE_LADDER":
+      return update(state, { ladder: { $splice: [[action.payload, 1]]}});
+    case "ADD_NON_RUNNER":
+    return update(state, { nonRunners: { $splice: [[action.payload, 1]]}});
     case "SET_SORTED_LADDER":
       return { ...state, sortedLadder: action.payload };
     case "LOAD_NON_RUNNERS":

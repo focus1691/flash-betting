@@ -336,9 +336,6 @@ const App = props => {
       let eventTypeId = props.eventType;
       let marketStatus = props.marketStatus;
 
-      var ladders = Object.assign({}, props.ladders);
-      var nonRunners = Object.assign({}, props.nonRunners);
-
       // Update the market status
       if (data.marketDefinition) {
         marketStatus = data.marketDefinition.status;
@@ -352,17 +349,18 @@ const App = props => {
           props.setInPlayTime(new Date());
         }
 
-        // data.marketDefinition.runners.forEach(runner => {
-        //   if (runner.status === "REMOVED") {
-        //     if (runner.id in ladders) {
-        //       delete ladders[runner.id];
-        //     }
-        //     if (runner.id in nonRunners === false) {
-        //       nonRunners[runner.id] = ladders[runner.id];
-        //     }
-        //   }
-        // });
-        // props.onReceiveNonRunners(nonRunners);
+        data.marketDefinition.runners.forEach(runner => {
+          if (runner.status === "REMOVED") {
+            let indexToRemove = props.runners.findIndex((runners, selId) => runners[selId]);
+            if (indexToRemove !== -1) {
+              props.onRunnerRemoved(indexToRemove);
+            }
+            let notRunnerIndex = props.nonRunners.findIndex((nonRunners, selId) => nonRunners[selId]);
+            if (notRunnerIndex === -1) {
+              props.onNewNonRunner(runner);
+            }
+          }
+        });
       }
       
       if (data.rc) {
@@ -375,9 +373,10 @@ const App = props => {
 
         await Promise.all(data.rc.map(async rc => {
 
-          if (rc.id in props.ladders) {
+          let index = props.ladders.findIndex(ladder => ladder.id === rc.id);
+
+          if (index !== -1) {
             // Runner found so we update our object with the raw data
-            // ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
 
             // Back and Lay
             if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
@@ -422,9 +421,8 @@ const App = props => {
             }
 
           }
-          else if (rc.id in nonRunners === false) {
+          else if (props.nonRunners.findIndex(nonRunners => nonRunners.selectionId === rc.id) === -1) {
             // Runner found so we create the new object with the raw data
-            // ladders[rc.id] = AddRunner(rc);
             props.onReceiverLadders(AddRunner(rc));
           }
         }));
@@ -455,11 +453,11 @@ const App = props => {
         }
 
         // If it's not a Greyhound Race (4339), we sort by the LTP
-        if (eventTypeId !== "4339") {
-          var sortedLadderIndices = sortLadder(ladders);
-          props.onSortLadder(sortedLadderIndices);
-          props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-        }
+          if (eventTypeId !== "4339") {
+            var sortedLadderIndices = sortLadder(props.ladders);
+            props.onSortLadder(sortedLadderIndices);
+            props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+          }
         // props.onReceiverLadders(ladders);
       }
     });
@@ -619,6 +617,8 @@ const mapDispatchToProps = dispatch => {
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
     onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
+    onRunnerRemoved: id => dispatch(marketActions.removeLadder(id)),
+    onNewNonRunner: nonRunner => dispatch(marketActions(nonRunner)),
     onSortLadder: sortedLadder => dispatch(marketActions.setSortedLadder(sortedLadder)),
     onReceiveNonRunners: nonRunners => dispatch(marketActions.loadNonRunners(nonRunners)),
     onChangeExcludedLadders: excludedLadders => dispatch(marketActions.updateExcludedLadders(excludedLadders)),
