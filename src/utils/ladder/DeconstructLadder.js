@@ -6,6 +6,7 @@
  */
 const DeconstructLadder = ladder => {
   const data = {
+    key: ladder.id || null,
     ltp: ladder.ltp ? ladder.ltp : [null, null],
     tv: ladder.tv ? ladder.tv : null,
     color: "#FFFFFF"

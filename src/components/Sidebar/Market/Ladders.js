@@ -10,6 +10,7 @@ const Ladder = props => {
     }
 
     const data = {
+      key: ladder.id || null,
       ltp: null,
       color: "#FFFFFF"
     };
@@ -36,23 +37,23 @@ const Ladder = props => {
   };
 
   const renderRunners = () => {
-    return props.sortedLadder.map(selectionId => {
-      const { atb, atl, ltp, ltpStyle } = deconstructLadder(props.ladder[selectionId]);
+    return props.ladder.map(ladder => {
+      const { key, atb, atl, ltp, ltpStyle } = deconstructLadder(ladder);
       return (
         <tr>
-          <td>{props.runners[selectionId].runnerName}</td>
+          <td>{props.runners[key].runnerName}</td>
           <td>{atl}</td>
           <td style={ltpStyle}>{ltp}</td>
           <td>{atb}</td>
           <td>
             <input
               type="checkbox"
-              checked={props.excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
+              checked={props.excludedLadders.indexOf(key) === -1} // false automatically omits attribute
               onClick={() => {
                 if (Object.keys(props.ladderOrder).length > 0) {
                   // we send it to the end when we select a new ladder
 
-                  const newLadderOrder = Object.values(props.ladderOrder).filter(item => item !== selectionId).concat(selectionId)
+                  const newLadderOrder = Object.values(props.ladderOrder).filter(item => item !== key).concat(key)
                   // convert it back to an object
                   const newLadderOrderObject = {};
                   newLadderOrder.map((item, index) => {
@@ -61,10 +62,10 @@ const Ladder = props => {
                   props.onChangeLadderOrder(newLadderOrderObject)
                 }
 
-                if (props.excludedLadders.indexOf(selectionId) === -1) {
-                  props.onChangeExcluded(props.excludedLadders.concat(selectionId))
+                if (props.excludedLadders.indexOf(key) === -1) {
+                  props.onChangeExcluded(props.excludedLadders.concat(key))
                 } else {
-                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== selectionId))
+                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== key))
                 }
               }} />
           </td>

@@ -352,17 +352,17 @@ const App = props => {
           props.setInPlayTime(new Date());
         }
 
-        data.marketDefinition.runners.forEach(runner => {
-          if (runner.status === "REMOVED") {
-            if (runner.id in ladders) {
-              delete ladders[runner.id];
-            }
-            if (runner.id in nonRunners === false) {
-              nonRunners[runner.id] = ladders[runner.id];
-            }
-          }
-        });
-        props.onReceiveNonRunners(nonRunners);
+        // data.marketDefinition.runners.forEach(runner => {
+        //   if (runner.status === "REMOVED") {
+        //     if (runner.id in ladders) {
+        //       delete ladders[runner.id];
+        //     }
+        //     if (runner.id in nonRunners === false) {
+        //       nonRunners[runner.id] = ladders[runner.id];
+        //     }
+        //   }
+        // });
+        // props.onReceiveNonRunners(nonRunners);
       }
       
       if (data.rc) {
@@ -377,7 +377,7 @@ const App = props => {
 
           if (rc.id in props.ladders) {
             // Runner found so we update our object with the raw data
-            ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
+            // ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
 
             // Back and Lay
             if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
@@ -424,7 +424,8 @@ const App = props => {
           }
           else if (rc.id in nonRunners === false) {
             // Runner found so we create the new object with the raw data
-            ladders[rc.id] = AddRunner(rc);
+            // ladders[rc.id] = AddRunner(rc);
+            props.onReceiverLadders(AddRunner(rc));
           }
         }));
 
@@ -459,7 +460,7 @@ const App = props => {
           props.onSortLadder(sortedLadderIndices);
           props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
         }
-        props.onReceiverLadders(ladders);
+        // props.onReceiverLadders(ladders);
       }
     });
 

@@ -30,6 +30,7 @@ const Grid = props => {
 	const oneClickRef = createRef();
 
 	const renderData = () => {
+		console.log('Market open: ' + props.marketOpen);
 		return (
 			<>
 			{props.marketOpen
@@ -157,6 +158,7 @@ const Grid = props => {
 	};
 
 	const renderTableData = () => {
+		console.log('table table');
 		return (
 			<React.Fragment>
 				{renderRunners()}
@@ -171,11 +173,11 @@ const Grid = props => {
 	};
 
 	const renderRunners = () => {
-		return props.sortedLadder.map(key => {
-			const { atb, atl, batb, batl, ltp, tv, ltpStyle } = DeconstructLadder(
-				props.ladder[key]
-			);
-			const { name, number, logo, order } = DeconstructRunner(props.runners[key], props.market.eventType.id);
+		return props.ladder.map(ladder => {
+			// const { key, atb, atl, batb, batl, ltp, tv, ltpStyle } = DeconstructLadder(
+			// 	props.ladder[id]
+			// );
+			const { name, number, logo, order } = DeconstructRunner(props.runners[ladder.id], props.market.eventType.id);
 
 			const orderProps =
 				order.stakeLiability === 0
@@ -194,7 +196,7 @@ const Grid = props => {
 			orderProps.bg = order.backLay === 0 ? "#DBEFFF" : "#FEE9EE";
 
 
-			const profitArray = Object.values(props.bets.matched).filter(bet => bet.selectionId == props.runners[key].selectionId).map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
+			const profitArray = Object.values(props.bets.matched).filter(bet => bet.selectionId == props.runners[ladder.id].selectionId).map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ladder.ltp[0])));
 			const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
 			return (
@@ -203,12 +205,12 @@ const Grid = props => {
 						<GridDetailCell
 							sportId={props.market.eventType.id}
 							market={props.market}
-							runner={props.runners[key]}
+							runner={props.runners[ladder.id]}
 							name={name}
 							number={number}
 							logo={logo}
-							ltp={ltp}
-							tv={tv}
+							ltp={ladder.ltp}
+							tv={ladder.tv}
 							bets={props.bets}
 							PL={
 								marketHasBets(props.market.marketId, props.bets) ?
@@ -216,28 +218,28 @@ const Grid = props => {
 										val: formatCurrency(
 											props.localeCode,
 											props.currencyCode,
-											getPLForRunner(props.market.marketId, parseInt(key), props.bets)
+											getPLForRunner(props.market.marketId, parseInt(ladder.id), props.bets)
 										),
-										color: colorForBack(order.backLay, getPLForRunner(props.market.marketId, parseInt(key), props.bets))
+										color: colorForBack(order.backLay, getPLForRunner(props.market.marketId, parseInt(ladder.id), props.bets))
 									}
 									:
-									order.visible && rowHovered === key && activeOrder
+									order.visible && rowHovered === ladder.id && activeOrder
 										? renderProfitAndLossAndHedge(order, colorForBack(order.backLay))
-										: rowHovered && rowHovered !== key && activeOrder
+										: rowHovered && rowHovered !== ladder.id && activeOrder
 											?
 											renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
 											:
 											{ val: "", color: "" }
 							}
 							hedge={profit}
-							ltpStyle={ltpStyle}
+							ltpStyle={ladder.ltpStyle}
 						/>
-						{renderRow(atb, batb, key, 0).reverse()}
-						{renderRow(atl, batl, key, 1)}
+						{renderRow(ladder.atb, ladder.batb, ladder.key, 0).reverse()}
+						{renderRow(ladder.atl, ladder.batl, ladder.key, 1)}
 					</tr>
 
 					<GridOrderRow
-						runnerId={key}
+						runnerId={ladder.id}
 						order={order}
 						orderProps={orderProps}
 						toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
@@ -248,7 +250,7 @@ const Grid = props => {
 						onPlaceOrder={props.onPlaceOrder}
 						market={props.market}
 						bets={props.bets}
-						price={props.market.runners[key] ? props.market.runners[key].order.price : 0}
+						price={props.market.runners[ladder.id] ? props.market.runners[ladder.id].order.price : 0}
 						side={activeOrder && activeOrder.side == 0 ? "BACK" : "LAY"}
 						size={activeOrder ? activeOrder.stake : 0}
 					/>
@@ -270,12 +272,11 @@ const Grid = props => {
 
 
 	const ltpSelectionIdObject = {};
-
-	Object.keys(props.ladder).map(key => {
-		const { ltp, } = DeconstructLadder(
-			props.ladder[key]
-		);
-		ltpSelectionIdObject[key] = ltp[0]
+	props.ladder.map(ladder => {
+		// const { ltp, } = DeconstructLadder(
+		// 	props.ladder[key]
+		// );
+		ltpSelectionIdObject[ladder.id] = ladder.ltp[0]
 	});
 
 	const marketCashout = getMarketCashout(props.market.marketId, props.bets, props.ladder)
