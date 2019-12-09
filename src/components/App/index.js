@@ -16,6 +16,7 @@ import Title from "./Title";
 import getQueryVariable from "../../utils/Market/GetQueryVariable";
 import { AddRunner } from "../../utils/ladder/AddRunner";
 import { UpdateRunner } from "../../utils/ladder/UpdateRunner";
+import { isLadderExists } from "../../utils/ladder/SearchLadder";
 import { isPremiumActive } from "../../utils/DateCalculator";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
@@ -385,20 +386,18 @@ const App = props => {
         let stopLossOrdersToRemove = [];
 
         await Promise.all(data.rc.map(async rc => {
-
-          let index = props.ladders.findIndex(ladder => ladder.id === rc.id);
-
-          if (index !== -1) {
+          
+          if (isLadderExists(props.ladders, rc.id)) {
             // Runner found so we update our object with the raw data
 
             // Back and Lay
             if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
-              const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
+              const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets);
               if (adjustedBackOrderArray.length > 0) {
                 adjustedBackList[rc.id] = adjustedBackOrderArray;
               }
 
-              const adjustedLayOrderArray = await checkTimeListAfter(props.layList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets)
+              const adjustedLayOrderArray = await checkTimeListAfter(props.layList[rc.id], rc.id, data.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets);
               if (adjustedLayOrderArray.length > 0) {
                 adjustedLayList[rc.id] = adjustedLayOrderArray;
               }

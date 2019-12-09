@@ -7,4 +7,9 @@ const isLadderExists = (ladders, selectionId) => {
    return index !== -1;
 };
 
-export { isLadderExists, findIndex };
+const isNonRunner = (ladders, selectionId) => {
+   let index = ladders.findIndex(ladder => ladder.id === selectionId);
+   return index !== -1;
+};
+
+export { isLadderExists, findIndex, isNonRunner };
