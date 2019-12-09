@@ -15,6 +15,8 @@ import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
     ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, ladderUnmatched, stake }) => {
+    
+    const ladderWithId = ladder.find(item => item.id == id)
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -25,23 +27,23 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
 
     // every 1 second, checks if there is an LTP, if there is, we scroll to it and stop the interval
     useEffect(() => {
-        const interval = setInterval(() => {
-            const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
-            if (listRef.current !== null && ltpIndex !== -1) {
-                listRef.current.scrollToItem(ltpIndex, 'center');
-                clearInterval(interval);
-                setlistRefSet(true);
-            }
-        }, 1000)
+        // const interval = setInterval(() => {
+        //     const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
+        //     if (listRef.current !== null && ltpIndex !== -1) {
+        //         listRef.current.scrollToItem(ltpIndex, 'center');
+        //         clearInterval(interval);
+        //         setlistRefSet(true);
+        //     }
+        // }, 1000)
 
     }, [listRef]);
 
     // if the order changes, we scrollback to the ltp 
     useEffect(() => {
-        const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
-        if (listRef.current !== undefined) {
-            listRef.current.scrollToItem(ltpIndex, 'center');
-        }
+        // const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
+        // if (listRef.current !== undefined) {
+        //     listRef.current.scrollToItem(ltpIndex, 'center');
+        // }
     }, [order]);
 
     const coloredLTPList = GetColoredLTPList(ladder, id)
@@ -80,13 +82,13 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
         });
     }
     const parsedVolume = {};
-    if (ladder[id].trd) {
-        ladder[id].trd.forEach(vol => {
+    if (ladderWithId.trd) {
+        ladderWithId.trd.forEach(vol => {
             parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10;
         });
     }
 
-    const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladder, id, selectionMatchedBets, ladderUnmatched, stake, PL);
+    const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladderWithId, selectionMatchedBets, ladderUnmatched, stake, PL);
 
     // gets all the bets we made and creates a size to offset
     const hedgeSize = selectionMatchedBets !== undefined ?
@@ -133,20 +135,20 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
 
             <div className={"ladder"} onContextMenu={() => false}>
                 <PercentageRow
-                    ltp={ladder[id].ltp}
-                    ltpStyle={getLTPstyle(ladder[id].ltp, ladder[id].ltpDelta)}
+                    ltp={ladderWithId.ltp}
+                    ltpStyle={getLTPstyle(ladderWithId.ltp, ladderWithId.ltpDelta)}
                     tv={
-                        ladder[id].tv[0]
-                            ? ladder[id].tv[0].toLocaleString()
+                        ladderWithId.tv[0]
+                            ? ladderWithId.tv[0].toLocaleString()
                             : ""
                     }
-                    percent={ladder[id].percent}
+                    percent={ladderWithId.percent}
                     setLadderSideLeft={setLadderSideLeft}
                     marketId={market.marketId}
                     selectionId={id}
                     ladderSideLeft={ladderSideLeft}
                 />
-                <AutoSizer>
+                {/* <AutoSizer>
                     {({ height, width }) => (
                         <List
                             className="List"
@@ -179,7 +181,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
                             {LadderRow}
                         </List>
                     )}
-                </AutoSizer>
+                </AutoSizer> */}
 
             </div>
             <PriceRow selectionId={id} />

@@ -3,18 +3,17 @@ import { calcBackProfit } from "../Bets/BettingCalculations";
 
 /**
  * This function calculates the hedge columns in the ladder as well as what would be the hedge for the LTP
- * @param {object} ladder - The Ladder List
- * @param {number} id - The id associated with the ladder
+ * @param {object} ladderWithId - The Ladder List
  * @param {number} ladderUnmatched - The setting that is associated with what happens to the columns (hedged, pl, none)
  * @param {number} stake - The current stake value that is selected, [2, 4, 6, 8, 10] <- default 2
  * @param {number} pl - The current profit/loss of the ladder
  * @return {object} fullLadderWithProfit, ladderLTPHedge 
  */
-export default (ladder, id, selectionMatchedBets, ladderUnmatched, stake, pl) => {
+export default (ladderWithId, selectionMatchedBets, ladderUnmatched, stake, pl) => {
     const fullLadderWithProfit = {};
     let ladderLTPHedge = 0;
 
-    Object.values(ladder[id].fullLadder).map(item => {
+    Object.values(ladderWithId.fullLadder).map(item => {
         fullLadderWithProfit[item.odds] = { ...item }
 
         if (selectionMatchedBets !== undefined && ladderUnmatched === "hedged") {
@@ -25,7 +24,7 @@ export default (ladder, id, selectionMatchedBets, ladderUnmatched, stake, pl) =>
             const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
             // if the row is the ltp, we set the ladder LTP
-            if (parseFloat(item.odds).toFixed(2) == parseFloat(ladder[id].ltp[0]).toFixed(2)) {
+            if (parseFloat(item.odds).toFixed(2) == parseFloat(ladderWithId.ltp[0]).toFixed(2)) {
                 ladderLTPHedge = profit;
             }
 
