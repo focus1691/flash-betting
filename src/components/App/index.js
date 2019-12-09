@@ -458,7 +458,6 @@ const App = props => {
             props.onSortLadder(sortedLadderIndices);
             props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
           }
-        // props.onReceiverLadders(ladders);
       }
     });
 
