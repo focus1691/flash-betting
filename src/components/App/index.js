@@ -349,6 +349,7 @@ const App = props => {
           props.setInPlayTime(new Date());
         }
 
+        props.nonRunners.findIndex(nonRunners => console.log(nonRunners));
         data.marketDefinition.runners.forEach(runner => {
           if (runner.status === "REMOVED") {
             let indexToRemove = props.runners.findIndex((runners, selId) => runners[selId]);
