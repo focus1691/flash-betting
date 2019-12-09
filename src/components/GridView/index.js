@@ -172,9 +172,6 @@ const Grid = props => {
 
 	const renderRunners = () => {
 		return props.ladder.map(ladder => {
-			// const { key, atb, atl, batb, batl, ltp, tv, ltpStyle } = DeconstructLadder(
-			// 	props.ladder[id]
-			// );
 			const { name, number, logo, order } = DeconstructRunner(props.runners[ladder.id], props.market.eventType.id);
 
 			const orderProps =
@@ -232,8 +229,8 @@ const Grid = props => {
 							hedge={profit}
 							ltpStyle={ladder.ltpStyle}
 						/>
-						{renderRow(ladder.atb, ladder.batb, ladder.key, 0).reverse()}
-						{renderRow(ladder.atl, ladder.batl, ladder.key, 1)}
+						{renderRow(ladder.atb, ladder.batb, ladder.id, 0).reverse()}
+						{renderRow(ladder.atl, ladder.batl, ladder.id, 1)}
 					</tr>
 
 					<GridOrderRow
@@ -270,14 +267,9 @@ const Grid = props => {
 
 
 	const ltpSelectionIdObject = {};
-	props.ladder.map(ladder => {
-		// const { ltp, } = DeconstructLadder(
-		// 	props.ladder[key]
-		// );
-		ltpSelectionIdObject[ladder.id] = ladder.ltp[0]
-	});
+	props.ladder.forEach(ladder => { ltpSelectionIdObject[ladder.id] = ladder.ltp[0] });
 
-	const marketCashout = getMarketCashout(props.market.marketId, props.bets, props.ladder)
+	const marketCashout = getMarketCashout(props.market.marketId, props.bets, props.ladder);
 
 	return (
 		<div id="grid-container">
