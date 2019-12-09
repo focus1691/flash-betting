@@ -323,6 +323,18 @@ const App = props => {
     });
   }, [props.marketStatus]);
 
+
+  useEffect(() => {
+    const eventTypeId = props.eventType;
+    // If it's not a Greyhound Race (4339), we sort by the LTP
+    if (eventTypeId !== "4339") {
+      var sortedLadderIndices = sortLadder(props.ladders);
+      props.onSortLadder(sortedLadderIndices);
+      props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+    }
+  }, [props.ladders.length])
+
+
   useEffect(() => {
     /**
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
@@ -453,12 +465,6 @@ const App = props => {
           props.onChangeStopLossList(adjustedStopLossList);
         }
 
-        // If it's not a Greyhound Race (4339), we sort by the LTP
-          if (eventTypeId !== "4339") {
-            var sortedLadderIndices = sortLadder(props.ladders);
-            props.onSortLadder(sortedLadderIndices);
-            props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-          }
       }
     });
 
