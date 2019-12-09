@@ -7,7 +7,7 @@ import OrderRow from "./OrderRow";
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
-import { formatPrice } from "../../utils/ladder/CreateFullLadder";
+import { formatPrice, ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
 import GetColoredLTPList from "../../utils/ladder/GetColoredLTPList";
@@ -27,23 +27,23 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
 
     // every 1 second, checks if there is an LTP, if there is, we scroll to it and stop the interval
     useEffect(() => {
-        // const interval = setInterval(() => {
-        //     const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
-        //     if (listRef.current !== null && ltpIndex !== -1) {
-        //         listRef.current.scrollToItem(ltpIndex, 'center');
-        //         clearInterval(interval);
-        //         setlistRefSet(true);
-        //     }
-        // }, 1000)
+        const interval = setInterval(() => {
+            const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
+            if (listRef.current !== null && ltpIndex !== -1) {
+                listRef.current.scrollToItem(ltpIndex, 'center');
+                clearInterval(interval);
+                setlistRefSet(true);
+            }
+        }, 1000)
 
     }, [listRef]);
 
     // if the order changes, we scrollback to the ltp 
     useEffect(() => {
-        // const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
-        // if (listRef.current !== undefined) {
-        //     listRef.current.scrollToItem(ltpIndex, 'center');
-        // }
+        const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
+        if (listRef.current !== undefined) {
+            listRef.current.scrollToItem(ltpIndex, 'center');
+        }
     }, [order]);
 
     const coloredLTPList = GetColoredLTPList(ladder, id)
@@ -105,7 +105,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
             selectionUnmatched[item.price] = item;
         }
     });
-
+    console.log(ladderWithId)
     return (
         <LadderContainer
             isReferenceSet={isReferenceSet}
@@ -148,12 +148,12 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
                     selectionId={id}
                     ladderSideLeft={ladderSideLeft}
                 />
-                {/* <AutoSizer>
+                <AutoSizer>
                     {({ height, width }) => (
                         <List
                             className="List"
                             height={height}
-                            itemCount={Object.keys(ladder[id].fullLadder).length}
+                            itemCount={ALL_PRICES.length}
                             itemSize={20}
                             width={width}
                             ref={listRef}
@@ -167,7 +167,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
                                 selectionId: id,
                                 placeOrder: placeOrder,
                                 cancelOrder: onCancelOrder,
-                                ltp: ladder[id].ltp[0],
+                                ltp: ladderWithId.ltp[0],
                                 ltpList: coloredLTPList,
                                 stopLoss: stopLoss,
                                 changeStopLossList: placeStopLossOrder,
@@ -181,7 +181,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
                             {LadderRow}
                         </List>
                     )}
-                </AutoSizer> */}
+                </AutoSizer>
 
             </div>
             <PriceRow selectionId={id} />
