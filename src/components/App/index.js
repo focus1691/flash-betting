@@ -326,8 +326,8 @@ const App = props => {
   useEffect(() => {
     // A message will be sent here if the connection to the market is disconnected.
     // We resubscribe to the market here using the initialClk & clk.
-    props.socket.on("connection_lost", data => {
-
+    props.socket.on("connection_closed", () => {
+      console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
     });
   }, []);
 

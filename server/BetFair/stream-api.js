@@ -76,7 +76,7 @@ class BetFairStreamAPI {
 			this.client.on('close', () => {
 				console.log('Connection closed');
 				this.connectionClosed = true;
-				this.authenticated = false;
+				this.openSocket.emit('connection_closed');
 			});
 
 			this.client.on('error', err => {
