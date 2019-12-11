@@ -1,9 +1,17 @@
-import React from "react";
+import React, { memo } from "react";
+import { connect } from "react-redux";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { calcBackBet } from "../../utils/TradingStategy/HedingCalculator";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
+import { setRunner } from "../../actions/market";
+import { getRunner, getSportId } from "../../selectors/marketSelector";
+import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
+import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 
-export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, ladderLTPHedge, newStake, oddsHovered, ordersOnMarket }) => {
+const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, ladderLTPHedge, newStake, oddsHovered }) => {
+
+  const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(selectionId), { matched: matchedBets }).toFixed(2) : 0;
+  const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
 
   const oddsHoveredCalc = ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) +
     ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2);
@@ -32,7 +40,7 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
                   : iconForEvent(sportId)
               }
               alt={"Colours"}
-              onClick={runnerClick}
+              onClick={onSelectRunner}
               onError={handleNoImageError()}
             />
           }
@@ -70,3 +78,21 @@ export default ({ selectionId, sportId, runner, runnerClick, setLadderDown, PL, 
     </div>
   )
 };
+
+const mapStateToProps = (state, {selectionId}) => {
+  return {
+    market: state.market.currentMarket,
+    sportId: getSportId(state.market.currentMarket),
+    runner: getRunner(state.market.runners, {selectionId}),
+    unmatchedBets: getUnmatchedBets(state.order.bets),
+    matchedBets: getMatchedBets(state.order.bets),
+  };
+}; 
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onSelectRunner: runner => e => dispatch(setRunner(runner)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderHeader));

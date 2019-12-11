@@ -5,8 +5,8 @@ import { setRunner, updateLadderOrder, changeLadderSideLeft } from "../../action
 import { updateStopLossList } from "../../actions/stopLoss";
 import Ladder from './Ladder'
 
-const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, runners, market, onPlaceOrder, onCancelOrder, onSelectRunner, stopLossList,
-                  stopLossOffset, stopLossTrailing, onChangeStopLossList, bets, ladderUnmatched, stakeVal, ladderSideLeft, onChangeLadderSideLeft}) => {
+const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, runners, market, onPlaceOrder, onCancelOrder, stopLossList,
+                  stopLossOffset, stopLossTrailing, onChangeStopLossList, bets, ladderUnmatched, stakeVal, ladderSideLeft}) => {
 
   const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
 
@@ -55,7 +55,6 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
                 ladder = {ladder}
                 market = {market}
                 onPlaceOrder = {onPlaceOrder}
-                onSelectRunner = {onSelectRunner}
                 id = {value}
                 key = {value}
                 order = {index}
@@ -70,7 +69,6 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
                 stake = {stakeVal[value]}
                 ladderSideLeft = {ladderSideLeft}
                 onCancelOrder = {onCancelOrder}
-                setLadderSideLeft = {onChangeLadderSideLeft}
                 changeStopLossList = {async newStopLoss => {
 
                   const adjustedNewStopLoss = {...newStopLoss, 
@@ -129,12 +127,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectRunner: runner => e => dispatch(setRunner(runner)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
     onCancelOrder: order => dispatch(cancelOrder(order)),
     onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
-    onChangeLadderSideLeft: side => e => dispatch(changeLadderSideLeft(side))
   };
 };
 

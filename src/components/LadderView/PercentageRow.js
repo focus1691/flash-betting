@@ -10,8 +10,9 @@ import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { cancelOrderAction, updateOrders } from "../../actions/order";
 import { getLTP, getTV, getPercent, getLTPDelta } from "../../selectors/marketSelector";
 import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
+import { changeLadderSideLeft } from "../../actions/market";
 
-const PercentageRow = memo(({ ltp, tv, percent, market, ltpDelta, setLadderSideLeft, ladderSideLeft, onUpdateBets, selectionId, 
+const PercentageRow = ({ ltp, tv, percent, market, ltpDelta, onChangeLadderSideLeft, ladderSideLeft, onUpdateBets, selectionId, 
                          bets, stopLossList, tickOffsetList, stopEntryList, layList, backList, fillOrKillList,
                          onChangeBackList, onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList}) => {
 
@@ -132,7 +133,7 @@ const PercentageRow = memo(({ ltp, tv, percent, market, ltpDelta, setLadderSideL
       </div>
       <div className = {"th"} 
         style={ltpStyle}
-          onClick = {setLadderSideLeft(ladderSideLeft === "LAY" ? "BACK" : "LAY")}
+          onClick = {onChangeLadderSideLeft(ladderSideLeft === "LAY" ? "BACK" : "LAY")}
           >
             {ltp[0]}
           </div>
@@ -145,7 +146,7 @@ const PercentageRow = memo(({ ltp, tv, percent, market, ltpDelta, setLadderSideL
       />
     </div>
   )
-});
+};
 
 const mapStateToProps = (state, {selectionId}) => {
   return {
@@ -161,7 +162,8 @@ const mapStateToProps = (state, {selectionId}) => {
     ltp: getLTP(state.market.ladder, {selectionId}),
     tv: getTV(state.market.ladder, {selectionId}),
     percent: getPercent(state.market.ladder, {selectionId}),
-    ltpDelta: getLTPDelta(state.market.ladder, {selectionId})
+    ltpDelta: getLTPDelta(state.market.ladder, {selectionId}),
+    ladderSideLeft: state.market.ladderSideLeft
   };
 };
 
@@ -173,8 +175,9 @@ const mapDispatchToProps = dispatch => {
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
-    onUpdateBets: bets => dispatch(updateOrders(bets))
+    onUpdateBets: bets => dispatch(updateOrders(bets)),
+    onChangeLadderSideLeft: side => e => dispatch(changeLadderSideLeft(side))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow);
+export default connect(mapStateToProps, mapDispatchToProps)(memo(PercentageRow));
