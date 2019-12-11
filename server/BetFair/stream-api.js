@@ -56,7 +56,7 @@ class BetFairStreamAPI {
 						if (result.mc[0].marketDefinition) {
 							this.openSocket.emit('market-definition', result.mc[0].marketDefinition);
 						}
-						this.openSocket.emit('mcm', result.mc[0]);
+						this.openSocket.emit('mcm', result);
 						this.chunks = [];
 					}
 					// Order Change Message Data Found
