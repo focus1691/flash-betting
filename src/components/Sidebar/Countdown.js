@@ -32,11 +32,15 @@ const Countdown = props => {
     setTimeRemaining(calculateTime());
 
     const newBackList = await checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK", props.bets.matched, props.bets.unmatched)
-    props.onUpdateBackList(newBackList)
+    if (Object.keys(props.backList).length > 0) {
+      props.onUpdateBackList(newBackList)
+    }
+    
 
     const newLayList = await checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY", props.bets.matched, props.bets.unmatched)
-    props.onUpdateLayList(newLayList)
-
+    if (Object.keys(props.layList).length > 0) {
+      props.onUpdateLayList(newLayList)
+    }
 
     const newFillOrKillList = {};
     const adjustedTickOffsetList = Object.assign({}, props.tickOffsetList);
@@ -92,8 +96,14 @@ const Countdown = props => {
         matched: props.bets.matched
       })
     }
-    props.onUpdateTickOffsetList(adjustedTickOffsetList)
-    props.onUpdateFillOrKillList(newFillOrKillList);
+    
+    if (Object.keys(props.tickOffsetList).length > 0) {
+      props.onUpdateTickOffsetList(adjustedTickOffsetList)
+    }
+
+    if (Object.keys(props.fillOrKillList).length > 0) {
+      props.onUpdateFillOrKillList(newFillOrKillList); 
+    }
 
   }, ONE_SECOND);
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { connect } from "react-redux";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { updateStopLossList } from "../../actions/stopLoss";
@@ -8,11 +8,16 @@ import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { cancelOrderAction, updateOrders } from "../../actions/order";
+import { getLTP, getTV, getPercent, getLTPDelta } from "../../selectors/marketSelector";
+import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
 
-const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSideLeft, onUpdateBets, marketId, selectionId, 
+const PercentageRow = memo(({ ltp, tv, percent, market, ltpDelta, setLadderSideLeft, ladderSideLeft, onUpdateBets, selectionId, 
                          bets, stopLossList, tickOffsetList, stopEntryList, layList, backList, fillOrKillList,
                          onChangeBackList, onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList}) => {
-  
+
+  const ltpStyle = getLTPstyle(ltp, ltpDelta);
+  const marketId = market.marketId;
+
   const leftSide = ladderSideLeft.toLowerCase();
 
   const allUnmatchedSpecialBets = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, {})[selectionId];
@@ -140,9 +145,9 @@ const PercentageRow = ({ ltp, ltpStyle, tv, percent, setLadderSideLeft, ladderSi
       />
     </div>
   )
-};
+});
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, {selectionId}) => {
   return {
     priceType: state.market.priceType,
     market: state.market.currentMarket,
@@ -152,7 +157,11 @@ const mapStateToProps = state => {
     stopEntryList: state.stopEntry.list,
     layList: state.lay.list,
     backList: state.back.list,
-    fillOrKillList: state.fillOrKill.list
+    fillOrKillList: state.fillOrKill.list,
+    ltp: getLTP(state.market.ladder, {selectionId}),
+    tv: getTV(state.market.ladder, {selectionId}),
+    percent: getPercent(state.market.ladder, {selectionId}),
+    ltpDelta: getLTPDelta(state.market.ladder, {selectionId})
   };
 };
 
