@@ -1,16 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { updateExcludedLadders, updateLadderOrder } from "../../../actions/market";
-import { findIndex } from "../../../utils/ladder/SearchLadder";
 
 const Ladder = props => {
   const deconstructLadder = ladder => {
-    if (ladder === null || ladder === undefined) {
-      return {};
+
+    if (ladder === undefined) {
+      return {}
     }
 
     const data = {
-      key: ladder.id || null,
       ltp: null,
       color: "#FFFFFF"
     };
@@ -36,30 +35,9 @@ const Ladder = props => {
     return data;
   };
 
-  const handleRunnerCheckboxClick = selectionId => e => {
-    if (Object.keys(props.ladderOrder).length > 0) {
-      // we send it to the end when we select a new ladder
-
-      const newLadderOrder = Object.values(props.ladderOrder).filter(item => item !== selectionId).concat(selectionId);
-      // convert it back to an object
-      const newLadderOrderObject = {};
-      newLadderOrder.forEach((item, index) => {
-        newLadderOrderObject[index] = item;
-      })
-      props.onChangeLadderOrder(newLadderOrderObject)
-    }
-
-    if (props.excludedLadders.indexOf(selectionId) === -1) {
-      props.onChangeExcluded(props.excludedLadders.concat(selectionId));
-    } else {
-      props.onChangeExcluded(props.excludedLadders.filter(item => item !== selectionId));
-    }
-  };
-
   const renderRunners = () => {
     return props.sortedLadder.map(selectionId => {
-      const index = findIndex(props.ladder, selectionId);
-      const { atb, atl, ltp, ltpStyle } = deconstructLadder(props.ladder[index]);
+      const { atb, atl, ltp, ltpStyle } = deconstructLadder(props.ladder[selectionId]);
       return (
         <tr>
           <td>{props.runners[selectionId].runnerName}</td>
@@ -70,7 +48,25 @@ const Ladder = props => {
             <input
               type="checkbox"
               checked={props.excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
-              onClick={handleRunnerCheckboxClick(selectionId)} />
+              onClick={() => {
+                if (Object.keys(props.ladderOrder).length > 0) {
+                  // we send it to the end when we select a new ladder
+
+                  const newLadderOrder = Object.values(props.ladderOrder).filter(item => item !== selectionId).concat(selectionId)
+                  // convert it back to an object
+                  const newLadderOrderObject = {};
+                  newLadderOrder.map((item, index) => {
+                    newLadderOrderObject[index] = item;
+                  })
+                  props.onChangeLadderOrder(newLadderOrderObject)
+                }
+
+                if (props.excludedLadders.indexOf(selectionId) === -1) {
+                  props.onChangeExcluded(props.excludedLadders.concat(selectionId))
+                } else {
+                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== selectionId))
+                }
+              }} />
           </td>
         </tr>
       );

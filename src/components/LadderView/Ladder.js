@@ -7,7 +7,7 @@ import OrderRow from "./OrderRow";
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList as List } from 'react-window'
 import LadderRow from "./LadderRow";
-import { formatPrice, ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
+import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
 import GetColoredLTPList from "../../utils/ladder/GetColoredLTPList";
@@ -15,8 +15,6 @@ import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
 const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSelectRunner, order, swapLadders, ladderSideLeft, setLadderSideLeft,
     ladderOrderList, stopLoss, changeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, ladderUnmatched, stake }) => {
-    
-    const ladderWithId = ladder.find(item => item.id == id)
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -28,7 +26,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
     // every 1 second, checks if there is an LTP, if there is, we scroll to it and stop the interval
     useEffect(() => {
         const interval = setInterval(() => {
-            const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
+            const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
             if (listRef.current !== null && ltpIndex !== -1) {
                 listRef.current.scrollToItem(ltpIndex, 'center');
                 clearInterval(interval);
@@ -40,7 +38,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
 
     // if the order changes, we scrollback to the ltp 
     useEffect(() => {
-        const ltpIndex = Object.keys(ladderWithId.fullLadder).indexOf(parseFloat(ladderWithId.ltp[0]).toFixed(2));
+        const ltpIndex = Object.keys(ladder[id].fullLadder).indexOf(parseFloat(ladder[id].ltp[0]).toFixed(2));
         if (listRef.current !== undefined) {
             listRef.current.scrollToItem(ltpIndex, 'center');
         }
@@ -82,13 +80,13 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
         });
     }
     const parsedVolume = {};
-    if (ladderWithId.trd) {
-        ladderWithId.trd.forEach(vol => {
+    if (ladder[id].trd) {
+        ladder[id].trd.forEach(vol => {
             parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10;
         });
     }
 
-    const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladderWithId, selectionMatchedBets, ladderUnmatched, stake, PL);
+    const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladder, id, selectionMatchedBets, ladderUnmatched, stake, PL);
 
     // gets all the bets we made and creates a size to offset
     const hedgeSize = selectionMatchedBets !== undefined ?
@@ -105,7 +103,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
             selectionUnmatched[item.price] = item;
         }
     });
-    console.log(ladderWithId)
+
     return (
         <LadderContainer
             isReferenceSet={isReferenceSet}
@@ -135,14 +133,14 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
 
             <div className={"ladder"} onContextMenu={() => false}>
                 <PercentageRow
-                    ltp={ladderWithId.ltp}
-                    ltpStyle={getLTPstyle(ladderWithId.ltp, ladderWithId.ltpDelta)}
+                    ltp={ladder[id].ltp}
+                    ltpStyle={getLTPstyle(ladder[id].ltp, ladder[id].ltpDelta)}
                     tv={
-                        ladderWithId.tv[0]
-                            ? ladderWithId.tv[0].toLocaleString()
+                        ladder[id].tv[0]
+                            ? ladder[id].tv[0].toLocaleString()
                             : ""
                     }
-                    percent={ladderWithId.percent}
+                    percent={ladder[id].percent}
                     setLadderSideLeft={setLadderSideLeft}
                     marketId={market.marketId}
                     selectionId={id}
@@ -153,7 +151,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
                         <List
                             className="List"
                             height={height}
-                            itemCount={ALL_PRICES.length}
+                            itemCount={Object.keys(ladder[id].fullLadder).length}
                             itemSize={20}
                             width={width}
                             ref={listRef}
@@ -167,7 +165,7 @@ const Ladder = ({ id, runners, ladder, market, onPlaceOrder, onCancelOrder, onSe
                                 selectionId: id,
                                 placeOrder: placeOrder,
                                 cancelOrder: onCancelOrder,
-                                ltp: ladderWithId.ltp[0],
+                                ltp: ladder[id].ltp[0],
                                 ltpList: coloredLTPList,
                                 stopLoss: stopLoss,
                                 changeStopLossList: placeStopLossOrder,

@@ -2,7 +2,6 @@
 
 import { twoDecimalPlaces } from "../Bets/BettingCalculations";
 import { calcHedgedPL2 } from "../TradingStategy/HedingCalculator";
-import { isLadderExists, findIndex } from "../ladder/SearchLadder";
 
 const getMarketCashout = (marketId, bets, ladder) => {
 
@@ -10,8 +9,8 @@ const getMarketCashout = (marketId, bets, ladder) => {
     const selections = Object.values(bets.matched).reduce(reducer, []);
 
     return twoDecimalPlaces(selections.map(selection =>
-        Object.values(bets.matched).filter(bet => bet.selectionId === selection && bet.marketId === marketId && isLadderExists(ladder, bet.selectionId))
-        .map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ladder[findIndex(ladder, bet.selectionId)].ltp[0]) ))
+        Object.values(bets.matched).filter(bet => bet.selectionId === selection && bet.marketId === marketId && ladder[bet.selectionId])
+        .map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ladder[bet.selectionId].ltp[0]) ))
         .reduce((acc, tot) => acc + tot, 0))
         .reduce((acc, tot) => acc + tot, 0));
 };

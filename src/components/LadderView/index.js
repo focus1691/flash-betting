@@ -10,14 +10,13 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
 
   const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
 
-
   useEffect(() => {
-    if (Object.keys(ladderOrder).length === 0 && ladder.length > 0) {
+    if (Object.keys(ladderOrder).length === 0 && Object.keys(sortedLadder).length > 0) {
         // initialize the order object
         const newOrderList = {};
 
-        ladder.map((item, index) => {
-          newOrderList[index] = item.id;
+        sortedLadder.map((key, index) => {
+          newOrderList[index] = key;
         })
 
         onChangeLadderOrder(newOrderList);
@@ -42,6 +41,7 @@ const Ladders = ({ladderOrder, ladder, sortedLadder, onChangeLadderOrder, market
     onChangeLadderOrder(newOrderList);
   }
 
+  
   return (
     marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ?                          
       <div className={"ladder-container"}

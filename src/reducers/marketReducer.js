@@ -1,5 +1,3 @@
-import update from 'immutability-helper';
-
 const initialState = {
   marketOpen: false,
   inPlay: false,
@@ -8,9 +6,9 @@ const initialState = {
   eventType: null,
   currentMarket: {},
   runnerSelection: 0,
-  nonRunners: [],
+  nonRunners: {},
   runners: {},
-  ladder: [],
+  ladder: {},
   sortedLadder: [],
   excludedLadders: [], 
   ladderOrder: {},
@@ -29,17 +27,13 @@ const reducer = (state = initialState, action) => {
     case "SET_IN_PLAY_TIME":
       return { ...state, inPlayTime: action.payload };
     case "LOAD_MARKET":
-      return { ...state, marketOpen: true, currentMarket: action.payload };
+      return { ...state, currentMarket: action.payload };
     case "CLOSE_MARKET":
       return { ...state, marketOpen: action.payload };
     case "SET_EVENT_TYPE":
       return { ...state, eventType: action.payload };
     case "LOAD_LADDER":
-      return update(state, { ladder: { $push: [action.payload] } } );
-    case "REMOVE_LADDER":
-      return update(state, { ladder: { $splice: [[action.payload, 1]]}});
-    case "ADD_NON_RUNNER":
-    return update(state, { nonRunners: { $splice: [[action.payload, 1]]}});
+      return { ...state, marketOpen: true, ladder: action.payload };
     case "SET_SORTED_LADDER":
       return { ...state, sortedLadder: action.payload };
     case "LOAD_NON_RUNNERS":

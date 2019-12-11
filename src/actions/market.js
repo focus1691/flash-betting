@@ -47,20 +47,6 @@ export const loadLadder = ladder => {
   };
 };
 
-export const removeLadder = index => {
-  return {
-    type: "REMOVE_LADDER",
-    payload: index
-  };
-};
-
-export const addNonRunner = nonRunner => {
-  return {
-    type: "ADD_NON_RUNNER",
-    payload: nonRunner
-  };
-};
-
 export const setSortedLadder = sortedLadder => {
   return {
     type: "SET_SORTED_LADDER",

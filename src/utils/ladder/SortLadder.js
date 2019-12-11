@@ -1,5 +1,5 @@
 const sortLadder = ladders => {
-    return ladders.map(ladder => [ladder.ltp[0], ladder.id])
+    return Object.keys(ladders).map(val => [ladders[val].ltp[0], val])
         .sort((a, b) => { return (!a[0]) - (!b[0]) || a[0] - b[0] })
         .map(data => data[1]);
 }

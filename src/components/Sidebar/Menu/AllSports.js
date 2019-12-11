@@ -94,7 +94,9 @@ const AllSports = props => {
     props.onUpdateSubmenuCurrent(newSubmenuType);
     props.onUpdateSubmenuList(newSubmenuList);
   }
-  
+
+  console.log(submenuList)
+
   return (
     <div>
       <table id="all-sports">
