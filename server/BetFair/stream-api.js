@@ -60,7 +60,7 @@ class BetFairStreamAPI {
 						this.chunks = [];
 					}
 					// Order Change Message Data Found
-					else if (result.op === 'ocm') {
+					else if (result.op === 'ocm' && result.oc) {
 						this.openSocket.emit('ocm', result);
 						this.chunks = [];
 					} else {
