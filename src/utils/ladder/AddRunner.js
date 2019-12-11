@@ -9,6 +9,8 @@ const AddRunner = (data) => {
   runner.ltpDelta = new Date();
   runner.tv = [runner.tv, runner.tv];
   runner.fullLadder = createFullLadder();
+  runner.atbo = {};
+  runner.atlo = {};
 
   runner.order = {
     visible: false,
@@ -44,6 +46,8 @@ const AddRunner = (data) => {
 
         // Alter the value to round down
         runner.atb[i][1] = matched;
+
+        runner.atbo[price] = matched;
       }
     }
   }
@@ -68,6 +72,8 @@ const AddRunner = (data) => {
 
         // Alter the value to round down
         runner.atl[i][1] = matched;
+
+        runner.atlo[price] = matched;
       }
     }
   }

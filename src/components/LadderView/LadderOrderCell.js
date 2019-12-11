@@ -1,16 +1,19 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { connect } from "react-redux";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import crypto from 'crypto'
 import { updateFillOrKillList } from '../../actions/fillOrKill';
+import { getMatched } from '../../selectors/marketSelector';
 
 const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, 
                           isStopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged,
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged,
-                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal }) => {
+                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal, cellMatched }) => {
                             
+
+    console.log(cellMatched)
     const handleClick = () => async e => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       
@@ -116,23 +119,23 @@ const LadderOrderCell = ({side, cell, unmatchedBets, matchedBets, marketId, sele
         <div className = 'td'
             style={
                 isStopLoss ? {background: "yellow"} :
-                cell.backMatched && side === "BACK" ? {background: "#75C2FD"} : 
-                cell.layMatched && side === "LAY" ? {background: "#F694AA"} : 
+                cellMatched.side === "BACK" && cellMatched.matched !== null && side === "BACK" ? {background: "#75C2FD"} : 
+                cellMatched.side === "LAY" && cellMatched.matched !== null && side === "LAY" ? {background: "#F694AA"} : 
                 side === "LAY" ? {background: "#FCC9D3"} : 
                 side === "BACK" ? {background: "#BCE4FC"} : 
                 null
             }
             onMouseEnter = {onHover}
             onMouseLeave = {onLeave}
-            onClick={handleClick()}
-            onContextMenu = {handleRightClick()}
+            // onClick={handleClick()}
+            // onContextMenu = {handleRightClick()}
           >
-            { isStopLoss ? stopLossData.hedged ? "H" : stopLossData.size : cell[`${side.toLowerCase()}Matched`] }
+            { cellMatched.matched }
         </div>
     )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   return {
     marketId: state.market.currentMarket.marketId,
     unmatchedBets: state.order.bets.unmatched,
@@ -150,15 +153,19 @@ const mapStateToProps = state => {
     fillOrKillSelected: state.fillOrKill.selected,
     fillOrKillSeconds: state.fillOrKill.seconds,
     fillOrKillList: state.fillOrKill.list,
-    stakeVal: state.settings.stake
+    stakeVal: state.settings.stake,
+    cellMatched: getMatched(state.market.ladder, props)
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
-    onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list))
+    onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list)),
+
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LadderOrderCell)
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderOrderCell))

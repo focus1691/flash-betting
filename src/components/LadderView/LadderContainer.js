@@ -1,7 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
+import { connect } from "react-redux";
+import { updateLadderOrder } from "../../actions/market";
 
-
-export default ({isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners, ladderOrderList, swapLadders, setIsMoving, setLadderDown, children}) => {
+const LadderContainer = ({isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners, ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children}) => {
 
     const onLoad = () => e => {
         setIsReferenceSet(true);
@@ -10,7 +11,7 @@ export default ({isReferenceSet, order, containerRef, isMoving, isLadderDown, se
     const handleMouseMove = () => e => {
         if (containerRef.current === null) return;
         if (!isLadderDown) return;
-        moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, swapLadders, setIsMoving);
+        moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving);
     };
 
     const handleMouseUp= () => e => {
@@ -47,13 +48,14 @@ export default ({isReferenceSet, order, containerRef, isMoving, isLadderDown, se
     )
 };
 
+
 const returnToOrderedPos = (containerRef, order, setIsMoving) => {
     containerRef.current.style.left = `${order * containerRef.current.clientWidth}px`;
     containerRef.current.style['z-index'] = 0;
     setIsMoving(false);
 }
 
-const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, order, runners, ladderOrderList, swapLadders, setIsMoving) => {
+const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving) => {
     if (!isReferenceSet) return;
     containerRef.current.style.left = `${parseInt(containerRef.current.style.left, 10) + offsetPos}px`;
     containerRef.current.style['z-index'] = 9999;
@@ -90,7 +92,13 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
             const otherLadderOrder = Object.values(ladderOrderList).findIndex(item => item == otherLadderId);
             if (otherLadderOrder === -1) break;
 
-            swapLadders(thisLadderOrder, otherLadderOrder);
+            // swap Ladders
+            const newOrderList = Object.assign({}, ladderOrderList);
+
+            newOrderList[thisLadderOrder] = ladderOrderList[otherLadderOrder];
+            newOrderList[otherLadderOrder] = ladderOrderList[thisLadderOrder];
+
+            onChangeLadderOrder(newOrderList);
 
             otherNodes[key].style.left = `${order * containerRef.current.clientWidth}px`;
             
@@ -99,3 +107,19 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
     }
     setIsMoving(true);
 }
+
+const mapStateToProps = (state, {id}) => {
+    return {
+        runners: state.market.runners,
+        ladderOrderList: state.market.ladderOrder,
+    };  
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
+    };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderContainer))

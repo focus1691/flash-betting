@@ -13,6 +13,12 @@ export const getRunner = createSelector(
     getRunnerSelector,
     runner => runner
 )
+
+export const getLadder = createSelector(
+    getLadderSelector,
+    ladder => ladder
+)
+
 export const getLTP = createSelector(
     getLadderSelector,
     ladder => ladder.ltp
@@ -21,6 +27,16 @@ export const getLTP = createSelector(
 export const getLTPDelta = createSelector(
     getLadderSelector,
     ladder => ladder.ltpDelta
+)
+
+const getLadderMatchedSelector = (state, {selectionId, side, price}) => ({matched: state[selectionId][side == "BACK" ? 'atbo' : 'atlo'][price], side: side})
+
+export const getMatched = createSelector(
+    getLadderMatchedSelector,
+    ({matched, side}) => ({
+        matched: matched ? matched : null,
+        side: side,
+    })
 )
 
 export const getTV = createSelector(

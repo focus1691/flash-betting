@@ -1,9 +1,9 @@
 // remove adjacent LTP values for [5.2, 4.3, 4.3] turns into [5.2, 4.3]
 export default (ladder, id) => {
     const filteredLTPs =
-        ladder[id] !== undefined ?
-            ladder[id].ltp[0] !== undefined ?
-                ladder[id].ltp.filter((item, pos, arr) => {
+        ladder !== undefined ?
+            ladder.ltp[0] !== undefined ?
+                ladder.ltp.filter((item, pos, arr) => {
                     // Always keep the 0th element as there is nothing before it
                     // Then check if each element is different than the one before it
                     return pos === 0 || item !== arr[pos - 1];

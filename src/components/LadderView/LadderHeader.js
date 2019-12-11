@@ -1,14 +1,15 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
 import { iconForEvent } from "../../utils/Market/EventIcons";
-import { calcBackBet } from "../../utils/TradingStategy/HedingCalculator";
+import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { setRunner } from "../../actions/market";
-import { getRunner, getSportId } from "../../selectors/marketSelector";
+import { getRunner, getSportId, getLTP } from "../../selectors/marketSelector";
 import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
+import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
-const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, ladderLTPHedge, newStake, oddsHovered }) => {
+const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp }) => {
 
   const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(selectionId), { matched: matchedBets }).toFixed(2) : 0;
   const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
@@ -25,6 +26,19 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
     e.target.src = iconForEvent(parseInt(sportId));
   };
 
+  const selectionMatchedBets = [];
+  Object.values(matchedBets).map(bet => {
+    if (bet.selectionId == selectionId) {
+      selectionMatchedBets.push(bet)
+    }
+  });
+
+  // calculate ladder ltp hedge
+  const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp)));
+  const ladderLTPHedge = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
+  const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0;
+  
+  
   return (
     <div className={"ladder-header"}>
       <div>
@@ -86,6 +100,7 @@ const mapStateToProps = (state, {selectionId}) => {
     runner: getRunner(state.market.runners, {selectionId}),
     unmatchedBets: getUnmatchedBets(state.order.bets),
     matchedBets: getMatchedBets(state.order.bets),
+    ltp: getLTP(state.market.ladder, {selectionId}),
   };
 }; 
 

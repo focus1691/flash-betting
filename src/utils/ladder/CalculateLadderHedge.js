@@ -14,7 +14,7 @@ export default (ladder, id, selectionMatchedBets, ladderUnmatched, stake, pl) =>
     const fullLadderWithProfit = {};
     let ladderLTPHedge = 0;
 
-    Object.values(ladder[id].fullLadder).map(item => {
+    Object.values(ladder.fullLadder).map(item => {
         fullLadderWithProfit[item.odds] = { ...item }
 
         if (selectionMatchedBets !== undefined && ladderUnmatched === "hedged") {
@@ -25,7 +25,7 @@ export default (ladder, id, selectionMatchedBets, ladderUnmatched, stake, pl) =>
             const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
             // if the row is the ltp, we set the ladder LTP
-            if (parseFloat(item.odds).toFixed(2) == parseFloat(ladder[id].ltp[0]).toFixed(2)) {
+            if (parseFloat(item.odds).toFixed(2) == parseFloat(ladder.ltp[0]).toFixed(2)) {
                 ladderLTPHedge = profit;
             }
 
