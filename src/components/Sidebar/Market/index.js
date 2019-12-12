@@ -66,13 +66,6 @@ const useStyles = makeStyles(theme => ({
 const Market = props => {
 
   const classes = useStyles();
-  const [laddersExpanded, setLaddersExpanded] = useState(localStorage.getItem("laddersExpanded") || false);
-  const [toolsExpanded, setToolsExpanded] = useState(true);
-  const [unmatchedBetsExpanded, setUnmatchedBetsExpanded] = useState(true);
-  const [matchedBetsExpanded, setMatchedBetsExpanded] = useState(true);
-  const [graphExpanded, setGraphExpanded] = useState(true);
-  const [marketInfoExpanded, setMarketInfoExpanded] = useState(true);
-  const [rulesExpanded, setRulesExpanded] = useState(true);
 
   const allUnmatchedSpecialBets = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, {})
 
@@ -145,35 +138,41 @@ const Market = props => {
 
   };
 
-  const cancelAllOrdersInMarket = async (marketId, unmatchedBets, matchedBets, specialBets, betCanceler) => {
+  const cancelAllOrdersInMarket = (marketId, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
+    e.stopPropagation();
 
-    betCanceler(specialBets)
+    betCanceler(specialBets);
 
-    const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-
-    if (currentOrders) {
-      // filter all the ones out that arent in the same selection or arent unmatched
-      const openSelectedRunnerOrders = currentOrders.filter(order => (order.status === "EXECUTABLE" || order.status === "PENDING"))
-
-      // this is basically calling 1 bet after another and returning the unmatched bets it gets from it
-      const cancelBets = await openSelectedRunnerOrders.reduce(async (previousPromise, nextOrder) => {
-        const previousCancelOrderUnmatchedBets = await previousPromise;
-        return cancelOrderAction({
-          marketId: nextOrder.marketId,
-          betId: nextOrder.betId,
-          sizeReduction: null,
-          matchedBets: matchedBets,
-          unmatchedBets: previousCancelOrderUnmatchedBets && previousCancelOrderUnmatchedBets.unmatched ? previousCancelOrderUnmatchedBets.unmatched : unmatchedBets,
+    await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json())
+    .then(res => res.currentOrders)
+    .then(async currentOrders => {
+      if (currentOrders) {
+        // filter all the ones out that arent in the same selection or arent unmatched
+        const openSelectedRunnerOrders = currentOrders.filter(order => (order.status === "EXECUTABLE" || order.status === "PENDING"));
+  
+        // this is basically calling 1 bet after another and returning the unmatched bets it gets from it
+        const cancelBets = await openSelectedRunnerOrders.reduce(async (previousPromise, nextOrder) => {
+          const previousCancelOrderUnmatchedBets = await previousPromise;
+          return cancelOrderAction({
+            marketId: nextOrder.marketId,
+            betId: nextOrder.betId,
+            sizeReduction: null,
+            matchedBets: matchedBets,
+            unmatchedBets: previousCancelOrderUnmatchedBets && previousCancelOrderUnmatchedBets.unmatched ? previousCancelOrderUnmatchedBets.unmatched : unmatchedBets,
+          });
+        }, Promise.resolve());
+  
+        if (cancelBets === undefined) return;
+  
+        props.onUpdateBets({
+          unmatched: cancelBets.unmatched,
+          matched: cancelBets.matched
         });
-      }, Promise.resolve());
-
-      if (cancelBets === undefined) return;
-
-      props.onUpdateBets({
-        unmatched: cancelBets.unmatched,
-        matched: cancelBets.matched
-      });
-    }
+      }
+    })
+    .catch(e => {
+      return;
+    });
   }
 
   const createTitle = (name, position) => {
@@ -209,10 +208,7 @@ const Market = props => {
             <button
               className={"cancel-order-btn"}
               style={{ height: "22px", width: "auto", display: "inline-block", zIndex: "999", float: "right", marginTop: "0.3em" }}
-              onClick={e => {
-                e.stopPropagation();
-                cancelAllOrdersInMarket(props.market.marketId, props.bets.unmatched, props.bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)
-              }}
+              onClick={cancelAllOrdersInMarket(props.market.marketId, props.bets.unmatched, props.bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
             >
               <img src={`${window.location.origin}/icons/error.png`} alt="X" />
             </button>

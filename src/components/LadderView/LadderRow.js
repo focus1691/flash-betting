@@ -46,8 +46,8 @@ const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, 
             // stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
             // hedgeSize = {hedgeSize}
-            onHover = {() => onOddsHovered({selectionId, odds: key, side: leftSide})}
-            onLeave = {() => onOddsHovered({selectionId, odds: 0, side: leftSide})}
+            onHover = {onOddsHovered({selectionId, odds: key, side: leftSide})}
+            onLeave = {onOddsHovered({selectionId, odds: 0, side: leftSide})}
           />
           <LadderLTPCell selectionId = {selectionId} price = {key} />
           
@@ -66,8 +66,8 @@ const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, 
             // stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
             // hedgeSize = {hedgeSize}
-            onHover = {() => onOddsHovered({selectionId, odds: key, side: rightSide})}
-            onLeave = {() => onOddsHovered({selectionId, odds: 0, side: rightSide})}
+            onHover = {onOddsHovered({selectionId, odds: key, side: rightSide})}
+            onLeave = {onOddsHovered({selectionId, odds: 0, side: rightSide})}
           />
           <div 
             className = 'td'
@@ -88,7 +88,7 @@ const mapStateToProps = (state, {data: {selectionId}, index}) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-      onOddsHovered: odds => dispatch(setOddsHovered(odds))
+      onOddsHovered: odds => e => dispatch(setOddsHovered(odds))
   };
 };
 

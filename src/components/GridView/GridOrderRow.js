@@ -3,6 +3,21 @@ import { LightenDarkenColor } from "../../utils/ColorManipulator";
 import crypto from 'crypto';
 
 export default ({ runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, market, bets, price, side, size }) => {
+
+    const executeOrder = () => e => {
+        const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+        onPlaceOrder({
+            marketId: market.marketId,
+            side: side,
+            size: size,
+            price: price,
+            selectionId: runnerId,
+            customerStrategyRef: referenceStrategyId,
+            unmatchedBets: bets.unmatched,
+            matchedBets: bets.matched,
+        })
+    };
+
     return (
         <tr style={{
             background: orderProps.bg
@@ -73,19 +88,7 @@ export default ({ runnerId, order, orderProps, toggleStakeAndLiabilityButtons, t
                         ></input>
 
                         <button className={"execute-order-btn"}
-                            onClick={() => {
-                                const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
-                                onPlaceOrder({
-                                    marketId: market.marketId,
-                                    side: side,
-                                    size: size,
-                                    price: price,
-                                    selectionId: runnerId,
-                                    customerStrategyRef: referenceStrategyId,
-                                    unmatchedBets: bets.unmatched,
-                                    matchedBets: bets.matched,
-                                })
-                            }}
+                            onClick={executeOrder()}
                         >Submit</button>
 
                         <span className={"grid-img-container"}>

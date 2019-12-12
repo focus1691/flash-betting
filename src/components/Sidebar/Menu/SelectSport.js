@@ -11,7 +11,7 @@ export default ({sports, setSubmenu}) => {
                 <MarketSaveButton sport = {{id: sport.eventType.id, name: sport.eventType.name, type: "EVENT_TYPE", data: {}}} />
                 <ListItem
                     button
-                    onClick={() => setSubmenu(
+                    onClick={setSubmenu(
                                     sport.eventType.name, 
                                     'EVENT_TYPE', 
                                     {}, 

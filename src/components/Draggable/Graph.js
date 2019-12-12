@@ -6,11 +6,15 @@ const DraggableGraph = props => {
 
   const [transparent, setTransparent] = useState(false);
 
+  const changeGraphTransparency = () => e => {
+    setTransparent(!transparent)
+  };
+
   return props.selection && props.open ? (
     <div className={"popup-graph"} style={{ opacity: transparent ? 0.5 : 1 }}>
       <div>
         <span>{props.selection.runnerName}</span>
-        <span className={"popup-graph-toggle-transparency"} onClick={e => setTransparent(!transparent)}>{transparent ? "Solid" : "Transparent"}</span>
+        <span className={"popup-graph-toggle-transparency"} onClick={changeGraphTransparency()}>{transparent ? "Solid" : "Transparent"}</span>
         <img
           alt={"Close"}
           className={"close-popup-graph"}

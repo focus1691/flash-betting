@@ -63,7 +63,7 @@ const StopEntry = props => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (event, index) => {
+  const handleMenuItemClick = index => e => {
     props.onSelection(index);
     setAnchorEl(null);
   };
@@ -73,7 +73,7 @@ const StopEntry = props => {
   };
 
   // Handle Submit click to place an order
-  const placeOrder = async () => {
+  const placeOrder = () => async e => {
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
     const newStopEntryList = Object.assign({}, props.stopEntryList)
@@ -147,14 +147,7 @@ const StopEntry = props => {
             key={`stop-loss-order-all/field`}
             className={classes.root}
             selected={typeof props.selections != "string"}
-            onClick={event =>
-              handleMenuItemClick(
-                event,
-                Object.keys(props.runners).map(key => [
-                  props.runners[key].selectionId
-                ])
-              )
-            }
+            onClick={handleMenuItemClick(Object.keys(props.runners).map(key => [props.runners[key].selectionId]))}
           >
             All / The Field
           </StyledMenuItem>
@@ -167,7 +160,7 @@ const StopEntry = props => {
             key={`stop-entry-order-${props.runners[key].runnerName}`}
             className={classes.root}
             selected={key === props.selections}
-            onClick={event => handleMenuItemClick(event, key)}
+            onClick={handleMenuItemClick(key)}
           >
             {props.runners[key].runnerName}
           </StyledMenuItem>
@@ -226,9 +219,7 @@ const StopEntry = props => {
         variant="outlined"
         color="primary"
         className={classes.button}
-        onClick={() => {
-          placeOrder();
-        }}
+        onClick={placeOrder()}
       >
         Submit
       </Button>

@@ -47,7 +47,7 @@ const AllSports = props => {
     currentSubmenu,
   } = props.sports;
 
-  const getSportInfo = async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {
+  const getSportInfo = (name, newSubmenuType, submenuList, selectedId, apiToCall) => async e => {
     // call the api with the id and get new selections
     const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${props.winMarketsOnly === true ? "WIN" : undefined}&country=${name.startsWith("TC") && name.endsWith("7") ? getCountryName(props.horseRaces) : undefined}`)
                             .then(res => res.json()).catch(err => false);
@@ -70,7 +70,7 @@ const AllSports = props => {
     props.onUpdateSubmenuList(newSubmenuList);
   }
 
-  const deselectSubmenu = (newSubmenuType, submenuList) => { 
+  const deselectSubmenu = (newSubmenuType, submenuList) => e => { 
     const submenuEnum = {
       ROOT: 0,
       EVENT_TYPE: 1,

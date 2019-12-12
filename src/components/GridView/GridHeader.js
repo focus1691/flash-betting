@@ -25,7 +25,33 @@ export default ({
   onPlaceOrder,
   marketCashout,
   openLiveStream
-}) => (
+}) => {
+
+  const executeMarketCashout = () => e => {
+    const hedgedBets = getHedgedBetsToMake(market.marketId, bets, ltpList);
+
+    if (hedgedBets.length > 0) {
+      const recursivePlaceHedge = (index, unmatchedBets) => {
+
+        const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+
+        onPlaceOrder({
+          marketId: market.marketId,
+          side: hedgedBets[index].side,
+          size: hedgedBets[index].stake,
+          price: hedgedBets[index].buyPrice,
+          selectionId: hedgedBets[index].selectionId,
+          customerStrategyRef: referenceStrategyId,
+          unmatchedBets: unmatchedBets,
+          matchedBets: bets.matched,
+          orderCompleteCallBack: (betId, newUnmatchedBets) => recursivePlaceHedge(index + 1, newUnmatchedBets)
+        })
+      }
+      recursivePlaceHedge(0, bets.unmatched);
+    }
+  };
+
+  return (
     <React.Fragment>
       <tr id="grid-header">
         <th colSpan="11">
@@ -48,7 +74,7 @@ export default ({
             {marketOpen
               ? `${new Date(
                 market.marketStartTime
-              ).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} ${market.marketName} ${
+              ).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ${market.marketName} ${
               market.event.venue || ""
               }`
               : "No Event Selected"}
@@ -59,7 +85,7 @@ export default ({
                 <button>Stake</button>
                 {stakeBtns.map(stake => (
                   <button
-                    style={{background: getOrderBtnBG("STAKE", stake, oneClickStake, -70)}}
+                    style={{ background: getOrderBtnBG("STAKE", stake, oneClickStake, -70) }}
                     onClick={setStakeOneClick(stake)}>
                     {stake}
                   </button>
@@ -70,10 +96,10 @@ export default ({
                 <button>Liability</button>
                 {layBtns.map(stake => (
                   <button
-                  style={{background: getOrderBtnBG("LAY", stake, oneClickStake, -70)}}
-                  onClick={setStakeOneClick(stake)}>
-                  {stake}
-                </button>
+                    style={{ background: getOrderBtnBG("LAY", stake, oneClickStake, -70) }}
+                    onClick={setStakeOneClick(stake)}>
+                    {stake}
+                  </button>
                 ))}
               </div>
             </React.Fragment>
@@ -97,31 +123,7 @@ export default ({
         */}
         <th id="market-cashout">
           <span>Market Cashout</span>
-          <span style={{ color: marketCashout < 0 ? "red" : marketCashout > 0 ? "#01CC41" : "#D3D3D3" }} onClick = {() => {
-              const hedgedBets = getHedgedBetsToMake(market.marketId, bets, ltpList)
-
-              if (hedgedBets.length > 0) {
-                const recursivePlaceHedge = (index, unmatchedBets) => {
-
-                  const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
-
-                  onPlaceOrder({
-                    marketId: market.marketId,
-                    side: hedgedBets[index].side,
-                    size: hedgedBets[index].stake,
-                    price: hedgedBets[index].buyPrice,
-                    selectionId: hedgedBets[index].selectionId,
-                    customerStrategyRef: referenceStrategyId,
-                    unmatchedBets: unmatchedBets,
-                    matchedBets: bets.matched,
-                    orderCompleteCallBack: (betId, newUnmatchedBets) => recursivePlaceHedge(index + 1, newUnmatchedBets)
-                  })
-                }
-
-                recursivePlaceHedge(0, bets.unmatched)
-                
-              }
-            }}>{marketCashout}</span>
+          <span style={{ color: marketCashout < 0 ? "red" : marketCashout > 0 ? "#01CC41" : "#D3D3D3" }} onClick={executeMarketCashout()}>{marketCashout}</span>
         </th>
         <th colSpan="2"></th>
         <th></th>
@@ -139,3 +141,4 @@ export default ({
       </tr>
     </React.Fragment>
   );
+}

@@ -62,6 +62,10 @@ const Sidebar = props => {
     const [openTab, setOpenTab] = useState(2);
     const activeStyle = "#389C41";
 
+    const changeTab = tab => e => {
+      setOpenTab(tab);
+    };
+
     const createToggleButton = (name, tab) => {
         return (
           <ThemeProvider theme={theme}>
@@ -69,9 +73,7 @@ const Sidebar = props => {
               variant="contained"
               color="primary"
               style={openTab === tab ? { background: activeStyle } : {}}
-              onClick={e => {
-                setOpenTab(tab);
-              }}
+              onClick={changeTab(tab)}
               className={"toggle-button"}>
               {name}
             </BootstrapButton>

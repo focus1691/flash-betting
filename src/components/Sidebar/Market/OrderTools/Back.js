@@ -50,11 +50,11 @@ const Back = props => {
     ])));
   }, []);
 
-  const handleClickListItem = event => {
-    setAnchorEl(event.currentTarget);
+  const handleClickListItem = () => e => {
+    setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuItemClick = (event, index) => {
+  const handleMenuItemClick = index => e => {
     props.onSelection(index);
     setAnchorEl(null);
   };
@@ -64,7 +64,7 @@ const Back = props => {
   };
 
   // Handle Submit click to place an order
-  const placeOrder = async () => {
+  const placeOrder = () => async e => {
 
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
@@ -111,7 +111,7 @@ const Back = props => {
           aria-haspopup="true"
           aria-controls="lock-menu"
           aria-label="Selections"
-          onClick={handleClickListItem}
+          onClick={handleClickListItem()}
         >
           <ListItemText
             primary="Back"
@@ -138,14 +138,7 @@ const Back = props => {
             key={`back-order-all/field`}
             className={classes.root}
             selected={typeof props.selections != "string"}
-            onClick={event =>
-              handleMenuItemClick(
-                event,
-                Object.keys(props.runners).map(key => [
-                  props.runners[key].selectionId
-                ])
-              )
-            }
+            onClick={handleMenuItemClick(Object.keys(props.runners).map(key => [props.runners[key].selectionId]))}
           >
             Back All / The Field
           </StyledMenuItem>
@@ -159,7 +152,7 @@ const Back = props => {
             key={`back-order-${props.runners[key].runnerName}`}
             className={classes.root}
             selected={key === props.selections}
-            onClick={event => handleMenuItemClick(event, key)}
+            onClick={handleMenuItemClick(key)}
           >
             {props.runners[key].runnerName}
           </StyledMenuItem>
@@ -174,7 +167,7 @@ const Back = props => {
           label="stake"
           value={props.stake}
           inputProps={{ min: "1", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveStake(e.target.value)}
+          onChange={props.onReceiveStake()}
           margin="normal"
         />
         <TextField
@@ -184,7 +177,7 @@ const Back = props => {
           label="@"
           value={props.price}
           inputProps={{ min: "1.01", max: "1000", style: { fontSize: 10 } }}
-          onChange={e => props.onReceivePrice(getNextPrice(props.price, e.target.value))}
+          onChange={props.onReceivePrice(props.price)}
           margin="normal"
         />
         <Button
@@ -192,7 +185,7 @@ const Back = props => {
           color="primary"
           size="small"
           className={classes.button}
-          onClick={e => placeOrder()}
+          onClick={placeOrder()}
         >
           Submit
         </Button>
@@ -206,7 +199,7 @@ const Back = props => {
           label="hh"
           value={props.hours}
           inputProps={{ min: "0", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveHours(e.target.value)}
+          onChange={props.onReceiveHours()}
           margin="normal"
         />
         <TextField
@@ -216,7 +209,7 @@ const Back = props => {
           label="mm"
           value={props.minutes}
           inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveMinutes(e.target.value)}
+          onChange={props.onReceiveMinutes()}
           margin="normal"
         />
         <TextField
@@ -226,7 +219,7 @@ const Back = props => {
           label="ss"
           value={props.seconds}
           inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveSeconds(e.target.value)}
+          onChange={props.onReceiveSeconds()}
           margin="normal"
         />
 
@@ -234,7 +227,7 @@ const Back = props => {
           aria-label="orderexecution"
           name="orderexecution"
           value={props.executionTime}
-          onChange={e => props.onToggleExecutionTime(e.target.value)}
+          onChange={props.onToggleExecutionTime()}
         >
           <FormControlLabel
             value="Before"
@@ -273,12 +266,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onTextUpdate: text => dispatch(actions.setDisplayText(text)),
-    onReceiveStake: stake => dispatch(actions.setStake(stake)),
-    onReceivePrice: price => dispatch(actions.setPrice(price)),
-    onReceiveHours: hours => dispatch(actions.setHours(hours)),
-    onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
-    onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
-    onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time)),
+    onReceiveStake: stake => e => dispatch(actions.setStake(e.target.value)),
+    onReceivePrice: price => e => dispatch(actions.setPrice(getNextPrice(price, e.target.value))),
+    onReceiveHours: () => e => dispatch(actions.setHours(e.target.value)),
+    onReceiveMinutes: () => e => dispatch(actions.setMinutes(e.target.value)),
+    onReceiveSeconds: () => e => dispatch(actions.setSeconds(e.target.value)),
+    onToggleExecutionTime: time => e => dispatch(actions.toggleExecutionTime(e.target.value)),
     onSelection: selections => dispatch(actions.setSelections(selections)),
     onUpdateBackList: list => dispatch(actions.updateBackList(list))
   };

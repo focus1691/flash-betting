@@ -6,7 +6,7 @@ import { loadMyMarkets } from '../../../actions/market';
 const MarketSaveButton = ({sport, myMarkets, onUpdateMyMarkets}) => {
     const marketItemSaved = myMarkets.findIndex(item => item.id === sport.id && item.type == sport.type && item.name == sport.name) !== -1
     
-    const updateMyMarkets = (marketItemSaved, id, name, type, children) => {
+    const updateMyMarkets = (marketItemSaved, id, name, type, children) => e => {
         /*
             marketItemSaved - whether it is saved or not
             id - id for the selection
@@ -31,9 +31,7 @@ const MarketSaveButton = ({sport, myMarkets, onUpdateMyMarkets}) => {
     }
 
     return (
-        <ListItemIcon style={{minWidth: 'auto', cursor: 'pointer'}} onClick={() => {
-            updateMyMarkets(marketItemSaved, sport.id, sport.name, sport.type, sport.children)
-        }}>
+        <ListItemIcon style={{minWidth: 'auto', cursor: 'pointer'}} onClick={updateMyMarkets(marketItemSaved, sport.id, sport.name, sport.type, sport.children)}>
             <img
                 src={window.location.origin + (marketItemSaved ? "/icons/rounded-remove-button.png" : "/icons/add-button-inside-black-circle.png")}
                 alt={"Add"}

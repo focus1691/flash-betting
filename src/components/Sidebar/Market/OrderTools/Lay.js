@@ -45,11 +45,11 @@ const Lay = props => {
     ])));
   }, []);
 
-  const handleClickListItem = event => {
-    setAnchorEl(event.currentTarget);
+  const handleClickListItem = () => e => {
+    setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuItemClick = (event, index) => {
+  const handleMenuItemClick = index => e => {
     props.onSelection(index);
     setAnchorEl(null);
   };
@@ -59,7 +59,7 @@ const Lay = props => {
   };
 
   // Handle Submit click to place an order
-  const placeOrder = async () => {
+  const placeOrder = () => async e => {
 
     const selections = typeof props.selections == "string" ? [props.selections] : props.selections
 
@@ -107,7 +107,7 @@ const Lay = props => {
           aria-haspopup="true"
           aria-controls="lock-menu"
           aria-label="Selections"
-          onClick={handleClickListItem}
+          onClick={handleClickListItem()}
         >
           <ListItemText
             primary="Lay"
@@ -134,14 +134,7 @@ const Lay = props => {
             key={`lay-order-all/field`}
             className={classes.root}
             selected={typeof props.selections != "string"}
-            onClick={event =>
-              handleMenuItemClick(
-                event,
-                Object.keys(props.runners).map(key => [
-                  props.runners[key].selectionId
-                ])
-              )
-            }
+            onClick={handleMenuItemClick(Object.keys(props.runners).map(key => [props.runners[key].selectionId]))}
           >
             Lay All / The Field
           </StyledMenuItem>
@@ -155,7 +148,7 @@ const Lay = props => {
             key={`lay-order-${props.runners[key].runnerName}`}
             className={classes.root}
             selected={key === props.selections}
-            onClick={event => handleMenuItemClick(event, key)}
+            onClick={handleMenuItemClick(key)}
           >
             {props.runners[key].runnerName}
           </StyledMenuItem>
@@ -182,7 +175,7 @@ const Lay = props => {
           onChange={e => props.onReceivePrice(getNextPrice(props.price, e.target.value))}
           margin="normal"
         />
-        <Button variant="outlined" color="primary" className={classes.button} onClick={e => placeOrder()}>
+        <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
           Submit
         </Button>
       </div>

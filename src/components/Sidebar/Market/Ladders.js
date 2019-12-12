@@ -35,6 +35,26 @@ const Ladder = props => {
     return data;
   };
 
+  const handleRunnerSelection = selectionId => e => {
+    if (Object.keys(props.ladderOrder).length > 0) {
+      // we send it to the end when we select a new ladder
+
+      const newLadderOrder = Object.values(props.ladderOrder).filter(item => item !== selectionId).concat(selectionId)
+      // convert it back to an object
+      const newLadderOrderObject = {};
+      newLadderOrder.map((item, index) => {
+        newLadderOrderObject[index] = item;
+      })
+      props.onChangeLadderOrder(newLadderOrderObject)
+    }
+
+    if (props.excludedLadders.indexOf(selectionId) === -1) {
+      props.onChangeExcluded(props.excludedLadders.concat(selectionId))
+    } else {
+      props.onChangeExcluded(props.excludedLadders.filter(item => item !== selectionId))
+    }
+  };
+
   const renderRunners = () => {
     return props.sortedLadder.map(selectionId => {
       const { atb, atl, ltp, ltpStyle } = deconstructLadder(props.ladder[selectionId]);
@@ -48,25 +68,7 @@ const Ladder = props => {
             <input
               type="checkbox"
               checked={props.excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
-              onClick={() => {
-                if (Object.keys(props.ladderOrder).length > 0) {
-                  // we send it to the end when we select a new ladder
-
-                  const newLadderOrder = Object.values(props.ladderOrder).filter(item => item !== selectionId).concat(selectionId)
-                  // convert it back to an object
-                  const newLadderOrderObject = {};
-                  newLadderOrder.map((item, index) => {
-                    newLadderOrderObject[index] = item;
-                  })
-                  props.onChangeLadderOrder(newLadderOrderObject)
-                }
-
-                if (props.excludedLadders.indexOf(selectionId) === -1) {
-                  props.onChangeExcluded(props.excludedLadders.concat(selectionId))
-                } else {
-                  props.onChangeExcluded(props.excludedLadders.filter(item => item !== selectionId))
-                }
-              }} />
+              onClick={handleRunnerSelection(selectionId)} />
           </td>
         </tr>
       );

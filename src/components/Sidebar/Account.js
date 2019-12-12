@@ -9,6 +9,10 @@ import { formatCurrency } from "./../../utils/NumberFormat";
 const Account = props => {
   const [loggedIn, setLoggedIn] = useState(true);
 
+  const handleLogout = () => e => {
+    setLoggedIn(false);
+  };
+
   useEffect(() => {
     fetch(`/api/get-account-details`)
       .then(res => res.json())
@@ -28,7 +32,7 @@ const Account = props => {
       <div id="sidebar-header">
         <p id="flag-name">
           {props.name}
-          <button id="logout" onClick={e => setLoggedIn(false)}>
+          <button id="logout" onClick={handleLogout()}>
             <img
               alt={"Logout"}
               src={window.location.origin + "/icons/logout.png"}

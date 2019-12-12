@@ -52,7 +52,7 @@ const Login = props => {
 
   props.onLogin(false);
 
-  const handleSubmit = e => {
+  const handleSubmit = () => e => {
     fetch(`/api/login?user=${cookies.username}&pass=${cookies.password}`)
       .then(res => res.json())
       .then(res => {
@@ -131,7 +131,7 @@ const Login = props => {
               onChange={(e, checked) => setRememberMe(checked)}
             />
             <Button
-              onClick={e => handleSubmit(e)}
+              onClick={handleSubmit()}
               fullWidth
               variant="contained"
               color="primary"

@@ -13,7 +13,6 @@ import { formatCurrency } from "../../utils/NumberFormat";
 import { calcBackProfit, colorForBack } from "../../utils/Bets/BettingCalculations";
 import { marketHasBets, getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import NonRunners from "./NonRunner";
-import SuspendedGrid from "./SuspendedGrid";
 import GridOrderRow from "./GridOrderRow";
 import { placeOrder } from "../../actions/order";
 import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
@@ -248,18 +247,6 @@ const Grid = props => {
 			);
 		});
 	};
-
-	const renderSuspended = () => {
-		return (
-			<SuspendedGrid
-				ladder={props.sortedLadder}
-				runners={props.runners}
-				selectRunner={selectRunner}
-				eventId={props.market.eventType.id}
-			/>
-		);
-	};
-
 
 	const ltpSelectionIdObject = {};
 

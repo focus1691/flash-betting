@@ -6,7 +6,7 @@ import { placeOrder } from "../../actions/order";
 import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 import { isHedgingOnSelectionAvailable } from "../../utils/TradingStategy/HedingCalculator";
 import { selectionHasBets } from "../../utils/Bets/SelectionHasBets";
-import crypto from 'crypto'
+import crypto from 'crypto';
 
 const GridDetailCell = props => {
 
@@ -24,12 +24,26 @@ const GridDetailCell = props => {
     e.target.src = iconForEvent(parseInt(props.sportId));
   };
 
+  const executeHedgeBet = () => e => {
+    if (isHedgingOnSelectionAvailable(props.market.marketId, props.runner.selectionId, props.bets)) {
+      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+      props.onPlaceOrder({
+        marketId: props.market.marketId,
+        side: side,
+        size: hedgeSize,
+        price: props.ltp[0],
+        selectionId: props.runner.selectionId,
+        customerStrategyRef: referenceStrategyId,
+        unmatchedBets: props.bets.unmatched,
+        matchedBets: props.bets.matched,
+      });
+    }
+  };
+
   return (
     <td
       className="grid-runner-details"
-      onClick={e => {
-        props.onSelectRunner(props.runner);
-      }}
+      onClick={props.onSelectRunner(props.runner)}
     >
       <img src={props.logo} alt={""} onError={handleImageError()} />
       <span>{`${props.number}${props.name}`}</span>
@@ -40,21 +54,7 @@ const GridDetailCell = props => {
           color: !isHedgingOnSelectionAvailable(props.market.marketId, props.runner.selectionId, props.bets)
             ? "#D3D3D3" : props.hedge < 0 ? "red" : "#01CC41"
         }}
-          onClick={() => {
-            if (isHedgingOnSelectionAvailable(props.market.marketId, props.runner.selectionId, props.bets)) {
-              const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
-              props.onPlaceOrder({
-                marketId: props.market.marketId,
-                side: side,
-                size: hedgeSize,
-                price: props.ltp[0],
-                selectionId: props.runner.selectionId,
-                customerStrategyRef: referenceStrategyId,
-                unmatchedBets: props.bets.unmatched,
-                matchedBets: props.bets.matched,
-              });
-            }
-          }}>
+          onClick={executeHedgeBet()}>
           {selectionHasBets(props.market.marketId, props.runner.selectionId, props.bets) ? props.hedge : ''}
         </span>
         <span style={{ color: props.PL.color }}>{props.PL.val}</span>
@@ -72,7 +72,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectRunner: runner => dispatch(actions.setRunner(runner)),
+    onSelectRunner: runner => e => dispatch(actions.setRunner(runner)),
     onPlaceOrder: order => dispatch(placeOrder(order)),
   };
 };

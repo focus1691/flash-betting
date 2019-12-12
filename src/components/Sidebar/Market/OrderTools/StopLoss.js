@@ -55,11 +55,11 @@ const StopLoss = props => {
     );
   }, []);
 
-  const handleClickListItem = event => {
-    setAnchorEl(event.currentTarget);
+  const handleClickListItem = () => e => {
+    setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuItemClick = (event, index) => {
+  const handleMenuItemClick = index => e => {
     props.onSelection(index);
     setAnchorEl(null);
   };
@@ -76,7 +76,7 @@ const StopLoss = props => {
           aria-haspopup="true"
           aria-controls="lock-menu"
           aria-label="Selections"
-          onClick={handleClickListItem}
+          onClick={handleClickListItem()}
         >
           <ListItemText
             primary="Runners"
@@ -103,14 +103,7 @@ const StopLoss = props => {
             key={`stop-loss-order-all/field`}
             className={classes.root}
             selected={typeof props.selections != "string"}
-            onClick={event =>
-              handleMenuItemClick(
-                event,
-                Object.keys(props.runners).map(key => [
-                  props.runners[key].selectionId
-                ])
-              )
-            }
+            onClick={handleMenuItemClick(Object.keys(props.runners).map(key => [props.runners[key].selectionId]))}
           >
             All / The Field
           </StyledMenuItem>
@@ -123,7 +116,7 @@ const StopLoss = props => {
             key={`stop-loss-order-${props.runners[key].runnerName}`}
             className={classes.root}
             selected={key === props.selections}
-            onClick={event => handleMenuItemClick(event, key)}
+            onClick={handleMenuItemClick(key)}
           >
             {props.runners[key].runnerName}
           </StyledMenuItem>
