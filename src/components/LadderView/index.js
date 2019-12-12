@@ -6,8 +6,6 @@ import { getMatchedBets } from "../../selectors/orderSelector";
 
 const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, matchedBets, ladderUnmatched}) => {
 
-  const [oddsHovered, setOddsHovered] = useState({selectionId: 0, odds: 0, side: "BACK"}) 
-
   useEffect(() => {
     // initialize the order object
     const newOrderList = {};
@@ -43,8 +41,6 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
                 key = {value}
                 order = {index}
                 selectionMatchedBets = {newMatchedBets[value]}
-                setOddsHovered = {setOddsHovered}
-                oddsHovered = {oddsHovered}
                 ladderUnmatched = {ladderUnmatched}
               />
             ))

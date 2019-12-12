@@ -101,6 +101,7 @@ const mapStateToProps = (state, {selectionId}) => {
     unmatchedBets: getUnmatchedBets(state.order.bets),
     matchedBets: getMatchedBets(state.order.bets),
     ltp: getLTP(state.market.ladder, {selectionId}),
+    oddsHovered: state.market.oddsHovered
   };
 }; 
 

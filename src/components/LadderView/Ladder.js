@@ -16,10 +16,10 @@ import { placeOrder, cancelOrder } from "../../actions/order";
 import { updateLadderOrder } from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { getUnmatchedBets, getMatchedBets } from "../../selectors/orderSelector";
-import { getLadder } from "../../selectors/marketSelector";
+import { getLadder, getLTP } from "../../selectors/marketSelector";
 import { getStakeVal } from "../../selectors/settingsSelector";
 
-const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, oddsHovered, setOddsHovered, ladderUnmatched, stake, stopLossOffset, stopLossTrailing, stopLossList }) => {
+const Ladder = ({ id, ltp, market, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, ladderUnmatched, stake, stopLossOffset, stopLossTrailing, stopLossList }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -29,31 +29,33 @@ const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladder
     const [isLadderDown, setLadderDown] = useState(false);
 
     // every 1 second, checks if there is an LTP, if there is, we scroll to it and stop the interval
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         const ltpIndex = Object.keys(ladder.fullLadder).indexOf(parseFloat(ladder.ltp[0]).toFixed(2));
-    //         if (listRef.current !== null && ltpIndex !== -1) {
-    //             listRef.current.scrollToItem(ltpIndex, 'center');
-    //             clearInterval(interval);
-    //             setlistRefSet(true);
-    //         }
-    //     }, 1000)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
+            if (listRef.current !== null && ltpIndex !== -1) {
+                // we do the calculation because we start in reverse
+                listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
+                clearInterval(interval);
+                setlistRefSet(true);
+            }
+        }, 1000)
 
-    // }, [listRef]);
+    }, [listRef]);
 
     // if the order changes, we scrollback to the ltp 
-    // useEffect(() => {
-    //     const ltpIndex = Object.keys(ladder.fullLadder).indexOf(parseFloat(ladder.ltp[0]).toFixed(2));
-    //     if (listRef.current !== undefined) {
-    //         listRef.current.scrollToItem(ltpIndex, 'center');
-    //     }
-    // }, [order]);
+    useEffect(() => {
+        const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
+        if (listRef.current !== undefined) {
+            // we do the calculation because we start in reverse
+            listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
+        }
+    }, [order]);
 
-    const coloredLTPList = GetColoredLTPList(ladder, id)
+    // const coloredLTPList = GetColoredLTPList(ladder, id)
 
     const placeOrder = data => {
         onPlaceOrder({
-            marketId: market.marketId,
+            marketId: data.marketId,
             side: data.side,
             size: data.size,
             price: data.price,
@@ -68,7 +70,7 @@ const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladder
 
     const placeStopLossOrder = async data => {
         const newStopLoss = {
-            marketId: market.marketId,
+            marketId: data.marketId,
             selectionId: parseInt(id),
             side: data.side,
             size: data.size,
@@ -122,13 +124,6 @@ const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladder
         }
       };
 
-    const parsedVolume = {};
-
-    // if (ladder.trd) {
-    //     ladder.trd.forEach(vol => {
-    //         parsedVolume[formatPrice(vol[0])] = Math.floor(vol[1] / 100) / 10;
-    //     });
-    // }
 
     // const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), { matched: matchedBets }).toFixed(2) : 0;
 
@@ -141,18 +136,7 @@ const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladder
     //     }, 0) : 0;
 
     // const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0;
-
-    // gets all the unmatched bets and puts them in the ladder
-    // const selectionUnmatched = {};
-    // Object.values(unmatchedBets).forEach(item => {
-    //     if (parseFloat(item.selectionId) === parseFloat(id)) {
-    //         selectionUnmatched[item.price] = item;
-    //     }
-    // });
     
-    console.log(500)
-
-
     return (
         <LadderContainer
             isReferenceSet={isReferenceSet}
@@ -167,7 +151,6 @@ const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladder
             <LadderHeader
                 selectionId={id}
                 setLadderDown={setLadderDown}
-                oddsHovered={oddsHovered}
             />
 
             <div className={"ladder"} onContextMenu={() => false}>
@@ -193,15 +176,12 @@ const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladder
                                 // unmatchedBets: unmatchedBets,
                                 // ladder: [],
                                 selectionId: id,
-                                // placeOrder: placeOrder,
+                                placeOrder: placeOrder,
                                 // cancelOrder: onCancelOrder,
-                                // ltp: ladder.ltp[0],
                                 // ltpList: [],
                                 // stopLoss: stopLossList[id],
-                                // changeStopLossList: placeStopLossOrder,
+                                changeStopLossList: placeStopLossOrder,
                                 // hedgeSize: 4,
-                                setOddsHovered: setOddsHovered,
-                                // volume: parsedVolume,
                                 ladderSideLeft: ladderSideLeft,
                                 // selectionUnmatched: 4
                             }}
@@ -221,7 +201,7 @@ const Ladder = ({ id, ladder, market, onPlaceOrder, onCancelOrder, order, ladder
 const mapStateToProps = (state, {id}) => {
     return {
       // market: state.market.currentMarket,
-      ladder: getLadder(state.market.ladder, {selectionId: id}), 
+      ltp: getLTP(state.market.ladder, {selectionId: id}), 
       unmatchedBets: getUnmatchedBets(state.order.bets),
       matchedBets: getMatchedBets(state.order.bets),
       stopLossList: state.stopLoss.list,
@@ -241,4 +221,29 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladder));
+function areEqualShallow(a, b) {
+    const diff = [];
+    for(var key in a) {
+        if(!(key in b) || a[key] !== b[key]) {
+            diff.push(key)
+        }
+    }
+    
+    return diff;
+}
+
+const arePropsEqual = (prevProps, nextProps) => {
+    // if only ltp changed
+    if (areEqualShallow(prevProps, nextProps).length === 1) {
+        if (nextProps[0] === 'ltp' && prevProps.ltp === undefined) {
+            return false;
+        } else if (nextProps[0] === 'ltp') {
+            return true;
+        }
+    }
+
+    return false
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladder, arePropsEqual));

@@ -1,49 +1,36 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import LadderOrderCell from './LadderOrderCell'
-import { formatPrice, ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
+import { formatPrice, ALL_PRICES, formatPriceKey } from "../../utils/ladder/CreateFullLadder";
 import { findStopPosition, findStopPositionForPercent } from "../../utils/TradingStategy/StopLoss";
 import crypto from 'crypto'
+import { getVolume, getIsLTP } from '../../selectors/marketSelector';
+import { setOddsHovered } from '../../actions/market';
+import LadderLTPCell from './LadderLTPCell';
+import LadderVolumeCell from './LadderVolumeCell';
+import LadderHedgeCell from './LadderHedgeCell';
 
-export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, setOddsHovered, volume, ladderSideLeft, selectionUnmatched, marketId, matchedBets, unmatchedBets }, style, index}) => {
+const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, ladderSideLeft, selectionUnmatched, marketId, matchedBets, unmatchedBets }, onOddsHovered, vol, style, index}) => {
     const key = ALL_PRICES[ALL_PRICES.length - index - 1]
     
-    const indexInLTPList = -1;
-    const volumeVal = 0;
+    
 
-    const leftSide = "LAY"
-    const rightSide = "BACK"
-
-    const unmatchedBetOnRow = undefined;
+    const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK"
+    const rightSide = ladderSideLeft === "LAY" ? "BACK" : "LAY"
 
     const handleContextMenu = () => e => {
       e.preventDefault();
       return false;
     };
 
+    console.log('zta')
+
     return (
         <div key={key}  onContextMenu = {handleContextMenu()} className={"tr"} style = {style} >
           
-          <div className={"candle-stick-col td"} colSpan={3}>
-            {
-              indexInLTPList >= 0 ? 
-              <img 
-                src={`${window.location.origin}/icons/${ltpList[indexInLTPList].color === 'R' ? 'red-candle.png' : 'green-candle.png'}`} 
-                className={"candle-stick"} alt = "" style = {{right: indexInLTPList * 2}} /> 
-              : null
-            }
-            <div className={"volume-col"} style={{width: `${volumeVal * 10}px`}}>
-              {volumeVal === 0 ? null : volumeVal}
-            </div>
-          </div>
-
-          <div 
-            className = 'td'
-            // style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? 'black' : `${ladder[key][leftSideProfit] >= 0 ? "green" : 'red'}`}}
-            // onClick = {handleHedgeCellClick(0)}
-          >
-              {/* {unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? unmatchedBetOnRow.size : ladder[key][leftSideProfit]} */}
-            </div>
+          <LadderVolumeCell selectionId = {selectionId} price = {key} />
+          <LadderHedgeCell selectionId = {selectionId} price = {key} leftSide = {leftSide} />
+          
           <LadderOrderCell 
             side = {leftSide}
             selectionId = {selectionId}
@@ -51,20 +38,19 @@ export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpL
             // ladderSideLeft = {ladderSideLeft}
             // cell = {ladder[key]}
             // selectionId = {selectionId}
-            // placeOrder = {placeOrder}
+            placeOrder = {placeOrder}
             // isStopLoss = {stopLoss !== undefined && stopLoss.side === leftSide ? 
             //               stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
             //               findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
             //                : false}
             // stopLossData = {stopLoss}
-            // changeStopLossList= {changeStopLossList}
+            changeStopLossList= {changeStopLossList}
             // hedgeSize = {hedgeSize}
-            onHover = {() => setOddsHovered({selectionId, odds: key, side: leftSide})}
-            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: leftSide})}
+            onHover = {() => onOddsHovered({selectionId, odds: key, side: leftSide})}
+            onLeave = {() => onOddsHovered({selectionId, odds: 0, side: leftSide})}
           />
-          <div style = {{
-            background: key == ltp ? 'yellow' : '#BBBBBB'
-          }} className = 'td'>{formatPrice(key)}</div>
+          <LadderLTPCell selectionId = {selectionId} price = {key} />
+          
           <LadderOrderCell 
             side = {rightSide}
             selectionId = {selectionId}
@@ -72,16 +58,16 @@ export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpL
             // ladderSideLeft = {ladderSideLeft}
             // cell = {ladder[key]}
             // selectionId = {selectionId}
-            // placeOrder = {placeOrder} 
+            placeOrder = {placeOrder} 
             // isStopLoss = {stopLoss !== undefined && stopLoss.side === rightSide ? 
             //   stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
             //   findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
             //    : false}
             // stopLossData = {stopLoss}
-            // changeStopLossList= {changeStopLossList}
+            changeStopLossList= {changeStopLossList}
             // hedgeSize = {hedgeSize}
-            onHover = {() => setOddsHovered({selectionId, odds: key, side: leftSide})}
-            onLeave = {() => setOddsHovered({selectionId, odds: 0, side: leftSide})}
+            onHover = {() => onOddsHovered({selectionId, odds: key, side: rightSide})}
+            onLeave = {() => onOddsHovered({selectionId, odds: 0, side: rightSide})}
           />
           <div 
             className = 'td'
@@ -91,3 +77,20 @@ export default ({data: { ladder, selectionId, placeOrder, cancelOrder, ltp, ltpL
         </div>
     )
 }
+
+const mapStateToProps = (state, {data: {selectionId}, index}) => {
+  return {
+      
+      
+      
+  };  
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+      onOddsHovered: odds => dispatch(setOddsHovered(odds))
+  };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderRow, (prevProps) => true));

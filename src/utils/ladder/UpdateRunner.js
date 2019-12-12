@@ -20,12 +20,15 @@ const UpdateRunner = (ladder, rawData) => {
 
       if (index === -1 && volumeMatched >= 100) {
         ladder.trd.push([price, volumeMatched]);
+        ladder.trdo[formatPriceKey(price)] = volumeMatched
       }
       else if (volumeMatched < 100) {
         ladder.trd.splice(index, 1);
+        delete ladder.trdo[formatPriceKey(price)];
       }
       else if (volumeMatched >= 100) {
         ladder.trd[index][1] = volumeMatched;
+        ladder.trdo[formatPriceKey(price)] = volumeMatched;
       }
     });
     sortAsc(ladder.trd);
@@ -41,10 +44,12 @@ const UpdateRunner = (ladder, rawData) => {
       if (index === -1 && matched >= 1) {
         ladder.atb.push([price, matched]);
         ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
+        ladder.atbo[formatPriceKey(price)] = matched;
       }
       else if (matched >= 1) {
         ladder.atb[index][1] = matched;
         ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
+        ladder.atbo[formatPriceKey(price)] = matched;
       }
       else if (matched <= 0) {
         ladder.atb.splice(index, 1);
@@ -64,6 +69,7 @@ const UpdateRunner = (ladder, rawData) => {
       if (index === -1 && matched >= 1) {
         ladder.atl.push([price, matched]);
         ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
+        ladder.atlo[formatPriceKey(price)] = matched;
       }
       else if (matched >= 1) {
         ladder.atl[index][1] = matched;
@@ -72,6 +78,7 @@ const UpdateRunner = (ladder, rawData) => {
       else if (matched <= 0) {
         ladder.atl.splice(index, 1);
         ladder.fullLadder[formatPriceKey(price)].backMatched = null;
+        ladder.atlo[formatPriceKey(price)] = matched;
       }
     });
     sortAsc(ladder.atl);

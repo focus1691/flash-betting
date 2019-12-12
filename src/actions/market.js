@@ -173,4 +173,11 @@ export const changeLadderSideLeft = side => {
   };
 };
 
+export const setOddsHovered = odds => {
+  return {
+    type: "SET_ODDS_HOVERED",
+    payload: odds
+  };
+}
+
 

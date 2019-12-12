@@ -20,10 +20,18 @@ const AddRunner = (data) => {
     price: 0
   };
 
+  // make it easier for ladder
+  runner.trdo = {};
   if (!runner.trd) {
     runner.trd = [];
+
+
   } else {
     sortAsc(runner.trd);
+
+    runner.trd.map(trd => {
+      runner.trdo[formatPriceKey(trd[0])] = trd[1]
+    })
   }
 
   if (!runner.atb) {
