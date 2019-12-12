@@ -1,8 +1,8 @@
 
-import { formatPriceKey, calcBackLayPercentages } from "../ladder/CreateFullLadder";
+import { formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Algorithms/Sort";
 
-const UpdateRunner = (ladder, rawData) => {
+const UpdateLadder = (ladder, rawData) => {
 
   if (rawData.ltp) {
     ladder.ltp = [rawData.ltp, ...ladder.ltp];
@@ -89,4 +89,4 @@ const UpdateRunner = (ladder, rawData) => {
   return ladder;
 }
 
-export { UpdateRunner };
+export { UpdateLadder };

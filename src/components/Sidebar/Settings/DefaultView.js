@@ -5,9 +5,16 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
-export default ({ defaultView, toggleDefaultView, saveSetting, classes }) => {
+export default ({ defaultView, toggleDefaultView, saveSetting, premiumMember, classes }) => {
 
     const [changeMade, setChangeMade] = useState(false);
+
+    const handleViewChange = () => e => {
+        if (!premiumMember && e.target.value === "LadderView") return;
+        
+        setChangeMade(true);
+        toggleDefaultView(e.target.value);
+    };
 
     const renderSaveBtn = () => {
         if (!changeMade) return null;
@@ -38,10 +45,7 @@ export default ({ defaultView, toggleDefaultView, saveSetting, classes }) => {
                 name="View"
                 className={classes.group}
                 value={defaultView}
-                onChange={e => {
-                    setChangeMade(true);
-                    toggleDefaultView(e.target.value);
-                }}
+                onChange={handleViewChange()}
             >
                 <FormControlLabel
                     value="LadderView"

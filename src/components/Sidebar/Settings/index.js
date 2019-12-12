@@ -59,6 +59,7 @@ const Settings = props => {
 				defaultView={props.defaultView}
 				toggleDefaultView={props.onToggleDefaultView}
 				saveSetting={saveSetting}
+				premiumMember={props.premiumMember}
 				classes={classes}
 			/>
 
@@ -170,6 +171,7 @@ const Settings = props => {
 
 const mapStateToProps = state => {
 	return {
+		premiumMember: state.settings.premiumMember,
 		defaultView: state.settings.defaultView,
 		view: state.settings.view,
 		trainingBalance: state.settings.trainingBalance,

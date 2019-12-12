@@ -14,8 +14,9 @@ import GridView from "../GridView/";
 import SocketContext from "../../SocketContext";
 import Title from "./Title";
 import getQueryVariable from "../../utils/Market/GetQueryVariable";
-import { AddRunner } from "../../utils/ladder/AddRunner";
-import { UpdateRunner } from "../../utils/ladder/UpdateRunner";
+import { CreateLadder } from "../../utils/ladder/CreateLadder";
+import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
+import { CreateRunners } from "../../utils/Market/CreateRunners";
 import { isPremiumActive } from "../../utils/DateCalculator";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
@@ -101,24 +102,7 @@ const App = props => {
           } else {
             setMarketId(marketId);
             if (data.result.length > 0) {
-              const runners = {};
-              for (let i = 0; i < data.result[0].runners.length; i++) {
-                let selectionId = data.result[0].runners[i].selectionId;
-                runners[selectionId] = data.result[0].runners[i];
-
-                if (runners[selectionId].metadata.CLOTH_NUMBER) {
-                  runners[selectionId].runnerName = runners[selectionId].runnerName.replace(/[0-9.]*[.,\s]/g, ' ').trim();
-                }
-
-                // The Stake/Liability buttons for the GridView
-                runners[selectionId].order = {
-                  visible: false,
-                  backLay: 0,
-                  stakeLiability: 0,
-                  stake: 2,
-                  price: 0
-                };
-              }
+              const runners = CreateRunners(data.result[0].runners);
               props.onSortLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
               props.onReceiveEventType(data.result[0].eventType.id);
               props.onUpdateRunners(runners);
@@ -396,7 +380,7 @@ const App = props => {
 
             if (rc.id in props.ladders) {
               // Runner found so we update our object with the raw data
-              ladders[rc.id] = UpdateRunner(props.ladders[rc.id], rc);
+              ladders[rc.id] = UpdateLadder(props.ladders[rc.id], rc);
 
               // Back and Lay
               if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
@@ -443,7 +427,7 @@ const App = props => {
             }
             else if (rc.id in nonRunners === false) {
               // Runner found so we create the new object with the raw data
-              ladders[rc.id] = AddRunner(rc);
+              ladders[rc.id] = CreateLadder(rc);
             }
           }));
 
