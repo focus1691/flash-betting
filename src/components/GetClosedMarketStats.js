@@ -31,7 +31,9 @@ const GetClosedMarketStats = () => {
                             runnersStatusObject[item.selectionId] = item.status;
                         });
 
-                        let runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then(res => res.json());
+                        let runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then(res => res.json()).catch(err => {
+                            window.location.href = window.location.origin + '/dashboard';
+                        });
                         const marketInfoRunners = Object.keys(runnerResults).map(key => ({ selectionId: key, runnerName: runnerResults[key] }));
 
                         const runnersWithStatusArray = marketInfoRunners.map(item => {

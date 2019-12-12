@@ -29,7 +29,7 @@ export const loadMarket = market => {
 export const closeMarket = () => {
   return {
     type: "CLOSE_MARKET",
-    payload: true
+    payload: false
   };
 };
 

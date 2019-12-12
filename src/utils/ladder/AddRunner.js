@@ -5,9 +5,9 @@ const AddRunner = (data) => {
   const runner = data;
 
   runner.id = data.id;
-  runner.ltp = [runner.ltp, runner.ltp];
+  runner.ltp = runner.ltp ? [runner.ltp] : [null];
   runner.ltpDelta = new Date();
-  runner.tv = [runner.tv, runner.tv];
+  runner.tv = runner.tv ? [runner.tv, runner.tv] : [null, null];
   runner.fullLadder = createFullLadder();
   runner.atbo = {};
   runner.atlo = {};

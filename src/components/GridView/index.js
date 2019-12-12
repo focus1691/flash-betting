@@ -29,22 +29,10 @@ const Grid = props => {
 	const [ordersVisible, setOrdersVisible] = useState(0);
 	const oneClickRef = createRef();
 
-	const renderData = () => {
-		return (
-			<>
-			{props.marketOpen
-				? props.marketStatus === "SUSPENDED"
-					? renderSuspended()
-					: props.marketStatus === "OPEN" || props.marketStatus === "RUNNING"
-						? renderTableData()
-						: null
-				: null}
-				</>
-		);
-	};
-
 	const handlePriceClick = (key, backLay, odds) => e => {
 		e.preventDefault();
+
+		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
 
 		if (!props.oneClickOn) {
 			props.onUpdateOrder({
@@ -58,6 +46,7 @@ const Grid = props => {
 	};
 
 	const handlePriceHover = key => e => {
+		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
 		setRowHovered(key);
 		$(e.currentTarget).one("mouseleave", e => {
 			setRowHovered(null);
@@ -65,17 +54,20 @@ const Grid = props => {
 	}
 
 	const toggleBackAndLay = (order) => e => {
+		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
 		props.onToggleBackAndLay({ id: order.id });
 		setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
 	};
 
 	const toggleOneClick = () => e => {
+		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
 		props.onToggleOneClick(!props.oneClickOn);
 		const node = oneClickRef.current;
 		props.oneClickOn ? node.blur() : node.focus();
 	};
 
 	const toggleStakeAndLiabilityButtons = data => e => {
+		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
 		props.onToggleStakeAndLiability(data);
 	};
 
@@ -311,7 +303,9 @@ const Grid = props => {
 						marketCashout={marketCashout}
 						openLiveStream={props.onOpenLiveStream}
 					/>
-					{renderData()}
+					{(props.marketOpen) && (props.marketStatus === "OPEN" ||
+						props.marketStatus === "RUNNING" || props.marketStatus === "SUSPENDED")
+						? renderTableData() : null}
 				</tbody>
 			</table>
 		</div>
