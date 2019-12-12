@@ -69,9 +69,6 @@ app.get("/api/generate-client-token", (request, response) => {
 	});
 });
 
-// marketId: {
-//	 selectionId: name
-// }
 const runnerNames = {}
 
 app.post("/api/save-runner-names", (request, response) => {
@@ -523,7 +520,7 @@ app.get("/api/list-market-book", (request, response) => {
 	betfair.listMarketBook(
 		{
 			marketIds: [request.query.marketId],
-			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS"] }
+			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS", "RUNNER_DESCRIPTION"] }
 		},
 		(err, res) => {
 			response.json(res);

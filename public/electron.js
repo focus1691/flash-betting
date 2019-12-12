@@ -87,7 +87,7 @@ app.post("/api/save-runner-names", (request, response) => {
 });
 
 app.get("/api/fetch-runner-names", (request, response) => {
-	response.json(runnerNames[request.marketId])
+	response.json(runnerNames[request.query.marketId])
 })
 
 
