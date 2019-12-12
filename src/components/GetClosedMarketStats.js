@@ -6,53 +6,61 @@ import BetsPlaced from "./ClosedMarketView/BetsPlaced";
 
 const GetClosedMarketStats = () => {
     const [completedOrders, setCompletedOrders] = useState([]);
-    const [marketInfo, setMarketInfo] = useState({});
     const [runners, setRunners] = useState([]);
+    const [marketInfo, setMarketInfo] = useState({});
     const marketId = getQueryVariable("marketId");
-    
+
     useEffect(() => {
+
         const getMarketInfo = async () => {
-            // await loadSession();
-            
-            const marketBook = await fetch(`/api/list-market-book?marketId=${marketId}`).then(res => res.json());
-            if (!marketBook || !marketBook.response.result || (marketBook.response.result[0] && marketBook.response.result[0].status !== "CLOSED")) {
-                window.location.href = window.location.origin + '/dashboard'
-            }            
+            await fetch(`/api/list-market-book?marketId=${marketId}`)
+                .then(res => res.json())
+                .then(async data => {
+                    if (!data || !data.response.result || (data.response.result[0] && data.response.result[0].status !== "CLOSED")) {
+                        window.location.href = window.location.origin + '/dashboard';
+                    } else {
+                        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+                        const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE");
+                        setCompletedOrders(completedOrders);
 
-            const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-            const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE")
-            setCompletedOrders(completedOrders)
+                        const marketBook = data.response.result[0];
 
-            const marketInfo = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then(res => res.json())
-            setMarketInfo(marketInfo)
+                        // take the runner status from the marketBook and add it to the runnerResults
+                        const runnersStatusObject = {} // selectionId: status
+                        marketBook.runners.forEach(item => {
+                            runnersStatusObject[item.selectionId] = item.status;
+                        });
 
-            // take the runner status from the marketBook and add it to the marketInfo runners
-            if (marketBook.response && marketBook.response.result && marketBook.response.result[0].runners) {
-                const runnersStatusObject = {} // selectionId: status
-                marketBook.response.result[0].runners.map(item => {
-                    runnersStatusObject[item.selectionId] = item.status;
-                })
+                        let runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then(res => res.json());
+                        const marketInfoRunners = Object.keys(runnerResults).map(key => ({ selectionId: key, runnerName: runnerResults[key] }));
 
-                const marketInfoRunners = Object.keys(marketInfo).map(key => ({selectionId: key, runnerName: marketInfo[key]}))
+                        const runnersWithStatusArray = marketInfoRunners.map(item => {
+                            return Object.assign({}, item, { status: runnersStatusObject[item.selectionId] });
+                        });
 
-                const runnersWithStatusArray = marketInfoRunners.map(item => {
-                    return Object.assign({}, item, {status: runnersStatusObject[item.selectionId]})
-                })
-                
-                setRunners(runnersWithStatusArray);
-            }
-            
+                        setRunners(runnersWithStatusArray);
+                    }
+                });
 
+            await fetch(`/api/get-market-info?marketId=${marketId}`)
+                .then(res => res.json())
+                .then(async data => {
+                    if (!data || data.error || !data.response.result || !data.response.result[0]) {
+                        window.location.href = window.location.origin + '/dashboard';
+                    } else {
+                        setMarketInfo(data.result[0]);
+                    }
+                });
         }
         getMarketInfo();
     }, []);
 
     return (
         <div className={"marketstats-container"}>
-            <MarketSettlement marketInfo = {marketInfo} />
+            <MarketSettlement marketInfo={marketInfo} />
             <div className={"marketstats-tables"}>
-                <ClosedMarketReport matchedBets = {completedOrders} runners = {runners ? runners : []}/>
-                <BetsPlaced matchedBets = {completedOrders} runners = {runners ? runners : []}/>
+                <ClosedMarketReport matchedBets={completedOrders} runners={runners ? runners : []} />
+                <BetsPlaced matchedBets={completedOrders} runners={runners ? runners : []} />
             </div>
         </div>
     )

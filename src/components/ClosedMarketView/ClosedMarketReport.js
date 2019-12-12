@@ -88,8 +88,8 @@ export default ({matchedBets, runners}) => {
                                             return (
                                             <TableCell key={column.id} align={column.align}>
                                                 {column.id === "result" ? 
-                                                    <span className = {"marketstats-table-win-result"} style={{backgroundColor: column.result ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)'}}>
-                                                        {column.result ? "Won" : "Lost"}
+                                                    <span className = {"marketstats-table-win-result"} style={{backgroundColor: row.result ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)'}}>
+                                                        {row.result ? "Won" : "Lost"}
                                                     </span> : null}
                                                 <span style={{color: color, fontWeight: isProfitOrLoss ? 'bold' : 'normal'}}>{column.format && typeof value === 'number' ? column.format(value) : value}</span>
                                             </TableCell>

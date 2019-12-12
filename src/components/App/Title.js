@@ -17,6 +17,7 @@ const Title = props => {
         ) : null
     );
 };
+
 const mapStateToProps = state => {
     return {
         market: state.market.currentMarket,

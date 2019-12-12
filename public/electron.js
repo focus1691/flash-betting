@@ -532,7 +532,7 @@ app.get("/api/list-market-book", (request, response) => {
 	betfair.listMarketBook(
 		{
 			marketIds: [request.query.marketId],
-			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS", "RUNNER_DESCRIPTION"] }
+			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS"] }
 		},
 		(err, res) => {
 			response.json(res);

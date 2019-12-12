@@ -492,6 +492,29 @@ app.get("/api/list-markets", (request, response) => {
 		}
 	);
 });
+// betfair.login('traderjosh', 'GdXFsnWvbQn2ujFM').then(res => {
+// 	betfair.setAccessToken('e8tlnYKl2G3ffahX6q7BGihIdsntheyXQdjYia7AB2bsTKY9dprMKvAmilN5R0XX');
+// 	betfair.listMarketCatalogue(
+// 		{
+// 			filter: {
+// 				marketIds: ["1.166252234"]
+// 			},
+// 			marketProjection: [
+// 				"COMPETITION",
+// 				"EVENT",
+// 				"EVENT_TYPE",
+// 				"MARKET_START_TIME",
+// 				"MARKET_DESCRIPTION",
+// 				"RUNNER_DESCRIPTION",
+// 				"RUNNER_METADATA"
+// 			],
+// 			maxResults: 1
+// 		},
+// 		(err, res) => {
+// 			console.log(res);
+// 		}
+// 	);
+// }).bind(this).catch(err => console.log(err));
 
 app.get("/api/get-market-info", (request, response) => {
 	betfair.listMarketCatalogue(
@@ -520,7 +543,7 @@ app.get("/api/list-market-book", (request, response) => {
 	betfair.listMarketBook(
 		{
 			marketIds: [request.query.marketId],
-			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS", "RUNNER_DESCRIPTION"] }
+			priceProjection: { priceData: ["EX_TRADED", "EX_ALL_OFFERS"] }
 		},
 		(err, res) => {
 			response.json(res);
