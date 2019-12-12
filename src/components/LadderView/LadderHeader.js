@@ -8,8 +8,9 @@ import { getRunner, getSportId, getLTP } from "../../selectors/marketSelector";
 import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
+import { formatCurrency } from "../../utils/NumberFormat";
 
-const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp }) => {
+const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, currencyCode, localeCode }) => {
 
   const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(selectionId), { matched: matchedBets }).toFixed(2) : 0;
   const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
@@ -26,12 +27,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
     e.target.src = iconForEvent(parseInt(sportId));
   };
 
-  const selectionMatchedBets = [];
-  Object.values(matchedBets).map(bet => {
-    if (bet.selectionId == selectionId) {
-      selectionMatchedBets.push(bet)
-    }
-  });
+  const selectionMatchedBets = Object.values(matchedBets).filter(bet => bet.selectionId === selectionId);
 
   // calculate ladder ltp hedge
   const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp)));
@@ -68,7 +64,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
               visibility: ordersOnMarket ? 'visible' : 'hidden',
               color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'
             }}
-          >{"£" + Math.abs(PL)}</span>
+          >{formatCurrency(localeCode, currencyCode, PL)}</span>
           <div className={"contender-details"}>
             <span>{getTrainerAndJockey(runner.metadata)}</span>
           </div>
@@ -77,16 +73,16 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
               visibility: oddsHovered.odds > 0 && ordersOnMarket ? 'visible' : 'hidden',
               color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'
             }}>
-            {"£" + Math.abs(oddsHoveredCalc)}
+            {formatCurrency(localeCode, currencyCode, oddsHoveredCalc)}
           </span>
         </div>
       </div>
       <div>
         <span style={{ visibility: ladderLTPHedge === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
-          {"£" + parseFloat(Math.abs(parseFloat(ladderLTPHedge))).toFixed(2)}
+          {formatCurrency(localeCode, currencyCode, ladderLTPHedge)}
         </span>
         <span style={{ visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
-          {"£" + parseFloat(Math.abs(parseFloat(newStake))).toFixed(2)}
+          {formatCurrency(localeCode, currencyCode, newStake)}
         </span>
       </div>
     </div>
@@ -101,7 +97,9 @@ const mapStateToProps = (state, {selectionId}) => {
     unmatchedBets: getUnmatchedBets(state.order.bets),
     matchedBets: getMatchedBets(state.order.bets),
     ltp: getLTP(state.market.ladder, {selectionId}),
-    oddsHovered: state.market.oddsHovered
+    oddsHovered: state.market.oddsHovered,
+    currencyCode: state.account.currencyCode,
+    localeCode: state.account.localeCode
   };
 }; 
 
