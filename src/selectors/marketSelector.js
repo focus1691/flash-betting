@@ -1,7 +1,10 @@
 import { createSelector } from 'reselect'
 import GetColoredLTPList from '../utils/ladder/GetColoredLTPList'
 
-const getLadderSelector = (state, {selectionId}) => state[selectionId]
+const getLadderSelector = (state, {selectionId}) => {
+    console.log(state[selectionId]) 
+    return state[selectionId]
+}
 
 const getRunnerSelector = (state, {selectionId}) => state[selectionId]
 
@@ -41,7 +44,7 @@ export const getCandleStickColor = createSelector(
         const ltpIndex = coloredLTPList.findIndex(item => parseFloat(item.tick) === parseFloat(price))
 
         if (ltpIndex === -1) return undefined
-        return {index: ltpIndex, color: coloredLTPList[ltpIndex]}
+        return {index: ltpIndex, color: coloredLTPList[ltpIndex].color}
     }
 )
 
