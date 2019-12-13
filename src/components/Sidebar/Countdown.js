@@ -6,8 +6,8 @@ import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { updateTickOffsetList } from "../../actions/tickOffset";
-import { checkTimeListsBefore } from '../../utils/TradingStategy/BackLay'
-
+import { setPastEventTime } from "../../actions/market";
+import { checkTimeListsBefore } from '../../utils/TradingStategy/BackLay';
 
 const Countdown = props => {
   const ONE_SECOND = 1000;
@@ -22,6 +22,7 @@ const Countdown = props => {
       return new Date(currentTime) - new Date();
     }
     else if (new Date() > new Date(currentTime)) {
+      if (!props.pastEventTime) props.onPastEventTime();
       return Math.abs(new Date(currentTime) - new Date());
     } else {
       return "--";
@@ -35,11 +36,11 @@ const Countdown = props => {
     if (Object.keys(props.backList).length > 0) {
       props.onUpdateBackList(newBackList)
     }
-    
+
 
     const newLayList = await checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY", props.bets.matched, props.bets.unmatched)
     if (Object.keys(props.layList).length > 0) {
-      props.onUpdateLayList(newLayList)
+      props.onUpdateLayList(newLayList);
     }
 
     const newFillOrKillList = {};
@@ -96,13 +97,13 @@ const Countdown = props => {
         matched: props.bets.matched
       })
     }
-    
+
     if (Object.keys(props.tickOffsetList).length > 0) {
       props.onUpdateTickOffsetList(adjustedTickOffsetList)
     }
 
     if (Object.keys(props.fillOrKillList).length > 0) {
-      props.onUpdateFillOrKillList(newFillOrKillList); 
+      props.onUpdateFillOrKillList(newFillOrKillList);
     }
 
   }, ONE_SECOND);
@@ -162,6 +163,7 @@ const mapStateToProps = state => {
     marketStatus: state.market.status,
     inPlay: state.market.inPlay,
     inPlayTime: state.market.inPlayTime,
+    pastEventTime: state.market.pastEventTime,
     market: state.market.currentMarket,
     layList: state.lay.list,
     backList: state.back.list,
@@ -179,9 +181,9 @@ const matchDispatchToProps = dispatch => {
     onUpdateBackList: list => dispatch(updateBackList(list)),
     onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list)),
     onUpdateTickOffsetList: list => dispatch(updateTickOffsetList(list)),
-    onChangeOrders: orders => dispatch(updateOrders(orders))
+    onChangeOrders: orders => dispatch(updateOrders(orders)),
+    onPastEventTime: () => dispatch(setPastEventTime()),
   }
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Countdown);
-

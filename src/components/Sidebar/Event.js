@@ -1,42 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import useStyles from "../Styles/Styles";
 import CountDown from "./Countdown";
 
-const Event = props => {
+const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime }) => {
   const classes = useStyles();
+  const [bgColour, setBGColor] = useState("#303030");
 
   const renderTitle = () => {
-    if (props.marketOpen) return new Date(
-      props.market.marketStartTime
-    ).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }) + " " + props.market.marketName + (props.market.event.venue ? ` ${props.market.event.venue}` : '');
+    if (marketOpen) return new Date(
+      market.marketStartTime
+    ).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }) + " " + market.marketName + (market.event.venue ? ` ${market.event.venue}` : '');
     return "No Event Selected";
   }
 
-  const getClockBG = () => {
-
-    if (props.marketStatus === "SUSPENDED") return "red";
-    else if (props.marketStatus === "CLOSED") return "#303030";
-
-    else if (new Date() > new Date(props.market.marketStartTime)) {
-      return props.inPlay ? "green" : "orange";
-    } else {
-      return "#303030";
-    }
-  };
+  useEffect(() => {
+    if (marketStatus === "SUSPENDED") setBGColor("red");
+    else if (marketStatus === "CLOSED") setBGColor("#303030");
+    else if (new Date() > new Date(market.marketStartTime) && inPlay) setBGColor("green");
+    else if (new Date() > new Date(market.marketStartTime) && pastEventTime) setBGColor("orange");
+    else setBGColor("#303030");
+  }, [marketStatus, inPlay, pastEventTime]);
 
   return (
     <div id="sidebar-event">
       <div id="sidebar-event-section-1">
-        <div id="sidebar-event-section-2" style={{ background: getClockBG() }}>
+        <div id="sidebar-event-section-2" style={{ background: bgColour }}>
           <span>
             <CountDown />
           </span>
         </div>
         <Typography>
-          Price: <b>{props.market.description ? props.market.description.marketBaseRate : null}</b>
+          Price: <b>{market.description ? market.description.marketBaseRate : null}</b>
         </Typography>
         <Typography>
           API: <b>33.87</b>
@@ -53,11 +50,11 @@ const Event = props => {
 
 const mapStateToProps = state => {
   return {
-    currentEvent: state.sports.currentSport.currentEvent,
     market: state.market.currentMarket,
     marketOpen: state.market.marketOpen,
     marketStatus: state.market.status,
-    inPlay: state.market.inPlay
+    inPlay: state.market.inPlay,
+    pastEventTime: state.market.pastEventTime
   };
 };
 

@@ -2,6 +2,7 @@ const initialState = {
   marketOpen: false,
   inPlay: false,
   inPlayTime: null,
+  pastEventTime: false,
   status: 'OPEN',
   eventType: null,
   initialClk: null,
@@ -29,6 +30,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, inPlay: action.payload };
     case "SET_IN_PLAY_TIME":
       return { ...state, inPlayTime: action.payload };
+    case "SET_PAST_EVENT_TIME":
+      return { ...state, pastEventTime: action.payload };
     case "LOAD_MARKET":
       return { ...state, currentMarket: action.payload };
     case "CLOSE_MARKET":

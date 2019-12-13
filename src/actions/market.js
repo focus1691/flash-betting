@@ -12,6 +12,13 @@ export const setInPlayTime = time => {
   }
 };
 
+export const setPastEventTime = () => {
+  return {
+    type: "SET_PAST_EVENT_TIME",
+    payload: true
+  }
+};
+
 export const setMarketStatus = status => {
   return {
     type: "NEW_MARKET_STATUS",
