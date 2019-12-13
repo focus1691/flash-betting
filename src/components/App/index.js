@@ -14,21 +14,15 @@ import GridView from "../GridView/";
 import SocketContext from "../../SocketContext";
 import Title from "./Title";
 import getQueryVariable from "../../utils/Market/GetQueryVariable";
-import { CreateLadder } from "../../utils/ladder/CreateLadder";
-import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
 import { CreateRunners } from "../../utils/Market/CreateRunners";
 import { isPremiumActive } from "../../utils/DateCalculator";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
-import { checkTimeListAfter } from "../../utils/TradingStategy/BackLay";
 import { placeOrder, updateOrders } from "../../actions/order";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
-import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
 import Draggable from "../Draggable";
-import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../../utils/ExchangeStreaming/MCMHelper";
-import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
-import { sortLadder, sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
+import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import MarketReceiver from "./MarketReceiver";
 
 const App = props => {
@@ -84,10 +78,6 @@ const App = props => {
         props.setPremiumStatus(isActive);
       });
   };
-
-  const cleanupOnMarketClose = (marketId) => {
-    window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
-  }
 
   const loadMarket = async () => {
     let marketId = getQueryVariable("marketId");
@@ -293,29 +283,6 @@ const App = props => {
       }
     }, 15000);
   }, []);
-
-
-  useEffect(() => {
-    props.socket.on("market-definition", async marketDefinition => {
-      props.onMarketStatusChange(marketDefinition.status);
-      props.setInPlay(marketDefinition.inPlay);
-
-      if (marketDefinition.status === "CLOSED" && !props.marketOpen) {
-        props.socket.off("market-definition");
-        props.onMarketClosed();
-        cleanupOnMarketClose(getQueryVariable("marketId"));
-      }
-    });
-  }, [props.marketStatus]);
-
-  useEffect(() => {
-    // A message will be sent here if the connection to the market is disconnected.
-    // We resubscribe to the market here using the initialClk & clk.
-    props.socket.on("connection_closed", () => {
-      console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
-    });
-  }, []);
-
 
   const renderView = () => {
     switch (props.view) {
