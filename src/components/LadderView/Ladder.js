@@ -51,8 +51,6 @@ const Ladder = ({ id, ltp, market, onPlaceOrder, onCancelOrder, order, ladderSid
         }
     }, [order]);
 
-    // const coloredLTPList = GetColoredLTPList(ladder, id)
-
     const placeOrder = data => {
         onPlaceOrder({
             marketId: data.marketId,
