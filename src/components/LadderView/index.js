@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { updateLadderOrder } from "../../actions/market";
 import Ladder from './Ladder'
 import { getMatchedBets } from "../../selectors/orderSelector";
+import SuspendedWarning from "../GridView/SuspendedWarning";
 
 const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, matchedBets, ladderUnmatched}) => {
 
@@ -32,6 +33,7 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
       <div className={"ladder-container"}
         onContextMenu = { (e) => { e.preventDefault(); return false } }
       >
+        
         {marketOpen && sortedLadder
           ? Object.values(ladderOrder)
             .filter(value => excludedLadders.indexOf(value) === -1)
@@ -42,9 +44,11 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
                 order = {index}
                 selectionMatchedBets = {newMatchedBets[value]}
                 ladderUnmatched = {ladderUnmatched}
+                marketStatus = {marketStatus}
               />
             ))
         : null } 
+        <SuspendedWarning marketStatus = {marketStatus} />
       </div>
     : null
   );

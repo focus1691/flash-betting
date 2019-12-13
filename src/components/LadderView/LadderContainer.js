@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder } from "../../actions/market";
 
-const LadderContainer = ({isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners, ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children}) => {
+const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners, ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children}) => {
 
     const onLoad = () => e => {
         setIsReferenceSet(true);
@@ -31,7 +31,14 @@ const LadderContainer = ({isReferenceSet, order, containerRef, isMoving, isLadde
     return (
         <div 
             className="odds-table" 
-            style={{
+            style={marketStatus === "SUSPENDED" ? 
+            {
+                left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
+                visibility: isReferenceSet ? 'visible' : 'collapse',
+                opacity: '0.3',
+                zIndex: -1
+            } :
+            {
                 left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
                 visibility: isReferenceSet ? 'visible' : 'collapse',
                 opacity: isMoving ? '0.7' : '1.0',

@@ -27,14 +27,15 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
     e.target.src = iconForEvent(parseInt(sportId));
   };
 
-  const selectionMatchedBets = Object.values(matchedBets).filter(bet => bet.selectionId === selectionId);
+  const selectionMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(selectionId));
 
   // calculate ladder ltp hedge
   const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp)));
   const ladderLTPHedge = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
   const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0;
   
-  
+
+
   return (
     <div className={"ladder-header"}>
       <div>

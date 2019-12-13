@@ -19,7 +19,7 @@ import { getUnmatchedBets, getMatchedBets } from "../../selectors/orderSelector"
 import { getLadder, getLTP } from "../../selectors/marketSelector";
 import { getStakeVal } from "../../selectors/settingsSelector";
 
-const Ladder = ({ id, ltp, market, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, selectionMatchedBets, unmatchedBets, matchedBets, ladderUnmatched, stake, stopLossOffset, stopLossTrailing, stopLossList }) => {
+const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, ladderUnmatched, stake, stopLossOffset, stopLossTrailing, stopLossList }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -145,6 +145,7 @@ const Ladder = ({ id, ltp, market, onPlaceOrder, onCancelOrder, order, ladderSid
             setIsReferenceSet={setIsReferenceSet}
             setIsMoving={setIsMoving}
             setLadderDown={setLadderDown}
+            marketStatus = {marketStatus}
         >
             <LadderHeader
                 selectionId={id}
@@ -169,19 +170,11 @@ const Ladder = ({ id, ltp, market, onPlaceOrder, onCancelOrder, order, ladderSid
                             style={{ paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px` }}
 
                             itemData = {{
-                                // marketId: market.marketId, 
-                                // matchedBets: matchedBets, 
-                                // unmatchedBets: unmatchedBets,
-                                // ladder: [],
                                 selectionId: id,
                                 placeOrder: placeOrder,
-                                // cancelOrder: onCancelOrder,
-                                // ltpList: [],
-                                // stopLoss: stopLossList[id],
+                                cancelOrder: onCancelOrder,
                                 changeStopLossList: placeStopLossOrder,
-                                // hedgeSize: 4,
                                 ladderSideLeft: ladderSideLeft,
-                                // selectionUnmatched: 4
                             }}
                         >
                             {LadderRow}

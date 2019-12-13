@@ -93,4 +93,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderRow, (prevProps) => true));
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderRow));
