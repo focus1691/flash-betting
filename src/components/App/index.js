@@ -19,7 +19,7 @@ import { isPremiumActive } from "../../utils/DateCalculator";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
-import { placeOrder, updateOrders } from "../../actions/order";
+import { updateOrders } from "../../actions/order";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import Draggable from "../Draggable";
 import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
@@ -330,18 +330,10 @@ const mapStateToProps = state => {
     market: state.market.currentMarket,
     eventType: state.market.eventType,
     marketOpen: state.market.marketOpen,
-    marketStatus: state.market.status,
     ladders: state.market.ladder,
-    sortedLadded: state.market.sortedLadder,
     nonRunners: state.market.nonRunners,
     premiumMember: state.settings.premiumMember,
     premiumPopup: state.settings.premiumPopupOpen,
-    stopLossList: state.stopLoss.list,
-    tickOffsetList: state.tickOffset.list,
-    stopEntryList: state.stopEntry.list,
-    fillOrKillList: state.fillOrKill.list,
-    layList: state.lay.list,
-    backList: state.back.list,
     unmatchedBets: state.order.bets.unmatched,
     matchedBets: state.order.bets.matched
   };
@@ -372,17 +364,10 @@ const mapDispatchToProps = dispatch => {
     onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
     /** Market **/
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
-    onMarketClosed: () => dispatch(marketActions.closeMarket()),
     onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
-    onReceiveInitialClk: initialClk => dispatch(marketActions.setInitialClk(initialClk)),
-    onReceiveClk: clk => dispatch(marketActions.setClk(clk)),
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
-    onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
     onSortLadder: sortedLadder => dispatch(marketActions.setSortedLadder(sortedLadder)),
-    onReceiveNonRunners: nonRunners => dispatch(marketActions.loadNonRunners(nonRunners)),
-    onChangeExcludedLadders: excludedLadders => dispatch(marketActions.updateExcludedLadders(excludedLadders)),
-    onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
     /** Betting Tools **/
@@ -391,7 +376,6 @@ const mapDispatchToProps = dispatch => {
     onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
-    onPlaceOrder: order => dispatch(placeOrder(order)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
     onChangeOrders: orders => dispatch(updateOrders(orders))
   };

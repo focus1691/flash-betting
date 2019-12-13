@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import getQueryVariable from "../../utils/Market/GetQueryVariable";
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { checkTimeListAfter } from '../../utils/TradingStategy/BackLay';
@@ -268,7 +268,6 @@ const mapStateToProps = state => {
         marketOpen: state.market.marketOpen,
         marketStatus: state.market.status,
         ladders: state.market.ladder,
-        sortedLadded: state.market.sortedLadder,
         nonRunners: state.market.nonRunners,
         stopLossList: state.stopLoss.list,
         tickOffsetList: state.tickOffset.list,
