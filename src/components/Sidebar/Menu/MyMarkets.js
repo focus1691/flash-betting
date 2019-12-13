@@ -55,7 +55,7 @@ const MyMarkets = props => {
 		}
 	}
 	
-	const deselectSubmenu = (newSubmenuType, submenuList) => { 
+	const deselectSubmenu = (newSubmenuType, submenuList) => e => { 
 		const submenuEnum = {
 		  ROOT: 0,
 		  EVENT_TYPE: 1,
