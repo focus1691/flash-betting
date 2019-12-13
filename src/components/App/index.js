@@ -14,21 +14,15 @@ import GridView from "../GridView/";
 import SocketContext from "../../SocketContext";
 import Title from "./Title";
 import getQueryVariable from "../../utils/Market/GetQueryVariable";
-import { CreateLadder } from "../../utils/ladder/CreateLadder";
-import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
 import { CreateRunners } from "../../utils/Market/CreateRunners";
 import { isPremiumActive } from "../../utils/DateCalculator";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
-import { checkTimeListAfter } from "../../utils/TradingStategy/BackLay";
-import { placeOrder, updateOrders } from "../../actions/order";
+import { updateOrders } from "../../actions/order";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
-import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
 import Draggable from "../Draggable";
-import { stopLossTrailingChange, stopLossCheck, stopEntryListChange } from "../../utils/ExchangeStreaming/MCMHelper";
-import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
-import { sortLadder, sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
+import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import MarketReceiver from "./MarketReceiver";
 
 const App = props => {
@@ -84,10 +78,6 @@ const App = props => {
         props.setPremiumStatus(isActive);
       });
   };
-
-  const cleanupOnMarketClose = (marketId) => {
-    window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
-  }
 
   const loadMarket = async () => {
     let marketId = getQueryVariable("marketId");
@@ -294,29 +284,6 @@ const App = props => {
     }, 15000);
   }, []);
 
-
-  useEffect(() => {
-    props.socket.on("market-definition", async marketDefinition => {
-      props.onMarketStatusChange(marketDefinition.status);
-      props.setInPlay(marketDefinition.inPlay);
-
-      if (marketDefinition.status === "CLOSED" && !props.marketOpen) {
-        props.socket.off("market-definition");
-        props.onMarketClosed();
-        cleanupOnMarketClose(getQueryVariable("marketId"));
-      }
-    });
-  }, [props.marketStatus]);
-
-  useEffect(() => {
-    // A message will be sent here if the connection to the market is disconnected.
-    // We resubscribe to the market here using the initialClk & clk.
-    props.socket.on("connection_closed", () => {
-      console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
-    });
-  }, []);
-
-
   const renderView = () => {
     switch (props.view) {
       case "HomeView":
@@ -363,18 +330,10 @@ const mapStateToProps = state => {
     market: state.market.currentMarket,
     eventType: state.market.eventType,
     marketOpen: state.market.marketOpen,
-    marketStatus: state.market.status,
     ladders: state.market.ladder,
-    sortedLadded: state.market.sortedLadder,
     nonRunners: state.market.nonRunners,
     premiumMember: state.settings.premiumMember,
     premiumPopup: state.settings.premiumPopupOpen,
-    stopLossList: state.stopLoss.list,
-    tickOffsetList: state.tickOffset.list,
-    stopEntryList: state.stopEntry.list,
-    fillOrKillList: state.fillOrKill.list,
-    layList: state.lay.list,
-    backList: state.back.list,
     unmatchedBets: state.order.bets.unmatched,
     matchedBets: state.order.bets.matched
   };
@@ -405,17 +364,10 @@ const mapDispatchToProps = dispatch => {
     onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
     /** Market **/
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
-    onMarketClosed: () => dispatch(marketActions.closeMarket()),
     onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
-    onReceiveInitialClk: initialClk => dispatch(marketActions.setInitialClk(initialClk)),
-    onReceiveClk: clk => dispatch(marketActions.setClk(clk)),
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
-    onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
     onSortLadder: sortedLadder => dispatch(marketActions.setSortedLadder(sortedLadder)),
-    onReceiveNonRunners: nonRunners => dispatch(marketActions.loadNonRunners(nonRunners)),
-    onChangeExcludedLadders: excludedLadders => dispatch(marketActions.updateExcludedLadders(excludedLadders)),
-    onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
     /** Betting Tools **/
@@ -424,7 +376,6 @@ const mapDispatchToProps = dispatch => {
     onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
-    onPlaceOrder: order => dispatch(placeOrder(order)),
     onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
     onChangeOrders: orders => dispatch(updateOrders(orders))
   };
