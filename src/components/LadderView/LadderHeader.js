@@ -78,7 +78,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
         </div>
       </div>
       <div>
-        <span style={{ visibility: ladderLTPHedge === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
+        <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
           {formatCurrency(localeCode, currencyCode, ladderLTPHedge)}
         </span>
         <span style={{ visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
