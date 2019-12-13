@@ -1,6 +1,6 @@
-import React, {memo} from 'react'
-import { connect } from 'react-redux'
-import { getVolume, getCandleStickColor } from '../../selectors/marketSelector';
+import React, { memo } from 'react';
+import { connect } from 'react-redux';
+import { getCandleStickColor, getVolume } from '../../selectors/marketSelector';
 
 const LadderVolumeCell = ({ltpList, vol, candleStickInfo}) => {
     if (candleStickInfo) console.log(candleStickInfo)

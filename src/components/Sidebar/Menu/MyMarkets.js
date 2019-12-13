@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import List from "@material-ui/core/List";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../actions/market";
-import List from "@material-ui/core/List";
+import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from "../../../actions/sport";
 import getCountryName from "../../../utils/CountryCodeConverter";
-import SelectSubmenu from "./SelectSubmenu";
 import DeselectSport from "./DeselectSport";
-import { updateSubmenuMyMarkets, updateSubmenuListMyMarkets } from "../../../actions/sport";
+import SelectSubmenu from "./SelectSubmenu";
 
 const MyMarkets = props => {
 

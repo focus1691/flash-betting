@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default ({plan='Monthly', price=9.99, color='gray', openPremiumMenu, setSelectedPremium}) => {
     return (

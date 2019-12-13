@@ -1,29 +1,26 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import Ladders from "./Ladders";
-import Tools from "./OrderTools";
-import UnmatchedBets from "./UnmatchedBets";
-import MatchedBets from "./MatchedBets";
-import Graph from "./Graphs";
-import MarketInfo from "./MarketInfo";
-import Rules from "./Rules";
 import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
 import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { combineUnmatchedOrders } from "../../../utils/Bets/CombineUnmatchedOrders";
-import { updateStopLossList } from "../../../actions/stopLoss";
-import { updateTickOffsetList } from "../../../actions/tickOffset";
-import { updateStopEntryList } from "../../../actions/stopEntry";
-import { updateLayList } from "../../../actions/lay";
+import Typography from "@material-ui/core/Typography";
+import React from "react";
+import { connect } from "react-redux";
 import { updateBackList } from "../../../actions/back";
 import { updateFillOrKillList } from "../../../actions/fillOrKill";
+import { updateLayList } from "../../../actions/lay";
 import { cancelOrderAction, updateOrders } from "../../../actions/order";
-import {
-  setLaddersExpanded, setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded,
-  setGraphExpanded, setMarketInfoExpanded, setRulesExpanded
-} from "../../../actions/settings";
+import { setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatchedBetsExpanded, setRulesExpanded, setToolsExpanded, setUnmatchedBetsExpanded } from "../../../actions/settings";
+import { updateStopEntryList } from "../../../actions/stopEntry";
+import { updateStopLossList } from "../../../actions/stopLoss";
+import { updateTickOffsetList } from "../../../actions/tickOffset";
+import { combineUnmatchedOrders } from "../../../utils/Bets/CombineUnmatchedOrders";
+import Graph from "./Graphs";
+import Ladders from "./Ladders";
+import MarketInfo from "./MarketInfo";
+import MatchedBets from "./MatchedBets";
+import Tools from "./OrderTools";
+import Rules from "./Rules";
+import UnmatchedBets from "./UnmatchedBets";
 
 const ExpansionPanel = withStyles({
   root: {

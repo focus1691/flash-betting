@@ -1,9 +1,9 @@
-import React, { useState } from "react";
 import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import Typography from '@material-ui/core/Typography';
+import React, { useState } from "react";
 
 export default ({ defaultView, toggleDefaultView, saveSetting, premiumMember, classes }) => {
 

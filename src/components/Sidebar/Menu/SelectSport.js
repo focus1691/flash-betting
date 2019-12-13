@@ -1,7 +1,6 @@
-import React from 'react'
-import { ListItem, ListItemText, Divider } from "@material-ui/core";
+import { Divider, ListItem, ListItemText } from "@material-ui/core";
+import React from 'react';
 import MarketSaveButton from './MarketSaveButton';
-
 
 export default ({sports, setSubmenu}) => {
     

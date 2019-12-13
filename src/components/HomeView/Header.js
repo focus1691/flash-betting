@@ -1,7 +1,7 @@
-import React from "react";
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import React from "react";
 
 export default ({ username, premiumMember, classes }) => (
     <Grid container alignItems="center">

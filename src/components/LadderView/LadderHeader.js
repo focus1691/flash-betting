@@ -1,14 +1,13 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
-import { iconForEvent } from "../../utils/Market/EventIcons";
-import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
-import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { setRunner } from "../../actions/market";
-import { getRunner, getSportId, getLTP } from "../../selectors/marketSelector";
+import { getLTP, getRunner, getSportId } from "../../selectors/marketSelector";
 import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
-import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
+import { iconForEvent } from "../../utils/Market/EventIcons";
+import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { formatCurrency } from "../../utils/NumberFormat";
+import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 
 const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, currencyCode, localeCode }) => {
 

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import SocketContext from "../../SocketContext";
-import { useCookies } from 'react-cookie';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import React, { useEffect, useState } from "react";
+import { useCookies } from 'react-cookie';
+import { connect } from "react-redux";
+import { openPremiumDialog, setSelectedPremium } from "../../actions/settings";
+import SocketContext from "../../SocketContext";
 import Header from "./Header";
 import SubscriptionContainer from "./SubscriptionContainer";
-import { setPremiumStatus, openPremiumDialog, setSelectedPremium } from "../../actions/settings";
 
 const useStyles = makeStyles(theme => ({
   root: {

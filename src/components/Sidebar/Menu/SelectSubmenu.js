@@ -1,6 +1,6 @@
-import React from 'react'
-import { ListItem, ListItemText, Divider } from "@material-ui/core";
-import MarketSaveButton from './MarketSaveButton'
+import { Divider, ListItem, ListItemText } from "@material-ui/core";
+import React from 'react';
+import MarketSaveButton from './MarketSaveButton';
 
 export default ({data, setSubmenu, submenuList, winMarketsOnly}) => {
     const dataWithoutRaces = data.filter(sport => sport.type !== "RACE");

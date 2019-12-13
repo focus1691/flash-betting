@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import * as actions from "../actions/account";
 import { useCookies } from 'react-cookie';
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import * as actions from "../actions/account";
 
 const Logout = props => {
   const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'accessToken', 'refreshToken', 'expiresIn']);

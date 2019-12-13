@@ -1,14 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
-import { updateOrders, cancelOrder } from "../../../actions/order";
-import { combineUnmatchedOrders } from '../../../utils/Bets/CombineUnmatchedOrders'
-import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
-import { updateStopLossList } from "../../../actions/stopLoss";
-import { updateTickOffsetList } from "../../../actions/tickOffset";
-import { updateStopEntryList } from "../../../actions/stopEntry";
-import { updateLayList } from "../../../actions/lay";
 import { updateBackList } from "../../../actions/back";
 import { updateFillOrKillList } from "../../../actions/fillOrKill";
+import { updateLayList } from "../../../actions/lay";
+import { cancelOrder, updateOrders } from "../../../actions/order";
+import { updateStopEntryList } from "../../../actions/stopEntry";
+import { updateStopLossList } from "../../../actions/stopLoss";
+import { updateTickOffsetList } from "../../../actions/tickOffset";
+import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
+import { combineUnmatchedOrders } from '../../../utils/Bets/CombineUnmatchedOrders';
 import { formatPrice, getPriceNTicksAway } from "../../../utils/ladder/CreateFullLadder";
 
 const UnmatchedBets = props => {

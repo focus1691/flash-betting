@@ -1,25 +1,25 @@
-import React, { useState, createRef } from "react";
 import $ from "jquery";
+import React, { createRef, useState } from "react";
 import { connect } from "react-redux";
+import { openLiveStream } from "../../actions/draggable";
 import * as actions from "../../actions/market";
+import { placeOrder } from "../../actions/order";
 import { setStakeInOneClick } from "../../actions/settings";
-import GridHeader from "./GridHeader";
-import GridDetailCell from "./GridDetailCell";
-import EmptyCell from "./EmptyCell";
+import { calcBackProfit, colorForBack } from "../../utils/Bets/BettingCalculations";
+import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
+import { getPLForRunner, marketHasBets } from "../../utils/Bets/GetProfitAndLoss";
+import { isValidPrice } from "../../utils/Bets/Validator";
 import { getNextPrice } from "../../utils/ladder/CreateFullLadder";
 import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 import { DeconstructRunner } from "../../utils/Market/DeconstructRunner";
 import { formatCurrency } from "../../utils/NumberFormat";
-import { calcBackProfit, colorForBack } from "../../utils/Bets/BettingCalculations";
-import { marketHasBets, getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
-import NonRunners from "./NonRunner";
-import GridOrderRow from "./GridOrderRow";
-import { placeOrder } from "../../actions/order";
-import { getMarketCashout } from "../../utils/Bets/GetMarketCashout";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
-import { isValidPrice } from "../../utils/Bets/Validator";
+import EmptyCell from "./EmptyCell";
+import GridDetailCell from "./GridDetailCell";
+import GridHeader from "./GridHeader";
+import GridOrderRow from "./GridOrderRow";
+import NonRunners from "./NonRunner";
 import SuspendedWarning from "./SuspendedWarning";
-import { openLiveStream } from "../../actions/draggable";
 
 const Grid = props => {
 

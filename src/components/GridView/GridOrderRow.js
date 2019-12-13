@@ -1,6 +1,6 @@
+import crypto from 'crypto';
 import React from "react";
 import { LightenDarkenColor } from "../../utils/ColorManipulator";
-import crypto from 'crypto';
 
 export default ({ runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, market, bets, price, side, size }) => {
 

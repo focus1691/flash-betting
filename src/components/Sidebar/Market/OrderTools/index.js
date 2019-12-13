@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { setStopEntrySelected } from "../../../../actions/stopEntry";
-import { setStopLossSelected } from "../../../../actions/stopLoss";
-import { setTickOffsetSelected } from "../../../../actions/tickOffset";
-import { setBackSelected } from "../../../../actions/back";
-import { setLaySelected } from "../../../../actions/lay";
-import { setFillOrKillSelected } from "../../../../actions/fillOrKill";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import Checkbox from "@material-ui/core/Checkbox";
+import Collapse from "@material-ui/core/Collapse";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import Collapse from "@material-ui/core/Collapse";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { setBackSelected } from "../../../../actions/back";
+import { setFillOrKillSelected } from "../../../../actions/fillOrKill";
+import { setLaySelected } from "../../../../actions/lay";
+import { setStopEntrySelected } from "../../../../actions/stopEntry";
+import { setStopLossSelected } from "../../../../actions/stopLoss";
+import { setTickOffsetSelected } from "../../../../actions/tickOffset";
+import Back from "./Back";
+import FillOrKill from "./FillOrKill";
+import Lay from "./Lay";
 import StopEntry from "./StopEntry";
 import StopLoss from "./StopLoss";
 import TickOffset from "./TickOffset";
-import Back from "./Back";
-import Lay from "./Lay";
-import FillOrKill from "./FillOrKill";
 
 const StyledTableCell = withStyles(theme => ({
   head: {

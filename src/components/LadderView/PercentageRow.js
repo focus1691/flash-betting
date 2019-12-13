@@ -1,16 +1,16 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
-import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
-import { updateStopLossList } from "../../actions/stopLoss";
-import { updateTickOffsetList } from "../../actions/tickOffset";
-import { updateStopEntryList } from "../../actions/stopEntry";
-import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
-import { cancelOrderAction, updateOrders } from "../../actions/order";
-import { getLTP, getTV, getPercent, getLTPDelta } from "../../selectors/marketSelector";
-import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
+import { updateLayList } from "../../actions/lay";
 import { changeLadderSideLeft } from "../../actions/market";
+import { cancelOrderAction, updateOrders } from "../../actions/order";
+import { updateStopEntryList } from "../../actions/stopEntry";
+import { updateStopLossList } from "../../actions/stopLoss";
+import { updateTickOffsetList } from "../../actions/tickOffset";
+import { getLTP, getLTPDelta, getPercent, getTV } from "../../selectors/marketSelector";
+import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
+import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
 
 const PercentageRow = ({ ltp, tv, percent, market, ltpDelta, onChangeLadderSideLeft, ladderSideLeft, onUpdateBets, selectionId, 
                          bets, stopLossList, tickOffsetList, stopEntryList, layList, backList, fillOrKillList,

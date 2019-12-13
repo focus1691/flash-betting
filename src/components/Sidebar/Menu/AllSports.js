@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import * as actions from "../../../actions/sport";
-import { loadMyMarkets } from "../../../actions/market";
 import List from "@material-ui/core/List";
-import SelectSport from "./SelectSport";
+import React, { useEffect } from "react";
 import { useCookies } from 'react-cookie';
-import DeselectSport from "./DeselectSport";
-import SelectSubmenu from "./SelectSubmenu";
-import getCountryName from "../../../utils/CountryCodeConverter";
+import { connect } from "react-redux";
+import { loadMyMarkets } from "../../../actions/market";
+import * as actions from "../../../actions/sport";
 import { sortSports } from "../../../utils/Algorithms/SortSports";
+import getCountryName from "../../../utils/CountryCodeConverter";
+import DeselectSport from "./DeselectSport";
+import SelectSport from "./SelectSport";
+import SelectSubmenu from "./SelectSubmenu";
 
 const AllSports = props => {
 

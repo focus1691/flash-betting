@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Redirect } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 import { connect } from 'react-redux';
+import { Redirect } from "react-router-dom";
 import * as actions from "../actions/account";
 import getQueryVariable from "../utils/Market/GetQueryVariable";
-import { useCookies } from 'react-cookie';
 
 const OAuthRedirect = props => {
 	const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);

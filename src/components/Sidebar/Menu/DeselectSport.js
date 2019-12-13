@@ -1,5 +1,5 @@
-import React from 'react'
-import { ListItem, ListItemText, Divider } from "@material-ui/core";
+import { Divider, ListItem, ListItemText } from "@material-ui/core";
+import React from 'react';
 
 export default ({type, data, isLast, submenuList, deselectSubmenu}) => {
     

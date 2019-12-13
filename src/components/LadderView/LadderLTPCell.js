@@ -1,7 +1,7 @@
-import React, {memo} from 'react'
-import { connect } from 'react-redux'
+import React, { memo } from 'react';
+import { connect } from 'react-redux';
 import { getIsLTP } from '../../selectors/marketSelector';
-import { formatPriceKey, ALL_PRICES, formatPrice } from '../../utils/ladder/CreateFullLadder';
+import { formatPrice, formatPriceKey } from '../../utils/ladder/CreateFullLadder';
 
 const LadderLTPCell = ({selectionId, price, isLTP}) => {
     return (

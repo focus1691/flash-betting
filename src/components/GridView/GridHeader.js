@@ -1,10 +1,10 @@
+import crypto from 'crypto';
 import React from "react";
-import { renderRaceStatus } from "./RaceStatus";
 import { sumMatchedBets } from "../../utils/Bets/BettingCalculations";
-import { formatTotalMatched } from "./../../utils/NumberFormat";
 import { getOrderBtnBG } from "../../utils/ColorManipulator";
 import { getHedgedBetsToMake } from "../../utils/TradingStategy/HedingCalculator";
-import crypto from 'crypto';
+import { formatTotalMatched } from "./../../utils/NumberFormat";
+import { renderRaceStatus } from "./RaceStatus";
 
 export default ({
   market,

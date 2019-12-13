@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import parse from 'html-react-parser';
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 
 const Rules = props => {
 

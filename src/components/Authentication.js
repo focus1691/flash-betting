@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { useCookies } from 'react-cookie';
 
 const Authentication = props => {
   const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder } from "../../actions/market";
-import Ladder from './Ladder'
 import { getMatchedBets } from "../../selectors/orderSelector";
 import SuspendedWarning from "../GridView/SuspendedWarning";
+import Ladder from './Ladder';
 
 const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, matchedBets, ladderUnmatched}) => {
 

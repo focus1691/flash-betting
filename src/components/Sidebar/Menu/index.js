@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { connect } from 'react-redux'
-import MyMarkets from "./MyMarkets";
-import AllSports from "./AllSports";
-import ActiveBets from "./ActiveBets";
+import AppBar from "@material-ui/core/AppBar";
 import MultiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MultiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import React, { useState } from "react";
+import { connect } from 'react-redux';
+import { updateCurrentSubmenu, updateSubmenuList, updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from "../../../actions/sport";
 import useStyles from "../../Styles/Styles";
-import { updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMarkets } from "../../../actions/sport";
+import ActiveBets from "./ActiveBets";
+import AllSports from "./AllSports";
+import MyMarkets from "./MyMarkets";
 
 const ExpansionPanel = withStyles({
   root: {

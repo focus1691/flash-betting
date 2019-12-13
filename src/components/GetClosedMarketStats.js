@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import getQueryVariable from "../utils/Market/GetQueryVariable";
-import MarketSettlement from "./ClosedMarketView/MarketSettlement";
-import ClosedMarketReport from './ClosedMarketView/ClosedMarketReport'
 import BetsPlaced from "./ClosedMarketView/BetsPlaced";
+import ClosedMarketReport from './ClosedMarketView/ClosedMarketReport';
+import MarketSettlement from "./ClosedMarketView/MarketSettlement";
 
 const GetClosedMarketStats = () => {
     const [completedOrders, setCompletedOrders] = useState([]);

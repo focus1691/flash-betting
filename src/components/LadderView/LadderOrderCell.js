@@ -1,12 +1,12 @@
-import React, { memo } from 'react'
+import crypto from 'crypto';
+import React, { memo } from 'react';
 import { connect } from "react-redux";
-import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { updateTickOffsetList } from '../../actions/tickOffset';
-import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
-import crypto from 'crypto'
 import { updateFillOrKillList } from '../../actions/fillOrKill';
+import { updateTickOffsetList } from '../../actions/tickOffset';
 import { getMatched } from '../../selectors/marketSelector';
 import { getStopLoss } from '../../selectors/stopLossSelector';
+import { formatPrice } from "../../utils/ladder/CreateFullLadder";
+import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 
 const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, 
                           isStopLoss, stopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged,

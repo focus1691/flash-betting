@@ -1,8 +1,8 @@
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
 import * as React from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../actions/fillOrKill";
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   root: {

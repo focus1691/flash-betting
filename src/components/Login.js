@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import * as actions from "../actions/account";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import React, { useState } from "react";
 import { useCookies } from 'react-cookie';
-import getQueryVariable from "../utils/Market/GetQueryVariable";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import * as actions from "../actions/account";
 import { getErrorMessage } from "../utils/ErrorMessages/AccountErrors";
+import getQueryVariable from "../utils/Market/GetQueryVariable";
 
 const useStyles = makeStyles(theme => ({
   "@global": {

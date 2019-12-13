@@ -1,14 +1,11 @@
-import React, { memo } from 'react'
-import { connect } from 'react-redux'
-import LadderOrderCell from './LadderOrderCell'
-import { formatPrice, ALL_PRICES, formatPriceKey } from "../../utils/ladder/CreateFullLadder";
-import { findStopPosition, findStopPositionForPercent } from "../../utils/TradingStategy/StopLoss";
-import crypto from 'crypto'
-import { getVolume, getIsLTP } from '../../selectors/marketSelector';
+import React, { memo } from 'react';
+import { connect } from 'react-redux';
 import { setOddsHovered } from '../../actions/market';
-import LadderLTPCell from './LadderLTPCell';
-import LadderVolumeCell from './LadderVolumeCell';
+import { ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
 import LadderHedgeCell from './LadderHedgeCell';
+import LadderLTPCell from './LadderLTPCell';
+import LadderOrderCell from './LadderOrderCell';
+import LadderVolumeCell from './LadderVolumeCell';
 
 const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, ladderSideLeft, selectionUnmatched, marketId, matchedBets, unmatchedBets }, onOddsHovered, vol, style, index}) => {
     const key = ALL_PRICES[ALL_PRICES.length - index - 1]

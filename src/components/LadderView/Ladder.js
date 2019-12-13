@@ -1,23 +1,19 @@
-import React, { useState, useRef, useEffect, memo } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
-import LadderContainer from './LadderContainer'
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
+import { cancelOrder, placeOrder } from "../../actions/order";
+import { updateStopLossList } from "../../actions/stopLoss";
+import { getLTP } from "../../selectors/marketSelector";
+import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
+import { getStakeVal } from "../../selectors/settingsSelector";
+import { ALL_PRICES, formatPrice } from "../../utils/ladder/CreateFullLadder";
+import LadderContainer from './LadderContainer';
 import LadderHeader from "./LadderHeader";
+import LadderRow from "./LadderRow";
+import OrderRow from "./OrderRow";
 import PercentageRow from "./PercentageRow";
 import PriceRow from "./PriceRow";
-import OrderRow from "./OrderRow";
-import AutoSizer from 'react-virtualized-auto-sizer'
-import { FixedSizeList as List } from 'react-window'
-import LadderRow from "./LadderRow";
-import { formatPrice, ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
-import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
-import GetColoredLTPList from "../../utils/ladder/GetColoredLTPList";
-import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
-import { placeOrder, cancelOrder } from "../../actions/order";
-import { updateLadderOrder } from "../../actions/market";
-import { updateStopLossList } from "../../actions/stopLoss";
-import { getUnmatchedBets, getMatchedBets } from "../../selectors/orderSelector";
-import { getLadder, getLTP } from "../../selectors/marketSelector";
-import { getStakeVal } from "../../selectors/settingsSelector";
 
 const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, ladderUnmatched, stake, stopLossOffset, stopLossTrailing, stopLossList }) => {
     const containerRef = useRef(null);

@@ -1,7 +1,5 @@
-import React, {memo} from 'react'
-import { connect } from 'react-redux'
-import { getIsLTP } from '../../selectors/marketSelector';
-import { formatPriceKey, ALL_PRICES, formatPrice } from '../../utils/ladder/CreateFullLadder';
+import React, { memo } from 'react';
+import { connect } from 'react-redux';
 import { getUnmatchedBetOnRow } from '../../selectors/orderSelector';
 
 const LadderHedgeCell = ({selectionId, price, unmatchedBetOnRow, leftSide}) => {
