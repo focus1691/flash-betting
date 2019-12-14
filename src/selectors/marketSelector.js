@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect'
 import GetColoredLTPList from '../utils/ladder/GetColoredLTPList'
+import GetVolumeFraction from '../utils/ladder/GetVolumeFraction'
+
 
 const getLadderSelector = (state, {selectionId}) => {
-    console.log(state[selectionId]) 
     return state[selectionId]
 }
 
@@ -33,6 +34,13 @@ const getLTPCheckerSelector = (state, {selectionId, price}) => parseFloat(state[
 export const getIsLTP = createSelector(
     getLTPCheckerSelector,
     isLTP => isLTP
+)
+
+const getVolumeLTP = (state, {selectionId}) => state[selectionId].trd
+
+export const getVolumeDivider = createSelector(
+    getVolumeLTP,
+    trd => trd ? GetVolumeFraction(trd) : undefined
 )
 
 const getLadderCandleStickSelector = (state, {selectionId, price}) => ({ladder: state[selectionId], price: price})
