@@ -50,7 +50,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
                   : iconForEvent(sportId)
               }
               alt={"Colours"}
-              onClick={onSelectRunner}
+              onClick={onSelectRunner(runner)}
               onError={handleNoImageError()}
             />
           }
