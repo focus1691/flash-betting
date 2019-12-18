@@ -26,7 +26,7 @@ export const getLadder = createSelector(
 
 export const getLTP = createSelector(
     getLadderSelector,
-    ladder => ladder.ltp
+    ladder => (ladder && ladder.ltp) ? ladder.ltp : null
 )
 
 const getLTPCheckerSelector = (state, {selectionId, price}) => parseFloat(state[selectionId].ltp[0]) === parseFloat(price)
@@ -58,7 +58,7 @@ export const getCandleStickColor = createSelector(
 
 export const getLTPDelta = createSelector(
     getLadderSelector,
-    ladder => ladder.ltpDelta
+    ladder => (ladder && ladder.ltpDelta) ? ladder.ltpDelta : null
 )
 
 const getLadderMatchedSelector = (state, {selectionId, side, price}) => ({matched: state[selectionId][side == "BACK" ? 'atbo' : 'atlo'][price], side: side})
@@ -80,11 +80,11 @@ export const getVolume = createSelector(
 
 export const getTV = createSelector(
     getLadderSelector,
-    ladder => ladder.tv[0]? ladder.tv[0].toLocaleString()
+    ladder => (ladder && ladder.tv[0]) ? ladder.tv[0].toLocaleString()
     : ""
 )
 
 export const getPercent = createSelector(
     getLadderSelector,
-    ladder => ladder.percent
+    ladder => (ladder && ladder.percent) ? ladder.percent : null
 )

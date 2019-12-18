@@ -8,20 +8,16 @@ import LadderOrderCell from './LadderOrderCell';
 import LadderVolumeCell from './LadderVolumeCell';
 
 const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, ladderSideLeft, selectionUnmatched, marketId, matchedBets, unmatchedBets }, onOddsHovered, vol, style, index}) => {
-    const key = ALL_PRICES[ALL_PRICES.length - index - 1]
+    const key = ALL_PRICES[ALL_PRICES.length - index - 1];
     
-    
-
-    const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK"
-    const rightSide = ladderSideLeft === "LAY" ? "BACK" : "LAY"
+    const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK";
+    const rightSide = ladderSideLeft === "LAY" ? "BACK" : "LAY";
 
     const handleContextMenu = () => e => {
       e.preventDefault();
       return false;
     };
-
-    console.log('zta')
-
+    
     return (
         <div key={key}  onContextMenu = {handleContextMenu()} className={"tr"} style = {style} >
           

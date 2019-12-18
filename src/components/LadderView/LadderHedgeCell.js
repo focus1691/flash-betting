@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { getUnmatchedBetOnRow } from '../../selectors/orderSelector';
 
 const LadderHedgeCell = ({selectionId, price, unmatchedBetOnRow, leftSide}) => {
-    if (price == "2.00") console.log(unmatchedBetOnRow)
     return (
         <div 
             className = 'td'

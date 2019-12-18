@@ -114,9 +114,6 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
 
       return false;
     };
-
-    if (stopLoss)
-    console.log(stopLoss)
     return (
         <div className = 'td'
             style={

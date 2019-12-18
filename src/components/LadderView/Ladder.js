@@ -28,7 +28,7 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
     useEffect(() => {
         const interval = setInterval(() => {
             const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
-            if (listRef.current !== null && ltpIndex !== -1) {
+            if (listRef.current !== null && listRef.current !== undefined && ltpIndex !== -1) {
                 // we do the calculation because we start in reverse
                 listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
                 clearInterval(interval);

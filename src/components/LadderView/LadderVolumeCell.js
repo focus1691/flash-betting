@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { getCandleStickColor, getVolume, getVolumeDivider } from '../../selectors/marketSelector';
 
 const LadderVolumeCell = ({ltpList, vol, candleStickInfo, volFraction}) => {
-    if (candleStickInfo) console.log(candleStickInfo)
-
     const volumeVal = vol ? vol : 0;
     
     return (
