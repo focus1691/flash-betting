@@ -13,10 +13,10 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
 
     sortedLadder.map((key, index) => {
       newOrderList[index] = key;
-    })
+    });
 
     onChangeLadderOrder(newOrderList);
-  }, [sortedLadder])
+  }, []);
 
   const newMatchedBets = {}; //selectionId: [{}]
   Object.values(matchedBets).map(bet => {
@@ -62,7 +62,6 @@ const mapStateToProps = state => {
     excludedLadders: state.market.excludedLadders,
     ladderOrder: state.market.ladderOrder,
     ladderUnmatched: state.settings.ladderUnmatched,
-    
     matchedBets: getMatchedBets(state.order.bets),
   };
 };

@@ -414,7 +414,9 @@ useEffect(() => {
                     props.onSortLadder(sortedLadderIndices);
                     props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
                 }
-                setUpdates([...updates, ladders]);
+                let newUpdates = [...updates];
+                updates.push(ladders);
+                setUpdates(newUpdates);
             }
         });
     });
