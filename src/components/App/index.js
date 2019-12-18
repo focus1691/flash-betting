@@ -34,6 +34,8 @@ import { checkStopLossForMatch, checkTickOffsetForMatch } from '../../utils/Exch
 const App = props => {
   const [marketId, setMarketId] = useState(null);
   const [cookies] = useCookies(['sessionKey', 'username']);
+  const [updates, setUpdates] = useState([]);
+  const [lastUpdated, setLastUpdated] = useState(new Date().getTime());
 
   if (!cookies.sessionKey && !cookies.username) {
     window.location.href = window.location.origin;
@@ -45,6 +47,15 @@ const App = props => {
       )}&email=${encodeURIComponent(cookies.username)}`
     );
   };
+
+  setInterval(async () => {
+    let now = new Date().getTime();
+    if (now - lastUpdated > 50 && updates.length > 0) {
+      props.onReceiverLadders(updates[0]);
+      setUpdates(updates.shift());
+      setLastUpdated(now);
+    }
+  }, 50);
 
   const loadSettings = async () => {
     /**
@@ -403,7 +414,7 @@ useEffect(() => {
                     props.onSortLadder(sortedLadderIndices);
                     props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
                 }
-                props.onReceiverLadders(ladders);
+                setUpdates(updates.concat(ladders));
             }
         });
     });
