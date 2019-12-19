@@ -10,6 +10,18 @@ export const getMatchedBets = createSelector(
     state => state.matched
 )
 
+const getSelectionMatchedBetsSelector = (state, {selectionId}) => ({bets: state.matched, selectionId: selectionId})
+
+export const getSelectionMatchedBets = createSelector(
+    getSelectionMatchedBetsSelector,
+    ({bets, selectionId}) => {
+        return Object.values(bets).filter(bet => {
+            if (parseInt(bet.selectionId) === parseInt(selectionId))
+                return true;
+        });
+    }
+)
+
 
 const getUnmatchedBetOnRowSelector = (state, {selectionId, price}) => ({unmatched: state.unmatched, selectionId: selectionId, price: price})
 

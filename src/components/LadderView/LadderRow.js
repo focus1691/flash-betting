@@ -6,8 +6,14 @@ import LadderHedgeCell from './LadderHedgeCell';
 import LadderLTPCell from './LadderLTPCell';
 import LadderOrderCell from './LadderOrderCell';
 import LadderVolumeCell from './LadderVolumeCell';
+import GetQueryVariable from '../../utils/Market/GetQueryVariable';
+import { getPLForRunner } from '../../utils/Bets/GetProfitAndLoss';
+import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
+import { getSelectionMatchedBets, getMatchedBets } from '../../selectors/orderSelector';
+import { getStakeVal } from '../../selectors/settingsSelector';
 
-const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, stopLoss, changeStopLossList, hedgeSize, ladderSideLeft, selectionUnmatched, marketId, matchedBets, unmatchedBets }, onOddsHovered, vol, style, index}) => {
+const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedgeCellClick, changeStopLossList }, 
+                    onOddsHovered, matchedBets, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index}) => {
     const key = ALL_PRICES[ALL_PRICES.length - index - 1];
     
     const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK";
@@ -17,28 +23,32 @@ const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, 
       e.preventDefault();
       return false;
     };
+
+    const marketId = GetQueryVariable("marketId");
+    
+    const PL = matchedBets !== undefined ? getPLForRunner(marketId, parseInt(selectionId), { matched: matchedBets }).toFixed(2) : 0;
+
+    const PLHedgeNumber = selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined; 
+
+    // gets all the bets we made and creates a size to offset
+    const hedgeSize = selectionMatchedBets !== undefined ?
+        selectionMatchedBets.reduce((a, b) => {
+            return a + b.size;
+        }, 0) : 0;
     
     return (
         <div key={key}  onContextMenu = {handleContextMenu()} className={"tr"} style = {style} >
           
           <LadderVolumeCell selectionId = {selectionId} price = {key} />
-          <LadderHedgeCell selectionId = {selectionId} price = {key} leftSide = {leftSide} />
+          <LadderHedgeCell selectionId = {selectionId} price = {key} PLHedgeNumber = {PLHedgeNumber} hedgeSize = {hedgeSize} side = {leftSide} handleHedgeCellClick = {handleHedgeCellClick} />
           
           <LadderOrderCell 
             side = {leftSide}
             selectionId = {selectionId}
             price = {key}
-            // ladderSideLeft = {ladderSideLeft}
-            // cell = {ladder[key]}
-            // selectionId = {selectionId}
             placeOrder = {placeOrder}
-            // isStopLoss = {stopLoss !== undefined && stopLoss.side === leftSide ? 
-            //               stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
-            //               findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
-            //                : false}
-            // stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
-            // hedgeSize = {hedgeSize}
+            hedgeSize = {hedgeSize}
             onHover = {onOddsHovered({selectionId, odds: key, side: leftSide})}
             onLeave = {onOddsHovered({selectionId, odds: 0, side: leftSide})}
           />
@@ -48,34 +58,24 @@ const LadderRow = ({data: { selectionId, placeOrder, cancelOrder, ltp, ltpList, 
             side = {rightSide}
             selectionId = {selectionId}
             price = {key}
-            // ladderSideLeft = {ladderSideLeft}
-            // cell = {ladder[key]}
-            // selectionId = {selectionId}
             placeOrder = {placeOrder} 
-            // isStopLoss = {stopLoss !== undefined && stopLoss.side === rightSide ? 
-            //   stopLoss.units === "Ticks" ? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key :
-            //   findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase()) === key
-            //    : false}
-            // stopLossData = {stopLoss}
             changeStopLossList= {changeStopLossList}
-            // hedgeSize = {hedgeSize}
+            hedgeSize = {hedgeSize}
             onHover = {onOddsHovered({selectionId, odds: key, side: rightSide})}
             onLeave = {onOddsHovered({selectionId, odds: 0, side: rightSide})}
           />
-          <div 
-            className = 'td'
-            // style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === rightSide ? 'black' : `${ladder[key][rightSideProfit] >= 0 ? "green" : 'red'}`}}
-            // onClick = {handleHedgeCellClick(1)}
-          >{}</div>
+
+          <LadderHedgeCell selectionId = {selectionId} price = {key} side = {rightSide} PLHedgeNumber = {PLHedgeNumber} hedgeSize = {hedgeSize} handleHedgeCellClick = {handleHedgeCellClick}  />
         </div>
     )
 }
 
 const mapStateToProps = (state, {data: {selectionId}, index}) => {
   return {
-      
-      
-      
+    matchedBets: getMatchedBets(state.order.bets),
+    ladderUnmatchedDisplay: state.settings.ladderUnmatched,
+    selectionMatchedBets: getSelectionMatchedBets(state.order.bets, {selectionId}),
+    stakeVal: getStakeVal(state.settings.stake, {selectionId}),
   };  
 };
 

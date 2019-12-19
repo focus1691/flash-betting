@@ -18,16 +18,6 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
     onChangeLadderOrder(newOrderList);
   }, []);
 
-  const newMatchedBets = {}; //selectionId: [{}]
-  Object.values(matchedBets).map(bet => {
-    if (newMatchedBets[bet.selectionId] === undefined) {
-      newMatchedBets[bet.selectionId] = [bet];
-    } else {
-      newMatchedBets[bet.selectionId] = newMatchedBets[bet.selectionId].concat(bet);
-    }
-  });
-
-
   return (
     marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ?                          
       <div className={"ladder-container"}
@@ -42,7 +32,6 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
                 id = {value}
                 key = {value}
                 order = {index}
-                selectionMatchedBets = {newMatchedBets[value]}
                 ladderUnmatched = {ladderUnmatched}
                 marketStatus = {marketStatus}
               />

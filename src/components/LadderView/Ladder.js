@@ -2,10 +2,11 @@ import React, { memo, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
+import crypto from 'crypto'
 import { cancelOrder, placeOrder } from "../../actions/order";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { getLTP } from "../../selectors/marketSelector";
-import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
+import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from "../../selectors/orderSelector";
 import { getStakeVal } from "../../selectors/settingsSelector";
 import { ALL_PRICES, formatPrice } from "../../utils/ladder/CreateFullLadder";
 import LadderContainer from './LadderContainer';
@@ -14,8 +15,11 @@ import LadderRow from "./LadderRow";
 import OrderRow from "./OrderRow";
 import PercentageRow from "./PercentageRow";
 import PriceRow from "./PriceRow";
+import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
+import GetQueryVariable from "../../utils/Market/GetQueryVariable";
+import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge'
 
-const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, ladderUnmatched, stake, stopLossOffset, stopLossTrailing, stopLossList }) => {
+const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, stakeVal, ladderUnmatched, selectionMatchedBets, stopLossOffset, stopLossTrailing, stopLossList }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -41,6 +45,7 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
     // if the order changes, we scrollback to the ltp 
     useEffect(() => {
         const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
+
         if (listRef.current !== undefined) {
             // we do the calculation because we start in reverse
             listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
@@ -94,12 +99,12 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
         onChangeStopLossList(newStopLossList);
     }
 
-    const handleHedgeCellClick = (clickSide, unmatchedBetOnRow, marketId, hedgeSize, leftSide, rightSide, price, selectionId) => e => {
+    const handleHedgeCellClick = (marketId, selectionId, unmatchedBetOnRow, side, price, size) => {
         const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
-  
+
         // CANCEL ORDER IF CLICK UNMATCHED BET
         if (unmatchedBetOnRow) {
-          cancelOrder({
+          onCancelOrder({
             marketId: marketId,
             betId: unmatchedBetOnRow.betId,
             sizeReduction: null,
@@ -107,30 +112,17 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
             unmatchedBets: unmatchedBets
           })
         }
-        else if (!unmatchedBetOnRow && hedgeSize > 0) {
+        else if (!unmatchedBetOnRow && size > 0) {
           placeOrder({
-            side: clickSide === 0 ? leftSide : rightSide,
+            side: side,
             price: formatPrice(price),
             selectionId: selectionId,
             customerStrategyRef: referenceStrategyId,
-            // size: hedgeSize + parseFloat(ladder[key][clickSide === 0 ? leftSideProfit : rightSideProfit])
+            size: size
           });
         }
-      };
+    };
 
-
-    // const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(id), { matched: matchedBets }).toFixed(2) : 0;
-
-    // const { ladderLTPHedge, fullLadderWithProfit } = CalculateLadderHedge(ladder, id, selectionMatchedBets, ladderUnmatched, stake, PL);
-
-    // gets all the bets we made and creates a size to offset
-    // const hedgeSize = selectionMatchedBets !== undefined ?
-    //     selectionMatchedBets.reduce((a, b) => {
-    //         return a + b.size;
-    //     }, 0) : 0;
-
-    // const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0;
-    
     return (
         <LadderContainer
             isReferenceSet={isReferenceSet}
@@ -171,6 +163,7 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
                                 cancelOrder: onCancelOrder,
                                 changeStopLossList: placeStopLossOrder,
                                 ladderSideLeft: ladderSideLeft,
+                                handleHedgeCellClick: handleHedgeCellClick
                             }}
                         >
                             {LadderRow}
@@ -191,6 +184,7 @@ const mapStateToProps = (state, {id}) => {
       ltp: getLTP(state.market.ladder, {selectionId: id}), 
       unmatchedBets: getUnmatchedBets(state.order.bets),
       matchedBets: getMatchedBets(state.order.bets),
+      selectionMatchedBets: getSelectionMatchedBets(state.order.bets, {selectionId: id}),
       stopLossList: state.stopLoss.list,
       stopLossSelected: state.stopLoss.selected,
       stopLossOffset: state.stopLoss.offset,

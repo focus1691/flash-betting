@@ -1,23 +1,29 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-import { getUnmatchedBetOnRow } from '../../selectors/orderSelector';
+import { getUnmatchedBetOnRow, getMatchedBets, getSelectionMatchedBets } from '../../selectors/orderSelector';
+import GetQueryVariable from '../../utils/Market/GetQueryVariable';
+import { getPLForRunner } from '../../utils/Bets/GetProfitAndLoss';
+import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
+import { getStakeVal } from '../../selectors/settingsSelector';
 
-const LadderHedgeCell = ({selectionId, price, unmatchedBetOnRow, leftSide}) => {
+const LadderHedgeCell = ({marketId, selectionId, price, unmatchedBetOnRow, side, PLHedgeNumber, hedgeSize, handleHedgeCellClick}) => {
+
+    const PLHedgeProfit = PLHedgeNumber && PLHedgeNumber.side === side && PLHedgeNumber.profit ? PLHedgeNumber.profit : undefined
+
     return (
         <div 
             className = 'td'
-            // style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? 'black' : `${ladder[key][leftSideProfit] >= 0 ? "green" : 'red'}`}}
-            // onClick = {handleHedgeCellClick(0)}
+            style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === side ? 'black' : `${PLHedgeProfit >= 0 ? "green" : 'red'}`}}
+            onClick = {() => handleHedgeCellClick(marketId, selectionId, unmatchedBetOnRow, side, price, parseFloat(PLHedgeProfit) + parseFloat(hedgeSize) )}
         >
-              {unmatchedBetOnRow && unmatchedBetOnRow.side === leftSide ? unmatchedBetOnRow.size : false} {/* ladder[key][leftSideProfit] */}
+            {unmatchedBetOnRow && unmatchedBetOnRow.side === side ? unmatchedBetOnRow.size : PLHedgeProfit }
         </div>
     )
 }
 
 const mapStateToProps = (state, {selectionId, price}) => {
     return {
-        unmatchedBetOnRow: getUnmatchedBetOnRow(state.order.bets, {selectionId, price})
-        
+        unmatchedBetOnRow: getUnmatchedBetOnRow(state.order.bets, {selectionId, price}),
     };  
   };
 
