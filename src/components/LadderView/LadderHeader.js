@@ -14,8 +14,8 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
   const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(selectionId), { matched: matchedBets }).toFixed(2) : 0;
   const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
 
-  const oddsHoveredCalc = ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) +
-    ((oddsHovered.side == "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side == "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2);
+  const oddsHoveredCalc = ((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) +
+    ((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2);
 
   const handleMouseDown = () => e => {
     setLadderDown(true);

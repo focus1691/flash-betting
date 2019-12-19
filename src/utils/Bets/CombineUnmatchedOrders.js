@@ -18,7 +18,7 @@ const selectionKeyCombinations = (list, allOrders) => {
         const objectsToAdd = {};
         
         list[selectionId].map(order => {
-            objectsToAdd[order.rfs] = objectsToAdd[order.rfs] == undefined ? [order] : objectsToAdd[order.rfs].concat(order);
+            objectsToAdd[order.rfs] = objectsToAdd[order.rfs] === undefined ? [order] : objectsToAdd[order.rfs].concat(order);
         })
 
         newAllOrders[selectionId] = {...allOrders[selectionId], ...objectsToAdd}

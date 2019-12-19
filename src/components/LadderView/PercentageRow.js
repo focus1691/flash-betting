@@ -128,7 +128,7 @@ const PercentageRow = ({ ltp, tv, percent, market, ltpDelta, onChangeLadderSideL
         style = {{cursor: 'pointer'}} 
         onClick={cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'LAY' : 'BACK', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
       />
-      <div className = {"th"} style={{backgroundColor: leftSide == 'lay' ? "#FCC9D3" : "#BCE4FC"}}>
+      <div className = {"th"} style={{backgroundColor: leftSide === 'lay' ? "#FCC9D3" : "#BCE4FC"}}>
         {`${percent[leftSide]}%`}
       </div>
       <div className = {"th"} 
@@ -137,7 +137,7 @@ const PercentageRow = ({ ltp, tv, percent, market, ltpDelta, onChangeLadderSideL
           >
             {ltp[0]}
           </div>
-      <div className = {"th"} style={{backgroundColor: leftSide == 'lay' ? "#BCE4FC" : "#FCC9D3"}}>
+      <div className = {"th"} style={{backgroundColor: leftSide === 'lay' ? "#BCE4FC" : "#FCC9D3"}}>
         {`${percent[leftSide === "lay" ? "back" : "lay"]}%`}</div>
       <div 
         className = {"th"} 
