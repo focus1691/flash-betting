@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, memo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder } from "../../actions/market";
 import { getMatchedBets } from "../../selectors/orderSelector";
@@ -64,4 +64,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Ladders);
+)(memo(Ladders));
