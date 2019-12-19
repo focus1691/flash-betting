@@ -75,10 +75,6 @@ app.get("/api/generate-client-token", (request, response) => {
 	});
 });
 
-
-// marketId: {
-//	 selectionId: name
-// }
 const runnerNames = {}
 
 app.post("/api/save-runner-names", (request, response) => {
