@@ -14,7 +14,7 @@ const LadderVolumeCell = ({ltpList, vol, candleStickInfo, volFraction}) => {
                 className={"candle-stick"} alt = "" style = {{right: candleStickInfo.index * 2}} /> 
             : null
             }
-            <div className={"volume-col"} style={{width: `${volumeVal / volFraction}%`}}>
+            <div className={"volume-col"} style={{width: `${(volumeVal / volFraction) / 2}%`}}>
                 {volumeVal === 0 ? null : volumeVal}
             </div>
         </div>

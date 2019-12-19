@@ -1,5 +1,6 @@
 export default (trd) => {
-    let highest = trd.sort((a, b) => b[1] > a[1]);
+    let highest = trd.sort((a, b) => b[1] - a[1]);
+
     if (highest[0] === null || highest[0] === undefined) return null;
     highest = Math.floor(highest[0][1] / 100) / 10;
 
