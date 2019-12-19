@@ -10,6 +10,11 @@
     color: #0000FF;
 }
 
+#all-sports ul {
+    z-index: 1;
+    
+}
+
 .MuiTypography-body1 {
 	font-size: 0.8rem !important;
 }
