@@ -61,9 +61,7 @@ const Login = props => {
           removeCookie('username');
           removeCookie('password');
           setCookie('rememberMe', 'no');
-
           setRememberMe(false);
-          //
 
           window.location.href = window.location.origin + "/?error=" + (res.error || "GENERAL_AUTH_ERROR");
         } else {
