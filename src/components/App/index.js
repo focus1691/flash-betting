@@ -334,6 +334,7 @@ useEffect(() => {
                         // Runner found so we update our object with the raw data
                         ladders[rc.id] = UpdateLadder(props.ladders[rc.id], rc);
 
+                        const currentLTP = ladders[rc.id].ltp[0]
                         // Back and Lay
                         if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
                             const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, mc.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
@@ -348,17 +349,16 @@ useEffect(() => {
                         }
 
                         // stop Entry
-
-                        newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, rc.ltp, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
+                        newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, currentLTP, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
                         // We increment and check the stoplosses
                         if (props.stopLossList[rc.id] !== undefined) {
                             // if it's trailing and the highest LTP went up, then we add a tickoffset
                             const maxLTP = props.ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-                            let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, rc.ltp, maxLTP));
+                            let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, currentLTP, maxLTP));
 
                             // if hedged, get size (price + hedged profit/loss)
                             if (adjustedStopLoss.hedged) {
-                                const newMatchedBets = Object.values(props.bets.matched).filter(bet => bet.selectionId == adjustedStopLoss.selectionId);
+                                const newMatchedBets = Object.values(props.matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
 
                                 const combinedSize =
                                     newMatchedBets.reduce((a, b) => {
@@ -371,7 +371,8 @@ useEffect(() => {
                             }
 
                             // if it doesn't have a reference or the order has been matched (STOP LOSS)
-                            const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets);
+                            const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, currentLTP, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets);
+
                             adjustedStopLossList = stopLossMatched.adjustedStopLossList;
                             stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
                         }
@@ -414,8 +415,7 @@ useEffect(() => {
                     props.onSortLadder(sortedLadderIndices);
                     props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
                 }
-                let newUpdates = [...updates];
-                updates.push(ladders);
+                let newUpdates = [ladders, ...updates];
                 setUpdates(newUpdates);
             }
         });
@@ -437,9 +437,7 @@ useEffect(() => {
                 if (runner.uo) {
                     runner.uo.forEach(order => {
                         // If the bet isn't in the unmatchedBets, we should delete it.
-                        if (newUnmatchedBets[order.id] !== undefined) {
-                            delete newUnmatchedBets[order.id];
-                        } else if (order.sr == 0) { // this is what happens when an order is finished
+                        if (order.sr === 0) { // this is what happens when an order is finished
                             newMatchedBets[order.id] = newUnmatchedBets[order.id];
                             delete newUnmatchedBets[order.id];
                         }

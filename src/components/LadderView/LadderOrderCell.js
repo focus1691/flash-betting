@@ -129,7 +129,7 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
             onClick={handleClick()}
             onContextMenu = {handleRightClick()}
           >
-            { stopLoss ? (stopLoss.hedged ? "H" : stopLoss.size) : cellMatched.matched }
+            { stopLoss ? (stopLoss.hedged ? "H" : stopLoss.stopLoss.size) : cellMatched.matched }
         </div>
     )
 }

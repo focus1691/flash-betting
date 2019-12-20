@@ -66,8 +66,9 @@ export const stopLossCheck = (adjustedStopLoss, selectionId, currentLTP, onPlace
     const adjustedStopLossList = Object.assign({}, previousAdjustedStopLossList)
 
     if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
-        const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, currentLTP, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, adjustedStopLoss.units.toLowerCase());
-        
+        const units = adjustedStopLoss.units ? adjustedStopLoss.units.toLowerCase() : "ticks";
+
+        const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, currentLTP, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, units);
         if (stopLossCheck.targetMet) {
             onPlaceOrder({
                 marketId: adjustedStopLoss.marketId,
