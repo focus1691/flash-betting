@@ -268,6 +268,19 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  let eventTypeId = props.eventType;
+
+    // If it's not a Greyhound Race (4339), we sort by the LTP
+    if (eventTypeId !== "4339") {
+      let ladders = Object.assign({}, props.ladders);
+      var sortedLadderIndices = sortLadder(ladders);
+      props.onSortLadder(sortedLadderIndices);
+      props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+  }
+
+}, [Object.values(props.ladders).length]);
+
+useEffect(() => {
     /**
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
      * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
@@ -288,7 +301,6 @@ useEffect(() => {
         }
 
         data.mc.forEach(async mc => {
-            let eventTypeId = props.eventType;
             let marketStatus = props.marketStatus;
 
             var ladders = Object.assign({}, props.ladders);
@@ -297,7 +309,6 @@ useEffect(() => {
             // Update the market status
             if (mc.marketDefinition) {
                 marketStatus = mc.marketDefinition.status;
-                eventTypeId = mc.marketDefinition.eventTypeId;
 
                 props.onMarketStatusChange(marketStatus);
                 props.setInPlay(mc.marketDefinition.inPlay);
@@ -409,12 +420,6 @@ useEffect(() => {
                     props.onChangeStopLossList(adjustedStopLossList);
                 }
 
-                // If it's not a Greyhound Race (4339), we sort by the LTP
-                if (eventTypeId !== "4339") {
-                    var sortedLadderIndices = sortLadder(ladders);
-                    props.onSortLadder(sortedLadderIndices);
-                    props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-                }
                 let newUpdates = [ladders, ...updates];
                 setUpdates(newUpdates);
             }
