@@ -48,6 +48,8 @@ const App = props => {
     );
   };
 
+  const isIterable = object => object != null && typeof object[Symbol.iterator] === 'function';
+
   setInterval(async () => {
     let now = new Date().getTime();
     if (now - lastUpdated > 100 && updates.length > 0) {
@@ -419,9 +421,10 @@ useEffect(() => {
                 if (Object.keys(props.stopLossList).length > 0) {
                     props.onChangeStopLossList(adjustedStopLossList);
                 }
-
-                let newUpdates = [ladders, ...updates];
-                setUpdates(newUpdates);
+                if (isIterable(updates)) {
+                  let newUpdates = [ladders, ...updates];
+                  setUpdates(newUpdates);
+                }
             }
         });
     });
