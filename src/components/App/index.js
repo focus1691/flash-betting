@@ -53,12 +53,12 @@ const App = props => {
 
   setInterval(async () => {
     let now = new Date().getTime();
-    if (now - lastUpdated > 100 && updates.length > 0) {
+    if (now - lastUpdated > 50 && updates.length > 0) {
       props.onReceiverLadders(updates[0]);
       setUpdates(updates.shift());
       setLastUpdated(now);
     }
-  }, 100);
+  }, 50);
 
   const loadSettings = async () => {
     /**
