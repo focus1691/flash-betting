@@ -1,21 +1,34 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-import { getIsLTP } from '../../selectors/marketSelector';
+import { getIsLTP, getLTPDelta, getLTP } from '../../selectors/marketSelector';
 import { formatPrice, formatPriceKey } from '../../utils/ladder/CreateFullLadder';
+import { getLTPstyle } from '../../utils/ladder/DeconstructLadder';
 
-const LadderLTPCell = ({selectionId, price, isLTP}) => {
+const LadderLTPCell = ({price, isLTP, ltp, ltpDelta}) => {
+    const ltpStyle = isLTP ? getLTPstyle(ltp, ltpDelta) : {background: "#BBBBBB"};
+
     return (
-        <div style = {{
-            background: isLTP ? 'yellow' : '#BBBBBB'
-        }} className = 'td'>{formatPrice(price)}</div>
+        <div style = {ltpStyle} className = 'td'>
+            {formatPrice(price)}
+        </div>
     )
 }
 
 const mapStateToProps = (state, {selectionId, price}) => {
     return {
         isLTP: getIsLTP(state.market.ladder, {selectionId: selectionId, price: formatPriceKey(price)}),
-        
+        ltp: getLTP(state.market.ladder, {selectionId}), 
+        ltpDelta: getLTPDelta(state.market.ladder, {selectionId}),
     };  
-  };
+};
 
-export default connect(mapStateToProps)(memo(LadderLTPCell))
+
+const arePropsEqual = (prevProps, nextProps) => {
+    if (nextProps.isLTP || prevProps.isLTP) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+export default connect(mapStateToProps)(memo(LadderLTPCell, arePropsEqual))

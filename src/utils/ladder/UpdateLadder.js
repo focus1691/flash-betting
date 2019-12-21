@@ -12,6 +12,8 @@ const UpdateLadder = (ladder, rawData) => {
     ladder.tv = [rawData.tv, ladder.tv[0]];
   }
 
+  
+
   if (rawData.trd) {
     rawData.trd.forEach(trd => {
       let price = trd[0];
