@@ -36,6 +36,7 @@ const App = props => {
   const [cookies] = useCookies(['sessionKey', 'username']);
   const [updates, setUpdates] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(new Date().getTime());
+  const [clk, setClk] = useState(null);
 
   if (!cookies.sessionKey && !cookies.username) {
     window.location.href = window.location.origin;
@@ -57,7 +58,7 @@ const App = props => {
       setUpdates(updates.shift());
       setLastUpdated(now);
     }
-  }, 100);
+  }, 250);
 
   const loadSettings = async () => {
     /**
@@ -293,13 +294,14 @@ useEffect(() => {
         const marketId = getQueryVariable("marketId");
 
         // initialClk = Initial clock. Sent once at the start.
-        // clk = Clock. Sent on every new update sent.
+          // clk = Clock. Sent on every new update sent.
         // These values are used as parameters to resubscribe to the market in the event of a disconnect.
         if (data.initialClk) {
             props.onReceiveInitialClk(data.initialClk);
         }
         if (data.clk) {
-            props.onReceiveClk(data.clk);
+          setClk(data.clk);
+            // props.onReceiveClk(data.clk);
         }
 
         data.mc.forEach(async mc => {
