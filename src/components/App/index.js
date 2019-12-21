@@ -298,35 +298,19 @@ useEffect(() => {
         props.socket.off("mcm");
         const marketId = getQueryVariable("marketId");
 
-        // initialClk = Initial clock. Sent once at the start.
-          // clk = Clock. Sent on every new update sent.
-        // These values are used as parameters to resubscribe to the market in the event of a disconnect.
         if (data.initialClk) {
             props.onReceiveInitialClk(data.initialClk);
         }
         if (data.clk) {
           setClk(data.clk);
-            // props.onReceiveClk(data.clk);
         }
 
         data.mc.forEach(async mc => {
-            let marketStatus = props.marketStatus;
-
             var ladders = updates[updates.length - 1] || Object.assign({}, props.ladders);
             var nonRunners = Object.assign({}, props.nonRunners);
 
             // Update the market status
             if (mc.marketDefinition) {
-                marketStatus = mc.marketDefinition.status;
-
-                // props.onMarketStatusChange(marketStatus);
-                // props.setInPlay(mc.marketDefinition.inPlay);
-
-                // if (!props.market.inPlayTime && mc.marketDefinition.inPlay) {
-                //     // Start the in-play clock
-                //     props.setInPlayTime(new Date());
-                // }
-
                 mc.marketDefinition.runners.forEach(runner => {
                     if (runner.status === "REMOVED") {
                         if (runner.id in ladders) {
