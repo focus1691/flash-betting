@@ -58,7 +58,7 @@ const App = props => {
       setUpdates(updates.shift());
       setLastUpdated(now);
     }
-  }, 250);
+  }, 1000);
 
   const loadSettings = async () => {
     /**
