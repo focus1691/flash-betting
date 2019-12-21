@@ -37,11 +37,11 @@ export const getIsLTP = createSelector(
     isLTP => isLTP
 )
 
-const getVolumeLTP = (state, {selectionId}) => state[selectionId].trd
+const getVolumeLTP = (state, {selectionId, price}) => ({trd: state[selectionId].trd, trdo: state[selectionId].trdo[formatPriceKey(price)]})
 
 export const getVolumeDivider = createSelector(
-    getVolumeLTP,
-    trd => trd ? GetVolumeFraction(trd) : undefined
+    getVolumeLTP, // Math.floor(trdo / 100) / 10: turns 100 vol into 0.1, then we divide it by 10 to make it look better, then we divide it by the fraction to find the percentage
+    ({trd, trdo}) => trd && trdo ? Math.floor(trdo / 100) / 10 / GetVolumeFraction(trd) : undefined
 )
 
 const getLadderCandleStickSelector = (state, {selectionId, price}) => ({ladder: state[selectionId], price: price})
@@ -81,7 +81,7 @@ export const getMatched = createSelector(
 const getLadderVolumeSelector = (state, {selectionId, price}) => state[selectionId].trdo[formatPriceKey(price)]
 
 export const getVolume = createSelector(
-    getLadderVolumeSelector,
+    getLadderVolumeSelector, // Math.floor(trdo / 100) / 10: turns 100 vol into 0.1, then we divide it by 10 to make it look better, 
     volume => volume ? Math.floor(volume / 100) / 10 : undefined
 )
 

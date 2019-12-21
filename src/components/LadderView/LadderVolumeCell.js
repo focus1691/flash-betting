@@ -13,7 +13,7 @@ const LadderVolumeCell = ({ltpList, vol, candleStickInfo, volFraction}) => {
                     src={`${window.location.origin}/icons/${item.color === 'R' ? 'red-candle.png' : 'green-candle.png'}`} 
                     className={"candle-stick"} alt = "" style = {{right: item.index * 2}} /> 
             )}
-            <div className={"volume-col"} style={{width: `${(volumeVal / volFraction) / 2}%`}}>
+            <div className={"volume-col"} style={{width: `${(volFraction) / 2}%`}}>
                 {volumeVal === 0 ? null : volumeVal}
             </div>
         </div>
@@ -23,7 +23,7 @@ const LadderVolumeCell = ({ltpList, vol, candleStickInfo, volFraction}) => {
 const mapStateToProps = (state, {selectionId, price}) => {
     return {
         vol: getVolume(state.market.ladder, {selectionId, price}),
-        volFraction: getVolumeDivider(state.market.ladder, {selectionId}),
+        volFraction: getVolumeDivider(state.market.ladder, {selectionId, price}),
         candleStickInfo: getCandleStickColor(state.market.ladder, {selectionId, price})
     };  
   };
