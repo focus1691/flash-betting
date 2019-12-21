@@ -95,7 +95,7 @@ const calcBackLayPercentages = (atbo, atlo, ltp) => {
   // Add the back total
   for (i = 0; i < indices.back.length; i++) {
     let price = indices.back[i];
-    let matched = atbo[price];
+    let matched = atbo[formatPriceKey(price)];
     if (matched) {
       backMatched += matched;
     }
@@ -104,7 +104,7 @@ const calcBackLayPercentages = (atbo, atlo, ltp) => {
   // Add the lay total
   for (i = 0; i < indices.lay.length; i++) {
     let price = indices.lay[i];
-    let matched = atlo[price];
+    let matched = atlo[formatPriceKey(price)];
 
     if (matched) {
       layMatched += matched;
