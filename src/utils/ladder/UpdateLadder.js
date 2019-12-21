@@ -43,15 +43,15 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (index === -1 && matched >= 1) {
         ladder.atb.push([price, matched]);
-        ladder.atbo[formatPriceKey(price)] = matched;
+        ladder.atlo[formatPriceKey(price)] = matched;
       }
       else if (matched >= 1) {
         ladder.atb[index][1] = matched;
-        ladder.atbo[formatPriceKey(price)] = matched;
+        ladder.atlo[formatPriceKey(price)] = matched;
       }
       else if (matched <= 0) {
         ladder.atb.splice(index, 1);
-        delete ladder.atbo[formatPriceKey(price)];
+        delete ladder.atlo[formatPriceKey(price)];
       }
     });
     sortDes(ladder.atb);
@@ -66,15 +66,15 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (index === -1 && matched >= 1) {
         ladder.atl.push([price, matched]);
-        ladder.atlo[formatPriceKey(price)] = matched;
+        ladder.atbo[formatPriceKey(price)] = matched;
       }
       else if (matched >= 1) {
         ladder.atl[index][1] = matched;
-        ladder.atlo[formatPriceKey(price)] = matched;
+        ladder.atbo[formatPriceKey(price)] = matched;
       }
       else if (matched <= 0) {
         ladder.atl.splice(index, 1);
-        delete ladder.atlo[formatPriceKey(price)];
+        delete ladder.atbo[formatPriceKey(price)];
       }
     });
     sortAsc(ladder.atl);

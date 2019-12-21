@@ -51,7 +51,7 @@ const CreateLadder = (data) => {
         // Alter the value to round down
         runner.atb[i][1] = matched;
 
-        runner.atbo[price] = matched;
+        runner.atlo[price] = matched;
       }
     }
   }
@@ -74,7 +74,7 @@ const CreateLadder = (data) => {
         // Alter the value to round down
         runner.atl[i][1] = matched;
 
-        runner.atlo[price] = matched;
+        runner.atbo[price] = matched;
       }
     }
   }
