@@ -58,7 +58,7 @@ const App = props => {
       setUpdates(updates.shift());
       setLastUpdated(now);
     }
-  }, 1000);
+  }, 100);
 
   const loadSettings = async () => {
     /**
@@ -307,7 +307,7 @@ useEffect(() => {
         data.mc.forEach(async mc => {
             let marketStatus = props.marketStatus;
 
-            var ladders = Object.assign({}, props.ladders);
+            var ladders = updates[updates.length - 1] || Object.assign({}, props.ladders);
             var nonRunners = Object.assign({}, props.nonRunners);
 
             // Update the market status
