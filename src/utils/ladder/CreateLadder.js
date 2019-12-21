@@ -1,4 +1,4 @@
-import { createFullLadder, formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
+import { formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Algorithms/Sort";
 
 const CreateLadder = (data) => {
@@ -8,7 +8,6 @@ const CreateLadder = (data) => {
   runner.ltp = runner.ltp ? [runner.ltp] : [null];
   runner.ltpDelta = new Date();
   runner.tv = runner.tv ? [runner.tv, runner.tv] : [null, null];
-  runner.fullLadder = createFullLadder();
   runner.atbo = {};
   runner.atlo = {};
 
@@ -48,9 +47,6 @@ const CreateLadder = (data) => {
         runner.atb.splice(i, 1);
         i--;
       } else {
-        // Update the values in the full ladder: 1.01 - 1000
-        runner.fullLadder[price].odds = price;
-        runner.fullLadder[price].layMatched = matched;
 
         // Alter the value to round down
         runner.atb[i][1] = matched;
@@ -74,9 +70,6 @@ const CreateLadder = (data) => {
         runner.atl.splice(i, 1);
         i--;
       } else {
-        // Update the values in the full ladder: 1.01 - 1000
-        runner.fullLadder[price].odds = price;
-        runner.fullLadder[price].backMatched = matched;
 
         // Alter the value to round down
         runner.atl[i][1] = matched;
@@ -86,7 +79,7 @@ const CreateLadder = (data) => {
     }
   }
 
-  runner.percent = calcBackLayPercentages(runner.fullLadder, runner.ltp[0]);
+  runner.percent = calcBackLayPercentages(runner.atbo, runner.atlo, runner.ltp[0]);
 
   return runner;
 };

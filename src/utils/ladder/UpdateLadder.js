@@ -20,7 +20,7 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (index === -1 && volumeMatched >= 100) {
         ladder.trd.push([price, volumeMatched]);
-        ladder.trdo[formatPriceKey(price)] = volumeMatched
+        ladder.trdo[formatPriceKey(price)] = volumeMatched;
       }
       else if (volumeMatched < 100) {
         ladder.trd.splice(index, 1);
@@ -43,17 +43,15 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (index === -1 && matched >= 1) {
         ladder.atb.push([price, matched]);
-        ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
         ladder.atbo[formatPriceKey(price)] = matched;
       }
       else if (matched >= 1) {
         ladder.atb[index][1] = matched;
-        ladder.fullLadder[formatPriceKey(price)].layMatched = matched;
         ladder.atbo[formatPriceKey(price)] = matched;
       }
       else if (matched <= 0) {
         ladder.atb.splice(index, 1);
-        ladder.fullLadder[formatPriceKey(price)].layMatched = null;
+        delete ladder.atbo[formatPriceKey(price)];
       }
     });
     sortDes(ladder.atb);
@@ -68,23 +66,21 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (index === -1 && matched >= 1) {
         ladder.atl.push([price, matched]);
-        ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
         ladder.atlo[formatPriceKey(price)] = matched;
       }
       else if (matched >= 1) {
         ladder.atl[index][1] = matched;
-        ladder.fullLadder[formatPriceKey(price)].backMatched = matched;
+        ladder.atlo[formatPriceKey(price)] = matched;
       }
       else if (matched <= 0) {
         ladder.atl.splice(index, 1);
-        ladder.fullLadder[formatPriceKey(price)].backMatched = null;
-        ladder.atlo[formatPriceKey(price)] = matched;
+        delete ladder.atlo[formatPriceKey(price)];
       }
     });
     sortAsc(ladder.atl);
   }
 
-  ladder.percent = calcBackLayPercentages(ladder.fullLadder, ladder.ltp[0]);
+  ladder.percent = calcBackLayPercentages(ladder.atbo, ladder.atlo, ladder.ltp[0]);
 
   return ladder;
 }
