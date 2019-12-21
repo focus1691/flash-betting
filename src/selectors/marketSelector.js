@@ -50,10 +50,16 @@ export const getCandleStickColor = createSelector(
     getLadderCandleStickSelector,
     ({ladder, price}) => { 
         const coloredLTPList = GetColoredLTPList(ladder);
-        const ltpIndex = coloredLTPList.findIndex(item => parseFloat(item.tick) === parseFloat(price))
+        const ltpIndexes = coloredLTPList.map((item, index) => {
+            if (parseFloat(item.tick) === parseFloat(price)) {
+                return Object.assign({}, item, {index})
+            }
+            return undefined;
+        }).filter(item => item !== undefined)
+        
 
-        if (ltpIndex === -1) return undefined
-        return {index: ltpIndex, color: coloredLTPList[ltpIndex].color}
+        if (ltpIndexes.length === 0) return []
+        return ltpIndexes.map(item => ({index: item.index, color: item.color}))
     }
 )
 

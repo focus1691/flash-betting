@@ -8,12 +8,11 @@ const LadderVolumeCell = ({ltpList, vol, candleStickInfo, volFraction}) => {
     return (
         <div className={"candle-stick-col td"} colSpan={3}>
             {
-            candleStickInfo ? 
-            <img 
-                src={`${window.location.origin}/icons/${candleStickInfo.color === 'R' ? 'red-candle.png' : 'green-candle.png'}`} 
-                className={"candle-stick"} alt = "" style = {{right: candleStickInfo.index * 2}} /> 
-            : null
-            }
+            candleStickInfo.map(item =>  
+                <img 
+                    src={`${window.location.origin}/icons/${item.color === 'R' ? 'red-candle.png' : 'green-candle.png'}`} 
+                    className={"candle-stick"} alt = "" style = {{right: item.index * 2}} /> 
+            )}
             <div className={"volume-col"} style={{width: `${(volumeVal / volFraction) / 2}%`}}>
                 {volumeVal === 0 ? null : volumeVal}
             </div>
