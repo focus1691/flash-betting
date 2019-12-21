@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import GetColoredLTPList from '../utils/ladder/GetColoredLTPList'
 import GetVolumeFraction from '../utils/ladder/GetVolumeFraction'
+import { formatPriceKey } from '../utils/ladder/CreateFullLadder'
 
 
 const getLadderSelector = (state, {selectionId}) => {
@@ -61,7 +62,7 @@ export const getLTPDelta = createSelector(
     ladder => (ladder && ladder.ltpDelta) ? ladder.ltpDelta : null
 )
 
-const getLadderMatchedSelector = (state, {selectionId, side, price}) => ({matched: state[selectionId][side == "BACK" ? 'atbo' : 'atlo'][price], side: side})
+const getLadderMatchedSelector = (state, {selectionId, side, price}) => ({matched: state[selectionId][side == "BACK" ? 'atbo' : 'atlo'][formatPriceKey(price)], side: side})
 
 export const getMatched = createSelector(
     getLadderMatchedSelector,
@@ -71,7 +72,7 @@ export const getMatched = createSelector(
     })
 )
 
-const getLadderVolumeSelector = (state, {selectionId, price}) => state[selectionId].trdo[price]
+const getLadderVolumeSelector = (state, {selectionId, price}) => state[selectionId].trdo[formatPriceKey(price)]
 
 export const getVolume = createSelector(
     getLadderVolumeSelector,
