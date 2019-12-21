@@ -306,7 +306,7 @@ useEffect(() => {
         }
 
         data.mc.forEach(async mc => {
-            var ladders = updates[updates.length - 1] || Object.assign({}, props.ladders);
+            var ladders = updates[0] || Object.assign({}, props.ladders);
             var nonRunners = Object.assign({}, props.nonRunners);
 
             // Update the market status
