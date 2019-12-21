@@ -254,13 +254,18 @@ const App = props => {
         props.onMarketStatusChange(marketDefinition.status);
         props.setInPlay(marketDefinition.inPlay);
 
+        if (!props.market.inPlayTime && marketDefinition.inPlay) {
+          // Start the in-play clock
+          props.setInPlayTime(new Date());
+      }
+
         if (marketDefinition.status === "CLOSED" && !props.marketOpen) {
             props.socket.off("market-definition");
             props.onMarketClosed();
             cleanupOnMarketClose(getQueryVariable("marketId"));
         }
     });
-}, [props.marketStatus]);
+}, [props.marketStatus, props.market.inPlayTime]);
 
 useEffect(() => {
     // A message will be sent here if the connection to the market is disconnected.
@@ -314,13 +319,13 @@ useEffect(() => {
             if (mc.marketDefinition) {
                 marketStatus = mc.marketDefinition.status;
 
-                props.onMarketStatusChange(marketStatus);
-                props.setInPlay(mc.marketDefinition.inPlay);
+                // props.onMarketStatusChange(marketStatus);
+                // props.setInPlay(mc.marketDefinition.inPlay);
 
-                if (!props.market.inPlayTime && mc.marketDefinition.inPlay) {
-                    // Start the in-play clock
-                    props.setInPlayTime(new Date());
-                }
+                // if (!props.market.inPlayTime && mc.marketDefinition.inPlay) {
+                //     // Start the in-play clock
+                //     props.setInPlayTime(new Date());
+                // }
 
                 mc.marketDefinition.runners.forEach(runner => {
                     if (runner.status === "REMOVED") {
@@ -491,7 +496,7 @@ useEffect(() => {
         }
         props.socket.off("ocm");
     });
-}, [props.ladders, props.marketStatus]);
+}, [props.ladders]);
 
   useEffect(() => {
     if (Object.keys(props.unmatchedBets).length > 0) {
