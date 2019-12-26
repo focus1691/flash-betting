@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
 import * as actions from "../../actions/settings";
@@ -51,14 +51,32 @@ const App = props => {
 
   const isIterable = object => object != null && typeof object[Symbol.iterator] === 'function';
 
-  setInterval(async () => {
-    let now = new Date().getTime();
-    if (now - lastUpdated > 50 && updates.length > 0) {
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+  
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
+
+  useInterval(() => {
+    if (updates.length > 0) {
+      setUpdates(updates.slice(1));
       props.onReceiverLadders(updates[0]);
-      setUpdates(updates.shift());
-      setLastUpdated(now);
     }
-  }, 50);
+  }, 100)
 
   const loadSettings = async () => {
     /**
@@ -306,7 +324,7 @@ useEffect(() => {
         }
 
         data.mc.forEach(async mc => {
-            var ladders = updates[0] || Object.assign({}, props.ladders);
+            var ladders = updates[updates.length - 1] || Object.assign({}, props.ladders);
             var nonRunners = Object.assign({}, props.nonRunners);
 
             // Update the market status

@@ -81,9 +81,9 @@ const mapStateToProps = (state, {data: {selectionId}, index}) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-      onOddsHovered: odds => e => dispatch(setOddsHovered(odds))
+    onOddsHovered: odds => e => dispatch(setOddsHovered(odds))
   };
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderRow));
+export default connect(mapStateToProps, mapDispatchToProps)(LadderRow);

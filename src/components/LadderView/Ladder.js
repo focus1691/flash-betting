@@ -50,7 +50,7 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
             // we do the calculation because we start in reverse
             listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
         }
-    }, [order]);
+    }, [order, ltp]);
 
     const placeOrder = data => {
         onPlaceOrder({
@@ -227,4 +227,4 @@ const arePropsEqual = (prevProps, nextProps) => {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladder, arePropsEqual));
+export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladder));
