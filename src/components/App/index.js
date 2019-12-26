@@ -73,8 +73,6 @@ const App = props => {
     if (!isUpdated) {
       props.onReceiverLadders(updates);
       setIsUpdated(true);
-      // setUpdates(updates.slice(1));
-      // props.onReceiverLadders(updates[0]);
     }
   }, 100);
 

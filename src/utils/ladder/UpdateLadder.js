@@ -23,8 +23,8 @@ const UpdateLadder = (ladder, rawData) => {
         index === -1 ? ladder.trd.push([price, volumeMatched]) : ladder.trd[index][1] = volumeMatched;
       }
       else if (volumeMatched < 100) {
-        ladder.trd.splice(index, 1);
         delete ladder.trdo[formatPriceKey(price)];
+        if (index !== -1) ladder.trd.splice(index, 1);
       }
     });
     sortAsc(ladder.trd);
@@ -39,11 +39,12 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (matched >= 1) {
         ladder.atlo[formatPriceKey(price)] = matched;
+        delete ladder.atbo[formatPriceKey(price)];
         index === -1 ? ladder.atb.push([price, matched]) : ladder.atb[index][1] = matched;
       } 
       else if (matched <= 0) {
         delete ladder.atlo[formatPriceKey(price)];
-        ladder.atb.splice(index, 1);
+        if (index !== -1) ladder.atb.splice(index, 1);
       }
     });
     sortDes(ladder.atb);
@@ -58,12 +59,13 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (matched >= 1) {
         ladder.atbo[formatPriceKey(price)] = matched;
+        delete ladder.atlo[formatPriceKey(price)];
         index === -1 ? ladder.atl.push([price, matched]) : ladder.atl[index][1] = matched;
 
       }
       else if (matched <= 0) {
         delete ladder.atbo[formatPriceKey(price)];
-        ladder.atl.splice(index, 1);
+        if (index !== -1) ladder.atl.splice(index, 1);
       }
     });
     sortAsc(ladder.atl);
