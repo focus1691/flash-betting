@@ -35,7 +35,7 @@ const App = props => {
   const [marketId, setMarketId] = useState(null);
   const [cookies] = useCookies(['sessionKey', 'username']);
   const [updates, setUpdates] = useState([]);
-  const [lastUpdated, setLastUpdated] = useState(new Date().getTime());
+  const [isUpdated, setIsUpdated] = useState(true);
   const [clk, setClk] = useState(null);
 
   if (!cookies.sessionKey && !cookies.username) {
@@ -48,8 +48,6 @@ const App = props => {
       )}&email=${encodeURIComponent(cookies.username)}`
     );
   };
-
-  const isIterable = object => object != null && typeof object[Symbol.iterator] === 'function';
 
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -72,11 +70,13 @@ const App = props => {
   }
 
   useInterval(() => {
-    if (updates.length > 0) {
-      setUpdates(updates.slice(1));
-      props.onReceiverLadders(updates[0]);
+    if (!isUpdated) {
+      props.onReceiverLadders(updates);
+      setIsUpdated(true);
+      // setUpdates(updates.slice(1));
+      // props.onReceiverLadders(updates[0]);
     }
-  }, 100)
+  }, 100);
 
   const loadSettings = async () => {
     /**
@@ -324,7 +324,7 @@ useEffect(() => {
         }
 
         data.mc.forEach(async mc => {
-            var ladders = updates[updates.length - 1] || Object.assign({}, props.ladders);
+            var ladders = Object.assign({}, updates);
             var nonRunners = Object.assign({}, props.nonRunners);
 
             // Update the market status
@@ -352,9 +352,9 @@ useEffect(() => {
 
                 await Promise.all(mc.rc.map(async rc => {
 
-                    if (rc.id in props.ladders) {
+                    if (rc.id in ladders) {
                         // Runner found so we update our object with the raw data
-                        ladders[rc.id] = UpdateLadder(props.ladders[rc.id], rc);
+                        ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
 
                         const currentLTP = ladders[rc.id].ltp[0]
                         // Back and Lay
@@ -375,7 +375,7 @@ useEffect(() => {
                         // We increment and check the stoplosses
                         if (props.stopLossList[rc.id] !== undefined) {
                             // if it's trailing and the highest LTP went up, then we add a tickoffset
-                            const maxLTP = props.ladders[rc.id].ltp.sort((a, b) => b - a)[0];
+                            const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
                             let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, currentLTP, maxLTP));
 
                             // if hedged, get size (price + hedged profit/loss)
@@ -430,10 +430,8 @@ useEffect(() => {
                 if (Object.keys(props.stopLossList).length > 0) {
                     props.onChangeStopLossList(adjustedStopLossList);
                 }
-                if (isIterable(updates)) {
-                  let newUpdates = [ladders, ...updates];
-                  setUpdates(newUpdates);
-                }
+                setUpdates(ladders);
+                setIsUpdated(false);
             }
         });
     });
