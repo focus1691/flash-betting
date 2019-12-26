@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { setOddsHovered } from '../../actions/market';
 import { ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
