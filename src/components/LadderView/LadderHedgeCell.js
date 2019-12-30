@@ -1,10 +1,6 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-import { getUnmatchedBetOnRow, getMatchedBets, getSelectionMatchedBets } from '../../selectors/orderSelector';
-import GetQueryVariable from '../../utils/Market/GetQueryVariable';
-import { getPLForRunner } from '../../utils/Bets/GetProfitAndLoss';
-import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
-import { getStakeVal } from '../../selectors/settingsSelector';
+import { getUnmatchedBetOnRow } from '../../selectors/orderSelector';
 
 const LadderHedgeCell = ({marketId, selectionId, price, unmatchedBetOnRow, side, PLHedgeNumber, hedgeSize, handleHedgeCellClick}) => {
 

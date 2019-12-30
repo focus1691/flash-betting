@@ -11,26 +11,20 @@ const UpdateLadder = (ladder, rawData) => {
   if (rawData.tv) {
     ladder.tv = [rawData.tv, ladder.tv[0]];
   }
-
   
-
   if (rawData.trd) {
     rawData.trd.forEach(trd => {
       let price = trd[0];
       let volumeMatched = Math.floor(trd[1]);
       let index = ladder.trd.map(trd => trd[0]).findIndex(val => val === price);
 
-      if (index === -1 && volumeMatched >= 100) {
-        ladder.trd.push([price, volumeMatched]);
+      if (volumeMatched >= 100) {
         ladder.trdo[formatPriceKey(price)] = volumeMatched;
+        index === -1 ? ladder.trd.push([price, volumeMatched]) : ladder.trd[index][1] = volumeMatched;
       }
       else if (volumeMatched < 100) {
-        ladder.trd.splice(index, 1);
         delete ladder.trdo[formatPriceKey(price)];
-      }
-      else if (volumeMatched >= 100) {
-        ladder.trd[index][1] = volumeMatched;
-        ladder.trdo[formatPriceKey(price)] = volumeMatched;
+        if (index !== -1) ladder.trd.splice(index, 1);
       }
     });
     sortAsc(ladder.trd);
@@ -43,17 +37,14 @@ const UpdateLadder = (ladder, rawData) => {
       let matched = Math.floor(atb[1]);
       let index = ladder.atb.map(atb => atb[0]).findIndex(val => val === price);
 
-      if (index === -1 && matched >= 1) {
-        ladder.atb.push([price, matched]);
+      if (matched >= 1) {
         ladder.atlo[formatPriceKey(price)] = matched;
-      }
-      else if (matched >= 1) {
-        ladder.atb[index][1] = matched;
-        ladder.atlo[formatPriceKey(price)] = matched;
-      }
+        delete ladder.atbo[formatPriceKey(price)];
+        index === -1 ? ladder.atb.push([price, matched]) : ladder.atb[index][1] = matched;
+      } 
       else if (matched <= 0) {
-        ladder.atb.splice(index, 1);
         delete ladder.atlo[formatPriceKey(price)];
+        if (index !== -1) ladder.atb.splice(index, 1);
       }
     });
     sortDes(ladder.atb);
@@ -66,17 +57,15 @@ const UpdateLadder = (ladder, rawData) => {
       let matched = Math.floor(atl[1]);
       let index = ladder.atl.map(atl => atl[0]).findIndex(val => val === price);
 
-      if (index === -1 && matched >= 1) {
-        ladder.atl.push([price, matched]);
+      if (matched >= 1) {
         ladder.atbo[formatPriceKey(price)] = matched;
-      }
-      else if (matched >= 1) {
-        ladder.atl[index][1] = matched;
-        ladder.atbo[formatPriceKey(price)] = matched;
+        delete ladder.atlo[formatPriceKey(price)];
+        index === -1 ? ladder.atl.push([price, matched]) : ladder.atl[index][1] = matched;
+
       }
       else if (matched <= 0) {
-        ladder.atl.splice(index, 1);
         delete ladder.atbo[formatPriceKey(price)];
+        if (index !== -1) ladder.atl.splice(index, 1);
       }
     });
     sortAsc(ladder.atl);

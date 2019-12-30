@@ -15,9 +15,6 @@ import LadderRow from "./LadderRow";
 import OrderRow from "./OrderRow";
 import PercentageRow from "./PercentageRow";
 import PriceRow from "./PriceRow";
-import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
-import GetQueryVariable from "../../utils/Market/GetQueryVariable";
-import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge'
 
 const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, stakeVal, ladderUnmatched, selectionMatchedBets, stopLossOffset, stopLossTrailing, stopLossList }) => {
     const containerRef = useRef(null);
