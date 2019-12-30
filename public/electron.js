@@ -110,9 +110,9 @@ app.post("/api/checkout", function (request, result) {
 });
 
 app.get("/api/load-session", async (request, response) => {
-	betfair.setActiveSession(request.query.sessionKey);
+	// betfair.setActiveSession(request.query.sessionKey);
 
-	betfair.setEmailAddress(request.query.email);
+	// betfair.setEmailAddress(request.query.email);
 
 	const accessToken = await database.getToken(request.query.email);
 
@@ -204,6 +204,15 @@ app.get("/api/get-account-balance", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
+			if (res.error) {
+				if (betfair.accessToken === null) {
+					response.status(400).send({error: "INVALID_ACCESS_TOKEN"});
+				} else if (betfair.sessionKey === null) {
+					response.status(400).send({error: "INVALID_SESSION_INFORMATION"});
+				} else { 
+					response.status(400).send({error: "ERROR"});
+				}
+			}
 			response.json({
 				balance: res.result.availableToBetBalance
 			});
@@ -217,7 +226,16 @@ app.get("/api/get-account-details", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
-			if (err) response.sendStatus(400).json();
+
+			if (res.error) {
+				if (betfair.accessToken === null) {
+					response.status(400).send({error: "INVALID_ACCESS_TOKEN"});
+				} else if (betfair.sessionKey === null) {
+					response.status(400).send({error: "INVALID_SESSION_INFORMATION"});
+				} else { 
+					response.status(400).send({error: "ERROR"});
+				}
+			}
 			else {
 				response.json({
 					name: res.result.firstName,
@@ -391,6 +409,10 @@ app.get("/api/list-todays-card", (request, response) => {
 			"MARKET_START_TIME"
 		]
 	}, (err, res) => {
+		if (res.response.error) {
+			response.sendStatus(400)
+			return;
+		}
 
 		// if its the next day, we have to put the date
 		const mappedResponseNames = res.result.map(item => {

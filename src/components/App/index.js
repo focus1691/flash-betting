@@ -33,13 +33,13 @@ import { checkStopLossForMatch, checkTickOffsetForMatch } from '../../utils/Exch
 
 const App = props => {
   const [marketId, setMarketId] = useState(null);
-  const [cookies] = useCookies(['sessionKey', 'username']);
+  const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
   const [updates, setUpdates] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(new Date().getTime());
   const [clk, setClk] = useState(null);
 
   if (!cookies.sessionKey && !cookies.username) {
-    window.location.href = window.location.origin;
+    window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
   }
   const loadSession = async () => {
     await fetch(
@@ -73,7 +73,7 @@ const App = props => {
 
   useInterval(() => {
     if (updates.length > 0) {
-      setUpdates(updates.slice(1));
+      setUpdates([]);
       props.onReceiverLadders(updates[0]);
     }
   }, 100)
@@ -102,7 +102,10 @@ const App = props => {
         props.onReceiveLayBtns(settings.layBtns);
         props.onReceiveRightClickTicks(settings.rightClickTicks);
         props.onReceiveHorseRaces(settings.horseRaces);
-      });
+      })
+      .catch(e => {
+        window.location.href = window.location.origin + "/?error=USER_SETTINGS_NOT_FOUND";
+      })
 
     /**
      * @return {Boolean} premiumStatus
@@ -127,7 +130,11 @@ const App = props => {
         .then(res => res.json())
         .then(async data => {
           if (data.error) {
-            window.location.href = window.location.origin + "/logout";
+            removeCookie('sessionKey');
+            removeCookie('accessToken');
+            removeCookie('refreshToken');
+            removeCookie('expiresIn');
+            window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
           } else {
             setMarketId(marketId);
             if (data.result.length > 0) {
