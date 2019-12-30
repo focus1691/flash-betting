@@ -197,7 +197,8 @@ app.get("/api/get-account-balance", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
-			response.json({
+			if (res.error) response.status(400).json(res);
+			else response.json({
 				balance: res.result.availableToBetBalance
 			});
 		}
@@ -210,7 +211,7 @@ app.get("/api/get-account-details", (request, response) => {
 			filter: {}
 		},
 		(err, res) => {
-			if (err) response.sendStatus(400).json();
+			if (res.error) response.status(400).json(res);
 			else {
 				response.json({
 					name: res.result.firstName,

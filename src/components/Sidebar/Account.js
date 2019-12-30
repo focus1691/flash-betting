@@ -14,15 +14,27 @@ const Account = props => {
   };
 
   useEffect(() => {
-    fetch(`/api/get-account-details`)
+    const loadAccountDetails = async () => {
+      await fetch(`/api/get-account-details`)
       .then(res => res.json())
-      .then(details => props.onReceiveAccountDetails(details))
-      .catch(err => setLoggedIn(false));
-
-    fetch(`/api/get-account-balance`)
+      .then(res => { 
+        if (res.error) {
+          window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
+        } else {
+          props.onReceiveAccountDetails(res);
+        }
+      });
+      await fetch(`/api/get-account-balance`)
       .then(res => res.json())
-      .then(account => props.onReceiveBalance(account.balance))
-      .catch(err => setLoggedIn(false));
+      .then(res =>  {
+        if (res.error) {
+          window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
+        } else {
+          props.onReceiveBalance(res.balance);
+        }
+      });
+    };
+    loadAccountDetails();
   }, []);
 
   if (!loggedIn) {
