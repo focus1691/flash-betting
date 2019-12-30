@@ -271,6 +271,9 @@ app.get("/api/premium-status", (request, response) => {
 
 
 app.get("/api/get-user-settings", (request, response) => {
+	if (betfair.email === null) {
+		response.sendStatus(400)
+	}
 	database.getSettings(betfair.email).then(settings => {
 		response.json(settings);
 	});
