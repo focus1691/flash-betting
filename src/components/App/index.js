@@ -70,9 +70,9 @@ const App = props => {
   }
 
   useInterval(() => {
-    if (updates.length > 0) {
-      setUpdates([]);
-      props.onReceiverLadders(updates[0]);
+    if (!isUpdated) {
+      props.onReceiverLadders(updates);
+      setIsUpdated(true);
     }
   }, 100);
 
