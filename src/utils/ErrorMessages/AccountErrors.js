@@ -1,6 +1,7 @@
 const ErrorMessages = {
     INVALID_INPUT_DATA: "Invalid input data",
     INVALID_SESSION_INFORMATION: "The session token hasn't been provided, is invalid or has expired",
+    INVALID_ACCESS_TOKEN: "There is an invalid access token",
     UNEXPECTED_ERROR: "An unexpected internal error occurred that prevented successful request processing",
     INVALID_APP_KEY: "The application key passed is invalid or is not present",
     SERVICE_BUSY: "The service is currently too busy to service this request",
@@ -60,7 +61,8 @@ const ErrorMessages = {
     TELBET_TERMS_CONDITIONS_NA: "Telbet terms and conditions rejected",
     TEMPORARY_BAN_TOO_MANY_REQUESTS: "The limit for successful login requests per minute has been exceeded. New login attempts will be banned for 20 minutes",
     TRADING_MASTER: "Trading Master Account",
-    TRADING_MASTER_SUSPENDED: "Suspended Trading Master Account"
+    TRADING_MASTER_SUSPENDED: "Suspended Trading Master Account",
+    USER_SETTINGS_NOT_FOUND: "The User's Settings were not found"
 }
 
 const getErrorMessage = errorCode => {

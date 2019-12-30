@@ -5,9 +5,12 @@ import * as actions from "../../actions/account";
 import FlagIcon from "./FlagIcon";
 import Clock from "./Clock";
 import { formatCurrency } from "./../../utils/NumberFormat";
+import { useCookies } from "react-cookie";
 
 const Account = props => {
   const [loggedIn, setLoggedIn] = useState(true);
+  const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
+  const [error, setError] = useState("");
 
   const handleLogout = () => e => {
     setLoggedIn(false);
@@ -17,6 +20,7 @@ const Account = props => {
     const loadAccountDetails = async () => {
       await fetch(`/api/get-account-details`)
       .then(res => res.json())
+<<<<<<< HEAD
       .then(res => { 
         if (res.error) {
           window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
@@ -35,10 +39,36 @@ const Account = props => {
       });
     };
     loadAccountDetails();
+=======
+      .then(details => {
+        if (details.error) {
+          setError(details.error)
+          setLoggedIn(false); 
+        }
+        props.onReceiveAccountDetails(details)
+        return details;
+      })
+
+    fetch(`/api/get-account-balance`)
+      .then(res => res.json())
+      .then(account => {
+        if (account.error) {
+          setError(account.error)
+          setLoggedIn(false); 
+        }
+        props.onReceiveBalance(account.balance)
+      })
+>>>>>>> 93f92b0690a101208d1fc1da66b2ad851cbc75cb
   }, []);
 
   if (!loggedIn) {
-    return <Redirect to="/logout" />;
+    removeCookie('sessionKey');
+    removeCookie('accessToken');
+    removeCookie('refreshToken');
+    removeCookie('expiresIn');
+    removeCookie('username');
+
+    window.location.href = window.location.origin + "/?error=" + error;
   } else {
     return (
       <div id="sidebar-header">
