@@ -110,9 +110,9 @@ app.post("/api/checkout", function (request, result) {
 });
 
 app.get("/api/load-session", async (request, response) => {
-	// betfair.setActiveSession(request.query.sessionKey);
+	betfair.setActiveSession(request.query.sessionKey);
 
-	// betfair.setEmailAddress(request.query.email);
+	betfair.setEmailAddress(request.query.email);
 
 	const accessToken = await database.getToken(request.query.email);
 
