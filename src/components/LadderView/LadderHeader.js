@@ -9,9 +9,9 @@ import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 
-const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, currencyCode, localeCode }) => {
+const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp}) => {
 
-  const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(selectionId), { matched: matchedBets }).toFixed(2) : 0;
+  const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(selectionId), { matched: matchedBets }) : 0;
   const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
 
   const oddsHoveredCalc = ((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) +
@@ -97,9 +97,7 @@ const mapStateToProps = (state, {selectionId}) => {
     unmatchedBets: getUnmatchedBets(state.order.bets),
     matchedBets: getMatchedBets(state.order.bets),
     ltp: getLTP(state.market.ladder, {selectionId}),
-    oddsHovered: state.market.oddsHovered,
-    currencyCode: state.account.currencyCode,
-    localeCode: state.account.localeCode
+    oddsHovered: state.market.oddsHovered
   };
 }; 
 
