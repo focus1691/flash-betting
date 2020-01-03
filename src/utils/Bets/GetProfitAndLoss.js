@@ -13,25 +13,10 @@ const getPLForRunner = (marketId, selectionId, bets) => {
     return twoDecimalPlaces(Object.values(bets.matched)
         .filter(order => order.marketId === marketId)
         .map(order => {
-
             if (order.selectionId === selectionId) {
-                switch (order.side) {
-                    case "BACK":
-                        return calcBackBet(order.price, order.size);
-                    case "LAY":
-                        return -calcBackBet(order.price, order.size);
-                    default:
-                        return calcBackBet(order.price, order.size);
-                }
+               return order.side === "LAY" ? -calcBackBet(order.price, order.size) : calcBackBet(order.price, order.size);
             } else {
-                switch (order.side) {
-                    case "BACK":
-                        return -order.size;
-                    case "LAY":
-                        return order.size;
-                    default:
-                        return -order.size;
-                }
+                return order.side === "BACK" ? -calcBackBet(order.price, order.size) : calcBackBet(order.price, order.size);
             }
         })
         .reduce((acc, total) => {
@@ -43,25 +28,10 @@ const getLossForRunner = (marketId, selectionId, bets) => {
     return twoDecimalPlaces(Object.values(bets.matched)
         .filter(order => order.marketId === marketId)
         .map(order => {
-
             if (order.selectionId === selectionId) {
-                switch (order.side) {
-                    case "BACK":
-                        return -calcBackBet(order.price, order.size);
-                    case "LAY":
-                        return calcBackBet(order.price, order.size);
-                    default:
-                        return calcBackBet(order.price, order.size);
-                }
+                return order.side === "BACK" ? -calcBackBet(order.price, order.size) : calcBackBet(order.price, order.size);
             } else {
-                switch (order.side) {
-                    case "BACK":
-                        return order.size;
-                    case "LAY":
-                        return -order.size;
-                    default:
-                        return -order.size;
-                }
+                return order.side === "LAY" ? -order.size : order.size;
             }
         })
         .reduce((acc, total) => {
