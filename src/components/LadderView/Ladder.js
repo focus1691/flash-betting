@@ -111,6 +111,7 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
         }
         else if (!unmatchedBetOnRow && size > 0) {
           placeOrder({
+            marketId: marketId,
             side: side,
             price: formatPrice(price),
             selectionId: selectionId,
