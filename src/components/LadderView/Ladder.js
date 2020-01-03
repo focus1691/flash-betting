@@ -115,7 +115,8 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
             price: formatPrice(price),
             selectionId: selectionId,
             customerStrategyRef: referenceStrategyId,
-            size: size
+            size: size,
+            marketId: marketId
           });
         }
     };

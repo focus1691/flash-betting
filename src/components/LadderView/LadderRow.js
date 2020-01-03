@@ -40,8 +40,15 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
         <div key={key}  onContextMenu = {handleContextMenu()} className={"tr"} style = {style} >
           
           <LadderVolumeCell selectionId = {selectionId} price = {key} />
-          <LadderHedgeCell selectionId = {selectionId} price = {key} PLHedgeNumber = {PLHedgeNumber} hedgeSize = {hedgeSize} side = {leftSide} handleHedgeCellClick = {handleHedgeCellClick} />
-          
+          <LadderHedgeCell 
+            marketId = {marketId} 
+            selectionId = {selectionId} 
+            price = {key} 
+            PLHedgeNumber = {PLHedgeNumber} 
+            hedgeSize = {hedgeSize} 
+            side = {leftSide} 
+            handleHedgeCellClick = {handleHedgeCellClick} 
+          />
           <LadderOrderCell 
             side = {leftSide}
             selectionId = {selectionId}
@@ -53,7 +60,6 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             onLeave = {onOddsHovered({selectionId, odds: 0, side: leftSide})}
           />
           <LadderLTPCell selectionId = {selectionId} price = {key} />
-          
           <LadderOrderCell 
             side = {rightSide}
             selectionId = {selectionId}
@@ -64,8 +70,15 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             onHover = {onOddsHovered({selectionId, odds: key, side: rightSide})}
             onLeave = {onOddsHovered({selectionId, odds: 0, side: rightSide})}
           />
-
-          <LadderHedgeCell selectionId = {selectionId} price = {key} side = {rightSide} PLHedgeNumber = {PLHedgeNumber} hedgeSize = {hedgeSize} handleHedgeCellClick = {handleHedgeCellClick}  />
+          <LadderHedgeCell 
+            marketId = {marketId}
+            selectionId = {selectionId} 
+            price = {key} 
+            side = {rightSide} 
+            PLHedgeNumber = {PLHedgeNumber} 
+            hedgeSize = {hedgeSize} 
+            handleHedgeCellClick = {handleHedgeCellClick}  
+          />
         </div>
     )
 }
