@@ -20,12 +20,29 @@ const MyMarkets = props => {
 			.then(markets => props.onReceiveMyMarkets(markets));
 	}, []);
 
+	useEffect(() => {
+		if (props.submenuListMyMarkets.EVENT_TYPE && props.submenuListMyMarkets.EVENT_TYPE.name.includes("Today's Card")) {
+			const id = props.submenuListMyMarkets.EVENT_TYPE.name.includes("Horse") ? 7 : 4339;
+			getSportInfo(props.submenuListMyMarkets.EVENT_TYPE.name, "EVENT_TYPE", submenuList, id, `list-todays-card`);
+		}
+	}, [props.winMarketsOnly])
 
 	const getSportInfo = async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {
+		const isHorseRace = (name.startsWith("TC") && name.endsWith("7")) || (name.includes("Horse") && name.includes("Today's Card"));
+
+		 // gets the country names and makes it an array ex... [GB]
+		 const countryNames = Object.keys(props.horseRaces).reduce((acc, item) => {
+			if (props.horseRaces[item] === true) {
+			  return [item, ...acc]
+			} else {
+			  return acc
+			}
+		}, [])
+
 		// call the api with the id and get new selections
 		const data = await fetch(`/api/${apiToCall}/?id=${selectedId}
 								&marketTypes=${props.winMarketsOnly === true ? "WIN" : undefined}
-								&country=${name.startsWith("TC") && name.endsWith("7") ? getCountryName(props.horseRaces) : undefined}`)
+								&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
 							.then(res => res.json()).catch(err => false);
 	
 		
@@ -34,7 +51,7 @@ const MyMarkets = props => {
 		  const newSubmenuList = Object.assign({}, submenuList);
 		  newSubmenuList[newSubmenuType] = {name, data};
 	
-		  setSubmenuList(newSubmenuList);
+		  setSubmenuList(newSubmenuList, {});
 		  setCurrentSubmenu(newSubmenuType);
 		}
 		
@@ -55,7 +72,13 @@ const MyMarkets = props => {
 		}
 	}
 	
-	const deselectSubmenu = (newSubmenuType, submenuList) => e => { 
+	const deselectSubmenu = (newSubmenuType, submenuList) => { 
+		if (newSubmenuType === "ROOT") {
+			setCurrentSubmenu('');
+			setSubmenuList({});
+			return;
+		}
+
 		const submenuEnum = {
 		  ROOT: 0,
 		  EVENT_TYPE: 1,

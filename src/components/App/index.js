@@ -224,6 +224,7 @@ const App = props => {
                     // handle orders not in the there
                     Object.keys(currentOrdersObject).map(async betId => {
                       const order = currentOrdersObject[betId];
+
                       const orderData = {
                         strategy: "None",
                         marketId: order.marketId,
