@@ -30,6 +30,13 @@ export const getLTP = createSelector(
     ladder => (ladder && ladder.ltp) ? ladder.ltp : null
 )
 
+const getPLSelector = (state, {selectionId}) => state[selectionId]
+
+export const getPL = createSelector(
+    getPLSelector,
+    pl => pl
+)
+
 const getLTPCheckerSelector = (state, {selectionId, price}) => parseFloat(state[selectionId].ltp[0]) === parseFloat(price)
 
 export const getIsLTP = createSelector(

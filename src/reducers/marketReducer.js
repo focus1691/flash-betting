@@ -18,6 +18,7 @@ const initialState = {
   oneClickOn: false,
   priceType: "STAKE",
   myMarkets: [],
+  marketPL: {},
   ladderSideLeft: "LAY",
   oddsHovered: {selectionId: 0, odds: 0, side: "BACK"}
 };
@@ -153,6 +154,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, ladderSideLeft: action.payload };
     case "SET_ODDS_HOVERED":
       return { ...state, oddsHovered: action.payload };
+    case "SET_MARKET_PL":
+      return { ...state, marketPL: action.payload };
     default:
       return state;
   }

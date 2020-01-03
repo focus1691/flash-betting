@@ -561,7 +561,21 @@ useEffect(() => {
         });
       }
     }, 15000);
-  }, []);
+  }, [marketId]);
+
+  useEffect(() => {
+    fetch(`/api/list-market-pl?marketId=${marketId}`)
+    .then(res => res.json())
+    .then(res => {
+        if (res.result[0] !== undefined) {
+          const selectionPL = res.result[0].profitAndLosses.reduce((acc, item) => {
+            acc[item.selectionId] = item.ifWin;
+            return acc
+          }, {})
+          props.setMarketPL(selectionPL);
+        }
+    })
+  }, [props.matchedBets])
 
   const renderView = () => {
     switch (props.view) {
@@ -662,6 +676,7 @@ const mapDispatchToProps = dispatch => {
     onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
+    setMarketPL: pl => dispatch(marketActions.setMarketPL(pl)),
     /** Betting Tools **/
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),

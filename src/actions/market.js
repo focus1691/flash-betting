@@ -187,4 +187,9 @@ export const setOddsHovered = odds => {
   };
 }
 
-
+export const setMarketPL = pl => {
+  return {
+    type: "SET_MARKET_PL",
+    payload: pl
+  }
+}

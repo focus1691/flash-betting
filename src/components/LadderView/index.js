@@ -34,6 +34,7 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
                 order = {index}
                 ladderUnmatched = {ladderUnmatched}
                 marketStatus = {marketStatus}
+
               />
             ))
         : null } 

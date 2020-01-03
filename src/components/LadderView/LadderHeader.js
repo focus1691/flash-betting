@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
 import { setRunner } from "../../actions/market";
-import { getLTP, getRunner, getSportId } from "../../selectors/marketSelector";
+import { getLTP, getRunner, getSportId, getPL } from "../../selectors/marketSelector";
 import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
@@ -9,9 +9,7 @@ import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 
-const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp}) => {
-
-  const PL = matchedBets !== undefined ? getPLForRunner(market.marketId, parseInt(selectionId), { matched: matchedBets }) : 0;
+const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, PL}) => {
   const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
 
   const oddsHoveredCalc = ((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) +
@@ -97,7 +95,8 @@ const mapStateToProps = (state, {selectionId}) => {
     unmatchedBets: getUnmatchedBets(state.order.bets),
     matchedBets: getMatchedBets(state.order.bets),
     ltp: getLTP(state.market.ladder, {selectionId}),
-    oddsHovered: state.market.oddsHovered
+    oddsHovered: state.market.oddsHovered,
+    PL: getPL(state.market.marketPL, {selectionId})
   };
 }; 
 

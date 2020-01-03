@@ -502,6 +502,15 @@ app.get("/api/list-markets", (request, response) => {
 	);
 });
 
+app.get("/api/list-market-pl", (request, response) => {
+	betfair.listMarketProfitAndLoss({
+		marketIds: [request.query.marketId]
+	},
+	(err, res) => {
+		response.json(res);
+	});
+});
+
 app.get("/api/get-market-info", (request, response) => {
 	betfair.listMarketCatalogue(
 		{
