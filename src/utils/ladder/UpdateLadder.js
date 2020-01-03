@@ -39,8 +39,13 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (matched >= 1) {
         ladder.atlo[formatPriceKey(price)] = matched;
-        delete ladder.atbo[formatPriceKey(price)];
+
         index === -1 ? ladder.atb.push([price, matched]) : ladder.atb[index][1] = matched;
+
+        delete ladder.atbo[formatPriceKey(price)];
+
+        let atlIdx = ladder.atl.map(atl => atl[0]).findIndex(val => val === price);
+        if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
       } 
       else if (matched <= 0) {
         delete ladder.atlo[formatPriceKey(price)];
@@ -59,9 +64,12 @@ const UpdateLadder = (ladder, rawData) => {
 
       if (matched >= 1) {
         ladder.atbo[formatPriceKey(price)] = matched;
-        delete ladder.atlo[formatPriceKey(price)];
         index === -1 ? ladder.atl.push([price, matched]) : ladder.atl[index][1] = matched;
 
+        delete ladder.atlo[formatPriceKey(price)];
+
+        let atbIdx = ladder.atb.map(atb => atb[0]).findIndex(val => val === price);
+        if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1);
       }
       else if (matched <= 0) {
         delete ladder.atbo[formatPriceKey(price)];
