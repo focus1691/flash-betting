@@ -4,9 +4,9 @@ import { setRunner } from "../../actions/market";
 import { getLTP, getRunner, getSportId } from "../../selectors/marketSelector";
 import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
+import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
-import { formatCurrency } from "../../utils/NumberFormat";
 import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 
 const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, currencyCode, localeCode }) => {
@@ -64,7 +64,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
               visibility: ordersOnMarket ? 'visible' : 'hidden',
               color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'
             }}
-          >{formatCurrency(localeCode, currencyCode, PL)}</span>
+          >{twoDecimalPlaces(PL)}</span>
           <div className={"contender-details"}>
             <span>{getTrainerAndJockey(runner.metadata)}</span>
           </div>
@@ -73,16 +73,16 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
               visibility: oddsHovered.odds > 0 && ordersOnMarket ? 'visible' : 'hidden',
               color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'
             }}>
-            {formatCurrency(localeCode, currencyCode, oddsHoveredCalc)}
+            {twoDecimalPlaces(oddsHoveredCalc)}
           </span>
         </div>
       </div>
       <div>
         <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
-          {formatCurrency(localeCode, currencyCode, ladderLTPHedge)}
+          {twoDecimalPlaces(ladderLTPHedge)}
         </span>
         <span style={{ visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
-          {formatCurrency(localeCode, currencyCode, newStake)}
+          {twoDecimalPlaces(newStake)}
         </span>
       </div>
     </div>
