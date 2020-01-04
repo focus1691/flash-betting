@@ -80,7 +80,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
         <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
           {twoDecimalPlaces(ladderLTPHedge)}
         </span>
-        <span style={{ visibility: PLHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(PLHedgeSize).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
+        <span style={{ visibility: PLHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(PLHedgeSize).toFixed(2) > 0 ? '#88c6f7' : 'red' }}>
           {twoDecimalPlaces(PLHedgeSize)}
         </span>
       </div>
