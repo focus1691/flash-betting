@@ -26,7 +26,6 @@ import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { checkTimeListAfter } from '../../utils/TradingStategy/BackLay';
 import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from '../../utils/ExchangeStreaming/MCMHelper';
-import { calcHedgedPL2 } from '../../utils/TradingStategy/HedingCalculator';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { sortLadder } from '../../utils/ladder/SortLadder';
 import { checkStopLossForMatch, checkTickOffsetForMatch } from '../../utils/ExchangeStreaming/OCMHelper';
@@ -37,6 +36,7 @@ const App = props => {
   const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
   const [updates, setUpdates] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
+  const [initialClk, setInitialClk] = useState(null);
   const [clk, setClk] = useState(null);
 
   if (!cookies.sessionKey && !cookies.username) {
@@ -73,6 +73,7 @@ const App = props => {
   useInterval(() => {
     if (!isUpdated) {
       props.onReceiverLadders(updates);
+      props.onReceiveClk(clk);
       setIsUpdated(true);
     }
   }, 100);
@@ -296,7 +297,17 @@ useEffect(() => {
     // A message will be sent here if the connection to the market is disconnected.
     // We resubscribe to the market here using the initialClk & clk.
     props.socket.on("connection_closed", () => {
-        console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
+      console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
+      // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+      console.log(initialClk, clk);
+      if (getQueryVariable("marketId") && initialClk && props.clk) {
+        console.log('resubscribing...');
+        props.socket.emit("market-resubscription", {
+          marketId: getQueryVariable("marketId"),
+          initialClk: initialClk,
+          clk: props.clk
+        });
+      }
     });
 }, []);
 
@@ -322,12 +333,11 @@ useEffect(() => {
         // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
         props.socket.off("mcm");
         const marketId = getQueryVariable("marketId");
+        setClk(data.clk || props.clk);
 
         if (data.initialClk) {
-            props.onReceiveInitialClk(data.initialClk);
-        }
-        if (data.clk) {
-          setClk(data.clk);
+          setInitialClk(data.initialClk);
+          props.onReceiveInitialClk(data.initialClk);
         }
 
         data.mc.forEach(async mc => {
@@ -617,6 +627,7 @@ const mapStateToProps = state => {
     marketStatus: state.market.status,
     eventType: state.market.eventType,
     marketOpen: state.market.marketOpen,
+    clk: state.market.clk,
     ladders: state.market.ladder,
     nonRunners: state.market.nonRunners,
     premiumMember: state.settings.premiumMember,

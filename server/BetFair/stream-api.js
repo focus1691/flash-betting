@@ -12,6 +12,7 @@ class BetFairStreamAPI {
 		this.bufferedStr = '';
 		this.chunks = [];
 		this.subscriptions = [];
+		this.tracker = 1;
 	}
 	authenticate (sessionKey) {
 
@@ -53,11 +54,15 @@ class BetFairStreamAPI {
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
+						this.tracker++;
 						if (result.mc[0].marketDefinition) {
 							this.openSocket.emit('market-definition', result.mc[0].marketDefinition);
 						}
 						this.openSocket.emit('mcm', result);
 						this.chunks = [];
+
+						if (this.tracker === 50) this.client.destroy();
+						console.log(`tracker: ${this.tracker}`);
 					}
 					// Order Change Message Data Found
 					else if (result.op === 'ocm' && result.oc) {
