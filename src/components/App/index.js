@@ -299,8 +299,7 @@ useEffect(() => {
     props.socket.on("connection_closed", () => {
       console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
       // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-      console.log(initialClk, clk);
-      if (getQueryVariable("marketId") && initialClk && props.clk) {
+      if (getQueryVariable("marketId") && initialClk && clk) {
         console.log('resubscribing...');
         props.socket.emit("market-resubscription", {
           marketId: getQueryVariable("marketId"),
@@ -309,7 +308,7 @@ useEffect(() => {
         });
       }
     });
-}, []);
+}, [clk, initialClk]);
 
 useEffect(() => {
   let eventTypeId = props.eventType;
@@ -333,7 +332,10 @@ useEffect(() => {
         // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
         props.socket.off("mcm");
         const marketId = getQueryVariable("marketId");
-        setClk(data.clk || props.clk);
+
+        if (data.clk) {
+          setClk(data.clk);
+        }
 
         if (data.initialClk) {
           setInitialClk(data.initialClk);

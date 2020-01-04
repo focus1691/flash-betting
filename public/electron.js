@@ -739,6 +739,11 @@ io.on("connection", async client => {
 		const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
 		exchangeStream.makeSubscription(marketSubscription, accessToken);
 	});
+	client.on("market-resubscription", async data => {
+		let accessToken = await database.getToken(betfair.email);
+		const marketSubscription = `{"op":"marketSubscription","id":${id++},"initialClk":${data.initialClk},"clk":${data.clk},marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 10}}\r\n`;
+		exchangeStream.makeSubscription(marketSubscription, accessToken);
+	});	
 	// Subscribe to orders
 	client.on("order-subscription", async data => {
 		let accessToken = await database.getToken(betfair.email);

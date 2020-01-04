@@ -60,9 +60,6 @@ class BetFairStreamAPI {
 						}
 						this.openSocket.emit('mcm', result);
 						this.chunks = [];
-
-						if (this.tracker === 50) this.client.destroy();
-						console.log(`tracker: ${this.tracker}`);
 					}
 					// Order Change Message Data Found
 					else if (result.op === 'ocm' && result.oc) {
