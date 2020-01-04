@@ -32,8 +32,9 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
   const ladderLTPHedge = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
   // gets all the bets and returns a hedge 
-  const PLHedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(ltp, selectionMatchedBets, 'hedged').size : 0; 
+  const LTPHedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(ltp, selectionMatchedBets, 'hedged').size : 0; 
 
+  console.log(runner)
   return (
     <div className={"ladder-header"}>
       <div>
@@ -80,8 +81,8 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
         <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
           {twoDecimalPlaces(ladderLTPHedge)}
         </span>
-        <span style={{ visibility: PLHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(PLHedgeSize).toFixed(2) > 0 ? '#88c6f7' : 'red' }}>
-          {twoDecimalPlaces(PLHedgeSize)}
+        <span style={{ visibility: LTPHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(LTPHedgeSize).toFixed(2) > 0 ? '#88c6f7' : 'red' }} id = "ltphedgesize">
+          {twoDecimalPlaces(LTPHedgeSize)}
         </span>
       </div>
     </div>
