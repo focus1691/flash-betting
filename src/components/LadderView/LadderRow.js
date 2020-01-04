@@ -11,9 +11,10 @@ import { getPLForRunner } from '../../utils/Bets/GetProfitAndLoss';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { getSelectionMatchedBets, getMatchedBets } from '../../selectors/orderSelector';
 import { getStakeVal } from '../../selectors/settingsSelector';
+import { getPL } from '../../selectors/marketSelector';
 
 const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedgeCellClick, changeStopLossList }, 
-                    onOddsHovered, matchedBets, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index}) => {
+                    PL, onOddsHovered, matchedBets, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index}) => {
     const key = ALL_PRICES[ALL_PRICES.length - index - 1];
     
     const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK";
@@ -25,16 +26,12 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
     };
 
     const marketId = GetQueryVariable("marketId");
-    
-    const PL = matchedBets !== undefined ? getPLForRunner(marketId, parseInt(selectionId), { matched: matchedBets }).toFixed(2) : 0;
 
-    const PLHedgeNumber = selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined; 
+    // gets all the bets and returns a hedge or new pl
+    const PLHedgeNumber = selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined;
 
-    // gets all the bets we made and creates a size to offset
-    const hedgeSize = selectionMatchedBets !== undefined ?
-        selectionMatchedBets.reduce((a, b) => {
-            return a + b.size;
-        }, 0) : 0;
+    // for the stoploss and tickoffset 
+    const HedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined; 
     
     return (
         <div key={key}  onContextMenu = {handleContextMenu()} className={"tr"} style = {style} >
@@ -45,7 +42,6 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             selectionId = {selectionId} 
             price = {key} 
             PLHedgeNumber = {PLHedgeNumber} 
-            hedgeSize = {hedgeSize} 
             side = {leftSide} 
             handleHedgeCellClick = {handleHedgeCellClick} 
           />
@@ -55,7 +51,8 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             price = {key}
             placeOrder = {placeOrder}
             changeStopLossList= {changeStopLossList}
-            hedgeSize = {hedgeSize}
+            // we do this because we want the hedge, not the pl
+            hedgeSize = {HedgeSize}
             onHover = {onOddsHovered({selectionId, odds: key, side: leftSide})}
             onLeave = {onOddsHovered({selectionId, odds: 0, side: leftSide})}
           />
@@ -66,7 +63,8 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             price = {key}
             placeOrder = {placeOrder} 
             changeStopLossList= {changeStopLossList}
-            hedgeSize = {hedgeSize}
+            // we do this because we want the hedge, not the pl
+            hedgeSize = {HedgeSize}
             onHover = {onOddsHovered({selectionId, odds: key, side: rightSide})}
             onLeave = {onOddsHovered({selectionId, odds: 0, side: rightSide})}
           />
@@ -76,7 +74,6 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             price = {key} 
             side = {rightSide} 
             PLHedgeNumber = {PLHedgeNumber} 
-            hedgeSize = {hedgeSize} 
             handleHedgeCellClick = {handleHedgeCellClick}  
           />
         </div>
@@ -89,6 +86,7 @@ const mapStateToProps = (state, {data: {selectionId}, index}) => {
     ladderUnmatchedDisplay: state.settings.ladderUnmatched,
     selectionMatchedBets: getSelectionMatchedBets(state.order.bets, {selectionId}),
     stakeVal: getStakeVal(state.settings.stake, {selectionId}),
+    PL: getPL(state.market.marketPL, {selectionId})
   };  
 };
 

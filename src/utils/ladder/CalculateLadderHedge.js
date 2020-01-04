@@ -21,11 +21,21 @@ export default (odds, selectionMatchedBets, ladderUnmatched, stake, pl) => {
         // find which side the column is supposed to be on
         const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) <= 0 ? "BACK" : "LAY"
 
-        return { side, profit }
+        // get the offset to the size ex. 2 BACK = 2 LAY
+        const offset = selectionMatchedBets.reduce((a, b) => {
+            if (b.side === "BACK")
+                return a - b.size;
+            else return a + b.size;
+        }, 0);
+
+        // calculate the size required to bet
+        const size = side === "BACK" ? parseFloat(offset) - parseFloat(profit) : parseFloat(profit) - parseFloat(offset)
+
+        return { side, profit, size }
     }
 
     if (ladderUnmatched === "pl") {
-        return { side: "BACK", profit: parseFloat(calcBackProfit(parseFloat(stake), odds, 0)) + parseFloat(pl) } 
+        return { side: "BACK", profit: parseFloat(calcBackProfit(parseFloat(stake), odds, 0)) + parseFloat(pl), size: stake } 
     }
 
     return undefined

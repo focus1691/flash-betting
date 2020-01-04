@@ -30,6 +30,7 @@ import { calcHedgedPL2 } from '../../utils/TradingStategy/HedingCalculator';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { sortLadder } from '../../utils/ladder/SortLadder';
 import { checkStopLossForMatch, checkTickOffsetForMatch } from '../../utils/ExchangeStreaming/OCMHelper';
+import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
 const App = props => {
   const [marketId, setMarketId] = useState(null);
@@ -388,14 +389,7 @@ useEffect(() => {
                             if (adjustedStopLoss.hedged) {
                                 const newMatchedBets = Object.values(props.matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
 
-                                const combinedSize =
-                                    newMatchedBets.reduce((a, b) => {
-                                        return a + b.size;
-                                    }, 0);
-
-                                const profitArray = newMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(adjustedStopLoss.price)));
-                                const profit = (-1 * profitArray.reduce((a, b) => a + b, 0));
-                                adjustedStopLoss.size = combinedSize + profit;
+                                adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, 'hedged').size
                             }
 
                             // if it doesn't have a reference or the order has been matched (STOP LOSS)

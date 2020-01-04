@@ -8,6 +8,7 @@ import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
+import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
 const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, PL}) => {
   const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
@@ -26,12 +27,12 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
 
   const selectionMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(selectionId));
 
-  // calculate ladder ltp hedge
+  // calculate hedge at the ltp
   const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp)));
   const ladderLTPHedge = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
-  const newStake = selectionMatchedBets !== undefined ? selectionMatchedBets.reduce((a, b) => a + (b.side === "LAY" ? -parseFloat(b.size) : parseFloat(b.size)), 0) + parseFloat(ladderLTPHedge) : 0;
-  
 
+  // gets all the bets and returns a hedge 
+  const PLHedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(ltp, selectionMatchedBets, 'hedged').size : 0; 
 
   return (
     <div className={"ladder-header"}>
@@ -79,8 +80,8 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
         <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
           {twoDecimalPlaces(ladderLTPHedge)}
         </span>
-        <span style={{ visibility: newStake === 0 ? 'hidden' : 'visible', color: parseFloat(newStake).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
-          {twoDecimalPlaces(newStake)}
+        <span style={{ visibility: PLHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(PLHedgeSize).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
+          {twoDecimalPlaces(PLHedgeSize)}
         </span>
       </div>
     </div>
