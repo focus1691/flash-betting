@@ -50,6 +50,9 @@ export const placeOrder = order => {
       }).then(() => {
         const newUnmatchedBets = Object.assign({}, reducedOrderBets.unmatched);
         newUnmatchedBets[startingOrder.order.betId].price = order.price;
+        delete newUnmatchedBets[startingOrder.order.betId].unmatchedBets;
+        delete newUnmatchedBets[startingOrder.order.betId].matchedBets;
+
         dispatch(updateOrders({
           unmatched: newUnmatchedBets,
           matched: startingOrder.bets.matched

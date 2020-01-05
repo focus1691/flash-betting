@@ -464,10 +464,14 @@ useEffect(() => {
                 if (runner.uo) {
                     runner.uo.forEach(order => {
                         // If the bet isn't in the unmatchedBets, we should delete it.
-                        if (order.sr === 0) { // this is what happens when an order is finished
-                            newMatchedBets[order.id] = newUnmatchedBets[order.id];
-                            delete newUnmatchedBets[order.id];
+                        if (order.sr === 0 && order.sm === 0) { // this is what happens when an order doesn't get any matched
+                          delete newUnmatchedBets[order.id];
+                        } else if (order.sr === 0) { // this is what happens when an order is finished
+                           // if they canceled early
+                          newMatchedBets[order.id] = Object.assign({}, newUnmatchedBets[order.id], {size: parseFloat(order.sm)});
+                          delete newUnmatchedBets[order.id];
                         }
+                        
 
                         checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
 

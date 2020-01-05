@@ -4,7 +4,10 @@ import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCal
 
 const MatchedBets = props => {
 
-  const reducer = (acc, cur) => acc.indexOf(cur.selectionId) === -1 ? acc.concat(cur.selectionId) : acc; 
+  const reducer = (acc, cur) => {
+    return acc.indexOf(cur.selectionId) === -1 ?  acc.concat(cur.selectionId) : acc; 
+  }
+  
   const selections = Object.values(props.bets.matched).reduce(reducer, [])
 
   return (
