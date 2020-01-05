@@ -7,7 +7,7 @@ describe('The Profit & Loss for a runner', () => {
         {
             marketId: "1.160741054",
             selectionId: 1,
-            price: 3.75,
+            price: 2.26,
             side: "LAY",
             size: 2
         }
@@ -15,7 +15,7 @@ describe('The Profit & Loss for a runner', () => {
 
     it("Liability should be correct", () => {
 
-        expect(getPLForRunner("1.160741054", 1, bets)).toBe(-5.50);
+        expect(getPLForRunner("1.160741054", 1, bets)).toBe(-2.52);
 
     });
 });

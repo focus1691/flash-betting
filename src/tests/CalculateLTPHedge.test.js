@@ -9,24 +9,18 @@ describe('The LTP Hedge for a Runner', () => {
         {
             marketId: "1.160741054",
             selectionId: 1,
-            price: 3.75,
+            price: 2.26,
             side: "LAY",
             size: 2
         },
         {
             marketId: "1.160741054",
             selectionId: 1,
-            price: 4.4,
+            price: 2.24,
             side: "BACK",
-            size: 5
+            size: 2
         },
-        {
-            marketId: "1.160741054",
-            selectionId: 1,
-            price: 4.4,
-            side: "LAY",
-            size: 5
-        },
+        
     ];
 
     const selectionMatchedBets = Object.values(bets.matched).filter(bet => parseFloat(bet.selectionId) === parseFloat(1));
@@ -38,16 +32,16 @@ describe('The LTP Hedge for a Runner', () => {
     const ladderLTPHedge = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
     // calculates the Hedge based on the 
-    const PLHedgeNumber = selectionMatchedBets.length > 0 ? CalculateLadderHedge(3.50, selectionMatchedBets, "hedged", 2, PL) : undefined; 
+    const PLHedgeNumber = selectionMatchedBets.length > 0 ? CalculateLadderHedge(2.26, selectionMatchedBets, "hedged") : undefined; 
 
     it("Hedge figure should be correct", () => {
 
-        expect(ladderLTPHedge).toBe("-0.14");
+        expect(PLHedgeNumber.profit).toBe("-0.02");
 
     });
     it("Hedge Size should be correct", () => {
 
-        expect(PLHedgeNumber.size).toBe(2.14);
+        expect(PLHedgeNumber.size).toBe(0.02);
 
     });
 

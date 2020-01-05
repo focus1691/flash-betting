@@ -34,7 +34,6 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
   // gets all the bets and returns a hedge 
   const LTPHedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(ltp, selectionMatchedBets, 'hedged').size : 0; 
 
-  console.log(runner)
   return (
     <div className={"ladder-header"}>
       <div>

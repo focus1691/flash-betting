@@ -29,7 +29,7 @@ export const placeOrder = order => {
       const reducedOrderBets = await reduceSizeAction(Object.assign({}, startingOrder.order, 
         { unmatchedBets: startingOrder.bets.unmatched, 
           matchedBets: startingOrder.bets.matched, 
-          sizeReduction: 0.1
+          sizeReduction: parseFloat((2 - newSize).toFixed(2))
         }))
 
       await dispatch(updateOrders(reducedOrderBets));
@@ -189,9 +189,10 @@ export const reduceSizeAction = async order => {
     body: JSON.stringify(minimalOrder)
   }).then(res => res.json()).catch(() => false);
 
-  if (cancelOrder) {
+  if (cancelOrder && cancelOrder.status === "SUCCESS") {
     const newUnmatchedBets = Object.assign({}, order.unmatchedBets);
     newUnmatchedBets[order.betId].size = order.size - cancelOrder.instructionReports[0].sizeCancelled;
+
 
     const newBets = {
       unmatched: newUnmatchedBets,
