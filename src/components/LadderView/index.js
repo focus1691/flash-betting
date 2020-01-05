@@ -16,7 +16,7 @@ const Ladders = ({ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, ma
     });
 
     onChangeLadderOrder(newOrderList);
-  }, []);
+  }, [sortedLadder]);
 
   return (
     marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ?                          
