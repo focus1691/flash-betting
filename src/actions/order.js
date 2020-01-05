@@ -47,16 +47,26 @@ export const placeOrder = order => {
           newPrice: order.price,
           customerStrategyRef: order.customerStrategyRef
         })
-      }).then(() => {
-        const newUnmatchedBets = Object.assign({}, reducedOrderBets.unmatched);
-        newUnmatchedBets[startingOrder.order.betId].price = order.price;
-        delete newUnmatchedBets[startingOrder.order.betId].unmatchedBets;
-        delete newUnmatchedBets[startingOrder.order.betId].matchedBets;
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "SUCCESS") {
+          const newUnmatchedBets = Object.assign({}, reducedOrderBets.unmatched);
+          newUnmatchedBets[startingOrder.order.betId].price = order.price;
+          delete newUnmatchedBets[startingOrder.order.betId].unmatchedBets;
+          delete newUnmatchedBets[startingOrder.order.betId].matchedBets;
 
-        dispatch(updateOrders({
-          unmatched: newUnmatchedBets,
-          matched: startingOrder.bets.matched
-        }));
+          dispatch(updateOrders({
+            unmatched: newUnmatchedBets,
+            matched: startingOrder.bets.matched
+          }));
+        } else {
+          dispatch(updateOrders({
+            unmatched: startingOrder.bets.unmatched,
+            matched: startingOrder.bets.matched
+          }));
+        }
+        
       })
     }
   }
