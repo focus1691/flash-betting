@@ -204,8 +204,8 @@ export const reduceSizeAction = async order => {
 
   if (cancelOrder && cancelOrder.status === "SUCCESS") {
     const newUnmatchedBets = Object.assign({}, order.unmatchedBets);
-    newUnmatchedBets[order.betId].size = order.size - cancelOrder.instructionReports[0].sizeCancelled;
-
+    newUnmatchedBets[order.betId].size = parseFloat((order.size - cancelOrder.instructionReports[0].sizeCancelled).toFixed(2))
+    
 
     const newBets = {
       unmatched: newUnmatchedBets,
