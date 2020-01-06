@@ -20,6 +20,14 @@ const LadderVolumeCell = ({ltpList, vol, candleStickInfo, volFraction}) => {
     )
 }
 
+const isMoving = (prevProps, nextProps) => {
+    if (nextProps.isMoving) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const mapStateToProps = (state, {selectionId, price}) => {
     return {
         vol: getVolume(state.market.ladder, {selectionId, price}),
@@ -28,4 +36,4 @@ const mapStateToProps = (state, {selectionId, price}) => {
     };  
   };
 
-export default connect(mapStateToProps)(memo(LadderVolumeCell))
+export default connect(mapStateToProps)(memo(LadderVolumeCell, isMoving))

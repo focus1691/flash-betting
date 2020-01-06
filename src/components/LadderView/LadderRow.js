@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import { connect } from 'react-redux';
 import { setOddsHovered } from '../../actions/market';
 import { ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
@@ -13,7 +13,7 @@ import { getSelectionMatchedBets, getMatchedBets } from '../../selectors/orderSe
 import { getStakeVal } from '../../selectors/settingsSelector';
 import { getPL } from '../../selectors/marketSelector';
 
-const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedgeCellClick, changeStopLossList }, 
+const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedgeCellClick, changeStopLossList, isMoving }, 
                     PL, onOddsHovered, matchedBets, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index}) => {
     const key = ALL_PRICES[ALL_PRICES.length - index - 1];
     
@@ -32,11 +32,10 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
 
     // for the stoploss and tickoffset 
     const HedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined; 
-    
     return (
         <div key={key}  onContextMenu = {handleContextMenu()} className={"tr"} style = {style} >
           
-          <LadderVolumeCell selectionId = {selectionId} price = {key} />
+          <LadderVolumeCell selectionId = {selectionId} price = {key} isMoving = {isMoving} />
           <LadderHedgeCell 
             marketId = {marketId} 
             selectionId = {selectionId} 
@@ -44,6 +43,7 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             PLHedgeNumber = {PLHedgeNumber} 
             side = {leftSide} 
             handleHedgeCellClick = {handleHedgeCellClick} 
+            isMoving = {isMoving}
           />
           <LadderOrderCell 
             side = {leftSide}
@@ -55,8 +55,9 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             hedgeSize = {HedgeSize}
             onHover = {onOddsHovered({selectionId, odds: key, side: leftSide})}
             onLeave = {onOddsHovered({selectionId, odds: 0, side: leftSide})}
+            isMoving = {isMoving}
           />
-          <LadderLTPCell selectionId = {selectionId} price = {key} />
+          <LadderLTPCell selectionId = {selectionId} price = {key} isMoving = {isMoving} />
           <LadderOrderCell 
             side = {rightSide}
             selectionId = {selectionId}
@@ -67,6 +68,7 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             hedgeSize = {HedgeSize}
             onHover = {onOddsHovered({selectionId, odds: key, side: rightSide})}
             onLeave = {onOddsHovered({selectionId, odds: 0, side: rightSide})}
+            isMoving = {isMoving}
           />
           <LadderHedgeCell 
             marketId = {marketId}
@@ -74,7 +76,8 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             price = {key} 
             side = {rightSide} 
             PLHedgeNumber = {PLHedgeNumber} 
-            handleHedgeCellClick = {handleHedgeCellClick}  
+            handleHedgeCellClick = {handleHedgeCellClick}
+            isMoving = {isMoving}  
           />
         </div>
     )
@@ -96,5 +99,13 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
+const isMoving = (prevProps, nextProps) => {
+  if (nextProps.data.isMoving) {
+      return true;
+  } else {
+      return false;
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(LadderRow);
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderRow, isMoving));

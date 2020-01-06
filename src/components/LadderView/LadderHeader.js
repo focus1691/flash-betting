@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
-import { setRunner } from "../../actions/market";
+import { setRunner, setDraggingLadder } from "../../actions/market";
 import { getLTP, getRunner, getSportId, getPL } from "../../selectors/marketSelector";
 import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
@@ -10,7 +10,7 @@ import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
-const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, PL}) => {
+const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, PL, onDraggingLadder}) => {
   const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
 
   const oddsHoveredCalc = ((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) +
@@ -18,6 +18,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
 
   const handleMouseDown = () => e => {
     setLadderDown(true);
+    onDraggingLadder(selectionId);
   };
 
   const handleNoImageError = () => e => {
@@ -104,6 +105,7 @@ const mapStateToProps = (state, {selectionId}) => {
 const mapDispatchToProps = dispatch => {
   return {
     onSelectRunner: runner => e => dispatch(setRunner(runner)),
+    onDraggingLadder: drag => dispatch(setDraggingLadder(drag))
   }
 }
 

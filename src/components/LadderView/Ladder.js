@@ -15,8 +15,9 @@ import LadderRow from "./LadderRow";
 import OrderRow from "./OrderRow";
 import PercentageRow from "./PercentageRow";
 import PriceRow from "./PriceRow";
+import { setDraggingLadder } from "../../actions/market";
 
-const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, stakeVal, ladderUnmatched, selectionMatchedBets, stopLossOffset, stopLossTrailing, stopLossList }) => {
+const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, stopLossOffset, stopLossTrailing, stopLossList }) => {
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -161,7 +162,8 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
                                 cancelOrder: onCancelOrder,
                                 changeStopLossList: placeStopLossOrder,
                                 ladderSideLeft: ladderSideLeft,
-                                handleHedgeCellClick: handleHedgeCellClick
+                                handleHedgeCellClick: handleHedgeCellClick,
+                                isMoving: isMoving
                             }}
                         >
                             {LadderRow}
@@ -188,7 +190,8 @@ const mapStateToProps = (state, {id}) => {
       stopLossOffset: state.stopLoss.offset,
       ladderUnmatched: state.settings.ladderUnmatched,
       stakeVal: getStakeVal(state.settings.stake, {selectionId: id}),
-      ladderSideLeft: state.market.ladderSideLeft
+      ladderSideLeft: state.market.ladderSideLeft,
+      draggingLadder: state.market.draggingLadder
     };  
 };
 
@@ -200,29 +203,13 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-function areEqualShallow(a, b) {
-    const diff = [];
-    for(var key in a) {
-        if(!(key in b) || a[key] !== b[key]) {
-            diff.push(key)
-        }
+const isMoving = (prevProps, nextProps) => {
+    if (nextProps.draggingLadder === nextProps.id && prevProps.order === nextProps.order) {
+        return true;
+    } else {
+        return false;
     }
-    
-    return diff;
-}
-
-const arePropsEqual = (prevProps, nextProps) => {
-    // if only ltp changed
-    if (areEqualShallow(prevProps, nextProps).length === 1) {
-        if (nextProps[0] === 'ltp' && prevProps.ltp === undefined) {
-            return false;
-        } else if (nextProps[0] === 'ltp') {
-            return true;
-        }
-    }
-
-    return false
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladder));
+export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladder, isMoving));

@@ -20,7 +20,8 @@ const initialState = {
   myMarkets: [],
   marketPL: {},
   ladderSideLeft: "LAY",
-  oddsHovered: {selectionId: 0, odds: 0, side: "BACK"}
+  oddsHovered: {selectionId: 0, odds: 0, side: "BACK"},
+  draggingLadder: false, // selection id of the ladder dragged
 };
 
 const reducer = (state = initialState, action) => {
@@ -156,6 +157,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, oddsHovered: action.payload };
     case "SET_MARKET_PL":
       return { ...state, marketPL: action.payload };
+    case "SET_DRAGGING_LADDER":
+      return { ...state, draggingLadder: action.payload };
     default:
       return state;
   }
