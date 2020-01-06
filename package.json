@@ -90,7 +90,7 @@
     "eject": "react-scripts eject",
     "server": "cross-env NODE_ENV=production nodemon server/index.js",
     "dev": "cross-env concurrently \"npm run start\" \"npm run server\"",
-    "electron-dev": "cross-env BROWSER=none electron .",
+    "electron-dev": "cross-env BROWSER=none npm run build && electron .",
     "electron-build": "cross-env npm run build && electron-builder"
   },
   "main": "public/electron.js",
