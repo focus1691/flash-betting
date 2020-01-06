@@ -62,7 +62,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
           <span className="contender-odds"
             style={{
               visibility: ordersOnMarket ? 'visible' : 'hidden',
-              color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'
+              color: PL >= 0 ? 'rgb(106, 177, 79)' : 'red'
             }}
           >{twoDecimalPlaces(PL)}</span>
           <div className={"contender-details"}>
@@ -71,17 +71,17 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
           <span className="contender-odds"
             style={{
               visibility: oddsHovered.odds > 0 && ordersOnMarket ? 'visible' : 'hidden',
-              color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'
+              color: oddsHoveredCalc >= 0 ? 'rgb(106, 177, 79)' : 'red'
             }}>
             {twoDecimalPlaces(oddsHoveredCalc)}
           </span>
         </div>
       </div>
       <div>
-        <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
+        <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) >= 0 ? 'rgb(106, 177, 79)' : 'red' }}>
           {twoDecimalPlaces(ladderLTPHedge)}
         </span>
-        <span style={{ visibility: LTPHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(LTPHedgeSize).toFixed(2) > 0 ? '#88c6f7' : 'red' }} id = "ltphedgesize">
+        <span style={{ visibility: LTPHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(LTPHedgeSize).toFixed(2) >= 0 ? '#88c6f7' : 'red' }} id = "ltphedgesize">
           {twoDecimalPlaces(LTPHedgeSize)}
         </span>
       </div>
