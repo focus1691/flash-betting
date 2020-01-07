@@ -27,7 +27,7 @@ const arePropsEqual = (prevProps, nextProps) => {
     if (nextProps.isMoving) {
         return true
     }
-    else if (nextProps.isLTP !== prevProps.isLTP) {
+    else if (nextProps.isLTP !== prevProps.isLTP || nextProps.ltpDelta !== prevProps.ltpDelta) {
         return false;
     } else {
         return true;
