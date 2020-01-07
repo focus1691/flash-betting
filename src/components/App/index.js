@@ -295,23 +295,6 @@ const App = props => {
 }, [props.marketStatus, props.market.inPlayTime]);
 
 useEffect(() => {
-  // A message will be sent here if the connection to the market is disconnected.
-  // We resubscribe to the market here using the initialClk & clk.
-  props.socket.on("connection_closed", () => {
-    console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
-    // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-    if (getQueryVariable("marketId") && initialClk && clk) {
-      console.log('resubscribing...');
-      props.socket.emit("market-resubscription", {
-        marketId: getQueryVariable("marketId"),
-        initialClk: initialClk,
-        clk: props.clk
-      });
-    }
-  });
-}, [clk, initialClk]);
-
-useEffect(() => {
   let eventTypeId = props.eventType;
 
     // If it's not a Greyhound Race (4339), we sort by the LTP
