@@ -92,6 +92,8 @@ export const placeOrderAction = async (order) => {
     }
   })
 
+  minimalOrder.size = parseFloat(minimalOrder.size).toFixed(2)
+
   return fetch('/api/place-order', {
     headers: {
       Accept: "application/json",
@@ -107,10 +109,11 @@ export const placeOrderAction = async (order) => {
 
       const betId = result.instructionReports[0].betId;
 
-      const adjustedOrder = Object.assign({}, order);
+      const adjustedOrder = Object.assign({}, minimalOrder);
       adjustedOrder.rfs = order.customerStrategyRef;
       adjustedOrder.betId = betId;
       adjustedOrder.strategy = "None";
+
       if (betId === undefined) {
         return;
       }
