@@ -30,6 +30,7 @@ import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { sortLadder } from '../../utils/ladder/SortLadder';
 import { checkStopLossForMatch, checkTickOffsetForMatch } from '../../utils/ExchangeStreaming/OCMHelper';
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
+import ConnectionBugDisplay from "../ConnectionBugDisplay";
 
 const App = props => {
   const [marketId, setMarketId] = useState(null);
@@ -294,20 +295,20 @@ const App = props => {
 }, [props.marketStatus, props.market.inPlayTime]);
 
 useEffect(() => {
-    // A message will be sent here if the connection to the market is disconnected.
-    // We resubscribe to the market here using the initialClk & clk.
-    props.socket.on("connection_closed", () => {
-      console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
-      // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-      if (getQueryVariable("marketId") && initialClk && clk) {
-        console.log('resubscribing...');
-        props.socket.emit("market-resubscription", {
-          marketId: getQueryVariable("marketId"),
-          initialClk: initialClk,
-          clk: props.clk
-        });
-      }
-    });
+  // A message will be sent here if the connection to the market is disconnected.
+  // We resubscribe to the market here using the initialClk & clk.
+  props.socket.on("connection_closed", () => {
+    console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
+    // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+    if (getQueryVariable("marketId") && initialClk && clk) {
+      console.log('resubscribing...');
+      props.socket.emit("market-resubscription", {
+        marketId: getQueryVariable("marketId"),
+        initialClk: initialClk,
+        clk: props.clk
+      });
+    }
+  });
 }, [clk, initialClk]);
 
 useEffect(() => {
@@ -609,10 +610,18 @@ useEffect(() => {
           <Title />
           <Siderbar />
           <main className="content">
+            <ConnectionBugDisplay 
+              marketId = {marketId} 
+              clk = {clk} 
+              initialClk = {initialClk} 
+              socket = {props.socket} 
+              setClk = {setClk} 
+              setInitialClk = {setInitialClk} 
+            />
             <Draggable />
             {renderView()}
             <PremiumPopup />
-          </main>
+          </main> 
         </div>
       </div>
     );
