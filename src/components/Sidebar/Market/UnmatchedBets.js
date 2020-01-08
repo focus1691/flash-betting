@@ -74,7 +74,7 @@ const UnmatchedBets = props => {
 
     // delete from database
     try {
-      fetch('/api/update-order', {
+      fetch('/api/remove-orders', {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
@@ -136,8 +136,27 @@ const UnmatchedBets = props => {
           body: JSON.stringify({
             marketId: order.marketId,
             betId: order.betId,
-            newPrice: newPrice
+            newPrice: newPrice,
+            customerRef: order.rfs
           })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === "SUCCESS") {
+            const newUnmatched = Object.assign({}, props.bets.unmatched);
+            
+            const newBetId = res.instructionReports[0].placeInstructionReport.betId;
+            newUnmatched[newBetId] = Object.assign({}, newUnmatched[order.betId]);
+            newUnmatched[newBetId].price = res.instructionReports[0].placeInstructionReport.instruction.limitOrder.price;
+            newUnmatched[newBetId].betId = newBetId;
+
+            delete newUnmatched[order.betId];
+
+            props.onChangeOrders({
+              unmatched: newUnmatched,
+              matched: props.bets.matched,
+            })
+          }
         })
         
 
