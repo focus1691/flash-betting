@@ -326,13 +326,12 @@ useEffect(() => {
 useEffect(() => {
     /**
      * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
-     * @param {obj} data The market change message data: { rc: [(atb, atl, batb, batl, tv, ltp, id)] }
+     * @param {obj} data The market change message data: { rc: [(atb, atl, tv, ltp, id)] }
      */
     props.socket.on("mcm", data => {
         // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
         props.socket.off("mcm");
         const marketId = getQueryVariable("marketId");
-
         if (data.clk) {
           setClk(data.clk);
         }

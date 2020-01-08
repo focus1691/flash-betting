@@ -103,7 +103,7 @@ const Grid = props => {
 		props.onSelectRunner(runner);
 	};
 
-	const renderRow = (betOdds, bestOdds, key, backLay) => {
+	const renderRow = (betOdds, key, backLay) => {
 		// Fill all empty cells if no data found
 		if (!betOdds) return Array(5).fill(<EmptyCell />);
 
@@ -163,7 +163,7 @@ const Grid = props => {
 
 	const renderRunners = () => {
 		return props.sortedLadder.map(key => {
-			const { atb, atl, batb, batl, ltp, tv, ltpStyle } = DeconstructLadder(
+			const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(
 				props.ladder[key]
 			);
 			const { name, number, logo, order } = DeconstructRunner(props.runners[key], props.market.eventType.id);
@@ -223,8 +223,8 @@ const Grid = props => {
 							hedge={profit}
 							ltpStyle={ltpStyle}
 						/>
-						{renderRow(atb, batb, key, 0).reverse()}
-						{renderRow(atl, batl, key, 1)}
+						{renderRow(atb, key, 0).reverse()}
+						{renderRow(atl, key, 1)}
 					</tr>
 
 					<GridOrderRow

@@ -12,8 +12,6 @@ const DeconstructLadder = ladder => {
       color: "#FFFFFF",
       atb: {},
       atl: {},
-      batb: {},
-      batl: {},
       ltpStyle: { background: "#FFF", color: "#000" }
     }
   } else {
@@ -24,8 +22,6 @@ const DeconstructLadder = ladder => {
       ltpStyle: getLTPstyle(ladder.ltp, ladder.ltpDelta),
       atb: ladder.atb || {},
       atl: ladder.atl || {},
-      batb: ladder.batb || {},
-      batl: ladder.batl || {},
     }
   }
 };
