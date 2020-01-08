@@ -31,6 +31,7 @@ import { sortLadder } from '../../utils/ladder/SortLadder';
 import { checkStopLossForMatch, checkTickOffsetForMatch } from '../../utils/ExchangeStreaming/OCMHelper';
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import ConnectionBugDisplay from "../ConnectionBugDisplay";
+import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionErrorType";
 
 const App = props => {
   const [marketId, setMarketId] = useState(null);
@@ -39,6 +40,7 @@ const App = props => {
   const [isUpdated, setIsUpdated] = useState(true);
   const [initialClk, setInitialClk] = useState(null);
   const [clk, setClk] = useState(null);
+  const [connectionError, setConnectionError] = useState("")
 
   if (!cookies.sessionKey && !cookies.username) {
     window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
@@ -306,6 +308,40 @@ useEffect(() => {
   }
 
 }, [Object.values(props.ladders).length]);
+
+useEffect(() => {
+  // A message will be sent here if the connection to the market is disconnected.
+  // We resubscribe to the market here using the initialClk & clk.
+  props.socket.on("connection_closed", () => {
+    console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
+    // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+    if (getQueryVariable("marketId") && initialClk && clk && connectionError !== "") {
+      console.log('resubscribing...');
+      props.socket.emit("market-resubscription", {
+        marketId: getQueryVariable("marketId"),
+        initialClk: initialClk,
+        clk: props.clk
+      });
+    }
+  });
+}, [clk, initialClk, connectionError]);
+
+
+useEffect(() => {
+  props.socket.on("subscription-error", async data => {
+    props.socket.off("subscription-error");
+      if (data.statusCode === "FAILURE") {
+          if (GetSubscriptionErrorType(data.errorCode) === "Authentication") {
+              window.location.href = window.location.origin + `/?error=${data.errorCode}`;
+          } else {
+              setConnectionError(data.errorMessage)
+          }
+      } else {
+          setConnectionError("")
+      }
+  })
+})
+
 
 useEffect(() => {
     /**
@@ -593,6 +629,7 @@ useEffect(() => {
           <Siderbar />
           <main className="content">
             <ConnectionBugDisplay 
+              connectionError = {connectionError}
               marketId = {marketId} 
               clk = {clk} 
               initialClk = {initialClk} 
