@@ -46,6 +46,7 @@ const ErrorMessages = {
     ITALIAN_PROFILING_ACCEPTANCE_REQUIRED: "You must login to the website to accept the new conditions",
     KYC_SUSPEND: "KYC suspended",
     MULTIPLE_USERS_WITH_SAME_CREDENTIAL: "There is more than one account with the same credential",
+    NOT_AUTHORIZED: "The user identified by the given credentials is not authorized.",
     NOT_AUTHORIZED_BY_REGULATOR_DK: "The user identified by the given credentials is not authorized in the DK's jurisdictions due to the regulators' policies. Ex: the user for which this session should be created is not allowed to act(play, bet) in the DK's jurisdiction",
     NOT_AUTHORIZED_BY_REGULATOR_IT: "The user identified by the given credentials is not authorized in the IT's jurisdictions due to the regulators' policies. Ex: the user for which this session should be created is not allowed to act(play, bet) in the IT's jurisdiction",
     PENDING_AUTH: "pending authentication",
@@ -62,7 +63,8 @@ const ErrorMessages = {
     TEMPORARY_BAN_TOO_MANY_REQUESTS: "The limit for successful login requests per minute has been exceeded. New login attempts will be banned for 20 minutes",
     TRADING_MASTER: "Trading Master Account",
     TRADING_MASTER_SUSPENDED: "Suspended Trading Master Account",
-    USER_SETTINGS_NOT_FOUND: "The User's Settings were not found"
+    USER_SETTINGS_NOT_FOUND: "The User's Settings were not found",
+    MAX_CONNECTION_LIMIT_EXCEEDED: "The User created more connections than alloewd to"
 }
 
 const getErrorMessage = errorCode => {

@@ -51,3 +51,20 @@ html, body, #root, #root > div {
 	top: 50%;
 	left: 50%;
 }
+
+.connectionbug-container {
+	position: absolute;
+	height: 4%;
+	width: 100vw;
+	background: #e13139;
+	z-index: 999;
+	text-align: center;
+	color: white;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.connectionbug-text {
+	margin-right: 1%;
+}

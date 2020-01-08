@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
-import { setRunner } from "../../actions/market";
+import { setRunner, setDraggingLadder } from "../../actions/market";
 import { getLTP, getRunner, getSportId, getPL } from "../../selectors/marketSelector";
-import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
+import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets, getSelectionUnmatchedBets } from "../../selectors/orderSelector";
 import { getPLForRunner } from "../../utils/Bets/GetProfitAndLoss";
 import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { iconForEvent } from "../../utils/Market/EventIcons";
@@ -10,22 +10,21 @@ import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 
-const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, setLadderDown, unmatchedBets, matchedBets, oddsHovered, ltp, PL}) => {
-  const ordersOnMarket = Object.keys(unmatchedBets).length + Object.keys(matchedBets).length > 0;
+const LadderHeader = ({ selectionId, sportId, runner, onSelectRunner, setLadderDown, oddsHovered, ltp, PL, onDraggingLadder, selectionUnmatchedBets, selectionMatchedBets}) => {
+  const ordersOnMarket = selectionMatchedBets.length > 0;
 
   const oddsHoveredCalc = ((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(calcBackBet(oddsHovered.odds, 2) +
     ((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) || (oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId) ? 1 : -1) * parseFloat(PL)).toFixed(2);
 
   const handleMouseDown = () => e => {
     setLadderDown(true);
+    onDraggingLadder(selectionId);
   };
 
   const handleNoImageError = () => e => {
     e.target.onerror = null;
     e.target.src = iconForEvent(parseInt(sportId));
   };
-
-  const selectionMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(selectionId));
 
   // calculate hedge at the ltp
   const profitArray = selectionMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp)));
@@ -61,7 +60,7 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
           <span className="contender-odds"
             style={{
               visibility: ordersOnMarket ? 'visible' : 'hidden',
-              color: PL > 0 ? 'rgb(106, 177, 79)' : 'red'
+              color: PL >= 0 ? 'rgb(106, 177, 79)' : 'red'
             }}
           >{twoDecimalPlaces(PL)}</span>
           <div className={"contender-details"}>
@@ -70,17 +69,17 @@ const LadderHeader = ({ market, selectionId, sportId, runner, onSelectRunner, se
           <span className="contender-odds"
             style={{
               visibility: oddsHovered.odds > 0 && ordersOnMarket ? 'visible' : 'hidden',
-              color: oddsHoveredCalc > 0 ? 'rgb(106, 177, 79)' : 'red'
+              color: oddsHoveredCalc >= 0 ? 'rgb(106, 177, 79)' : 'red'
             }}>
             {twoDecimalPlaces(oddsHoveredCalc)}
           </span>
         </div>
       </div>
       <div>
-        <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) > 0 ? 'rgb(106, 177, 79)' : 'red' }}>
+        <span style={{ visibility: parseFloat(ladderLTPHedge) === 0 ? 'hidden' : 'visible', color: parseFloat(ladderLTPHedge).toFixed(2) >= 0 ? 'rgb(106, 177, 79)' : 'red' }}>
           {twoDecimalPlaces(ladderLTPHedge)}
         </span>
-        <span style={{ visibility: LTPHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(LTPHedgeSize).toFixed(2) > 0 ? '#88c6f7' : 'red' }} id = "ltphedgesize">
+        <span style={{ visibility: LTPHedgeSize === 0 ? 'hidden' : 'visible', color: parseFloat(LTPHedgeSize).toFixed(2) >= 0 ? '#88c6f7' : 'red' }} id = "ltphedgesize">
           {twoDecimalPlaces(LTPHedgeSize)}
         </span>
       </div>
@@ -97,13 +96,16 @@ const mapStateToProps = (state, {selectionId}) => {
     matchedBets: getMatchedBets(state.order.bets),
     ltp: getLTP(state.market.ladder, {selectionId}),
     oddsHovered: state.market.oddsHovered,
-    PL: getPL(state.market.marketPL, {selectionId})
+    PL: getPL(state.market.marketPL, {selectionId}),
+    selectionMatchedBets: getSelectionMatchedBets(state.order.bets, {selectionId}),
+    // selectionUnmatchedBets: getSelectionUnmatchedBets(state.order.bets, {selectionId}),
   };
 }; 
 
 const mapDispatchToProps = dispatch => {
   return {
     onSelectRunner: runner => e => dispatch(setRunner(runner)),
+    onDraggingLadder: drag => dispatch(setDraggingLadder(drag))
   }
 }
 

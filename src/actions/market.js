@@ -193,3 +193,10 @@ export const setMarketPL = pl => {
     payload: pl
   }
 }
+
+export const setDraggingLadder = draggingLadder => {
+  return {
+    type: "SET_DRAGGING_LADDER",
+    payload: draggingLadder
+  }
+}

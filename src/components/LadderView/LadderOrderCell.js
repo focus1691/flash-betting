@@ -167,6 +167,12 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
+const isMoving = (prevProps, nextProps) => {
+  if (nextProps.isMoving) {
+      return true;
+  } else {
+      return false;
+  }
+}
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderOrderCell))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderOrderCell, isMoving))

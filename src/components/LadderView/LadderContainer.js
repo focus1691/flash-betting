@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
-import { updateLadderOrder } from "../../actions/market";
+import { updateLadderOrder, setDraggingLadder } from "../../actions/market";
 
-const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners, ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children}) => {
+const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners, ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children, onDraggingLadder, draggingLadder}) => {
 
     const onLoad = () => e => {
         setIsReferenceSet(true);
@@ -12,11 +12,14 @@ const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isM
         if (containerRef.current === null) return;
         if (!isLadderDown) return;
         moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving);
+        if (!draggingLadder)
+            onDraggingLadder(false);
     };
 
     const handleMouseUp= () => e => {
         if (containerRef.current === null) return;
         if (!isLadderDown) return;
+        onDraggingLadder(false);
         setLadderDown(false);
         returnToOrderedPos(containerRef, order, setIsMoving);
     };
@@ -24,6 +27,7 @@ const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isM
     const handleMouseLeave = () => e => {
         if (containerRef.current === null) return;
         if (!isLadderDown) return;
+        onDraggingLadder(false);
         setLadderDown(false);
         returnToOrderedPos(containerRef, order, setIsMoving); 
     };
@@ -119,12 +123,14 @@ const mapStateToProps = (state, {id}) => {
     return {
         runners: state.market.runners,
         ladderOrderList: state.market.ladderOrder,
+        draggingLadder: state.market.draggingLadder
     };  
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
+        onDraggingLadder: drag => dispatch(setDraggingLadder(drag))
     };
 };
 

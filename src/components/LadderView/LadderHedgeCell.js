@@ -6,6 +6,7 @@ const LadderHedgeCell = ({marketId, selectionId, price, unmatchedBetOnRow, side,
 
     const PLHedgeProfit = PLHedgeNumber && PLHedgeNumber.side === side && PLHedgeNumber.profit ? PLHedgeNumber.profit : undefined
 
+
     return (
         <div 
             className = 'td'
@@ -21,6 +22,15 @@ const mapStateToProps = (state, {selectionId, price}) => {
     return {
         unmatchedBetOnRow: getUnmatchedBetOnRow(state.order.bets, {selectionId, price}),
     };  
-  };
+};
 
-export default connect(mapStateToProps)(memo(LadderHedgeCell))
+
+const isMoving = (prevProps, nextProps) => {
+    if (nextProps.isMoving) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export default connect(mapStateToProps)(memo(LadderHedgeCell, isMoving))
