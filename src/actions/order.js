@@ -9,7 +9,7 @@ export const updateOrders = order => {
 
 export const placeOrder = order => {
 
-  const newSize = order.size === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
+  const newSize = order.side === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size)
 
   if (order.unmatchedBets === undefined || order.matchedBets === undefined) {
     return
@@ -21,6 +21,7 @@ export const placeOrder = order => {
   if (parseFloat(newSize) < 2.0) {
     return async dispatch => {
       const startingOrder = await placeOrderAction(Object.assign({}, order, {price: 1.01, size: 2, orderCompleteCallBack: undefined}))
+      
       if (startingOrder === null) return
 
       await dispatch(updateOrders(startingOrder.bets));
@@ -32,10 +33,11 @@ export const placeOrder = order => {
           sizeReduction: parseFloat((2 - newSize).toFixed(2))
         }))
 
+
       await dispatch(updateOrders(reducedOrderBets));
 
       // replaceOrder, editing the price
-      await fetch('/api/replace-orders', {
+      const replaceOrderRequest = await fetch('/api/replace-orders', {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
@@ -49,35 +51,33 @@ export const placeOrder = order => {
         })
       })
       .then(res => res.json())
-      .then(res => {
-        if (res.status === "SUCCESS") {
-          const newUnmatchedBets = Object.assign({}, reducedOrderBets.unmatched);
-          newUnmatchedBets[startingOrder.order.betId].price = order.price;
-          delete newUnmatchedBets[startingOrder.order.betId].unmatchedBets;
-          delete newUnmatchedBets[startingOrder.order.betId].matchedBets;
 
-          dispatch(updateOrders({
-            unmatched: newUnmatchedBets,
-            matched: startingOrder.bets.matched
-          }));
-        } else {
-          dispatch(updateOrders({
-            unmatched: startingOrder.bets.unmatched,
-            matched: startingOrder.bets.matched
-          }));
-        }
-        
-      })
+      if (replaceOrderRequest.status === "SUCCESS") {
+        const newUnmatchedBets = Object.assign({}, reducedOrderBets.unmatched);
+        newUnmatchedBets[startingOrder.order.betId].price = order.price;
+        delete newUnmatchedBets[startingOrder.order.betId].unmatchedBets;
+        delete newUnmatchedBets[startingOrder.order.betId].matchedBets;
+
+        return dispatch(updateOrders({
+          unmatched: newUnmatchedBets,
+          matched: startingOrder.bets.matched
+        }));
+      } else {
+        return dispatch(updateOrders({
+          unmatched: startingOrder.bets.unmatched,
+          matched: startingOrder.bets.matched
+        }));
+      }
+      
     }
   }
 
-  return dispatch => {
-    placeOrderAction(order).then(result => {
+  return async dispatch  => {
+    const result = await placeOrderAction(order)
 
-      if (result !== null) {
-        dispatch(updateOrders(result.bets));
-      }
-    })
+    if (result !== null) {
+      return dispatch(updateOrders(result.bets));
+    }  
     
   };
 };
@@ -94,6 +94,7 @@ export const placeOrderAction = async (order) => {
 
   minimalOrder.size = parseFloat(minimalOrder.size).toFixed(2)
 
+
   return fetch('/api/place-order', {
     headers: {
       Accept: "application/json",
@@ -108,12 +109,12 @@ export const placeOrderAction = async (order) => {
       if (!result || result.status === "FAILURE") return null;
 
       const betId = result.instructionReports[0].betId;
-
+      
       const adjustedOrder = Object.assign({}, minimalOrder);
       adjustedOrder.rfs = order.customerStrategyRef;
       adjustedOrder.betId = betId;
       adjustedOrder.strategy = "None";
-
+      
       if (betId === undefined) {
         return;
       }
@@ -140,10 +141,9 @@ export const cancelOrder = order => {
     return
   }
 
-  return dispatch => {
-    return cancelOrderAction(order).then(newBets => {
-      dispatch(updateOrders(newBets));
-    })
+  return async dispatch => {
+    const newBets = await cancelOrderAction(order)
+    return dispatch(updateOrders(newBets));
   };
 };
 
@@ -208,7 +208,6 @@ export const reduceSizeAction = async order => {
   if (cancelOrder && cancelOrder.status === "SUCCESS") {
     const newUnmatchedBets = Object.assign({}, order.unmatchedBets);
     newUnmatchedBets[order.betId].size = parseFloat((order.size - cancelOrder.instructionReports[0].sizeCancelled).toFixed(2))
-    
 
     const newBets = {
       unmatched: newUnmatchedBets,
@@ -223,5 +222,3 @@ export const reduceSizeAction = async order => {
   }
   
 }
-
-
