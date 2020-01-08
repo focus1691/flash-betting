@@ -7,7 +7,6 @@ import LadderLTPCell from './LadderLTPCell';
 import LadderOrderCell from './LadderOrderCell';
 import LadderVolumeCell from './LadderVolumeCell';
 import GetQueryVariable from '../../utils/Market/GetQueryVariable';
-import { getPLForRunner } from '../../utils/Bets/GetProfitAndLoss';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { getSelectionMatchedBets, getMatchedBets } from '../../selectors/orderSelector';
 import { getStakeVal } from '../../selectors/settingsSelector';

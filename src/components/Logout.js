@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import * as actions from "../actions/account";
 
 const Logout = props => {
-  const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'accessToken', 'refreshToken', 'expiresIn']);
+  const [removeCookie] = useCookies(['sessionKey', 'accessToken', 'refreshToken', 'expiresIn']);
   useEffect(() => {
     fetch("/api/logout")
       .then(res => res.json())

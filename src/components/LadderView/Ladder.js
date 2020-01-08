@@ -15,7 +15,6 @@ import LadderRow from "./LadderRow";
 import OrderRow from "./OrderRow";
 import PercentageRow from "./PercentageRow";
 import PriceRow from "./PriceRow";
-import { setDraggingLadder } from "../../actions/market";
 
 const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, ladderSideLeft, setLadderSideLeft, onChangeStopLossList, unmatchedBets, matchedBets, stopLossOffset, stopLossTrailing, stopLossList }) => {
     const containerRef = useRef(null);
