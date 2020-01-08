@@ -315,7 +315,7 @@ useEffect(() => {
   props.socket.on("connection_closed", () => {
     console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
     // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-    if (getQueryVariable("marketId") && initialClk && clk && connectionError !== "") {
+    if (getQueryVariable("marketId") && initialClk && clk && connectionError === "") {
       console.log('resubscribing...');
       props.socket.emit("market-resubscription", {
         marketId: getQueryVariable("marketId"),
