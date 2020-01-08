@@ -44,6 +44,16 @@ export const stopLossTrailingChange = (stopLossList, selectionId, currentLTP, ol
     if (stopLossList[selectionId].trailing && currentLTP > oldMaxLadderLTP) {
         adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1; 
     }
+
+    fetch('/api/update-order', {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(adjustedStopLoss)
+    }).catch(console.log)
+
     return adjustedStopLoss
 }
 
