@@ -2,10 +2,14 @@ import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from '../u
 import { checkTimeListAfter } from '../utils/TradingStategy/BackLay';
 import { calcHedgedPL2 } from '../utils/TradingStategy/HedingCalculator';
 import data from './MCMHelperData.json'
+import { UpdateLadder } from '../utils/ladder/UpdateLadder';
+import CalculateLadderHedge from '../utils/ladder/CalculateLadderHedge';
+import { CreateLadder } from '../utils/ladder/CreateLadder';
 
 test('mcm should go through all strategies', async () => {
 
     const ladders = {};
+    const nonRunners = {};
 
     const backList = {
         "10141729": [
@@ -44,11 +48,11 @@ test('mcm should go through all strategies', async () => {
           }
         ],
     }
-    
+
     const stopLossList = {
         "10141729": {
           "strategy": "Stop Loss",
-          "trailing": true,
+          "trailing": false,
           "hedged": true,
           "assignedIsOrderMatched": true,
           "units": "Ticks",
@@ -71,55 +75,46 @@ test('mcm should go through all strategies', async () => {
 
     let stopLossOrdersToRemove = [];
 
+    const marketId = "1.160741054";
+
+    data.rc.map(rc => {
+        ladders[rc.id] = CreateLadder(rc)
+    });
+    
     await Promise.all(data.rc.map(async rc => {
-        ladders[rc.id] = data.rc[0];
-        // Runner found so we update our object with the raw data
-        const marketId = "1.160741054";
 
-        // Back and Lay
-        if (data.marketDefinition.status === "RUNNING") {
-            if (laylist[rc.id] !== undefined) {
-                const adjustedBackOrderArray = await checkTimeListAfter(backList[rc.id], rc.id, data.marketDefinition.openDate, () => {}, marketId, "BACK", matchedBets, unmatchedBets)
-                if (adjustedBackOrderArray.length > 0) {
-                    adjustedBackList[rc.id] = adjustedBackOrderArray;
+        if (rc.id in ladders) {
+            // Runner found so we update our object with the raw data
+            ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
+
+            const currentLTP = ladders[rc.id].ltp[0]
+
+            // stop Entry
+            newStopEntryList = stopEntryListChange(stopEntryList, rc.id, currentLTP, () => {}, newStopEntryList, unmatchedBets, matchedBets);
+            // We increment and check the stoplosses
+            if (stopLossList[rc.id] !== undefined) {
+                
+                // if it's trailing and the highest LTP went up, then we add a tickoffset
+                const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
+                let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, rc.id, currentLTP, maxLTP));
+
+                // if hedged, get size (price + hedged profit/loss)
+                if (adjustedStopLoss.hedged) {
+                    const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
+
+                    adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, 'hedged').size
                 }
+
+                // if it doesn't have a reference or the order has been matched (STOP LOSS)
+                const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, currentLTP, () => {}, stopLossOrdersToRemove, adjustedStopLossList, unmatchedBets, matchedBets);
+                
+                adjustedStopLossList = stopLossMatched.adjustedStopLossList;
+                stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
             }
-            
-            if (laylist[rc.id] !== undefined) {
-                const adjustedLayOrderArray = await checkTimeListAfter(laylist[rc.id], rc.id, data.marketDefinition.openDate, () => {}, marketId, "LAY", matchedBets, unmatchedBets)
-                if (adjustedLayOrderArray.length > 0) {
-                    adjustedLayList[rc.id] = adjustedLayOrderArray;
-                }
+            else if (rc.id in nonRunners === false) {
+                // Runner found so we create the new object with the raw data
+                ladders[rc.id] = CreateLadder(rc);
             }
-        }
-
-        // stop Entry
-        newStopEntryList = await stopEntryListChange(stopEntryList, rc.id, rc.ltp[0], () => {}, newStopEntryList, unmatchedBets, matchedBets, true);
-        
-        // We increment and check the stoplosses
-        if (stopLossList[rc.id] !== undefined) {
-            // if it's trailing and the highest LTP went up, then we add a tickoffset
-            const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-            let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, rc.id, rc.ltp, maxLTP))
-
-            // if hedged, get size (price + hedged profit/loss)
-            if (adjustedStopLoss.hedged) {
-                const newMatchedBets = Object.values(matchedBets).filter(bet => bet.selectionId == adjustedStopLoss.selectionId);
-
-                const combinedSize =
-                newMatchedBets.reduce((a, b) => {
-                    return a + b.size
-                }, 0)
-
-                const profitArray = newMatchedBets.map(bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(adjustedStopLoss.price)));
-                const profit = (-1 * profitArray.reduce((a, b) => a + b, 0));
-                adjustedStopLoss.size = combinedSize + profit
-            }
-
-            // if it doesn't have a reference or the order has been matched (STOP LOSS)
-            const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, rc.ltp, () => {}, stopLossOrdersToRemove, adjustedStopLossList, unmatchedBets, matchedBets)
-            adjustedStopLossList = stopLossMatched.adjustedStopLossList;
-            stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
         }
     }));
 

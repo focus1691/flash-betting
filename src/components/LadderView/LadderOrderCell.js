@@ -38,7 +38,8 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
               assignedIsOrderMatched: false,
               size: stakeVal[selectionId],
               betId: betId,
-              hedged: stopLossHedged
+              hedged: stopLossHedged,
+              marketId: marketId,
             })
           } else if (tickOffsetSelected) {
             const newTickOffset = Object.assign({}, tickOffsetList);
@@ -104,6 +105,7 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
       }
       
       changeStopLossList({
+        marketId: marketId,
         side: side,
         size: stakeVal[selectionId], 
         price: formatPrice(price),

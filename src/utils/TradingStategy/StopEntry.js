@@ -5,7 +5,7 @@ const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatche
     
     // eslint-disable-next-line no-loop-func
     stopEntryArray.map((item, index) => {
-        if ((currentLTP < item.targetLTP && item.stopEntryCondition == '<' ) || (currentLTP == item.targetLTP && item.stopEntryCondition == '=' ) || (currentLTP > item.targetLTP && item.stopEntryCondition == '>' )) {
+        if ((currentLTP < item.targetLTP && item.stopEntryCondition === '<' ) || (currentLTP == item.targetLTP && item.stopEntryCondition === '=' ) || (currentLTP > item.targetLTP && item.stopEntryCondition === '>' )) {
             onPlaceOrder(Object.assign({}, item, {unmatchedBets: unmatchedBets, matchedBets: matchedBets}));
             
             indexesToRemove = indexesToRemove.concat(index);
@@ -13,7 +13,6 @@ const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatche
           }  
         
     })
-
     if (ordersToRemove.length > 0) {
         if (!testing) {
           await fetch('/api/remove-orders', {

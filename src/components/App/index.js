@@ -24,7 +24,7 @@ import { updateFillOrKillList } from "../../actions/fillOrKill";
 import Draggable from "../Draggable";
 import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
-import { checkTimeListAfter } from '../../utils/TradingStategy/BackLay';
+import { checkTimeListsAfter } from '../../utils/TradingStategy/BackLay';
 import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from '../../utils/ExchangeStreaming/MCMHelper';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { sortLadder } from '../../utils/ladder/SortLadder';
@@ -179,7 +179,6 @@ const App = props => {
               let loadedUnmatchedOrders = {};
               let loadedMatchedOrders = {};
 
-
               await fetch(`/api/get-all-orders`)
                 .then(res => res.json())
                 .then(async orders => {
@@ -296,242 +295,244 @@ const App = props => {
     });
 }, [props.marketStatus, props.market.inPlayTime]);
 
-useEffect(() => {
-  let eventTypeId = props.eventType;
+  useEffect(() => {
+    let eventTypeId = props.eventType;
 
-    // If it's not a Greyhound Race (4339), we sort by the LTP
-    if (eventTypeId !== "4339") {
-      let ladders = Object.assign({}, props.ladders);
-      var sortedLadderIndices = sortLadder(ladders);
-      props.onSortLadder(sortedLadderIndices);
-      props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-  }
-
-}, [Object.values(props.ladders).length]);
-
-useEffect(() => {
-  // A message will be sent here if the connection to the market is disconnected.
-  // We resubscribe to the market here using the initialClk & clk.
-  props.socket.on("connection_closed", () => {
-    console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
-    // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-    if (getQueryVariable("marketId") && initialClk && clk && connectionError === "") {
-      console.log('resubscribing...');
-      props.socket.emit("market-resubscription", {
-        marketId: getQueryVariable("marketId"),
-        initialClk: initialClk,
-        clk: props.clk
-      });
+      // If it's not a Greyhound Race (4339), we sort by the LTP
+      if (eventTypeId !== "4339") {
+        let ladders = Object.assign({}, props.ladders);
+        var sortedLadderIndices = sortLadder(ladders);
+        props.onSortLadder(sortedLadderIndices);
+        props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
     }
-  });
-}, [clk, initialClk, connectionError]);
 
+  }, [Object.values(props.ladders).length]);
 
-useEffect(() => {
-  props.socket.on("subscription-error", async data => {
-    props.socket.off("subscription-error");
-      if (data.statusCode === "FAILURE") {
-          if (GetSubscriptionErrorType(data.errorCode) === "Authentication") {
-              window.location.href = window.location.origin + `/?error=${data.errorCode}`;
-          } else {
-              setConnectionError(data.errorMessage)
-          }
-      } else {
-          setConnectionError("")
+  useEffect(() => {
+    // A message will be sent here if the connection to the market is disconnected.
+    // We resubscribe to the market here using the initialClk & clk.
+    props.socket.on("connection_closed", () => {
+      console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
+      // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+      if (getQueryVariable("marketId") && initialClk && clk && connectionError === "") {
+        console.log('resubscribing...');
+        props.socket.emit("market-resubscription", {
+          marketId: getQueryVariable("marketId"),
+          initialClk: initialClk,
+          clk: props.clk
+        });
       }
+    });
+  }, [clk, initialClk, connectionError]);
+
+
+  useEffect(() => {
+    props.socket.on("subscription-error", async data => {
+      console.log(data)
+      props.socket.off("subscription-error");
+        if (data.statusCode === "FAILURE") {
+            if (GetSubscriptionErrorType(data.errorCode) === "Authentication") {
+                window.location.href = window.location.origin + `/?error=${data.errorCode}`;
+            } else {
+                setConnectionError(data.errorMessage)
+            }
+        } else {
+            setConnectionError("")
+        }
+    })
   })
-})
 
 
-useEffect(() => {
-    /**
-     * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
-     * @param {obj} data The market change message data: { rc: [(atb, atl, tv, ltp, id)] }
-     */
-    props.socket.on("mcm", data => {
-        // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
-        props.socket.off("mcm");
-        const marketId = getQueryVariable("marketId");
-        if (data.clk) {
-          setClk(data.clk);
-        }
-
-        if (data.initialClk) {
-          setInitialClk(data.initialClk);
-          props.onReceiveInitialClk(data.initialClk);
-        }
-
-        data.mc.forEach(async mc => {
-            var ladders = Object.assign({}, updates);
-            var nonRunners = Object.assign({}, props.nonRunners);
-
-            // Update the market status
-            if (mc.marketDefinition) {
-                mc.marketDefinition.runners.forEach(runner => {
-                    if (runner.status === "REMOVED") {
-                        if (runner.id in ladders) {
-                            delete ladders[runner.id];
-                        }
-                        if (runner.id in nonRunners === false) {
-                            nonRunners[runner.id] = ladders[runner.id];
-                        }
-                    }
-                });
-                props.onReceiveNonRunners(nonRunners);
-            }
-
-            if (mc.rc) {
-                let adjustedStopLossList = Object.assign({}, props.stopLossList);
-                const adjustedBackList = {};
-                const adjustedLayList = {};
-                let newStopEntryList = Object.assign({}, props.stopEntryList);
-
-                let stopLossOrdersToRemove = [];
-
-                await Promise.all(mc.rc.map(async rc => {
-
-                    if (rc.id in ladders) {
-                        // Runner found so we update our object with the raw data
-                        ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
-
-                        const currentLTP = ladders[rc.id].ltp[0]
-                        // Back and Lay
-                        if (props.marketDefinition && props.marketDefinition.marketStatus === "RUNNING") {
-                            const adjustedBackOrderArray = await checkTimeListAfter(props.backList[rc.id], rc.id, mc.marketDefinition.openDate, props.onPlaceOrder, marketId, "BACK", props.matchedBets, props.unmatchedBets)
-                            if (adjustedBackOrderArray.length > 0) {
-                                adjustedBackList[rc.id] = adjustedBackOrderArray;
-                            }
-
-                            const adjustedLayOrderArray = await checkTimeListAfter(props.layList[rc.id], rc.id, mc.marketDefinition.openDate, props.onPlaceOrder, marketId, "LAY", props.matchedBets, props.unmatchedBets)
-                            if (adjustedLayOrderArray.length > 0) {
-                                adjustedLayList[rc.id] = adjustedLayOrderArray;
-                            }
-                        }
-
-                        // stop Entry
-                        newStopEntryList = stopEntryListChange(props.stopEntryList, rc.id, currentLTP, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
-                        // We increment and check the stoplosses
-                        if (props.stopLossList[rc.id] !== undefined) {
-                            // if it's trailing and the highest LTP went up, then we add a tickoffset
-                            const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-                            let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, currentLTP, maxLTP));
-
-                            // if hedged, get size (price + hedged profit/loss)
-                            if (adjustedStopLoss.hedged) {
-                                const newMatchedBets = Object.values(props.matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
-
-                                adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, 'hedged').size
-                            }
-
-                            // if it doesn't have a reference or the order has been matched (STOP LOSS)
-                            const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, currentLTP, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets);
-
-                            adjustedStopLossList = stopLossMatched.adjustedStopLossList;
-                            stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
-                        }
-
-                    }
-                    else if (rc.id in nonRunners === false) {
-                        // Runner found so we create the new object with the raw data
-                        ladders[rc.id] = CreateLadder(rc);
-                    }
-                }));
-
-                if (stopLossOrdersToRemove.length > 0) {
-                    await fetch('/api/remove-orders', {
-                        headers: {
-                            Accept: "application/json",
-                            "Content-Type": "application/json"
-                        },
-                        method: "POST",
-                        body: JSON.stringify(stopLossOrdersToRemove)
-                    })
-                }
-
-                // so it doesn't mess up the loading of the orders
-                if (Object.keys(props.backList).length > 0) {
-                    props.onChangeBackList(adjustedBackList);
-                }
-                if (Object.keys(props.layList).length > 0) {
-                    props.onChangeLayList(adjustedLayList);
-                }
-                if (Object.keys(props.stopEntryList).length > 0) {
-                    props.onChangeStopEntryList(newStopEntryList);
-                }
-                if (Object.keys(props.stopLossList).length > 0) {
-                    props.onChangeStopLossList(adjustedStopLossList);
-                }
-                setUpdates(ladders);
-                setIsUpdated(false);
-            }
-        });
-    });
-
-    /**
-     * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
-     * @param {obj} data The order change message data:
-     */
-    props.socket.on("ocm", async data => {
-        const newUnmatchedBets = Object.assign({}, props.unmatchedBets);
-        const newMatchedBets = Object.assign({}, props.matchedBets);
-        let checkForMatchInStopLoss = Object.assign({}, props.stopLossList);
-        let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList);
-        let tickOffsetOrdersToRemove = [];
-
-        data.oc.forEach(changes => {
-            changes.orc.forEach(runner => {
-                if (runner.uo) {
-                    runner.uo.forEach(order => {
-                        // If the bet isn't in the unmatchedBets, we should delete it.
-                        if (order.sr === 0 && order.sm === 0) { // this is what happens when an order doesn't get any matched
-                          delete newUnmatchedBets[order.id];
-                        } else if (order.sr === 0) { // this is what happens when an order is finished
-                           // if they canceled early
-                          newMatchedBets[order.id] = Object.assign({}, newUnmatchedBets[order.id], {size: parseFloat(order.sm)});
-                          delete newUnmatchedBets[order.id];
-                        }
-                        
-
-                        checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
-
-                        // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
-                        const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets);
-                        checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
-                        tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove;
-                    });
-                }
-            });
-        });
+  useInterval(async () => {
+    // Back and Lay
+    if (props.market && props.market.marketStartTime && new Date().valueOf() > new Date(props.market.marketStartTime).valueOf()) {
+      console.log('34023')
+      const newBackList = await checkTimeListsAfter(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK", props.bets.matched, props.bets.unmatched)
+      if (Object.keys(props.backList).length > 0) {
+        props.onUpdateBackList(newBackList)
+      }
 
 
-        if (tickOffsetOrdersToRemove.length > 0) {
-            await fetch('/api/remove-orders', {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify(tickOffsetOrdersToRemove)
-            })
-        }
+      const newLayList = await checkTimeListsAfter(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY", props.bets.matched, props.bets.unmatched)
+      if (Object.keys(props.layList).length > 0) {
+        props.onUpdateLayList(newLayList);
+      }
+    }
+  }, 1000);
 
-        if (Object.keys(props.stopLossList).length > 0) {
-            props.onChangeStopLossList(checkForMatchInStopLoss);
-        }
 
-        if (Object.keys(props.tickOffsetList).length > 0) {
-            props.onChangeTickOffsetList(checkForMatchInTickOffset);
-        }
+  useEffect(() => {
+      /**
+       * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
+       * @param {obj} data The market change message data: { rc: [(atb, atl, tv, ltp, id)] }
+       */
+      props.socket.on("mcm", data => {
+          // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
+          props.socket.off("mcm");
+          
+          if (data.clk) {
+            setClk(data.clk);
+          }
 
-        if (Object.keys(props.unmatchedBets).length > 0) {
-            props.onChangeOrders({
-                unmatched: newUnmatchedBets,
-                matched: newMatchedBets,
-            });
-        }
-        props.socket.off("ocm");
-    });
-}, [props.ladders]);
+          if (data.initialClk) {
+            setInitialClk(data.initialClk);
+            props.onReceiveInitialClk(data.initialClk);
+          }
+
+          data.mc.forEach(async mc => {
+              var ladders = Object.assign({}, updates);
+              var nonRunners = Object.assign({}, props.nonRunners);
+
+              // Update the market status
+              if (mc.marketDefinition) {
+                console.log(mc.marketDefinition)
+                  mc.marketDefinition.runners.forEach(runner => {
+                      if (runner.status === "REMOVED") {
+                          if (runner.id in ladders) {
+                              delete ladders[runner.id];
+                          }
+                          if (runner.id in nonRunners === false) {
+                              nonRunners[runner.id] = ladders[runner.id];
+                          }
+                      }
+                  });
+                  props.onReceiveNonRunners(nonRunners);
+              }
+
+              if (mc.rc) {
+                  let adjustedStopLossList = Object.assign({}, props.stopLossList);
+                  let newStopEntryList = Object.assign({}, props.stopEntryList);
+
+                  let stopLossOrdersToRemove = [];
+
+                  await Promise.all(mc.rc.map(async rc => {
+
+                      if (rc.id in ladders) {
+                          // Runner found so we update our object with the raw data
+                          ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
+
+                          const currentLTP = ladders[rc.id].ltp[0]
+
+                          // stop Entry
+                          newStopEntryList = await stopEntryListChange(props.stopEntryList, rc.id, currentLTP, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
+                          // We increment and check the stoplosses
+                          if (props.stopLossList[rc.id] !== undefined) {
+                              // if it's trailing and the highest LTP went up, then we add a tickoffset
+                              const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
+                              let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, currentLTP, maxLTP));
+
+                              // if hedged, get size (price + hedged profit/loss)
+                              if (adjustedStopLoss.hedged) {
+                                  const newMatchedBets = Object.values(props.matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
+
+                                  adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, 'hedged').size
+                              }
+
+                              // if it doesn't have a reference or the order has been matched (STOP LOSS)
+                              const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, currentLTP, props.onPlaceOrder, stopLossOrdersToRemove, adjustedStopLossList, props.unmatchedBets, props.matchedBets);
+
+                              adjustedStopLossList = stopLossMatched.adjustedStopLossList;
+                              stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
+                          }
+
+                      }
+                      else if (rc.id in nonRunners === false) {
+                          // Runner found so we create the new object with the raw data
+                          ladders[rc.id] = CreateLadder(rc);
+                      }
+                  }));
+
+                  if (stopLossOrdersToRemove.length > 0) {
+                      await fetch('/api/remove-orders', {
+                          headers: {
+                              Accept: "application/json",
+                              "Content-Type": "application/json"
+                          },
+                          method: "POST",
+                          body: JSON.stringify(stopLossOrdersToRemove)
+                      })
+                  }
+
+                  // so it doesn't mess up the loading of the orders
+                  if (Object.keys(props.stopEntryList).length > 0) {
+                      console.log(newStopEntryList)
+                      props.onChangeStopEntryList(newStopEntryList);
+                  }
+                  if (Object.keys(props.stopLossList).length > 0) {
+                      props.onChangeStopLossList(adjustedStopLossList);
+                  }
+                  setUpdates(ladders);
+                  setIsUpdated(false);
+              }
+          });
+      });
+
+      /**
+       * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
+       * @param {obj} data The order change message data:
+       */
+      props.socket.on("ocm", async data => {
+          const newUnmatchedBets = Object.assign({}, props.unmatchedBets);
+          const newMatchedBets = Object.assign({}, props.matchedBets);
+          let checkForMatchInStopLoss = Object.assign({}, props.stopLossList);
+          let checkForMatchInTickOffset = Object.assign({}, props.tickOffsetList);
+          let tickOffsetOrdersToRemove = [];
+
+          data.oc.forEach(changes => {
+            if (changes.orc === undefined) return;
+              changes.orc.forEach(runner => {
+                  if (runner.uo) {
+                      runner.uo.forEach(order => {
+                          // If the bet isn't in the unmatchedBets, we should delete it.
+                          if (order.sr === 0 && order.sm === 0) { // this is what happens when an order doesn't get any matched
+                            delete newUnmatchedBets[order.id];
+                          } else if (order.sr === 0) { // this is what happens when an order is finished
+                            // if they canceled early
+                            newMatchedBets[order.id] = Object.assign({}, newUnmatchedBets[order.id], {size: parseFloat(order.sm)});
+                            delete newUnmatchedBets[order.id];
+                          }
+                          
+
+                          checkForMatchInStopLoss = checkStopLossForMatch(props.stopLossList, runner.id, order, checkForMatchInStopLoss);
+
+                          // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
+                          const tickOffsetCheck = checkTickOffsetForMatch(props.tickOffsetList, order, props.onPlaceOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, props.unmatchedBets, props.matchedBets);
+                          checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
+                          tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove;
+                      });
+                  }
+              });
+          });
+
+
+          if (tickOffsetOrdersToRemove.length > 0) {
+              await fetch('/api/remove-orders', {
+                  headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json"
+                  },
+                  method: "POST",
+                  body: JSON.stringify(tickOffsetOrdersToRemove)
+              })
+          }
+
+          if (Object.keys(props.stopLossList).length > 0) {
+              props.onChangeStopLossList(checkForMatchInStopLoss);
+          }
+
+          if (Object.keys(props.tickOffsetList).length > 0) {
+              props.onChangeTickOffsetList(checkForMatchInTickOffset);
+          }
+
+          if (Object.keys(props.unmatchedBets).length > 0) {
+              props.onChangeOrders({
+                  unmatched: newUnmatchedBets,
+                  matched: newMatchedBets,
+              });
+          }
+          props.socket.off("ocm");
+      });
+  }, [props.ladders]);
 
   useEffect(() => {
     if (Object.keys(props.unmatchedBets).length > 0) {

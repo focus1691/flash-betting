@@ -5,9 +5,9 @@ const ConnectionBugDisplay = ({connectionError, socket, marketId, initialClk, cl
 
     const resubscribe = (marketId, initialClk, clk) => {
         if (marketId && initialClk && clk) {
-            setClk(null)
-            setInitialClk(null);
             socket.emit("market-resubscription", {marketId, initialClk, clk});
+            // setClk(null)
+            // setInitialClk(null);
         }
     }
     

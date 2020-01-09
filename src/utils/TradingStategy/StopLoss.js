@@ -9,9 +9,10 @@ import { ALL_PRICES } from "../ladder/CreateFullLadder";
  * @param {string} side - Back or Lay *REQUIRED*
  * @param {number} ticks - Number of ticks for the stop, or percentage of price
  * @param {string} tickOffsetStrategy - ticks field represents percent if percent is passed
+ * @param {boolean} betAssociated - Whether there is a bet associated with the stoploss or not
  * @return {Object} {targetMet, priceReached or stopPrice}
  */
-const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOffsetStrategy) => {
+const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOffsetStrategy, betAssociated) => {
 
 	// We turn the prices into floating point numbers in case strings are passed
     matchedPrice = parseFloat(matchedPrice);
@@ -25,12 +26,17 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
 	else if (tickOffsetStrategy === 'percent') {
     let percentIncrease = calcPercentDifference(size, matchedPrice, currentPrice);
 		return { targetMet: percentIncrease > ticks, stopPrice: findStopPositionForPercent(size, matchedPrice, ticks, side) };
-	}
+  }
+  // If it's a right click, we do a comparison since there is no bet associated with it
+  else if (((side === 'back' && currentPrice > matchedPrice) || (side === 'lay' && currentPrice < matchedPrice)) && !betAssociated) {
+    console.log(currentPrice, matchedPrice)
+    return { targetMet: true, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
+  }
 	// Check if the tick offset has been satisfied by checking the price difference
 	// between the matched and current prices, by finding the absolute value of their indexes
 	else if (Math.abs(ALL_PRICES.indexOf(matchedPrice) - ALL_PRICES.indexOf(currentPrice)) >= ticks) {
-  		return { targetMet: true, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
-	}
+    return { targetMet: true, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
+  }
 	// Target not met
 	return { targetMet: false, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
 }

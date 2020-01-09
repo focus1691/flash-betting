@@ -10,6 +10,7 @@ import { updateTickOffsetList } from "../../../actions/tickOffset";
 import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
 import { combineUnmatchedOrders } from '../../../utils/Bets/CombineUnmatchedOrders';
 import { formatPrice, getPriceNTicksAway } from "../../../utils/ladder/CreateFullLadder";
+import { getTimeToDisplay } from '../../../utils/TradingStategy/BackLay'
 
 const UnmatchedBets = props => {
 
@@ -221,9 +222,7 @@ const UnmatchedBets = props => {
                   {
                     Object.values(allOrders[selection]).map(rfs =>
                       rfs.map(order => {
-                        const remainingTime = order.strategy == "Back" || order.strategy == "Lay" ? (new Date(props.market.marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000) : 0
-                        const remainingMinutes = order.strategy == "Back" || order.strategy == "Lay" ? Math.floor((remainingTime - order.timeOffset) / 60) : 0
-                        const remainingSeconds = order.strategy == "Back" || order.strategy == "Lay" ? Math.floor((remainingTime - order.timeOffset) % 60) : 0
+                        
 
                         let suffix = "";
                         if (order.trailing && order.hedged) suffix = "th"
@@ -231,10 +230,10 @@ const UnmatchedBets = props => {
                         else if (order.trailing && !order.hedged) suffix = "t"
 
                         const PL =
-                          (order.strategy == "Stop Loss" ? "SL " :
-                            order.strategy == "Tick Offset" ? "T.O." :
-                              order.strategy == "Back" || order.strategy == "Lay" ? remainingMinutes + ":" + remainingSeconds + 's' + (order.executionTime == "Before" ? "-" : "+") :
-                                order.strategy == "Stop Entry" ? order.stopEntryCondition + formatPrice(order.targetLTP) + "SE" :
+                          (order.strategy === "Stop Loss" ? "SL " :
+                            order.strategy === "Tick Offset" ? "T.O." :
+                              order.strategy === "Back" || order.strategy === "Lay" ? getTimeToDisplay(order, props.market.marketStartTime) + 's' + (order.executionTime === "Before" ? "-" : "+") :
+                                order.strategy === "Stop Entry" ? order.stopEntryCondition + formatPrice(order.targetLTP) + "SE" :
                                   calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)) + suffix
 
                         return (
