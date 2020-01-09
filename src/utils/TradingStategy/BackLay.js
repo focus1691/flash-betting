@@ -80,7 +80,7 @@ const checkTimeListsAfter = async (list, marketStartTime, onPlaceOrder, marketId
         }
       })
   
-      newList[selectionId] = newSelectionArray.filter((item, index) => indexesToRemove.indexOf(index) === -1)
+      newList[selectionId] = newSelectionArray.filter((item, index) => indexesToRemove.indexOf(index) === -1);
       if (newList[selectionId].length === 0) {
         delete newList[selectionId]
       }
@@ -97,9 +97,7 @@ const checkTimeListsAfter = async (list, marketStartTime, onPlaceOrder, marketId
         body: JSON.stringify(ordersToRemove)
       })
     }
-  
-    return newList
-
+    return newList;
 }
 
 const getTimeToDisplay = (order, marketStartTime) => {

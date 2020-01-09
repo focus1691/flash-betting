@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
-import crypto from 'crypto'
+import crypto from 'crypto';
 import { cancelOrder, placeOrder } from "../../actions/order";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { getLTP } from "../../selectors/marketSelector";
@@ -20,34 +20,30 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
-
     const [isReferenceSet, setIsReferenceSet] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
     const [isLadderDown, setLadderDown] = useState(false);
-
-    // every 1 second, checks if there is an LTP, if there is, we scroll to it and stop the interval
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
-            if (listRef.current !== null && listRef.current !== undefined && ltpIndex !== -1) {
-                // we do the calculation because we start in reverse
-                listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
-                clearInterval(interval);
-                setlistRefSet(true);
-            }
-        }, 1000)
-
-    }, [listRef]);
-
-    // if the order changes, we scrollback to the ltp 
-    useEffect(() => {
+    
+    const scrollToLTP = () => {
         const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
-
-        if (listRef.current !== undefined) {
+        if (listRef.current !== null && listRef.current !== undefined && ltpIndex !== -1) {
             // we do the calculation because we start in reverse
             listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
+            setlistRefSet(true);
         }
-    }, [order, ltp]);
+    };
+
+    // Scroll to the LTP when the ladder first loads
+    useEffect(() => {
+        setTimeout(() => {
+            scrollToLTP();
+        }, 1000);
+    }, []);
+
+    // Scroll to LTP when the LTP or order changes
+    useEffect(() => {
+        scrollToLTP();
+    }, [ltp, order]);
 
     const placeOrder = data => {
         onPlaceOrder({
@@ -179,13 +175,11 @@ const Ladder = ({ id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, lad
 
 const mapStateToProps = (state, {id}) => {
     return {
-      // market: state.market.currentMarket,
       ltp: getLTP(state.market.ladder, {selectionId: id}), 
       unmatchedBets: getUnmatchedBets(state.order.bets),
       matchedBets: getMatchedBets(state.order.bets),
       selectionMatchedBets: getSelectionMatchedBets(state.order.bets, {selectionId: id}),
       stopLossList: state.stopLoss.list,
-      stopLossSelected: state.stopLoss.selected,
       stopLossOffset: state.stopLoss.offset,
       ladderUnmatched: state.settings.ladderUnmatched,
       stakeVal: getStakeVal(state.settings.stake, {selectionId: id}),
@@ -209,6 +203,5 @@ const isMoving = (prevProps, nextProps) => {
         return false;
     }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladder, isMoving));

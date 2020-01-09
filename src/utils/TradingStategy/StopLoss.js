@@ -29,7 +29,7 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
   }
   // If it's a right click, we do a comparison since there is no bet associated with it
   else if (((side === 'back' && currentPrice > matchedPrice) || (side === 'lay' && currentPrice < matchedPrice)) && !betAssociated) {
-    console.log(currentPrice, matchedPrice)
+
     return { targetMet: true, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
   }
 	// Check if the tick offset has been satisfied by checking the price difference

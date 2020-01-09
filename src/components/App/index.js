@@ -76,10 +76,9 @@ const App = props => {
   useInterval(() => {
     if (!isUpdated) {
       props.onReceiverLadders(updates);
-      props.onReceiveClk(clk);
       setIsUpdated(true);
     }
-  }, 100);
+  }, 250);
 
   const loadSettings = async () => {
     /**
@@ -312,14 +311,12 @@ const App = props => {
     // A message will be sent here if the connection to the market is disconnected.
     // We resubscribe to the market here using the initialClk & clk.
     props.socket.on("connection_closed", () => {
-      console.log("Connection to the market (MCM) was lost. We need to resubscribe here.\nUse the clk/initialClk");
       // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
       if (getQueryVariable("marketId") && initialClk && clk && connectionError === "") {
-        console.log('resubscribing...');
         props.socket.emit("market-resubscription", {
           marketId: getQueryVariable("marketId"),
           initialClk: initialClk,
-          clk: props.clk
+          clk: clk
         });
       }
     });
@@ -328,7 +325,6 @@ const App = props => {
 
   useEffect(() => {
     props.socket.on("subscription-error", async data => {
-      console.log(data)
       props.socket.off("subscription-error");
         if (data.statusCode === "FAILURE") {
             if (GetSubscriptionErrorType(data.errorCode) === "Authentication") {
@@ -340,26 +336,29 @@ const App = props => {
             setConnectionError("")
         }
     })
-  })
+  });
 
-
-  useInterval(async () => {
+  useEffect(() => {
     // Back and Lay
-    if (props.market && props.market.marketStartTime && new Date().valueOf() > new Date(props.market.marketStartTime).valueOf()) {
-      console.log('34023')
-      const newBackList = await checkTimeListsAfter(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK", props.bets.matched, props.bets.unmatched)
+    const updateBackList = async (list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
+      let newBackList = await checkTimeListsAfter(list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets);
       if (Object.keys(props.backList).length > 0) {
-        props.onUpdateBackList(newBackList)
+        props.onUpdateBackList(newBackList);
       }
+    }
 
-
-      const newLayList = await checkTimeListsAfter(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY", props.bets.matched, props.bets.unmatched)
+    const updateLayList = async (list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
+      let newLayList = await checkTimeListsAfter(list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets);
       if (Object.keys(props.layList).length > 0) {
         props.onUpdateLayList(newLayList);
       }
     }
-  }, 1000);
 
+    if (props.market && props.market.marketStartTime && new Date().valueOf() > new Date(props.market.marketStartTime).valueOf()) {
+      updateBackList(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK", props.matchedBets, props.unmatchedBets);
+      updateLayList(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY", props.matchedBets, props.unmatchedBets);
+    }
+  }, [updates]);
 
   useEffect(() => {
       /**
@@ -385,7 +384,6 @@ const App = props => {
 
               // Update the market status
               if (mc.marketDefinition) {
-                console.log(mc.marketDefinition)
                   mc.marketDefinition.runners.forEach(runner => {
                       if (runner.status === "REMOVED") {
                           if (runner.id in ladders) {
@@ -455,7 +453,6 @@ const App = props => {
 
                   // so it doesn't mess up the loading of the orders
                   if (Object.keys(props.stopEntryList).length > 0) {
-                      console.log(newStopEntryList)
                       props.onChangeStopEntryList(newStopEntryList);
                   }
                   if (Object.keys(props.stopLossList).length > 0) {
