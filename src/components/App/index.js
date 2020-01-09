@@ -78,7 +78,7 @@ const App = props => {
       props.onReceiverLadders(updates);
       setIsUpdated(true);
     }
-  }, 250);
+  }, 50);
 
   const loadSettings = async () => {
     /**
