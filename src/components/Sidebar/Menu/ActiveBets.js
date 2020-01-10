@@ -20,7 +20,7 @@ const ActiveBets = () => {
 	}, []);
 
 	const renderEvents = () => {
-		if (events) {
+		if (Array.isArray(events)) {
 			return events.map(event => {
 				return (
 					<ListItem
