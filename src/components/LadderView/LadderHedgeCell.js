@@ -11,7 +11,11 @@ const LadderHedgeCell = ({marketId, selectionId, price, unmatchedBetOnRow, side,
         <div 
             className = 'td'
             style = {{color: unmatchedBetOnRow && unmatchedBetOnRow.side === side ? 'black' : `${PLHedgeProfit >= 0 ? "green" : 'red'}`}}
-            onClick = {() => handleHedgeCellClick(marketId, selectionId, unmatchedBetOnRow, side, price, PLHedgeNumber.size )}
+            onClick = {() => {
+                if (PLHedgeNumber) {
+                    handleHedgeCellClick(marketId, selectionId, unmatchedBetOnRow, side, price, PLHedgeNumber.size )
+                }
+            }}
         >
             {unmatchedBetOnRow && unmatchedBetOnRow.side === side ? unmatchedBetOnRow.size : PLHedgeProfit }
         </div>
