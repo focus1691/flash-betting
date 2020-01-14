@@ -158,6 +158,111 @@ test('ocm should go through all strategies', () => {
     expect(Object.keys(checkForMatchInTickOffset)).toEqual([])
 })
 
+test('tickoffset makes a bet in the right place', () => {
+
+    const ocmData = {
+        "op": "ocm",
+        "id": 6,
+        "initialClk": "GpOH0JwBH762w50BHKKomJ0BGpzR5ZoBH5mWsJwB",
+        "clk": "AAAAAAAAAAAAAA==",
+        "conflateMs": 0,
+        "heartbeatMs": 5000,
+        "pt": 1468943673782,
+        "ct": "SUB_IMAGE",
+        "oc": [{
+            "id": "1.125657760",
+            "orc": [{
+                "fullImage": true,
+                "id": "60424",
+                "uo": [{
+                    "id": "71352090695",
+                    "p": 12,
+                    "s": 5,
+                    "side": "B",
+                    "status": "E",
+                    "pt": "L",
+                    "ot": "L",
+                    "pd": 1468919099000,
+                    "md": 1468933833000,
+                    "avp": 12,
+                    "sm": 4.75,
+                    "sr": 0.1,
+                    "sl": 0,
+                    "sc": 0,
+                    "sv": 0,
+                    "rfs": "ff737fe8398735b"
+                }],
+                "mb": [
+                    [12, 4.75]
+                ]
+            }]
+        }, {
+            "id": "1.125657760",
+            "orc": [{
+                "fullImage": true,
+                "id": "237470",
+                "uo": [{
+                    "id": "71352090695",
+                    "p": 12,
+                    "s": 5,
+                    "side": "B",
+                    "status": "E",
+                    "pt": "L",
+                    "ot": "L",
+                    "pd": 1468919099000,
+                    "md": 1468933833000,
+                    "avp": 12,
+                    "sm": 4.75,
+                    "sr": 0,
+                    "sl": 0,
+                    "sc": 0,
+                    "sv": 0,
+                    "rfs": "1e4786863a6577c"
+                }],
+                "mb": [
+                    [12, 4.75]
+                ]
+            }]
+        }]
+    };
+
+    const tickOffsetList = {
+        "ff737fe8398735b": {
+            "strategy": "Tick Offset",
+            "trailing": false,
+            "hedged": false,
+            "assignedIsOrderMatched": false,
+            "units": "Ticks",
+            "_id": "5d96cd2fb1d4f6b0a01f1c55",
+            "marketId": "1.159700186",
+            "selectionId": 60424,
+            "price": 3.15,
+            "size": 25,
+            "side": "LAY",
+            "percentageTrigger": 2,
+            "rfs": "ff737fe8398735b",
+            "betId": "4235115"
+        },
+    }
+
+    let checkForMatchInTickOffset = Object.assign({}, tickOffsetList)
+    let tickOffsetOrdersToRemove = [];
+    const ordersPlaced = [];
+    const unmatchedBets = {};
+    const matchedBets = {};
+    
+    const placeOrder = (order) => {
+        ordersPlaced.push(order)
+    }
+
+    
+    const tickOffsetCheck = checkTickOffsetForMatch(tickOffsetList, ocmData.oc[0].orc[0].uo[0], placeOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, unmatchedBets, matchedBets)
+    checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
+    tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove
+
+    expect(ordersPlaced.length).toBe(1); 
+})
+
 test('stopLossList should match when sr == 0', () => {
     const stopLossList = {
         237470: {

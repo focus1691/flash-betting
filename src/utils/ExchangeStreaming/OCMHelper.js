@@ -54,7 +54,7 @@ export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, pre
         onPlaceOrder({
             marketId: tickOffsetItem.marketId,
             selectionId: tickOffsetItem.selectionId,
-            side: tickOffsetItem.side === "BACK" ? "LAY" : "BACK",
+            side: tickOffsetItem.side,
             size: tickOffsetItem.size,
             price: tickOffsetItem.price, // this is the new price
             unmatchedBets: unmatchedBets,
