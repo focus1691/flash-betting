@@ -41,45 +41,29 @@ const UpdateLadder = (ladder, rawData) => {
       // Available to BACK
       if (matched >= 1) {
 
-        // No LAY requests at this price, so simply add/update the new back request
-        if (atlIdx === -1) {
-          ladder.atlo[formatPriceKey(price)] = matched;
-          atbIdx === -1 ? ladder.atb.push([price, matched]) : ladder.atb[atbIdx][1] = matched;
+        ladder.atlo[formatPriceKey(price)] = matched;
+
+        let difference = (ladder.atbo[formatPriceKey(price)] || 0) - (ladder.atlo[formatPriceKey(price)]);
+
+        if (difference > 0) {
+          delete ladder.atlo[formatPriceKey(price)];
+          if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1);
+
+          ladder.atbo[formatPriceKey(price)] = Math.abs(difference);
         }
-
-        // Handle back requests that already have back/lay requests at this price
+        else if (difference < 0) {
+          atbIdx === -1 ? ladder.atb.push([price, matched]) : ladder.atb[atbIdx][1] = matched;
+          ladder.atlo[formatPriceKey(price)] = Math.abs(difference);
+          
+          delete ladder.atbo[formatPriceKey(price)];
+          if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
+        }
         else {
-          let totalBackRequest = matched + (ladder.atlo[formatPriceKey(price)] || 0);
-          let layMatched = ladder.atbo[formatPriceKey(price)] || 0;
+          delete ladder.atbo[formatPriceKey(price)];
+          delete ladder.atlo[formatPriceKey(price)];
 
-          let difference = layMatched - totalBackRequest;
-          matched = Math.abs(difference);
-
-          // More Lay requests than Backs so we subtract the lay requests from the back requests.
-          if (difference < 0) {
-            ladder.atbo[formatPriceKey(price)] = matched;
-            atlIdx === -1 ? ladder.atl.push([price, matched]) : ladder.atl[atlIdx][1] = matched;
-
-            delete ladder.atlo[formatPriceKey(price)];
-            if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1);
-          }
-
-          // More Back requests than Lays so we subtract the Back requests from the Lay requests.
-          else if (difference > 0) {
-            ladder.atlo[formatPriceKey(price)] = matched;
-            atbIdx === -1 ? ladder.atb.push([price, matched]) : ladder.atb[atbIdx][1] = matched;
-
-            delete ladder.atbo[formatPriceKey(price)];
-            if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
-          }
-
-          // Back and Lay requests cancel each other out, so remove all.
-          else if (difference === 0) {
-            delete ladder.atlo[formatPriceKey(price)];
-            delete ladder.atbo[formatPriceKey(price)];
-            if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1);
-            if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
-          }
+          if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1)
+          if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
         }
       }
       // Remove BACK matched bets
@@ -102,46 +86,32 @@ const UpdateLadder = (ladder, rawData) => {
       // Available to LAY
       if (matched >= 1) {
         // No BACK requests at this price, so simply add/update the new lay request
-        if (atbIdx === -1) {
-          ladder.atbo[formatPriceKey(price)] = matched;
+
+        ladder.atbo[formatPriceKey(price)] = matched;
+
+        let difference = (ladder.atlo[formatPriceKey(price)] || 0) - (ladder.atbo[formatPriceKey(price)]);
+
+        if (difference > 0) {
+          delete ladder.atbo[formatPriceKey(price)];
+
+          if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
+
+          ladder.atlo[formatPriceKey(price)] = Math.abs(difference);
+        }
+        else if (difference < 0) {
           atlIdx === -1 ? ladder.atl.push([price, matched]) : ladder.atl[atlIdx][1] = matched;
+          ladder.atbo[formatPriceKey(price)] = Math.abs(difference);
+
+          delete ladder.atlo[formatPriceKey(price)];
+          if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1);
         }
-        
-        // Handle lay requests that already have back/lay requests at this price
         else {
-          let totalLayRequest = matched + (ladder.atbo[formatPriceKey(price)] || 0);
-          let backMatched = ladder.atlo[formatPriceKey(price)] || 0;
+          delete ladder.atbo[formatPriceKey(price)];
+          delete ladder.atlo[formatPriceKey(price)];
 
-          let difference = backMatched - totalLayRequest;
-          matched = Math.abs(difference);
-
-          // More Back requests than Lays so we subtract the back requests from the lay requests.
-          if (difference < 0) {
-            ladder.atlo[formatPriceKey(price)] = matched;
-            atbIdx === -1 ? ladder.atb.push([price, matched]) : ladder.atb[atbIdx][1] = matched;
-
-            delete ladder.atbo[formatPriceKey(price)];
-            if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
-          }
-
-          // More Lay requests than Backs so we subtract the Lay requests from the Back requests.
-          else if (difference > 0) {
-            ladder.atbo[formatPriceKey(price)] = matched;
-            atlIdx === -1 ? ladder.atl.push([price, matched]) : ladder.atl[atlIdx][1] = matched;
-
-            delete ladder.atlo[formatPriceKey(price)];
-            if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1);
-          }
-
-          // Lay and Back requests cancel each other out, so remove all.
-          else if (difference === 0) {
-            delete ladder.atlo[formatPriceKey(price)];
-            delete ladder.atbo[formatPriceKey(price)];
-            if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1);
-            if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
-          }
+          if (atbIdx !== -1) ladder.atb.splice(atbIdx, 1)
+          if (atlIdx !== -1) ladder.atl.splice(atlIdx, 1);
         }
-
       }
       // Remove LAY matched bets
       else if (matched <= 0) {
