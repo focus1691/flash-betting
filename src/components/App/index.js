@@ -278,21 +278,21 @@ const App = props => {
 
   useEffect(() => {
     props.socket.on("market-definition", async marketDefinition => {
-      props.socket.off("market-definition");
+      // props.socket.off("market-definition");
         props.onMarketStatusChange(marketDefinition.status);
         props.setInPlay(marketDefinition.inPlay);
 
         if (!props.market.inPlayTime && marketDefinition.inPlay) {
           // Start the in-play clock
           props.setInPlayTime(new Date());
-      }
+        }
 
         if (marketDefinition.status === "CLOSED" && !props.marketOpen) {
             props.onMarketClosed();
             cleanupOnMarketClose(getQueryVariable("marketId"));
         }
     });
-}, [props.marketStatus, props.market.inPlayTime]);
+}, [props.marketStatus, props.market.inPlayTime, props.pastEventTime]);
 
   useEffect(() => {
     let eventTypeId = props.eventType;
@@ -529,7 +529,7 @@ const App = props => {
           }
           props.socket.off("ocm");
       });
-  }, [props.ladders]);
+  }, [props.ladders,props.marketStatus, props.market.inPlayTime, props.pastEventTime]);
 
   useEffect(() => {
     if (Object.keys(props.unmatchedBets).length > 0) {
@@ -658,6 +658,7 @@ const mapStateToProps = state => {
     market: state.market.currentMarket,
     marketStatus: state.market.status,
     eventType: state.market.eventType,
+    pastEventTime: state.market.pastEventTime,
     marketOpen: state.market.marketOpen,
     clk: state.market.clk,
     ladders: state.market.ladder,
