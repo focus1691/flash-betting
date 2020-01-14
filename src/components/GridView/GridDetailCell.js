@@ -7,6 +7,7 @@ import { calcBackProfit } from "../../utils/Bets/BettingCalculations";
 import { selectionHasBets } from "../../utils/Bets/SelectionHasBets";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { isHedgingOnSelectionAvailable } from "../../utils/TradingStategy/HedingCalculator";
+import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 
 const GridDetailCell = props => {
 
@@ -14,10 +15,7 @@ const GridDetailCell = props => {
 
   const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) <= 0 ? "BACK" : "LAY"
 
-  const hedgeSize = selectionMatchedBets !== undefined ?
-    selectionMatchedBets.reduce((a, b) => {
-      return a + b.size
-    }, 0) : 0;
+
 
   const handleImageError = () => e => {
     e.target.onerror = null;
@@ -27,6 +25,8 @@ const GridDetailCell = props => {
   const executeHedgeBet = () => e => {
     if (isHedgingOnSelectionAvailable(props.market.marketId, props.runner.selectionId, props.bets)) {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+      const hedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(props.ltp[0], selectionMatchedBets, 'hedged').size : undefined; 
+
       props.onPlaceOrder({
         marketId: props.market.marketId,
         side: side,
