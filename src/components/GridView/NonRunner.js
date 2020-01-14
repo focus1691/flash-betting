@@ -6,7 +6,7 @@ export default ({sportId, nonRunners, runners, selectRunner}) => {
     return Object.keys(nonRunners).map(key => {
         const { name, number, logo } = DeconstructRunner(runners[key], sportId);
         return (
-            <tr className={"grid-non-runner"}>
+            <tr className={"grid-non-runner"} key={"nonrunners-" + key}>
                 <GridDetailSuspCell
                     sportId={sportId}
                     name={name}

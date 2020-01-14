@@ -33,7 +33,6 @@ const UpdateLadder = (ladder, rawData) => {
   // Update the atb values
   if (rawData.atb) {
     rawData.atb.forEach(atb => {
-      // console.log('atb ' + atb);
       let price = atb[0];
       let matched = Math.floor(atb[1]);
       let atbIdx = ladder.atb.map(atb => atb[0]).findIndex(val => val === price);
@@ -57,7 +56,7 @@ const UpdateLadder = (ladder, rawData) => {
           matched = Math.abs(difference);
 
           // More Lay requests than Backs so we subtract the lay requests from the back requests.
-          if (difference > 0) {
+          if (difference < 0) {
             ladder.atbo[formatPriceKey(price)] = matched;
             atlIdx === -1 ? ladder.atl.push([price, matched]) : ladder.atl[atlIdx][1] = matched;
 
@@ -66,7 +65,7 @@ const UpdateLadder = (ladder, rawData) => {
           }
 
           // More Back requests than Lays so we subtract the Back requests from the Lay requests.
-          else if (difference < 0) {
+          else if (difference > 0) {
             ladder.atlo[formatPriceKey(price)] = matched;
             atbIdx === -1 ? ladder.atb.push([price, matched]) : ladder.atb[atbIdx][1] = matched;
 
@@ -95,7 +94,6 @@ const UpdateLadder = (ladder, rawData) => {
   // Update the atl values
   if (rawData.atl) {
     rawData.atl.forEach(atl => {
-      // console.log('atl ' + atl);
       let price = atl[0];
       let matched = Math.floor(atl[1]);
       let atlIdx = ladder.atl.map(atl => atl[0]).findIndex(val => val === price);
@@ -118,7 +116,7 @@ const UpdateLadder = (ladder, rawData) => {
           matched = Math.abs(difference);
 
           // More Back requests than Lays so we subtract the back requests from the lay requests.
-          if (difference > 0) {
+          if (difference < 0) {
             ladder.atlo[formatPriceKey(price)] = matched;
             atbIdx === -1 ? ladder.atb.push([price, matched]) : ladder.atb[atbIdx][1] = matched;
 
@@ -127,7 +125,7 @@ const UpdateLadder = (ladder, rawData) => {
           }
 
           // More Lay requests than Backs so we subtract the Lay requests from the Back requests.
-          else if (difference < 0) {
+          else if (difference > 0) {
             ladder.atbo[formatPriceKey(price)] = matched;
             atlIdx === -1 ? ladder.atl.push([price, matched]) : ladder.atl[atlIdx][1] = matched;
 

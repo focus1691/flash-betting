@@ -59,7 +59,7 @@ const Ladder = props => {
     return props.sortedLadder.map(selectionId => {
       const { atb, atl, ltp, ltpStyle } = deconstructLadder(props.ladder[selectionId]);
       return (
-        <tr>
+        <tr key={"sidebar-ladder" + props.runners[selectionId].runnerName}>
           <td>{props.runners[selectionId].runnerName}</td>
           <td>{atl}</td>
           <td style={ltpStyle}>{ltp}</td>

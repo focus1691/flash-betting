@@ -24,6 +24,7 @@ const ActiveBets = () => {
 			return events.map(event => {
 				return (
 					<ListItem
+						key={"active-bets-" + event.marketId}
 						button
 						onClick={openMarket(event.marketId)}
 					>

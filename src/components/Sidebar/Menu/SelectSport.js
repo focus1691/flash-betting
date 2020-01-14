@@ -9,6 +9,7 @@ export default ({sports, setSubmenu}) => {
             <tr style={{display: 'flex', flexDirection: 'row', height: "3em", paddingBottom: "2px", marginTop: '0.5em', marginLeft: '1rem'}}>
                 <MarketSaveButton sport = {{id: sport.eventType.id, name: sport.eventType.name, type: "EVENT_TYPE", data: {}}} />
                 <ListItem
+                    key={"select-sport-" + sport.eventType.id}
                     button
                     onClick={setSubmenu(
                                     sport.eventType.name, 

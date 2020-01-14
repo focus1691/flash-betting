@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { loadMyMarkets } from "../../../actions/market";
 import * as actions from "../../../actions/sport";
 import { sortSports } from "../../../utils/Algorithms/SortSports";
-import getCountryName from "../../../utils/CountryCodeConverter";
 import DeselectSport from "./DeselectSport";
 import SelectSport from "./SelectSport";
 import SelectSubmenu from "./SelectSubmenu";
@@ -126,9 +125,9 @@ const AllSports = props => {
       <table id="all-sports">
         <tbody>
           <List>
-            {/* { Deselecting Items } */}
             { Object.keys(submenuList).map((type, index) => (
-                <DeselectSport 
+                <DeselectSport
+                  key={"all-sports-" + submenuList[type].name}
                   type = {type}
                   data = {submenuList[type]}
                   isLast = {index === Object.keys(submenuList).length - 1}
@@ -140,7 +139,7 @@ const AllSports = props => {
 
             { // Selecting Item
               submenuList['EVENT_TYPE'] === undefined || currentSubmenu === "" ? 
-              <SelectSport 
+              <SelectSport
                 sports = {sports}  
                 setSubmenu = {getSportInfo}
               />

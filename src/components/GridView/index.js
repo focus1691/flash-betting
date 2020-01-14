@@ -125,6 +125,7 @@ const Grid = props => {
 	const createCell = (odds, matched, key, backLay) => {
 		return (
 			<td
+				key={"grid-" + odds}
 				className="grid-cell"
 				onMouseEnter={handlePriceHover(key)}
 				onClick={handlePriceClick(key, backLay, odds)}

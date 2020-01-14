@@ -32,16 +32,16 @@ const MarketInfo = props => {
   const renderRacerDetails = () => {
     return (
       <React.Fragment>
-        <tr>
+        <tr key={`market-info-${props.selection.metadata.CLOTH_NUMBER}.${props.selection.runnerName}`}>
           <td>{`${props.selection.metadata.CLOTH_NUMBER}.${props.selection.runnerName}`}</td>
         </tr>
         {racerDetails().map((row => {
           return (
             <>
-              <tr>
+              <tr key={`market-info-name-${props.selection.metadata.CLOTH_NUMBER}.${props.selection.runnerName}`}>
                 <td>{row.name}</td>
               </tr>
-              <tr>
+              <tr key={`market-info-description-${props.selection.metadata.CLOTH_NUMBER}.${props.selection.runnerName}`}>
                 <td>{row.description}</td>
               </tr>
             </>
