@@ -529,7 +529,7 @@ const App = props => {
           }
           props.socket.off("ocm");
       });
-  }, [props.ladders,props.marketStatus, props.market.inPlayTime, props.pastEventTime]);
+  }, [props.ladders,props.marketStatus, props.inPlay, props.market.inPlayTime, props.pastEventTime]);
 
   useEffect(() => {
     if (Object.keys(props.unmatchedBets).length > 0) {
@@ -658,6 +658,7 @@ const mapStateToProps = state => {
     market: state.market.currentMarket,
     marketStatus: state.market.status,
     eventType: state.market.eventType,
+    inPlay: state.market.inPlay,
     pastEventTime: state.market.pastEventTime,
     marketOpen: state.market.marketOpen,
     clk: state.market.clk,

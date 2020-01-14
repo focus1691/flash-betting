@@ -2,7 +2,6 @@ import { Divider, ListItem, ListItemText } from "@material-ui/core";
 import React from 'react';
 
 export default ({type, data, isLast, submenuList, deselectSubmenu}) => {
-    console.log(submenuList[type]);
     return (
         <React.Fragment>
             <ListItem
