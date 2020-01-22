@@ -4,8 +4,9 @@ import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import useStyles from "../Styles/Styles";
 import CountDown from "./Countdown";
+import { openLiveStream } from "../../actions/draggable";
 
-const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime }) => {
+const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime, onOpenLiveStream }) => {
   const classes = useStyles();
   const [bgColour, setBGColor] = useState("#303030");
 
@@ -32,12 +33,14 @@ const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime }) => {
             <CountDown />
           </span>
         </div>
-        <Typography>
-          Price: <b>{market.description ? market.description.marketBaseRate : null}</b>
-        </Typography>
-        <Typography>
-          API: <b>33.87</b>
-        </Typography>
+        <span className={"grid-video"}>
+            {" "}
+            <img
+              src={window.location.origin + "/icons/youtube-black.png"}
+              alt={"Video"}
+              onClick={onOpenLiveStream()}
+            />
+          </span>
       </div>
       <AppBar className={classes.AppBar} position="static">
         <Typography variant="h6" className={classes.title}>
@@ -58,4 +61,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Event);
+const mapDispatchToProps = dispatch => {
+	return {
+		onOpenLiveStream: () => e => dispatch(openLiveStream())
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Event);
