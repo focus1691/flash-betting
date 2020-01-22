@@ -1,16 +1,18 @@
-import { formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Algorithms/Sort";
+import { calcBackLayPercentages, formatPriceKey } from "./CreateFullLadder";
 
-const CreateLadder = (data) => {
+const CreateLadder = data => {
   const runner = data;
-
   runner.id = data.id;
   runner.ltp = runner.ltp ? [runner.ltp] : [null];
   runner.ltpDelta = new Date();
   runner.tv = runner.tv ? [runner.tv, runner.tv] : [null, null];
+  runner.atb = runner.atb || [];
+  runner.atl = runner.atl || [];
   runner.atbo = {};
   runner.atlo = {};
-
+  runner.trd = runner.trd || [];
+  runner.trdo = {};
   runner.order = {
     visible: false,
     backLay: 0,
@@ -20,68 +22,52 @@ const CreateLadder = (data) => {
   };
 
   // make it easier for ladder
-  runner.trdo = {};
-  if (!runner.trd) {
-    runner.trd = [];
+  runner.trd.forEach(trd => {
+    runner.trdo[formatPriceKey(trd[0])] = trd[1];
+  });
 
+  for (var i = 0; i < runner.atb.length; i++) {
+    let price = formatPriceKey(runner.atb[i][0]);
+    const matched = Math.floor(runner.atb[i][1]);
 
-  } else {
-    sortAsc(runner.trd);
+    if (matched <= 0) {
+      runner.atb.splice(i, 1);
+      i--;
+    } else {
+      // Alter the value to round down
+      runner.atb[i][1] = matched;
 
-    runner.trd.map(trd => {
-      runner.trdo[formatPriceKey(trd[0])] = trd[1]
-    })
-  }
-
-  if (!runner.atb) {
-    runner.atb = [];
-  } else {
-    sortDes(runner.atb);
-
-    for (var i = 0; i < runner.atb.length; i++) {
-
-      let price = formatPriceKey(runner.atb[i][0]);
-      const matched = Math.floor(runner.atb[i][1]);
-
-      if (matched <= 0) {
-        runner.atb.splice(i, 1);
-        i--;
-      } else {
-
-        // Alter the value to round down
-        runner.atb[i][1] = matched;
-
-        runner.atlo[price] = matched;
-      }
+      runner.atlo[price] = matched;
     }
   }
 
-  if (!runner.atl) {
-    runner.atl = [];
-  } else {
-    sortAsc(runner.atl);
+  for (i = 0; i < runner.atl.length; i++) {
+    let price = formatPriceKey(runner.atl[i][0]);
+    const matched = Math.floor(runner.atl[i][1]);
 
-    for (i = 0; i < runner.atl.length; i++) {
+    if (matched <= 0) {
+      runner.atl.splice(i, 1);
+      i--;
+    } else {
+      // Alter the value to round down
+      runner.atl[i][1] = matched;
 
-      let price = formatPriceKey(runner.atl[i][0]);
-      const matched = Math.floor(runner.atl[i][1]);
-
-      if (matched <= 0) {
-        runner.atl.splice(i, 1);
-        i--;
-      } else {
-
-        // Alter the value to round down
-        runner.atl[i][1] = matched;
-
-        runner.atbo[price] = matched;
-      }
+      runner.atbo[price] = matched;
     }
   }
 
-  runner.percent = calcBackLayPercentages(runner.atbo, runner.atlo, runner.ltp[0]);
+  sortAsc(runner.trd);
+  sortDes(runner.atb);
+  sortAsc(runner.atl);
+
+  runner.percent = calcBackLayPercentages(
+    runner.atbo,
+    runner.atlo,
+    runner.ltp[0]
+  );
 
   return runner;
 };
 
 export { CreateLadder };
+
