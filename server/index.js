@@ -375,7 +375,7 @@ app.get("/api/list-todays-card", (request, response) => {
 			] : undefined,
 			"marketCountries": request.query.country !== 'undefined' ? JSON.parse(request.query.country) : undefined,
 			"marketStartTime": {
-				"from": new Date().toJSON(),
+				"from": new Date(new Date().setSeconds(new Date().getSeconds() - 3600)).toJSON(),
 				"to": new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON()
 			}
 		},
