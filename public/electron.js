@@ -309,8 +309,6 @@ app.post("/api/remove-orders", (request, response) => {
 	});
 });
 
-const allSports = {};
-
 app.post("/api/fetch-all-sports", (request, response) => {
 	fetch("https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json", {
 		headers: {
@@ -320,8 +318,8 @@ app.post("/api/fetch-all-sports", (request, response) => {
 	})
 	.then(res => res.json())
 	.then(res => {
-		res.children.map(item => {
-			allSports[item.id] = item.children;
+		res.children.forEach(item => {
+			betfair.allSports[item.id] = item.children;
 		})
 		response.sendStatus(200)
 	})
@@ -332,11 +330,9 @@ app.post("/api/fetch-all-sports", (request, response) => {
 
 
 app.get("/api/fetch-sport-data", (request, response) => {
-	if (Object.keys(allSports).length) {
-		response.json(allSports[request.query.id])
-	} else {
-		response.sendStatus(400).send("All Sports contains no data")
-	}
+	return betfair.allSports[request.query.id]
+    ? response.json(betfair.allSports[request.query.id])
+    : response.sendStatus(400).send("All Sports contains no data");
 })
 
 app.get("/api/get-all-sports", (request, response) => {

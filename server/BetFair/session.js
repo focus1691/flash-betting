@@ -69,6 +69,7 @@ class BetfairSession {
         this.applicationKey = applicationKey;
         this.accessToken = null;
         this.email = null;
+        this.allSports = {};
         BetfairInvocation.setApplicationKey(applicationKey);
 
         this.createApiMethods('betting', API_BETTING_METHODS);
