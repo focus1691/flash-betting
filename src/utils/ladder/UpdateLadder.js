@@ -57,10 +57,10 @@ const UpdateLadder = (ladder, rawData) => {
         }
       }
       ladder.atl = ladder.atl.filter(v => {
-        if (v[0] <= price) {
+        if (v[0] <= price || (ladder.ltp[0] && v[0] < ladder.ltp[0])) {
           delete ladder.atbo[formatPriceKey(v[0])];
         }
-        return v[0] > price;
+        return v[0] > price || (ladder.ltp[0] && v[0] < ladder.ltp[0]);
       });
     });
 
@@ -94,10 +94,10 @@ const UpdateLadder = (ladder, rawData) => {
         }
       }
       ladder.atb = ladder.atb.filter(v => {
-        if (v[0] >= price) {
+        if (v[0] >= price || (ladder.ltp[0] && v[0] > ladder.ltp[0])) {
           delete ladder.atlo[formatPriceKey(v[0])];
         }
-        return v[0] < price;
+        return v[0] < price || (ladder.ltp[0] && v[0] > ladder.ltp[0]);
       });
     });
 
