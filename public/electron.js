@@ -310,22 +310,22 @@ app.post("/api/remove-orders", (request, response) => {
 });
 
 app.post("/api/fetch-all-sports", (request, response) => {
-	fetch("https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json", {
-		headers: {
-			"X-Application": process.env.APP_KEY || "qI6kop1fEslEArVO",
-			"X-Authentication": request.body.sessionKey
-		}
-	})
-	.then(res => res.json())
-	.then(res => {
-		res.children.forEach(item => {
-			betfair.allSports[item.id] = item.children;
-		})
-		response.sendStatus(200)
-	})
-	.catch(err => {
-		response.sendStatus(400)
-	})
+  let headers = {
+    "X-Application": process.env.APP_KEY || "qI6kop1fEslEArVO",
+    "X-Authentication": request.body.sessionKey
+  };
+
+  fetch("https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json", {headers})
+    .then(res => res.json())
+    .then(res => {
+      res.children.forEach(item => {
+        betfair.allSports[item.id] = item.children;
+      });
+      response.sendStatus(200);
+    })
+    .catch(err => {
+      response.sendStatus(400);
+    });
 })
 
 

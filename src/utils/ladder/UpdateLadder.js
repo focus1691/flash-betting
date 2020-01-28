@@ -94,16 +94,34 @@ const UpdateLadder = (ladder, rawData) => {
         }
       }
       ladder.atb = ladder.atb.filter(v => {
-        if (v[0] >= price || (ladder.ltp[0] && v[0] > ladder.ltp[0])) {
+        if (v[0] >= price) {
           delete ladder.atlo[formatPriceKey(v[0])];
+          return false;
         }
-        return v[0] < price || (ladder.ltp[0] && v[0] > ladder.ltp[0]);
+        return true;
       });
+    });
+
+    ladder.atb = ladder.atb.filter(v => {
+      if (ladder.ltp[0] && v[0] > ladder.ltp[0]) {
+        delete ladder.atlo[formatPriceKey(v[0])];
+        return false;
+      }
+      return true;
+    });
+
+    ladder.atl = ladder.atl.filter(v => {
+      if (ladder.ltp[0] && v[0] < ladder.ltp[0]) {
+        delete ladder.atbo[formatPriceKey(v[0])];
+        return false;
+      }
+      return true;
     });
 
   sortAsc(ladder.trd);
   sortDes(ladder.atb);
   sortAsc(ladder.atl);
+
 
   ladder.percent = calcBackLayPercentages(
     ladder.atbo,
