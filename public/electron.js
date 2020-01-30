@@ -310,7 +310,7 @@ app.post("/api/remove-orders", (request, response) => {
 });
 
 app.post("/api/fetch-all-sports", async (request, response) => {
-	const data = await vendor.login(process.env.BETFAIR_USER, process.env.BETFAIR_PASS);
+	const data = await vendor.login(process.env.BETFAIR_USER || "traderjosh", process.env.BETFAIR_PASS || "GdXFsnWvbQn2ujFM");
 	
 	if (!data) {
 		response.sendStatus(400);
