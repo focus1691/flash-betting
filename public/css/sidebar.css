@@ -54,11 +54,10 @@
 }
 
 #sidebar-event-section-2 {
-	margin: 0 auto;
+	margin: 5px;
 	display: block;
-	float: right;
-	background: #303030;
-	color: #fff;
+	float: left;
+	border: 1px solid;
 	border-radius: 10px;
 	padding: 5px;
 	font-size: large;
