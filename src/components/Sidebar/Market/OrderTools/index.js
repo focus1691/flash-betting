@@ -148,7 +148,7 @@ const OrderTools = props => {
         <TableBody>
           {rows.map(row => (
             <>
-              <StyledTableRow key={row.name}>
+              <StyledTableRow key={`tool-${row.name}`}>
                 <StyledTableCell scope="row" colSpan={2}>
                   <button
                     className={"order-btn"}
@@ -182,7 +182,7 @@ const OrderTools = props => {
               </StyledTableRow>
 
               <StyledTableRow
-                key={row.abbreviation}
+                key={`tool-${row.abbreviation}`}
                 className={"order-editable"}
               >
                 <Collapse hidden={!row.isOpen} in={row.isOpen}>

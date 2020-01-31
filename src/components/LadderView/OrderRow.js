@@ -246,9 +246,10 @@ const OrderRow = props => {
           <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
             <table className="lay-table">
               <tbody className={matchedBets.length > 0 ? "lay-body" : ""}>
-                {matchedBets.map(bet => {
+                {matchedBets.map((bet, idx) => {
                   return (
                     <tr
+                      key={`ladder-matched-bet-${bet.selectionId}-${idx}`}
                       style={{
                         backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
                       }}

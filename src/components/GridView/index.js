@@ -104,7 +104,15 @@ const Grid = props => {
 
 	const renderRow = (betOdds, key, backLay) => {
 		// Fill all empty cells if no data found
-		if (!betOdds) return Array(5).fill(<EmptyCell />);
+		if (!betOdds) {
+			return [
+				<td className="grid-cell"/>,
+				<td className="grid-cell"/>,
+				<td className="grid-cell"/>,
+				<td className="grid-cell"/>,
+				<td className="grid-cell"/>
+			]
+		}
 
 		const rows = [];
 
@@ -115,7 +123,7 @@ const Grid = props => {
 
 		// Fill the remaining columns with empty cells
 		while (rows.length < 5) {
-			rows.push(<EmptyCell />);
+			rows.push(<td key={rows.length + 1} className="grid-cell"/>);
 		}
 
 		return rows;
@@ -189,7 +197,7 @@ const Grid = props => {
 			const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
 			return (
-				<React.Fragment>
+				<React.Fragment key={`grid-runner-${key}`}>
 					<tr>
 						<GridDetailCell
 							sportId={props.market.eventType.id}

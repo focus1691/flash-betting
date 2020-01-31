@@ -546,7 +546,14 @@ const App = props => {
   useEffect(() => {
     setInterval(async () => {
       if (marketId) {
-        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(async res => {
+          if (res.status === 200) {
+            res = await res.json();
+            return res.currentOrders || [];
+          } else {
+            return [];
+          }
+        });
         const currentOrdersObject = {};
         currentOrders.forEach(item => {
           currentOrdersObject[item.betId] = item;

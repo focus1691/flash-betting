@@ -36,22 +36,22 @@ const MatchedBets = props => {
             </td>
           </tr>
           {props.marketOpen
-            ? selections.map(selection => {
+            ? selections.map((selection, idx) => {
               const selectionObject = props.market.runners.find(runner => runner.selectionId === selection);
               if (selectionObject === undefined) return null;
 
               const filteredOrders = Object.values(props.bets.matched).filter(order => order.selectionId === selection);
               return (
             
-                <React.Fragment>
+                <React.Fragment key={`sidebar-matched-bet-${selection}-${idx}`}>
                   <tr className="menu-bets-selection" colSpan={4}>
                     <td>{selectionObject.runnerName}</td>
                   </tr>
                   {
-                    filteredOrders.map(order => { 
-                        const PL = calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)
+                    filteredOrders.map((order, idx) => {
+                        const PL = calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1);
                         return (
-                          <React.Fragment>
+                          <React.Fragment key={`sidebar-matched-bet-filtered-${order.selectionId}-${idx}`}>
                               <tr
                               id="menu-matched-bet"
                               style={{

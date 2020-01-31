@@ -127,7 +127,7 @@ const AllSports = props => {
           <List>
             { Object.keys(submenuList).map((type, index) => (
                 <DeselectSport
-                  key={"all-sports-" + submenuList[type].name}
+                  key={"all-sports-deselect-" + submenuList[type].name}
                   type = {type}
                   data = {submenuList[type]}
                   isLast = {index === Object.keys(submenuList).length - 1}
@@ -144,7 +144,7 @@ const AllSports = props => {
                 setSubmenu = {getSportInfo}
               />
               :
-              <SelectSubmenu 
+              <SelectSubmenu
                 data = {submenuList[currentSubmenu].data}
                 setSubmenu = {setSubmenu}
                 submenuList = {submenuList}

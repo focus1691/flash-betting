@@ -18,9 +18,8 @@ export default ({ data, setSubmenu, submenuList, winMarketsOnly }) => {
       );
   };
   return dataWithoutRaces.map(sport => (
-    <React.Fragment>
+    <React.Fragment key={"select-submenu-" + sport.id}>
       <tr
-        key={"select-submenu-" + sport.id}
         style={{
           display: "flex",
           flexDirection: "row",
