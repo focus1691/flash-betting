@@ -13,7 +13,6 @@ import { DeconstructLadder } from "../../utils/ladder/DeconstructLadder";
 import { DeconstructRunner } from "../../utils/Market/DeconstructRunner";
 import { formatCurrency } from "../../utils/NumberFormat";
 import { calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
-import EmptyCell from "./EmptyCell";
 import GridDetailCell from "./GridDetailCell";
 import GridHeader from "./GridHeader";
 import GridOrderRow from "./GridOrderRow";
