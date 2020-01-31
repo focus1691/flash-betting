@@ -1,7 +1,6 @@
 import $ from "jquery";
 import React, { createRef, useState } from "react";
 import { connect } from "react-redux";
-import { openLiveStream } from "../../actions/draggable";
 import * as actions from "../../actions/market";
 import { placeOrder } from "../../actions/order";
 import { setStakeInOneClick } from "../../actions/settings";
@@ -289,7 +288,6 @@ const Grid = props => {
 						ltpList={ltpSelectionIdObject}
 						onPlaceOrder={props.onPlaceOrder}
 						marketCashout={marketCashout}
-						openLiveStream={props.onOpenLiveStream}
 					/>
 					{(props.marketOpen) && (props.marketStatus === "OPEN" ||
 						props.marketStatus === "RUNNING" || props.marketStatus === "SUSPENDED")
@@ -338,8 +336,7 @@ const mapDispatchToProps = dispatch => {
 		onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value)),
 		onToggleOneClick: active => dispatch(actions.toggleOneClick(active)),
 		setStakeInOneClick: stake => dispatch(setStakeInOneClick(stake)),
-		onPlaceOrder: order => dispatch(placeOrder(order)),
-		onOpenLiveStream: () => e => dispatch(openLiveStream())
+		onPlaceOrder: order => dispatch(placeOrder(order))
 	};
 };
 

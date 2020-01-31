@@ -8,7 +8,7 @@
 
 .odds-table {
 	position: absolute;
-    width: 16.5rem;
+    width: 18rem;
     height: 100%;
 	float: left;
 	padding: 0;
@@ -47,10 +47,10 @@
 }
 
 .contender-name {
-	font-size: 1em;
+	font-size: 0.9em;
 	text-align: left;
-	color: #350505;
-	font-family: "Open Sans";
+	color: #000000;
+	font-family: "roboto";
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
@@ -102,7 +102,7 @@
 }
 
 .ladder > div > .List {
-	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-family: "roboto", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	table-layout: fixed;
 	border: 1px solid rgb(178, 181, 181);
@@ -129,18 +129,16 @@
 .ladder .td:nth-child(1) {width: 100%}
 .ladder .td:nth-child(3) {background-color: #FCC9D3; }
 .ladder .td:nth-child(4) {
-	font-weight: bold;
-	background: #BBBBBB;
+	font-weight: 900;
 }
 
 .ladder .td:nth-child(5) { background-color: #BCE4FC; }
 
 .ladder .td:not(:first-child) {
 	text-align: center;
-	font-family: "Open Sans";
-	font-weight: 600;
-	font-size: x-small;
-	border: 1px solid rgb(178, 181, 181);
+	font-size: small;
+	font-family: 'roboto';
+	border: 1px solid #000000;
 	padding: 2px;
 	cursor: pointer;
 	width: 30%;
@@ -300,11 +298,17 @@
 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 	outline: 1px solid rgb(178, 181, 181); 
 	width: 28%;
+	font-size: small;
+	font-family: 'roboto';
 }
 
 .percentage-row .th:not(:first-child) {
-	background-color: white;
 	text-align: center;
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+	font-size: small;
+	font-family: 'roboto';
+
 }
 
 .percentage-row .th:nth-child(3) {

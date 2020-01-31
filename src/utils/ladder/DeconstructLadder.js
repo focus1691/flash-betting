@@ -27,22 +27,20 @@ const DeconstructLadder = ladder => {
 };
 
 const getLTPstyle = (ltp, ltpDelta) => {
-  let now = new Date().getTime();
-
   if (ltp === null || ltp === undefined || ltp[0] === null || ltp[0] === undefined) {
     return { background: "#FFF", color: "#000" };
   }
   
-  else if (ltp[0] < ltp[1] && now - ltpDelta.getTime() < 2000) {
-    return { background: "#0AFD03", color: "#000" };
+  else if (ltp[0] < ltp[1]) {
+    return { background: "#FC0700", color: "#FFFF00" } // #FC0700 (Red Lower LTP)
   }
-  else if (ltp[0] > ltp[1] && now - ltpDelta.getTime() < 2000) {
-    return { background: "#FC0700", color: "#FFFF00" };
+  else if (ltp[0] > ltp[1]) {
+    return { background: "#0AFD03", color: "#000" } // #0AFD03 (Green Higher LTP)
   }
   else if (ltp[0]) {
-    return { background: "#FFFF00", color: "#000" };
+    return { background: "#FFFF00", color: "#000" } // #FFFF00 (Yellow Same LTP)
   } else {
-    return { background: "#FFF", color: "#000" };
+    return { background: "#FFF", color: "#000" }; // #FFF (No Value)
   }
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/settings';
+import { openLiveStream } from "../../actions/draggable";
 
 const Toolbar = props => {
 	
@@ -14,8 +15,8 @@ const Toolbar = props => {
 
 	return (
 		<div id="toolbar">
-			<button onClick={handleClick("TrainingView")} style={props.view === 'TrainingView' ? {background: '#389C41'} : {}}>
-				<img alt={"Training"} src={window.location.origin + '/icons/graduated.png'}/>
+			<button onClick={props.onOpenLiveStream()} style={props.videoOpen ? {background: '#389C41'} : {}}>
+				<img alt={"Video"} src={window.location.origin + "/icons/youtube.png"}/>
 			</button>
 			<button onClick={toggleFullScreen()} style={props.fullscreen ? {background: '#389C41'} : {} }>
 				<img alt={"Hide"} src={window.location.origin + '/icons/sort-up.png'}/>
@@ -37,7 +38,8 @@ const mapStateToProps = state => {
 	return {
 		view: state.settings.view,
 		fullscreen: state.settings.fullscreen,
-		premiumMember: state.settings.premiumMember
+		premiumMember: state.settings.premiumMember,
+		videoOpen: state.draggable.liveStreamOpen
 	}
 }
 
@@ -45,7 +47,8 @@ const mapDispatchToProps = dispatch => {
 	return {
 		onViewChange: view => dispatch(actions.setActiveView(view)),
 		onToggleFullscreen: fullscreenSelected => dispatch(actions.setFullscreen(fullscreenSelected)),
-		openPremiumDialog: open => e => dispatch(actions.openPremiumDialog(open))
+		openPremiumDialog: open => e => dispatch(actions.openPremiumDialog(open)),
+		onOpenLiveStream: () => e => dispatch(openLiveStream())
 	}
 }
 

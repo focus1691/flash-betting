@@ -33,14 +33,6 @@ const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime, onOpen
             <CountDown />
           </span>
         </div>
-        <span className={"grid-video"}>
-            {" "}
-            <img
-              src={window.location.origin + "/icons/youtube-black.png"}
-              alt={"Video"}
-              onClick={onOpenLiveStream()}
-            />
-          </span>
       </div>
       <AppBar className={classes.AppBar} position="static">
         <Typography variant="h6" className={classes.title}>

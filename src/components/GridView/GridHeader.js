@@ -23,8 +23,7 @@ export default ({
   bets,
   ltpList,
   onPlaceOrder,
-  marketCashout,
-  openLiveStream
+  marketCashout
 }) => {
 
   const executeMarketCashout = () => e => {
@@ -62,14 +61,6 @@ export default ({
           >
             {`Turn One click ${oneClickOn ? "off" : "on"}`}
           </button>
-          <span className={"grid-video"}>
-            {" "}
-            <img
-              src={window.location.origin + "/icons/youtube.png"}
-              alt={"Video"}
-              onClick={openLiveStream()}
-            />
-          </span>
           <h1>
             {marketOpen
               ? `${new Date(
