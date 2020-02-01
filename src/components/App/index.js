@@ -547,7 +547,7 @@ const App = props => {
     setInterval(async () => {
       if (marketId) {
         const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(async res => {
-          if (res.status === 200) {
+          if (res && res.status === 200 && typeof res === 'object') {
             res = await res.json();
             return res.currentOrders || [];
           } else {

@@ -4,9 +4,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import useStyles from "../Styles/Styles";
 import CountDown from "./Countdown";
-import { openLiveStream } from "../../actions/draggable";
 
-const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime, onOpenLiveStream }) => {
+const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime }) => {
   const classes = useStyles();
   const [bgColour, setBGColor] = useState("#303030");
 
@@ -18,11 +17,11 @@ const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime, onOpen
   }
 
   useEffect(() => {
-    if (marketStatus === "SUSPENDED") setBGColor("red");
-    else if (marketStatus === "CLOSED") setBGColor("#303030");
-    else if (new Date() > new Date(market.marketStartTime) && inPlay) setBGColor("green");
-    else if (new Date() > new Date(market.marketStartTime) && pastEventTime) setBGColor("orange");
-    else setBGColor("#303030");
+    if (marketStatus === "SUSPENDED") setBGColor("#e33232"); // Red
+    else if (marketStatus === "CLOSED") setBGColor("#303030"); // Black
+    else if (new Date() > new Date(market.marketStartTime) && inPlay) setBGColor("#0c990c"); // Green
+    else if (new Date() > new Date(market.marketStartTime) && pastEventTime) setBGColor("#ed8b25"); // Orange
+    else setBGColor("#727272"); // Grey
   }, [marketStatus, inPlay, pastEventTime]);
 
   return (
@@ -53,10 +52,4 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onOpenLiveStream: () => e => dispatch(openLiveStream())
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Event);
+export default connect(mapStateToProps)(Event);
