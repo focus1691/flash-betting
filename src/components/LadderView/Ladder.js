@@ -116,7 +116,7 @@ const Ladder = ({
   const handleHedgeCellClick = (
     marketId,
     selectionId,
-    unmatchedBetOnRow,
+    unmatchedBetsOnRow,
     side,
     price,
     size
@@ -127,15 +127,20 @@ const Ladder = ({
       .substring(0, 15);
 
     // // CANCEL ORDER IF CLICK UNMATCHED BET
-    if (unmatchedBetOnRow) {
-      onCancelOrder({
-        marketId: marketId,
-        betId: unmatchedBetOnRow.betId,
-        sizeReduction: null,
-        matchedBets: matchedBets,
-        unmatchedBets: unmatchedBets
-      });
-    } else if (!unmatchedBetOnRow && size > 0) {
+    // Map through all the unmatched bets and cancel all made at this price
+    if (unmatchedBetsOnRow) {
+      unmatchedBetsOnRow.forEach(unmatchedBet => {
+        onCancelOrder({
+          marketId: marketId,
+          betId: unmatchedBet.betId,
+          sizeReduction: null,
+          matchedBets: matchedBets,
+          unmatchedBets: unmatchedBets
+        });
+      })
+
+
+    } else if (size > 0) {
       placeOrder({
         marketId: marketId,
         side: side,

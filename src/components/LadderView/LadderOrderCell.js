@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { getMatched } from '../../selectors/marketSelector';
+import { getUnmatchedBetsOnRow } from '../../selectors/orderSelector';
 import { getStopLoss } from '../../selectors/stopLossSelector';
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
@@ -11,7 +12,15 @@ import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, 
                           isStopLoss, stopLoss, stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged,
                           onChangeTickOffsetList, tickOffsetList, tickOffsetSelected, tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged,
-                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal, cellMatched }) => {
+                          fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched }) => {
+
+    let totalMatched = 0;
+    if (cellMatched.matched) {
+      totalMatched += cellMatched.matched;
+    }
+    if (cellUnmatched) {
+      totalMatched += cellUnmatched.reduce(function (acc, bet) { return acc + bet.size; }, 0);
+    }
                             
     const handleClick = () => async e => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
@@ -120,8 +129,8 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
         <div className = 'td'
             style={
                 stopLoss ? {background: "yellow"} :
-                cellMatched.side === "BACK" && cellMatched.matched !== null && side === "BACK" ? {background: "#75C2FD"} : 
-                cellMatched.side === "LAY" && cellMatched.matched !== null && side === "LAY" ? {background: "#F694AA"} : 
+                cellMatched.side === "BACK" && totalMatched > 0 && side === "BACK" ? {background: "#75C2FD"} : 
+                cellMatched.side === "LAY" && totalMatched > 0 && side === "LAY" ? {background: "#F694AA"} : 
                 side === "LAY" ? {background: "#FCC9D3"} : 
                 side === "BACK" ? {background: "#BCE4FC"} : 
                 null
@@ -131,7 +140,7 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
             onClick={handleClick()}
             onContextMenu = {handleRightClick()}
           >
-            { stopLoss ? (stopLoss.hedged ? "H" : stopLoss.stopLoss.size) : cellMatched.matched }
+            { stopLoss ? (stopLoss.hedged ? "H" : stopLoss.stopLoss.size) : totalMatched > 0 ? totalMatched : null }
         </div>
     )
 }
@@ -157,7 +166,7 @@ const mapStateToProps = (state, props) => {
     fillOrKillList: state.fillOrKill.list,
     stakeVal: state.settings.stake,
     cellMatched: getMatched(state.market.ladder, props),
-
+    cellUnmatched: getUnmatchedBetsOnRow(state.order.bets, props)
   };
 };
 

@@ -38,13 +38,14 @@ export const getSelectionMatchedBets = createSelector(
 )
 
 
-const getUnmatchedBetOnRowSelector = (state, {selectionId, price}) => ({unmatched: state.unmatched, selectionId: selectionId, price: price})
+const getUnmatchedBetsOnRowSelector = (state, {selectionId, price, side}) => ({unmatched: state.unmatched, selectionId: selectionId, price: price, side: side})
 
-export const getUnmatchedBetOnRow = createSelector(
-    getUnmatchedBetOnRowSelector,
-    ({unmatched, selectionId, price}) => {
+export const getUnmatchedBetsOnRow = createSelector(
+    getUnmatchedBetsOnRowSelector,
+    ({unmatched, selectionId, price, side}) => {
         if (unmatched) {
-            return Object.values(unmatched).find(bet => bet.selectionId == selectionId && parseFloat(bet.price) == parseFloat(price))
+            let unmatchedBets = Object.values(unmatched).filter(bet => bet.selectionId == selectionId && parseFloat(bet.price) == parseFloat(price) && bet.side === side)
+            return unmatchedBets.length > 0 ? unmatchedBets : undefined;
         } else {
             return undefined
         }
