@@ -779,7 +779,7 @@ const App = props => {
     fetch(`/api/list-market-pl?marketId=${marketId}`)
       .then(res => res.json())
       .then(res => {
-        if (res.result && res.result[0]) {
+        if (res.result !== undefined && res.result[0] !== undefined) {
           const selectionPL = res.result[0].profitAndLosses.reduce(
             (acc, item) => {
               acc[item.selectionId] = item.ifWin;
