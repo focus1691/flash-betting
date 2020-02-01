@@ -7,7 +7,7 @@ import CountDown from "./Countdown";
 
 const Event = ({ market, marketOpen, marketStatus, inPlay, pastEventTime }) => {
   const classes = useStyles();
-  const [bgColour, setBGColor] = useState("#303030");
+  const [bgColour, setBGColor] = useState("#727272");
 
   const renderTitle = () => {
     if (marketOpen) return new Date(
