@@ -15,6 +15,8 @@ export const placeOrder = order => {
     return
   }
 
+  console.log(order);
+
   order.size = newSize
   order.price = parseFloat(order.price)
 

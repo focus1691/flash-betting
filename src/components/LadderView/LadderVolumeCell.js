@@ -17,9 +17,9 @@ const LadderVolumeCell = ({
   const volumeVal = vol ? vol : 0;
   return (
     <div className={"candle-stick-col td"} colSpan={3}>
-      {candleStickInfo.map(item => (
+      {candleStickInfo.map((item, idx) => (
         <img
-					key={`ladder-volume-${selectionId}-${price}`}
+					key={`ladder-volume-${selectionId}-${price}-${idx}`}
           src={`${window.location.origin}/icons/${
             item.color === "R" ? "red-candle.png" : "green-candle.png"
           }`}

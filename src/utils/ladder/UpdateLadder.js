@@ -2,6 +2,8 @@ import { formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Algorithms/Sort";
 
 const UpdateLadder = (ladder, rawData) => {
+  var i;
+
   if (rawData.ltp) {
     ladder.ltp = [rawData.ltp, ...ladder.ltp];
     ladder.ltpDelta = new Date();
@@ -10,10 +12,10 @@ const UpdateLadder = (ladder, rawData) => {
     ladder.tv = [rawData.tv, ladder.tv[0]];
   }
 
-  rawData.trd &&
-    rawData.trd.forEach(trd => {
-      let price = trd[0];
-      let volumeMatched = Math.floor(trd[1]);
+  if (rawData.trd) {
+    for (i = 0; i < rawData.trd.length; i++) {
+      let price = rawData.trd[i][0];
+      let volumeMatched = Math.floor(rawData.trd[i][1]);
       let index = ladder.trd.map(trd => trd[0]).findIndex(val => val === price);
 
       if (volumeMatched >= 100) {
@@ -25,13 +27,13 @@ const UpdateLadder = (ladder, rawData) => {
         delete ladder.trdo[formatPriceKey(price)];
         if (index > -1) ladder.trd.splice(index, 1);
       }
-    });
+    }
+  }
 
-  // Update the atb values
-  rawData.atb &&
-    rawData.atb.forEach(atb => {
-      let price = atb[0];
-      let matched = Math.floor(atb[1]);
+  if (rawData.atb) {
+    for (i = 0; i < rawData.atb.length; i++) {
+      let price = rawData.atb[i][0];
+      let matched = Math.floor(rawData.atb[i][1]);
 
       if (matched <= 0) {
         ladder.atb = ladder.atb.filter(v => v[0] !== price);
@@ -62,13 +64,13 @@ const UpdateLadder = (ladder, rawData) => {
         }
         return v[0] > price || (ladder.ltp[0] && v[0] < ladder.ltp[0]);
       });
-    });
+    }
+  }
 
-  // Update the atl values
-  rawData.atl &&
-    rawData.atl.forEach(atl => {
-      let price = atl[0];
-      let matched = Math.floor(atl[1]);
+  if (rawData.atl) {
+    for (i = 0; i < rawData.atl.length; i++) {
+      let price = rawData.atl[i][0];
+      let matched = Math.floor(rawData.atl[i][1]);
 
       if (matched <= 0) {
         ladder.atl = ladder.atl.filter(v => v[0] !== price);
@@ -100,28 +102,28 @@ const UpdateLadder = (ladder, rawData) => {
         }
         return true;
       });
-    });
+    }
+  }
 
-    ladder.atb = ladder.atb.filter(v => {
-      if (ladder.ltp[0] && v[0] > ladder.ltp[0]) {
-        delete ladder.atlo[formatPriceKey(v[0])];
-        return false;
-      }
-      return true;
-    });
+  ladder.atb = ladder.atb.filter(v => {
+    if (ladder.ltp[0] && v[0] > ladder.ltp[0]) {
+      delete ladder.atlo[formatPriceKey(v[0])];
+      return false;
+    }
+    return true;
+  });
 
-    ladder.atl = ladder.atl.filter(v => {
-      if (ladder.ltp[0] && v[0] < ladder.ltp[0]) {
-        delete ladder.atbo[formatPriceKey(v[0])];
-        return false;
-      }
-      return true;
-    });
+  ladder.atl = ladder.atl.filter(v => {
+    if (ladder.ltp[0] && v[0] < ladder.ltp[0]) {
+      delete ladder.atbo[formatPriceKey(v[0])];
+      return false;
+    }
+    return true;
+  });
 
   sortAsc(ladder.trd);
   sortDes(ladder.atb);
   sortAsc(ladder.atl);
-
 
   ladder.percent = calcBackLayPercentages(
     ladder.atbo,
