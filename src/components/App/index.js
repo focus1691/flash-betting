@@ -166,10 +166,12 @@ const App = props => {
               props.onSelectRunner(data.result[0].runners[0]);
               const selectionNames = {};
 
-              Object.keys(runners).forEach(selectionId => {
-                selectionNames[selectionId] = runners[selectionId].runnerName;
-              });
+              let runnerIds = Object.keys(runners);
 
+              for (var i = 0; i < runnerIds.length; i++) {
+                selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
+              }
+              
               fetch("/api/save-runner-names", {
                 headers: {
                   Accept: "application/json",
@@ -471,6 +473,7 @@ const App = props => {
      * @param {obj} data The market change message data: { rc: [(atb, atl, tv, ltp, id)] }
      */
     props.socket.on("mcm", data => {
+      var i;
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
       props.socket.off("mcm");
 
@@ -489,16 +492,16 @@ const App = props => {
 
         // Update the market status
         if (mc.marketDefinition) {
-          mc.marketDefinition.runners.forEach(runner => {
-            if (runner.status === "REMOVED") {
-              if (runner.id in ladders) {
-                delete ladders[runner.id];
+          for (i = 0; i < mc.marketDefinition.runners.length; i++) {
+            if (mc.marketDefinition.runners[i].status === "REMOVED") {
+              if (mc.marketDefinition.runners[i].id in ladders) {
+                delete ladders[mc.marketDefinition.runners[i].id];
               }
-              if (runner.id in nonRunners === false) {
-                nonRunners[runner.id] = ladders[runner.id];
+              if (mc.marketDefinition.runners[i].id in nonRunners === false) {
+                nonRunners[mc.marketDefinition.runners[i].id] = ladders[mc.marketDefinition.runners[i].id];
               }
             }
-          });
+          }
           props.onReceiveNonRunners(nonRunners);
         }
 
@@ -508,77 +511,76 @@ const App = props => {
 
           let stopLossOrdersToRemove = [];
 
-          await Promise.all(
-            mc.rc.map(async rc => {
-              if (rc.id in ladders) {
-                // Runner found so we update our object with the raw data
-                ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
+          for (i = 0; i < mc.rc.length; i++) {
+            let rc = mc.rc[i];
+            if (rc.id in ladders) {
+              // Runner found so we update our object with the raw data
+              ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
 
-                const currentLTP = ladders[rc.id].ltp[0];
+              const currentLTP = ladders[rc.id].ltp[0];
 
-                // stop Entry
-                newStopEntryList = await stopEntryListChange(
-                  props.stopEntryList,
+              // stop Entry
+              newStopEntryList = await stopEntryListChange(
+                props.stopEntryList,
+                rc.id,
+                currentLTP,
+                props.onPlaceOrder,
+                newStopEntryList,
+                props.unmatchedBets,
+                props.matchedBets
+              );
+              // We increment and check the stoplosses
+              if (props.stopLossList[rc.id] !== undefined) {
+                // if it's trailing and the highest LTP went up, then we add a tickoffset
+                const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
+                let adjustedStopLoss = Object.assign(
+                  {},
+                  stopLossTrailingChange(
+                    props.stopLossList,
+                    rc.id,
+                    currentLTP,
+                    maxLTP
+                  )
+                );
+
+                // if hedged, get size (price + hedged profit/loss)
+                if (adjustedStopLoss.hedged) {
+                  const newMatchedBets = Object.values(
+                    props.matchedBets
+                  ).filter(
+                    bet =>
+                      parseFloat(bet.selectionId) ===
+                      parseFloat(adjustedStopLoss.selectionId)
+                  );
+
+                  adjustedStopLoss.size = CalculateLadderHedge(
+                    parseFloat(adjustedStopLoss.price),
+                    newMatchedBets,
+                    "hedged"
+                  ).size;
+                }
+
+                // if it doesn't have a reference or the order has been matched (STOP LOSS)
+                const stopLossMatched = stopLossCheck(
+                  adjustedStopLoss,
                   rc.id,
                   currentLTP,
                   props.onPlaceOrder,
-                  newStopEntryList,
+                  stopLossOrdersToRemove,
+                  adjustedStopLossList,
                   props.unmatchedBets,
                   props.matchedBets
                 );
-                // We increment and check the stoplosses
-                if (props.stopLossList[rc.id] !== undefined) {
-                  // if it's trailing and the highest LTP went up, then we add a tickoffset
-                  const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-                  let adjustedStopLoss = Object.assign(
-                    {},
-                    stopLossTrailingChange(
-                      props.stopLossList,
-                      rc.id,
-                      currentLTP,
-                      maxLTP
-                    )
-                  );
 
-                  // if hedged, get size (price + hedged profit/loss)
-                  if (adjustedStopLoss.hedged) {
-                    const newMatchedBets = Object.values(
-                      props.matchedBets
-                    ).filter(
-                      bet =>
-                        parseFloat(bet.selectionId) ===
-                        parseFloat(adjustedStopLoss.selectionId)
-                    );
-
-                    adjustedStopLoss.size = CalculateLadderHedge(
-                      parseFloat(adjustedStopLoss.price),
-                      newMatchedBets,
-                      "hedged"
-                    ).size;
-                  }
-
-                  // if it doesn't have a reference or the order has been matched (STOP LOSS)
-                  const stopLossMatched = stopLossCheck(
-                    adjustedStopLoss,
-                    rc.id,
-                    currentLTP,
-                    props.onPlaceOrder,
-                    stopLossOrdersToRemove,
-                    adjustedStopLossList,
-                    props.unmatchedBets,
-                    props.matchedBets
-                  );
-
-                  adjustedStopLossList = stopLossMatched.adjustedStopLossList;
-                  stopLossOrdersToRemove =
-                    stopLossMatched.stopLossOrdersToRemove;
-                }
-              } else if (rc.id in nonRunners === false) {
-                // Runner found so we create the new object with the raw data
-                ladders[rc.id] = CreateLadder(rc);
+                adjustedStopLossList = stopLossMatched.adjustedStopLossList;
+                stopLossOrdersToRemove =
+                  stopLossMatched.stopLossOrdersToRemove;
               }
-            })
-          );
+            } else if (rc.id in nonRunners === false) {
+              // Runner found so we create the new object with the raw data
+              ladders[rc.id] = CreateLadder(rc);
+            }
+          }
 
           if (stopLossOrdersToRemove.length > 0) {
             await fetch("/api/remove-orders", {
@@ -730,7 +732,8 @@ const App = props => {
           }
         });
         const currentOrdersObject = {};
-        currentOrders.forEach(item => {
+        for (var j = 0; j < currentOrders.length; j++) {
+          let item = currentOrders[j];
           currentOrdersObject[item.betId] = item;
           if (item.status === "EXECUTION_COMPLETE") {
             currentOrdersObject[item.betId].price = item.averagePriceMatched;
@@ -738,7 +741,7 @@ const App = props => {
             currentOrdersObject[item.betId] = item;
             currentOrdersObject[item.betId].price = item.priceSize.price;
           }
-        });
+        }
 
         const loadedUnmatchedOrders = {};
         const loadedMatchedOrders = {};
