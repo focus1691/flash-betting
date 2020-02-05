@@ -6,7 +6,11 @@ import { FixedSizeList as List } from "react-window";
 import { cancelOrder, placeOrder } from "../../actions/order";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { getLTP } from "../../selectors/marketSelector";
-import { getMatchedBets, getSelectionMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
+import {
+  getMatchedBets,
+  getSelectionMatchedBets,
+  getUnmatchedBets
+} from "../../selectors/orderSelector";
 import { getStakeVal } from "../../selectors/settingsSelector";
 import { ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
 import LadderContainer from "./LadderContainer";
@@ -137,9 +141,7 @@ const Ladder = ({
           matchedBets: matchedBets,
           unmatchedBets: unmatchedBets
         });
-      })
-
-
+      });
     } else if (size > 0) {
       placeOrder({
         marketId: marketId,

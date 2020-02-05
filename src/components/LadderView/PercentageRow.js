@@ -11,6 +11,7 @@ import { updateTickOffsetList } from "../../actions/tickOffset";
 import { getLTP, getLTPDelta, getPercent, getTV } from "../../selectors/marketSelector";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
+import Tooltip from '@material-ui/core/Tooltip';
 
 const PercentageRow = ({ ltp, tv, percent, market, ltpDelta, onChangeLadderSideLeft, ladderSideLeft, onUpdateBets, selectionId, 
                          bets, stopLossList, tickOffsetList, stopEntryList, layList, backList, fillOrKillList,
@@ -123,15 +124,17 @@ const PercentageRow = ({ ltp, tv, percent, market, ltpDelta, onChangeLadderSideL
   return (
     <div className = {"percentage-row"}>
       <div colSpan={3} className={'th'}>{tv}</div>
-      <div 
-        className = {"th"} 
-        style = {{cursor: 'pointer'}} 
-        onClick={cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'LAY' : 'BACK', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
-      />
+      <Tooltip title={`Cancel selection ${leftSide === 'lay' ? 'lay' : 'back'} bets`} aria-label="Cancel selections">
+        <div
+          className = {"th"}
+          style = {{cursor: 'pointer'}}
+          onClick={cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'LAY' : 'BACK', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
+        />
+      </Tooltip>
       <div className = {"th"} style={{backgroundColor: leftSide === 'lay' ? "#FCC9D3" : "#BCE4FC"}}>
         {`${percent[leftSide]}%`}
       </div>
-      <div className = {"th"} 
+      <div className = {"th"}
         style={ltpStyle}
           onClick = {onChangeLadderSideLeft(ladderSideLeft === "LAY" ? "BACK" : "LAY")}
           >
@@ -139,13 +142,15 @@ const PercentageRow = ({ ltp, tv, percent, market, ltpDelta, onChangeLadderSideL
           </div>
       <div className = {"th"} style={{backgroundColor: leftSide === 'lay' ? "#BCE4FC" : "#FCC9D3"}}>
         {`${percent[leftSide === "lay" ? "back" : "lay"]}%`}</div>
-      <div 
-        className = {"th"} 
-        style = {{cursor: 'pointer'}} 
-        onClick={cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'BACK' : 'LAY', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
-      />
+      <Tooltip title={`Cancel selection ${leftSide === 'lay' ? 'back' : 'lay'} bets`} aria-label={"Cancel selections"}>
+        <div
+          className = {"th"}
+          style = {{cursor: 'pointer'}}
+          onClick={cancelAllOrdersOnSide(marketId, selectionId, leftSide === 'lay' ? 'BACK' : 'LAY', bets.unmatched, bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
+        />
+      </Tooltip>
     </div>
-  )
+  );
 };
 
 const mapStateToProps = (state, {selectionId}) => {
