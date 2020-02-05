@@ -12,8 +12,9 @@ import { getSelectionMatchedBets, getMatchedBets } from '../../selectors/orderSe
 import { getStakeVal } from '../../selectors/settingsSelector';
 import { getPL } from '../../selectors/marketSelector';
 
-const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedgeCellClick, changeStopLossList, isMoving }, 
-                    PL, onOddsHovered, matchedBets, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index}) => {
+const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedgeCellClick, changeStopLossList, isMoving,
+                    resumeLTPScrolling, pauseLTPScrolling }, PL, onOddsHovered, matchedBets, selectionMatchedBets,
+                    ladderUnmatchedDisplay, stakeVal, style, index}) => {
     const key = ALL_PRICES[ALL_PRICES.length - index - 1];
     
     const leftSide = ladderSideLeft === "LAY" ? "LAY" : "BACK";
@@ -56,7 +57,7 @@ const LadderRow = ({data: { selectionId, placeOrder, ladderSideLeft, handleHedge
             onLeave = {onOddsHovered({selectionId, odds: 0, side: leftSide})}
             isMoving = {isMoving}
           />
-          <LadderLTPCell selectionId = {selectionId} price = {key} isMoving = {isMoving} />
+          <LadderLTPCell selectionId = {selectionId} price = {key} isMoving = {isMoving} pauseLTPScrolling={pauseLTPScrolling()} resumeLTPScrolling={resumeLTPScrolling()} />
           <LadderOrderCell 
             side = {rightSide}
             selectionId = {selectionId}

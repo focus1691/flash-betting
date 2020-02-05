@@ -4,11 +4,11 @@ import { getIsLTP, getLTPDelta, getLTP } from '../../selectors/marketSelector';
 import { formatPrice, formatPriceKey } from '../../utils/ladder/CreateFullLadder';
 import { getLTPstyle } from '../../utils/ladder/DeconstructLadder';
 
-const LadderLTPCell = ({price, isLTP, ltp, ltpDelta}) => {
+const LadderLTPCell = ({price, isLTP, ltp, ltpDelta, pauseLTPScrolling, resumeLTPScrolling}) => {
     const ltpStyle = isLTP ? getLTPstyle(ltp, ltpDelta) : {background: "#BBBBBB"};
 
     return (
-        <div style = {ltpStyle} className = 'td'>
+        <div style = {ltpStyle} className = 'td' onMouseEnter={pauseLTPScrolling} onMouseOut={resumeLTPScrolling}>
             {formatPrice(price)}
         </div>
     )

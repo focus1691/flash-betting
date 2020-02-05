@@ -42,6 +42,7 @@ const Ladder = ({
   const [isReferenceSet, setIsReferenceSet] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [isLadderDown, setLadderDown] = useState(false);
+  const [ltpIsScrolling, setLTPIsScrolling] = useState(true);
 
   const scrollToLTP = () => {
     const ltpIndex = ALL_PRICES.findIndex(
@@ -58,6 +59,14 @@ const Ladder = ({
     }
   };
 
+  const resumeLTPScrolling = () => e => {
+    setLTPIsScrolling(true);
+  }
+
+  const pauseLTPScrolling = () => e => {
+    setLTPIsScrolling(false);
+  }
+
   // Scroll to the LTP when the ladder first loads
   useEffect(() => {
     setTimeout(() => {
@@ -67,7 +76,7 @@ const Ladder = ({
 
   // Scroll to LTP when the LTP or order changes
   useEffect(() => {
-    scrollToLTP();
+    if (ltpIsScrolling) scrollToLTP();
   }, [ltp, order]);
 
   const placeOrder = data => {
@@ -185,6 +194,7 @@ const Ladder = ({
               itemSize={20}
               width={width}
               ref={listRef}
+              onScroll={pauseLTPScrolling()}
               style={{
                 paddingRight: `${
                   listRefSet
@@ -199,7 +209,9 @@ const Ladder = ({
                 changeStopLossList: placeStopLossOrder,
                 ladderSideLeft: ladderSideLeft,
                 handleHedgeCellClick: handleHedgeCellClick,
-                isMoving: isMoving
+                isMoving: isMoving,
+                resumeLTPScrolling: resumeLTPScrolling,
+                pauseLTPScrolling: pauseLTPScrolling
               }}
             >
               {LadderRow}
