@@ -144,7 +144,7 @@ app.get("/api/request-access-token", async (request, response) => {
 	}
 
 	const token = async () => {
-		vendor.login(process.env.BETFAIR_USER || "traderjosh", process.env.BETFAIR_PASS || "GdXFsnWvbQn2ujFM").then(res => {
+		vendor.login(process.env.BETFAIR_USER || "traderjosh", process.env.BETFAIR_PASS || "r5gYGPjpLgaP!rj").then(res => {
 			if (res.error) {
 				response.status(400).json(res);
 			} else {
@@ -310,7 +310,7 @@ app.post("/api/remove-orders", (request, response) => {
 });
 
 app.post("/api/fetch-all-sports", async (request, response) => {
-	const data = await vendor.login(process.env.BETFAIR_USER || "traderjosh", process.env.BETFAIR_PASS || "GdXFsnWvbQn2ujFM");
+	const data = await vendor.login(process.env.BETFAIR_USER || "traderjosh", process.env.BETFAIR_PASS || "r5gYGPjpLgaP!rj");
 	
 	if (!data) {
 		response.sendStatus(400);

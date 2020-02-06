@@ -173,13 +173,6 @@ export const changePriceType = priceType => { // stake and liability
   };
 };
 
-export const changeLadderSideLeft = side => { 
-  return {
-    type: "SWITCH_LADDER_SIDE_LEFT",
-    payload: side
-  };
-};
-
 export const setOddsHovered = odds => {
   return {
     type: "SET_ODDS_HOVERED",

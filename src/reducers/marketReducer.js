@@ -19,7 +19,6 @@ const initialState = {
   priceType: "STAKE",
   myMarkets: [],
   marketPL: {},
-  ladderSideLeft: "LAY",
   oddsHovered: {selectionId: 0, odds: 0, side: "BACK"},
   draggingLadder: false, // selection id of the ladder dragged
 };
@@ -151,8 +150,6 @@ const reducer = (state = initialState, action) => {
       };
     case "SWITCH_PRICE_TYPE":
       return { ...state, priceType: action.payload };
-    case "SWITCH_LADDER_SIDE_LEFT":
-      return { ...state, ladderSideLeft: action.payload };
     case "SET_ODDS_HOVERED":
       return { ...state, oddsHovered: action.payload };
     case "SET_MARKET_PL":

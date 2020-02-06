@@ -25,30 +25,17 @@ import Draggable from "../Draggable";
 import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
 import { checkTimeListsAfter } from "../../utils/TradingStategy/BackLay";
-import {
-  stopEntryListChange,
-  stopLossTrailingChange,
-  stopLossCheck
-} from "../../utils/ExchangeStreaming/MCMHelper";
+import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from "../../utils/ExchangeStreaming/MCMHelper";
 import { CreateLadder } from "../../utils/ladder/CreateLadder";
 import { sortLadder } from "../../utils/ladder/SortLadder";
-import {
-  checkStopLossForMatch,
-  checkTickOffsetForMatch
-} from "../../utils/ExchangeStreaming/OCMHelper";
+import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import ConnectionBugDisplay from "../ConnectionBugDisplay";
 import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionErrorType";
 
 const App = props => {
   const [marketId, setMarketId] = useState(null);
-  const [cookies, removeCookie] = useCookies([
-    "sessionKey",
-    "username",
-    "accessToken",
-    "refreshToken",
-    "expiresIn"
-  ]);
+  const [cookies, removeCookie] = useCookies(["sessionKey", "username", "accessToken", "refreshToken", "expiresIn"]);
   const [updates, setUpdates] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [initialClk, setInitialClk] = useState(null);
@@ -56,14 +43,13 @@ const App = props => {
   const [connectionError, setConnectionError] = useState("");
 
   if (!cookies.sessionKey && !cookies.username) {
-    window.location.href =
-      window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
+    window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
   }
   const loadSession = async () => {
     await fetch(
-      `/api/load-session?sessionKey=${encodeURIComponent(
-        cookies.sessionKey
-      )}&email=${encodeURIComponent(cookies.username)}`
+      `/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(
+        cookies.username
+      )}`
     );
   };
 
@@ -120,8 +106,7 @@ const App = props => {
         props.onReceiveHorseRaces(settings.horseRaces);
       })
       .catch(e => {
-        window.location.href =
-          window.location.origin + "/?error=USER_SETTINGS_NOT_FOUND";
+        window.location.href = window.location.origin + "/?error=USER_SETTINGS_NOT_FOUND";
       });
 
     /**
@@ -151,15 +136,12 @@ const App = props => {
             removeCookie("accessToken");
             removeCookie("refreshToken");
             removeCookie("expiresIn");
-            window.location.href =
-              window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
+            window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
           } else {
             setMarketId(marketId);
             if (data.result.length > 0) {
               const runners = CreateRunners(data.result[0].runners);
-              props.onSortLadder(
-                sortGreyHoundMarket(data.result[0].eventType.id, runners)
-              );
+              props.onSortLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
               props.onReceiveEventType(data.result[0].eventType.id);
               props.onUpdateRunners(runners);
               props.onReceiveMarket(data.result[0]);
@@ -171,7 +153,7 @@ const App = props => {
               for (var i = 0; i < runnerIds.length; i++) {
                 selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
               }
-              
+
               fetch("/api/save-runner-names", {
                 headers: {
                   Accept: "application/json",
@@ -202,20 +184,16 @@ const App = props => {
                 .then(res => res.json())
                 .then(async orders => {
                   const loadOrders = async orders => {
-                    const currentOrders = await fetch(
-                      `/api/listCurrentOrders?marketId=${marketId}`
-                    )
+                    const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`)
                       .then(res => res.json())
                       .then(res => res.currentOrders);
                     const currentOrdersObject = {};
                     currentOrders.forEach(item => {
                       currentOrdersObject[item.betId] = item;
                       if (item.status === "EXECUTION_COMPLETE") {
-                        currentOrdersObject[item.betId].price =
-                          item.averagePriceMatched;
+                        currentOrdersObject[item.betId].price = item.averagePriceMatched;
                       } else {
-                        currentOrdersObject[item.betId].price =
-                          item.priceSize.price;
+                        currentOrdersObject[item.betId].price = item.priceSize.price;
                       }
                     });
 
@@ -226,35 +204,26 @@ const App = props => {
                             loadedBackOrders[order.selectionId] =
                               loadedBackOrders[order.selectionId] === undefined
                                 ? [order]
-                                : loadedBackOrders[order.selectionId].concat(
-                                    order
-                                  );
+                                : loadedBackOrders[order.selectionId].concat(order);
                             break;
                           case "Lay":
                             loadedLayOrders[order.selectionId] =
                               loadedLayOrders[order.selectionId] === undefined
                                 ? [order]
-                                : loadedLayOrders[order.selectionId].concat(
-                                    order
-                                  );
+                                : loadedLayOrders[order.selectionId].concat(order);
                             break;
                           case "Stop Entry":
                             loadedStopEntryOrders[order.selectionId] =
-                              loadedStopEntryOrders[order.selectionId] ===
-                              undefined
+                              loadedStopEntryOrders[order.selectionId] === undefined
                                 ? [order]
-                                : loadedStopEntryOrders[
-                                    order.selectionId
-                                  ].concat(order);
+                                : loadedStopEntryOrders[order.selectionId].concat(order);
                             break;
                           case "Tick Offset":
                             loadedTickOffsetOrders[order.rfs] = order;
                             break;
                           case "Fill Or Kill":
                             // this should only keep the fill or kill if the order isn't completed already
-                            if (
-                              currentOrdersObject[order.betId] === "EXECUTABLE"
-                            ) {
+                            if (currentOrdersObject[order.betId] === "EXECUTABLE") {
                               loadedFillOrKillOrders[order.betId] = order;
                             }
                             break;
@@ -276,14 +245,9 @@ const App = props => {
                         marketId: order.marketId,
                         side: order.side,
                         price: order.price,
-                        size:
-                          order.status === "EXECUTION_COMPLETE"
-                            ? order.sizeMatched
-                            : order.priceSize.size,
+                        size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
                         selectionId: order.selectionId,
-                        rfs: order.customerStrategyRef
-                          ? order.customerStrategyRef
-                          : "None",
+                        rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
                         betId: betId
                       };
 
@@ -351,9 +315,7 @@ const App = props => {
       let ladders = Object.assign({}, props.ladders);
       var sortedLadderIndices = sortLadder(ladders);
       props.onSortLadder(sortedLadderIndices);
-      props.onChangeExcludedLadders(
-        sortedLadderIndices.slice(6, sortedLadderIndices.length)
-      );
+      props.onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
     }
   }, [Object.values(props.ladders).length]);
 
@@ -362,12 +324,7 @@ const App = props => {
     // We resubscribe to the market here using the initialClk & clk.
     props.socket.on("connection_closed", () => {
       // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-      if (
-        getQueryVariable("marketId") &&
-        initialClk &&
-        clk &&
-        connectionError === ""
-      ) {
+      if (getQueryVariable("marketId") && initialClk && clk && connectionError === "") {
         props.socket.emit("market-resubscription", {
           marketId: getQueryVariable("marketId"),
           initialClk: initialClk,
@@ -382,8 +339,7 @@ const App = props => {
       props.socket.off("subscription-error");
       if (data.statusCode === "FAILURE") {
         if (GetSubscriptionErrorType(data.errorCode) === "Authentication") {
-          window.location.href =
-            window.location.origin + `/?error=${data.errorCode}`;
+          window.location.href = window.location.origin + `/?error=${data.errorCode}`;
         } else {
           setConnectionError(data.errorMessage);
         }
@@ -395,15 +351,7 @@ const App = props => {
 
   useEffect(() => {
     // Back and Lay
-    const updateBackList = async (
-      list,
-      startTime,
-      onPlaceOrder,
-      marketId,
-      side,
-      matchedBets,
-      unmatchedBets
-    ) => {
+    const updateBackList = async (list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
       let newBackList = await checkTimeListsAfter(
         list,
         startTime,
@@ -418,15 +366,7 @@ const App = props => {
       }
     };
 
-    const updateLayList = async (
-      list,
-      startTime,
-      onPlaceOrder,
-      marketId,
-      side,
-      matchedBets,
-      unmatchedBets
-    ) => {
+    const updateLayList = async (list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
       let newLayList = await checkTimeListsAfter(
         list,
         startTime,
@@ -535,22 +475,13 @@ const App = props => {
                 const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
                 let adjustedStopLoss = Object.assign(
                   {},
-                  stopLossTrailingChange(
-                    props.stopLossList,
-                    rc.id,
-                    currentLTP,
-                    maxLTP
-                  )
+                  stopLossTrailingChange(props.stopLossList, rc.id, currentLTP, maxLTP)
                 );
 
                 // if hedged, get size (price + hedged profit/loss)
                 if (adjustedStopLoss.hedged) {
-                  const newMatchedBets = Object.values(
-                    props.matchedBets
-                  ).filter(
-                    bet =>
-                      parseFloat(bet.selectionId) ===
-                      parseFloat(adjustedStopLoss.selectionId)
+                  const newMatchedBets = Object.values(props.matchedBets).filter(
+                    bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId)
                   );
 
                   adjustedStopLoss.size = CalculateLadderHedge(
@@ -573,8 +504,7 @@ const App = props => {
                 );
 
                 adjustedStopLossList = stopLossMatched.adjustedStopLossList;
-                stopLossOrdersToRemove =
-                  stopLossMatched.stopLossOrdersToRemove;
+                stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
               }
             } else if (rc.id in nonRunners === false) {
               // Runner found so we create the new object with the raw data
@@ -629,11 +559,9 @@ const App = props => {
               } else if (order.sr === 0) {
                 // this is what happens when an order is finished
                 // if they canceled early
-                newMatchedBets[order.id] = Object.assign(
-                  {},
-                  newUnmatchedBets[order.id],
-                  { size: parseFloat(order.sm) }
-                );
+                newMatchedBets[order.id] = Object.assign({}, newUnmatchedBets[order.id], {
+                  size: parseFloat(order.sm)
+                });
                 delete newUnmatchedBets[order.id];
               }
 
@@ -654,10 +582,8 @@ const App = props => {
                 props.unmatchedBets,
                 props.matchedBets
               );
-              checkForMatchInTickOffset =
-                tickOffsetCheck.checkForMatchInTickOffset;
-              tickOffsetOrdersToRemove =
-                tickOffsetCheck.tickOffsetOrdersToRemove;
+              checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
+              tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove;
             });
           }
         });
@@ -690,36 +616,24 @@ const App = props => {
       }
       props.socket.off("ocm");
     });
-  }, [
-    props.ladders,
-    props.marketStatus,
-    props.inPlay,
-    props.market.inPlayTime,
-    props.pastEventTime
-  ]);
+  }, [props.ladders, props.marketStatus, props.inPlay, props.market.inPlayTime, props.pastEventTime]);
 
   useEffect(() => {
     if (Object.keys(props.unmatchedBets).length > 0) {
       props.socket.emit("order-subscription", {
-        customerStrategyRefs: JSON.stringify(
-          Object.values(props.unmatchedBets).map(bet => bet.rfs)
-        )
+        customerStrategyRefs: JSON.stringify(Object.values(props.unmatchedBets).map(bet => bet.rfs))
       });
     }
   }, [Object.keys(props.unmatchedBets).length]);
 
   const cleanupOnMarketClose = marketId => {
-    window.open(
-      `${window.location.origin}/getClosedMarketStats?marketId=${marketId}`
-    );
+    window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
   };
 
   useEffect(() => {
     setInterval(async () => {
       if (marketId) {
-        const currentOrders = await fetch(
-          `/api/listCurrentOrders?marketId=${marketId}`
-        ).then(async res => {
+        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(async res => {
           try {
             if (res && res.status === 200) {
               res = await res.json();
@@ -754,10 +668,7 @@ const App = props => {
             marketId: order.marketId,
             side: order.side,
             price: order.price,
-            size:
-              order.status === "EXECUTION_COMPLETE"
-                ? order.sizeMatched
-                : order.priceSize.size,
+            size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
             selectionId: order.selectionId,
             rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
             betId: betId
@@ -783,13 +694,10 @@ const App = props => {
       .then(res => res.json())
       .then(res => {
         if (res.result !== undefined && res.result[0] !== undefined) {
-          const selectionPL = res.result[0].profitAndLosses.reduce(
-            (acc, item) => {
-              acc[item.selectionId] = item.ifWin;
-              return acc;
-            },
-            {}
-          );
+          const selectionPL = res.result[0].profitAndLosses.reduce((acc, item) => {
+            acc[item.selectionId] = item.ifWin;
+            return acc;
+          }, {});
           props.setMarketPL(selectionPL);
         }
       });
@@ -837,9 +745,7 @@ const App = props => {
 };
 
 const AppWithSocket = props => (
-  <SocketContext.Consumer>
-    {socket => <App {...props} socket={socket} />}
-  </SocketContext.Consumer>
+  <SocketContext.Consumer>{socket => <App {...props} socket={socket} />}</SocketContext.Consumer>
 );
 
 const mapStateToProps = state => {
@@ -872,49 +778,35 @@ const mapDispatchToProps = dispatch => {
   return {
     /** Settings **/
     setLoading: isLoading => dispatch(actions.setIsLoading(isLoading)),
-    setPremiumStatus: isPremium =>
-      dispatch(actions.setPremiumStatus(isPremium)),
+    setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
     onToggleDefaultView: view => dispatch(actions.setDefaultView(view)),
     onToggleActiveView: view => dispatch(actions.setActiveView(view)),
     onToggleSounds: isSelected => dispatch(actions.toggleSound(isSelected)),
     onToggleTools: settings => dispatch(actions.toggleTools(settings)),
-    onToggleUnmatchedBets: settings =>
-      dispatch(actions.toggleUnmatchedBets(settings)),
-    onToggleMatchedBets: settings =>
-      dispatch(actions.toggleMatchedBets(settings)),
+    onToggleUnmatchedBets: settings => dispatch(actions.toggleUnmatchedBets(settings)),
+    onToggleMatchedBets: settings => dispatch(actions.toggleMatchedBets(settings)),
     onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
-    onToggleMarketInformation: settings =>
-      dispatch(actions.toggleMarketInformation(settings)),
-    onUpdateWinMarketsOnly: isChecked =>
-      dispatch(actions.setWinMarketsOnly(isChecked)),
+    onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
+    onUpdateWinMarketsOnly: isChecked => dispatch(actions.setWinMarketsOnly(isChecked)),
     onToggleRules: settings => dispatch(actions.toggleRules(settings)),
-    onToggleLadderUnmatched: unmatchedColumn =>
-      dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
+    onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
     onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
     onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
-    onReceiveRightClickTicks: ticks =>
-      dispatch(actions.updateRightClickTicks(ticks)),
-    onReceiveHorseRaces: horseRaces =>
-      dispatch(actions.setHorseRacingCountries(horseRaces)),
+    onReceiveRightClickTicks: ticks => dispatch(actions.updateRightClickTicks(ticks)),
+    onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
     /** Market **/
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
-    onReceiveEventType: eventType =>
-      dispatch(marketActions.setEventType(eventType)),
+    onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
     onMarketClosed: () => dispatch(marketActions.closeMarket()),
-    onReceiveInitialClk: initialClk =>
-      dispatch(marketActions.setInitialClk(initialClk)),
+    onReceiveInitialClk: initialClk => dispatch(marketActions.setInitialClk(initialClk)),
     onReceiveClk: clk => dispatch(marketActions.setClk(clk)),
     onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
-    onSortLadder: sortedLadder =>
-      dispatch(marketActions.setSortedLadder(sortedLadder)),
+    onSortLadder: sortedLadder => dispatch(marketActions.setSortedLadder(sortedLadder)),
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
-    onReceiveNonRunners: nonRunners =>
-      dispatch(marketActions.loadNonRunners(nonRunners)),
-    onChangeExcludedLadders: excludedLadders =>
-      dispatch(marketActions.updateExcludedLadders(excludedLadders)),
-    onMarketStatusChange: isOpen =>
-      dispatch(marketActions.setMarketStatus(isOpen)),
+    onReceiveNonRunners: nonRunners => dispatch(marketActions.loadNonRunners(nonRunners)),
+    onChangeExcludedLadders: excludedLadders => dispatch(marketActions.updateExcludedLadders(excludedLadders)),
+    onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
     setMarketPL: pl => dispatch(marketActions.setMarketPL(pl)),
