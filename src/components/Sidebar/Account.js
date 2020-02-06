@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../actions/account";
 import FlagIcon from "./FlagIcon";
@@ -16,29 +15,38 @@ const Account = props => {
     setLoggedIn(false);
   };
 
+  const getAccountDetails = async () => {
+    await fetch(`/api/get-account-details`)
+    .then(res => res.json())
+    .then(res => { 
+      if (res.error) {
+        window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
+      } else {
+        props.onReceiveAccountDetails(res);
+      }
+    });
+  };
+
+  const getAccountBalance = async () => {
+    await fetch(`/api/get-account-balance`)
+    .then(res => res.json())
+    .then(res =>  {
+      if (res.error) {
+        window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
+      } else {
+        props.onReceiveBalance(res.balance);
+      }
+    });
+  };
+
   useEffect(() => {
-    const loadAccountDetails = async () => {
-      await fetch(`/api/get-account-details`)
-      .then(res => res.json())
-      .then(res => { 
-        if (res.error) {
-          window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
-        } else {
-          props.onReceiveAccountDetails(res);
-        }
-      });
-      await fetch(`/api/get-account-balance`)
-      .then(res => res.json())
-      .then(res =>  {
-        if (res.error) {
-          window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
-        } else {
-          props.onReceiveBalance(res.balance);
-        }
-      });
-    };
-    loadAccountDetails();
+      getAccountDetails();
+      getAccountBalance();
   }, []);
+
+  useEffect(() => {
+    getAccountBalance();
+  }, [props.bets]);
 
   if (!loggedIn) {
     removeCookie('sessionKey');
@@ -77,7 +85,8 @@ const mapStateToProps = state => {
     currencyCode: state.account.currencyCode,
     localeCode: state.account.localeCode,
     balance: state.account.balance,
-    time: state.account.time
+    time: state.account.time,
+    bets: state.order.bets
   };
 };
 
