@@ -12,26 +12,9 @@ import { getSelectionMatchedBets, getMatchedBets } from "../../selectors/orderSe
 import { getStakeVal } from "../../selectors/settingsSelector";
 import { getPL } from "../../selectors/marketSelector";
 
-const LadderRow = ({
-	data: {
-		selectionId,
-		placeOrder,
-		layFirstCol,
-		handleHedgeCellClick,
-		changeStopLossList,
-		isMoving,
-		resumeLTPScrolling,
-		pauseLTPScrolling
-	},
-	PL,
-	onOddsHovered,
-	matchedBets,
-	selectionMatchedBets,
-	ladderUnmatchedDisplay,
-	stakeVal,
-	style,
-	index
-}) => {
+const LadderRow = ({data: {selectionId, placeOrder, layFirstCol, handleHedgeCellClick, changeStopLossList, isMoving, resumeLTPScrolling,
+	pauseLTPScrolling }, PL, onOddsHovered, matchedBets, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index}) => {
+	
 	const key = ALL_PRICES[ALL_PRICES.length - index - 1];
 
 	const leftSide = layFirstCol ? "LAY" : "BACK";

@@ -9,41 +9,10 @@ import { getStopLoss } from "../../selectors/stopLossSelector";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findTickOffset } from "../../utils/TradingStategy/TickOffset";
 
-const LadderOrderCell = ({
-	side,
-	price,
-	cell,
-	unmatchedBets,
-	matchedBets,
-	marketId,
-	selectionId,
-	placeOrder,
-	isStopLoss,
-	stopLoss,
-	stopLossData,
-	stopLossUnits,
-	changeStopLossList,
-	stopLossSelected,
-	stopLossList,
-	stopLossHedged,
-	onChangeTickOffsetList,
-	tickOffsetList,
-	tickOffsetSelected,
-	tickOffsetUnits,
-	tickOffsetTicks,
-	tickOffsetTrigger,
-	tickOffsetHedged,
-	fillOrKillSelected,
-	fillOrKillSeconds,
-	fillOrKillList,
-	onUpdateFillOrKillList,
-	hedgeSize,
-	onHover,
-	onLeave,
-	stakeVal,
-	cellMatched,
-	cellUnmatched
-}) => {
+const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, isStopLoss, stopLoss,
+	stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged, onChangeTickOffsetList,
+	tickOffsetList, tickOffsetSelected,tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected,
+	fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched}) => {
 	let totalMatched = 0;
 	if (cellMatched.matched) {
 		totalMatched += cellMatched.matched;
@@ -59,8 +28,6 @@ const LadderOrderCell = ({
 			.randomBytes(15)
 			.toString("hex")
 			.substring(0, 15);
-
-		console.log(stakeVal[selectionId]);
 
 		// stoploss and fill or kill can't be together, stoploss takes priority
 		placeOrder({
