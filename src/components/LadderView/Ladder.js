@@ -173,7 +173,7 @@ const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, setL
 			size: stakeVal[selectionId],
 			orderCompleteCallBack: async betId => {
 				if (stopLossSelected && stopLossData === undefined) {
-					changeStopLossList({
+					placeStopLossOrder({
 						side: side === "BACK" ? "LAY" : "BACK",
 						price: formatPrice(price),
 						custom: false,

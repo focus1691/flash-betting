@@ -1,20 +1,10 @@
 import React, { useEffect, memo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder } from "../../actions/market";
-import { getMatchedBets } from "../../selectors/orderSelector";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({
-	ladderOrder,
-	sortedLadder,
-	onChangeLadderOrder,
-	marketOpen,
-	marketStatus,
-	excludedLadders,
-	matchedBets,
-	ladderUnmatched
-}) => {
+const Ladders = ({ ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, ladderUnmatched }) => {
 	useEffect(() => {
 		// initialize the order object
 		const newOrderList = {};
@@ -24,7 +14,7 @@ const Ladders = ({
 		}
 
 		onChangeLadderOrder(newOrderList);
-	}, [sortedLadder]);
+	}, [onChangeLadderOrder, sortedLadder]);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div
@@ -58,8 +48,7 @@ const mapStateToProps = state => {
 		sortedLadder: state.market.sortedLadder,
 		excludedLadders: state.market.excludedLadders,
 		ladderOrder: state.market.ladderOrder,
-		ladderUnmatched: state.settings.ladderUnmatched,
-		matchedBets: getMatchedBets(state.order.bets)
+		ladderUnmatched: state.settings.ladderUnmatched
 	};
 };
 
