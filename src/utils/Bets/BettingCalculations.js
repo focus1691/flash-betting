@@ -1,3 +1,5 @@
+import { formatPrice } from "../ladder/CreateFullLadder";
+
 /**
  * This function sums all matched bets to find the total.
  * @param {object} ladder - The ladder containing the price data for a runner.
@@ -53,4 +55,42 @@ const colorForLay = side => {
   return side === 0 ? "red" : "#01CC41";
 };
 
-export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay, twoDecimalPlaces };
+const colorForOrder = side => {
+  return { 
+    backgroundColor: side === "BACK" ? "#A6D8FF" : "#FAC9D7"
+  };
+};
+
+const getStrategyAbbreviation = (trailing, hedged) => {
+  if (trailing && hedged) return "th";
+  else if (!trailing && hedged) return "h";
+  else if (trailing && !hedged) return "t";
+  else return "";
+};
+
+const getStrategySuffix = (strategy, stopEntryCondition, targetLTP, strategyAbbreviation) => {
+  let suffix = "";
+  switch (strategy) {
+    case "Stop Loss":
+      suffix = "SL ";
+      break;
+    case "Tick Offset":
+      suffix = "T.O.";
+      break;
+    case "Back":
+      suffix = "B";
+      break;
+    case "Lay":
+      suffix = "L";
+      break;
+    case "Stop Entry":
+      suffix = stopEntryCondition + formatPrice(targetLTP) + "SE";
+      break;
+    default:
+      break;
+  }
+  suffix += strategyAbbreviation;
+  return suffix;
+};
+
+export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay, colorForOrder, twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix };

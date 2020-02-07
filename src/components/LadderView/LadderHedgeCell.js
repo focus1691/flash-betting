@@ -4,8 +4,12 @@ import { getUnmatchedBetsOnRow } from "../../selectors/orderSelector";
 import { calcHedgeProfit, hedgeStyle } from "../../utils/Bets/HedgeProfit";
 import GetUnmatchedStake from "../../utils/Bets/GetUnmatchedStake";
 
-const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBetsOnRow, side, PLHedgeNumber, handleHedgeCellClick }) => {
-	const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber]);
+const isMoving = (prevProps, nextProps) => {
+	return nextProps.isMoving;
+};
+
+const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow, side, PLHedgeNumber, handleHedgeCellClick }) => {
+	const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber, side]);
 	const style = useMemo(() => hedgeStyle(unmatchedBetsOnRow, hedgePL), [unmatchedBetsOnRow, hedgePL]);
 	const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBetsOnRow), [unmatchedBetsOnRow]);
 
@@ -14,10 +18,10 @@ const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBetsOnRow, sid
 			className="td"
 			style={style}
 			onClick={handleHedgeCellClick(marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber)}>
-			{unmatchedBetsOnRow ? unmatchedStake : hedgePL}
+			{unmatchedStake || hedgePL || null}
 		</div>
 	);
-};
+}, isMoving);
 
 const mapStateToProps = (state, { selectionId, price, side }) => {
 	return {
@@ -25,12 +29,4 @@ const mapStateToProps = (state, { selectionId, price, side }) => {
 	};
 };
 
-const isMoving = (prevProps, nextProps) => {
-	if (nextProps.isMoving) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-export default connect(mapStateToProps)(memo(LadderHedgeCell, isMoving));
+export default connect(mapStateToProps)(LadderHedgeCell);

@@ -1,9 +1,8 @@
-import React, { useMemo, useCallback } from "react";
+import React, { memo, useMemo, useCallback, useEffect } from "react";
 import { connect } from "react-redux";
 import { changePriceType, updateOrder } from "../../actions/market";
 import { cancelOrder, cancelOrderAction, updateOrders } from "../../actions/order";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
-import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { updateTickOffsetList } from "../../actions/tickOffset";
@@ -11,24 +10,23 @@ import { updateStopEntryList } from "../../actions/stopEntry";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
+import { getStrategyAbbreviation, getStrategySuffix, colorForOrder } from "../../utils/Bets/BettingCalculations";
 
-const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, tickOffsetList, stopLossList,
+const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryList, tickOffsetList, stopLossList,
 	fillOrKillList, onChangeBackList, onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList,
 	onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, onUpdateBets, priceType, onChangePriceType}) => {
 
-	const matchedBets = useMemo(() => Object.values(bets.matched)
-		.filter(order => parseFloat(order.selectionId) === parseFloat(selectionId),
-		[bets]));
+	const matchedBets = useMemo(() => {
+		return Object.values(bets.matched).filter(order => parseFloat(order.selectionId) === parseFloat(selectionId));
+	}, [bets.matched, selectionId]);
 		
 	const allUnmatchedBets = useMemo(() => combineUnmatchedOrders(
 		backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched)[selectionId],
-		[backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched]);
+		[backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched, selectionId]);
 
-	const allUnmatchedSpecialBets = useMemo(() => combineUnmatchedOrders(
-		backList, layList, stopEntryList, tickOffsetList, stopLossList, {})[selectionId],
-		[backList, layList, stopEntryList, tickOffsetList, stopLossList]);
+	const unmatchedBetsArr = useMemo(() => allUnmatchedBets ? Object.values(allUnmatchedBets) : [], [allUnmatchedBets]);
 
-	const unmatchedBetsArr = allUnmatchedBets ? Object.values(allUnmatchedBets) : [];
+	const style = useMemo(() => unmatchedBetsArr.length > 0 ? "lay-body" : "", [unmatchedBetsArr.length]);
 
 	const cancelUnmatchedOrder = useCallback(order => e => {
 		let ordersToRemove = [];
@@ -97,7 +95,7 @@ const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, 
 				body: JSON.stringify(ordersToRemove)
 			});
 		} catch (e) {}
-	});
+	}, [backList, onChangeBackList, layList, onChangeLayList, stopEntryList, onChangeStopEntryList, tickOffsetList, onChangeTickOffsetList, stopLossList, onChangeStopLossList, fillOrKillList, onCancelOrder, bets.matched, bets.unmatched, onChangeFillOrKillList]);
 
 	const cancelSpecialOrders = useCallback(orders => {
 		let ordersToRemove = [];
@@ -161,7 +159,8 @@ const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, 
 		onChangeTickOffsetList(newTickOffsetList);
 		onChangeStopLossList(newStopLossList);
 		onChangeFillOrKillList(newFillOrKill);
-	});
+	}, [backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, onChangeBackList, onChangeLayList,
+		onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList]);
 
 	const cancelAllOrdersOnSelection = useCallback((marketId, selectionId, unmatchedBets,
 		matchedBets, specialBets, betCanceler) => async e => {
@@ -201,7 +200,7 @@ const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, 
 				matched: cancelBets.matched
 			});
 		}
-	});
+	}, [onUpdateBets]);
 
 	return (
 		<div className={"order-row"}>
@@ -209,32 +208,14 @@ const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, 
 				<tbody>
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
-							<tbody className={unmatchedBetsArr.length > 0 ? "lay-body" : ""}>
+							<tbody className={style}>
 								{unmatchedBetsArr.map(rfs =>
 									rfs.map(bet => {
-										let specialSuffix = "";
-										if (bet.trailing && bet.hedged) specialSuffix = "th";
-										else if (!bet.trailing && bet.hedged) specialSuffix = "h";
-										else if (bet.trailing && !bet.hedged) specialSuffix = "t";
-
-										const suffix =
-											(bet.strategy == "Stop Loss"
-												? "SL "
-												: bet.strategy === "Tick Offset"
-												? "T.O."
-												: bet.strategy === "Back"
-												? "B"
-												: bet.strategy === "Lay"
-												? "L"
-												: bet.strategy === "Stop Entry"
-												? bet.stopEntryCondition + formatPrice(bet.targetLTP) + "SE"
-												: "") + specialSuffix;
-
+										let strategyAbbreviation = getStrategyAbbreviation(bet.trailing, bet.hedged);
+										let strategySuffix = getStrategySuffix(bet.strategy, bet.stopEntryCondition, bet.targetLTP, strategyAbbreviation);
 										return (
 											<tr
-												style={{
-													backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
-												}}>
+												style={colorForOrder(bet.side)}>
 												<td>
 													<img
 														className={"cancel-order-btn-2"}
@@ -243,7 +224,7 @@ const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, 
 														style={{ cursor: "pointer" }}
 														onClick={cancelUnmatchedOrder(bet)}
 													/>
-													{`${bet.size} @ ${twoDecimalPlaces(bet.price)} ${suffix}`}
+													{`${bet.size} @ ${twoDecimalPlaces(bet.price)} ${strategySuffix}`}
 												</td>
 											</tr>
 										);
@@ -263,7 +244,7 @@ const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, 
 								selectionId,
 								bets.unmatched,
 								bets.matched,
-								allUnmatchedSpecialBets,
+								allUnmatchedBets,
 								cancelSpecialOrders
 							)}>
 							K
@@ -290,7 +271,7 @@ const OrderRow = ({selectionId, market, bets, backList, layList, stopEntryList, 
 			</table>
 		</div>
 	);
-};
+});
 
 const mapStateToProps = state => {
 	return {

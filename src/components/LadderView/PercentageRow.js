@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { connect } from "react-redux";
 import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
@@ -11,41 +11,16 @@ import { getLTP, getLTPDelta, getPercent, getTV } from "../../selectors/marketSe
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
 import Tooltip from "@material-ui/core/Tooltip";
-const PercentageRow = ({
-	ltp,
-	tv,
-	percent,
-	market,
-	ltpDelta,
-	layFirstCol,
-	setLayFirst,
-	onUpdateBets,
-	selectionId,
-	bets,
-	stopLossList,
-	tickOffsetList,
-	stopEntryList,
-	layList,
-	backList,
-	fillOrKillList,
-	onChangeBackList,
-	onChangeLayList,
-	onChangeStopEntryList,
-	onChangeTickOffsetList,
-	onChangeStopLossList,
-	onChangeFillOrKillList
-}) => {
-	const ltpStyle = getLTPstyle(ltp, ltpDelta);
-	const marketId = market.marketId;
 
-	const allUnmatchedSpecialBets = combineUnmatchedOrders(
-		backList,
-		layList,
-		stopEntryList,
-		tickOffsetList,
-		stopLossList,
-		{}
-	)[selectionId];
+const PercentageRow = memo(({ltp, tv, percent, market, ltpDelta, layFirstCol, setLayFirst, onUpdateBets, selectionId, bets, stopLossList,
+						tickOffsetList, stopEntryList, layList, backList, fillOrKillList, onChangeBackList, onChangeLayList, onChangeStopEntryList,
+						onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList }) => {
+	
+	const ltpStyle = useMemo(() => getLTPstyle(ltp, ltpDelta), [ltp, ltpDelta]);
+	const marketId = useMemo(() => market.marketId, [market.marketId]);
+	const allUnmatchedBets = useMemo(() => combineUnmatchedOrders(
+		backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched)[selectionId],
+		[backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched, selectionId]);
 
 	const cancelSpecialOrders = orders => {
 		let ordersToRemove = [];
@@ -175,7 +150,7 @@ const PercentageRow = ({
 						layFirstCol ? "LAY" : "BACK",
 						bets.unmatched,
 						bets.matched,
-						allUnmatchedSpecialBets,
+						allUnmatchedBets,
 						cancelSpecialOrders
 					)}
 				/>
@@ -204,14 +179,14 @@ const PercentageRow = ({
 						layFirstCol ? "BACK" : "LAY",
 						bets.unmatched,
 						bets.matched,
-						allUnmatchedSpecialBets,
+						allUnmatchedBets,
 						cancelSpecialOrders
 					)}
 				/>
 			</Tooltip>
 		</div>
 	);
-};
+});
 
 const mapStateToProps = (state, { selectionId }) => {
 	return {
@@ -243,4 +218,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(PercentageRow));
+export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow);

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { connect } from "react-redux";
 import { setRunner, setDraggingLadder } from "../../actions/market";
 import { getLTP, getRunner, getSportId, getPL } from "../../selectors/marketSelector";
@@ -6,37 +6,16 @@ import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from "../..
 import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
-import { calcBackBet, calcHedgedPL2 } from "../../utils/TradingStategy/HedingCalculator";
+import { calcHedgeAtLTP, calcHedgeSize } from "../../utils/TradingStategy/HedingCalculator";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
+import { calcOddsOnPriceHover } from "../../utils/Bets/HedgeProfit";
 
-const LadderHeader = ({
-	selectionId,
-	sportId,
-	runner,
-	onSelectRunner,
-	setLadderDown,
-	oddsHovered,
-	ltp,
-	PL,
-	onDraggingLadder,
-	selectionUnmatchedBets,
-	selectionMatchedBets
-}) => {
-	const ordersOnMarket = selectionMatchedBets.length > 0;
+const LadderHeader = memo(({selectionId, sportId, runner, onSelectRunner, setLadderDown, oddsHovered, ltp, PL, onDraggingLadder, selectionMatchedBets}) => {
 
-	const oddsHoveredCalc =
-		((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) ||
-		(oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId)
-			? 1
-			: -1) *
-		parseFloat(
-			calcBackBet(oddsHovered.odds, 2) +
-				((oddsHovered.side === "BACK" && oddsHovered.selectionId === selectionId) ||
-				(oddsHovered.side === "LAY" && oddsHovered.selectionId !== selectionId)
-					? 1
-					: -1) *
-					parseFloat(PL)
-		).toFixed(2);
+	const ordersOnMarket = useMemo(() => selectionMatchedBets.length > 0, [selectionMatchedBets.length]);
+	const oddsHoveredCalc = useMemo(() => calcOddsOnPriceHover(oddsHovered.odds, oddsHovered.side, selectionId, oddsHovered.selectionId, PL), [PL, oddsHovered.odds, oddsHovered.selectionId, oddsHovered.side, selectionId]);
+	const ladderLTPHedge = useMemo(() => calcHedgeAtLTP(selectionMatchedBets, ltp),[ltp, selectionMatchedBets]);
+	const LTPHedgeSize = useMemo(() => calcHedgeSize(selectionMatchedBets, ltp), [selectionMatchedBets, ltp]);
 
 	const handleMouseDown = () => e => {
 		setLadderDown(true);
@@ -47,16 +26,6 @@ const LadderHeader = ({
 		e.target.onerror = null;
 		e.target.src = iconForEvent(parseInt(sportId));
 	};
-
-	// calculate hedge at the ltp
-	const profitArray = selectionMatchedBets.map(
-		bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp))
-	);
-	const ladderLTPHedge = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
-
-	// gets all the bets and returns a hedge
-	const LTPHedgeSize =
-		selectionMatchedBets.length > 0 ? CalculateLadderHedge(ltp, selectionMatchedBets, "hedged").size : 0;
 
 	return (
 		<div className={"ladder-header"}>
@@ -118,7 +87,7 @@ const LadderHeader = ({
 			</div>
 		</div>
 	);
-};
+});
 
 const mapStateToProps = (state, { selectionId }) => {
 	return {
@@ -131,7 +100,6 @@ const mapStateToProps = (state, { selectionId }) => {
 		oddsHovered: state.market.oddsHovered,
 		PL: getPL(state.market.marketPL, { selectionId }),
 		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId })
-		// selectionUnmatchedBets: getSelectionUnmatchedBets(state.order.bets, {selectionId}),
 	};
 };
 
@@ -142,4 +110,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderHeader));
+export default connect(mapStateToProps, mapDispatchToProps)(LadderHeader);

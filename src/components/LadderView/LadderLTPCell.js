@@ -4,7 +4,13 @@ import { getIsLTP, getLTPDelta, getLTP } from "../../selectors/marketSelector";
 import { formatPrice, formatPriceKey } from "../../utils/ladder/CreateFullLadder";
 import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
 
-const LadderLTPCell = ({ price, isLTP, ltp, ltpDelta, pauseLTPScrolling, resumeLTPScrolling }) => {
+const arePropsEqual = (prevProps, nextProps) => {
+	if (nextProps.isMoving) return true;
+	else if (nextProps.isLTP !== prevProps.isLTP || nextProps.ltpDelta !== prevProps.ltpDelta) return false;
+	return true;
+};
+
+const LadderLTPCell = memo(({ price, isLTP, ltp, ltpDelta, pauseLTPScrolling, resumeLTPScrolling }) => {
 	const ltpStyle = isLTP ? getLTPstyle(ltp, ltpDelta) : { background: "#BBBBBB" };
 
 	return (
@@ -12,7 +18,7 @@ const LadderLTPCell = ({ price, isLTP, ltp, ltpDelta, pauseLTPScrolling, resumeL
 			{formatPrice(price)}
 		</div>
 	);
-};
+}, arePropsEqual);
 
 const mapStateToProps = (state, { selectionId, price }) => {
 	return {
@@ -22,14 +28,4 @@ const mapStateToProps = (state, { selectionId, price }) => {
 	};
 };
 
-const arePropsEqual = (prevProps, nextProps) => {
-	if (nextProps.isMoving) {
-		return true;
-	} else if (nextProps.isLTP !== prevProps.isLTP || nextProps.ltpDelta !== prevProps.ltpDelta) {
-		return false;
-	} else {
-		return true;
-	}
-};
-
-export default connect(mapStateToProps)(memo(LadderLTPCell, arePropsEqual));
+export default connect(mapStateToProps)(LadderLTPCell);

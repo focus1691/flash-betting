@@ -1,6 +1,7 @@
 
 import { twoDecimalPlaces } from "../Bets/BettingCalculations";
 import { getOppositeSide } from "../Bets/GetOppositeSide";
+import CalculateLadderHedge from "../ladder/CalculateLadderHedge";
 
 /**
  * This function is used to calculate liability of a bet.
@@ -40,6 +41,17 @@ const calcHedge = (size, price, side, ltp, exitPrice) => {
         hedgePL: calcHedgedPL2(size, price, ltp),
         hedgeStake: calcHedgeStake(size, price, exitPrice, side)
     }
+};
+
+const calcHedgeAtLTP = (bets, ltp) => {
+	const arr = bets.map(
+		bet => (bet.side === "LAY" ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp))
+	);
+	return (-1 * arr.reduce((a, b) => a - b, 0)).toFixed(2);
+};
+
+const calcHedgeSize = (bets, ltp) => {
+    return bets.length > 0 ? CalculateLadderHedge(ltp, bets, "hedged").size : 0;
 };
 
 /**
@@ -100,4 +112,4 @@ const isHedgingOnSelectionAvailable = (marketId, selectionId, bets) => {
     return counter[0] > 0 && counter[1] === 0 || counter[0] === 0 && counter[1] > 0;
 };
 
-export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets };
+export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP, calcHedgeSize };

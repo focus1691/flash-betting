@@ -2,42 +2,13 @@ import React, { memo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder, setDraggingLadder } from "../../actions/market";
 
-const LadderContainer = ({
-	marketStatus,
-	isReferenceSet,
-	order,
-	containerRef,
-	isMoving,
-	isLadderDown,
-	setIsReferenceSet,
-	runners,
-	ladderOrderList,
-	onChangeLadderOrder,
-	setIsMoving,
-	setLadderDown,
-	children,
-	onDraggingLadder,
-	draggingLadder,
-	scrollToLTP
-}) => {
-	const onLoad = e => {
-		setIsReferenceSet(true);
-	};
-
+const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
+	ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children, onDraggingLadder, draggingLadder, scrollToLTP}) => {
+	
 	const handleMouseMove = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
-		moveLadder(
-			e.movementX,
-			e.clientX,
-			isReferenceSet,
-			containerRef,
-			order,
-			runners,
-			ladderOrderList,
-			onChangeLadderOrder,
-			setIsMoving
-		);
+		moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving);
 		if (!draggingLadder) onDraggingLadder(false);
 	};
 
@@ -77,7 +48,7 @@ const LadderContainer = ({
 					  }
 			}
 			ref={containerRef}
-			onLoad={onLoad}
+			onLoad={setIsReferenceSet}
 			onMouseMove={handleMouseMove}
 			onMouseUp={handleMouseUp}
 			onMouseLeave={handleMouseLeave}>
@@ -92,17 +63,7 @@ const returnToOrderedPos = (containerRef, order, setIsMoving) => {
 	setIsMoving(false);
 };
 
-const moveLadder = (
-	offsetPos,
-	cursorPosition,
-	isReferenceSet,
-	containerRef,
-	order,
-	runners,
-	ladderOrderList,
-	onChangeLadderOrder,
-	setIsMoving
-) => {
+const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving) => {
 	if (!isReferenceSet) return;
 	containerRef.current.style.left = `${parseInt(containerRef.current.style.left, 10) + offsetPos}px`;
 	containerRef.current.style["z-index"] = 9999;

@@ -8,13 +8,17 @@ import LadderOrderCell from "./LadderOrderCell";
 import LadderVolumeCell from "./LadderVolumeCell";
 import GetQueryVariable from "../../utils/Market/GetQueryVariable";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
-import { getSelectionMatchedBets, getMatchedBets } from "../../selectors/orderSelector";
+import { getSelectionMatchedBets } from "../../selectors/orderSelector";
 import { getStakeVal } from "../../selectors/settingsSelector";
 import { getPL } from "../../selectors/marketSelector";
 import { getMatchedSide } from "../../utils/Bets/GetMatched";
 
-const LadderRow = ({ data: { selectionId, placeOrder, layFirstCol, handleHedgeCellClick, changeStopLossList, isMoving, resumeLTPScrolling,
-	pauseLTPScrolling }, PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
+const isMoving = (prevProps, nextProps) => {
+	return nextProps.data.isMoving;
+};
+
+const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, changeStopLossList, isMoving, resumeLTPScrolling,
+	pauseLTPScrolling, handlePlaceOrder }, PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
 
 	const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
 	const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
@@ -22,17 +26,17 @@ const LadderRow = ({ data: { selectionId, placeOrder, layFirstCol, handleHedgeCe
 	// gets all the bets and returns a hedge or new pl
 	const PLHedgeNumber = useMemo(() => selectionMatchedBets.length > 0
 		? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL)
-		: undefined, [selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL]);
+		: undefined, [selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
 
 	// for the stoploss and tickoffset
 	const HedgeSize = useMemo(() => selectionMatchedBets.length > 0
 		? CalculateLadderHedge(key, selectionMatchedBets, "hedged", stakeVal, PL).size
-		: undefined, [selectionMatchedBets, stakeVal, PL]);
+		: undefined, [selectionMatchedBets, key, stakeVal, PL]);
 
 	const handleContextMenu = useCallback(e => {
 		e.preventDefault();
 		return false;
-	});
+	}, []);
 
 	const marketId = GetQueryVariable("marketId");
 
@@ -52,7 +56,7 @@ const LadderRow = ({ data: { selectionId, placeOrder, layFirstCol, handleHedgeCe
 				side={side.left}
 				selectionId={selectionId}
 				price={key}
-				placeOrder={placeOrder}
+				handlePlaceOrder={handlePlaceOrder}
 				changeStopLossList={changeStopLossList}
 				// we do this because we want the hedge, not the pl
 				hedgeSize={HedgeSize}
@@ -71,7 +75,7 @@ const LadderRow = ({ data: { selectionId, placeOrder, layFirstCol, handleHedgeCe
 				side={side.right}
 				selectionId={selectionId}
 				price={key}
-				placeOrder={placeOrder}
+				handlePlaceOrder={handlePlaceOrder}
 				changeStopLossList={changeStopLossList}
 				// we do this because we want the hedge, not the pl
 				hedgeSize={HedgeSize}
@@ -90,7 +94,7 @@ const LadderRow = ({ data: { selectionId, placeOrder, layFirstCol, handleHedgeCe
 			/>
 		</div>
 	);
-};
+}, isMoving);
 
 const mapStateToProps = (state, { data: { selectionId }, index }) => {
 	return {
@@ -107,8 +111,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-const isMoving = (prevProps, nextProps) => {
-	return nextProps.data.isMoving;
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderRow, isMoving));
+export default connect(mapStateToProps, mapDispatchToProps)(LadderRow);

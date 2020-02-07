@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import React, { memo, useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
@@ -7,104 +6,21 @@ import { getMatched } from "../../selectors/marketSelector";
 import { getUnmatchedBetsOnRow } from "../../selectors/orderSelector";
 import { getStopLoss } from "../../selectors/stopLossSelector";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
-import { findTickOffset } from "../../utils/TradingStategy/TickOffset";
 import { getTotalMatched, orderStyle} from "../../utils/Bets/GetMatched";
 
-const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, isStopLoss, stopLoss,
-	stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged, onChangeTickOffsetList,
-	tickOffsetList, tickOffsetSelected,tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected,
-	fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched}) => {
+const isMoving = (prevProps, nextProps) => {
+	return nextProps.isMoving;
+};
+
+const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceOrder, stopLoss,
+	stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched}) => {
 	
-	const totalMatched = useMemo(() => getTotalMatched(cellMatched, cellUnmatched), [cellMatched, cellUnmatched]);
+	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
 	const style = useMemo(() => orderStyle(side, stopLoss, cellMatched, totalMatched), [side, stopLoss, cellMatched, totalMatched]);
 
 	const handleClick = useCallback(async e => {
-		const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
-
-		// stoploss and fill or kill can't be together, stoploss takes priority
-		placeOrder({
-			side: side,
-			price: formatPrice(price),
-			marketId: marketId,
-			selectionId: selectionId,
-			customerStrategyRef: referenceStrategyId,
-			unmatchedBets: unmatchedBets,
-			matchedBets: matchedBets,
-			size: stakeVal[selectionId],
-			orderCompleteCallBack: async betId => {
-				if (stopLossSelected && stopLossData === undefined) {
-					changeStopLossList({
-						side: side === "BACK" ? "LAY" : "BACK",
-						price: formatPrice(price),
-						custom: false,
-						units: stopLossUnits,
-						rfs: referenceStrategyId,
-						assignedIsOrderMatched: false,
-						size: stakeVal[selectionId],
-						betId: betId,
-						hedged: stopLossHedged,
-						marketId: marketId
-					});
-				} else if (tickOffsetSelected) {
-					const newTickOffset = Object.assign({}, tickOffsetList);
-					const addedOrder = {
-						strategy: "Tick Offset",
-						marketId: marketId,
-						selectionId: selectionId,
-						price: findTickOffset(
-							formatPrice(price),
-							side.toLowerCase() === "lay" ? "back" : "lay",
-							tickOffsetTicks,
-							tickOffsetUnits === "Percent"
-						).priceReached,
-						size: tickOffsetHedged ? hedgeSize : stakeVal[selectionId],
-						side: side === "BACK" ? "LAY" : "BACK",
-						percentageTrigger: tickOffsetTrigger,
-						rfs: referenceStrategyId,
-						betId: betId,
-						hedged: tickOffsetHedged,
-						minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1
-					};
-
-					newTickOffset[referenceStrategyId] = addedOrder;
-
-					await fetch("/api/save-order", {
-						headers: {
-							Accept: "application/json",
-							"Content-Type": "application/json"
-						},
-						method: "POST",
-						body: JSON.stringify(addedOrder)
-					});
-					onChangeTickOffsetList(newTickOffset);
-				}
-
-				if (!stopLossSelected && fillOrKillSelected) {
-					const addedFillOrKillOrder = {
-						strategy: "Fill Or Kill",
-						marketId: marketId,
-						selectionId: selectionId,
-						seconds: fillOrKillSeconds,
-						startTime: Date.now(),
-						betId: betId,
-						rfs: referenceStrategyId
-					};
-					const newFillOrKillList = Object.assign({}, fillOrKillList);
-					newFillOrKillList[betId] = addedFillOrKillOrder;
-
-					await fetch("/api/save-order", {
-						headers: {
-							Accept: "application/json",
-							"Content-Type": "application/json"
-						},
-						method: "POST",
-						body: JSON.stringify(addedFillOrKillOrder)
-					});
-					onUpdateFillOrKillList(newFillOrKillList);
-				}
-			}
-		});
-	}, []);
+		handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, stopLossData, stopLossUnits, changeStopLossList, hedgeSize);
+	}, [changeStopLossList, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLossData, stopLossSelected, stopLossUnits]);
 
 	const handleRightClick = useCallback(async e => {
 		e.preventDefault();
@@ -131,7 +47,7 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
 		});
 
 		return false;
-	});
+	}, [changeStopLossList, marketId, price, selectionId, side, stakeVal, stopLossList]);
 	return (
 		<div
 			className="td"
@@ -143,7 +59,7 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
 			{stopLoss ? (stopLoss.hedged ? "H" : stopLoss.stopLoss.size) : totalMatched > 0 ? totalMatched : null}
 		</div>
 	);
-};
+}, isMoving);
 
 const mapStateToProps = (state, props) => {
 	return {
@@ -177,12 +93,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-const isMoving = (prevProps, nextProps) => {
-	if (nextProps.isMoving) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderOrderCell, isMoving));
+export default connect(mapStateToProps, mapDispatchToProps)(LadderOrderCell);
