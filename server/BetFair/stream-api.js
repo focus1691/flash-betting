@@ -12,7 +12,6 @@ class BetFairStreamAPI {
 		this.bufferedStr = '';
 		this.chunks = [];
 		this.subscriptions = [];
-		this.tracker = 1;
 	}
 	authenticate (sessionKey) {
 
@@ -55,25 +54,20 @@ class BetFairStreamAPI {
 							}));
 						}
 						this.subscriptions = [];
-						this.chunks = [];
 					}
 					
 					// Market Change Message Data Found
 					if (result.op === 'mcm' && result.mc) {
-						this.tracker++;
 						if (result.mc[0].marketDefinition) {
 							this.openSocket.emit('market-definition', result.mc[0].marketDefinition);
 						}
 						this.openSocket.emit('mcm', result);
-						this.chunks = [];
 					}
 					// Order Change Message Data Found
 					else if (result.op === 'ocm' && result.oc) {
 						this.openSocket.emit('ocm', result);
-						this.chunks = [];
-					} else {
-						this.chunks = [];
-					}
+					} 
+					this.chunks = [];
 				} catch (e) {}
 			});
 
