@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState, useCallback } from "react";
 import { connect } from "react-redux";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
@@ -40,9 +40,9 @@ const Ladder = ({
 	const [ltpIsScrolling, setLTPIsScrolling] = useState(true);
 	const [layFirstCol, setLayFirstCol] = useState(true);
 
-	const setLayFirst = () => {
+	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
-	};
+	}, [layFirstCol]);
 
 	const scrollToLTP = () => {
 		const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
@@ -53,13 +53,13 @@ const Ladder = ({
 		}
 	};
 
-	const resumeLTPScrolling = () => e => {
+	const resumeLTPScrolling = useCallback(() => {
 		setLTPIsScrolling(true);
-	};
+	}, [ltpIsScrolling]);
 
-	const pauseLTPScrolling = () => e => {
+	const pauseLTPScrolling = useCallback(() => {
 		setLTPIsScrolling(false);
-	};
+	}, [ltpIsScrolling]);
 
 	// Scroll to the LTP when the ladder first loads
 	useEffect(() => {

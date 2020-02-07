@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import React, { memo } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { updateTickOffsetList } from "../../actions/tickOffset";
@@ -8,26 +8,18 @@ import { getUnmatchedBetsOnRow } from "../../selectors/orderSelector";
 import { getStopLoss } from "../../selectors/stopLossSelector";
 import { formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findTickOffset } from "../../utils/TradingStategy/TickOffset";
+import { getTotalMatched, orderStyle} from "../../utils/Bets/GetMatched";
 
 const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketId, selectionId, placeOrder, isStopLoss, stopLoss,
 	stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, stopLossHedged, onChangeTickOffsetList,
 	tickOffsetList, tickOffsetSelected,tickOffsetUnits, tickOffsetTicks, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected,
 	fillOrKillSeconds, fillOrKillList, onUpdateFillOrKillList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched}) => {
-	let totalMatched = 0;
-	if (cellMatched.matched) {
-		totalMatched += cellMatched.matched;
-	}
-	if (cellUnmatched) {
-		totalMatched += cellUnmatched.reduce(function(acc, bet) {
-			return acc + bet.size;
-		}, 0);
-	}
+	
+	const totalMatched = useMemo(() => getTotalMatched(cellMatched, cellUnmatched), [cellMatched, cellUnmatched]);
+	const style = useMemo(() => orderStyle(side, stopLoss, cellMatched, totalMatched), [side, stopLoss, cellMatched, totalMatched]);
 
-	const handleClick = async e => {
-		const referenceStrategyId = crypto
-			.randomBytes(15)
-			.toString("hex")
-			.substring(0, 15);
+	const handleClick = useCallback(async e => {
+		const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
 
 		// stoploss and fill or kill can't be together, stoploss takes priority
 		placeOrder({
@@ -112,9 +104,9 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
 				}
 			}
 		});
-	};
+	}, []);
 
-	const handleRightClick = async e => {
+	const handleRightClick = useCallback(async e => {
 		e.preventDefault();
 
 		if (stopLossList[selectionId] !== undefined) {
@@ -139,23 +131,11 @@ const LadderOrderCell = ({side, price, cell, unmatchedBets, matchedBets, marketI
 		});
 
 		return false;
-	};
+	});
 	return (
 		<div
 			className="td"
-			style={
-				stopLoss
-					? { background: "yellow" }
-					: cellMatched.side === "BACK" && totalMatched > 0 && side === "BACK"
-					? { background: "#75C2FD" }
-					: cellMatched.side === "LAY" && totalMatched > 0 && side === "LAY"
-					? { background: "#F694AA" }
-					: side === "LAY"
-					? { background: "#FCC9D3" }
-					: side === "BACK"
-					? { background: "#BCE4FC" }
-					: null
-			}
+			style={style}
 			onMouseEnter={onHover}
 			onMouseLeave={onLeave}
 			onClick={handleClick}

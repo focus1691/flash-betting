@@ -1,23 +1,20 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { connect } from "react-redux";
 import { getUnmatchedBetsOnRow } from "../../selectors/orderSelector";
+import { calcHedgeProfit, hedgeStyle } from "../../utils/Bets/HedgeProfit";
+import GetUnmatchedStake from "../../utils/Bets/GetUnmatchedStake";
 
-const LadderHedgeCell = ({marketId, selectionId, price, unmatchedBetsOnRow, side, PLHedgeNumber, handleHedgeCellClick}) => {
-	let PLHedgeProfit =
-		PLHedgeNumber && PLHedgeNumber.side === side && PLHedgeNumber.profit ? PLHedgeNumber.profit : undefined;
-	let unmatchedStake = 0;
-	if (unmatchedBetsOnRow) {
-		unmatchedStake = unmatchedBetsOnRow.reduce(function(acc, bet) {
-			return parseFloat(acc) + parseFloat(bet.size);
-		}, 0);
-	}
+const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBetsOnRow, side, PLHedgeNumber, handleHedgeCellClick }) => {
+	const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber]);
+	const style = useMemo(() => hedgeStyle(unmatchedBetsOnRow, hedgePL), [unmatchedBetsOnRow, hedgePL]);
+	const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBetsOnRow), [unmatchedBetsOnRow]);
 
 	return (
 		<div
 			className="td"
-			style={{ color: unmatchedBetsOnRow ? "black" : `${PLHedgeProfit >= 0 ? "green" : "red"}` }}
+			style={style}
 			onClick={handleHedgeCellClick(marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber)}>
-			{unmatchedBetsOnRow ? unmatchedStake : PLHedgeProfit}
+			{unmatchedBetsOnRow ? unmatchedStake : hedgePL}
 		</div>
 	);
 };
