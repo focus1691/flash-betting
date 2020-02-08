@@ -7,78 +7,67 @@ import { updateBackList } from "../../actions/back";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { updateTickOffsetList } from "../../actions/tickOffset";
 import { setPastEventTime } from "../../actions/market";
-import { checkTimeListsBefore } from '../../utils/TradingStategy/BackLay';
+import { checkBackAndLayOrders } from '../../utils/TradingStategy/BackLay';
+import { countDownTime } from "../../utils/Market/CountDown";
+import { msToHMS } from "../../utils/DateCalculator";
 
-const Countdown = props => {
-  const ONE_SECOND = 1000;
+const ONE_SECOND = 1000;
+
+const Countdown = ({market, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, onPastEventTime, onPlaceOrder, onCancelOrder, onChangeOrders,
+                    backList, layList, tickOffsetList, fillOrKillList,  bets, onUpdateBackList, onUpdateLayList, onUpdateTickOffsetList, onUpdateFillOrKillList}) => {
+
   const [timeRemaining, setTimeRemaining] = useState("--");
 
-  const calculateTime = () => {
-    if (!props.market) {
-      return "--";
-    }
-    let currentTime = props.inPlay ? props.inPlayTime : props.market.marketStartTime;
-    if (new Date() < new Date(currentTime)) {
-      return new Date(currentTime) - new Date();
-    }
-    else if (new Date() > new Date(currentTime)) {
-      if (!props.pastEventTime) props.onPastEventTime();
-      return Math.abs(new Date(currentTime) - new Date());
-    } else {
-      return "--";
-    }
-  }
-
   useInterval(async () => {
-    setTimeRemaining(calculateTime());
-
-    const newBackList = await checkTimeListsBefore(props.backList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "BACK", props.bets.matched, props.bets.unmatched)
-    if (Object.keys(props.backList).length > 0) {
-      props.onUpdateBackList(newBackList)
+    setTimeRemaining(countDownTime(market, inPlay, inPlayTime, pastEventTime, onPastEventTime));
+    
+    // Back Before/After Market
+    const newBackList = await checkBackAndLayOrders(backList, market.marketStartTime, onPlaceOrder, market.marketId, "BACK", bets.matched, bets.unmatched);
+    if (Object.keys(backList).length > 0) {
+      onUpdateBackList(newBackList);
     }
 
-
-    const newLayList = await checkTimeListsBefore(props.layList, props.market.marketStartTime, props.onPlaceOrder, props.market.marketId, "LAY", props.bets.matched, props.bets.unmatched)
-    if (Object.keys(props.layList).length > 0) {
-      props.onUpdateLayList(newLayList);
+    // Lay Before/After Market
+    const newLayList = await checkBackAndLayOrders(layList, market.marketStartTime, onPlaceOrder, market.marketId, "LAY", bets.matched, bets.unmatched);
+    if (Object.keys(layList).length > 0) {
+      onUpdateLayList(newLayList);
     }
 
     const newFillOrKillList = {};
-    const adjustedTickOffsetList = Object.assign({}, props.tickOffsetList);
-    const adjustedUnmatchedBets = Object.assign({}, props.bets.unmatched);
+    const adjustedTickOffsetList = Object.assign({}, tickOffsetList);
+    const adjustedUnmatchedBets = Object.assign({}, bets.unmatched);
     let ordersToRemove = [];
 
-    Object.keys(props.fillOrKillList).map((betId, index) => {
-      const order = props.fillOrKillList[betId];
+    // Fill Or Kill
+    Object.keys(fillOrKillList).map((betId, index) => {
+      const order = fillOrKillList[betId];
       if ((Date.now() / 1000) - (order.startTime / 1000) >= order.seconds) {
-        props.onCancelOrder({
-          marketId: props.market.marketId,
+        onCancelOrder({
+          marketId: market.marketId,
           betId: betId,
           sizeReduction: null,
-          matchedBets: props.bets.matched,
-          unmatchedBets: props.bets.unmatched
+          matchedBets: bets.matched,
+          unmatchedBets: bets.unmatched
         })
 
         ordersToRemove = ordersToRemove.concat(order);
 
         if (adjustedUnmatchedBets[betId] !== undefined) {
-          ordersToRemove = ordersToRemove.concat(adjustedUnmatchedBets[betId])
+          ordersToRemove = ordersToRemove.concat(adjustedUnmatchedBets[betId]);
           delete adjustedUnmatchedBets[betId];
         }
 
-        Object.values(props.tickOffsetList).map(tickOffsetOrder => {
+        // Tick Offset
+        Object.values(tickOffsetList).map(tickOffsetOrder => {
           if (tickOffsetOrder.rfs === order.rfs) {
             ordersToRemove = ordersToRemove.concat(adjustedTickOffsetList[tickOffsetOrder.rfs]);
             delete adjustedTickOffsetList[tickOffsetOrder.rfs];
           }
         })
-
-
-
       } else {
-        newFillOrKillList[betId] = props.fillOrKillList[betId]
+        newFillOrKillList[betId] = fillOrKillList[betId];
       }
-    })
+    });
 
     if (ordersToRemove.length > 0) {
       await fetch('/api/remove-orders', {
@@ -91,65 +80,28 @@ const Countdown = props => {
       })
     }
 
-    if (Object.values(adjustedUnmatchedBets).length !== Object.values(props.bets.unmatched).length) {
-      props.onChangeOrders({
+    if (Object.values(adjustedUnmatchedBets).length !== Object.values(bets.unmatched).length) {
+      onChangeOrders({
         unmatched: adjustedUnmatchedBets,
-        matched: props.bets.matched
+        matched: bets.matched
       })
     }
 
-    if (Object.keys(props.tickOffsetList).length > 0) {
-      props.onUpdateTickOffsetList(adjustedTickOffsetList)
+    if (Object.keys(tickOffsetList).length > 0) {
+      onUpdateTickOffsetList(adjustedTickOffsetList);
     }
 
-    if (Object.keys(props.fillOrKillList).length > 0) {
-      props.onUpdateFillOrKillList(newFillOrKillList);
+    if (Object.keys(fillOrKillList).length > 0) {
+      onUpdateFillOrKillList(newFillOrKillList);
     }
 
   }, ONE_SECOND);
 
-  const padZeroes = num => {
-    var str = num.toString();
-
-    while (str.length < 2) {
-      str = "0".concat(str);
-    }
-    return str;
-  };
-
-  const msToHMS = ms => {
-    if (typeof ms !== "number") return "--";
-
-    // 1- Convert to seconds:
-    var seconds = ms / 1000;
-    // 2- Extract hours:
-    var hours = Math.floor(parseInt(seconds / 3600)); // 3,600 seconds in 1 hour
-    seconds = seconds % 3600; // seconds remaining after extracting hours
-    // 3- Extract minutes:
-    var minutes = Math.floor(parseInt(seconds / 60)); // 60 seconds in 1 minute
-    // 4- Keep only seconds not extracted to minutes:
-    seconds = Math.floor(seconds % 60);
-
-    return Math.abs(hours) <= 0 && minutes <= 0 && seconds <= 0
-      ? "00:00:00"
-      : `${hours}:${padZeroes(minutes)}:${padZeroes(seconds)}`;
-  };
-
   const renderTime = () => {
-    if (!props.marketOpen) return null;
-
-    switch (props.marketStatus) {
-      case "OPEN":
-        return msToHMS(timeRemaining);
-      case "RUNNING":
-        return msToHMS(timeRemaining)
-      case "SUSPENDED":
-        return props.marketStatus;
-      case "CLOSED":
-        return props.marketStatus;
-      default:
-        return null;
-    }
+    if (!marketOpen) return null;
+    else if (marketStatus === "OPEN" || marketStatus === "RUNNING") return msToHMS(timeRemaining);
+    else if (marketStatus === "SUSPENDED" || marketStatus === "CLOSED") return marketStatus;
+    return null;
   };
 
   return (

@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import List from "@material-ui/core/List";
@@ -8,7 +9,6 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import crypto from 'crypto';
-import * as React from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../actions/back";
 import { formatPrice, getNextPrice } from "../../../../utils/ladder/CreateFullLadder";
@@ -36,15 +36,15 @@ const useStyles = makeStyles(theme => ({
 
 const Back = props => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // Change the text when the fields change
-  React.useEffect(() => {
+  useEffect(() => {
     props.onTextUpdate(`${props.stake} @ ${props.price}`);
   }, [props.price, props.stake]);
 
   // Load all the runners / set All / The Field as the default
-  React.useEffect(() => {
+  useEffect(() => {
     props.onSelection((Object.keys(props.runners).map(key => [
       props.runners[key].selectionId
     ])));
@@ -74,7 +74,7 @@ const Back = props => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
-        strategy: "Back",
+        strategy: "BACK",
         marketId: props.market.marketId,
         selectionId: convertedSelection,
         executionTime: props.executionTime,

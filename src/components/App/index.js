@@ -24,7 +24,6 @@ import { updateFillOrKillList } from "../../actions/fillOrKill";
 import Draggable from "../Draggable";
 import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
-import { checkTimeListsAfter } from "../../utils/TradingStategy/BackLay";
 import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from "../../utils/ExchangeStreaming/MCMHelper";
 import { CreateLadder } from "../../utils/ladder/CreateLadder";
 import { sortLadder } from "../../utils/ladder/SortLadder";
@@ -348,64 +347,6 @@ const App = props => {
       }
     });
   }, [connectionError]);
-
-  useEffect(() => {
-    // Back and Lay
-    const updateBackList = async (list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
-      let newBackList = await checkTimeListsAfter(
-        list,
-        startTime,
-        onPlaceOrder,
-        marketId,
-        side,
-        matchedBets,
-        unmatchedBets
-      );
-      if (Object.keys(props.backList).length > 0) {
-        props.onUpdateBackList(newBackList);
-      }
-    };
-
-    const updateLayList = async (list, startTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets) => {
-      let newLayList = await checkTimeListsAfter(
-        list,
-        startTime,
-        onPlaceOrder,
-        marketId,
-        side,
-        matchedBets,
-        unmatchedBets
-      );
-      if (Object.keys(props.layList).length > 0) {
-        props.onUpdateLayList(newLayList);
-      }
-    };
-
-    if (
-      props.market &&
-      props.market.marketStartTime &&
-      new Date().valueOf() > new Date(props.market.marketStartTime).valueOf()
-    ) {
-      updateBackList(
-        props.backList,
-        props.market.marketStartTime,
-        props.onPlaceOrder,
-        props.market.marketId,
-        "BACK",
-        props.matchedBets,
-        props.unmatchedBets
-      );
-      updateLayList(
-        props.layList,
-        props.market.marketStartTime,
-        props.onPlaceOrder,
-        props.market.marketId,
-        "LAY",
-        props.matchedBets,
-        props.unmatchedBets
-      );
-    }
-  }, [props.ladders]);
 
   useEffect(() => {
     /**

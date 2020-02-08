@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { updateBackList } from "../../../actions/back";
 import { updateFillOrKillList } from "../../../actions/fillOrKill";
@@ -10,62 +10,61 @@ import { updateTickOffsetList } from "../../../actions/tickOffset";
 import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
 import { combineUnmatchedOrders } from '../../../utils/Bets/CombineUnmatchedOrders';
 import { formatPrice, getPriceNTicksAway } from "../../../utils/ladder/CreateFullLadder";
-import { getTimeToDisplay } from '../../../utils/TradingStategy/BackLay'
+import { getTimeToDisplay } from '../../../utils/TradingStategy/BackLay';
+import { getStrategyAbbreviation } from "../../../utils/Bets/BettingCalculations";
 
-const UnmatchedBets = props => {
+const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, onChangeBackList, onChangeLayList,
+                        onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, onChangeOrders, rightClickTicks}) => {
 
-  const allOrders = combineUnmatchedOrders(props.backList, props.layList, props.stopEntryList, props.tickOffsetList, props.stopLossList, props.bets.unmatched);
-  const selections = Object.keys(allOrders);
+  const allOrders = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched), [backList, bets.unmatched, layList, stopEntryList, stopLossList, tickOffsetList]);
+  const selections = useMemo(() => { return Object.keys(allOrders) }, [allOrders]);
 
-  const cancelOrder = order => e => {
+  const cancelOrder = useCallback(order => e => {
     let ordersToRemove = [];
     // figure out which strategy it's using and make a new array without it
     switch (order.strategy) {
       case "Back":
-        const newBackList = Object.assign({}, props.backList);
+        const newBackList = Object.assign({}, backList);
         newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs)
-        props.onChangeBackList(newBackList);
+        onChangeBackList(newBackList);
         break;
       case "Lay":
-        const newLayList = Object.assign({}, props.layList);
+        const newLayList = Object.assign({}, layList);
         newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs)
-        props.onChangeLayList(newLayList);
+        onChangeLayList(newLayList);
         break;
       case "Stop Entry":
-        const newStopEntryList = Object.assign({}, props.stopEntryList);
+        const newStopEntryList = Object.assign({}, stopEntryList);
         newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs)
-        props.onChangeStopEntryList(newStopEntryList);
+        onChangeStopEntryList(newStopEntryList);
         break;
       case "Tick Offset":
-        const newTickOffsetList = Object.assign({}, props.tickOffsetList);
+        const newTickOffsetList = Object.assign({}, tickOffsetList);
         delete newTickOffsetList[order.rfs]
-        props.onChangeTickOffsetList(newTickOffsetList)
+        onChangeTickOffsetList(newTickOffsetList)
         break;
       case "Stop Loss":
-        const newStopLossList = Object.assign({}, props.stopLossList);
+        const newStopLossList = Object.assign({}, stopLossList);
         delete newStopLossList[order.selectionId];
-        props.onChangeStopLossList(newStopLossList)
+        onChangeStopLossList(newStopLossList)
         break;
       case "None":
         // if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
-        if (props.fillOrKillList[order.betId] !== undefined) {
-          const newFillOrKill = Object.assign({}, props.fillOrKillList)
+        if (fillOrKillList[order.betId] !== undefined) {
+          const newFillOrKill = Object.assign({}, fillOrKillList)
           ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId])
           delete newFillOrKill[order.betId];
-          props.onChangeFillOrKillList(newFillOrKill)
+          onChangeFillOrKillList(newFillOrKill)
         }
 
         // cancel order
-        props.onCancelOrder({
+        onCancelOrder({
           marketId: order.marketId,
           betId: order.betId,
           sizeReduction: null,
-          matchedBets: props.bets.matched,
-          unmatchedBets: props.bets.unmatched
+          matchedBets: bets.matched,
+          unmatchedBets: bets.unmatched
         });
-
-
-
         break;
       default:
         break;
@@ -86,45 +85,45 @@ const UnmatchedBets = props => {
     } catch (e) {
 
     }
-  };
+  }, [backList, bets.matched, bets.unmatched, fillOrKillList, layList, onCancelOrder, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, stopEntryList, stopLossList, tickOffsetList]);
 
-  const replaceOrderPrice = (order, newPrice) => {
+  const replaceOrderPrice = useCallback((order, newPrice) => {
     const newOrder = Object.assign({}, order, {price: newPrice})
     switch (order.strategy) {
       case "Back":
-        const newBackList = Object.assign({}, props.backList);
+        const newBackList = Object.assign({}, backList);
         const indexBack = newBackList[order.selectionId].findIndex(item => item.rfs === order.rfs)
         newBackList[order.selectionId][indexBack].price = newPrice;
-        props.onChangeBackList(newBackList);
+        onChangeBackList(newBackList);
         break;
       case "Lay":
-        const newLayList = Object.assign({}, props.layList);
+        const newLayList = Object.assign({}, layList);
         const indexLay = newLayList[order.selectionId].findIndex(item => item.rfs === order.rfs)
         newLayList[order.selectionId][indexLay].price = newPrice;
-        props.onChangeLayList(newLayList);
+        onChangeLayList(newLayList);
         break;
       case "Stop Entry":
-        const newStopEntryList = Object.assign({}, props.stopEntryList);
+        const newStopEntryList = Object.assign({}, stopEntryList);
         const indexStopEntry = newStopEntryList[order.selectionId].findIndex(item => item.rfs === order.rfs)
         newStopEntryList[order.selectionId][indexStopEntry].price = newPrice;
-        props.onChangeStopEntryList(newStopEntryList);
+        onChangeStopEntryList(newStopEntryList);
         break;
       case "Tick Offset":
-        const newTickOffsetList = Object.assign({}, props.tickOffsetList);
+        const newTickOffsetList = Object.assign({}, tickOffsetList);
         newTickOffsetList[order.rfs].price = newPrice;
-        props.onChangeTickOffsetList(newTickOffsetList)
+        onChangeTickOffsetList(newTickOffsetList)
         break;
       case "Stop Loss":
-        const newStopLossList = Object.assign({}, props.stopLossList);
+        const newStopLossList = Object.assign({}, stopLossList);
         newStopLossList[order.selectionId].price = newPrice;
-        props.onChangeStopLossList(newStopLossList)
+        onChangeStopLossList(newStopLossList)
         break;
       case "None":
         // if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
-        if (props.fillOrKillList[order.betId] !== undefined) {
-          const newFillOrKill = Object.assign({}, props.fillOrKillList)
+        if (fillOrKillList[order.betId] !== undefined) {
+          const newFillOrKill = Object.assign({}, fillOrKillList)
           newFillOrKill[order.betId].price = newPrice;
-          props.onChangeFillOrKillList(newFillOrKill)
+          onChangeFillOrKillList(newFillOrKill)
 
         }
 
@@ -144,7 +143,7 @@ const UnmatchedBets = props => {
         .then(res => res.json())
         .then(res => {
           if (res.status === "SUCCESS") {
-            const newUnmatched = Object.assign({}, props.bets.unmatched);
+            const newUnmatched = Object.assign({}, bets.unmatched);
             
             const newBetId = res.instructionReports[0].placeInstructionReport.betId;
             newUnmatched[newBetId] = Object.assign({}, newUnmatched[order.betId]);
@@ -153,14 +152,12 @@ const UnmatchedBets = props => {
 
             delete newUnmatched[order.betId];
 
-            props.onChangeOrders({
+            onChangeOrders({
               unmatched: newUnmatched,
-              matched: props.bets.matched,
+              matched: bets.matched,
             })
           }
-        })
-        
-
+        });
         break;
       default:
         break;
@@ -178,11 +175,10 @@ const UnmatchedBets = props => {
     } catch (e) {
 
     }
-
-  }
+  }, [backList, bets.matched, bets.unmatched, fillOrKillList, layList, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeOrders, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, stopEntryList, stopLossList, tickOffsetList]);
 
   const handleRightClick = order => {
-    replaceOrderPrice(order, getPriceNTicksAway(parseFloat(order.price), props.rightClickTicks))
+    replaceOrderPrice(order, getPriceNTicksAway(parseFloat(order.price), rightClickTicks))
   }
 
   return (
@@ -205,13 +201,13 @@ const UnmatchedBets = props => {
           </tr>
           <tr>
             <td className="menu-bets-event" colSpan={4}>
-              {props.market.competition !== undefined ? props.market.marketName + " " + props.market.competition.name : null}
+              {market.competition !== undefined ? market.marketName + " " + market.competition.name : null}
             </td>
           </tr>
-          {props.marketOpen
+          {marketOpen
             ? selections.map(selection => {
 
-              const selectionObject = props.market.runners.find(runner => runner.selectionId == selection);
+              const selectionObject = market.runners.find(runner => runner.selectionId == selection);
               if (selectionObject === undefined) return null;
 
               return (
@@ -222,17 +218,13 @@ const UnmatchedBets = props => {
                   {
                     Object.values(allOrders[selection]).map(rfs =>
                       rfs.map(order => {
-                        
-
-                        let suffix = "";
-                        if (order.trailing && order.hedged) suffix = "th"
-                        else if (!order.trailing && order.hedged) suffix = "h"
-                        else if (order.trailing && !order.hedged) suffix = "t"
+                        console.log(order);
+                        let suffix = getStrategyAbbreviation(order.trailing, order.hedged);
 
                         const PL =
                           (order.strategy === "Stop Loss" ? "SL " :
                             order.strategy === "Tick Offset" ? "T.O." :
-                              order.strategy === "Back" || order.strategy === "Lay" ? getTimeToDisplay(order, props.market.marketStartTime) + 's' + (order.executionTime === "Before" ? "-" : "+") :
+                              order.strategy === "Back" || order.strategy === "Lay" ? getTimeToDisplay(order, market.marketStartTime) + 's' + (order.executionTime === "Before" ? "-" : "+") :
                                 order.strategy === "Stop Entry" ? order.stopEntryCondition + formatPrice(order.targetLTP) + "SE" :
                                   calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)) + suffix
 
@@ -240,12 +232,12 @@ const UnmatchedBets = props => {
                           <tr
                             id="menu-unmatched-bet"
                             style={{
-                              backgroundColor: order.side === "BACK" ? "#A6D8FF" : "#FAC9D7",
+                              backgroundColor: (order.side === "BACK" || order.strategy === "BACK") ? "#A6D8FF" : (order.side === "LAY" || order.strategy === "Lay") ? "#FAC9D7" : null,
                               cursor: 'pointer',
                             }}
                             onContextMenu = {e => {
-                              e.preventDefault()
-                              handleRightClick(order)
+                              e.preventDefault();
+                              handleRightClick(order);
                             }}
                           >
 

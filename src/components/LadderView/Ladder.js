@@ -89,7 +89,7 @@ const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, setL
 		});
 	}, [matchedBets, onPlaceOrder, unmatchedBets]);
 
-	const placeStopLossOrder = async data => {
+	const placeStopLossOrder = useCallback(() => async data => {
 		const newStopLoss = {
 			marketId: data.marketId,
 			selectionId: parseInt(id),
@@ -119,7 +119,7 @@ const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, setL
 		});
 
 		onChangeStopLossList(newStopLossList);
-	};
+	}, [id, onChangeStopLossList, stopLossList, stopLossOffset, stopLossTrailing]);
 
 	const handleHedgeCellClick = (marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber) => e => {
 		if (!PLHedgeNumber) {
@@ -244,8 +244,7 @@ const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, setL
 				}
 			}
 		});
-	// eslint-disable-next-line no-use-before-define
-	}, [fillOrKillList, fillOrKillSeconds, fillOrKillSelected, matchedBets, onChangeTickOffsetList, onUpdateFillOrKillList, placeOrder, stopLossHedged, tickOffsetHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks, tickOffsetTrigger, tickOffsetUnits, unmatchedBets]);
+	}, [fillOrKillList, fillOrKillSeconds, fillOrKillSelected, matchedBets, onChangeTickOffsetList, onUpdateFillOrKillList, placeOrder, placeStopLossOrder, stopLossHedged, tickOffsetHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks, tickOffsetTrigger, tickOffsetUnits, unmatchedBets]);
 
 	return (
 		<LadderContainer

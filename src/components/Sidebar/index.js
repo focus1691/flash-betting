@@ -57,7 +57,7 @@ const BootstrapButton = withStyles({
     },
   });
 
-const Sidebar = props => {
+const Sidebar = ({fullscreen}) => {
 
     const [openTab, setOpenTab] = useState(2);
     const activeStyle = "#389C41";
@@ -99,7 +99,7 @@ const Sidebar = props => {
             }}
             anchor="left">
         <div className={"sticky"} style={{zIndex: "2"}}>
-            {props.fullscreen ? null : <Account/>}
+            {fullscreen ? null : <Account/>}
             <Toolbar/>
             <Event/>
             <div id="toggle-buttons">
@@ -115,7 +115,6 @@ const Sidebar = props => {
 
 const mapStateToProps = state => {
 	return {
-		view: state.settings.view,
 		fullscreen: state.settings.fullscreen
 	}
 }
