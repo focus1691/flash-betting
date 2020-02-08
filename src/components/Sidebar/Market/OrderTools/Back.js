@@ -74,7 +74,7 @@ const Back = props => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
-        strategy: "BACK",
+        strategy: "Back",
         marketId: props.market.marketId,
         selectionId: convertedSelection,
         executionTime: props.executionTime,

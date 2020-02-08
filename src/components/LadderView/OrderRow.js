@@ -215,7 +215,7 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 										let strategySuffix = getStrategySuffix(bet.strategy, bet.stopEntryCondition, bet.targetLTP, strategyAbbreviation);
 										return (
 											<tr
-												style={colorForOrder(bet.side)}>
+												style={colorForOrder(bet.side, bet.strategy)}>
 												<td>
 													<img
 														className={"cancel-order-btn-2"}

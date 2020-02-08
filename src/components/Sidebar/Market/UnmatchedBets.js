@@ -11,7 +11,7 @@ import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCal
 import { combineUnmatchedOrders } from '../../../utils/Bets/CombineUnmatchedOrders';
 import { formatPrice, getPriceNTicksAway } from "../../../utils/ladder/CreateFullLadder";
 import { getTimeToDisplay } from '../../../utils/TradingStategy/BackLay';
-import { getStrategyAbbreviation } from "../../../utils/Bets/BettingCalculations";
+import { getStrategyAbbreviation, colorForOrder, PLColor } from "../../../utils/Bets/BettingCalculations";
 
 const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, onChangeBackList, onChangeLayList,
                         onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, onChangeOrders, rightClickTicks}) => {
@@ -218,7 +218,6 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
                   {
                     Object.values(allOrders[selection]).map(rfs =>
                       rfs.map(order => {
-                        console.log(order);
                         let suffix = getStrategyAbbreviation(order.trailing, order.hedged);
 
                         const PL =
@@ -231,10 +230,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
                         return (
                           <tr
                             id="menu-unmatched-bet"
-                            style={{
-                              backgroundColor: (order.side === "BACK" || order.strategy === "BACK") ? "#A6D8FF" : (order.side === "LAY" || order.strategy === "Lay") ? "#FAC9D7" : null,
-                              cursor: 'pointer',
-                            }}
+                            style={colorForOrder(order.side, order.strategy)}
                             onContextMenu = {e => {
                               e.preventDefault();
                               handleRightClick(order);
@@ -252,14 +248,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
                             <td>{order.size}</td>
                             <td
                               id="pl-style"
-                              style={{
-                                color:
-                                  PL === "0.00"
-                                    ? "black"
-                                    : PL > 0
-                                      ? "green"
-                                      : "red"
-                              }}
+                              style={PLColor(PL)}
                             >
                               {PL}
                             </td>

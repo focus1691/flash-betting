@@ -25,7 +25,7 @@ const calcPercentDifference = (size, matchedPrice, currentPrice) => {
   let currPL = Math.round((size * currentPrice - size) * 100) / 100;
 
   // Round to remove the decimals and absolute to remove negatives
-  let percentDifference = Math.abs(Math.round((currPL - initialPL) * 100) /100) / currPL * 100;
+  let percentDifference = Math.abs(Math.round((currPL - initialPL) * 100) / 100) / currPL * 100;
   percentDifference = Math.floor(percentDifference);
 
   return percentDifference;
@@ -55,10 +55,16 @@ const colorForLay = side => {
   return side === 0 ? "red" : "#01CC41";
 };
 
-const colorForOrder = side => {
-  return { 
-    backgroundColor: side === "BACK" ? "#A6D8FF" : "#FAC9D7"
+const colorForOrder = (side, strategy) => {
+  return {
+    backgroundColor: (side === "BACK" || strategy === "Back") ? "#A6D8FF" : (side === "LAY" || strategy === "Lay") ? "#FAC9D7" : null
   };
+};
+
+const PLColor = PL => {
+  return {
+    color: PL === "0.00" ? "black" : PL > 0 ? "green" : "red"
+  }
 };
 
 const getStrategyAbbreviation = (trailing, hedged) => {
@@ -93,4 +99,4 @@ const getStrategySuffix = (strategy, stopEntryCondition, targetLTP, strategyAbbr
   return suffix;
 };
 
-export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay, colorForOrder, twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix };
+export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay, colorForOrder, PLColor, twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix };
