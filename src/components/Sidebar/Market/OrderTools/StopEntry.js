@@ -12,7 +12,7 @@ import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../actions/stopEntry";
-import { formatPrice, findPriceStep, getValidatedPrice } from "../../../../utils/ladder/CreateFullLadder";
+import { formatPrice, findPriceStep } from "../../../../utils/ladder/CreateFullLadder";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 
@@ -92,8 +92,6 @@ const StopEntry = props => {
     if (newStep !== step) {
       setStep(newStep);
     }
-
-    v = getValidatedPrice(props.price, v);
 
     props.onReceivePrice(v);
   }, [step, props.price]);

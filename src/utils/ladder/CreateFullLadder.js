@@ -37,6 +37,14 @@ const formatPrice = odds => {
   }
 };
 
+const getNextPrice = (prevPrice, nextPrice) => {
+  if (prevPrice === nextPrice) return prevPrice;
+  
+  let priceIncreased = prevPrice < nextPrice;
+  let index = ALL_PRICES.indexOf(prevPrice) + (priceIncreased ? 1 : -1);
+  return ALL_PRICES[index];
+}
+
 const findPriceStep = v => {
   if (v >= 1.01 && v < 2) {
     return 0.01;
@@ -68,14 +76,6 @@ const findPriceStep = v => {
   else if (v >= 100 && v <= 100) {
     return 10;
   }
-};
-
-const getNextPrice = (prevPrice, nextPrice, e, cb) => {
-  return prevPrice;
-};
-
-const getValidatedPrice = (prevPrice, nextPrice) => {
-  return nextPrice;
 };
 
 const getPriceNTicksAway = (price, N) => {
@@ -153,8 +153,7 @@ export {
   formatPrice,
   ALL_PRICES,
   calcBackLayPercentages,
+  getNextPrice,
   findPriceStep,
-  getValidatedPrice,
-  getPriceNTicksAway,
-  getNextPrice
+  getPriceNTicksAway
 };

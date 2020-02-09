@@ -11,7 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import crypto from 'crypto';
 import { connect } from "react-redux";
 import * as actions from "../../../../actions/back";
-import { formatPrice, findPriceStep, getValidatedPrice } from "../../../../utils/ladder/CreateFullLadder";
+import { formatPrice, findPriceStep } from "../../../../utils/ladder/CreateFullLadder";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 
@@ -83,8 +83,6 @@ const Back = props => {
     if (newStep !== step) {
       setStep(newStep);
     }
-
-    v = getValidatedPrice(props.price, v);
 
     props.onReceivePrice(v);
   }, [step, props.price]);
