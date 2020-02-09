@@ -762,9 +762,10 @@ io.on("connection", async client => {
 });
 
 function createWindow() {
+	let screenSize = electron.screen.getPrimaryDisplay().size;
     mainWindow = new BrowserWindow({
-        width: 800,
-		height: 600,
+        width: screenSize.width,
+		height: screenSize.height,
 		webPreferences: {
 			nodeIntegration: true
 		}
