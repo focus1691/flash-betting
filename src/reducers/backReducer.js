@@ -1,7 +1,7 @@
 const initialState = {
   selected: false,
   stake: 2,
-  price: 2,
+  price: 2.02,
   offset: {
     hours: 0,
     minutes: 0,

@@ -8,10 +8,10 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import crypto from 'crypto';
-import * as React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../actions/lay";
-import { formatPrice, getNextPrice } from "../../../../utils/ladder/CreateFullLadder";
+import { formatPrice, findPriceStep, getValidatedPrice } from "../../../../utils/ladder/CreateFullLadder";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 
@@ -31,15 +31,16 @@ const useStyles = makeStyles(theme => ({
 
 const Lay = props => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [step, setStep] = useState(findPriceStep(props.price));
 
   // Change the text when the fields change
-  React.useEffect(() => {
+  useEffect(() => {
     props.onTextUpdate(`${props.stake} @ ${props.price}`);
   }, [props.price, props.stake]);
 
   // Load all the runners / set All / The Field as the default
-  React.useEffect(() => {
+  useEffect(() => {
     props.onSelection((Object.keys(props.runners).map(key => [
       props.runners[key].selectionId
     ])));
@@ -57,6 +58,31 @@ const Lay = props => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const updateStep = useCallback(e => {
+    let v = e.target.value;
+
+    // Set empty String for non-numbers
+    if (parseInt(v) === NaN) {
+      props.onReceivePrice("");
+      return;
+    }
+    else if (props.price === "" && parseInt(v) === 1) {
+      setStep(0.01);
+      props.onReceivePrice(1.01);
+      return;
+    }
+    
+    let newStep = findPriceStep(v);
+
+    if (newStep !== step) {
+      setStep(newStep);
+    }
+
+    v = getValidatedPrice(props.price, v);
+
+    props.onReceivePrice(v);
+  }, [step, props.price]);
 
   // Handle Submit click to place an order
   const placeOrder = () => async e => {
@@ -100,7 +126,7 @@ const Lay = props => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <List component="nav" aria-label="Device settings">
         <ListItem
           button
@@ -171,8 +197,8 @@ const Lay = props => {
           type="number"
           label="@"
           value={props.price}
-          inputProps={{ min: "1.01", max: "1000", style: { fontSize: 10 } }}
-          onChange={e => props.onReceivePrice(getNextPrice(props.price, e.target.value))}
+          inputProps={{ min: "1.00", max: "1000", step: step, style: { fontSize: 10 } }}
+          onChange={updateStep}
           margin="normal"
         />
         <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
@@ -232,7 +258,7 @@ const Lay = props => {
           />
         </RadioGroup>
       </div>
-    </React.Fragment>
+    </>
   );
 };
 

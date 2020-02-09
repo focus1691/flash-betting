@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import List from "@material-ui/core/List";
@@ -11,7 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import crypto from 'crypto';
 import { connect } from "react-redux";
 import * as actions from "../../../../actions/back";
-import { formatPrice, getNextPrice } from "../../../../utils/ladder/CreateFullLadder";
+import { formatPrice, findPriceStep, getValidatedPrice } from "../../../../utils/ladder/CreateFullLadder";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 
@@ -37,6 +37,7 @@ const useStyles = makeStyles(theme => ({
 const Back = props => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [step, setStep] = useState(findPriceStep(props.price));
 
   // Change the text when the fields change
   useEffect(() => {
@@ -62,6 +63,31 @@ const Back = props => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const updateStep = useCallback(e => {
+    let v = e.target.value;
+
+    // Set empty String for non-numbers
+    if (parseInt(v) === NaN) {
+      props.onReceivePrice("");
+      return;
+    }
+    else if (props.price === "" && parseInt(v) === 1) {
+      setStep(0.01);
+      props.onReceivePrice(1.01);
+      return;
+    }
+    
+    let newStep = findPriceStep(v);
+
+    if (newStep !== step) {
+      setStep(newStep);
+    }
+
+    v = getValidatedPrice(props.price, v);
+
+    props.onReceivePrice(v);
+  }, [step, props.price]);
 
   // Handle Submit click to place an order
   const placeOrder = () => async e => {
@@ -176,8 +202,8 @@ const Back = props => {
           type="number"
           label="@"
           value={props.price}
-          inputProps={{ min: "1.01", max: "1000", style: { fontSize: 10 } }}
-          onChange={props.onReceivePrice(props.price)}
+          inputProps={{ min: "1.00", max: "1000", step: step, style: { fontSize: 10 } }}
+          onChange={updateStep}
           margin="normal"
         />
         <Button
@@ -267,7 +293,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onTextUpdate: text => dispatch(actions.setDisplayText(text)),
     onReceiveStake: stake => e => dispatch(actions.setStake(e.target.value)),
-    onReceivePrice: price => e => dispatch(actions.setPrice(getNextPrice(price, e.target.value))),
+    onReceivePrice: price => dispatch(actions.setPrice(price)),
     onReceiveHours: () => e => dispatch(actions.setHours(e.target.value)),
     onReceiveMinutes: () => e => dispatch(actions.setMinutes(e.target.value)),
     onReceiveSeconds: () => e => dispatch(actions.setSeconds(e.target.value)),

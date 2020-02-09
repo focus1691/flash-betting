@@ -37,16 +37,45 @@ const formatPrice = odds => {
   }
 };
 
-const getNextPrice = (currentPrice, selectedVal) => {
-  if (currentPrice === selectedVal) return currentPrice;
-  
-  let priceIncreased = currentPrice < selectedVal;
-  let index = ALL_PRICES.indexOf(currentPrice) + (priceIncreased ? 1 : -1);
+const findPriceStep = v => {
+  if (v >= 1.01 && v < 2) {
+    return 0.01;
+  }
+  else if (v >= 2 && v < 3) {
+    return 0.02;
+  }
+  else if (v >= 3 && v < 4) {
+    return 0.05;
+  }
+  else if (v >= 4 && v < 6) {
+    return 0.05;
+  }
+  else if (v >= 6 && v < 10) {
+    return 0.1;
+  }
+  else if (v >= 10 && v < 20) {
+    return 0.5;
+  }
+  else if (v >= 20 && v < 30) {
+    return 1;
+  }
+  else if (v >= 30 && v < 50) {
+    return 2;
+  }
+  else if (v >= 50 && v < 100) {
+    return 5;
+  }
+  else if (v >= 100 && v <= 100) {
+    return 10;
+  }
+};
 
-  let newPrice = ALL_PRICES[index];
+const getNextPrice = (prevPrice, nextPrice, e, cb) => {
+  return prevPrice;
+};
 
-  if (newPrice === -1) return currentPrice;
-  return newPrice;
+const getValidatedPrice = (prevPrice, nextPrice) => {
+  return nextPrice;
 };
 
 const getPriceNTicksAway = (price, N) => {
@@ -116,7 +145,7 @@ const calcBackLayPercentages = (atbo, atlo, ltp) => {
   const backPercent = Math.round((backMatched / total) * 100);
   const layPercent = Math.round((layMatched / total) * 100);
 
-  return { back: backPercent ? backPercent : 0 , lay: layPercent ? layPercent : 0 };
+  return { back: backPercent ? backPercent : 0, lay: layPercent ? layPercent : 0 };
 };
 
 export {
@@ -124,6 +153,8 @@ export {
   formatPrice,
   ALL_PRICES,
   calcBackLayPercentages,
-  getNextPrice,
-  getPriceNTicksAway
+  findPriceStep,
+  getValidatedPrice,
+  getPriceNTicksAway,
+  getNextPrice
 };
