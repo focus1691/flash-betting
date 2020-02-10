@@ -73,7 +73,7 @@ const findPriceStep = v => {
   else if (v >= 50 && v < 100) {
     return 5;
   }
-  else if (v >= 100 && v <= 100) {
+  else if (v >= 100 && v <= 1000) {
     return 10;
   }
 };

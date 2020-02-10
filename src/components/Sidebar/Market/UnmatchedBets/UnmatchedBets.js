@@ -1,17 +1,15 @@
 import React, { useMemo, useCallback } from "react";
 import { connect } from "react-redux";
-import { updateBackList } from "../../../actions/back";
-import { updateFillOrKillList } from "../../../actions/fillOrKill";
-import { updateLayList } from "../../../actions/lay";
-import { cancelOrder, updateOrders } from "../../../actions/order";
-import { updateStopEntryList } from "../../../actions/stopEntry";
-import { updateStopLossList } from "../../../actions/stopLoss";
-import { updateTickOffsetList } from "../../../actions/tickOffset";
-import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
-import { combineUnmatchedOrders } from '../../../utils/Bets/CombineUnmatchedOrders';
-import { formatPrice, getPriceNTicksAway } from "../../../utils/ladder/CreateFullLadder";
-import { getTimeToDisplay } from '../../../utils/TradingStategy/BackLay';
-import { getStrategyAbbreviation, colorForOrder, PLColor } from "../../../utils/Bets/BettingCalculations";
+import { updateBackList } from "../../../../actions/back";
+import { updateFillOrKillList } from "../../../../actions/fillOrKill";
+import { updateLayList } from "../../../../actions/lay";
+import { cancelOrder, updateOrders } from "../../../../actions/order";
+import { updateStopEntryList } from "../../../../actions/stopEntry";
+import { updateStopLossList } from "../../../../actions/stopLoss";
+import { updateTickOffsetList } from "../../../../actions/tickOffset";
+import { combineUnmatchedOrders } from '../../../../utils/Bets/CombineUnmatchedOrders';
+import { getPriceNTicksAway } from "../../../../utils/ladder/CreateFullLadder";
+import Bet from "./Bet";
 
 const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, onChangeBackList, onChangeLayList,
                         onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, onChangeOrders, rightClickTicks}) => {
@@ -19,7 +17,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
   const allOrders = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched), [backList, bets.unmatched, layList, stopEntryList, stopLossList, tickOffsetList]);
   const selections = useMemo(() => { return Object.keys(allOrders) }, [allOrders]);
 
-  const cancelOrder = useCallback(order => e => {
+  const cancelOrder = useCallback(order => {
     let ordersToRemove = [];
     // figure out which strategy it's using and make a new array without it
     switch (order.strategy) {
@@ -218,42 +216,12 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
                   {
                     Object.values(allOrders[selection]).map(rfs =>
                       rfs.map(order => {
-                        let suffix = getStrategyAbbreviation(order.trailing, order.hedged);
-
-                        const PL =
-                          (order.strategy === "Stop Loss" ? "SL " :
-                            order.strategy === "Tick Offset" ? "T.O." :
-                              order.strategy === "Back" || order.strategy === "Lay" ? getTimeToDisplay(order, market.marketStartTime) + 's' + (order.executionTime === "Before" ? "-" : "+") :
-                                order.strategy === "Stop Entry" ? order.stopEntryCondition + formatPrice(order.targetLTP) + "SE" :
-                                  calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1)) + suffix
-
-                        return (
-                          <tr
-                            id="menu-unmatched-bet"
-                            style={colorForOrder(order.side, order.strategy)}
-                            onContextMenu = {e => {
-                              e.preventDefault();
-                              handleRightClick(order);
-                            }}
-                          >
-
-                            <button
-                              className={"cancel-order-btn"}
-                              style={{ height: "22px", width: "auto" }}
-                              onClick={cancelOrder(order)}
-                            >
-                              <img src={`${window.location.origin}/icons/error.png`} alt="X"/>
-                            </button>
-                            <td>{twoDecimalPlaces(order.price)}</td>
-                            <td>{order.size}</td>
-                            <td
-                              id="pl-style"
-                              style={PLColor(PL)}
-                            >
-                              {PL}
-                            </td>
-                          </tr>
-                        );
+                        return <Bet
+                                  order={order}
+                                  handleRightClick={handleRightClick}
+                                  cancelOrder={cancelOrder}
+                                  marketStartTime={market.marketStartTime}
+                                />
                       })
                     )
                   }

@@ -18,7 +18,7 @@ const isMoving = (prevProps, nextProps) => {
 };
 
 const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, changeStopLossList, isMoving, resumeLTPScrolling,
-	pauseLTPScrolling, handlePlaceOrder }, PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
+	pauseLTPScrolling, handlePlaceOrder, cancelSpecialOrders }, PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
 
 	const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
 	const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);

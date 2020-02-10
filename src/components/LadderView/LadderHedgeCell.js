@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { getUnmatchedBetsOnRow } from "../../selectors/orderSelector";
 import { calcHedgeProfit, hedgeStyle } from "../../utils/Bets/HedgeProfit";
@@ -13,11 +13,15 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow
 	const style = useMemo(() => hedgeStyle(unmatchedBetsOnRow, hedgePL), [unmatchedBetsOnRow, hedgePL]);
 	const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBetsOnRow), [unmatchedBetsOnRow]);
 
+	const handleClick = useCallback(() => {
+		handleHedgeCellClick(marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber);
+	}, [PLHedgeNumber, handleHedgeCellClick, marketId, price, selectionId, side, unmatchedBetsOnRow]);
+
 	return (
 		<div
 			className="td"
 			style={style}
-			onClick={handleHedgeCellClick(marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber)}>
+			onClick={handleClick}>
 			{unmatchedStake || hedgePL || null}
 		</div>
 	);

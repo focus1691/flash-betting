@@ -401,23 +401,13 @@ const App = props => {
               const currentLTP = ladders[rc.id].ltp[0];
 
               // stop Entry
-              newStopEntryList = await stopEntryListChange(
-                props.stopEntryList,
-                rc.id,
-                currentLTP,
-                props.onPlaceOrder,
-                newStopEntryList,
-                props.unmatchedBets,
-                props.matchedBets
-              );
+              newStopEntryList = await stopEntryListChange(props.stopEntryList, rc.id, currentLTP, props.onPlaceOrder, newStopEntryList, props.unmatchedBets, props.matchedBets);
+              
               // We increment and check the stoplosses
-              if (props.stopLossList[rc.id] !== undefined) {
+              if (adjustedStopLossList[rc.id]) {
                 // if it's trailing and the highest LTP went up, then we add a tickoffset
                 const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-                let adjustedStopLoss = Object.assign(
-                  {},
-                  stopLossTrailingChange(props.stopLossList, rc.id, currentLTP, maxLTP)
-                );
+                let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(props.stopLossList, rc.id, currentLTP, maxLTP));
 
                 // if hedged, get size (price + hedged profit/loss)
                 if (adjustedStopLoss.hedged) {
@@ -425,29 +415,17 @@ const App = props => {
                     bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId)
                   );
 
-                  adjustedStopLoss.size = CalculateLadderHedge(
-                    parseFloat(adjustedStopLoss.price),
-                    newMatchedBets,
-                    "hedged"
-                  ).size;
+                  adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, "hedged").size;
                 }
 
                 // if it doesn't have a reference or the order has been matched (STOP LOSS)
-                const stopLossMatched = stopLossCheck(
-                  adjustedStopLoss,
-                  rc.id,
-                  currentLTP,
-                  props.onPlaceOrder,
-                  stopLossOrdersToRemove,
-                  adjustedStopLossList,
-                  props.unmatchedBets,
-                  props.matchedBets
-                );
+                const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, currentLTP, props.onPlaceOrder, stopLossOrdersToRemove,
+                                                      adjustedStopLossList, props.unmatchedBets, props.matchedBets);
 
                 adjustedStopLossList = stopLossMatched.adjustedStopLossList;
                 stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
               }
-            } else if (rc.id in nonRunners === false) {
+            } else if (!(rc.id in nonRunners)) {
               // Runner found so we create the new object with the raw data
               ladders[rc.id] = CreateLadder(rc);
             }

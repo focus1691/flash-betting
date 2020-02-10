@@ -77,7 +77,7 @@ const StopEntry = props => {
     let v = e.target.value;
 
     // Set empty String for non-numbers
-    if (parseInt(v) === NaN) {
+    if (isNaN(parseInt(v))) {
       props.onReceivePrice("");
       return;
     }

@@ -40,7 +40,7 @@ export const stopEntryListChange = async (stopEntryList, selectionId, currentLTP
  * @return {object} The new stoploss with the changes to the tickOffset.
 */
 export const stopLossTrailingChange = (stopLossList, selectionId, currentLTP, oldMaxLadderLTP) => {
-    let adjustedStopLoss = Object.assign({}, stopLossList[selectionId])
+    let adjustedStopLoss = Object.assign({}, stopLossList[selectionId]);
     if (stopLossList[selectionId].trailing && currentLTP > oldMaxLadderLTP) {
         adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1; 
     }
@@ -98,10 +98,8 @@ export const stopLossCheck = (adjustedStopLoss, selectionId, currentLTP, onPlace
             adjustedStopLossList[selectionId] = adjustedStopLoss;
         }
     }
-
     return {
         adjustedStopLossList: adjustedStopLossList,
         stopLossOrdersToRemove: newStopLossOrdersToRemove
     }
-    
 }

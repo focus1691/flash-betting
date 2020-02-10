@@ -1,4 +1,5 @@
 import { formatPrice } from "../ladder/CreateFullLadder";
+import { getTimeToDisplay } from "../TradingStategy/BackLay";
 
 /**
  * This function sums all matched bets to find the total.
@@ -99,4 +100,29 @@ const getStrategySuffix = (strategy, stopEntryCondition, targetLTP, strategyAbbr
   return suffix;
 };
 
-export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay, colorForOrder, PLColor, twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix };
+const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartTime) => {
+  let suffix = "";
+  switch (order.strategy) {
+    case "Stop Loss":
+      suffix = "SL ";
+      break;
+    case "Tick Offset":
+      suffix = "T.O.";
+      break;
+    case "Back":
+      suffix = getTimeToDisplay(order, marketStartTime) + "s" + (order.executionTime === "Before" ? "-" : "+");
+      break;
+    case "Lay":
+      suffix = getTimeToDisplay(order, marketStartTime) + "s" + (order.executionTime === "Before" ? "-" : "+");
+      break;
+    case "Stop Entry":
+      suffix = order.stopEntryCondition + formatPrice(order.targetLTP) + "SE";
+      break;
+    default:
+      suffix = calcBackProfit(order.size, order.price, order.side === "BACK" ? 0 : 1) + strategyAbbreviation;
+      break;
+  }
+  return suffix;
+}
+
+export { sumMatchedBets, calcPercentDifference, calcBackProfit, calcLiability, colorForBack, colorForLay, colorForOrder, PLColor, twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix, getStrategySuffixForPL };

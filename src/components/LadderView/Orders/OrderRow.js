@@ -1,20 +1,20 @@
-import React, { memo, useMemo, useCallback, useEffect } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
-import { changePriceType, updateOrder } from "../../actions/market";
-import { cancelOrder, cancelOrderAction, updateOrders } from "../../actions/order";
-import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
-import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
-import { updateStopLossList } from "../../actions/stopLoss";
-import { updateTickOffsetList } from "../../actions/tickOffset";
-import { updateStopEntryList } from "../../actions/stopEntry";
-import { updateLayList } from "../../actions/lay";
-import { updateBackList } from "../../actions/back";
-import { updateFillOrKillList } from "../../actions/fillOrKill";
-import { getStrategyAbbreviation, getStrategySuffix, colorForOrder } from "../../utils/Bets/BettingCalculations";
+import { changePriceType, updateOrder } from "../../../actions/market";
+import { cancelOrder, cancelOrderAction, updateOrders } from "../../../actions/order";
+import { combineUnmatchedOrders } from "../../../utils/Bets/CombineUnmatchedOrders";
+import { updateStopLossList } from "../../../actions/stopLoss";
+import { updateTickOffsetList } from "../../../actions/tickOffset";
+import { updateStopEntryList } from "../../../actions/stopEntry";
+import { updateLayList } from "../../../actions/lay";
+import { updateBackList } from "../../../actions/back";
+import { updateFillOrKillList } from "../../../actions/fillOrKill";
+import { MatchedBet } from "./MatchedBet";
+import { UnmatchedBet } from "./UnmatchedBet";
 
 const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryList, tickOffsetList, stopLossList,
 	fillOrKillList, onChangeBackList, onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList,
-	onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, onUpdateBets, priceType, onChangePriceType}) => {
+	onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, cancelSpecialOrders, onUpdateBets, priceType, onChangePriceType}) => {
 
 	const matchedBets = useMemo(() => {
 		return Object.values(bets.matched).filter(order => parseFloat(order.selectionId) === parseFloat(selectionId));
@@ -28,7 +28,7 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 
 	const style = useMemo(() => unmatchedBetsArr.length > 0 ? "lay-body" : "", [unmatchedBetsArr.length]);
 
-	const cancelUnmatchedOrder = useCallback(order => e => {
+	const cancelUnmatchedOrder = useCallback(order => {
 		let ordersToRemove = [];
 		// figure out which strategy it's using and make a new array without it
 		switch (order.strategy) {
@@ -61,7 +61,7 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 				break;
 			case "None":
 				// if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
-				if (fillOrKillList[order.betId] !== undefined) {
+				if (fillOrKillList[order.betId]) {
 					const newFillOrKill = Object.assign({}, fillOrKillList);
 					ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId]);
 					delete newFillOrKill[order.betId];
@@ -97,77 +97,10 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 		} catch (e) {}
 	}, [backList, onChangeBackList, layList, onChangeLayList, stopEntryList, onChangeStopEntryList, tickOffsetList, onChangeTickOffsetList, stopLossList, onChangeStopLossList, fillOrKillList, onCancelOrder, bets.matched, bets.unmatched, onChangeFillOrKillList]);
 
-	const cancelSpecialOrders = useCallback(orders => {
-		let ordersToRemove = [];
-		const newBackList = Object.assign({}, backList);
-		const newLayList = Object.assign({}, layList);
-		const newStopEntryList = Object.assign({}, stopEntryList);
-		const newTickOffsetList = Object.assign({}, tickOffsetList);
-		const newStopLossList = Object.assign({}, stopLossList);
-		const newFillOrKill = Object.assign({}, fillOrKillList);
-		Object.values(orders).forEach(rfs => {
-			rfs.forEach(order => {
-				// figure out which strategy it's using and make a new array without it
-				switch (order.strategy) {
-					case "Back":
-						newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs);
-						break;
-					case "Lay":
-						newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs);
-						break;
-					case "Stop Entry":
-						newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(
-							item => item.rfs !== order.rfs
-						);
-						break;
-					case "Tick Offset":
-						delete newTickOffsetList[order.rfs];
-						break;
-					case "Stop Loss":
-						delete newStopLossList[order.selectionId];
-						break;
-					case "None":
-						// if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
-						if (fillOrKillList[order.betId] !== undefined) {
-							ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId]);
-							delete newFillOrKill[order.betId];
-						}
-						break;
-					default:
-						break;
-				}
+	const cancelAllOrdersOnSelection = useCallback(async () => {
+		cancelSpecialOrders(allUnmatchedBets);
 
-				ordersToRemove = ordersToRemove.concat(order);
-
-				// delete from database
-				try {
-					fetch("/api/remove-orders", {
-						headers: {
-							Accept: "application/json",
-							"Content-Type": "application/json"
-						},
-						method: "POST",
-						body: JSON.stringify(ordersToRemove)
-					});
-				} catch (e) {}
-			});
-		});
-
-		onChangeBackList(newBackList);
-		onChangeLayList(newLayList);
-		onChangeStopEntryList(newStopEntryList);
-		onChangeTickOffsetList(newTickOffsetList);
-		onChangeStopLossList(newStopLossList);
-		onChangeFillOrKillList(newFillOrKill);
-	}, [backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, onChangeBackList, onChangeLayList,
-		onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList]);
-
-	const cancelAllOrdersOnSelection = useCallback((marketId, selectionId, unmatchedBets,
-		matchedBets, specialBets, betCanceler) => async e => {
-			
-		betCanceler(specialBets);
-
-		const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`)
+		const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${market.marketId}`)
 			.then(res => res.json())
 			.then(res => res.currentOrders);
 
@@ -189,7 +122,7 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 					unmatchedBets:
 						previousCancelOrderUnmatchedBets && previousCancelOrderUnmatchedBets.unmatched
 							? previousCancelOrderUnmatchedBets.unmatched
-							: unmatchedBets
+							: bets.unmatched
 				});
 			}, Promise.resolve());
 
@@ -200,7 +133,7 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 				matched: cancelBets.matched
 			});
 		}
-	}, [onUpdateBets]);
+	}, [allUnmatchedBets, bets.unmatched, cancelSpecialOrders, market.marketId, matchedBets, onUpdateBets, selectionId]);
 
 	return (
 		<div className={"order-row"}>
@@ -209,27 +142,9 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
 							<tbody className={style}>
-								{unmatchedBetsArr.map(rfs =>
-									rfs.map(bet => {
-										let strategyAbbreviation = getStrategyAbbreviation(bet.trailing, bet.hedged);
-										let strategySuffix = getStrategySuffix(bet.strategy, bet.stopEntryCondition, bet.targetLTP, strategyAbbreviation);
-										return (
-											<tr
-												style={colorForOrder(bet.side, bet.strategy)}>
-												<td>
-													<img
-														className={"cancel-order-btn-2"}
-														src={`${window.location.origin}/icons/error.png`}
-														alt="X"
-														style={{ cursor: "pointer" }}
-														onClick={cancelUnmatchedOrder(bet)}
-													/>
-													{`${bet.size} @ ${twoDecimalPlaces(bet.price)} ${strategySuffix}`}
-												</td>
-											</tr>
-										);
-									})
-								)}
+								{unmatchedBetsArr.map(rfs => rfs.map(bet => {
+									return <UnmatchedBet bet={bet} cancelBet={cancelUnmatchedOrder} />
+								}))}
 							</tbody>
 						</table>
 					</td>
@@ -239,14 +154,7 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 							{priceType === "STAKE" ? "S" : "L"}
 						</button>
 						<button
-							onClick={cancelAllOrdersOnSelection(
-								market.marketId,
-								selectionId,
-								bets.unmatched,
-								bets.matched,
-								allUnmatchedBets,
-								cancelSpecialOrders
-							)}>
+							onClick={cancelAllOrdersOnSelection}>
 							K
 						</button>
 					</td>
@@ -254,15 +162,7 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 						<table className="lay-table">
 							<tbody className={matchedBets.length > 0 ? "lay-body" : ""}>
 								{matchedBets.map((bet, idx) => {
-									return (
-										<tr
-											key={`ladder-matched-bet-${bet.selectionId}-${idx}`}
-											style={{
-												backgroundColor: bet.side === "BACK" ? "#A6D8FF" : "#FAC9D7"
-											}}>
-											<td>{`${bet.size} @ ${twoDecimalPlaces(bet.price)}`}</td>
-										</tr>
-									);
+									return <MatchedBet bet={bet} index={idx} />
 								})}
 							</tbody>
 						</table>

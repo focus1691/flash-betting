@@ -29,29 +29,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Lay = props => {
+const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market, runners, selections, list,
+  onTextUpdate, onReceiveStake, onReceivePrice, onReceiveHours, onReceiveMinutes, onReceiveSeconds,
+  onToggleExecutionTime, onSelection, onUpdateLayList}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [step, setStep] = useState(findPriceStep(props.price));
+  const [step, setStep] = useState(findPriceStep(price));
 
   // Change the text when the fields change
   useEffect(() => {
-    props.onTextUpdate(`${props.stake} @ ${props.price}`);
-  }, [props.price, props.stake]);
+    onTextUpdate(`${stake} @ ${price}`);
+  }, [onTextUpdate, price, stake]);
 
   // Load all the runners / set All / The Field as the default
   useEffect(() => {
-    props.onSelection((Object.keys(props.runners).map(key => [
-      props.runners[key].selectionId
+    onSelection((Object.keys(runners).map(key => [
+      runners[key].selectionId
     ])));
-  }, []);
+  }, [onSelection, runners]);
 
   const handleClickListItem = () => e => {
     setAnchorEl(e.currentTarget);
   };
 
   const handleMenuItemClick = index => e => {
-    props.onSelection(index);
+    onSelection(index);
     setAnchorEl(null);
   };
 
@@ -63,13 +65,13 @@ const Lay = props => {
     let v = e.target.value;
 
     // Set empty String for non-numbers
-    if (parseInt(v) === NaN) {
-      props.onReceivePrice("");
+    if (isNaN(parseInt(v))) {
+      onReceivePrice("");
       return;
     }
-    else if (props.price === "" && parseInt(v) === 1) {
+    else if (price === "" && parseInt(v) === 1) {
       setStep(0.01);
-      props.onReceivePrice(1.01);
+      onReceivePrice(1.01);
       return;
     }
     
@@ -79,27 +81,27 @@ const Lay = props => {
       setStep(newStep);
     }
 
-    props.onReceivePrice(v);
-  }, [step, props.price]);
+    onReceivePrice(v);
+  }, [price, step, onReceivePrice]);
 
   // Handle Submit click to place an order
   const placeOrder = () => async e => {
 
-    const selections = typeof props.selections == "string" ? [props.selections] : props.selections
+    const selectedRunners = typeof selections == "string" ? [selections] : selections
 
-    const newLayList = Object.assign({}, props.list)
+    const newLayList = Object.assign({}, list)
 
-    await Promise.all(selections.map(async (selection, index) => {
+    await Promise.all(selectedRunners.map(async (selection, index) => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
         strategy: "Lay",
-        marketId: props.market.marketId,
+        marketId: market.marketId,
         selectionId: convertedSelection,
-        executionTime: props.executionTime,
-        timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
-        size: props.stake,
-        price: formatPrice(props.price),
+        executionTime: executionTime,
+        timeOffset: (hours * 3600) + (minutes * 60) + parseInt(seconds),
+        size: stake,
+        price: formatPrice(price),
         rfs: referenceStrategyId
       };
 
@@ -120,7 +122,7 @@ const Lay = props => {
         }
       });
     }));
-    props.onUpdateLayList(newLayList);
+    onUpdateLayList(newLayList);
   };
 
   return (
@@ -136,9 +138,9 @@ const Lay = props => {
           <ListItemText
             primary="Lay"
             secondary={
-              props.selections
-                ? typeof props.selections === "string"
-                  ? props.runners[props.selections].runnerName
+              selections
+                ? typeof selections === "string"
+                  ? runners[selections].runnerName
                   : "Lay All / The Field"
                 : ""
             }
@@ -153,12 +155,12 @@ const Lay = props => {
         onClose={handleClose}
       >
         {/* The Menu Item for Back All / the Field */}
-        {props.runners ? (
+        {runners ? (
           <StyledMenuItem
             key={`lay-order-all/field`}
             className={classes.root}
-            selected={typeof props.selections != "string"}
-            onClick={handleMenuItemClick(Object.keys(props.runners).map(key => [props.runners[key].selectionId]))}
+            selected={typeof selections != "string"}
+            onClick={handleMenuItemClick(Object.keys(runners).map(key => [runners[key].selectionId]))}
           >
             Lay All / The Field
           </StyledMenuItem>
@@ -167,14 +169,14 @@ const Lay = props => {
         {/* Create Menu Items for all the runners and display their names
          * Store their selectionId to be used to place bets for event clicks
          */}
-        {Object.keys(props.runners).map(key => (
+        {Object.keys(runners).map(key => (
           <StyledMenuItem
-            key={`lay-order-${props.runners[key].runnerName}`}
+            key={`lay-order-${runners[key].runnerName}`}
             className={classes.root}
-            selected={key === props.selections}
+            selected={key === selections}
             onClick={handleMenuItemClick(key)}
           >
-            {props.runners[key].runnerName}
+            {runners[key].runnerName}
           </StyledMenuItem>
         ))}
       </StyledMenu>
@@ -184,9 +186,9 @@ const Lay = props => {
           className={classes.textField}
           type="number"
           label="stake"
-          value={props.stake}
+          value={stake}
           inputProps={{ min: "1", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveStake(e.target.value)}
+          onChange={e => onReceiveStake(e.target.value)}
           margin="normal"
         />
         <TextField
@@ -194,7 +196,7 @@ const Lay = props => {
           className={classes.textField}
           type="number"
           label="@"
-          value={props.price}
+          value={price}
           inputProps={{ min: "1.00", max: "1000", step: step, style: { fontSize: 10 } }}
           onChange={updateStep}
           margin="normal"
@@ -210,9 +212,9 @@ const Lay = props => {
           className={classes.textField2}
           type="number"
           label="hh"
-          value={props.hours}
+          value={hours}
           inputProps={{ min: "0", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveHours(e.target.value)}
+          onChange={e => onReceiveHours(e.target.value)}
           margin="normal"
         />
         <TextField
@@ -220,9 +222,9 @@ const Lay = props => {
           className={classes.textField2}
           type="number"
           label="mm"
-          value={props.minutes}
+          value={minutes}
           inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveMinutes(e.target.value)}
+          onChange={e => onReceiveMinutes(e.target.value)}
           margin="normal"
         />
         <TextField
@@ -230,17 +232,17 @@ const Lay = props => {
           className={classes.textField2}
           type="number"
           label="ss"
-          value={props.seconds}
+          value={seconds}
           inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={e => props.onReceiveSeconds(e.target.value)}
+          onChange={e => onReceiveSeconds(e.target.value)}
           margin="normal"
         />
 
         <RadioGroup
           aria-label="orderexecution"
           name="orderexecution"
-          value={props.executionTime}
-          onChange={e => props.onToggleExecutionTime(e.target.value)}
+          value={executionTime}
+          onChange={e => onToggleExecutionTime(e.target.value)}
         >
           <FormControlLabel
             value="Before"

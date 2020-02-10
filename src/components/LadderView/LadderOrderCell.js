@@ -16,6 +16,7 @@ const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceO
 	stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched}) => {
 	
 	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
+	const text = useMemo(() => stopLoss ? (stopLoss.stopLoss.hedged ? "H" : stopLoss.stopLoss.size) : totalMatched > 0 ? totalMatched : null, [stopLoss, totalMatched]);
 	const style = useMemo(() => orderStyle(side, stopLoss, cellMatched, totalMatched), [side, stopLoss, cellMatched, totalMatched]);
 
 	const handleClick = useCallback(async e => {
@@ -23,9 +24,10 @@ const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceO
 	}, [changeStopLossList, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLossData, stopLossSelected, stopLossUnits]);
 
 	const handleRightClick = useCallback(async e => {
+		console.log(stopLoss);
 		e.preventDefault();
 
-		if (stopLossList[selectionId] !== undefined) {
+		if (stopLossList[selectionId]) {
 			await fetch("/api/remove-orders", {
 				headers: {
 					Accept: "application/json",
@@ -45,9 +47,7 @@ const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceO
 			rfs: undefined,
 			assignedIsOrderMatched: false
 		});
-
-		return false;
-	}, [changeStopLossList, marketId, price, selectionId, side, stakeVal, stopLossList]);
+	}, [changeStopLossList, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossList]);
 	return (
 		<div
 			className="td"
@@ -56,7 +56,7 @@ const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceO
 			onMouseLeave={onLeave}
 			onClick={handleClick}
 			onContextMenu={handleRightClick}>
-			{stopLoss ? (stopLoss.hedged ? "H" : stopLoss.stopLoss.size) : totalMatched > 0 ? totalMatched : null}
+			{text}
 		</div>
 	);
 }, isMoving);

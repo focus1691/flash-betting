@@ -34,29 +34,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Back = props => {
+const Back = ({text, stake, price, hours, minutes, seconds, executionTime, runners, market, selections, list,
+  onTextUpdate, onReceiveStake, onReceivePrice, onReceiveHours, onReceiveMinutes, onReceiveSeconds,
+  onToggleExecutionTime, onSelection, onUpdateBackList }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [step, setStep] = useState(findPriceStep(props.price));
+  const [step, setStep] = useState(findPriceStep(price));
 
   // Change the text when the fields change
   useEffect(() => {
-    props.onTextUpdate(`${props.stake} @ ${props.price}`);
-  }, [props.price, props.stake]);
+    onTextUpdate(`${stake} @ ${price}`);
+  }, [onTextUpdate, price, stake]);
 
   // Load all the runners / set All / The Field as the default
   useEffect(() => {
-    props.onSelection((Object.keys(props.runners).map(key => [
-      props.runners[key].selectionId
+    onSelection((Object.keys(runners).map(key => [
+      runners[key].selectionId
     ])));
-  }, []);
+  }, [onSelection, runners]);
 
   const handleClickListItem = () => e => {
     setAnchorEl(e.currentTarget);
   };
 
   const handleMenuItemClick = index => e => {
-    props.onSelection(index);
+    onSelection(index);
     setAnchorEl(null);
   };
 
@@ -68,13 +70,13 @@ const Back = props => {
     let v = e.target.value;
 
     // Set empty String for non-numbers
-    if (parseInt(v) === NaN) {
-      props.onReceivePrice("");
+    if (isNaN(parseInt(v))) {
+      onReceivePrice("");
       return;
     }
-    else if (props.price === "" && parseInt(v) === 1) {
+    else if (price === "" && parseInt(v) === 1) {
       setStep(0.01);
-      props.onReceivePrice(1.01);
+      onReceivePrice(1.01);
       return;
     }
     
@@ -84,27 +86,27 @@ const Back = props => {
       setStep(newStep);
     }
 
-    props.onReceivePrice(v);
-  }, [step, props.price]);
+    onReceivePrice(v);
+  }, [price, step, onReceivePrice]);
 
   // Handle Submit click to place an order
   const placeOrder = () => async e => {
 
-    const selections = typeof props.selections == "string" ? [props.selections] : props.selections
+    const selectedRunners = typeof selections == "string" ? [selections] : selections
 
-    const newBackList = Object.assign({}, props.list);
+    const newBackList = Object.assign({}, list);
 
-    await Promise.all(selections.map(async (selection, index) => {
+    await Promise.all(selectedRunners.map(async (selection, index) => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
       const convertedSelection = parseInt(selection);
       const addedOrder = {
         strategy: "Back",
-        marketId: props.market.marketId,
+        marketId: market.marketId,
         selectionId: convertedSelection,
-        executionTime: props.executionTime,
-        timeOffset: (props.hours * 3600) + (props.minutes * 60) + parseInt(props.seconds),
-        size: props.stake,
-        price: formatPrice(props.price),
+        executionTime: executionTime,
+        timeOffset: (hours * 3600) + (minutes * 60) + parseInt(seconds),
+        size: stake,
+        price: formatPrice(price),
         rfs: referenceStrategyId
       };
 
@@ -124,7 +126,7 @@ const Back = props => {
         }
       });
     }));
-    props.onUpdateBackList(newBackList);
+    onUpdateBackList(newBackList);
   };
 
   return (
@@ -140,9 +142,9 @@ const Back = props => {
           <ListItemText
             primary="Back"
             secondary={
-              props.selections
-                ? typeof props.selections === "string"
-                  ? props.runners[props.selections].runnerName
+              selections
+                ? typeof selections === "string"
+                  ? runners[selections].runnerName
                   : "Back All / The Field"
                 : ""
             }
@@ -157,12 +159,12 @@ const Back = props => {
         onClose={handleClose}
       >
         {/* The Menu Item for Back All / the Field */}
-        {props.runners ? (
+        {runners ? (
           <StyledMenuItem
             key={`back-order-all/field`}
             className={classes.root}
-            selected={typeof props.selections != "string"}
-            onClick={handleMenuItemClick(Object.keys(props.runners).map(key => [props.runners[key].selectionId]))}
+            selected={typeof selections != "string"}
+            onClick={handleMenuItemClick(Object.keys(runners).map(key => [runners[key].selectionId]))}
           >
             Back All / The Field
           </StyledMenuItem>
@@ -171,14 +173,14 @@ const Back = props => {
         {/* Create Menu Items for all the runners and display their names
          * Store their selectionId to be used to place bets for event clicks
          */}
-        {Object.keys(props.runners).map(key => (
+        {Object.keys(runners).map(key => (
           <StyledMenuItem
-            key={`back-order-${props.runners[key].runnerName}`}
+            key={`back-order-${runners[key].runnerName}`}
             className={classes.root}
-            selected={key === props.selections}
+            selected={key === selections}
             onClick={handleMenuItemClick(key)}
           >
-            {props.runners[key].runnerName}
+            {runners[key].runnerName}
           </StyledMenuItem>
         ))}
       </StyledMenu>
@@ -189,9 +191,9 @@ const Back = props => {
           className={classes.textField}
           type="number"
           label="stake"
-          value={props.stake}
+          value={stake}
           inputProps={{ min: "1", style: { fontSize: 10 } }}
-          onChange={props.onReceiveStake()}
+          onChange={onReceiveStake()}
           margin="normal"
         />
         <TextField
@@ -199,7 +201,7 @@ const Back = props => {
           className={classes.textField}
           type="number"
           label="@"
-          value={props.price}
+          value={price}
           inputProps={{ min: "1.00", max: "1000", step: step, style: { fontSize: 10 } }}
           onChange={updateStep}
           margin="normal"
@@ -221,9 +223,9 @@ const Back = props => {
           className={classes.textField2}
           type="number"
           label="hh"
-          value={props.hours}
+          value={hours}
           inputProps={{ min: "0", style: { fontSize: 10 } }}
-          onChange={props.onReceiveHours()}
+          onChange={onReceiveHours()}
           margin="normal"
         />
         <TextField
@@ -231,9 +233,9 @@ const Back = props => {
           className={classes.textField2}
           type="number"
           label="mm"
-          value={props.minutes}
+          value={minutes}
           inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={props.onReceiveMinutes()}
+          onChange={onReceiveMinutes()}
           margin="normal"
         />
         <TextField
@@ -241,17 +243,17 @@ const Back = props => {
           className={classes.textField2}
           type="number"
           label="ss"
-          value={props.seconds}
+          value={seconds}
           inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={props.onReceiveSeconds()}
+          onChange={onReceiveSeconds()}
           margin="normal"
         />
 
         <RadioGroup
           aria-label="orderexecution"
           name="orderexecution"
-          value={props.executionTime}
-          onChange={props.onToggleExecutionTime()}
+          value={executionTime}
+          onChange={onToggleExecutionTime()}
         >
           <FormControlLabel
             value="Before"
@@ -295,7 +297,7 @@ const mapDispatchToProps = dispatch => {
     onReceiveHours: () => e => dispatch(actions.setHours(e.target.value)),
     onReceiveMinutes: () => e => dispatch(actions.setMinutes(e.target.value)),
     onReceiveSeconds: () => e => dispatch(actions.setSeconds(e.target.value)),
-    onToggleExecutionTime: time => e => dispatch(actions.toggleExecutionTime(e.target.value)),
+    onToggleExecutionTime: () => e => dispatch(actions.toggleExecutionTime(e.target.value)),
     onSelection: selections => dispatch(actions.setSelections(selections)),
     onUpdateBackList: list => dispatch(actions.updateBackList(list))
   };

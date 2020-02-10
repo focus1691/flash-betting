@@ -20,7 +20,7 @@ import MarketInfo from "./MarketInfo";
 import MatchedBets from "./MatchedBets";
 import Tools from "./OrderTools";
 import Rules from "./Rules";
-import UnmatchedBets from "./UnmatchedBets";
+import UnmatchedBets from "./UnmatchedBets/UnmatchedBets";
 
 const ExpansionPanel = withStyles({
   root: {
