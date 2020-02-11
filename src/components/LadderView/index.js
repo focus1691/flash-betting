@@ -1,10 +1,16 @@
-import React, { useEffect, memo } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder } from "../../actions/market";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
 const Ladders = ({ ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, ladderUnmatched }) => {
+	const [layFirstCol, setLayFirstCol] = useState(true);
+
+	const setLayFirst = useCallback(() => {
+		setLayFirstCol(!layFirstCol);
+	}, [layFirstCol]);
+	
 	useEffect(() => {
 		// initialize the order object
 		const newOrderList = {};
@@ -33,6 +39,8 @@ const Ladders = ({ ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, m
 								order={index}
 								ladderUnmatched={ladderUnmatched}
 								marketStatus={marketStatus}
+								layFirstCol={layFirstCol}
+								setLayFirst={setLayFirst}
 							/>
 						))
 				: null}

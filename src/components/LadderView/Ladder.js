@@ -22,8 +22,8 @@ import { updateTickOffsetList } from "../../actions/tickOffset";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { updateStopEntryList } from "../../actions/stopEntry";
 
-const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, unmatchedBets, matchedBets, setLadderSideLeft, onChangeStopLossList, backList, onChangeBackList, layList, onChangeLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks, tickOffsetUnits, tickOffsetTrigger,
-				tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList, stopEntryList, onChangeStopEntryList, onChangeTickOffsetList, onUpdateFillOrKillList, stopLossOffset, stopLossTrailing, stopLossList}) => {
+const Ladder = ({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOrder, onCancelOrder, order, unmatchedBets, matchedBets, setLadderSideLeft, onChangeStopLossList, backList, onChangeBackList, layList, onChangeLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
+				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList, stopEntryList, onChangeStopEntryList, onChangeTickOffsetList, onUpdateFillOrKillList, stopLossOffset, stopLossTrailing, stopLossList}) => {
 	
 	const containerRef = useRef(null);
 	const listRef = useRef();
@@ -32,11 +32,11 @@ const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, unma
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
 	const [ltpIsScrolling, setLTPIsScrolling] = useState(true);
-	const [layFirstCol, setLayFirstCol] = useState(true);
+	// const [layFirstCol, setLayFirstCol] = useState(true);
 
-	const setLayFirst = useCallback(() => {
-		setLayFirstCol(!layFirstCol);
-	}, [layFirstCol]);
+	// const setLayFirst = useCallback(() => {
+	// 	setLayFirstCol(!layFirstCol);
+	// }, [layFirstCol]);
 
 	const setReferenceSent = useCallback(() => {
 		setIsReferenceSet(true);
@@ -159,7 +159,18 @@ const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, unma
 		stopLossUnits, changeStopLossList, hedgeSize) => {
 		const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
 
-		console.log(stopLossSelected, stopLossData);
+		console.log('stop loss, ', stopLossSelected, stopLossData);
+
+		console.table({
+			side: side,
+			price: formatPrice(price),
+			marketId: marketId,
+			selectionId: selectionId,
+			customerStrategyRef: referenceStrategyId,
+			unmatchedBets: unmatchedBets,
+			matchedBets: matchedBets,
+			size: stakeVal[selectionId]
+		});
 
 		// stoploss and fill or kill can't be together, stoploss takes priority
 		placeOrder({
@@ -172,7 +183,7 @@ const Ladder = ({id, ltp, marketStatus, onPlaceOrder, onCancelOrder, order, unma
 			matchedBets: matchedBets,
 			size: stakeVal[selectionId],
 			orderCompleteCallBack: async betId => {
-				if (stopLossSelected && stopLossData === undefined) {
+				if (stopLossSelected && !stopLossData) {
 					console.log('placing stop loss');
 					console.log({
 						side: side === "BACK" ? "LAY" : "BACK",

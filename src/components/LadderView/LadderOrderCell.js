@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useMemo } from "react";
 import { connect } from "react-redux";
-import { updateFillOrKillList } from "../../actions/fillOrKill";
-import { updateTickOffsetList } from "../../actions/tickOffset";
+import { updateStopLossList } from "../../actions/stopLoss";
 import { getMatched } from "../../selectors/marketSelector";
 import { getUnmatchedBetsOnRow } from "../../selectors/orderSelector";
 import { getStopLoss } from "../../selectors/stopLossSelector";
@@ -12,8 +11,8 @@ const isMoving = (prevProps, nextProps) => {
 	return nextProps.isMoving;
 };
 
-const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceOrder, stopLoss,
-	stopLossData, stopLossUnits, changeStopLossList, stopLossSelected, stopLossList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched}) => {
+const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceOrder, stopLoss, stopLossData, stopLossUnits,
+	changeStopLossList, onChangeStopLossList, stopLossSelected, stopLossList, hedgeSize, onHover, onLeave, stakeVal, cellMatched, cellUnmatched}) => {
 	
 	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
 	const text = useMemo(() => stopLoss ? (stopLoss.stopLoss.hedged ? "H" : stopLoss.stopLoss.size) : totalMatched > 0 ? totalMatched : null, [stopLoss, totalMatched]);
@@ -24,10 +23,11 @@ const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceO
 	}, [changeStopLossList, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLossData, stopLossSelected, stopLossUnits]);
 
 	const handleRightClick = useCallback(async e => {
-		console.log(stopLoss);
+		console.table(stopLoss);
 		e.preventDefault();
 
 		if (stopLossList[selectionId]) {
+			console.log('stop loss found at this cell. Removing...');
 			await fetch("/api/remove-orders", {
 				headers: {
 					Accept: "application/json",
@@ -35,18 +35,23 @@ const LadderOrderCell = memo(({side, price,  marketId, selectionId, handlePlaceO
 				},
 				method: "POST",
 				body: JSON.stringify([stopLossList[selectionId]])
+			}).then(() => {
+				const newStopLossList = Object.assign({}, stopLossList);
+				delete newStopLossList[selectionId];
+				onChangeStopLossList(newStopLossList);
+			});
+		} else {
+			console.log("No stop loss found at this cell. Updating...");
+			changeStopLossList({
+				marketId: marketId,
+				side: side,
+				size: stakeVal[selectionId],
+				price: formatPrice(price),
+				custom: true,
+				rfs: undefined,
+				assignedIsOrderMatched: false
 			});
 		}
-
-		changeStopLossList({
-			marketId: marketId,
-			side: side,
-			size: stakeVal[selectionId],
-			price: formatPrice(price),
-			custom: true,
-			rfs: undefined,
-			assignedIsOrderMatched: false
-		});
 	}, [changeStopLossList, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossList]);
 	return (
 		<div
@@ -88,8 +93,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
-		onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list))
+		onChangeStopLossList: list => dispatch(updateStopLossList(list))
 	};
 };
 

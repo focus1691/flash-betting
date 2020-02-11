@@ -104,33 +104,33 @@ export const placeOrderAction = async order => {
 		method: "POST",
 		body: JSON.stringify(minimalOrder)
 	})
-		.then(res => res.json())
-		.then(async result => {
-			if (!result || result.status === "FAILURE") return null;
+	.then(res => res.json())
+	.then(async result => {
+		if (!result || result.status === "FAILURE") return null;
 
-			const betId = result.instructionReports[0].betId;
+		const betId = result.instructionReports[0].betId;
 
-			const adjustedOrder = Object.assign({}, minimalOrder);
-			adjustedOrder.rfs = order.customerStrategyRef;
-			adjustedOrder.betId = betId;
-			adjustedOrder.strategy = "None";
+		const adjustedOrder = Object.assign({}, minimalOrder);
+		adjustedOrder.rfs = order.customerStrategyRef;
+		adjustedOrder.betId = betId;
+		adjustedOrder.strategy = "None";
 
-			if (betId === undefined) {
-				return;
-			}
+		if (betId === undefined) {
+			return;
+		}
 
-			const newUnmatchedBets = Object.assign({}, order.unmatchedBets);
-			newUnmatchedBets[betId] = adjustedOrder;
+		const newUnmatchedBets = Object.assign({}, order.unmatchedBets);
+		newUnmatchedBets[betId] = adjustedOrder;
 
-			const newBets = {
-				unmatched: newUnmatchedBets,
-				matched: order.matchedBets == undefined ? {} : order.matchedBets
-			};
+		const newBets = {
+			unmatched: newUnmatchedBets,
+			matched: order.matchedBets == undefined ? {} : order.matchedBets
+		};
 
-			if (order.orderCompleteCallBack !== undefined) await order.orderCompleteCallBack(betId, newUnmatchedBets);
+		if (order.orderCompleteCallBack !== undefined) await order.orderCompleteCallBack(betId, newUnmatchedBets);
 
-			return { order: adjustedOrder, bets: newBets };
-		});
+		return { order: adjustedOrder, bets: newBets };
+	});
 };
 
 export const cancelOrder = order => {
@@ -161,8 +161,8 @@ export const cancelOrderAction = async order => {
 		method: "POST",
 		body: JSON.stringify(minimalOrder)
 	})
-		.then(res => res.json())
-		.catch(() => false);
+	.then(res => res.json())
+	.catch(() => false);
 
 	if (cancelOrder) {
 		const newUnmatchedBets = {};

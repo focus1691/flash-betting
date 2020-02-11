@@ -14,7 +14,7 @@ import Bet from "./Bet";
 const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, onChangeBackList, onChangeLayList,
                         onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, onChangeOrders, rightClickTicks}) => {
 
-  const allOrders = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched), [backList, bets.unmatched, layList, stopEntryList, stopLossList, tickOffsetList]);
+  const allOrders = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched);
   const selections = useMemo(() => { return Object.keys(allOrders) }, [allOrders]);
 
   const cancelOrder = useCallback(order => {
