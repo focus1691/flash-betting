@@ -467,7 +467,7 @@ const App = props => {
       let tickOffsetOrdersToRemove = [];
 
       data.oc.forEach(changes => {
-        if (changes.orc === undefined) return;
+        if (!changes.orc) return;
         changes.orc.forEach(runner => {
           if (runner.uo) {
             runner.uo.forEach(order => {

@@ -126,6 +126,8 @@ const OrderRow = memo(({selectionId, market, bets, backList, layList, stopEntryL
 				});
 			}, Promise.resolve());
 
+			console.table(cancelBets);;
+
 			if (cancelBets === undefined) return;
 
 			onUpdateBets({

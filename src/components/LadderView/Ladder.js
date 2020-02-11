@@ -32,11 +32,6 @@ const Ladder = ({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOrder, 
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
 	const [ltpIsScrolling, setLTPIsScrolling] = useState(true);
-	// const [layFirstCol, setLayFirstCol] = useState(true);
-
-	// const setLayFirst = useCallback(() => {
-	// 	setLayFirstCol(!layFirstCol);
-	// }, [layFirstCol]);
 
 	const setReferenceSent = useCallback(() => {
 		setIsReferenceSet(true);
@@ -315,6 +310,8 @@ const Ladder = ({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOrder, 
 				}
 
 				ordersToRemove = ordersToRemove.concat(order);
+
+				console.table(ordersToRemove);
 
 				// delete from database
 				try {
