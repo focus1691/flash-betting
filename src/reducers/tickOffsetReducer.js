@@ -4,7 +4,7 @@ const initialState = {
   units: "Ticks",
   percentTrigger: 2,
   hedged: false,
-  list: {} // rfs: {marketId: , selectionId: , price: , size: , side: , percentageTrigger: , rfs:}
+  list: {} //! rfs: {marketId: , selectionId: , price: , size: , side: , percentageTrigger: , rfs:}
 };
 initialState.text = `${initialState.ticks} ${initialState.units} [${
   initialState.hedged ? "x" : "-"
@@ -26,6 +26,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, hedged: action.payload };
     case "UPDATE_TICK_OFFSET_LIST":
       return { ...state, list: action.payload };
+    case "REMOVE_TICK_OFFSET_ORDER":
+      let newList = Object.assign({}, state.list);
+      delete newList[action.payload.selectionId];
+      return { ...state, list: newList };
     default:
       return state;
   }

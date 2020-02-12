@@ -52,3 +52,10 @@ export const setSelections = selections => {
         payload: selections
     }
 }
+
+export const removeStopLossOrder = order => {
+    return {
+        type: "REMOVE_STOP_LOSS_ORDER",
+        payload: order
+    }
+};

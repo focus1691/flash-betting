@@ -1,24 +1,24 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
-import { setOddsHovered } from "../../actions/market";
-import { ALL_PRICES } from "../../utils/ladder/CreateFullLadder";
-import LadderHedgeCell from "./LadderHedgeCell";
-import LadderLTPCell from "./LadderLTPCell";
-import LadderOrderCell from "./LadderOrderCell";
-import LadderVolumeCell from "./LadderVolumeCell";
-import GetQueryVariable from "../../utils/Market/GetQueryVariable";
-import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
-import { getSelectionMatchedBets } from "../../selectors/orderSelector";
-import { getStakeVal } from "../../selectors/settingsSelector";
-import { getPL } from "../../selectors/marketSelector";
-import { getMatchedSide } from "../../utils/Bets/GetMatched";
+import { setOddsHovered } from "../../../actions/market";
+import { ALL_PRICES } from "../../../utils/ladder/CreateFullLadder";
+import LadderHedgeCell from "../Cells/LadderHedgeCell";
+import LadderLTPCell from "../Cells/LadderLTPCell";
+import LadderOrderCell from "../Cells/LadderOrderCell";
+import LadderVolumeCell from "../Cells/LadderVolumeCell";
+import GetQueryVariable from "../../../utils/Market/GetQueryVariable";
+import CalculateLadderHedge from "../../../utils/ladder/CalculateLadderHedge";
+import { getSelectionMatchedBets } from "../../../selectors/orderSelector";
+import { getStakeVal } from "../../../selectors/settingsSelector";
+import { getPL } from "../../../selectors/marketSelector";
+import { getMatchedSide } from "../../../utils/Bets/GetMatched";
 
 const isMoving = (prevProps, nextProps) => {
 	return nextProps.data.isMoving;
 };
 
-const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, changeStopLossList, isMoving, resumeLTPScrolling,
-	pauseLTPScrolling, handlePlaceOrder, cancelSpecialOrders }, PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
+const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, replaceStopLossOrder, isMoving, resumeLTPScrolling,
+	pauseLTPScrolling, handlePlaceOrder }, PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
 
 	const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
 	const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
@@ -57,7 +57,7 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 				selectionId={selectionId}
 				price={key}
 				handlePlaceOrder={handlePlaceOrder}
-				changeStopLossList={changeStopLossList}
+				replaceStopLossOrder={replaceStopLossOrder}
 				// we do this because we want the hedge, not the pl
 				hedgeSize={HedgeSize}
 				onHover={onOddsHovered({ selectionId, odds: key, side: side.left })}
@@ -76,7 +76,7 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 				selectionId={selectionId}
 				price={key}
 				handlePlaceOrder={handlePlaceOrder}
-				changeStopLossList={changeStopLossList}
+				replaceStopLossOrder={replaceStopLossOrder}
 				// we do this because we want the hedge, not the pl
 				hedgeSize={HedgeSize}
 				onHover={onOddsHovered({ selectionId, odds: key, side: side.right })}

@@ -1,5 +1,8 @@
 import { calcLayBet } from "../utils/TradingStategy/HedingCalculator";
-
+/**
+ * 
+ * @param {object} order The object
+ */
 export const updateOrders = order => {
 	return {
 		type: "UPDATE_BET",
@@ -86,7 +89,7 @@ export const placeOrder = order => {
 };
 
 export const placeOrderAction = async order => {
-	// order without anything that might make the payload too large
+	//! order without anything that might make the payload too large
 	const minimalOrder = {};
 	Object.keys(order).map(key => {
 		if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "orderCompleteCallBack") {
@@ -133,8 +136,12 @@ export const placeOrderAction = async order => {
 	});
 };
 
+/**
+ ** Wrapper function to check order and dispatch delete
+ * @param {object} order Object to delete
+ */
 export const cancelOrder = order => {
-	if (order.unmatchedBets === undefined || order.matchedBets === undefined) {
+	if (!order.unmatchedBets || !order.matchedBets) {
 		return;
 	}
 
@@ -144,6 +151,10 @@ export const cancelOrder = order => {
 	};
 };
 
+/**
+ * 
+ * @param {object} order Object to delete 
+ */
 export const cancelOrderAction = async order => {
 	// order with everything removed that might make the payload too large
 	const minimalOrder = {};
@@ -185,7 +196,7 @@ export const cancelOrderAction = async order => {
 };
 
 export const reduceSizeAction = async order => {
-	// order with everything removed that might make the payload too large
+	//! order with everything removed that might make the payload too large
 	const minimalOrder = {};
 	Object.keys(order).map(key => {
 		if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "callback") {

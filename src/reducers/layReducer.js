@@ -9,7 +9,7 @@ const initialState = {
   },
   executionTime: "Before",
   selections: null,
-  list: {} // {selectionId(parameter): [{executionTime: Before, timeOffset: (seconds) , size: (2) , price: (750) },]  }
+  list: {} //! {selectionId(parameter): [{executionTime: Before, timeOffset: (seconds) , size: (2) , price: (750) },]  }
 };
 initialState.text = `${initialState.stake} @ ${initialState.price}`;
 
@@ -55,7 +55,11 @@ const reducer = (state = initialState, action) => {
     case "SET_LAY_SELECTIONS":
       return { ...state, selections: action.payload };
     case "UPDATE_LAY_LIST":
-        return { ...state, list: action.payload };  
+      return { ...state, list: action.payload }; 
+    case "REMOVE_LAY_ORDER":
+      let newList = Object.assign({}, state.list);
+      delete newList[action.payload.selectionId];
+      return { ...state, list: newList };
     default:
       return state;
   }

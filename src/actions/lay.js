@@ -67,3 +67,10 @@ export const updateLayList = list => {
         payload: list
     }
 }
+
+export const removeLayOrder = order => {
+    return {
+        type: "REMOVE_LAY_ORDER",
+        payload: order
+    }
+};

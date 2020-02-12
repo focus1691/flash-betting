@@ -25,3 +25,10 @@ export const updateFillOrKillList = list => {
         payload: list
     }
 };
+
+export const removeFillOrKillOrder = order => {
+    return {
+        type: "REMOVE_FILL_OR_KILL_ORDER",
+        payload: order
+    }
+};

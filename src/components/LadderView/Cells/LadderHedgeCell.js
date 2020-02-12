@@ -1,8 +1,8 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
-import { getUnmatchedBetsOnRow } from "../../selectors/orderSelector";
-import { calcHedgeProfit, hedgeStyle } from "../../utils/Bets/HedgeProfit";
-import GetUnmatchedStake from "../../utils/Bets/GetUnmatchedStake";
+import { getUnmatchedBetsOnRow } from "../../../selectors/orderSelector";
+import { calcHedgeProfit, hedgeStyle } from "../../../utils/Bets/HedgeProfit";
+import GetUnmatchedStake from "../../../utils/Bets/GetUnmatchedStake";
 
 const isMoving = (prevProps, nextProps) => {
 	return nextProps.isMoving;

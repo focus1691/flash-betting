@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
-import { getIsLTP, getLTPDelta, getLTP } from "../../selectors/marketSelector";
-import { formatPrice, formatPriceKey } from "../../utils/ladder/CreateFullLadder";
-import { getLTPstyle } from "../../utils/ladder/DeconstructLadder";
+import { getIsLTP, getLTPDelta, getLTP } from "../../../selectors/marketSelector";
+import { formatPrice, formatPriceKey } from "../../../utils/ladder/CreateFullLadder";
+import { getLTPstyle } from "../../../utils/ladder/DeconstructLadder";
 
 const arePropsEqual = (prevProps, nextProps) => {
 	if (nextProps.isMoving) return true;

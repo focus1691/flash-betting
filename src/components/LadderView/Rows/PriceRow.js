@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { setStakeInOneClick } from "../../actions/settings";
-import { getOrderBtnBG } from "../../utils/ColorManipulator";
+import { setStakeInOneClick } from "../../../actions/settings";
+import { getOrderBtnBG } from "../../../utils/ColorManipulator";
 
 const PriceRow = ({ selectionId, ltp, tv, buttonType, stake, lay, stakeVal, onSetStake }) => {
 	const buttons = buttonType === "STAKE" ? stake : lay;

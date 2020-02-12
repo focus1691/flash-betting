@@ -67,3 +67,10 @@ export const updateBackList = list => {
         payload: list
     }
 };
+
+export const removeBackOrder = order => {
+    return {
+        type: "REMOVE_BACK_ORDER",
+        payload: order
+    }
+};

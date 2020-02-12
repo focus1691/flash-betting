@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
-import { getCandleStickColor, getVolume, getVolumeDivider } from "../../selectors/marketSelector";
+import { getCandleStickColor, getVolume, getVolumeDivider } from "../../../selectors/marketSelector";
 
 const LadderVolumeCell = ({ ltpList, price, selectionId, vol, candleStickInfo, volFraction }) => {
 	const volumeVal = vol ? vol : 0;

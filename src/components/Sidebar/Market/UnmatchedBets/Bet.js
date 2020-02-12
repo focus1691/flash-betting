@@ -1,15 +1,9 @@
-import React, { memo, useCallback, useState, useEffect } from "react";
-import { getStrategyAbbreviation, colorForOrder, PLColor } from "../../../../utils/Bets/BettingCalculations";
-import { twoDecimalPlaces, getStrategySuffixForPL } from "../../../../utils/Bets/BettingCalculations";
+import React, { useCallback, memo } from "react";
+import { colorForOrder } from "../../../../utils/Bets/BettingCalculations";
+import { twoDecimalPlaces } from "../../../../utils/Bets/BettingCalculations";
+import BetPL from "./BetPL";
 
 const Bet = memo(({order, handleRightClick, cancelOrder, marketStartTime}) => {
-    const [PL, setPL] = useState("");
-
-    useEffect(() => {
-        let suffix = getStrategyAbbreviation(order.trailing, order.hedged);
-        setPL(getStrategySuffixForPL(order, suffix, marketStartTime));
-
-    }, [marketStartTime, order]);
 
     const handleClick = useCallback(() => {
         cancelOrder(order);
@@ -28,9 +22,7 @@ const Bet = memo(({order, handleRightClick, cancelOrder, marketStartTime}) => {
 			</button>
 			<td>{twoDecimalPlaces(order.price)}</td>
 			<td>{order.size}</td>
-			<td id="pl-style" style={PLColor(PL)}>
-				{PL}
-			</td>
+			<BetPL marketStartTime={marketStartTime} order={order} />
 		</tr>
 	);
 });

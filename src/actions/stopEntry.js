@@ -53,3 +53,10 @@ export const setSelections = selections => {
         payload: selections
     }
 }
+
+export const removeStopEntryOrder = order => {
+    return {
+        type: "REMOVE_STOP_ENTRY_ORDER",
+        payload: order
+    }
+};

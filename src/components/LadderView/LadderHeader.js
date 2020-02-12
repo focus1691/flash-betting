@@ -2,12 +2,11 @@ import React, { memo, useMemo } from "react";
 import { connect } from "react-redux";
 import { setRunner, setDraggingLadder } from "../../actions/market";
 import { getLTP, getRunner, getSportId, getPL } from "../../selectors/marketSelector";
-import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from "../../selectors/orderSelector";
+import { getSelectionMatchedBets } from "../../selectors/orderSelector";
 import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcHedgeAtLTP, calcHedgeSize } from "../../utils/TradingStategy/HedingCalculator";
-import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import { calcOddsOnPriceHover } from "../../utils/Bets/HedgeProfit";
 
 const LadderHeader = memo(({selectionId, sportId, runner, onSelectRunner, setLadderDown, oddsHovered, ltp, PL, onDraggingLadder, selectionMatchedBets}) => {
@@ -94,8 +93,6 @@ const mapStateToProps = (state, { selectionId }) => {
 		market: state.market.currentMarket,
 		sportId: getSportId(state.market.currentMarket),
 		runner: getRunner(state.market.runners, { selectionId }),
-		unmatchedBets: getUnmatchedBets(state.order.bets),
-		matchedBets: getMatchedBets(state.order.bets),
 		ltp: getLTP(state.market.ladder, { selectionId }),
 		oddsHovered: state.market.oddsHovered,
 		PL: getPL(state.market.marketPL, { selectionId }),

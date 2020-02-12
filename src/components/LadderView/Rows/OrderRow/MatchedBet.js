@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from "react";
-import { twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
+import { twoDecimalPlaces } from "../../../../utils/Bets/BettingCalculations";
 
 const MatchedBet = memo(({ bet, index }) => {
     

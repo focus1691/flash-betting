@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix, colorForOrder } from "../../../utils/Bets/BettingCalculations";
+import { twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix, colorForOrder } from "../../../../utils/Bets/BettingCalculations";
 
 const UnmatchedBet = memo(({bet, cancelBet}) => {
 	const strategyAbbreviation = getStrategyAbbreviation(bet.trailing, bet.hedged);

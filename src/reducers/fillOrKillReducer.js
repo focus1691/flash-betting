@@ -15,6 +15,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, seconds: action.payload };
     case "UPDATE_FILL_OR_KILL_LIST":
       return { ...state, list: action.payload };
+    case "REMOVE_FILL_OR_KILL_ORDER":
+      let newList = Object.assign({}, state.list);
+      delete newList[action.payload.selectionId];
+      return { ...state, list: newList };
     default:
       return state;
   }

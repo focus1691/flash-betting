@@ -13,16 +13,15 @@ export const combineUnmatchedOrders = (backList, layList, stopEntryList, tickOff
 
 // the ones with {selectionId(parameter): [orders]}
 const selectionKeyCombinations = (list, allOrders) => {
-    const newAllOrders = Object.assign({}, allOrders)
+    const newAllOrders = Object.assign({}, allOrders);
     Object.keys(list).map(selectionId => {
         const objectsToAdd = {};
         
         list[selectionId].map(order => {
             objectsToAdd[order.rfs] = objectsToAdd[order.rfs] === undefined ? [order] : objectsToAdd[order.rfs].concat(order);
-        })
-
+        });
         newAllOrders[selectionId] = {...allOrders[selectionId], ...objectsToAdd}
-    })
+    });
 
     return newAllOrders;
 }

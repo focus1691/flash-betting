@@ -4,7 +4,7 @@ const initialState = {
   units: "Ticks",
   trailing: true,
   hedged: true,
-  list: {}, // {marketId: , selectionId: , price(matchedPrice): , side: , size: , tickOffset: , trailing: , units: , rfs(reference strategy): , assignedIsOrderMatched: false}
+  list: {}, //! {marketId: , selectionId: , price(matchedPrice): , side: , size: , tickOffset: , trailing: , units: , rfs(reference strategy): , assignedIsOrderMatched: false}
   selections: null
 };
 initialState.text = `${initialState.offset} ${initialState.units} [${
@@ -29,6 +29,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, list: action.payload };
     case "SET_STOP_LOSS_SELECTIONS":
       return { ...state, selections: action.payload };
+    case "REMOVE_STOP_LOSS_ORDER":
+      let newList = Object.assign({}, state.list);
+      delete newList[action.payload.selectionId];
+      return { ...state, list: newList };
     default:
       return state;
   }

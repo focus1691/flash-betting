@@ -46,3 +46,10 @@ export const updateTickOffsetList = list => {
         payload: list
     }
 };
+
+export const removeTickOffsetOrder = order => {
+    return {
+        type: "REMOVE_TICK_OFFSET_ORDER",
+        payload: order
+    }
+};
