@@ -9,7 +9,7 @@ import { removeStopLossOrder, updateStopLossList } from "../../actions/stopLoss"
 import { removeTickOffsetOrder, updateTickOffsetList } from "../../actions/tickOffset";
 import { removeStopEntryOrder, updateStopEntryList } from "../../actions/stopEntry";
 import { removeFillOrKillOrder, updateFillOrKillList } from "../../actions/fillOrKill";
-import { cancelOrder, cancelOrderAction, placeOrder, updateOrders } from "../../actions/order";
+import { cancelOrder, placeOrder, updateOrders } from "../../actions/order";
 import { getLTP } from "../../selectors/marketSelector";
 import { getMatchedBets, getSelectionMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
