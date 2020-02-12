@@ -1,6 +1,3 @@
-
-
-
 /**
  * This function checks if the stoploss's corresponding order is matched.
  * @param {object} stopLossList - The object containing all the stoploss information.
@@ -45,11 +42,11 @@ export const checkStopLossForMatch = (stopLossList, selectionId, order, previous
 export const checkTickOffsetForMatch = (tickOffsetList, order, onPlaceOrder, previousTickOffsetOrdersToRemove, previousCheckForMatchInTickOffset, unmatchedBets, matchedBets) => {
 
     // if the strategies are the same and enough of the order has been matched (TICK OFFSET)
-    const tickOffsetItem = tickOffsetList[order.rfs]
+    const tickOffsetItem = tickOffsetList[order.selectionId]
     let tickOffsetOrdersToRemove = [...previousTickOffsetOrdersToRemove];
     let checkForMatchInTickOffset = Object.assign({}, previousCheckForMatchInTickOffset);
 
-    if (tickOffsetItem !== undefined && order.sm / tickOffsetItem.size >= tickOffsetItem.percentageTrigger / 100) {
+    if (tickOffsetItem && order.sm / tickOffsetItem.size >= tickOffsetItem.percentageTrigger / 100) {
 
         onPlaceOrder({
             marketId: tickOffsetItem.marketId,

@@ -26,7 +26,12 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 						<table className="lay-table">
 							<tbody className={unmatchedStyle}>
 								{unmatchedBetsArr.map(rfs => rfs.map(bet => {
-									return <UnmatchedBet bet={bet} cancelBet={cancelUnmatchedOrder} />
+									return (
+										<UnmatchedBet
+											key={`ladder-matched-bet-${bet.selectionId}-${bet.rfs}`}
+											bet={bet}
+											cancelBet={cancelUnmatchedOrder} />
+									);
 								}))}
 							</tbody>
 						</table>
@@ -45,7 +50,11 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 						<table className="lay-table">
 							<tbody className={matchedBets.length > 0 ? "lay-body" : ""}>
 								{matchedBets.map((bet, idx) => {
-									return <MatchedBet bet={bet} index={idx} />
+									return (
+										<MatchedBet
+											key={`ladder-matched-bet-${bet.selectionId}-${idx}`}
+											bet={bet} index={idx} />
+									);
 								})}
 							</tbody>
 						</table>

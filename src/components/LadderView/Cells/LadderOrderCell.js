@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { updateStopLossList } from "../../../actions/stopLoss";
 import { getMatched } from "../../../selectors/marketSelector";
 import { getStopLoss } from "../../../selectors/stopLossSelector";
+import { getTickOffset } from "../../../selectors/tickOffsetSelector";
 import { getTotalMatched, orderStyle, textForOrderCell } from "../../../utils/Bets/GetMatched";
 
 const isMoving = (prevProps, nextProps) => {
@@ -14,7 +15,7 @@ const LadderOrderCell = memo(({side, price, marketId, selectionId, handlePlaceOr
 	
 	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
 	const orderText = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
-	const style = useMemo(() => orderStyle(side, stopLoss, cellMatched, totalMatched), [side, stopLoss, cellMatched, totalMatched]);
+	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched), [side, stopLoss, tickOffset, cellMatched, totalMatched]);
 
 	const handleClick = useCallback(async () => {
 		handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
@@ -43,7 +44,7 @@ const mapStateToProps = (state, props) => {
 		stopLoss: getStopLoss(state.stopLoss.list, props),
 		stopLossSelected: state.stopLoss.selected,
 		stopLossUnits: state.stopLoss.units,
-		tickOffset: state.tickOffset,
+		tickOffset: getTickOffset(state.tickOffset.list, props),
 		stakeVal: state.settings.stake,
 		cellMatched: getMatched(state.market.ladder, props)
 	};

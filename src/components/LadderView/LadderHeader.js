@@ -52,7 +52,7 @@ const LadderHeader = memo(({selectionId, sportId, runner, onSelectRunner, setLad
 							visibility: ordersOnMarket ? "visible" : "hidden",
 							color: PL >= 0 ? "rgb(106, 177, 79)" : "red"
 						}}>
-						{twoDecimalPlaces(PL)}
+						{twoDecimalPlaces(PL) || null}
 					</span>
 					<div className={"contender-details"}>
 						<span>{getTrainerAndJockey(runner.metadata)}</span>

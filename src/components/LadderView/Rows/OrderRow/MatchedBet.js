@@ -12,7 +12,6 @@ const MatchedBet = memo(({ bet, index }) => {
 
 	return (
 		<tr
-			key={`ladder-matched-bet-${bet.selectionId}-${index}`}
 			style={style}>
 			<td>{`${bet.size} @ ${twoDecimalPlaces(bet.price)}`}</td>
 		</tr>

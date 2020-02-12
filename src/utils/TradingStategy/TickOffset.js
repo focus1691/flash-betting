@@ -2,18 +2,6 @@ const findTickOffset = (matchedPrice, side, offset, percent=false) => {
 
     var i;
 
-    const ALL_PRICES = Array(100).fill()
-    .map((a, l) => parseFloat((l / 100 + 1.01).toFixed(2)))
-    .concat(Array(50).fill().map((a, l) => parseFloat((l / 50 + 2.02).toFixed(2))))
-    .concat(Array(20).fill().map((a, l) => parseFloat((l / 20 + 3.05).toFixed(2))))
-    .concat(Array(20).fill().map((a, l) => parseFloat((l / 10 + 4.1).toFixed(1))))
-    .concat(Array(20).fill().map((a, l) => parseFloat((l / 5 + 6.2).toFixed(1))))
-    .concat(Array(19).fill().map((a, l) => parseFloat((l / 2 + 10.5).toFixed(1))))
-    .concat(Array(11).fill().map((a, l) => parseFloat((l + 20).toFixed(0))))
-    .concat(Array(10).fill().map((a, l) => parseFloat((2 * l + 32).toFixed(0))))
-    .concat(Array(10).fill().map((a, l) => parseFloat((5 * l + 55).toFixed(0))))
-    .concat(Array(90).fill().map((a, l) => parseFloat((10 * l + 110).toFixed(0))));
-
     var arr =
     Array(100).fill().map((v,i)=> (i/100 + 1.01).toFixed(2) )
     .concat(Array(50).fill().map((v,i)=> (i/50 + 2.02).toFixed(2) ))

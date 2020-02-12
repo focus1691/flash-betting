@@ -11,7 +11,7 @@ const getTotalMatched = (cellMatched, cellUnmatched) => {
 	return totalMatched;
 };
 
-const orderStyle = (side, stopLoss, cellMatched, totalMatched) => {
+const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched) => {
 	if (stopLoss) return { background: "yellow" };
 	else if (cellMatched.side === "BACK" && totalMatched > 0 && side) return { background: "#75C2FD" };
 	else if (cellMatched.side === "LAY" && totalMatched > 0 && side === "LAY") return { background: "#F694AA" };
