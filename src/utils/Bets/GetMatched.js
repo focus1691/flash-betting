@@ -20,6 +20,17 @@ const orderStyle = (side, stopLoss, cellMatched, totalMatched) => {
 	return null;
 };
 
+const textForOrderCell = (stopLoss, totalMatched) => {
+	if (stopLoss) {
+		if (stopLoss.stopLoss) {
+			if (stopLoss.stopLoss.hedged) return "H";
+			else return stopLoss.stopLoss.size;
+		}
+	}
+	else if (totalMatched > 0) return totalMatched;
+	return null
+};
+
 const getMatchedSide = firstCol => {
 	return {
 		left: firstCol ? "LAY" : "BACK",
@@ -27,4 +38,4 @@ const getMatchedSide = firstCol => {
 	}
 };
 
-export { getTotalMatched, orderStyle, getMatchedSide };
+export { getTotalMatched, textForOrderCell, orderStyle, getMatchedSide };
