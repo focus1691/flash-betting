@@ -695,7 +695,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    /** Settings **/
+    //! Settings
     setLoading: isLoading => dispatch(actions.setIsLoading(isLoading)),
     setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
     onToggleDefaultView: view => dispatch(actions.setDefaultView(view)),
@@ -713,7 +713,7 @@ const mapDispatchToProps = dispatch => {
     onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
     onReceiveRightClickTicks: ticks => dispatch(actions.updateRightClickTicks(ticks)),
     onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
-    /** Market **/
+    //! Market
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
     onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
     onMarketClosed: () => dispatch(marketActions.closeMarket()),
@@ -729,7 +729,7 @@ const mapDispatchToProps = dispatch => {
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
     setMarketPL: pl => dispatch(marketActions.setMarketPL(pl)),
-    /** Betting Tools **/
+    //! Betting Tools
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
     onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),

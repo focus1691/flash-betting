@@ -3,6 +3,11 @@ import { twoDecimalPlaces } from "../Bets/BettingCalculations";
 import { getOppositeSide } from "../Bets/GetOppositeSide";
 import CalculateLadderHedge from "../ladder/CalculateLadderHedge";
 
+// eslint-disable-next-line no-extend-native
+Number.prototype.round = function(places) {
+    return +(Math.round(this + "e+" + places)  + "e-" + places);
+}
+
 /**
  * This function is used to calculate liability of a bet.
  * Source: https://help.smarkets.com/hc/en-gb/articles/115003381865-How-to-calculate-the-liability-of-a-lay-bet
@@ -16,7 +21,7 @@ const calcLiability = (side, backStake, layOdds) => {
     if (side === 'BACK') return backStake;
 
     // Calculate the lay liability
-    return parseFloat(backStake * (layOdds - 1).toFixed(2));
+    return backStake * (layOdds - 1);
 };
 
 const calcBackBet = (odds, stake) => {
@@ -24,10 +29,10 @@ const calcBackBet = (odds, stake) => {
 }
 
 const calcLayBet = (odds, stake) => {
-    const backersStake = parseFloat((stake / (odds - 1)).toFixed(2));
+    const backersStake = (stake / (odds - 1));
     return {
         backersStake: backersStake,
-        liability: calcLiability("LAY", backersStake, odds).toFixed(2)
+        liability: calcLiability("LAY", backersStake, odds).round(2)
     }
 }
 
