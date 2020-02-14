@@ -16,6 +16,7 @@ import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders"
 import { getStakeVal } from "../../selectors/settingsSelector";
 import { ALL_PRICES, formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findTickOffset } from "../../utils/TradingStategy/TickOffset";
+import { findStopPosition } from "../../utils/TradingStategy/StopLoss";
 import LadderContainer from "./LadderContainer";
 import LadderHeader from "./LadderHeader";
 import LadderRow from "./Rows/LadderRow";
@@ -235,7 +236,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 						marketId: marketId,
 						selectionId: parseInt(id),
 						side: side === "BACK" ? "LAY" : "BACK",
-						price: formatPrice(price),
+						price: findStopPosition(price, stopLossOffset, side.toLowerCase()),
 						custom: false,
 						units: stopLossUnits,
 						rfs: referenceStrategyId,

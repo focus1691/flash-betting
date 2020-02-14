@@ -25,10 +25,10 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
 							<tbody className={unmatchedStyle}>
-								{unmatchedBetsArr.map(rfs => rfs.map(bet => {
+								{unmatchedBetsArr.map(rfs => rfs.map((bet, id) => {
 									return (
 										<UnmatchedBet
-											key={`ladder-matched-bet-${bet.selectionId}-${bet.rfs}`}
+											key={`ladder-matched-bet-${bet.selectionId}-${bet.rfs}-${id}`}
 											bet={bet}
 											cancelBet={cancelUnmatchedOrder} />
 									);
