@@ -293,12 +293,9 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 				}
 			}
 		});
-	}, [placeOrder, unmatchedBets, matchedBets, tickOffsetSelected, fillOrKillSelected, createStopLoss, id, stopLossHedged, createTickOffset, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
-
-
+	}, [placeOrder, unmatchedBets, matchedBets, tickOffsetSelected, fillOrKillSelected, createStopLoss, id, stopLossOffset, stopLossHedged, createTickOffset, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
 
 	const cancelSpecialOrder = useCallback(async (order, side) => {
-		
 		//! Run only if side is undefined or side matches order
 		if (!side || side === order.side) {
 			//! figure out which strategy it's using and make a new array without it

@@ -19,7 +19,6 @@ export const placeOrder = order => {
 
 	order.size = newSize;
 	order.price = parseFloat(order.price);
-	console.log(order.size);
 
 	if (parseFloat(newSize) < 2.0) {
 		return async dispatch => {

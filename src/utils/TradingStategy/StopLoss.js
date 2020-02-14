@@ -52,8 +52,6 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
  */
 const findStopPosition = (matchedPrice, ticks, side) => {
   matchedPrice = parseFloat(matchedPrice);
-  
-  console.log(side === 'back');
 
   const index = Math.floor(ALL_PRICES.indexOf(matchedPrice) + (side === 'back' ? +ticks : -ticks));
 
