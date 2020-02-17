@@ -1,52 +1,53 @@
-import React, { memo } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder, setDraggingLadder } from "../../actions/market";
 
 const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
 	ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children, onDraggingLadder, draggingLadder, scrollToLTP}) => {
 	
-	const handleMouseMove = e => {
+	const style = useMemo(() => {
+		return marketStatus === "SUSPENDED" ?
+			{
+				left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
+				visibility: isReferenceSet ? "visible" : "collapse",
+				opacity: "0.3",
+				zIndex: -1
+			} : {
+				left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
+				visibility: isReferenceSet ? "visible" : "collapse",
+				opacity: isMoving ? "0.7" : "1.0",
+				cursor: isLadderDown ? "move" : "default"
+			}
+		}, [containerRef, isLadderDown, isMoving, isReferenceSet, marketStatus, order]);
+
+	const handleMouseMove = useCallback(e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
 		moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving);
 		if (!draggingLadder) onDraggingLadder(false);
-	};
+	}, [containerRef, draggingLadder, isLadderDown, isReferenceSet, ladderOrderList, onChangeLadderOrder, onDraggingLadder, order, runners, setIsMoving]);
 
-	const handleMouseUp = e => {
+	const handleMouseUp = useCallback(e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
 		onDraggingLadder(false);
 		setLadderDown(false);
 		returnToOrderedPos(containerRef, order, setIsMoving);
-	};
+	}, [containerRef, isLadderDown, onDraggingLadder, order, setIsMoving, setLadderDown]);
 
-	const handleMouseLeave = e => {
+	const handleMouseLeave = useCallback(e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
 		onDraggingLadder(false);
 		setLadderDown(false);
 		returnToOrderedPos(containerRef, order, setIsMoving);
 		scrollToLTP();
-	};
+	}, [containerRef, isLadderDown, onDraggingLadder, order, scrollToLTP, setIsMoving, setLadderDown]);
 
 	return (
 		<div
 			className="odds-table"
-			style={
-				marketStatus === "SUSPENDED"
-					? {
-							left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
-							visibility: isReferenceSet ? "visible" : "collapse",
-							opacity: "0.3",
-							zIndex: -1
-					  }
-					: {
-							left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
-							visibility: isReferenceSet ? "visible" : "collapse",
-							opacity: isMoving ? "0.7" : "1.0",
-							cursor: isLadderDown ? "move" : "default"
-					  }
-			}
+			style={style}
 			ref={containerRef}
 			onLoad={setIsReferenceSet}
 			onMouseMove={handleMouseMove}

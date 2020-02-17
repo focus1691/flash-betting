@@ -356,7 +356,7 @@ const App = props => {
     props.socket.on("mcm", data => {
       var i;
       // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
-      props.socket.off("mcm");
+      // props.socket.off("mcm");
 
       if (data.clk) {
         setClk(data.clk);
@@ -533,8 +533,12 @@ const App = props => {
           matched: newMatchedBets
         });
       }
-      props.socket.off("ocm");
+      // props.socket.off("ocm");
     });
+    return () => {
+      props.socket.off("mcm");
+      props.socket.off("ocm");
+    }
   }, [props.ladders, props.marketStatus, props.inPlay, props.market.inPlayTime, props.pastEventTime]);
 
   useEffect(() => {

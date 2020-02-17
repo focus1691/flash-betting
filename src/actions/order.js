@@ -1,8 +1,5 @@
 import { calcLayBet } from "../utils/TradingStategy/HedingCalculator";
-/**
- * 
- * @param {object} order The object
- */
+
 export const updateOrders = order => {
 	return {
 		type: "UPDATE_BET",
@@ -13,7 +10,7 @@ export const updateOrders = order => {
 export const placeOrder = order => {
 	const newSize = order.side === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size);
 
-	if (order.unmatchedBets === undefined || order.matchedBets === undefined) {
+	if (!order.unmatchedBets || !order.matchedBets || isNaN(newSize)) {
 		return;
 	}
 
@@ -82,6 +79,8 @@ export const placeOrder = order => {
 	return async dispatch => {
 		const result = await placeOrderAction(order);
 
+		return result;
+
 		if (result !== null) {
 			return dispatch(updateOrders(result.bets));
 		}
@@ -91,7 +90,9 @@ export const placeOrder = order => {
 export const placeOrderAction = async order => {
 	//! order without anything that might make the payload too large
 	const minimalOrder = {};
-	Object.keys(order).map(key => {
+
+	Object.keys(order).forEach(key => {
+		console.log(key);
 		if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "orderCompleteCallBack") {
 			minimalOrder[key] = order[key];
 		}
@@ -231,5 +232,142 @@ export const reduceSizeAction = async order => {
 			unmatched: order.unmatchedBets ? order.unmatchedBets : {},
 			matched: order.matchedBets ? order.matchedBets : {}
 		};
+	}
+};
+
+export const saveOrder = order => {
+	return new Promise(async (res, rej) => {
+		await fetch("/api/save-order", {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json"
+			},
+			method: "POST",
+			body: JSON.stringify(order)
+		})
+		.then(() => {
+			res(true);
+		})
+		.catch(err => {
+			rej(false);
+		})
+	});
+}
+
+export const removeOrder = order => {
+	return new Promise(async (res, rej) => {
+		await fetch("/api/remove-orders", {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json"
+			},
+			method: "POST",
+			body: JSON.stringify([order])
+		}).then(() => {
+			res(true);
+		})
+		.catch(() => {
+			rej(false);
+		})
+	});
+};
+
+/**
+ * This function saves the new stop loss to the database
+ * @param {*} stopLoss New stop loss
+ * @param {*} stopLossList List of stop loss objects
+ * @returns Updated list to be updated in the redux store
+ */
+export const placeStopLoss = async (stopLoss, stopLossList) => {
+	const newStopLossList = Object.assign({}, stopLossList);
+	newStopLossList[stopLoss.selectionId] = stopLoss;
+
+	const result = await saveOrder(stopLoss);
+
+	return {
+		status: result,
+		data: newStopLossList
+	}
+}
+
+/**
+ * This function saves the new tick offset to the database
+ * @param {object} tickOffset New tick offset 
+ * @param {object} tickOffsetList List of tick offset objects
+ * @returns Updated list to be updated in the redux store
+ */
+export const placeTickOffset = async (tickOffset, tickOffsetList) => {
+	const newTickOffsetList = Object.assign({}, tickOffsetList);
+	newTickOffsetList[tickOffset.rfs] = tickOffset;
+
+	const result = await saveOrder(tickOffset);
+	
+	return {
+		status: result,
+		data: newTickOffsetList
+	}
+};
+
+/**
+ * This function saves the fill or kill order to the database
+ * @param {object} tickOffset New Fill or Kill
+ * @param {object} tickOffsetList List of Fill or Kill objects
+ * @returns Updated list to be updated in the redux store
+ */
+export const placeFillOrKill = async (fillOrKill, fillOrKillList) => {
+
+	const newFillOrKillList = Object.assign({}, fillOrKillList);
+	newFillOrKillList[fillOrKill.betId] = fillOrKill;
+
+	const result = await saveOrder(fillOrKill);
+
+	return {
+		status: result,
+		data: fillOrKill
+	}
+};
+
+export const replaceStopLoss = async (SL, stopLossList, data) => {
+	const newStopLossList = Object.assign({}, stopLossList);
+
+	//* Just remove it if the stop loss position is clicked
+	if (SL && SL.stopLoss && SL.stopLoss) {
+		console.log(newStopLossList, data.id);
+		console.log('-----------------');
+
+		const result = await removeOrder(newStopLossList[data.id]);
+
+		delete newStopLossList[data.id];
+
+		return {
+			status: result,
+			data: newStopLossList
+		}
+	//* Otherwise update the stop position
+	}
+	else if (stopLossList) {
+		const newStopLoss = Object.assign({}, newStopLossList[data.id]);
+		let result = await removeOrder(newStopLoss);
+
+		//! Update the stop loss
+		newStopLoss.size = data.stakeVal;
+		newStopLoss.price = data.price;
+		newStopLoss.units = data.stopLossUnits;
+		newStopLoss.custom = true;
+		newStopLoss.assignedIsOrderMatched = false;
+		newStopLoss.strategy = "Stop Loss"
+		newStopLoss.tickOffset = 0;
+		newStopLoss.hedged = data.stopLossHedged;
+
+		newStopLossList[data.id] = newStopLoss;
+
+		result = await saveOrder(newStopLoss);
+		
+		return {
+			status: result,
+			data: newStopLossList
+		}
+	} else {
+		return { status: null };
 	}
 };
