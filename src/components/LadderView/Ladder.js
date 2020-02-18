@@ -9,7 +9,7 @@ import { updateStopLossList } from "../../actions/stopLoss";
 import { updateTickOffsetList } from "../../actions/tickOffset";
 import { updateStopEntryList } from "../../actions/stopEntry";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
-import { cancelOrder, placeOrder, updateOrders, placeStopLoss, replaceStopLoss, placeTickOffset, placeFillOrKill } from "../../actions/order";
+import { cancelOrder, cancelOrders, placeOrder, updateOrders, placeStopLoss, replaceStopLoss, placeTickOffset, placeFillOrKill } from "../../actions/order";
 import { getLTP } from "../../selectors/marketSelector";
 import { getMatchedBets, getSelectionMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
@@ -193,93 +193,21 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		if (result) onUpdateOrders(result.bets);
 	}, [onPlaceOrder, unmatchedBets, matchedBets, onUpdateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, onChangeFillOrKillList]);
 
-	const cancelSpecialOrder = useCallback((order, side) => {
-		//! Run only if side is undefined or side matches order
-		if (!side || side === order.side) {
-			//! figure out which strategy it's using and make a new array without it
-			switch (order.strategy) {
-				case "Back":
-					const newBackList = Object.assign({}, backList);
-					newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs)
-					onChangeBackList(newBackList);
-					break;
-				case "Lay":
-					const newLayList = Object.assign({}, layList);
-					newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs)
-					onChangeLayList(newLayList);
-					break;
-				case "Stop Entry":
-					const newStopEntryList = Object.assign({}, stopEntryList);
-					newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs)
-					onChangeStopEntryList(newStopEntryList);
-					break;
-				case "Tick Offset":
-					const newTickOffsetList = Object.assign({}, tickOffsetList);
-					delete newTickOffsetList[order.rfs]
-					onChangeTickOffsetList(newTickOffsetList)
-					break;
-				case "Stop Loss":
-					const newStopLossList = Object.assign({}, stopLossList);
-					delete newStopLossList[order.selectionId];
-					onChangeStopLossList(newStopLossList)
-					break;
-				case "None":
-					// if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
-					if (fillOrKillList[order.betId]) {
-						const newFillOrKill = Object.assign({}, fillOrKillList)
-						delete newFillOrKill[order.betId];
-						onChangeFillOrKillList(newFillOrKill)
-					}
-					onCancelOrder({
-						marketId: order.marketId,
-						betId: order.betId,
-						sizeReduction: null,
-						matchedBets: matchedBets,
-						unmatchedBets: unmatchedBets
-					});
-					break;
-				default:
-					onCancelOrder({
-						marketId: order.marketId,
-						betId: order.betId,
-						sizeReduction: null,
-						matchedBets: matchedBets,
-						unmatchedBets: unmatchedBets
-					});
-					break;
-			}
+	const cancelSpecialOrders = async (order, side) => {
+		let betsToPass = order ? order : selectionUnmatchedBets ? selectionUnmatchedBets : null;
+
+		if (betsToPass) {
+			const data = await cancelOrders(betsToPass, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
+
+			onChangeBackList(data.back);
+			onChangeLayList(data.lay);
+			onChangeStopLossList(data.stopLoss);
+			onChangeTickOffsetList(data.tickOffset);
+			onChangeStopEntryList(data.stopEntry);
+			onChangeFillOrKillList(data.fillOrKill);
+			onUpdateOrders(data.bets);
 		}
-	}, [backList, fillOrKillList, layList, matchedBets, onCancelOrder, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
-
-	const cancelSpecialOrders = useCallback((order, side) => {
-		if (!order && !selectionUnmatchedBets) return;
-		let ordersToRemove = [];
-
-		if (order) {
-			cancelSpecialOrder(order, side);
-			ordersToRemove = ordersToRemove.concat(order);
-			
-		} else if (selectionUnmatchedBets) {
-			Object.values(selectionUnmatchedBets).forEach(rfs => {
-				rfs.forEach(order => {
-					cancelSpecialOrder(order, side);
-					ordersToRemove = ordersToRemove.concat(order);
-				});
-			});
-		}
-
-		// delete from database
-		try {
-			fetch("/api/remove-orders", {
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json"
-				},
-				method: "POST",
-				body: JSON.stringify(ordersToRemove)
-			});
-		} catch (e) {}
-	}, [cancelSpecialOrder, selectionUnmatchedBets]);
+	};
 
 	return (
 		<LadderContainer

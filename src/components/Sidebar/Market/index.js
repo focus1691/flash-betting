@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { updateBackList } from "../../../actions/back";
 import { updateFillOrKillList } from "../../../actions/fillOrKill";
 import { updateLayList } from "../../../actions/lay";
-import { cancelOrderAction, updateOrders } from "../../../actions/order";
+import { updateOrders } from "../../../actions/order";
 import { setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatchedBetsExpanded, setRulesExpanded, setToolsExpanded, setUnmatchedBetsExpanded } from "../../../actions/settings";
 import { updateStopEntryList } from "../../../actions/stopEntry";
 import { updateStopLossList } from "../../../actions/stopLoss";
@@ -135,42 +135,42 @@ const Market = props => {
 
   };
 
-  const cancelAllOrdersInMarket = (marketId, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
-    e.stopPropagation();
+  // const cancelAllOrdersInMarket = (marketId, unmatchedBets, matchedBets, specialBets, betCanceler) => async e => {
+  //   e.stopPropagation();
 
-    betCanceler(specialBets);
+  //   betCanceler(specialBets);
 
-    await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json())
-    .then(res => res.currentOrders)
-    .then(async currentOrders => {
-      if (currentOrders) {
-        // filter all the ones out that arent in the same selection or arent unmatched
-        const openSelectedRunnerOrders = currentOrders.filter(order => (order.status === "EXECUTABLE" || order.status === "PENDING"));
+  //   await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json())
+  //   .then(res => res.currentOrders)
+  //   .then(async currentOrders => {
+  //     if (currentOrders) {
+  //       // filter all the ones out that arent in the same selection or arent unmatched
+  //       const openSelectedRunnerOrders = currentOrders.filter(order => (order.status === "EXECUTABLE" || order.status === "PENDING"));
   
-        // this is basically calling 1 bet after another and returning the unmatched bets it gets from it
-        const cancelBets = await openSelectedRunnerOrders.reduce(async (previousPromise, nextOrder) => {
-          const previousCancelOrderUnmatchedBets = await previousPromise;
-          return cancelOrderAction({
-            marketId: nextOrder.marketId,
-            betId: nextOrder.betId,
-            sizeReduction: null,
-            matchedBets: matchedBets,
-            unmatchedBets: previousCancelOrderUnmatchedBets && previousCancelOrderUnmatchedBets.unmatched ? previousCancelOrderUnmatchedBets.unmatched : unmatchedBets,
-          });
-        }, Promise.resolve());
+  //       // this is basically calling 1 bet after another and returning the unmatched bets it gets from it
+  //       const cancelBets = await openSelectedRunnerOrders.reduce(async (previousPromise, nextOrder) => {
+  //         const previousCancelOrderUnmatchedBets = await previousPromise;
+  //         return cancelOrderAction({
+  //           marketId: nextOrder.marketId,
+  //           betId: nextOrder.betId,
+  //           sizeReduction: null,
+  //           matchedBets: matchedBets,
+  //           unmatchedBets: previousCancelOrderUnmatchedBets && previousCancelOrderUnmatchedBets.unmatched ? previousCancelOrderUnmatchedBets.unmatched : unmatchedBets,
+  //         });
+  //       }, Promise.resolve());
   
-        if (cancelBets === undefined) return;
+  //       if (cancelBets === undefined) return;
   
-        props.onUpdateBets({
-          unmatched: cancelBets.unmatched,
-          matched: cancelBets.matched
-        });
-      }
-    })
-    .catch(e => {
-      return;
-    });
-  }
+  //       props.onUpdateBets({
+  //         unmatched: cancelBets.unmatched,
+  //         matched: cancelBets.matched
+  //       });
+  //     }
+  //   })
+  //   .catch(e => {
+  //     return;
+  //   });
+  // }
 
   const createTitle = (name, position) => {
     return (
@@ -205,7 +205,7 @@ const Market = props => {
             <button
               className={"cancel-order-btn"}
               style={{ height: "22px", width: "auto", display: "inline-block", zIndex: "999", float: "right", marginTop: "0.3em" }}
-              onClick={cancelAllOrdersInMarket(props.market.marketId, props.bets.unmatched, props.bets.matched, allUnmatchedSpecialBets, cancelSpecialOrders)}
+              onClick={null}
             >
               <img src={`${window.location.origin}/icons/error.png`} alt="X" />
             </button>

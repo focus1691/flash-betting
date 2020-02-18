@@ -1,4 +1,10 @@
 import { calcLayBet } from "../utils/TradingStategy/HedingCalculator";
+import { updateBackList } from "../actions/back";
+import { updateLayList } from "../actions/lay";
+import { updateStopLossList } from "../actions/stopLoss";
+import { updateTickOffsetList } from "../actions/tickOffset";
+import { updateStopEntryList } from "../actions/stopEntry";
+import { updateFillOrKillList } from "../actions/fillOrKill";
 
 export const updateOrders = order => {
 	return {
@@ -92,7 +98,6 @@ export const placeOrderAction = async order => {
 	const minimalOrder = {};
 
 	Object.keys(order).forEach(key => {
-		console.log(key);
 		if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "orderCompleteCallBack") {
 			minimalOrder[key] = order[key];
 		}
@@ -137,6 +142,92 @@ export const placeOrderAction = async order => {
 	});
 };
 
+export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side) => {
+
+	const newUnmatchedBets = Object.assign({}, unmatchedBets);
+	const newBackList = Object.assign({}, backList);
+	const newLayList = Object.assign({}, layList);
+	const newStopEntryList = Object.assign({}, stopEntryList);
+	const newTickOffsetList = Object.assign({}, tickOffsetList);
+	const newStopLossList = Object.assign({}, stopLossList);
+	const newFillOrKill = Object.assign({}, fillOrKillList);
+	const ordersToRemove = [];
+
+	const cancelSpecialOrder = async order => {
+		//! Run only if side is undefined or side matches order
+		if (!side || side === order.side) {
+			//! figure out which strategy it's using and make a new array without it
+			switch (order.strategy) {
+				case "Back":
+					ordersToRemove.push(newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs));
+					break;
+				case "Lay":
+					ordersToRemove.push(newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs));
+					break;
+				case "Stop Entry":
+					ordersToRemove.push(newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs));
+					break;
+				case "Tick Offset":
+					let tickOffsetRemoved = await removeOrder(newTickOffsetList[order.rfs]);
+					if (tickOffsetRemoved) delete newTickOffsetList[order.rfs];
+					break;
+				case "Stop Loss":
+					console.log('stop loss before', newStopLossList);
+					let stopLossRemoved = await removeOrder(newStopLossList[order.selectionId]);
+					if (stopLossRemoved) delete newStopLossList[order.selectionId];
+					console.log('stop loss after', newStopLossList);
+					break;
+				default:
+					// if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
+					if (fillOrKillList[order.betId]) delete newFillOrKill[order.betId];
+
+					let isCancelled = await cancelBetFairOrder(order);
+					if (isCancelled) delete newUnmatchedBets[order.betId];
+					break;
+			}
+		}
+	}
+
+	if (orders.hasOwnProperty('betId')) {
+		await cancelSpecialOrder(orders);
+	} else {
+		await Object.values(orders).forEach(rfs => {
+			rfs.forEach(orders => {
+				cancelSpecialOrder(orders);
+			});
+		});
+	}
+
+	return {
+		back: newBackList,
+		lay: newLayList,
+		stopLoss: newStopLossList,
+		stopEntry: newStopEntryList,
+		tickOffset: newTickOffsetList,
+		fillOrKill: newFillOrKill,
+		bets: {
+			unmatched: newUnmatchedBets || {},
+			matched: matchedBets || {}
+		}
+	}
+
+	return async dispatch => {
+		console.log('updating... 2');
+		dispatch(removeOrder(ordersToRemove));
+		dispatch(updateBackList(newBackList));
+		dispatch(updateLayList(newLayList));
+		dispatch(updateStopEntryList(newStopEntryList));
+		dispatch(updateTickOffsetList(newTickOffsetList));
+		dispatch(updateStopLossList(newStopLossList));
+		console.log('stop loss...', newStopLossList);
+		dispatch(updateFillOrKillList(newFillOrKill));
+		dispatch(updateOrders({
+			unmatched: newUnmatchedBets || {},
+			matched: matchedBets || {}
+		}));
+	};
+};
+
 /**
  ** Wrapper function to check order and dispatch delete
  * @param {object} order Object to delete
@@ -147,53 +238,31 @@ export const cancelOrder = order => {
 	}
 
 	return async dispatch => {
-		const newBets = await cancelOrderAction(order);
-		return dispatch(updateOrders(newBets));
-	};
-};
-
-/**
- * 
- * @param {object} order Object to delete 
- */
-export const cancelOrderAction = async order => {
-	// order with everything removed that might make the payload too large
-	const minimalOrder = {};
-	Object.keys(order).map(key => {
-		if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "callback") {
-			minimalOrder[key] = order[key];
-		}
-	});
-
-	const cancelOrder = await fetch("/api/cancel-order", {
-		headers: {
-			Accept: "application/json",
-			"Content-Type": "application/json"
-		},
-		method: "POST",
-		body: JSON.stringify(minimalOrder)
-	})
-	.then(res => res.json())
-	.catch(() => false);
-
-	if (cancelOrder) {
-		const newUnmatchedBets = {};
-		for (const key in order.unmatchedBets) {
-			if (key != order.betId) {
-				newUnmatchedBets[key] = order.unmatchedBets[key];
+		// order with everything removed that might make the payload too large
+		const minimalOrder = {};
+		Object.keys(order).map(key => {
+			if (key !== "unmatchedBets" && key !== "matchedBets" && key !== "callback") {
+				minimalOrder[key] = order[key];
 			}
+		});
+
+		const cancelOrder = await cancelBetFairOrder(minimalOrder);
+
+		if (cancelOrder) {
+			const newUnmatchedBets = Object.keys(order.unmatchedBets).filter(key => {
+				if (key != order.betId) return order.unmatchedBets[key];
+			});
+			dispatch(updateOrders({
+				unmatched: newUnmatchedBets,
+				matched: order.matchedBets || {}
+			}));
+		} else {
+			dispatch(updateOrders( {
+				unmatched: order.unmatchedBets || {},
+				matched: order.matchedBets || {}
+			}));
 		}
-		const newBets = {
-			unmatched: newUnmatchedBets,
-			matched: order.matchedBets ? order.matchedBets : {}
-		};
-		return newBets;
-	} else {
-		return {
-			unmatched: order.unmatchedBets ? order.unmatchedBets : {},
-			matched: order.matchedBets ? order.matchedBets : {}
-		};
-	}
+	};
 };
 
 export const reduceSizeAction = async order => {
@@ -251,6 +320,21 @@ export const saveOrder = order => {
 		.catch(err => {
 			rej(false);
 		})
+	});
+}
+
+export const cancelBetFairOrder = order => {
+	return new Promise (async (res, rej) => {
+		await fetch("/api/cancel-order", {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json"
+			},
+			method: "POST",
+			body: JSON.stringify(order)
+		})
+		.then(data => res(data.json()))
+		.catch(() => rej(false));
 	});
 }
 
@@ -332,9 +416,6 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
 
 	//* Just remove it if the stop loss position is clicked
 	if (SL && SL.stopLoss && SL.stopLoss) {
-		console.log(newStopLossList, data.id);
-		console.log('-----------------');
-
 		const result = await removeOrder(newStopLossList[data.id]);
 
 		delete newStopLossList[data.id];
