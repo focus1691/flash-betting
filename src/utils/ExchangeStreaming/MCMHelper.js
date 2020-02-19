@@ -70,15 +70,18 @@ export const stopLossTrailingChange = (stopLossList, selectionId, currentLTP, ol
  * @param {object} matchedBets - The matchedBets that has to be passed into onPlaceOrder.
  * @return {object} The new {adjustedStopLossList, stopLossOrdersToRemove}.
 */
-export const stopLossCheck = (adjustedStopLoss, selectionId, currentLTP, onPlaceOrder, stopLossOrdersToRemove, previousAdjustedStopLossList, unmatchedBets, matchedBets) => {
+export const stopLossCheck = (adjustedStopLoss, selectionId, currentLTP, onPlaceOrder, previousAdjustedStopLossList, unmatchedBets, matchedBets) => {
 
-    let newStopLossOrdersToRemove = [...stopLossOrdersToRemove];
+    let newStopLossOrdersToRemove = [];
     const adjustedStopLossList = Object.assign({}, previousAdjustedStopLossList)
+
+    console.log(adjustedStopLoss);
 
     if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
         const units = adjustedStopLoss.units ? adjustedStopLoss.units.toLowerCase() : "ticks";
 
         const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, currentLTP, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, units, adjustedStopLoss.rfs !== undefined);
+        console.log(stopLossCheck);
         if (stopLossCheck.targetMet) {
             onPlaceOrder({
                 marketId: adjustedStopLoss.marketId,
@@ -91,6 +94,7 @@ export const stopLossCheck = (adjustedStopLoss, selectionId, currentLTP, onPlace
             })
 
             newStopLossOrdersToRemove = newStopLossOrdersToRemove.concat(adjustedStopLoss);
+            
 
             delete adjustedStopLossList[selectionId];
           

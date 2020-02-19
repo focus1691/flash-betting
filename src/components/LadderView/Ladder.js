@@ -199,13 +199,14 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		if (betsToPass) {
 			const data = await cancelOrders(betsToPass, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
 
+			console.log('ladder ', data.stopLoss);
 			onChangeBackList(data.back);
 			onChangeLayList(data.lay);
 			onChangeStopLossList(data.stopLoss);
 			onChangeTickOffsetList(data.tickOffset);
 			onChangeStopEntryList(data.stopEntry);
 			onChangeFillOrKillList(data.fillOrKill);
-			onUpdateOrders(data.bets);
+			// onUpdateOrders(data.bets);
 		}
 	};
 
