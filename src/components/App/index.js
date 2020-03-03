@@ -34,11 +34,10 @@ import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionE
 import useInterval from "../../utils/CustomHooks/useInterval";
 
 const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEventTime, marketOpen, ladders, nonRunners,
-  premiumMember, premiumPopup, unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, layList, backList,
-  socket, setLoading, setPremiumStatus, onToggleDefaultView, onToggleActiveView, onToggleSounds, onToggleTools, onToggleUnmatchedBets,
+  unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, socket, setLoading, setPremiumStatus, onToggleDefaultView, onToggleActiveView, onToggleSounds, onToggleTools, onToggleUnmatchedBets,
   onToggleMatchedBets, onToggleGraph, onToggleMarketInformation, onUpdateWinMarketsOnly, onToggleRules, onToggleLadderUnmatched,
   onReceiveStakeBtns, onReceiveLayBtns, onReceiveRightClickTicks, onReceiveHorseRaces, onReceiveMarket, onReceiveEventType,
-  onMarketClosed, onReceiveInitialClk, onReceiveClk, onReceiverLadders, onSortLadder, onSelectRunner, onUpdateRunners,
+  onMarketClosed, onReceiverLadders, onSortLadder, onSelectRunner, onUpdateRunners,
   onReceiveNonRunners, onChangeExcludedLadders, onMarketStatusChange, setInPlay, setInPlayTime, setMarketPL, onChangeStopLossList,
   onChangeTickOffsetList, onChangeStopEntryList, onChangeLayList, onChangeBackList, onPlaceOrder, onChangeOrders, onChangeFillOrKillList}) => {
   const [marketId, setMarketId] = useState(null);
@@ -669,16 +668,11 @@ const mapStateToProps = state => {
     marketOpen: state.market.marketOpen,
     ladders: state.market.ladder,
     nonRunners: state.market.nonRunners,
-    premiumMember: state.settings.premiumMember,
-    premiumPopup: state.settings.premiumPopupOpen,
     unmatchedBets: state.order.bets.unmatched,
     matchedBets: state.order.bets.matched,
     stopLossList: state.stopLoss.list,
     tickOffsetList: state.tickOffset.list,
-    stopEntryList: state.stopEntry.list,
-    fillOrKillList: state.fillOrKill.list,
-    layList: state.lay.list,
-    backList: state.back.list
+    stopEntryList: state.stopEntry.list
   };
 };
 
@@ -706,8 +700,6 @@ const mapDispatchToProps = dispatch => {
     onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
     onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
     onMarketClosed: () => dispatch(marketActions.closeMarket()),
-    onReceiveInitialClk: initialClk => dispatch(marketActions.setInitialClk(initialClk)),
-    onReceiveClk: clk => dispatch(marketActions.setClk(clk)),
     onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
     onSortLadder: sortedLadder => dispatch(marketActions.setSortedLadder(sortedLadder)),
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
