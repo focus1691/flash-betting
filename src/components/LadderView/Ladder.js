@@ -142,7 +142,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 						marketId: marketId,
 						selectionId: parseInt(id),
 						side: side === "BACK" ? "LAY" : "BACK",
-						price: findStopPosition(price, stopLossOffset, side.toLowerCase()),
+						price: findStopPosition(price, stopLossOffset, side),
 						custom: false,
 						units: stopLossUnits,
 						rfs: referenceStrategyId,

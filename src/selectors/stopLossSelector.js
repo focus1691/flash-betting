@@ -14,8 +14,8 @@ export const getStopLoss = createSelector(getStopLossSelector, ({ stopLoss, pric
 		stopLoss.tickOffset > 0
 			? stopLoss.side === side
 				? stopLoss.units === "Ticks"
-					? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase())
-					: findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side.toLowerCase())
+					? findStopPosition(stopLoss.price, stopLoss.tickOffset, stopLoss.side)
+					: findStopPositionForPercent(stopLoss.size, stopLoss.price, stopLoss.tickOffset, stopLoss.side)
 				: false
 			: stopLoss.price;
 

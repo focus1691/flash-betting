@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { connect } from "react-redux";
-import { updateLadderOrder, setSortedLadder, updateExcludedLadders } from "../../actions/market";
+import { updateLadderOrder } from "../../actions/market";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
-import { sortLadder } from "../../utils/ladder/SortLadder";
 
-const Ladders = ({ ladderOrder, sortedLadder, onSortLadder, onChangeExcludedLadders, onChangeLadderOrder, marketOpen, marketStatus, eventType, ladders, excludedLadders, ladderUnmatched }) => {
+const Ladders = memo(({ ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, ladderUnmatched }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 
 	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
 	}, [layFirstCol]);
-
-
-	// 
 	
 	useEffect(() => {
 		// initialize the order object
@@ -51,14 +47,12 @@ const Ladders = ({ ladderOrder, sortedLadder, onSortLadder, onChangeExcludedLadd
 			<SuspendedWarning marketStatus={marketStatus} />
 		</div>
 	) : null;
-};
+});
 
 const mapStateToProps = state => {
 	return {
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
-		eventType: state.market.eventType,
-		ladders: state.market.ladder,
 		sortedLadder: state.market.sortedLadder,
 		excludedLadders: state.market.excludedLadders,
 		ladderOrder: state.market.ladderOrder,
@@ -68,10 +62,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
-		onSortLadder: sortedLadder => dispatch(setSortedLadder(sortedLadder)),
-		onChangeExcludedLadders: excludedLadders => dispatch(updateExcludedLadders(excludedLadders))
+		onChangeLadderOrder: order => dispatch(updateLadderOrder(order))
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladders));
+export default connect(mapStateToProps, mapDispatchToProps)(Ladders);

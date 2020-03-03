@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { connect } from "react-redux";
 import * as actions from "../../actions/settings";
@@ -9,8 +9,7 @@ import { updateStopEntryList } from "../../actions/stopEntry";
 import Spinner from "./Spinner";
 import Siderbar from "../Sidebar";
 import HomeView from "../HomeView/";
-import LadderView from "../LadderView/";
-import GridView from "../GridView/";
+import Views from "../Views";
 import SocketContext from "../../SocketContext";
 import Title from "./Title";
 import getQueryVariable from "../../utils/Market/GetQueryVariable";
@@ -292,7 +291,7 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
         cleanupOnMarketClose(getQueryVariable("marketId"));
       }
     });
-  }, [marketStatus, market.inPlayTime, pastEventTime]);
+  }, [marketStatus, market.inPlayTime, pastEventTime, socket, onMarketStatusChange, setInPlay, marketOpen, setInPlayTime, onMarketClosed]);
 
   useEffect(() => {
     // If it's not a Greyhound Race (4339), we sort by the LTP
@@ -301,7 +300,7 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
       onSortLadder(sortedLadderIndices);
       onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
     }
-  }, [Object.values(ladders).length]);
+  }, [eventType, ladders, onChangeExcludedLadders, onSortLadder]);
 
   useEffect(() => {
     // A message will be sent here if the connection to the market is disconnected.
@@ -316,7 +315,7 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
         });
       }
     });
-  }, [clk, initialClk, connectionError]);
+  }, [clk, initialClk, connectionError, socket]);
 
   useEffect(() => {
     socket.on("subscription-error", async data => {
@@ -331,7 +330,7 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
         setConnectionError("");
       }
     });
-  }, [connectionError]);
+  }, [connectionError, socket]);
 
   useEffect(() => {
     /**
@@ -340,15 +339,9 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
      */
     socket.on("mcm", data => {
       var i;
-      // Turn the socket off to prevent the listener from runner more than once. It will back on once the component reset.
 
-      if (data.clk) {
-        setClk(data.clk);
-      }
-
-      if (data.initialClk) {
-        setInitialClk(data.initialClk);
-      }
+      if (data.clk) setClk(data.clk);
+      if (data.initialClk) setInitialClk(data.initialClk);
 
       data.mc.forEach(async mc => {
         var ladders = Object.assign({}, updates);
@@ -372,26 +365,24 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
         if (mc.rc) {
           let adjustedStopLossList = Object.assign({}, stopLossList);
           let newStopEntryList = Object.assign({}, stopEntryList);
+          let stopLossOrdersToRemove = [];
 
-          console.log('app ', adjustedStopLossList);
-          
           for (i = 0; i < mc.rc.length; i++) {
-            let rc = mc.rc[i];
-            if (rc.id in ladders) {
+            if (mc.rc[i].id in ladders) {
               // Runner found so we update our object with the raw data
-              ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
+              ladders[mc.rc[i].id] = UpdateLadder(ladders[mc.rc[i].id], mc.rc[i]);
 
-              const currentLTP = ladders[rc.id].ltp[0];
+              const currentLTP = ladders[mc.rc[i].id].ltp[0];
 
               // stop Entry
-              newStopEntryList = await stopEntryListChange(stopEntryList, rc.id, currentLTP, onPlaceOrder, newStopEntryList, unmatchedBets, matchedBets);
+              newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, onPlaceOrder, newStopEntryList, unmatchedBets, matchedBets);
               
               // We increment and check the stoplosses
-              if (adjustedStopLossList[rc.id]) {
-                console.log('stop loss avail');
+              if (adjustedStopLossList[mc.rc[i].id]) {
+                console.log('stop loss found for runner with id', mc.rc[i].id);
                 // if it's trailing and the highest LTP went up, then we add a tickoffset
-                const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-                let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, rc.id, currentLTP, maxLTP));
+                const maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
+                let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, mc.rc[i].id, currentLTP, maxLTP));
 
                 // if hedged, get size (price + hedged profit/loss)
                 if (adjustedStopLoss.hedged) {
@@ -403,28 +394,32 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
                 }
 
                 // if it doesn't have a reference or the order has been matched (STOP LOSS)
-                const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, currentLTP, onPlaceOrder,
+                const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, onPlaceOrder,
                                                       adjustedStopLossList, unmatchedBets, matchedBets);
+                                                      
+                stopLossOrdersToRemove = stopLossOrdersToRemove.concat(stopLossMatched.stopLossOrdersToRemove);
 
-                if (Object.keys(stopLossList).length > 0) {
-                  onChangeStopLossList(stopLossMatched.adjustedStopLossList);
-                }
-
-                if (stopLossMatched.stopLossOrdersToRemove && stopLossMatched.stopLossOrdersToRemove.length > 0) {
-                  await fetch("/api/remove-orders", {
-                    headers: {
-                      Accept: "application/json",
-                      "Content-Type": "application/json"
-                    },
-                    method: "POST",
-                    body: JSON.stringify(stopLossMatched.stopLossOrdersToRemove)
-                  })
-                }
+                adjustedStopLossList = stopLossMatched.adjustedStopLossList;
               }
-            } else if (!(rc.id in nonRunners)) {
+            } else if (!(mc.rc[i].id in nonRunners)) {
               // Runner found so we create the new object with the raw data
-              ladders[rc.id] = CreateLadder(rc);
+              ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
             }
+          }
+
+          if (stopLossOrdersToRemove.length > 0) {
+            await fetch("/api/remove-orders", {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              method: "POST",
+              body: JSON.stringify(stopLossOrdersToRemove)
+            });
+          }
+
+          if (Object.keys(stopLossList).length > 0) {
+            onChangeStopLossList(adjustedStopLossList);
           }
 
           // so it doesn't mess up the loading of the orders
@@ -521,7 +516,7 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
       socket.off("mcm");
       socket.off("ocm");
     }
-  }, [ladders, marketStatus, inPlay, market.inPlayTime, pastEventTime]);
+  }, [ladders, marketStatus, inPlay, market.inPlayTime, pastEventTime, socket, updates, nonRunners, onReceiveNonRunners, stopLossList, stopEntryList, onPlaceOrder, unmatchedBets, matchedBets, onChangeStopLossList, onChangeStopEntryList, tickOffsetList, onChangeTickOffsetList, onChangeOrders]);
 
   useEffect(() => {
     if (Object.keys(unmatchedBets).length > 0) {
@@ -532,7 +527,7 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
         socket.off("order-subscription");
       };
     }
-  }, [Object.keys(unmatchedBets).length]);
+  }, [socket, unmatchedBets]);
 
   const cleanupOnMarketClose = marketId => {
     window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
@@ -595,7 +590,7 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
         });
       }
     }, 15000);
-  }, [marketId]);
+  }, [marketId, onChangeOrders]);
 
   useEffect(() => {
     fetch(`/api/list-market-pl?marketId=${marketId}`)
@@ -611,45 +606,29 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
       });
   }, [marketId, matchedBets, setMarketPL]);
 
-  const renderView = () => {
-    switch (view) {
-      case "HomeView":
-        return <HomeView />;
-      case "LadderView":
-        return <LadderView />;
-      case "GridView":
-        return <GridView />;
-      default:
-        return <HomeView />;
-    }
-  };
-
-  if (isLoading) {
-    return <Spinner />;
-  } else {
-    return (
-      <div className="horizontal-scroll-wrapper">
-        <div className="root">
-          <Title />
-          <Siderbar />
-          <main className="content">
-            <ConnectionBugDisplay
-              connectionError={connectionError}
-              marketId={marketId}
-              clk={clk}
-              initialClk={initialClk}
-              socket={socket}
-              setClk={setClk}
-              setInitialClk={setInitialClk}
-            />
-            <Draggable />
-            {renderView()}
-            <PremiumPopup />
-          </main>
-        </div>
+  if (isLoading) return <Spinner />;
+  return (
+    <div className="horizontal-scroll-wrapper">
+      <div className="root">
+        <Title />
+        <Siderbar />
+        <main className="content">
+          <ConnectionBugDisplay
+            connectionError={connectionError}
+            marketId={marketId}
+            clk={clk}
+            initialClk={initialClk}
+            socket={socket}
+            setClk={setClk}
+            setInitialClk={setInitialClk}
+          />
+          <Draggable />
+          {Views[view] || <HomeView />}
+          <PremiumPopup />
+        </main>
       </div>
-    );
-  }
+    </div>
+  );
 };
 
 const AppWithSocket = props => (
