@@ -75,13 +75,10 @@ export const stopLossCheck = (adjustedStopLoss, selectionId, currentLTP, onPlace
     let newStopLossOrdersToRemove = [];
     const adjustedStopLossList = Object.assign({}, previousAdjustedStopLossList)
 
-    console.log(adjustedStopLoss);
-
     if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
         const units = adjustedStopLoss.units ? adjustedStopLoss.units.toLowerCase() : "ticks";
 
         const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, currentLTP, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, units, adjustedStopLoss.rfs !== undefined);
-        console.log(stopLossCheck);
         if (stopLossCheck.targetMet) {
             onPlaceOrder({
                 marketId: adjustedStopLoss.marketId,

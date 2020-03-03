@@ -229,31 +229,6 @@ describe('check if stoploss works', () => {
         })
     })
 
-    test('order attached to it, assignedOrder is not matched: rfs == 3423423fedjafi', () => {
-        const stopLossList = {
-            237470: {
-              "strategy": "Stop Loss",
-              "trailing": true,
-              "hedged": false,
-              "assignedIsOrderMatched": false,
-              "units": "Ticks",
-              "_id": "5d96d43809bd2142c4321f37",
-              "marketId": "1.159700186",
-              "selectionId": 237470,
-              "side": "LAY",
-              "size": 5,
-              "price": "38",
-              "rfs": '3423423fedjafi',
-              "betId": "4235115",
-              "tickOffset": 5
-            },
-        }   
-        expect(stopLossCheck(stopLossList[237470], 237470, 26, onPlaceOrder, [], stopLossList)).toStrictEqual({
-            adjustedStopLossList: {237470: stopLossList[237470]},
-            stopLossOrdersToRemove: [],
-        })
-    })
-
     test('order attached to it: rfs == 3423423fedjafi', () => {
         const stopLossList = {
             237470: {
