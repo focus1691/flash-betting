@@ -248,7 +248,7 @@ describe('check if stoploss works', () => {
               "tickOffset": 5
             },
         }   
-        expect(stopLossCheck(stopLossList[237470], 237470, 26, onPlaceOrder, [], stopLossList)).toStrictEqual({
+        expect(stopLossCheck(stopLossList[237470], 237470, 26, onPlaceOrder, [], stopLossList).adjustedStopLossList).toStrictEqual({
             adjustedStopLossList: {237470: stopLossList[237470]},
             stopLossOrdersToRemove: [],
         })

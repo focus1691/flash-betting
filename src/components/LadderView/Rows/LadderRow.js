@@ -2,10 +2,10 @@ import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { setOddsHovered } from "../../../actions/market";
 import { ALL_PRICES } from "../../../utils/ladder/CreateFullLadder";
-import LadderHedgeCell from "../Cells/LadderHedgeCell";
-import LadderLTPCell from "../Cells/LadderLTPCell";
-import LadderOrderCell from "../Cells/LadderOrderCell";
-import LadderVolumeCell from "../Cells/LadderVolumeCell";
+import HedgeCell from "../Cells/HedgeCell";
+import OddsCell from "../Cells/OddsCell";
+import OrderCell from "../Cells/OrderCell";
+import VolumeCell from "../Cells/VolumeCell";
 import GetQueryVariable from "../../../utils/Market/GetQueryVariable";
 import CalculateLadderHedge from "../../../utils/ladder/CalculateLadderHedge";
 import { getSelectionMatchedBets } from "../../../selectors/orderSelector";
@@ -17,8 +17,8 @@ const isMoving = (prevProps, nextProps) => {
 	return nextProps.data.isMoving;
 };
 
-const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, replaceStopLossOrder, isMoving, resumeLTPScrolling,
-	pauseLTPScrolling, handlePlaceOrder }, PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
+const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, replaceStopLossOrder, isMoving, handlePlaceOrder },
+	PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
 
 	const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
 	const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
@@ -42,8 +42,8 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 
 	return (
 		<div key={key} onContextMenu={handleContextMenu} className={"tr"} style={style}>
-			<LadderVolumeCell selectionId={selectionId} price={key} isMoving={isMoving} />
-			<LadderHedgeCell
+			<VolumeCell selectionId={selectionId} price={key} isMoving={isMoving} />
+			<HedgeCell
 				marketId={marketId}
 				selectionId={selectionId}
 				price={key}
@@ -52,7 +52,7 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 				handleHedgeCellClick={handleHedgeCellClick}
 				isMoving={isMoving}
 			/>
-			<LadderOrderCell
+			<OrderCell
 				side={side.left}
 				selectionId={selectionId}
 				price={key}
@@ -64,14 +64,12 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 				onLeave={onOddsHovered({ selectionId, odds: 0, side: side.left })}
 				isMoving={isMoving}
 			/>
-			<LadderLTPCell
+			<OddsCell
 				selectionId={selectionId}
 				price={key}
 				isMoving={isMoving}
-				pauseLTPScrolling={pauseLTPScrolling()}
-				resumeLTPScrolling={resumeLTPScrolling()}
 			/>
-			<LadderOrderCell
+			<OrderCell
 				side={side.right}
 				selectionId={selectionId}
 				price={key}
@@ -83,7 +81,7 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 				onLeave={onOddsHovered({ selectionId, odds: 0, side: side.right })}
 				isMoving={isMoving}
 			/>
-			<LadderHedgeCell
+			<HedgeCell
 				marketId={marketId}
 				selectionId={selectionId}
 				price={key}

@@ -20,29 +20,29 @@ const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isM
 			}
 		}, [containerRef, isLadderDown, isMoving, isReferenceSet, marketStatus, order]);
 
-	const handleMouseMove = useCallback(e => {
+	const handleMouseMove = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
 		moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving);
 		if (!draggingLadder) onDraggingLadder(false);
-	}, [containerRef, draggingLadder, isLadderDown, isReferenceSet, ladderOrderList, onChangeLadderOrder, onDraggingLadder, order, runners, setIsMoving]);
+	};
 
-	const handleMouseUp = useCallback(e => {
+	const handleMouseUp = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
 		onDraggingLadder(false);
 		setLadderDown(false);
 		returnToOrderedPos(containerRef, order, setIsMoving);
-	}, [containerRef, isLadderDown, onDraggingLadder, order, setIsMoving, setLadderDown]);
+	};
 
-	const handleMouseLeave = useCallback(e => {
+	const handleMouseLeave = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
 		onDraggingLadder(false);
 		setLadderDown(false);
 		returnToOrderedPos(containerRef, order, setIsMoving);
 		scrollToLTP();
-	}, [containerRef, isLadderDown, onDraggingLadder, order, scrollToLTP, setIsMoving, setLadderDown]);
+	};
 
 	return (
 		<div

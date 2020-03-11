@@ -10,11 +10,11 @@ const arePropsEqual = (prevProps, nextProps) => {
 	return true;
 };
 
-const LadderLTPCell = memo(({ price, isLTP, ltp, ltpDelta, pauseLTPScrolling, resumeLTPScrolling }) => {
+const LadderLTPCell = memo(({ price, isLTP, ltp, ltpDelta}) => {
 	const ltpStyle = isLTP ? getLTPstyle(ltp, ltpDelta) : { background: "#BBBBBB" };
 
 	return (
-		<div style={ltpStyle} className="td" onMouseEnter={pauseLTPScrolling} onMouseOut={resumeLTPScrolling}>
+		<div style={ltpStyle} className="td">
 			{formatPrice(price)}
 		</div>
 	);

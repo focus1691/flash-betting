@@ -373,8 +373,6 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
         if (mc.rc) {
           let adjustedStopLossList = Object.assign({}, stopLossList);
           let newStopEntryList = Object.assign({}, stopEntryList);
-
-          console.log('app ', adjustedStopLossList);
           
           for (i = 0; i < mc.rc.length; i++) {
             let rc = mc.rc[i];

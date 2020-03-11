@@ -17,8 +17,8 @@ import { getStakeVal } from "../../selectors/settingsSelector";
 import { ALL_PRICES, formatPrice } from "../../utils/ladder/CreateFullLadder";
 import { findTickOffset } from "../../utils/TradingStategy/TickOffset";
 import { findStopPosition } from "../../utils/TradingStategy/StopLoss";
-import LadderContainer from "./LadderContainer";
-import LadderHeader from "./LadderHeader";
+import Container from "./Container";
+import Header from "./Header";
 import LadderRow from "./Rows/LadderRow";
 import OrderRow from "./Rows/OrderRow/OrderRow";
 import PercentageRow from "./Rows/PercentageRow/PercentageRow";
@@ -60,29 +60,16 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		}
 	}, [ltp]);
 
-	const resumeLTPScrolling = () => {
-		setLTPIsScrolling(true);
-	};
-
-	const pauseLTPScrolling =() => {
-		setLTPIsScrolling(false);
-	};
-
 	// Scroll to the LTP when the ladder first loads
 	useEffect(() => {
 		setTimeout(() => {
 			scrollToLTP();
 		}, 1000);
-	}, [scrollToLTP]);
+	}, []);
 
 	useEffect(() => {
 		scrollToLTP();
-	}, [isLadderDown, scrollToLTP]);
-
-	// Scroll to LTP when the LTP or order changes
-	useEffect(() => {
-		if (ltpIsScrolling) scrollToLTP();
-	}, [ltp, ltpIsScrolling, order, scrollToLTP]);
+	}, [ltp, isLadderDown, scrollToLTP]);
 
 	const replaceStopLossOrder = useCallback(async ({price, stopLoss}) => {
 		let res = await replaceStopLoss(stopLoss, stopLossList, {
@@ -211,7 +198,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 	};
 
 	return (
-		<LadderContainer
+		<Container
 			isReferenceSet={isReferenceSet}
 			order={order}
 			containerRef={containerRef}
@@ -222,7 +209,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 			setLadderDown={setLadderDown}
 			marketStatus={marketStatus}
 			scrollToLTP={scrollToLTP}>
-			<LadderHeader selectionId={id} setLadderDown={setLadderDown} />
+			<Header selectionId={id} setLadderDown={setLadderDown} />
 
 			<div className={"ladder"} onContextMenu={() => false}>
 				<PercentageRow
@@ -241,7 +228,6 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 							itemSize={20}
 							width={width}
 							ref={listRef}
-							onScroll={pauseLTPScrolling()}
 							style={{
 								paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px`
 							}}
@@ -253,9 +239,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 								handleHedgeCellClick: handleHedgeCellClick,
 								replaceStopLossOrder: replaceStopLossOrder,
 								layFirstCol: layFirstCol,
-								isMoving: isMoving,
-								resumeLTPScrolling: resumeLTPScrolling,
-								pauseLTPScrolling: pauseLTPScrolling
+								isMoving: isMoving
 							}}>
 							{LadderRow}
 						</List>
@@ -268,7 +252,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 				unmatchedBets={selectionUnmatchedBets}
 				cancelSpecialOrders={cancelSpecialOrders}
 			/>
-		</LadderContainer>
+		</Container>
 	);
 }, isMoving);
 

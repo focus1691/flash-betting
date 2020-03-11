@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { connect } from "react-redux";
-import { updateLadderOrder, setSortedLadder, updateExcludedLadders } from "../../actions/market";
+import { updateLadderOrder } from "../../actions/market";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
-import { sortLadder } from "../../utils/ladder/SortLadder";
 
-const Ladders = ({ ladderOrder, sortedLadder, onSortLadder, onChangeExcludedLadders, onChangeLadderOrder, marketOpen, marketStatus, eventType, ladders, excludedLadders, ladderUnmatched }) => {
+const Ladders = ({ ladderOrder, sortedLadder,  onChangeLadderOrder, marketOpen, marketStatus, eventType, ladders, excludedLadders, ladderUnmatched }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 
 	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
 	}, [layFirstCol]);
-
-
-	// 
 	
 	useEffect(() => {
 		// initialize the order object
@@ -68,9 +64,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
-		onSortLadder: sortedLadder => dispatch(setSortedLadder(sortedLadder)),
-		onChangeExcludedLadders: excludedLadders => dispatch(updateExcludedLadders(excludedLadders))
+		onChangeLadderOrder: order => dispatch(updateLadderOrder(order))
 	};
 };
 
