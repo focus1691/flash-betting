@@ -40,20 +40,6 @@ export const closeMarket = () => {
   };
 };
 
-export const setInitialClk = () => {
-  return {
-    type: "SET_INITIAL_CLOCK",
-    payload: true
-  };
-};
-
-export const setClk = () => {
-  return {
-    type: "SET_CLOCK",
-    payload: true
-  };
-};
-
 export const setEventType = eventType => {
   return {
     type: "SET_EVENT_TYPE",

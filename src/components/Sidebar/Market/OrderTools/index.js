@@ -147,8 +147,8 @@ const OrderTools = props => {
       <Table className={`${classes.table} order-settings-tbl`}>
         <TableBody>
           {rows.map(row => (
-            <>
-              <StyledTableRow key={`tool-${row.name}`}>
+            <React.Fragment key={`tool-${row.name}`}>
+              <StyledTableRow>
                 <StyledTableCell scope="row" colSpan={2}>
                   <button
                     className={"order-btn"}
@@ -176,7 +176,6 @@ const OrderTools = props => {
                     onChange={e => {
                       row.toggleSelected();
                     }}
-                    // inputProps={{ 'aria-labelledby': labelId }}
                   />
                 </StyledTableCell>
               </StyledTableRow>
@@ -189,7 +188,7 @@ const OrderTools = props => {
                   <StyledTableCell colSpan={6}>{row.settings}</StyledTableCell>
                 </Collapse>
               </StyledTableRow>
-            </>
+            </React.Fragment>
           ))}
         </TableBody>
       </Table>

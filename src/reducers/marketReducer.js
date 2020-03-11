@@ -5,8 +5,6 @@ const initialState = {
   pastEventTime: false,
   status: 'OPEN',
   eventType: null,
-  initialClk: null,
-  clk: null,
   currentMarket: {},
   runnerSelection: 0,
   nonRunners: {},
@@ -39,10 +37,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, marketOpen: action.payload };
     case "SET_EVENT_TYPE":
       return { ...state, eventType: action.payload };
-    case "SET_INITIAL_CLOCK":
-      return { ...state, initialClk: action.payload };
-    case "SET_CLOCK":
-      return { ...state, clk: action.payload };
     case "LOAD_LADDER":
       return { ...state, marketOpen: true, ladder: action.payload };
     case "SET_SORTED_LADDER":

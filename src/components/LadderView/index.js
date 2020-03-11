@@ -53,8 +53,6 @@ const mapStateToProps = state => {
 	return {
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
-		eventType: state.market.eventType,
-		ladders: state.market.ladder,
 		sortedLadder: state.market.sortedLadder,
 		excludedLadders: state.market.excludedLadders,
 		ladderOrder: state.market.ladderOrder,
@@ -68,4 +66,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(Ladders));
+export default connect(mapStateToProps, mapDispatchToProps)(Ladders);

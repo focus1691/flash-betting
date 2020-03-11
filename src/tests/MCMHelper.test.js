@@ -229,6 +229,7 @@ describe('check if stoploss works', () => {
         })
     })
 
+<<<<<<< HEAD
     test('order attached to it, assignedOrder is not matched: rfs == 3423423fedjafi', () => {
         const stopLossList = {
             237470: {
@@ -254,6 +255,8 @@ describe('check if stoploss works', () => {
         })
     })
 
+=======
+>>>>>>> f96bb72e477eb259a539de81ba452a783a98f68d
     test('order attached to it: rfs == 3423423fedjafi', () => {
         const stopLossList = {
             237470: {

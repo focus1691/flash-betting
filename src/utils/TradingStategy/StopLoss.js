@@ -18,7 +18,7 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
     matchedPrice = parseFloat(matchedPrice);
     currentPrice = parseFloat(currentPrice);
   
-  if ((side === 'back' && currentPrice < matchedPrice) || (side === 'lay' && currentPrice > matchedPrice)) {
+  if ((side === 'BACK' && currentPrice < matchedPrice) || (side === 'BACK' && currentPrice > matchedPrice)) {
 		// The price is trading in our favour so no need for further checks
 		return { targetMet: false, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
 	}
@@ -28,7 +28,7 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
 		return { targetMet: percentIncrease > ticks, stopPrice: findStopPositionForPercent(size, matchedPrice, ticks, side) };
   }
   // If it's a right click, we do a comparison since there is no bet associated with it
-  else if (((side === 'back' && currentPrice > matchedPrice) || (side === 'lay' && currentPrice < matchedPrice)) && !betAssociated) {
+  else if (((side === 'BACK' && currentPrice > matchedPrice) || (side === 'LAY' && currentPrice < matchedPrice)) && !betAssociated) {
 
     return { targetMet: true, priceReached: findStopPosition(matchedPrice, ticks, side, tickOffsetStrategy) };
   }
@@ -53,7 +53,9 @@ const checkStopLossHit = (size, matchedPrice, currentPrice, side, ticks, tickOff
 const findStopPosition = (matchedPrice, ticks, side) => {
   matchedPrice = parseFloat(matchedPrice);
 
-  const index = Math.floor(ALL_PRICES.indexOf(matchedPrice) + (side === 'back' ? +ticks : -ticks));
+  const offset = side === 'BACK' ? +ticks : side === "LAY" ? -ticks : 0;
+
+  const index = Math.floor(ALL_PRICES.indexOf(matchedPrice) + offset);
 
 	return parseFloat(ALL_PRICES[index]).toFixed(2);
 }
@@ -70,7 +72,7 @@ const findStopPositionForPercent = (size, matchedPrice, percent, side) => {
   matchedPrice = parseFloat(matchedPrice);
   var i;
 
-  if (side === "back") {
+  if (side === "BACK") {
     for (i = ALL_PRICES.indexOf(matchedPrice); i <= 1000; i++) {
       let percentIncrease = calcPercentDifference(size, matchedPrice, ALL_PRICES[i]);
 
@@ -79,7 +81,7 @@ const findStopPositionForPercent = (size, matchedPrice, percent, side) => {
       }
     }
   }
-  else if (side === "lay") {
+  else if (side === "LAY") {
     for (i = ALL_PRICES.indexOf(matchedPrice); i >= 0; i--) {
       let percentIncrease = calcPercentDifference(size, matchedPrice, ALL_PRICES[i]);
 

@@ -1,6 +1,4 @@
 import { createSelector } from "reselect";
-import { findStopPosition, findStopPositionForPercent } from "../utils/TradingStategy/StopLoss";
-
 
 const getTickOffsetSelector = (tickOffset, { refs, price, side}) => ({
     tickOffset: tickOffset[refs],
