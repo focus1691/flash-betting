@@ -143,7 +143,7 @@ const StopLoss = props => {
           <FormControlLabel
             value="Ticks"
             className={classes.formControlLabel}
-            control={<Radio color="primary" Radio />}
+            control={<Radio color="primary" />}
             label={<span>Tick</span>}
           />
           <FormControlLabel
