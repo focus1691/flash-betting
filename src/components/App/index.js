@@ -25,19 +25,19 @@ import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
 import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from "../../utils/ExchangeStreaming/MCMHelper";
 import { CreateLadder } from "../../utils/ladder/CreateLadder";
-import { sortLadder } from "../../utils/ladder/SortLadder";
 import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import ConnectionBugDisplay from "../ConnectionBugDisplay";
 import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionErrorType";
 import useInterval from "../../utils/CustomHooks/useInterval";
 
-const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEventTime, marketOpen, ladders, nonRunners,
-  unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, socket, setLoading, setPremiumStatus, onToggleDefaultView, onToggleActiveView, onToggleSounds, onToggleTools, onToggleUnmatchedBets,
+const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, marketOpen, ladders, nonRunners,
+  unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, socket, setLoading, setPremiumStatus,
+  onToggleDefaultView, onToggleActiveView, onToggleSounds, onToggleTools, onToggleUnmatchedBets,
   onToggleMatchedBets, onToggleGraph, onToggleMarketInformation, onUpdateWinMarketsOnly, onToggleRules, onToggleLadderUnmatched,
   onReceiveStakeBtns, onReceiveLayBtns, onReceiveRightClickTicks, onReceiveHorseRaces, onReceiveMarket, onReceiveEventType,
   onMarketClosed, onReceiverLadders, onSortLadder, onSelectRunner, onUpdateRunners,
-  onReceiveNonRunners, onChangeExcludedLadders, onMarketStatusChange, setInPlay, setInPlayTime, setMarketPL, onChangeStopLossList,
+  onReceiveNonRunners, onMarketStatusChange, setInPlay, setInPlayTime, setMarketPL, onChangeStopLossList,
   onChangeTickOffsetList, onChangeStopEntryList, onChangeLayList, onChangeBackList, onPlaceOrder, onChangeOrders, onChangeFillOrKillList}) => {
   const [marketId, setMarketId] = useState(null);
   const [cookies, removeCookie] = useCookies(["sessionKey", "username", "accessToken", "refreshToken", "expiresIn"]);
@@ -292,15 +292,6 @@ const App = ({ view, isLoading, market, marketStatus, eventType, inPlay, pastEve
       }
     });
   }, [marketStatus, market.inPlayTime, pastEventTime, socket, onMarketStatusChange, setInPlay, marketOpen, setInPlayTime, onMarketClosed]);
-
-  useEffect(() => {
-    // If it's not a Greyhound Race (4339), we sort by the LTP
-    if (eventType !== "4339") {
-      var sortedLadderIndices = sortLadder(ladders);
-      onSortLadder(sortedLadderIndices);
-      onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-    }
-  }, [eventType, ladders, onChangeExcludedLadders, onSortLadder]);
 
   useEffect(() => {
     // A message will be sent here if the connection to the market is disconnected.
@@ -641,7 +632,6 @@ const mapStateToProps = state => {
     isLoading: state.settings.isLoading,
     market: state.market.currentMarket,
     marketStatus: state.market.status,
-    eventType: state.market.eventType,
     inPlay: state.market.inPlay,
     pastEventTime: state.market.pastEventTime,
     marketOpen: state.market.marketOpen,
@@ -684,7 +674,6 @@ const mapDispatchToProps = dispatch => {
     onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
     onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
     onReceiveNonRunners: nonRunners => dispatch(marketActions.loadNonRunners(nonRunners)),
-    onChangeExcludedLadders: excludedLadders => dispatch(marketActions.updateExcludedLadders(excludedLadders)),
     onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),

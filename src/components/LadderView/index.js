@@ -1,26 +1,33 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import { updateLadderOrder } from "../../actions/market";
+import { updateLadderOrder, setSortedLadder, updateExcludedLadders,  } from "../../actions/market";
+import { sortLadder } from "../../utils/ladder/SortLadder";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({ ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, ladderUnmatched }) => {
+const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, onChangeLadderOrder, onChangeExcludedLadders, marketOpen, marketStatus, onSortLadder, excludedLadders, ladderUnmatched }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 
 	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
 	}, [layFirstCol]);
-	
+
 	useEffect(() => {
-		// initialize the order object
-		const newOrderList = {};
+		// If it's not a Greyhound Race (4339), we sort by the LTP
+		if (eventType !== "4339") {
+		  var sortedLadderIndices = sortLadder(ladders);
+		  onSortLadder(sortedLadderIndices);
+		  onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
 
-		for (var i = 0; i < sortedLadder.length; i++) {
-			newOrderList[i] = sortedLadder[i];
+		  const newOrderList = {};
+
+		  for (var i = 0; i < sortedLadderIndices.length; i++) {
+			  newOrderList[i] = sortedLadderIndices[i];
+		  }
+  
+		  onChangeLadderOrder(newOrderList);
 		}
-
-		onChangeLadderOrder(newOrderList);
-	}, [onChangeLadderOrder, sortedLadder]);
+	  }, [eventType, ladders, onChangeExcludedLadders, onChangeLadderOrder, onSortLadder]);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div
@@ -56,13 +63,20 @@ const mapStateToProps = state => {
 		sortedLadder: state.market.sortedLadder,
 		excludedLadders: state.market.excludedLadders,
 		ladderOrder: state.market.ladderOrder,
-		ladderUnmatched: state.settings.ladderUnmatched
+		ladderUnmatched: state.settings.ladderUnmatched,
+
+		eventType: state.market.eventType,
+		ladders: state.market.ladder
 	};
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onChangeLadderOrder: order => dispatch(updateLadderOrder(order))
+		onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
+
+		onChangeExcludedLadders: excludedLadders => dispatch(updateExcludedLadders(excludedLadders)),
+		onSortLadder: sortedLadder => dispatch(setSortedLadder(sortedLadder))
+		
 	};
 };
 
