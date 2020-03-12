@@ -5,7 +5,7 @@ import { sortLadder } from "../../utils/ladder/SortLadder";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, onChangeLadderOrder, onChangeExcludedLadders, marketOpen, marketStatus, onSortLadder, excludedLadders, ladderUnmatched }) => {
+const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, ladderOrderList, onChangeLadderOrder, onChangeExcludedLadders, marketOpen, marketStatus, onSortLadder, excludedLadders, ladderUnmatched }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 
 	const setLayFirst = useCallback(() => {
@@ -13,21 +13,25 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, onChangeLadder
 	}, [layFirstCol]);
 
 	useEffect(() => {
-		// If it's not a Greyhound Race (4339), we sort by the LTP
+		//! If it's not a Greyhound Race (4339), we sort by the LTP
 		if (eventType !== "4339") {
 		  var sortedLadderIndices = sortLadder(ladders);
 		  onSortLadder(sortedLadderIndices);
 		  onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-
-		  const newOrderList = {};
-
-		  for (var i = 0; i < sortedLadderIndices.length; i++) {
-			  newOrderList[i] = sortedLadderIndices[i];
-		  }
-  
-		  onChangeLadderOrder(newOrderList);
 		}
 	  }, [eventType, ladders, onChangeExcludedLadders, onChangeLadderOrder, onSortLadder]);
+
+	  //* Initialise the ladder order to the sorted positions
+	  //! Used for dragging & dropping ladders
+	  useEffect(() => {
+		const newOrderList = {};
+	
+		for (var i = 0; i < sortedLadder.length; i++) {
+			newOrderList[i] = sortedLadder[i];
+		}
+	
+		onChangeLadderOrder(newOrderList);
+	  }, []);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div
@@ -60,7 +64,8 @@ const mapStateToProps = state => {
 	return {
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
-		sortedLadder: state.market.sortedLadder,
+		sortedLadder: state.market.sortedLadder, //! Sorted by LTP
+		ladderOrderList: state.market.ladderOrder, //! For the ladderview specifically when swapping ladders
 		excludedLadders: state.market.excludedLadders,
 		ladderOrder: state.market.ladderOrder,
 		ladderUnmatched: state.settings.ladderUnmatched,
