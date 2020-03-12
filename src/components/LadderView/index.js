@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder } from "../../actions/market";
 import SuspendedWarning from "../GridView/SuspendedWarning";

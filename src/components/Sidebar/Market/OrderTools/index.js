@@ -149,7 +149,7 @@ const OrderTools = props => {
           {rows.map(row => (
             <React.Fragment key={`tool-${row.name}`}>
               <StyledTableRow>
-                <StyledTableCell scope="row" colSpan={2}>
+                <StyledTableCell scope="row" colSpan={4}>
                   <button
                     className={"order-btn"}
                     onClick={e => row.toggleExpand(!row.isOpen)}
@@ -166,10 +166,10 @@ const OrderTools = props => {
                     </div>
                   </button>
                 </StyledTableCell>
-                <StyledTableCell align="left" colSpan={3}>
+                <StyledTableCell align="left" colSpan={6}>
                   {row.description}
                 </StyledTableCell>
-                <StyledTableCell padding="checkbox" colSpan={1}>
+                <StyledTableCell padding="checkbox" colSpan={2}>
                   <Checkbox
                     color="primary"
                     checked={row.selected}
@@ -185,7 +185,9 @@ const OrderTools = props => {
                 className={"order-editable"}
               >
                 <Collapse hidden={!row.isOpen} in={row.isOpen}>
-                  <StyledTableCell colSpan={6}>{row.settings}</StyledTableCell>
+                  <StyledTableRow>
+                  <StyledTableCell colSpan={12}>{row.settings}</StyledTableCell>
+                  </StyledTableRow>
                 </Collapse>
               </StyledTableRow>
             </React.Fragment>

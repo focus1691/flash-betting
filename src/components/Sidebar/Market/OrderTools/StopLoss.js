@@ -16,7 +16,6 @@ import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
-    maxWidth: 360,
     height: "50px",
     backgroundColor: theme.palette.background.paper
   },

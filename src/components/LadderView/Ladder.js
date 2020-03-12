@@ -33,7 +33,7 @@ const isMoving = (prevProps, nextProps) => {
 };
 
 const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOrder, onUpdateOrders, onCancelOrder, order, unmatchedBets, matchedBets, setLadderSideLeft, onChangeStopLossList, backList, onChangeBackList, layList, onChangeLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
-				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList, stopEntryList, onChangeStopEntryList, onChangeTickOffsetList, stopLossOffset, stopLossTrailing, stopLossList, stopLossUnits, stakeVal, stopLoss}) => {
+				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList, stopEntryList, onChangeStopEntryList, onChangeTickOffsetList, stopLossOffset, stopLossTrailing, stopLossList, stopLossUnits, stakeVal, stopLoss, ladderOrderList}) => {
 	
 	const containerRef = useRef(null);
 	const listRef = useRef();
@@ -59,16 +59,17 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		}
 	}, [ltp]);
 
-	// Scroll to the LTP when the ladder first loads
+	//* Scroll to the LTP when the ladder first loads
 	useEffect(() => {
 		setTimeout(() => {
 			scrollToLTP();
 		}, 1000);
-	}, []);
+	}, [scrollToLTP]);
 
+	//* Scroll to the LTP when the ladder order changes
 	useEffect(() => {
 		scrollToLTP();
-	}, [ltp, isLadderDown, scrollToLTP]);
+	}, [ltp, ladderOrderList, scrollToLTP]);
 
 	const replaceStopLossOrder = useCallback(async ({price, stopLoss}) => {
 		let res = await replaceStopLoss(stopLoss, stopLossList, {
@@ -266,6 +267,7 @@ const mapStateToProps = (state, props) => {
 		ladderUnmatched: state.settings.ladderUnmatched,
 		stakeVal: getStakeVal(state.settings.stake, { selectionId: props.id }),
 		draggingLadder: state.market.draggingLadder,
+		ladderOrderList: state.market.ladderOrder,
 
 		//* Back/Lay
 		layList: state.lay.list,
