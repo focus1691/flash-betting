@@ -245,6 +245,7 @@ export const cancelOrder = order => {
 				minimalOrder[key] = order[key];
 			}
 		});
+		console.log(minimalOrder);
 
 		const cancelOrder = await cancelBetFairOrder(minimalOrder);
 

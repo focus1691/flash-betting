@@ -41,7 +41,6 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 	const [isReferenceSet, setIsReferenceSet] = useState(false);
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
-	const [ltpIsScrolling, setLTPIsScrolling] = useState(true);
 
 	const selectionMatchedBets = Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id));
 		

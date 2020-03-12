@@ -4,7 +4,7 @@ import { updateLadderOrder } from "../../actions/market";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({ ladderOrder, sortedLadder,  onChangeLadderOrder, marketOpen, marketStatus, eventType, ladders, excludedLadders, ladderUnmatched }) => {
+const Ladders = ({ ladderOrder, sortedLadder, onChangeLadderOrder, marketOpen, marketStatus, excludedLadders, ladderUnmatched }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 
 	const setLayFirst = useCallback(() => {

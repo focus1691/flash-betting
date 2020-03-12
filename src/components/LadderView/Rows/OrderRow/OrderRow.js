@@ -65,7 +65,7 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 	);
 });
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = state => {
 	return {
 		priceType: state.market.priceType,
 		market: state.market.currentMarket
@@ -74,7 +74,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onChangePriceType: priceType => e => dispatch(changePriceType(priceType)),
+		onChangePriceType: priceType => e => dispatch(changePriceType(priceType))
 	};
 };
 
