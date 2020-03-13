@@ -1,4 +1,4 @@
-#all-sports {
+.all-sports {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	border: none;
@@ -6,13 +6,16 @@
     height: 40%;
 }
 
-#all-sports tr {
+.all-sports tr {
     color: #0000FF;
 }
 
-#all-sports ul {
-    z-index: 1;
-    
+.all-sports ul {
+    z-index: 1;    
+}
+
+.active-bet-name {
+	color: #0000FF;
 }
 
 .MuiTypography-body1 {

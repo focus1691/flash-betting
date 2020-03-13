@@ -19,26 +19,21 @@ const ActiveBets = () => {
 			})
 	}, []);
 
-	const renderEvents = () => {
-		if (Array.isArray(events)) {
-			return events.map(event => {
-				return (
-					<ListItem
-						key={"active-bets-" + event.marketId}
-						button
-						onClick={openMarket(event.marketId)}
-					>
-						<ListItemText>{event.marketName}</ListItemText>
-					</ListItem>
-				);
-			});
-		}
-		return null;
-	}
-
 	return (
 		<List>
-			{renderEvents()}
+			{
+				Array.isArray(events) && events.map(event => {
+					return (
+						<ListItem
+							key={"active-bets-" + event.marketId}
+							button
+							onClick={openMarket(event.marketId)}
+						>
+							<ListItemText className="active-bet-name">{event.marketName}</ListItemText>
+						</ListItem>
+					);
+				})
+			}
 		</List>
 	);
 }

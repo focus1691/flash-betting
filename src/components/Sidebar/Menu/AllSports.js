@@ -121,10 +121,7 @@ const AllSports = props => {
   }
 
   return (
-    <div>
-      <table id="all-sports">
-        <tbody>
-          <List>
+          <List className="all-sports">
             { Object.keys(submenuList).map((type, index) => (
                 <DeselectSport
                   key={"all-sports-deselect-" + submenuList[type].name}
@@ -152,9 +149,6 @@ const AllSports = props => {
               />
             }
           </List>
-        </tbody>
-      </table>
-    </div>
   );
 };
 

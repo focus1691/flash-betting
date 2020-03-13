@@ -127,10 +127,10 @@ const MyMarkets = props => {
   };
 
   return (
-    <div>
-      <table id="all-sports">
-        <tbody>
-          <List>
+    // <div>
+    //   <table id="all-sports">
+    //     <tbody>
+          <List className="all-sports">
             {/* { Deselecting Items } */}
             {Object.keys(submenuList).map((type, index) => (
               <DeselectSport
@@ -156,9 +156,9 @@ const MyMarkets = props => {
               />
             }
           </List>
-        </tbody>
-      </table>
-    </div>
+    //     </tbody>
+    //   </table>
+    // </div>
   );
 };
 
