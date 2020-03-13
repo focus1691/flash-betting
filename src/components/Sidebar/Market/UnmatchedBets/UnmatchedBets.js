@@ -3,87 +3,34 @@ import { connect } from "react-redux";
 import { updateBackList } from "../../../../actions/back";
 import { updateFillOrKillList } from "../../../../actions/fillOrKill";
 import { updateLayList } from "../../../../actions/lay";
-import { cancelOrder, updateOrders } from "../../../../actions/order";
+import { cancelOrders, updateOrders } from "../../../../actions/order";
 import { updateStopEntryList } from "../../../../actions/stopEntry";
 import { updateStopLossList } from "../../../../actions/stopLoss";
 import { updateTickOffsetList } from "../../../../actions/tickOffset";
 import { combineUnmatchedOrders } from '../../../../utils/Bets/CombineUnmatchedOrders';
 import { getPriceNTicksAway } from "../../../../utils/ladder/CreateFullLadder";
+import { getMatchedBets, getUnmatchedBets } from "../../../../selectors/orderSelector";
 import Bet from "./Bet";
 
-const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, onChangeBackList, onChangeLayList,
-                        onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList, onCancelOrder, onChangeOrders, rightClickTicks}) => {
+const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, matchedBets, unmatchedBets, onChangeBackList,
+  onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList, onChangeOrders, rightClickTicks}) => {
 
   const allOrders = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched);
   const selections = useMemo(() => { return Object.keys(allOrders) }, [allOrders]);
 
-  const cancelOrder = useCallback(order => {
-    let ordersToRemove = [];
-    // figure out which strategy it's using and make a new array without it
-    switch (order.strategy) {
-      case "Back":
-        const newBackList = Object.assign({}, backList);
-        newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs)
-        onChangeBackList(newBackList);
-        break;
-      case "Lay":
-        const newLayList = Object.assign({}, layList);
-        newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs)
-        onChangeLayList(newLayList);
-        break;
-      case "Stop Entry":
-        const newStopEntryList = Object.assign({}, stopEntryList);
-        newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs)
-        onChangeStopEntryList(newStopEntryList);
-        break;
-      case "Tick Offset":
-        const newTickOffsetList = Object.assign({}, tickOffsetList);
-        delete newTickOffsetList[order.rfs]
-        onChangeTickOffsetList(newTickOffsetList)
-        break;
-      case "Stop Loss":
-        const newStopLossList = Object.assign({}, stopLossList);
-        delete newStopLossList[order.selectionId];
-        onChangeStopLossList(newStopLossList)
-        break;
-      case "None":
-        // if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
-        if (fillOrKillList[order.betId] !== undefined) {
-          const newFillOrKill = Object.assign({}, fillOrKillList)
-          ordersToRemove = ordersToRemove.concat(newFillOrKill[order.betId])
-          delete newFillOrKill[order.betId];
-          onChangeFillOrKillList(newFillOrKill)
-        }
+  const cancelOrder = useCallback(async order => {
+		if (order) {
+			const data = await cancelOrders(order, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, order.side);
 
-        // cancel order
-        onCancelOrder({
-          marketId: order.marketId,
-          betId: order.betId,
-          sizeReduction: null,
-          matchedBets: bets.matched,
-          unmatchedBets: bets.unmatched
-        });
-        break;
-      default:
-        break;
-    }
-
-    ordersToRemove = ordersToRemove.concat(order);
-
-    // delete from database
-    try {
-      fetch('/api/remove-orders', {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify(ordersToRemove)
-      })
-    } catch (e) {
-
-    }
-  }, [backList, bets.matched, bets.unmatched, fillOrKillList, layList, onCancelOrder, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, stopEntryList, stopLossList, tickOffsetList]);
+			console.log('cancelled special orders ', data.stopLoss);
+			onChangeBackList(data.back);
+			onChangeLayList(data.lay);
+			onChangeStopLossList(data.stopLoss);
+			onChangeTickOffsetList(data.tickOffset);
+			onChangeStopEntryList(data.stopEntry);
+			onChangeFillOrKillList(data.fillOrKill);
+		}
+  }, [backList, fillOrKillList, layList, matchedBets, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 
   const replaceOrderPrice = useCallback((order, newPrice) => {
     const newOrder = Object.assign({}, order, {price: newPrice})
@@ -246,7 +193,9 @@ const mapStateToProps = state => {
     backList: state.back.list,
     fillOrKillList: state.fillOrKill.list,
     bets: state.order.bets,
-    rightClickTicks: state.settings.rightClickTicks
+    rightClickTicks: state.settings.rightClickTicks,
+		unmatchedBets: getUnmatchedBets(state.order.bets),
+		matchedBets: getMatchedBets(state.order.bets)
   };
 };
 
@@ -258,8 +207,7 @@ const mapDispatchToProps = dispatch => {
     onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
     onChangeLayList: list => dispatch(updateLayList(list)),
     onChangeBackList: list => dispatch(updateBackList(list)),
-    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list)),
-    onCancelOrder: order => dispatch(cancelOrder(order))
+    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list))
   };
 };
 

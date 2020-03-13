@@ -151,7 +151,6 @@ export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList,
 	const newTickOffsetList = Object.assign({}, tickOffsetList);
 	const newStopLossList = Object.assign({}, stopLossList);
 	const newFillOrKill = Object.assign({}, fillOrKillList);
-	const ordersToRemove = [];
 
 	const cancelSpecialOrder = async order => {
 		//! Run only if side is undefined or side matches order
@@ -159,13 +158,25 @@ export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList,
 			//! figure out which strategy it's using and make a new array without it
 			switch (order.strategy) {
 				case "Back":
-					ordersToRemove.push(newBackList[order.selectionId] = newBackList[order.selectionId].filter(item => item.rfs !== order.rfs));
+					let backIdx = newBackList[order.selectionId].findIndex(v => v.rfs === order.rfs);
+					if (backIdx > -1) {
+						let backOrderRemoved = await removeOrder(newBackList[order.selectionId][backIdx]);
+						if (backOrderRemoved) newBackList[order.selectionId].splice(backIdx, 1);
+					}
 					break;
 				case "Lay":
-					ordersToRemove.push(newLayList[order.selectionId] = newLayList[order.selectionId].filter(item => item.rfs !== order.rfs));
+					let layIdx = newLayList[order.selectionId].findIndex(v => v.rfs === order.rfs);
+					if (layIdx > -1) {
+						let layOrderRemoved = await removeOrder(newLayList[order.selectionId][layIdx]);
+						if (layOrderRemoved) newLayList[order.selectionId].splice(layIdx, 1);
+					}
 					break;
 				case "Stop Entry":
-					ordersToRemove.push(newStopEntryList[order.selectionId] = newStopEntryList[order.selectionId].filter(item => item.rfs !== order.rfs));
+					let seIdx = newStopEntryList[order.selectionId].findIndex(v => v.rfs === order.rfs);
+					if (seIdx > -1) {
+						let seOrderRemoved = await removeOrder(newStopEntryList[order.selectionId][seIdx]);
+						if (seOrderRemoved) newStopEntryList[order.selectionId].splice(seIdx, 1);
+					}
 					break;
 				case "Tick Offset":
 					let tickOffsetRemoved = await removeOrder(newTickOffsetList[order.rfs]);
@@ -188,14 +199,21 @@ export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList,
 		}
 	}
 
-	if (orders.hasOwnProperty('betId')) {
-		await cancelSpecialOrder(orders);
+	if (Array.isArray(orders)) {
+		for (var i = 0; i < orders.length; i++) {
+			cancelSpecialOrder(orders[i]);
+		}
 	} else {
-		await Object.values(orders).forEach(rfs => {
-			rfs.forEach(orders => {
-				cancelSpecialOrder(orders);
-			});
-		});
+		if (orders.hasOwnProperty('betId') || orders.hasOwnProperty('rfs')) {
+			await cancelSpecialOrder(orders);
+		} else {
+			console.log(orders);
+			await Object.values(orders).forEach(rfs => {
+				rfs.forEach(orders => {
+					cancelSpecialOrder(orders);
+				});
+			});	
+		}
 	}
 
 	return {
@@ -210,22 +228,6 @@ export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList,
 			matched: matchedBets || {}
 		}
 	}
-
-	return async dispatch => {
-		console.log('updating... 2');
-		dispatch(removeOrder(ordersToRemove));
-		dispatch(updateBackList(newBackList));
-		dispatch(updateLayList(newLayList));
-		dispatch(updateStopEntryList(newStopEntryList));
-		dispatch(updateTickOffsetList(newTickOffsetList));
-		dispatch(updateStopLossList(newStopLossList));
-		console.log('stop loss...', newStopLossList);
-		dispatch(updateFillOrKillList(newFillOrKill));
-		dispatch(updateOrders({
-			unmatched: newUnmatchedBets || {},
-			matched: matchedBets || {}
-		}));
-	};
 };
 
 /**

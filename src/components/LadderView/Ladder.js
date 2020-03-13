@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useMemo, useCallback, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
@@ -44,7 +44,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 
 	const selectionMatchedBets = Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id));
 		
-	const selectionUnmatchedBets = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id];
+	const selectionUnmatchedBets = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id], [backList, id, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 
 	const setReferenceSent = useCallback(() => {
 		setIsReferenceSet(true);
@@ -82,19 +82,21 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		if (res.status) onChangeStopLossList(res.data);
 	}, [id, onChangeStopLossList, stakeVal, stopLossHedged, stopLossList, stopLossUnits]);
 
-	const handleHedgeCellClick = useCallback((marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber) => {
-
-		const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
+	const handleHedgeCellClick = useCallback(async (marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber) => {
 		if (unmatchedBetsOnRow) {
-			const betIdsToCancel = unmatchedBetsOnRow.map(unmatchedBet => unmatchedBet.betId);
-				onCancelOrder({
-					marketId: marketId,
-					betId: betIdsToCancel,
-					sizeReduction: null,
-					matchedBets: matchedBets,
-					unmatchedBets: unmatchedBets
-			});
+
+			const data = await cancelOrders(unmatchedBetsOnRow, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
+
+			console.log('cancelled order by hedge click ', data.stopLoss);
+			onChangeBackList(data.back);
+			onChangeLayList(data.lay);
+			onChangeStopLossList(data.stopLoss);
+			onChangeTickOffsetList(data.tickOffset);
+			onChangeStopEntryList(data.stopEntry);
+			onChangeFillOrKillList(data.fillOrKill);
+
 		} else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
+			const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
 			onPlaceOrder({
 				marketId: marketId,
 				side: side,
@@ -106,7 +108,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 				matchedBets: matchedBets
 			});
 		}
-	}, [matchedBets, onCancelOrder, onPlaceOrder, unmatchedBets]);
+	}, [backList, fillOrKillList, layList, matchedBets, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, onPlaceOrder, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 
 	const handlePlaceOrder = useCallback(async (side, price, marketId, selectionId, stakeVal, stopLossSelected, stopLossData,
 		stopLossUnits, hedgeSize) => {
@@ -186,7 +188,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		if (betsToPass) {
 			const data = await cancelOrders(betsToPass, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
 
-			console.log('ladder ', data.stopLoss);
+			console.log('cancelled special orders ', data.stopLoss);
 			onChangeBackList(data.back);
 			onChangeLayList(data.lay);
 			onChangeStopLossList(data.stopLoss);

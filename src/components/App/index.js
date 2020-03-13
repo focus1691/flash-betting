@@ -518,14 +518,13 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
         socket.off("order-subscription");
       };
     }
-  }, [socket, unmatchedBets]);
+  }, [unmatchedBets]);
 
   const cleanupOnMarketClose = marketId => {
     window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
   };
 
-  useEffect(() => {
-    setInterval(async () => {
+  useInterval(async () => {
       if (marketId) {
         const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(async res => {
           try {
@@ -581,7 +580,6 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
         });
       }
     }, 15000);
-  }, [marketId, onChangeOrders]);
 
   useEffect(() => {
     fetch(`/api/list-market-pl?marketId=${marketId}`)

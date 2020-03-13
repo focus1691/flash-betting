@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { connect } from "react-redux";
 import { getCandleStickColor, getVolume, getVolumeDivider } from "../../../selectors/marketSelector";
 
-const LadderVolumeCell = ({ ltpList, price, selectionId, vol, candleStickInfo, volFraction }) => {
+const LadderVolumeCell = memo(({ ltpList, price, selectionId, vol, candleStickInfo, volFraction }) => {
 	const volumeVal = vol ? vol : 0;
 	return (
 		<div className={"candle-stick-col td"} colSpan={3}>
@@ -20,7 +20,7 @@ const LadderVolumeCell = ({ ltpList, price, selectionId, vol, candleStickInfo, v
 			</div>
 		</div>
 	);
-};
+});
 
 const isMoving = (prevProps, nextProps) => {
 	if (nextProps.isMoving) {
