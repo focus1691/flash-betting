@@ -14,25 +14,24 @@ const ActiveBets = () => {
 	useEffect(() => {
 		fetch('/api/get-events-with-active-bets')
 			.then(res => res.json())
-			.then(data => {
-				setEvents(data || []);
-			})
+			.then(data => setEvents(data || []))
 	}, []);
 
 	return (
 		<List>
 			{
 				Array.isArray(events) && events.map(event => {
+					{ console.log(event) }
 					return (
 						<>
-						<ListItem
-							key={"active-bets-" + event.marketId}
-							button
-							onClick={openMarket(event.marketId)}
-						>
-							<ListItemText className="active-bet-name">{event.marketName}</ListItemText>
-						</ListItem>
-						<Divider />
+							<ListItem
+								key={"active-bets-" + event.marketId}
+								button
+								onClick={openMarket(event.marketId)}
+							>
+								<ListItemText className="active-bet-name">{event.marketName}</ListItemText>
+							</ListItem>
+							<Divider />
 						</>
 					);
 				})

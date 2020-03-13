@@ -186,7 +186,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		let betsToPass = order ? order : selectionUnmatchedBets ? selectionUnmatchedBets : null;
 
 		if (betsToPass) {
-			const data = await cancelOrders(betsToPass, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
+			const data = await cancelOrders(betsToPass, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
 
 			console.log('cancelled special orders ', data.stopLoss);
 			onChangeBackList(data.back);
@@ -195,7 +195,6 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 			onChangeTickOffsetList(data.tickOffset);
 			onChangeStopEntryList(data.stopEntry);
 			onChangeFillOrKillList(data.fillOrKill);
-			// onUpdateOrders(data.bets);
 		}
 	};
 

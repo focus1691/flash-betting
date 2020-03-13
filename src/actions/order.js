@@ -1,10 +1,4 @@
 import { calcLayBet } from "../utils/TradingStategy/HedingCalculator";
-import { updateBackList } from "../actions/back";
-import { updateLayList } from "../actions/lay";
-import { updateStopLossList } from "../actions/stopLoss";
-import { updateTickOffsetList } from "../actions/tickOffset";
-import { updateStopEntryList } from "../actions/stopEntry";
-import { updateFillOrKillList } from "../actions/fillOrKill";
 
 export const updateOrders = order => {
 	return {
@@ -13,7 +7,7 @@ export const updateOrders = order => {
 	};
 };
 
-export const placeOrder = order => {
+export const placeOrder = async order => {
 	const newSize = order.side === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size);
 
 	if (!order.unmatchedBets || !order.matchedBets || isNaN(newSize)) {
@@ -82,15 +76,9 @@ export const placeOrder = order => {
 		};
 	}
 
-	return async dispatch => {
-		const result = await placeOrderAction(order);
+	const result = await placeOrderAction(order);
 
-		return result;
-
-		if (result !== null) {
-			return dispatch(updateOrders(result.bets));
-		}
-	};
+	return result;
 };
 
 export const placeOrderAction = async order => {
@@ -142,9 +130,8 @@ export const placeOrderAction = async order => {
 	});
 };
 
-export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side) => {
+export const cancelOrders = async (orders, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side) => {
 
-	const newUnmatchedBets = Object.assign({}, unmatchedBets);
 	const newBackList = Object.assign({}, backList);
 	const newLayList = Object.assign({}, layList);
 	const newStopEntryList = Object.assign({}, stopEntryList);
@@ -191,9 +178,7 @@ export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList,
 				default:
 					// if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
 					if (fillOrKillList[order.betId]) delete newFillOrKill[order.betId];
-
-					let isCancelled = await cancelBetFairOrder(order);
-					if (isCancelled) delete newUnmatchedBets[order.betId];
+					await cancelBetFairOrder(order);
 					break;
 			}
 		}
@@ -222,11 +207,7 @@ export const cancelOrders = async (orders, matchedBets, unmatchedBets, backList,
 		stopLoss: newStopLossList,
 		stopEntry: newStopEntryList,
 		tickOffset: newTickOffsetList,
-		fillOrKill: newFillOrKill,
-		bets: {
-			unmatched: newUnmatchedBets || {},
-			matched: matchedBets || {}
-		}
+		fillOrKill: newFillOrKill
 	}
 };
 

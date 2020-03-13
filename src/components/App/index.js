@@ -38,7 +38,7 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
   onReceiveStakeBtns, onReceiveLayBtns, onReceiveRightClickTicks, onReceiveHorseRaces, onReceiveMarket, onReceiveEventType,
   onMarketClosed, onReceiverLadders, onSortLadder, onSelectRunner, onUpdateRunners,
   onReceiveNonRunners, onMarketStatusChange, setInPlay, setInPlayTime, setMarketPL, onChangeStopLossList,
-  onChangeTickOffsetList, onChangeStopEntryList, onChangeLayList, onChangeBackList, onPlaceOrder, onChangeOrders, onChangeFillOrKillList}) => {
+  onChangeTickOffsetList, onChangeStopEntryList, onChangeLayList, onChangeBackList, onPlaceOrder, onChangeOrders, onChangeFillOrKillList }) => {
   const [marketId, setMarketId] = useState(null);
   const [cookies, removeCookie] = useCookies(["sessionKey", "username", "accessToken", "refreshToken", "expiresIn"]);
   const [updates, setUpdates] = useState([]);
@@ -50,7 +50,7 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
   if (!cookies.sessionKey && !cookies.username) {
     window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
   }
-  
+
   const loadSession = async () => {
     await fetch(
       `/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(
@@ -368,7 +368,7 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
 
               // stop Entry
               newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, onPlaceOrder, newStopEntryList, unmatchedBets, matchedBets);
-              
+
               // We increment and check the stoplosses
               if (adjustedStopLossList[mc.rc[i].id]) {
                 console.log('stop loss found for runner with id', mc.rc[i].id);
@@ -387,8 +387,8 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
 
                 // if it doesn't have a reference or the order has been matched (STOP LOSS)
                 const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, onPlaceOrder,
-                                                      adjustedStopLossList, unmatchedBets, matchedBets);
-                                                      
+                  adjustedStopLossList, unmatchedBets, matchedBets);
+
                 stopLossOrdersToRemove = stopLossOrdersToRemove.concat(stopLossMatched.stopLossOrdersToRemove);
 
                 adjustedStopLossList = stopLossMatched.adjustedStopLossList;
@@ -526,61 +526,61 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
   };
 
   useInterval(async () => {
-      if (marketId) {
-        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(async res => {
-          try {
-            if (res && res.status === 200) {
-              res = await res.json();
-              return res.currentOrders || [];
-            } else {
-              return [];
-            }
-          } catch (e) {
+    if (marketId) {
+      const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(async res => {
+        try {
+          if (res && res.status === 200) {
+            res = await res.json();
+            return res.currentOrders || [];
+          } else {
             return [];
           }
-        });
-        const currentOrdersObject = {};
-        for (var j = 0; j < currentOrders.length; j++) {
-          let item = currentOrders[j];
-          currentOrdersObject[item.betId] = item;
-          if (item.status === "EXECUTION_COMPLETE") {
-            currentOrdersObject[item.betId].price = item.averagePriceMatched;
-          } else {
-            currentOrdersObject[item.betId] = item;
-            currentOrdersObject[item.betId].price = item.priceSize.price;
-          }
+        } catch (e) {
+          return [];
         }
-
-        const loadedUnmatchedOrders = {};
-        const loadedMatchedOrders = {};
-
-        Object.keys(currentOrdersObject).map(async betId => {
-          const order = currentOrdersObject[betId];
-
-          const orderData = {
-            strategy: "None",
-            marketId: order.marketId,
-            side: order.side,
-            price: order.price,
-            size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
-            selectionId: order.selectionId,
-            rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
-            betId: betId
-          };
-
-          if (order.status === "EXECUTION_COMPLETE") {
-            loadedMatchedOrders[order.betId] = orderData;
-          } else if (order.status === "EXECUTABLE") {
-            loadedUnmatchedOrders[order.betId] = orderData;
-          }
-        });
-
-        onChangeOrders({
-          matched: loadedMatchedOrders,
-          unmatched: loadedUnmatchedOrders
-        });
+      });
+      const currentOrdersObject = {};
+      for (var j = 0; j < currentOrders.length; j++) {
+        let item = currentOrders[j];
+        currentOrdersObject[item.betId] = item;
+        if (item.status === "EXECUTION_COMPLETE") {
+          currentOrdersObject[item.betId].price = item.averagePriceMatched;
+        } else {
+          currentOrdersObject[item.betId] = item;
+          currentOrdersObject[item.betId].price = item.priceSize.price;
+        }
       }
-    }, 15000);
+
+      const loadedUnmatchedOrders = {};
+      const loadedMatchedOrders = {};
+
+      Object.keys(currentOrdersObject).map(async betId => {
+        const order = currentOrdersObject[betId];
+
+        const orderData = {
+          strategy: "None",
+          marketId: order.marketId,
+          side: order.side,
+          price: order.price,
+          size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
+          selectionId: order.selectionId,
+          rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
+          betId: betId
+        };
+
+        if (order.status === "EXECUTION_COMPLETE") {
+          loadedMatchedOrders[order.betId] = orderData;
+        } else if (order.status === "EXECUTABLE") {
+          loadedUnmatchedOrders[order.betId] = orderData;
+        }
+      });
+
+      onChangeOrders({
+        matched: loadedMatchedOrders,
+        unmatched: loadedUnmatchedOrders
+      });
+    }
+  }, 15000);
 
   useEffect(() => {
     fetch(`/api/list-market-pl?marketId=${marketId}`)

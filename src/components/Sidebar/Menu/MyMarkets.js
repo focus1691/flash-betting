@@ -127,38 +127,32 @@ const MyMarkets = props => {
   };
 
   return (
-    // <div>
-    //   <table id="all-sports">
-    //     <tbody>
-          <List className="all-sports">
-            {/* { Deselecting Items } */}
-            {Object.keys(submenuList).map((type, index) => (
-              <DeselectSport
-                type={type}
-                data={submenuList[type]}
-                isLast={index === Object.keys(submenuList).length - 1}
-                submenuList={submenuList}
-                deselectSubmenu={deselectSubmenu}
-              />
-            ))}
+    <List className="all-sports">
+      {/* { Deselecting Items } */}
+      {Object.keys(submenuList).map((type, index) => (
+        <DeselectSport
+          type={type}
+          data={submenuList[type]}
+          isLast={index === Object.keys(submenuList).length - 1}
+          submenuList={submenuList}
+          deselectSubmenu={deselectSubmenu}
+        />
+      ))}
 
-            {
-              // Selecting Item
-              <SelectSubmenu
-                data={
-                  currentSubmenu === ""
-                    ? props.myMarkets
-                    : submenuList[currentSubmenu].data
-                }
-                setSubmenu={setSubmenu}
-                submenuList={submenuList}
-                winMarketsOnly={props.winMarketsOnly}
-              />
-            }
-          </List>
-    //     </tbody>
-    //   </table>
-    // </div>
+      {
+        // Selecting Item
+        <SelectSubmenu
+          data={
+            currentSubmenu === ""
+              ? props.myMarkets
+              : submenuList[currentSubmenu].data
+          }
+          setSubmenu={setSubmenu}
+          submenuList={submenuList}
+          winMarketsOnly={props.winMarketsOnly}
+        />
+      }
+    </List>
   );
 };
 

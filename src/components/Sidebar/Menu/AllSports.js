@@ -33,8 +33,8 @@ const AllSports = props => {
     fetch(`/api/get-all-sports`)
       .then(res => res.json())
       .then(sports => {
-        sports.push({eventType: {id: "TC-7", name: "Horse Racing - Today's Card"}});
-        sports.push({eventType: {id: "TC-4339", name: "Greyhound Racing - Today's Card"}});
+        sports.push({ eventType: { id: "TC-7", name: "Horse Racing - Today's Card" } });
+        sports.push({ eventType: { id: "TC-4339", name: "Greyhound Racing - Today's Card" } });
         sports = sortSports(sports);
         props.onReceiveAllSports(sports);
       });
@@ -47,10 +47,10 @@ const AllSports = props => {
   } = props.sports;
 
   useEffect(() => {
-		if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
+    if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
       props.onUpdateSubmenuCurrent('')
       props.onUpdateSubmenuList({})
-		}
+    }
   }, [props.winMarketsOnly, props.horseRaces])
 
   const getSportInfo = (name, newSubmenuType, submenuList, selectedId, apiToCall) => async e => {
@@ -68,13 +68,13 @@ const AllSports = props => {
 
     // call the api with the id and get new selections
     const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${props.winMarketsOnly === true ? "WIN" : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
-                            .then(res => res.json()).catch(err => {});
-    
+      .then(res => res.json()).catch(err => { });
+
     // set the old submenu as the newSubmenuType: children we received from the api
     if (data) {
       const newSubmenuList = Object.assign({}, submenuList);
-      
-      newSubmenuList[newSubmenuType] = {name, data};
+
+      newSubmenuList[newSubmenuType] = { name, data };
 
       props.onUpdateSubmenuCurrent(newSubmenuType);
       props.onUpdateSubmenuList(newSubmenuList);
@@ -83,19 +83,19 @@ const AllSports = props => {
 
   const setSubmenu = (data, name, newSubmenuType, submenuList) => {
     const newSubmenuList = Object.assign({}, submenuList);
-    newSubmenuList[newSubmenuType] = {name, data};
+    newSubmenuList[newSubmenuType] = { name, data };
 
     props.onUpdateSubmenuCurrent(newSubmenuType);
     props.onUpdateSubmenuList(newSubmenuList);
   }
 
-  const deselectSubmenu = (newSubmenuType, submenuList) => { 
+  const deselectSubmenu = (newSubmenuType, submenuList) => {
     if (newSubmenuType === "ROOT") {
-			props.onUpdateSubmenuCurrent('');
+      props.onUpdateSubmenuCurrent('');
       props.onUpdateSubmenuList({});
-			return;
+      return;
     }
-    
+
     const submenuEnum = {
       ROOT: 0,
       EVENT_TYPE: 1,
@@ -115,40 +115,40 @@ const AllSports = props => {
         newSubmenuList[key] = submenuList[key]
       }
     })
-    
+
     props.onUpdateSubmenuCurrent(newSubmenuType);
     props.onUpdateSubmenuList(newSubmenuList);
   }
 
   return (
-          <List className="all-sports">
-            { Object.keys(submenuList).map((type, index) => (
-                <DeselectSport
-                  key={"all-sports-deselect-" + submenuList[type].name}
-                  type = {type}
-                  data = {submenuList[type]}
-                  isLast = {index === Object.keys(submenuList).length - 1}
-                  submenuList = {submenuList}
-                  deselectSubmenu = {deselectSubmenu}
-                />
-              ))
-            }
+    <List className="all-sports">
+      {Object.keys(submenuList).map((type, index) => (
+        <DeselectSport
+          key={"all-sports-deselect-" + submenuList[type].name}
+          type={type}
+          data={submenuList[type]}
+          isLast={index === Object.keys(submenuList).length - 1}
+          submenuList={submenuList}
+          deselectSubmenu={deselectSubmenu}
+        />
+      ))
+      }
 
-            { // Selecting Item
-              submenuList['EVENT_TYPE'] === undefined || currentSubmenu === "" ? 
-              <SelectSport
-                sports = {sports}  
-                setSubmenu = {getSportInfo}
-              />
-              :
-              <SelectSubmenu
-                data = {submenuList[currentSubmenu].data}
-                setSubmenu = {setSubmenu}
-                submenuList = {submenuList}
-                winMarketsOnly = {props.winMarketsOnly}
-              />
-            }
-          </List>
+      { // Selecting Item
+        submenuList['EVENT_TYPE'] === undefined || currentSubmenu === "" ?
+          <SelectSport
+            sports={sports}
+            setSubmenu={getSportInfo}
+          />
+          :
+          <SelectSubmenu
+            data={submenuList[currentSubmenu].data}
+            setSubmenu={setSubmenu}
+            submenuList={submenuList}
+            winMarketsOnly={props.winMarketsOnly}
+          />
+      }
+    </List>
   );
 };
 
