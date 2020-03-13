@@ -14,6 +14,7 @@ import * as actions from "../../../../actions/lay";
 import { formatPrice, findPriceStep } from "../../../../utils/ladder/CreateFullLadder";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
+import dropdownRunnerStyle from "../../../../assets/jss/DropdownList";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -26,7 +27,8 @@ const useStyles = makeStyles(theme => ({
   textField2: {
     width: 30,
     margin: theme.spacing(2)
-  }
+  },
+  ...dropdownRunnerStyle(theme)
 }));
 
 const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market, runners, selections, list,

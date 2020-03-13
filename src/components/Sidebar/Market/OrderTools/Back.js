@@ -14,24 +14,21 @@ import * as actions from "../../../../actions/back";
 import { formatPrice, findPriceStep } from "../../../../utils/ladder/CreateFullLadder";
 import StyledMenu from "../../../MaterialUI/StyledMenu";
 import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
+import dropdownRunnerStyle from "../../../../assets/jss/DropdownList";
 
 const useStyles = makeStyles(theme => ({
-  container: {
-    display: "flex",
-    flexWrap: "wrap"
-  },
   button: {
     margin: theme.spacing(2)
   },
   textField: {
     width: 40,
-    margin: theme.spacing(1),
-    fontSize: '1em',
+    margin: theme.spacing(1)
   },
   textField2: {
     width: 30,
     margin: theme.spacing(2)
-  }
+  },
+  ...dropdownRunnerStyle(theme)
 }));
 
 const Back = ({text, stake, price, hours, minutes, seconds, executionTime, runners, market, selections, list,
@@ -153,6 +150,7 @@ const Back = ({text, stake, price, hours, minutes, seconds, executionTime, runne
       </List>
       <StyledMenu
         id="lock-menu"
+        className={classes.runnerList}
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
@@ -162,7 +160,7 @@ const Back = ({text, stake, price, hours, minutes, seconds, executionTime, runne
         {runners ? (
           <StyledMenuItem
             key={`back-order-all/field`}
-            className={classes.root}
+            className={classes.runnerItem}
             selected={typeof selections != "string"}
             onClick={handleMenuItemClick(Object.keys(runners).map(key => [runners[key].selectionId]))}
           >
@@ -176,7 +174,7 @@ const Back = ({text, stake, price, hours, minutes, seconds, executionTime, runne
         {Object.keys(runners).map(key => (
           <StyledMenuItem
             key={`back-order-${runners[key].runnerName}`}
-            className={classes.root}
+            className={classes.runnerItem}
             selected={key === selections}
             onClick={handleMenuItemClick(key)}
           >
