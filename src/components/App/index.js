@@ -208,6 +208,7 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
                             loadedTickOffsetOrders[order.rfs] = order;
                             break;
                           case "Fill Or Kill":
+                            console.log('loading FOK from DB: ', currentOrdersObject[order.betId]);
                             // this should only keep the fill or kill if the order isn't completed already
                             if (currentOrdersObject[order.betId] === "EXECUTABLE") {
                               loadedFillOrKillOrders[order.betId] = order;

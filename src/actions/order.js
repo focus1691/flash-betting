@@ -410,7 +410,7 @@ export const placeFillOrKill = async (fillOrKill, fillOrKillList) => {
 
 	return {
 		isSaved: result,
-		data: fillOrKill
+		data: newFillOrKillList
 	}
 };
 
