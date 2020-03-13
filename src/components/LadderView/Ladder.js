@@ -174,13 +174,13 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 						startTime: Date.now(),
 						betId: betId,
 						rfs: referenceStrategyId
-					});
-					onChangeFillOrKillList(fok.data);
+					}, fillOrKillList);
+					if (fok.isSaved) onChangeFillOrKillList(fok.data);
 				}
 			}
 		});
 		if (result) onUpdateOrders(result.bets);
-	}, [onPlaceOrder, unmatchedBets, matchedBets, onUpdateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, onChangeFillOrKillList]);
+	}, [onPlaceOrder, unmatchedBets, matchedBets, onUpdateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
 
 	const cancelSpecialOrders = async (order, side) => {
 		let betsToPass = order ? order : selectionUnmatchedBets ? selectionUnmatchedBets : null;

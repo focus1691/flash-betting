@@ -409,7 +409,7 @@ export const placeFillOrKill = async (fillOrKill, fillOrKillList) => {
 	const result = await saveOrder(fillOrKill);
 
 	return {
-		status: result,
+		isSaved: result,
 		data: fillOrKill
 	}
 };

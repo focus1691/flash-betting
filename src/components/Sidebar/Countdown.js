@@ -10,6 +10,7 @@ import { setPastEventTime } from "../../actions/market";
 import { checkBackAndLayOrders } from '../../utils/TradingStategy/BackLay';
 import { countDownTime } from "../../utils/Market/CountDown";
 import { msToHMS } from "../../utils/DateCalculator";
+import { cancelBetFairOrder, removeOrder } from "../../actions/order";
 
 const ONE_SECOND = 1000;
 
@@ -21,13 +22,13 @@ const Countdown = ({market, marketOpen, marketStatus, inPlay, inPlayTime, pastEv
   useInterval(async () => {
     setTimeRemaining(countDownTime(market, inPlay, inPlayTime, pastEventTime, onPastEventTime));
     
-    // Back Before/After Market
+    //* BACK Before/After Market
     const newBackList = await checkBackAndLayOrders(backList, market.marketStartTime, onPlaceOrder, market.marketId, "BACK", bets.matched, bets.unmatched);
     if (Object.keys(backList).length > 0) {
       onUpdateBackList(newBackList);
     }
 
-    // Lay Before/After Market
+    //* LAY Before/After Market
     const newLayList = await checkBackAndLayOrders(layList, market.marketStartTime, onPlaceOrder, market.marketId, "LAY", bets.matched, bets.unmatched);
     if (Object.keys(layList).length > 0) {
       onUpdateLayList(newLayList);
@@ -38,36 +39,47 @@ const Countdown = ({market, marketOpen, marketStatus, inPlay, inPlayTime, pastEv
     const adjustedUnmatchedBets = Object.assign({}, bets.unmatched);
     let ordersToRemove = [];
 
-    // Fill Or Kill
-    Object.keys(fillOrKillList).map((betId, index) => {
-      const order = fillOrKillList[betId];
-      if ((Date.now() / 1000) - (order.startTime / 1000) >= order.seconds) {
-        onCancelOrder({
-          marketId: market.marketId,
-          betId: betId,
-          sizeReduction: null,
-          matchedBets: bets.matched,
-          unmatchedBets: bets.unmatched
-        })
+    console.log(fillOrKillList);
 
-        ordersToRemove = ordersToRemove.concat(order);
-
-        if (adjustedUnmatchedBets[betId] !== undefined) {
-          ordersToRemove = ordersToRemove.concat(adjustedUnmatchedBets[betId]);
-          delete adjustedUnmatchedBets[betId];
-        }
-
-        // Tick Offset
-        Object.values(tickOffsetList).map(tickOffsetOrder => {
-          if (tickOffsetOrder.rfs === order.rfs) {
-            ordersToRemove = ordersToRemove.concat(adjustedTickOffsetList[tickOffsetOrder.rfs]);
-            delete adjustedTickOffsetList[tickOffsetOrder.rfs];
+    //* FOK
+    for (var betId in fillOrKillList) {
+      if (fillOrKillList.hasOwnProperty(betId)) {
+        const order = fillOrKillList[betId];
+        console.log(order);
+        if ((Date.now() / 1000) - (order.startTime / 1000) >= order.seconds) {
+  
+          await cancelBetFairOrder(order);
+          await removeOrder(order);
+          delete newFillOrKillList[betId];
+  
+          onCancelOrder({
+            marketId: market.marketId,
+            betId: betId,
+            sizeReduction: null,
+            matchedBets: bets.matched,
+            unmatchedBets: bets.unmatched
+          })
+  
+          ordersToRemove = ordersToRemove.concat(order);
+  
+          if (adjustedUnmatchedBets[betId] !== undefined) {
+            ordersToRemove = ordersToRemove.concat(adjustedUnmatchedBets[betId]);
+            delete adjustedUnmatchedBets[betId];
           }
-        })
-      } else {
-        newFillOrKillList[betId] = fillOrKillList[betId];
+  
+          // * TOS
+          for (var tickOffsetId in tickOffsetList) {
+            let tickOffsetRfs = tickOffsetList[tickOffsetId].rfs;
+            if (tickOffsetRfs === order.rfs) {
+              ordersToRemove = ordersToRemove.concat(adjustedTickOffsetList[tickOffsetRfs]);
+              delete adjustedTickOffsetList[tickOffsetRfs];
+            }
+          }
+        } else {
+          newFillOrKillList[betId] = fillOrKillList[betId];
+        }
       }
-    });
+    };
 
     if (ordersToRemove.length > 0) {
       await fetch('/api/remove-orders', {
