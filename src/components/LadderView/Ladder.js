@@ -44,9 +44,10 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 
 	const selectionMatchedBets = useMemo(() => Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id)), [matchedBets, id]);
 	const selectionUnmatchedBets = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id], [backList, id, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
-	const setReferenceSent = useCallback(() => {
+	
+	const setReferenceSent = () => {
 		setIsReferenceSet(true);
-	}, []);
+	};
 
 	const scrollToLTP = useCallback(() => {
 		const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
@@ -95,6 +96,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 
 		} else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
 			const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
+			console.log(PLHedgeNumber, PLHedgeNumber.size);
 			onPlaceOrder({
 				marketId: marketId,
 				side: side,
