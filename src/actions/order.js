@@ -7,7 +7,7 @@ export const updateOrders = order => {
 	};
 };
 
-export const placeOrder = async order => {
+export const placeOrder = order => {
 	const newSize = order.side === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size);
 
 	if (!order.unmatchedBets || !order.matchedBets || isNaN(newSize)) {
@@ -76,9 +76,13 @@ export const placeOrder = async order => {
 		};
 	}
 
-	const result = await placeOrderAction(order);
-
-	return result;
+	return async dispatch => {
+		const result = await placeOrderAction(order);
+		return result;
+		if (result !== null) {
+			return dispatch(updateOrders(result.bets));
+		}
+	};
 };
 
 export const placeOrderAction = async order => {
