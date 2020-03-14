@@ -6,7 +6,6 @@ import HedgeCell from "../Cells/HedgeCell";
 import OddsCell from "../Cells/OddsCell";
 import OrderCell from "../Cells/OrderCell";
 import VolumeCell from "../Cells/VolumeCell";
-import GetQueryVariable from "../../../utils/Market/GetQueryVariable";
 import CalculateLadderHedge from "../../../utils/ladder/CalculateLadderHedge";
 import { getSelectionMatchedBets } from "../../../selectors/orderSelector";
 import { getStakeVal } from "../../../selectors/settingsSelector";
@@ -18,7 +17,7 @@ const isMoving = (prevProps, nextProps) => {
 };
 
 const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, replaceStopLossOrder, isMoving, handlePlaceOrder },
-	PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
+	PL, onOddsHovered, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, marketId }) => {
 
 	const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
 	const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
@@ -33,12 +32,10 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 		? CalculateLadderHedge(key, selectionMatchedBets, "hedged", stakeVal, PL).size
 		: undefined, [selectionMatchedBets, key, stakeVal, PL]);
 
-	const handleContextMenu = useCallback(e => {
+	const handleContextMenu = e => {
 		e.preventDefault();
 		return false;
-	}, []);
-
-	const marketId = GetQueryVariable("marketId");
+	};
 
 	return (
 		<div key={key} onContextMenu={handleContextMenu} className={"tr"} style={style}>
@@ -99,7 +96,8 @@ const mapStateToProps = (state, { data: { selectionId }, index }) => {
 		ladderUnmatchedDisplay: state.settings.ladderUnmatched,
 		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
 		stakeVal: getStakeVal(state.settings.stake, { selectionId }),
-		PL: getPL(state.market.marketPL, { selectionId })
+		PL: getPL(state.market.marketPL, { selectionId }),
+		marketId: state.market.currentMarket,
 	};
 };
 

@@ -11,7 +11,7 @@ import { updateStopEntryList } from "../../actions/stopEntry";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { cancelOrder, cancelOrders, placeOrder, updateOrders, placeStopLoss, replaceStopLoss, placeTickOffset, placeFillOrKill } from "../../actions/order";
 import { getLTP } from "../../selectors/marketSelector";
-import { getMatchedBets, getSelectionMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
+import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { getStakeVal } from "../../selectors/settingsSelector";
 import { ALL_PRICES, formatPrice } from "../../utils/ladder/CreateFullLadder";
@@ -42,8 +42,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
 
-	const selectionMatchedBets = Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id));
-		
+	const selectionMatchedBets = useMemo(() => Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id)), [matchedBets, order.selectionId, id]);
 	const selectionUnmatchedBets = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id], [backList, id, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 
 	const setReferenceSent = useCallback(() => {
@@ -235,7 +234,6 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 							itemData={{
 								selectionId: id,
 								handlePlaceOrder: handlePlaceOrder,
-								cancelOrder: onCancelOrder,
 								cancelSpecialOrders: cancelSpecialOrders,
 								handleHedgeCellClick: handleHedgeCellClick,
 								replaceStopLossOrder: replaceStopLossOrder,
@@ -262,9 +260,6 @@ const mapStateToProps = (state, props) => {
 		ltp: getLTP(state.market.ladder, { selectionId: props.id }),
 		unmatchedBets: getUnmatchedBets(state.order.bets),
 		matchedBets: getMatchedBets(state.order.bets),
-		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, {
-			selectionId: props.id
-		}),
 		ladderUnmatched: state.settings.ladderUnmatched,
 		stakeVal: getStakeVal(state.settings.stake, { selectionId: props.id }),
 		draggingLadder: state.market.draggingLadder,
