@@ -42,9 +42,8 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
 
-	const selectionMatchedBets = useMemo(() => Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id)), [matchedBets, order.selectionId, id]);
+	const selectionMatchedBets = useMemo(() => Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id)), [matchedBets, id]);
 	const selectionUnmatchedBets = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id], [backList, id, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
-
 	const setReferenceSent = useCallback(() => {
 		setIsReferenceSet(true);
 	}, []);
@@ -84,7 +83,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 	const handleHedgeCellClick = useCallback(async (marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber) => {
 		if (unmatchedBetsOnRow) {
 
-			const data = await cancelOrders(unmatchedBetsOnRow, matchedBets, unmatchedBets, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
+			const data = await cancelOrders(unmatchedBetsOnRow, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
 
 			console.log('cancelled order by hedge click ', data.stopLoss);
 			onChangeBackList(data.back);
