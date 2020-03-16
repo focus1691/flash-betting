@@ -174,10 +174,8 @@ export const cancelOrders = async (orders, backList, layList, stopLossList, tick
 					if (tickOffsetRemoved) delete newTickOffsetList[order.rfs];
 					break;
 				case "Stop Loss":
-					console.log('stop loss before', newStopLossList);
 					let stopLossRemoved = await removeOrder(newStopLossList[order.selectionId]);
 					if (stopLossRemoved) delete newStopLossList[order.selectionId];
-					console.log('stop loss after', newStopLossList);
 					break;
 				default:
 					// if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
@@ -196,7 +194,6 @@ export const cancelOrders = async (orders, backList, layList, stopLossList, tick
 		if (orders.hasOwnProperty('betId') || orders.hasOwnProperty('rfs')) {
 			await cancelSpecialOrder(orders);
 		} else {
-			console.log(orders);
 			await Object.values(orders).forEach(rfs => {
 				rfs.forEach(orders => {
 					cancelSpecialOrder(orders);
@@ -232,8 +229,6 @@ export const cancelOrder = order => {
 				minimalOrder[key] = order[key];
 			}
 		});
-		console.log(minimalOrder);
-
 		const cancelOrder = await cancelBetFairOrder(minimalOrder);
 
 		if (cancelOrder) {

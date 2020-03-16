@@ -20,9 +20,8 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
 
   const cancelOrder = useCallback(async order => {
 		if (order) {
-			const data = await cancelOrders(order, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, order.side);
-
-			console.log('cancelled special orders ', data.stopLoss);
+      const data = await cancelOrders(order, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, order.side);
+      
 			onChangeBackList(data.back);
 			onChangeLayList(data.lay);
 			onChangeStopLossList(data.stopLoss);

@@ -97,7 +97,7 @@ const mapStateToProps = (state, { data: { selectionId }, index }) => {
 		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
 		stakeVal: getStakeVal(state.settings.stake, { selectionId }),
 		PL: getPL(state.market.marketPL, { selectionId }),
-		marketId: state.market.currentMarket,
+		marketId: state.market.currentMarket.marketId,
 	};
 };
 

@@ -85,8 +85,6 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		if (unmatchedBetsOnRow) {
 
 			const data = await cancelOrders(unmatchedBetsOnRow, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
-
-			console.log('cancelled order by hedge click ', data.stopLoss);
 			onChangeBackList(data.back);
 			onChangeLayList(data.lay);
 			onChangeStopLossList(data.stopLoss);
@@ -96,7 +94,6 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 
 		} else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
 			const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
-			console.log(PLHedgeNumber, PLHedgeNumber.size);
 			onPlaceOrder({
 				marketId: marketId,
 				side: side,
@@ -188,7 +185,6 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		if (betsToPass) {
 			const data = await cancelOrders(betsToPass, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
 
-			console.log('cancelled special orders ', data.stopLoss);
 			onChangeBackList(data.back);
 			onChangeLayList(data.lay);
 			onChangeStopLossList(data.stopLoss);
