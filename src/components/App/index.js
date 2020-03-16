@@ -208,7 +208,6 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
                             loadedTickOffsetOrders[order.rfs] = order;
                             break;
                           case "Fill Or Kill":
-                            console.log('loading FOK from DB: ', currentOrdersObject[order.betId]);
                             // this should only keep the fill or kill if the order isn't completed already
                             if (currentOrdersObject[order.betId] === "EXECUTABLE") {
                               loadedFillOrKillOrders[order.betId] = order;
@@ -371,7 +370,6 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
 
               // We increment and check the stoplosses
               if (adjustedStopLossList[mc.rc[i].id]) {
-                console.log('stop loss found for runner with id', mc.rc[i].id);
                 // if it's trailing and the highest LTP went up, then we add a tickoffset
                 const maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
                 let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, mc.rc[i].id, currentLTP, maxLTP));

@@ -78,9 +78,7 @@ export const placeOrder = order => {
 
 	return async dispatch => {
 		const result = await placeOrderAction(order);
-		if (result !== null) {
-			return dispatch(updateOrders(result.bets));
-		}
+		return result;
 	};
 };
 

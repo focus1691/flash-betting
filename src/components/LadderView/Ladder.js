@@ -32,7 +32,7 @@ const isMoving = (prevProps, nextProps) => {
 	}
 };
 
-const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOrder, onUpdateOrders, onCancelOrder, order, unmatchedBets, matchedBets, setLadderSideLeft, onChangeStopLossList, backList, onChangeBackList, layList, onChangeLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
+const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOrder, onUpdateOrders, order, unmatchedBets, matchedBets, setLadderSideLeft, onChangeStopLossList, backList, onChangeBackList, layList, onChangeLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
 				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList, stopEntryList, onChangeStopEntryList, onChangeTickOffsetList, stopLossOffset, stopLossTrailing, stopLossList, stopLossUnits, stakeVal, draggingLadder}) => {
 	
 	const containerRef = useRef(null);
@@ -95,7 +95,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 
 		} else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
 			const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
-			onPlaceOrder({
+			const result = onPlaceOrder({
 				marketId: marketId,
 				side: side,
 				size: PLHedgeNumber.size,
@@ -105,8 +105,9 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 				unmatchedBets: unmatchedBets,
 				matchedBets: matchedBets
 			});
+			if (result.bets) onUpdateOrders(result.bets);
 		}
-	}, [backList, fillOrKillList, layList, matchedBets, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, onPlaceOrder, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
+	}, [backList, fillOrKillList, layList, matchedBets, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, onPlaceOrder, onUpdateOrders, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 
 	const handlePlaceOrder = useCallback(async (side, price, marketId, selectionId, stakeVal, stopLossSelected, stopLossData,
 		stopLossUnits, hedgeSize) => {
@@ -114,7 +115,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		
 		//* Place the order first with BetFair and then execute the tools
 		//! Tool priority: 1) Stop Loss 2) Tick Offset 3) Fill or Kill
-		await onPlaceOrder({
+		const result = await onPlaceOrder({
 			side: side,
 			price: formatPrice(price),
 			marketId: marketId,
@@ -177,7 +178,8 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 				}
 			}
 		});
-	}, [onPlaceOrder, unmatchedBets, matchedBets, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
+		if (result.bets) onUpdateOrders(result.bets);
+	}, [onPlaceOrder, unmatchedBets, matchedBets, onUpdateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
 
 	const cancelSpecialOrders = async (order, side) => {
 		let betsToPass = order ? order : selectionUnmatchedBets ? selectionUnmatchedBets : null;
@@ -204,8 +206,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 			setIsReferenceSet={setReferenceSent}
 			setIsMoving={setIsMoving}
 			setLadderDown={setLadderDown}
-			marketStatus={marketStatus}
-			scrollToLTP={scrollToLTP}>
+			marketStatus={marketStatus} >
 			<Header selectionId={id} setLadderDown={setLadderDown} ladderLocked={ladderLocked} setLadderLocked={setLadderLocked} />
 
 			<div className={"ladder"} onContextMenu={() => false}>
@@ -294,7 +295,6 @@ const mapDispatchToProps = dispatch => {
 	return {
 		onPlaceOrder: order => dispatch(placeOrder(order)),
 		onUpdateOrders: orders => dispatch(updateOrders(orders)),
-		onCancelOrder: order => dispatch(cancelOrder(order)),
 		onChangeBackList: list => dispatch(updateBackList(list)),
 		onChangeLayList: list => dispatch(updateLayList(list)),
 		onChangeStopLossList: list => dispatch(updateStopLossList(list)),

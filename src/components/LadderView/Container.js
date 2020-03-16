@@ -1,9 +1,9 @@
-import React, { memo, useCallback, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder, setDraggingLadder } from "../../actions/market";
 
 const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
-	ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children, onDraggingLadder, draggingLadder, scrollToLTP}) => {
+	ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children, onDraggingLadder, draggingLadder}) => {
 	
 	const style = useMemo(() => {
 		return marketStatus === "SUSPENDED" ?
@@ -41,7 +41,6 @@ const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isM
 		onDraggingLadder(false);
 		setLadderDown(false);
 		returnToOrderedPos(containerRef, order, setIsMoving);
-		scrollToLTP();
 	};
 
 	return (

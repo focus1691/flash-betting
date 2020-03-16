@@ -1,4 +1,5 @@
 import { secToMin } from "../DateCalculator";
+import { removeOrder } from "../../actions/order";
 
 const isOrderBeforeMarketReady = (marketStartTime, order) => {
   const remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);
@@ -13,7 +14,6 @@ const isOrderAfterMarketReady = (marketStartTime, order) => {
 
 const checkBackAndLayOrders = async (list, marketStartTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets, inPlay) => {
     const newList = Object.assign({}, list);
-    let ordersToRemove = [];
 
     Object.keys(list).map(selectionId => {
       const newSelectionArray = newList[selectionId];
@@ -35,7 +35,8 @@ const checkBackAndLayOrders = async (list, marketStartTime, onPlaceOrder, market
           });
 
           indexesToRemove = indexesToRemove.concat(index);
-          ordersToRemove = ordersToRemove.concat(order);
+          
+          removeOrder(order);
         }
       })
   
@@ -44,17 +45,6 @@ const checkBackAndLayOrders = async (list, marketStartTime, onPlaceOrder, market
         delete newList[selectionId];
       }
     })
-
-    if (ordersToRemove.length > 0) {
-      await fetch('/api/remove-orders', {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify(ordersToRemove)
-      })
-    }
     return newList;
 }
 
