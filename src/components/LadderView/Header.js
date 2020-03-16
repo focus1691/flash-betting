@@ -8,12 +8,18 @@ import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcHedgeAtLTP, calcHedgeSize } from "../../utils/TradingStategy/HedingCalculator";
 import { calcOddsOnPriceHover } from "../../utils/Bets/HedgeProfit";
+import Tooltip from "@material-ui/core/Tooltip";
 
-const LadderHeader = memo(({selectionId, sportId, runner, onSelectRunner, setLadderDown, oddsHovered, ltp, PL, onDraggingLadder, selectionMatchedBets}) => {
-
+const LadderHeader = memo(({ selectionId, sportId, runner, onSelectRunner, setLadderDown, oddsHovered, ltp, PL, onDraggingLadder, selectionMatchedBets, ladderLocked, setLadderLocked }) => {
 	const ordersOnMarket = useMemo(() => selectionMatchedBets.length > 0, [selectionMatchedBets.length]);
-	const oddsHoveredCalc = useMemo(() => calcOddsOnPriceHover(oddsHovered.odds, oddsHovered.side, selectionId, oddsHovered.selectionId, PL), [PL, oddsHovered.odds, oddsHovered.selectionId, oddsHovered.side, selectionId]);
-	const ladderLTPHedge = useMemo(() => calcHedgeAtLTP(selectionMatchedBets, ltp),[ltp, selectionMatchedBets]);
+	const oddsHoveredCalc = useMemo(() => calcOddsOnPriceHover(oddsHovered.odds, oddsHovered.side, selectionId, oddsHovered.selectionId, PL), [
+		PL,
+		oddsHovered.odds,
+		oddsHovered.selectionId,
+		oddsHovered.side,
+		selectionId
+	]);
+	const ladderLTPHedge = useMemo(() => calcHedgeAtLTP(selectionMatchedBets, ltp), [ltp, selectionMatchedBets]);
 	const LTPHedgeSize = useMemo(() => calcHedgeSize(selectionMatchedBets, ltp), [selectionMatchedBets, ltp]);
 
 	const handleMouseDown = () => e => {
@@ -83,6 +89,9 @@ const LadderHeader = memo(({selectionId, sportId, runner, onSelectRunner, setLad
 					id="ltphedgesize">
 					{twoDecimalPlaces(LTPHedgeSize)}
 				</span>
+				<Tooltip title={`Lock LTP scrolling`} aria-label="Lock LTP scrolling">
+					<img alt={"Lock"} id="lock-ladder" src={`${window.location.origin}/icons/${ladderLocked ? 'locked.png' : 'unlocked.png'}`} onClick={e => setLadderLocked(!ladderLocked)}/>
+				</Tooltip>
 			</div>
 		</div>
 	);

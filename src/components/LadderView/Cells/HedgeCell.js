@@ -25,7 +25,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow
 			{unmatchedStake || hedgePL || null}
 		</div>
 	);
-}, []);
+});
 
 const mapStateToProps = (state, { selectionId, price, side }) => {
 	return {

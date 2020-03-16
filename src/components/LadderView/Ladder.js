@@ -41,6 +41,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 	const [isReferenceSet, setIsReferenceSet] = useState(false);
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
+	const [ladderLocked, setLadderLocked] = useState(false);
 
 	const selectionMatchedBets = useMemo(() => Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id)), [matchedBets, id]);
 	const selectionUnmatchedBets = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id], [backList, id, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
@@ -63,12 +64,12 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		setTimeout(() => {
 			scrollToLTP();
 		}, 1000);
-	}, [scrollToLTP]);
+	}, []);
 
 	//* Scroll to the LTP when the ladder order changes
 	useEffect(() => {
-		scrollToLTP();
-	}, [ltp, draggingLadder, scrollToLTP]);
+		if (!ladderLocked) scrollToLTP();
+	}, [ltp, draggingLadder, scrollToLTP, ladderLocked]);
 
 	const replaceStopLossOrder = useCallback(async ({price, stopLoss}) => {
 		let res = await replaceStopLoss(stopLoss, stopLossList, {
@@ -113,7 +114,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		
 		//* Place the order first with BetFair and then execute the tools
 		//! Tool priority: 1) Stop Loss 2) Tick Offset 3) Fill or Kill
-		const result = await onPlaceOrder({
+		await onPlaceOrder({
 			side: side,
 			price: formatPrice(price),
 			marketId: marketId,
@@ -176,8 +177,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 				}
 			}
 		});
-		if (result) onUpdateOrders(result.bets);
-	}, [onPlaceOrder, unmatchedBets, matchedBets, onUpdateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
+	}, [onPlaceOrder, unmatchedBets, matchedBets, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
 
 	const cancelSpecialOrders = async (order, side) => {
 		let betsToPass = order ? order : selectionUnmatchedBets ? selectionUnmatchedBets : null;
@@ -206,7 +206,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 			setLadderDown={setLadderDown}
 			marketStatus={marketStatus}
 			scrollToLTP={scrollToLTP}>
-			<Header selectionId={id} setLadderDown={setLadderDown} />
+			<Header selectionId={id} setLadderDown={setLadderDown} ladderLocked={ladderLocked} setLadderLocked={setLadderLocked} />
 
 			<div className={"ladder"} onContextMenu={() => false}>
 				<PercentageRow
