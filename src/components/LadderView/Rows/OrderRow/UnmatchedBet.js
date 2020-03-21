@@ -1,13 +1,13 @@
-import React, { memo } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix, colorForOrder } from "../../../../utils/Bets/BettingCalculations";
 
 const UnmatchedBet = memo(({bet, cancelBet}) => {
-	const strategyAbbreviation = getStrategyAbbreviation(bet.trailing, bet.hedged);
-	const strategySuffix = getStrategySuffix(bet.strategy, bet.stopEntryCondition, bet.targetLTP, strategyAbbreviation);
+	const strategyAbbreviation = useMemo(() => getStrategyAbbreviation(bet.trailing, bet.hedged), []);
+	const strategySuffix = useMemo(() => getStrategySuffix(bet.strategy, bet.stopEntryCondition, bet.targetLTP, strategyAbbreviation), []);
 
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         cancelBet(bet);
-	};
+	}, []);
 
 	return (
 		<tr

@@ -181,7 +181,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 		if (result.bets) onUpdateOrders(result.bets);
 	}, [onPlaceOrder, unmatchedBets, matchedBets, onUpdateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, onChangeStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, onChangeTickOffsetList, fillOrKillSeconds, fillOrKillList, onChangeFillOrKillList]);
 
-	const cancelSpecialOrders = async (order, side) => {
+	const cancelSpecialOrders = useCallback(async (order, side) => {
 		let betsToPass = order ? order : selectionUnmatchedBets ? selectionUnmatchedBets : null;
 
 		if (betsToPass) {
@@ -194,7 +194,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, onPlaceOr
 			onChangeStopEntryList(data.stopEntry);
 			onChangeFillOrKillList(data.fillOrKill);
 		}
-	};
+	}, [backList, fillOrKillList, layList, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, selectionUnmatchedBets, stopEntryList, stopLossList, tickOffsetList]);
 
 	return (
 		<Container

@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { updateStopLossList } from "../../../actions/stopLoss";
 import { getMatched } from "../../../selectors/marketSelector";
@@ -17,14 +17,14 @@ const LadderOrderCell = memo(({ side, price, marketId, selectionId, handlePlaceO
 	const orderText = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
 	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched), [side, stopLoss, tickOffset, cellMatched, totalMatched]);
 
-	const handleClick = () => {
+	const handleClick = useCallback(() => {
 		handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
-	};
+	}, [handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossSelected, stopLossUnits]);
 
-	const handleRightClick = e => {
+	const handleRightClick = useCallback(() => e => {
 		e.preventDefault();
 		replaceStopLossOrder({ price, stopLoss });
-	};
+	}, [price, replaceStopLossOrder, stopLoss]);
 
 	return (
 		<div className="td"
