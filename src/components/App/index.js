@@ -6,6 +6,7 @@ import * as marketActions from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { updateTickOffsetList } from "../../actions/tickOffset";
 import { updateStopEntryList } from "../../actions/stopEntry";
+import { updateLadderOrder, setSortedLadder, updateExcludedLadders } from "../../actions/market";
 import Spinner from "./Spinner";
 import Siderbar from "../Sidebar";
 import HomeView from "../HomeView/";
@@ -15,6 +16,7 @@ import Title from "./Title";
 import getQueryVariable from "../../utils/Market/GetQueryVariable";
 import { CreateRunners } from "../../utils/Market/CreateRunners";
 import { isPremiumActive } from "../../utils/DateCalculator";
+import { sortLadder } from "../../utils/ladder/SortLadder";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
@@ -36,7 +38,7 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
   onToggleDefaultView, onToggleActiveView, onToggleSounds, onToggleTools, onToggleUnmatchedBets,
   onToggleMatchedBets, onToggleGraph, onToggleMarketInformation, onUpdateWinMarketsOnly, onToggleRules, onToggleLadderUnmatched,
   onReceiveStakeBtns, onReceiveLayBtns, onReceiveRightClickTicks, onReceiveHorseRaces, onReceiveMarket, onReceiveEventType,
-  onMarketClosed, onReceiverLadders, onSortLadder, onSelectRunner, onUpdateRunners,
+  onMarketClosed, onReceiverLadders, onSortLadder, onChangeExcludedLadders, onSelectRunner, onUpdateRunners,
   onReceiveNonRunners, onMarketStatusChange, setInPlay, setInPlayTime, setMarketPL, onChangeStopLossList,
   onChangeTickOffsetList, onChangeStopEntryList, onChangeLayList, onChangeBackList, onPlaceOrder, onChangeOrders, onChangeFillOrKillList }) => {
   const [marketId, setMarketId] = useState(null);
@@ -394,6 +396,11 @@ const App = ({ view, isLoading, market, marketStatus, inPlay, pastEventTime, mar
           } else if (!(mc.rc[i].id in nonRunners)) {
             // Runner found so we create the new object with the raw data
             ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
+            if (market.eventType !== "4339") {
+              var sortedLadderIndices = sortLadder(ladders);
+              onSortLadder(sortedLadderIndices);
+              onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+            }
           }
         }
 
@@ -679,6 +686,7 @@ const mapDispatchToProps = dispatch => {
     setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
     setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
     setMarketPL: pl => dispatch(marketActions.setMarketPL(pl)),
+    onChangeExcludedLadders: excludedLadders => dispatch(updateExcludedLadders(excludedLadders)),
     //! Betting Tools
     onChangeStopLossList: list => dispatch(updateStopLossList(list)),
     onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
