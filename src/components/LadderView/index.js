@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import { updateLadderOrder, setSortedLadder, updateExcludedLadders,  } from "../../actions/market";
+import { updateLadderOrder, setSortedLadder, updateExcludedLadders } from "../../actions/market";
 import { sortLadder } from "../../utils/ladder/SortLadder";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
@@ -19,7 +19,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, ladderOrderLis
 		  onSortLadder(sortedLadderIndices);
 		  onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
 		}
-	  }, [eventType, ladders, onChangeExcludedLadders, onChangeLadderOrder, onSortLadder]);
+	  }, [eventType, ladders, onChangeExcludedLadders, onChangeLadderOrder, onSortLadder, marketOpen, marketStatus]);
 
 	  //* Initialise the ladder order to the sorted positions
 	  //! Used for dragging & dropping ladders
@@ -31,7 +31,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, ladderOrderLis
 		}
 	
 		onChangeLadderOrder(newOrderList);
-	  }, []);
+	  }, [marketOpen, marketStatus]);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div
