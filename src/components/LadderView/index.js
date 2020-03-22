@@ -19,7 +19,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, ladderOrderLis
 		  onSortLadder(sortedLadderIndices);
 		  onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
 		}
-	  }, [eventType, ladders, onChangeExcludedLadders, onChangeLadderOrder, onSortLadder, marketOpen, marketStatus]);
+	  }, [eventType, ladders, onChangeExcludedLadders, onChangeLadderOrder, onSortLadder]);
 
 	  //* Initialise the ladder order to the sorted positions
 	  //! Used for dragging & dropping ladders
@@ -31,7 +31,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, ladderOrderLis
 		}
 	
 		onChangeLadderOrder(newOrderList);
-	  }, [marketOpen, marketStatus]);
+	  }, []);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div
