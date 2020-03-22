@@ -564,8 +564,7 @@ app.post("/api/place-order", (request, response) => {
 					orderType: "LIMIT",
 					limitOrder: {
 						size: request.body.size,
-						price: request.body.price,
-						persistenceType: "PERSIST"
+						price: request.body.price
 					}
 				}
 			],
