@@ -5,12 +5,15 @@ import { sortLadder } from "../../utils/ladder/SortLadder";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, ladderOrderList, onChangeLadderOrder, onChangeExcludedLadders, marketOpen, marketStatus, onSortLadder, excludedLadders, ladderUnmatched }) => {
+const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, onChangeLadderOrder, onChangeExcludedLadders, marketOpen, marketStatus, onSortLadder, excludedLadders, ladderUnmatched }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
-
 	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
 	}, [layFirstCol]);
+
+	useEffect(() => {
+
+	}, []);
 
 	useEffect(() => {
 		//! If it's not a Greyhound Race (4339), we sort by the LTP
@@ -29,7 +32,6 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, ladderOrderLis
 		for (var i = 0; i < sortedLadder.length; i++) {
 			newOrderList[i] = sortedLadder[i];
 		}
-	
 		onChangeLadderOrder(newOrderList);
 	  }, []);
 
@@ -65,11 +67,9 @@ const mapStateToProps = state => {
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
 		sortedLadder: state.market.sortedLadder, //! Sorted by LTP
-		ladderOrderList: state.market.ladderOrder, //! For the ladderview specifically when swapping ladders
+		ladderOrder: state.market.ladderOrder, //! For the ladderview specifically when swapping ladders
 		excludedLadders: state.market.excludedLadders,
-		ladderOrder: state.market.ladderOrder,
 		ladderUnmatched: state.settings.ladderUnmatched,
-
 		eventType: state.market.eventType,
 		ladders: state.market.ladder
 	};
@@ -78,7 +78,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
-
 		onChangeExcludedLadders: excludedLadders => dispatch(updateExcludedLadders(excludedLadders)),
 		onSortLadder: sortedLadder => dispatch(setSortedLadder(sortedLadder))
 		
