@@ -372,27 +372,27 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             // We increment and check the stoplosses
             if (adjustedStopLossList[mc.rc[i].id]) {
               // if it's trailing and the highest LTP went up, then we add a tickoffset
-              const maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
-              let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, mc.rc[i].id, currentLTP, maxLTP));
+              // const maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
+              // let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, mc.rc[i].id, currentLTP, maxLTP));
 
-              // if hedged, get size (price + hedged profit/loss)
-              if (adjustedStopLoss.hedged) {
-                const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
-                adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, "hedged").size;
-              }
+              // // if hedged, get size (price + hedged profit/loss)
+              // if (adjustedStopLoss.hedged) {
+              //   const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
+              //   adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, "hedged").size;
+              // }
               
-              // if it doesn't have a reference or the order has been matched (STOP LOSS)
-              const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, placeOrder, adjustedStopLossList, unmatchedBets, matchedBets);
-              stopLossOrdersToRemove = stopLossOrdersToRemove.concat(stopLossMatched.stopLossOrdersToRemove);
-              adjustedStopLossList = stopLossMatched.adjustedStopLossList;
+              // // if it doesn't have a reference or the order has been matched (STOP LOSS)
+              // const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, placeOrder, adjustedStopLossList, unmatchedBets, matchedBets);
+              // stopLossOrdersToRemove = stopLossOrdersToRemove.concat(stopLossMatched.stopLossOrdersToRemove);
+              // adjustedStopLossList = stopLossMatched.adjustedStopLossList;
             }
           } else if (!(mc.rc[i].id in nonRunners)) {
             // Runner found so we create the new object with the raw data
             ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
           }
         }
-        if (stopLossOrdersToRemove.length > 0) removeOrder(stopLossOrdersToRemove);
-        if (Object.keys(stopLossList).length > 0) updateStopLossList(adjustedStopLossList);
+        // if (stopLossOrdersToRemove.length > 0) removeOrder(stopLossOrdersToRemove);
+        // if (Object.keys(stopLossList).length > 0) updateStopLossList(adjustedStopLossList);
         if (Object.keys(stopEntryList).length > 0) updateStopEntryList(newStopEntryList);
 
         setUpdates(ladders);
