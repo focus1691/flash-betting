@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useCookies } from "react-cookie";
 import { connect } from "react-redux";
-import * as actions from "../../actions/settings";
-import * as marketActions from "../../actions/market";
+import  { setIsLoading, setPremiumStatus, setDefaultView, setActiveView, toggleSound, toggleTools, toggleUnmatchedBets, 
+        toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules,  toggleLadderUnmatched,
+        setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries } from "../../actions/settings";
+import { loadMarket, setEventType, closeMarket, loadLadder, setSortedLadder, setRunner, loadRunners,
+        loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL } from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { updateTickOffsetList } from "../../actions/tickOffset";
 import { updateStopEntryList } from "../../actions/stopEntry";
@@ -32,13 +35,13 @@ import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionE
 import useInterval from "../../utils/CustomHooks/useInterval";
 
 const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen, nonRunners,
-  unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, socket, setLoading, setPremiumStatus,
-  onToggleDefaultView, onToggleActiveView, onToggleSounds, onToggleTools, onToggleUnmatchedBets,
-  onToggleMatchedBets, onToggleGraph, onToggleMarketInformation, onUpdateWinMarketsOnly, onToggleRules, onToggleLadderUnmatched,
-  onReceiveStakeBtns, onReceiveLayBtns, onReceiveRightClickTicks, onReceiveHorseRaces, onReceiveMarket, onReceiveEventType,
-  onMarketClosed, onReceiverLadders, onSortLadder, onSelectRunner, onUpdateRunners,
-  onReceiveNonRunners, onMarketStatusChange, setInPlay, setInPlayTime, setMarketPL, onChangeStopLossList,
-  onChangeTickOffsetList, onChangeStopEntryList, onChangeLayList, onChangeBackList, onPlaceOrder, onChangeOrders, onChangeFillOrKillList }) => {
+  unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, socket, setIsLoading, setPremiumStatus,
+  setDefaultView, setActiveView, toggleSound, toggleTools, toggleUnmatchedBets,
+  toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules, toggleLadderUnmatched,
+  setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries, loadMarket, setEventType,
+  closeMarket, loadLadder, setSortedLadder, setRunner, loadRunners,
+  loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateStopLossList,
+  updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, placeOrder, updateOrders, updateFillOrKillList }) => {
   const [marketId, setMarketId] = useState(null);
   const [cookies, removeCookie] = useCookies(["sessionKey", "username", "accessToken", "refreshToken", "expiresIn"]);
   const [updates, setUpdates] = useState([]);
@@ -47,10 +50,6 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   const [clk, setClk] = useState(null);
   const [connectionError, setConnectionError] = useState("");
 
-  if (!cookies.sessionKey && !cookies.username) {
-    window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
-  }
-
   const loadSession = async () => {
     await fetch(
       `/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(
@@ -58,13 +57,6 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       )}`
     );
   };
-
-  useInterval(() => {
-    if (!isUpdated) {
-      onReceiverLadders(updates);
-      setIsUpdated(true);
-    }
-  }, 50);
 
   const loadSettings = async () => {
     /**
@@ -75,21 +67,21 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     await fetch(`/api/get-user-settings`)
       .then(res => res.json())
       .then(settings => {
-        onToggleDefaultView(settings.defaultView);
-        onToggleActiveView(settings.defaultView);
-        onToggleSounds(settings.sounds);
-        onToggleTools(settings.tools);
-        onToggleUnmatchedBets(settings.unmatchedBets);
-        onToggleMatchedBets(settings.matchedBets);
-        onToggleGraph(settings.graphs);
-        onToggleMarketInformation(settings.marketInfo);
-        onUpdateWinMarketsOnly(settings.winMarketsOnly);
-        onToggleRules(settings.rules);
-        onToggleLadderUnmatched(settings.ladderUnmatched);
-        onReceiveStakeBtns(settings.stakeBtns);
-        onReceiveLayBtns(settings.layBtns);
-        onReceiveRightClickTicks(settings.rightClickTicks);
-        onReceiveHorseRaces(settings.horseRaces);
+        setDefaultView(settings.defaultView);
+        setActiveView(settings.defaultView);
+        toggleSound(settings.sounds);
+        toggleTools(settings.tools);
+        toggleUnmatchedBets(settings.unmatchedBets);
+        toggleMatchedBets(settings.matchedBets);
+        toggleGraph(settings.graphs);
+        toggleMarketInformation(settings.marketInfo);
+        setWinMarketsOnly(settings.winMarketsOnly);
+        toggleRules(settings.rules);
+        toggleLadderUnmatched(settings.ladderUnmatched);
+        setStakeBtns(settings.stakeBtns);
+        setLayBtns(settings.layBtns);
+        updateRightClickTicks(settings.rightClickTicks);
+        setHorseRacingCountries(settings.horseRaces);
       })
       .catch(e => {
         window.location.href = window.location.origin + "/?error=USER_SETTINGS_NOT_FOUND";
@@ -108,7 +100,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       });
   };
 
-  const loadMarket = async () => {
+  const retrieveMarket = async () => {
     let marketId = getQueryVariable("marketId");
 
     // Check if the page has query parameter 'marketId'
@@ -127,11 +119,11 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             setMarketId(marketId);
             if (data.result.length > 0) {
               const runners = CreateRunners(data.result[0].runners);
-              onSortLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
-              onReceiveEventType(data.result[0].eventType.id);
-              onUpdateRunners(runners);
-              onReceiveMarket(data.result[0]);
-              onSelectRunner(data.result[0].runners[0]);
+              setSortedLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
+              setEventType(data.result[0].eventType.id);
+              loadRunners(runners);
+              loadMarket(data.result[0]);
+              setRunner(data.result[0].runners[0]);
               const selectionNames = {};
 
               let runnerIds = Object.keys(runners);
@@ -247,29 +239,42 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
                   await loadOrders(orders);
                 })
                 .then(() => {
-                  onChangeOrders({
+                  updateOrders({
                     matched: loadedMatchedOrders,
                     unmatched: loadedUnmatchedOrders
                   });
-                  onChangeBackList(loadedBackOrders);
-                  onChangeLayList(loadedLayOrders);
-                  onChangeStopEntryList(loadedStopEntryOrders);
-                  onChangeTickOffsetList(loadedTickOffsetOrders);
-                  onChangeFillOrKillList(loadedFillOrKillOrders);
-                  onChangeStopLossList(loadedStopLossOrders);
+                  updateBackList(loadedBackOrders);
+                  updateLayList(loadedLayOrders);
+                  updateStopEntryList(loadedStopEntryOrders);
+                  updateTickOffsetList(loadedTickOffsetOrders);
+                  updateFillOrKillList(loadedFillOrKillOrders);
+                  updateStopLossList(loadedStopLossOrders);
                 });
             }
           }
         });
     }
   };
+  
+  useInterval(() => {
+    if (!isUpdated) {
+      loadLadder(updates);
+      setIsUpdated(true);
+    }
+  }, 50);
+
+  useEffect(() => {
+    if (!cookies.sessionKey && !cookies.username) {
+      window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
+    }
+  }, [cookies.sessionKey, cookies.username]);
 
   useEffect(() => {
     const loadData = async () => {
       await loadSession();
       await loadSettings();
-      await loadMarket();
-      setLoading(false);
+      await retrieveMarket();
+      setIsLoading(false);
     };
 
     loadData();
@@ -278,7 +283,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   useEffect(() => {
     socket.on("market-definition", async marketDefinition => {
       // socket.off("market-definition");
-      onMarketStatusChange(marketDefinition.status);
+      setMarketStatus(marketDefinition.status);
       setInPlay(marketDefinition.inPlay);
 
       if (!market.inPlayTime && marketDefinition.inPlay) {
@@ -287,11 +292,11 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       }
 
       if (marketDefinition.status === "CLOSED" && !marketOpen) {
-        onMarketClosed();
+        closeMarket();
         cleanupOnMarketClose(getQueryVariable("marketId"));
       }
     });
-  }, [marketStatus, market.inPlayTime, pastEventTime, socket, onMarketStatusChange, setInPlay, marketOpen, setInPlayTime, onMarketClosed]);
+  }, [marketStatus, market.inPlayTime, pastEventTime, socket, setMarketStatus, setInPlay, marketOpen, setInPlayTime, closeMarket]);
 
   useEffect(() => {
     // A message will be sent here if the connection to the market is disconnected.
@@ -350,7 +355,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             }
           }
         }
-        onReceiveNonRunners(updatedNonRunners);
+        loadNonRunners(updatedNonRunners);
       }
 
       if (mc.rc) {
@@ -366,7 +371,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             const currentLTP = ladders[mc.rc[i].id].ltp[0];
 
             // stop Entry
-            newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, onPlaceOrder, newStopEntryList, unmatchedBets, matchedBets);
+            newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, placeOrder, newStopEntryList, unmatchedBets, matchedBets);
 
             // We increment and check the stoplosses
             if (adjustedStopLossList[mc.rc[i].id]) {
@@ -384,7 +389,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
               }
 
               // if it doesn't have a reference or the order has been matched (STOP LOSS)
-              const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, onPlaceOrder,
+              const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, placeOrder,
                 adjustedStopLossList, unmatchedBets, matchedBets);
 
               stopLossOrdersToRemove = stopLossOrdersToRemove.concat(stopLossMatched.stopLossOrdersToRemove);
@@ -409,18 +414,18 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
         }
 
         if (Object.keys(stopLossList).length > 0) {
-          onChangeStopLossList(adjustedStopLossList);
+          updateStopLossList(adjustedStopLossList);
         }
 
         // so it doesn't mess up the loading of the orders
         if (Object.keys(stopEntryList).length > 0) {
-          onChangeStopEntryList(newStopEntryList);
+          updateStopEntryList(newStopEntryList);
         }
         setUpdates(ladders);
         setIsUpdated(false);
       }
     });
-  }, [matchedBets, nonRunners, onChangeStopEntryList, onChangeStopLossList, onPlaceOrder, onReceiveNonRunners, stopEntryList, stopLossList, unmatchedBets, updates]);
+  }, [matchedBets, nonRunners, updateStopEntryList, updateStopLossList, placeOrder, loadNonRunners, stopEntryList, stopLossList, unmatchedBets, updates]);
 
   /**
    * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
@@ -462,7 +467,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             const tickOffsetCheck = checkTickOffsetForMatch(
               tickOffsetList,
               order,
-              onPlaceOrder,
+              placeOrder,
               tickOffsetOrdersToRemove,
               checkForMatchInTickOffset,
               unmatchedBets,
@@ -487,20 +492,20 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     }
 
     if (Object.keys(stopLossList).length > 0) {
-      onChangeStopLossList(checkForMatchInStopLoss);
+      updateStopLossList(checkForMatchInStopLoss);
     }
 
     if (Object.keys(tickOffsetList).length > 0) {
-      onChangeTickOffsetList(checkForMatchInTickOffset);
+      updateTickOffsetList(checkForMatchInTickOffset);
     }
 
     if (Object.keys(unmatchedBets).length > 0) {
-      onChangeOrders({
+      updateOrders({
         unmatched: newUnmatchedBets,
         matched: newMatchedBets
       });
     }
-  }, [matchedBets, onChangeOrders, onChangeStopLossList, onChangeTickOffsetList, onPlaceOrder, stopLossList, tickOffsetList, unmatchedBets]);
+  }, [matchedBets, updateOrders, updateStopLossList, updateTickOffsetList, placeOrder, stopLossList, tickOffsetList, unmatchedBets]);
 
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
@@ -577,7 +582,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
         }
       });
 
-      onChangeOrders({
+      updateOrders({
         matched: loadedMatchedOrders,
         unmatched: loadedUnmatchedOrders
       });
@@ -646,49 +651,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    //! Settings
-    setLoading: isLoading => dispatch(actions.setIsLoading(isLoading)),
-    setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium)),
-    onToggleDefaultView: view => dispatch(actions.setDefaultView(view)),
-    onToggleActiveView: view => dispatch(actions.setActiveView(view)),
-    onToggleSounds: isSelected => dispatch(actions.toggleSound(isSelected)),
-    onToggleTools: settings => dispatch(actions.toggleTools(settings)),
-    onToggleUnmatchedBets: settings => dispatch(actions.toggleUnmatchedBets(settings)),
-    onToggleMatchedBets: settings => dispatch(actions.toggleMatchedBets(settings)),
-    onToggleGraph: settings => dispatch(actions.toggleGraph(settings)),
-    onToggleMarketInformation: settings => dispatch(actions.toggleMarketInformation(settings)),
-    onUpdateWinMarketsOnly: isChecked => dispatch(actions.setWinMarketsOnly(isChecked)),
-    onToggleRules: settings => dispatch(actions.toggleRules(settings)),
-    onToggleLadderUnmatched: unmatchedColumn => dispatch(actions.toggleLadderUnmatched(unmatchedColumn)),
-    onReceiveStakeBtns: data => dispatch(actions.setStakeBtns(data)),
-    onReceiveLayBtns: data => dispatch(actions.setLayBtns(data)),
-    onReceiveRightClickTicks: ticks => dispatch(actions.updateRightClickTicks(ticks)),
-    onReceiveHorseRaces: horseRaces => dispatch(actions.setHorseRacingCountries(horseRaces)),
-    //! Market
-    onReceiveMarket: market => dispatch(marketActions.loadMarket(market)),
-    onReceiveEventType: eventType => dispatch(marketActions.setEventType(eventType)),
-    onMarketClosed: () => dispatch(marketActions.closeMarket()),
-    onReceiverLadders: ladders => dispatch(marketActions.loadLadder(ladders)),
-    onSortLadder: sortedLadder => dispatch(marketActions.setSortedLadder(sortedLadder)),
-    onSelectRunner: runner => dispatch(marketActions.setRunner(runner)),
-    onUpdateRunners: runners => dispatch(marketActions.loadRunners(runners)),
-    onReceiveNonRunners: nonRunners => dispatch(marketActions.loadNonRunners(nonRunners)),
-    onMarketStatusChange: isOpen => dispatch(marketActions.setMarketStatus(isOpen)),
-    setInPlay: inPlay => dispatch(marketActions.setInPlay(inPlay)),
-    setInPlayTime: time => dispatch(marketActions.setInPlayTime(time)),
-    setMarketPL: pl => dispatch(marketActions.setMarketPL(pl)),
-    //! Betting Tools
-    onChangeStopLossList: list => dispatch(updateStopLossList(list)),
-    onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
-    onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
-    onChangeLayList: list => dispatch(updateLayList(list)),
-    onChangeBackList: list => dispatch(updateBackList(list)),
-    onPlaceOrder: order => dispatch(placeOrder(order)),
-    onChangeOrders: orders => dispatch(updateOrders(orders)),
-    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list))
-  };
-};
+const mapDispatchToProps = { setIsLoading, setPremiumStatus, setDefaultView, setActiveView, toggleSound, toggleTools,
+  toggleUnmatchedBets, toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules, toggleLadderUnmatched,
+  setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries, loadMarket, setEventType, closeMarket, loadLadder,
+  setSortedLadder, setRunner, loadRunners, loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateStopLossList,
+  updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, placeOrder, updateOrders, updateFillOrKillList };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppWithSocket);

@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
-import * as actions from "../actions/account";
+import { setLoggedIn } from "../actions/account";
 import getQueryVariable from "../utils/Market/GetQueryVariable";
 
-const OAuthRedirect = props => {
+const OAuthRedirect = ({loggedIn, setLoggedIn}) => {
 	const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
 
 	useEffect(() => {
@@ -18,13 +18,13 @@ const OAuthRedirect = props => {
 							.then(res => res.json())
 							.then(data => {
 								if (data.error) {
-									props.onLogin(false);
+									setLoggedIn(false);
 									window.location.href = window.location.origin + "/?error=" + (data.error.data ? data.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
 								} else {
 									setCookie('accessToken', data.accessToken);
 									setCookie('refreshToken', data.refreshToken);
 									setCookie('expiresIn', data.expiresIn);
-									props.onLogin(true);
+									setLoggedIn(true);
 								}
 							})
 					}
@@ -32,7 +32,7 @@ const OAuthRedirect = props => {
 		}
 	}, []);
 
-	if (props.loggedIn) {
+	if (loggedIn) {
 		return <Redirect to='/dashboard' />
 	} else {
 		return (<section>Redirecting...</section>);
@@ -45,13 +45,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onLogin: loggedIn => dispatch(actions.setLoggedIn(loggedIn))
-	};
-};
+const mapDispatchToProps = { setLoggedIn };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(OAuthRedirect);
+export default connect(mapStateToProps, mapDispatchToProps)(OAuthRedirect);

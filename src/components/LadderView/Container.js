@@ -2,8 +2,8 @@ import React, { memo, useMemo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder, setDraggingLadder } from "../../actions/market";
 
-const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
-	ladderOrderList, onChangeLadderOrder, setIsMoving, setLadderDown, children, onDraggingLadder, draggingLadder}) => {
+const LadderContainer = memo(({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
+	ladderOrderList, updateLadderOrder, setIsMoving, setLadderDown, children, setDraggingLadder, draggingLadder}) => {
 	
 	const style = useMemo(() => {
 		return marketStatus === "SUSPENDED" ?
@@ -23,14 +23,14 @@ const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isM
 	const handleMouseMove = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
-		moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving);
-		if (!draggingLadder) onDraggingLadder(false);
+		moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, updateLadderOrder, setIsMoving);
+		if (!draggingLadder) setDraggingLadder(false);
 	};
 
 	const handleMouseUp = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
-		onDraggingLadder(false);
+		setDraggingLadder(false);
 		setLadderDown(false);
 		returnToOrderedPos(containerRef, order, setIsMoving);
 	};
@@ -38,7 +38,7 @@ const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isM
 	const handleMouseLeave = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
-		onDraggingLadder(false);
+		setDraggingLadder(false);
 		setLadderDown(false);
 		returnToOrderedPos(containerRef, order, setIsMoving);
 	};
@@ -55,7 +55,7 @@ const LadderContainer = ({marketStatus, isReferenceSet, order, containerRef, isM
 			{children}
 		</div>
 	);
-};
+});
 
 const returnToOrderedPos = (containerRef, order, setIsMoving) => {
 	containerRef.current.style.left = `${order * containerRef.current.clientWidth}px`;
@@ -63,7 +63,7 @@ const returnToOrderedPos = (containerRef, order, setIsMoving) => {
 	setIsMoving(false);
 };
 
-const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, order, runners, ladderOrderList, onChangeLadderOrder, setIsMoving) => {
+const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, order, runners, ladderOrderList, updateLadderOrder, setIsMoving) => {
 	if (!isReferenceSet) return;
 	containerRef.current.style.left = `${parseInt(containerRef.current.style.left, 10) + offsetPos}px`;
 	containerRef.current.style["z-index"] = 9999;
@@ -116,7 +116,7 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
 			newOrderList[thisLadderOrder] = ladderOrderList[otherLadderOrder];
 			newOrderList[otherLadderOrder] = ladderOrderList[thisLadderOrder];
 
-			onChangeLadderOrder(newOrderList);
+			updateLadderOrder(newOrderList);
 
 			otherNodes[key].style.left = `${order * containerRef.current.clientWidth}px`;
 
@@ -134,11 +134,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
-		onDraggingLadder: drag => dispatch(setDraggingLadder(drag))
-	};
-};
+const mapDispatchToProps = { updateLadderOrder, setDraggingLadder };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderContainer));
+export default connect(mapStateToProps, mapDispatchToProps)(LadderContainer);

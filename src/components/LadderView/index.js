@@ -5,24 +5,20 @@ import { sortLadder } from "../../utils/ladder/SortLadder";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, onChangeLadderOrder, onChangeExcludedLadders, marketOpen, marketStatus, onSortLadder, excludedLadders, ladderUnmatched }) => {
+const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, updateExcludedLadders, marketOpen, marketStatus, setSortedLadder, excludedLadders, ladderUnmatched }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
 	}, [layFirstCol]);
 
 	useEffect(() => {
-
-	}, []);
-
-	useEffect(() => {
 		//! If it's not a Greyhound Race (4339), we sort by the LTP
 		if (eventType !== "4339") {
 		  var sortedLadderIndices = sortLadder(ladders);
-		  onSortLadder(sortedLadderIndices);
-		  onChangeExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+		  setSortedLadder(sortedLadderIndices);
+		  updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
 		}
-	  }, [eventType, ladders, onChangeExcludedLadders, onChangeLadderOrder, onSortLadder]);
+	  }, [eventType, ladders, updateExcludedLadders, updateLadderOrder, setSortedLadder]);
 
 	  //* Initialise the ladder order to the sorted positions
 	  //! Used for dragging & dropping ladders
@@ -32,7 +28,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, onChangeLadder
 		for (var i = 0; i < sortedLadder.length; i++) {
 			newOrderList[i] = sortedLadder[i];
 		}
-		onChangeLadderOrder(newOrderList);
+		updateLadderOrder(newOrderList);
 	  }, []);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
@@ -75,13 +71,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onChangeLadderOrder: order => dispatch(updateLadderOrder(order)),
-		onChangeExcludedLadders: excludedLadders => dispatch(updateExcludedLadders(excludedLadders)),
-		onSortLadder: sortedLadder => dispatch(setSortedLadder(sortedLadder))
-		
-	};
-};
+const mapDispatchToProps = { updateLadderOrder, updateExcludedLadders, setSortedLadder };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ladders);

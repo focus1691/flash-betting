@@ -44,15 +44,15 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const HomeView = props => {
+const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
 	const [cookies] = useCookies(["username"]);
-	const styleProps = { subscribed: props.premiumMember };
+	const styleProps = { subscribed: premiumMember };
 	const [data, setData] = useState({});
 
 	const classes = useStyles(styleProps);
 
 	useEffect(() => {
-		props.premiumMember
+		premiumMember
 			? setData({
 					subscribed: "Active",
 					information: " and you can now have full access to the Ladder View.",
@@ -63,12 +63,12 @@ const HomeView = props => {
 					information: " and you have restricted access to Trader Pro.",
 					color: "#F44336"
 			  });
-	}, [props.premiumMember]);
+	}, [premiumMember]);
 
 	return (
 		<div id="home-view-container" className={classes.root}>
 			<div className={classes.section2} id="home-view">
-				<Header username={cookies.username} premiumMember={props.premiumMember} classes={classes} />
+				<Header username={cookies.username} premiumMember={premiumMember} classes={classes} />
 				<Divider className={classes.divider} />
 				<Grid container alignItems="center">
 					<Typography className={classes.subheading} style={{ whiteSpace: "pre-wrap" }} variant="h5">
@@ -89,24 +89,24 @@ const HomeView = props => {
 				</Grid>
 				<Divider className={classes.divider} />
 				<div className={"subscription-list"}>
-					{props.premiumMember ? null : (
+					{premiumMember ? null : (
 						<React.Fragment>
 							<SubscriptionContainer
-								openPremiumMenu={props.openPremiumMenu}
-								setSelectedPremium={props.setSelectedPlan}
+								openPremiumDialog={openPremiumDialog}
+								setSelectedPremium={setSelectedPremium}
 							/>
 							<SubscriptionContainer
 								plan="Biannually"
 								price={49.99}
 								color={"green"}
-								openPremiumMenu={props.openPremiumMenu}
-								setSelectedPremium={props.setSelectedPlan}
+								openPremiumDialog={openPremiumDialog}
+								setSelectedPremium={setSelectedPremium}
 							/>
 							<SubscriptionContainer
 								plan="Annually"
 								price={99.99}
-								openPremiumMenu={props.openPremiumMenu}
-								setSelectedPremium={props.setSelectedPlan}
+								openPremiumDialog={openPremiumDialog}
+								setSelectedPremium={setSelectedPremium}
 							/>
 						</React.Fragment>
 					)}
@@ -126,11 +126,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		openPremiumMenu: isPremium => dispatch(openPremiumDialog(isPremium)),
-		setSelectedPlan: premiumSelected => dispatch(setSelectedPremium(premiumSelected))
-	};
-};
+const mapDispatchToProps = { openPremiumDialog, setSelectedPremium };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeViewWithSocket);

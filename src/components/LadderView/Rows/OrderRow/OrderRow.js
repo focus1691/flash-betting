@@ -4,10 +4,9 @@ import { changePriceType } from "../../../../actions/market";
 import { MatchedBet } from "./MatchedBet";
 import { UnmatchedBet } from "./UnmatchedBet";
 
-const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceType, onChangePriceType}) => {
+const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceType, changePriceType}) => {
 
 	const unmatchedBetsArr = useMemo(() => unmatchedBets ? Object.values(unmatchedBets) : [], [unmatchedBets]);
-
 	const unmatchedStyle = useMemo(() => unmatchedBetsArr.length > 0 ? "lay-body" : "", [unmatchedBetsArr.length]);
 
 	const cancelUnmatchedOrder = useCallback(order => {
@@ -17,6 +16,10 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 	const cancelAllOrdersOnSelection = useCallback(async () => {
 		cancelSpecialOrders(null, null);
 	}, [cancelSpecialOrders]);
+
+	const handleButtonClick = useCallback(() => {
+		changePriceType(priceType === "STAKE" ? "LIABILITY" : "STAKE");
+	}, [priceType, changePriceType]);
 
 	return (
 		<div className={"order-row"}>
@@ -38,7 +41,7 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 					</td>
 					<td colSpan={1} rowSpan={4} style={{ verticalAlign: "top", minHeight: "1.675em" }}>
 						<button>0</button>
-						<button onClick={onChangePriceType(priceType === "STAKE" ? "LIABILITY" : "STAKE")}>
+						<button onClick={handleButtonClick}>
 							{priceType === "STAKE" ? "S" : "L"}
 						</button>
 						<button
@@ -72,10 +75,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onChangePriceType: priceType => e => dispatch(changePriceType(priceType))
-	};
-};
+const mapDispatchToProps = { changePriceType };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderRow);

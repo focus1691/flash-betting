@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { setRunner, setDraggingLadder } from "../../actions/market";
 import { getLTP, getRunner, getSportId, getPL } from "../../selectors/marketSelector";
@@ -10,7 +10,7 @@ import { calcHedgeAtLTP, calcHedgeSize } from "../../utils/TradingStategy/Heding
 import { calcOddsOnPriceHover } from "../../utils/Bets/HedgeProfit";
 import Tooltip from "@material-ui/core/Tooltip";
 
-const LadderHeader = memo(({ selectionId, sportId, runner, onSelectRunner, setLadderDown, oddsHovered, ltp, PL, onDraggingLadder, selectionMatchedBets, ladderLocked, setLadderLocked }) => {
+const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderDown, oddsHovered, ltp, PL, setDraggingLadder, selectionMatchedBets, ladderLocked, setLadderLocked }) => {
 	const ordersOnMarket = useMemo(() => selectionMatchedBets.length > 0, [selectionMatchedBets.length]);
 	const oddsHoveredCalc = useMemo(() => calcOddsOnPriceHover(oddsHovered.odds, oddsHovered.side, selectionId, oddsHovered.selectionId, PL), [
 		PL,
@@ -22,20 +22,24 @@ const LadderHeader = memo(({ selectionId, sportId, runner, onSelectRunner, setLa
 	const ladderLTPHedge = useMemo(() => calcHedgeAtLTP(selectionMatchedBets, ltp), [ltp, selectionMatchedBets]);
 	const LTPHedgeSize = useMemo(() => calcHedgeSize(selectionMatchedBets, ltp), [selectionMatchedBets, ltp]);
 
-	const handleMouseDown = () => e => {
+	const handleMouseDown = () => {
 		setLadderDown(true);
-		onDraggingLadder(selectionId);
+		setDraggingLadder(selectionId);
 	};
 
-	const handleNoImageError = () => e => {
+	const handleNoImageError = (e) => {
 		e.target.onerror = null;
 		e.target.src = iconForEvent(parseInt(sportId));
 	};
 
+	const runnerSelected = useCallback(() => {
+		setRunner(runner);
+	}, [runner, setRunner]);
+
 	return (
 		<div className={"ladder-header"}>
 			<div>
-				<h2 className="contender-name" onMouseDown={handleMouseDown()}>
+				<h2 className="contender-name" onMouseDown={handleMouseDown}>
 					{
 						<img
 							className={"contender-image"}
@@ -45,8 +49,8 @@ const LadderHeader = memo(({ selectionId, sportId, runner, onSelectRunner, setLa
 									: iconForEvent(sportId)
 							}
 							alt={"Colours"}
-							onClick={onSelectRunner(runner)}
-							onError={handleNoImageError()}
+							onClick={runnerSelected}
+							onError={handleNoImageError}
 						/>
 					}
 					{`${runner.metadata.CLOTH_NUMBER ? runner.metadata.CLOTH_NUMBER + ". " : ""}${runner.runnerName}`}
@@ -109,11 +113,6 @@ const mapStateToProps = (state, { selectionId }) => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onSelectRunner: runner => e => dispatch(setRunner(runner)),
-		onDraggingLadder: drag => dispatch(setDraggingLadder(drag))
-	};
-};
+const mapDispatchToProps = { setRunner, setDraggingLadder };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LadderHeader);

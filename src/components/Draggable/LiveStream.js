@@ -2,19 +2,19 @@ import React from "react";
 import { connect } from "react-redux";
 import { openLiveStream } from "../../actions/draggable";
 
-const LiveStream = props => {
-	return props.market && props.open ? (
+const LiveStream = ({market, open, openLiveStream}) => {
+	return market && open ? (
 		<div className={"popup-live-stream"}>
 			<div>
 				<img
 					alt={"Close"}
 					className={"close-popup-graph"}
 					src={`${window.location.origin}/icons/error.png`}
-					onClick={props.onOpenLiveStream()}
+					onClick={openLiveStream}
 				/>
 			</div>
 			<iframe
-				src={`https://videoplayer.betfair.com/GetPlayer.do?tr=1&mID=${props.market.marketId}&allowPopup=false`}
+				src={`https://videoplayer.betfair.com/GetPlayer.do?tr=1&mID=${market.marketId}&allowPopup=false`}
 				width="500px"
 				height="500px"
 				frameBorder="0"
@@ -32,10 +32,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onOpenLiveStream: () => e => dispatch(openLiveStream())
-	};
-};
+const mapDispatchToProps = { openLiveStream };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LiveStream);

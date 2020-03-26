@@ -1,7 +1,7 @@
 import $ from "jquery";
 import React, { createRef, useState } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../actions/market";
+import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from "../../actions/market";
 import { placeOrder } from "../../actions/order";
 import { setStakeInOneClick } from "../../actions/settings";
 import { calcBackProfit, colorForBack } from "../../utils/Bets/BettingCalculations";
@@ -19,7 +19,11 @@ import GridOrderRow from "./GridOrderRow";
 import NonRunners from "./NonRunner";
 import SuspendedWarning from "./SuspendedWarning";
 
-const Grid = props => {
+const Grid = ({oneClickOn, oneClickStake, marketOpen, marketStatus, inPlay, market, ladder,
+	sortedLadder, runners, nonRunners, stakeBtns, layBtns, countryCode, currencyCode, localeCode, bets,
+	setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility,
+	toggleStakeAndLiability, toggleBackAndLay, toggleOneClick, setStakeInOneClick, placeOrder }) => {
+	
 	const [rowHovered, setRowHovered] = useState(null);
 	const [activeOrder, setActiveOrder] = useState(null);
 	const [ordersVisible, setOrdersVisible] = useState(0);
@@ -28,10 +32,10 @@ const Grid = props => {
 	const handlePriceClick = (key, backLay, odds) => e => {
 		e.preventDefault();
 
-		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
+		if (!marketOpen || marketStatus === "SUSPENDED" || marketStatus === "CLOSED") return;
 
-		if (!props.oneClickOn) {
-			props.onUpdateOrder({
+		if (!oneClickOn) {
+			updateOrder({
 				id: key,
 				visible: true,
 				backLay: backLay,
@@ -42,39 +46,39 @@ const Grid = props => {
 	};
 
 	const handlePriceHover = key => e => {
-		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
+		if (!marketOpen || marketStatus === "SUSPENDED" || marketStatus === "CLOSED") return;
 		setRowHovered(key);
 		$(e.currentTarget).one("mouseleave", e => {
 			setRowHovered(null);
 		});
 	};
 
-	const toggleBackAndLay = order => e => {
-		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
-		props.onToggleBackAndLay({ id: order.id });
+	const changeSide = order => e => {
+		if (!marketOpen || marketStatus === "SUSPENDED" || marketStatus === "CLOSED") return;
+		toggleBackAndLay({ id: order.id });
 		setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
 	};
 
-	const toggleOneClick = () => e => {
-		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
-		props.onToggleOneClick(!props.oneClickOn);
+	const handleOneClickPress = () => e => {
+		if (!marketOpen || marketStatus === "SUSPENDED" || marketStatus === "CLOSED") return;
+		toggleOneClick(!oneClickOn);
 		const node = oneClickRef.current;
-		props.oneClickOn ? node.blur() : node.focus();
+		oneClickOn ? node.blur() : node.focus();
 	};
 
 	const toggleStakeAndLiabilityButtons = data => e => {
-		if (!props.marketOpen || props.marketStatus === "SUSPENDED" || props.marketStatus === "CLOSED") return;
-		props.onToggleStakeAndLiability(data);
+		if (!marketOpen || marketStatus === "SUSPENDED" || marketStatus === "CLOSED") return;
+		toggleStakeAndLiability(data);
 	};
 
 	const toggleOrderRowVisibility = data => e => {
-		props.onUpdateOrderVisibility(data);
+		toggleVisibility(data);
 		setActiveOrder(null);
 		setOrdersVisible(ordersVisible - 1);
 	};
 
-	const setStakeInOneClick = stake => e => {
-		props.setStakeInOneClick(stake);
+	const handlePriceClickInOneClick = stake => e => {
+		setStakeInOneClick(stake);
 	};
 
 	const updateOrderSize = data => e => {
@@ -83,21 +87,21 @@ const Grid = props => {
 			data.stake = e.target.value;
 		}
 
-		props.onUpdateOrderValue(data);
+		updateOrderValue(data);
 		setActiveOrder(data);
 	};
 
-	const updateOrderPrice = data => e => {
+	const handlePriceChange = data => e => {
 		let val = parseInt(e.target.value);
 
 		if (isValidPrice(val)) {
 			data.price = getNextPrice(data.price, e.target.value);
-			props.onUpdateOrderPrice(data);
+			updateOrderPrice(data);
 		}
 	};
 
 	const selectRunner = runner => e => {
-		props.onSelectRunner(runner);
+		setRunner(runner);
 	};
 
 	const renderRow = (betOdds, key, backLay) => {
@@ -144,8 +148,8 @@ const Grid = props => {
 	const renderProfitAndLossAndHedge = (order, color) => {
 		return {
 			val: formatCurrency(
-				props.localeCode,
-				props.currencyCode,
+				localeCode,
+				currencyCode,
 				calcBackProfit(order.stake, order.price, order.backLay)
 			),
 			color: color
@@ -157,9 +161,9 @@ const Grid = props => {
 			<React.Fragment>
 				{renderRunners()}
 				<NonRunners
-					sportId={props.market.eventType.id}
-					nonRunners={props.nonRunners}
-					runners={props.runners}
+					sportId={market.eventType.id}
+					nonRunners={nonRunners}
+					runners={runners}
 					selectRunner={selectRunner}
 				/>
 			</React.Fragment>
@@ -167,28 +171,28 @@ const Grid = props => {
 	};
 
 	const renderRunners = () => {
-		return props.sortedLadder.map(key => {
-			const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(props.ladder[key]);
-			const { name, number, logo, order } = DeconstructRunner(props.runners[key], props.market.eventType.id);
+		return sortedLadder.map(key => {
+			const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
+			const { name, number, logo, order } = DeconstructRunner(runners[key], market.eventType.id);
 
 			const orderProps =
 				order.stakeLiability === 0
 					? {
 							text: "STAKE",
 							text2: "BACK",
-							prices: props.stakeBtns
+							prices: stakeBtns
 					  }
 					: {
 							text: "LIABILITY",
 							text2: "LAY",
-							prices: props.layBtns
+							prices: layBtns
 					  };
 
 			orderProps.text2 = order.backLay === 0 ? "BACK" : "LAY";
 			orderProps.bg = order.backLay === 0 ? "#DBEFFF" : "#FEE9EE";
 
-			const profitArray = Object.values(props.bets.matched)
-				.filter(bet => bet.selectionId == props.runners[key].selectionId)
+			const profitArray = Object.values(bets.matched)
+				.filter(bet => bet.selectionId == runners[key].selectionId)
 				.map(
 					bet =>
 						(bet.side === "LAY" ? -1 : 1) *
@@ -200,26 +204,26 @@ const Grid = props => {
 				<React.Fragment key={`grid-runner-${key}`}>
 					<tr>
 						<GridDetailCell
-							sportId={props.market.eventType.id}
-							market={props.market}
-							runner={props.runners[key]}
+							sportId={market.eventType.id}
+							market={market}
+							runner={runners[key]}
 							name={name}
 							number={number}
 							logo={logo}
 							ltp={ltp}
 							tv={tv}
-							bets={props.bets}
+							bets={bets}
 							PL={
-								marketHasBets(props.market.marketId, props.bets)
+								marketHasBets(market.marketId, bets)
 									? {
 											val: formatCurrency(
-												props.localeCode,
-												props.currencyCode,
-												getPLForRunner(props.market.marketId, parseInt(key), props.bets)
+												localeCode,
+												currencyCode,
+												getPLForRunner(market.marketId, parseInt(key), bets)
 											),
 											color: colorForBack(
 												order.backLay,
-												getPLForRunner(props.market.marketId, parseInt(key), props.bets)
+												getPLForRunner(market.marketId, parseInt(key), bets)
 											)
 									  }
 									: order.visible && rowHovered === key && activeOrder
@@ -240,14 +244,14 @@ const Grid = props => {
 						order={order}
 						orderProps={orderProps}
 						toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
-						toggleBackAndLay={toggleBackAndLay}
+						toggleBackAndLay={changeSide}
 						updateOrderSize={updateOrderSize}
-						updateOrderPrice={updateOrderPrice}
+						updateOrderPrice={handlePriceChange}
 						toggleOrderRowVisibility={toggleOrderRowVisibility}
-						onPlaceOrder={props.onPlaceOrder}
-						market={props.market}
-						bets={props.bets}
-						price={props.market.runners[key] ? props.market.runners[key].order.price : 0}
+						placeOrder={placeOrder}
+						market={market}
+						bets={bets}
+						price={market.runners[key] ? market.runners[key].order.price : 0}
 						side={activeOrder && activeOrder.side == 0 ? "BACK" : "LAY"}
 						size={activeOrder ? activeOrder.stake : 0}
 					/>
@@ -258,42 +262,42 @@ const Grid = props => {
 
 	const ltpSelectionIdObject = {};
 
-	Object.keys(props.ladder).map(key => {
-		const { ltp } = DeconstructLadder(props.ladder[key]);
+	Object.keys(ladder).map(key => {
+		const { ltp } = DeconstructLadder(ladder[key]);
 		ltpSelectionIdObject[key] = ltp[0];
 	});
 
-	const marketCashout = getMarketCashout(props.market.marketId, props.bets, props.ladder);
+	const marketCashout = getMarketCashout(market.marketId, bets, ladder);
 
 	return (
 		<div id="grid-container">
-			<table style={props.marketStatus === "SUSPENDED" ? { opacity: 0.75 } : {}} className={"grid-view"}>
-				<SuspendedWarning marketStatus={props.marketStatus} />
+			<table style={marketStatus === "SUSPENDED" ? { opacity: 0.75 } : {}} className={"grid-view"}>
+				<SuspendedWarning marketStatus={marketStatus} />
 				<tbody>
 					<GridHeader
-						market={props.market}
-						ladder={props.ladder}
-						marketOpen={props.marketOpen}
-						inPlay={props.inPlay}
-						status={props.marketStatus}
+						market={market}
+						ladder={ladder}
+						marketOpen={marketOpen}
+						inPlay={inPlay}
+						status={marketStatus}
 						country={{
-							localeCode: props.localeCode,
-							countryCode: props.countryCode
+							localeCode: localeCode,
+							countryCode: countryCode
 						}}
 						oneClickRef={oneClickRef}
-						oneClickOn={props.oneClickOn}
-						toggleOneClick={toggleOneClick}
-						oneClickStake={props.oneClickStake}
-						setStakeOneClick={setStakeInOneClick}
-						stakeBtns={props.stakeBtns}
-						layBtns={props.layBtns}
-						bets={props.bets}
+						oneClickOn={oneClickOn}
+						toggleOneClick={handleOneClickPress}
+						oneClickStake={oneClickStake}
+						setStakeOneClick={handlePriceClickInOneClick}
+						stakeBtns={stakeBtns}
+						layBtns={layBtns}
+						bets={bets}
 						ltpList={ltpSelectionIdObject}
-						onPlaceOrder={props.onPlaceOrder}
+						placeOrder={placeOrder}
 						marketCashout={marketCashout}
 					/>
-					{props.marketOpen &&
-					(props.marketStatus === "OPEN" || props.marketStatus === "RUNNING" || props.marketStatus === "SUSPENDED")
+					{marketOpen &&
+					(marketStatus === "OPEN" || marketStatus === "RUNNING" || marketStatus === "SUSPENDED")
 						? renderTableData()
 						: null}
 				</tbody>
@@ -306,12 +310,10 @@ const mapStateToProps = state => {
 	return {
 		oneClickOn: state.market.oneClickOn,
 		oneClickStake: state.settings.stake,
-		currentEvent: state.sports.currentSport.currentEvent,
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
 		inPlay: state.market.inPlay,
 		market: state.market.currentMarket,
-		selection: state.market.runnerSelection,
 		ladder: state.market.ladder,
 		sortedLadder: state.market.sortedLadder,
 		runners: state.market.runners,
@@ -321,25 +323,10 @@ const mapStateToProps = state => {
 		countryCode: state.account.countryCode,
 		currencyCode: state.account.currencyCode,
 		localeCode: state.account.localeCode,
-		graph: state.graph,
 		bets: state.order.bets
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onSelectRunner: runner => dispatch(actions.setRunner(runner)),
-		onUpdateRunners: runners => dispatch(actions.loadRunners(runners)),
-		onUpdateOrder: order => dispatch(actions.updateOrder(order)),
-		onUpdateOrderValue: val => dispatch(actions.updateOrderValue(val)),
-		onUpdateOrderPrice: price => dispatch(actions.updateOrderPrice(price)),
-		onUpdateOrderVisibility: settings => dispatch(actions.toggleVisibility(settings)),
-		onToggleStakeAndLiability: value => dispatch(actions.toggleStakeAndLiability(value)),
-		onToggleBackAndLay: value => dispatch(actions.toggleBackAndLay(value)),
-		onToggleOneClick: active => dispatch(actions.toggleOneClick(active)),
-		setStakeInOneClick: stake => dispatch(setStakeInOneClick(stake)),
-		onPlaceOrder: order => dispatch(placeOrder(order))
-	};
-};
+const mapDispatchToProps = { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick, setStakeInOneClick, placeOrder };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../actions/account";
+import { setAccountDetails, setBalance } from "../../actions/account";
 import FlagIcon from "./FlagIcon";
 import Clock from "./Clock";
 import { formatCurrency } from "./../../utils/NumberFormat";
 import { useCookies } from "react-cookie";
 
-const Account = props => {
+const Account = ({name, countryCode, currencyCode, localeCode, balance, bets, setAccountDetails, setBalance, onUpdateTime}) => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
   const [error, setError] = useState("");
@@ -22,7 +22,7 @@ const Account = props => {
       if (res.error) {
         window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
       } else {
-        props.onReceiveAccountDetails(res);
+        setAccountDetails(res);
       }
     });
   };
@@ -34,7 +34,7 @@ const Account = props => {
       if (res.error) {
         window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
       } else {
-        props.onReceiveBalance(res.balance);
+        setBalance(res.balance);
       }
     });
   };
@@ -46,7 +46,7 @@ const Account = props => {
 
   useEffect(() => {
     getAccountBalance();
-  }, [props.bets]);
+  }, [bets]);
 
   if (!loggedIn) {
     removeCookie('sessionKey');
@@ -60,7 +60,7 @@ const Account = props => {
     return (
       <div id="sidebar-header">
         <p id="flag-name">
-          {props.name}
+          {name}
           <button id="logout" onClick={handleLogout()}>
             <img
               alt={"Logout"}
@@ -69,8 +69,8 @@ const Account = props => {
           </button>
         </p>
         <p>
-          <FlagIcon code={props.countryCode || "gb"} />{" "}
-          {formatCurrency(props.localeCode, props.currencyCode, props.balance)}
+          <FlagIcon code={countryCode || "gb"} />{" "}
+          {formatCurrency(localeCode, currencyCode, balance)}
         </p>
         <Clock />
       </div>
@@ -85,19 +85,11 @@ const mapStateToProps = state => {
     currencyCode: state.account.currencyCode,
     localeCode: state.account.localeCode,
     balance: state.account.balance,
-    time: state.account.time,
     bets: state.order.bets
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onReceiveAccountDetails: details =>
-      dispatch(actions.setAccountDetails(details)),
-    onReceiveBalance: balance => dispatch(actions.setBalance(balance)),
-    onUpdateTime: time => dispatch(actions.setTime(time))
-  };
-};
+const mapDispatchToProps = { setAccountDetails, setBalance };
 
 export default connect(
   mapStateToProps,

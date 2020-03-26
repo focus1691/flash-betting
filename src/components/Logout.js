@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import * as actions from "../actions/account";
+import { setLoggedIn } from "../actions/account";
 
-const Logout = props => {
+const Logout = ({loggedIn, setLoggedIn}) => {
   const [removeCookie] = useCookies(['sessionKey', 'accessToken', 'refreshToken', 'expiresIn']);
   useEffect(() => {
     fetch("/api/logout")
@@ -15,13 +15,13 @@ const Logout = props => {
         removeCookie('refreshToken');
         removeCookie('expiresIn');
 
-        props.onLogout(false);
+        setLoggedIn(false);
       });
   }, []);
 
   return (
     <>
-      {props.loggedIn ? null : <Redirect to="/" />}
+      {loggedIn ? null : <Redirect to="/" />}
       <section>Logging out...</section>
     </>
   );
@@ -33,13 +33,6 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogout: loggedIn => dispatch(actions.setLoggedIn(loggedIn))
-  };
-};
+const mapDispatchToProps = { setLoggedIn };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Logout);
+export default connect(mapStateToProps, mapDispatchToProps)(Logout);

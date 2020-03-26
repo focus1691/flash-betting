@@ -11,7 +11,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import DropIn from "braintree-web-drop-in-react";
 import React, { useEffect, useState } from "react";
 import { connect } from 'react-redux';
-import * as actions from '../actions/settings';
+import { openPremiumDialog,setPremiumStatus } from '../actions/settings';
 import { getDate180DaysAhead, getDate1YearAhead, getDate30DaysAhead } from "../utils/DateCalculator";
 
 const useStyles = makeStyles(theme => ({
@@ -34,7 +34,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const FullScreenDialog = props => {
+const PremiumPopup = ({open, premiumMember, selectedPremium, openPremiumDialog, setPremiumStatus}) => {
   const classes = useStyles();
   const [clientToken, setClientToken] = useState(null);
   const [instance, setInstance] = useState(null);
@@ -51,10 +51,10 @@ const FullScreenDialog = props => {
   }, []);
 
   useEffect(() => {
-    if (props.premiumMember) {
-      props.openPremiumDialog(false);
+    if (premiumMember) {
+      openPremiumDialog(false);
     }
-  }, [props.premiumMember]);
+  }, [premiumMember]);
 
   const buy = async () => {
 
@@ -68,12 +68,12 @@ const FullScreenDialog = props => {
       method: "POST",
       body: JSON.stringify({
         payment_method_nonce: nonce,
-        expiresIn: props.selectedPremium === 'monthly' ? getDate30DaysAhead() : props.selectedPremium === 'biannually' ? getDate180DaysAhead() : getDate1YearAhead(),
-        amount: props.selectedPremium === 'monthly' ? 9.99 : props.selectedPremium === 'biannually' ? 49.99 : 99.99
+        expiresIn: selectedPremium === 'monthly' ? getDate30DaysAhead() : selectedPremium === 'biannually' ? getDate180DaysAhead() : getDate1YearAhead(),
+        amount: selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99
       })
     }).then(res => {
-      props.setPremiumStatus(true);
-      props.openPremiumDialog(false);
+      setPremiumStatus(true);
+      openPremiumDialog(false);
     });
   }
 
@@ -94,8 +94,8 @@ const FullScreenDialog = props => {
 
   return (
     <Dialog
-      open={props.open}
-      onClose={e => props.openPremiumDialog(false)}
+      open={open}
+      onClose={e => openPremiumDialog(false)}
       TransitionComponent={Transition}
     >
       <AppBar className={classes.appBar}>
@@ -103,7 +103,7 @@ const FullScreenDialog = props => {
           <IconButton
             edge="start"
             color="inherit"
-            onClick={e => props.openPremiumDialog()}
+            onClick={e => openPremiumDialog()}
             aria-label="close"
           >
             <CloseIcon />
@@ -115,7 +115,7 @@ const FullScreenDialog = props => {
       </AppBar>
       <DialogContent>
         <DialogContentText>
-          You are required to pay the monthly subscription fee of £{props.selectedPremium === 'monthly' ? 9.99 : props.selectedPremium === 'biannually' ? 49.99 : 99.99} in order to access Trader Pro's advanced features.
+          You are required to pay the monthly subscription fee of £{selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99} in order to access Trader Pro's advanced features.
           </DialogContentText>
 
         {renderForm()}
@@ -132,11 +132,6 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    openPremiumDialog: open => dispatch(actions.openPremiumDialog(open)),
-    setPremiumStatus: isPremium => dispatch(actions.setPremiumStatus(isPremium))
-  }
-}
+const mapDispatchToProps = { openPremiumDialog, setPremiumStatus };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FullScreenDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(PremiumPopup);

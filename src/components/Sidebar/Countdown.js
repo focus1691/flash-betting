@@ -14,24 +14,24 @@ import { cancelBetFairOrder, removeOrder } from "../../actions/order";
 
 const ONE_SECOND = 1000;
 
-const Countdown = ({ market, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, onPastEventTime, onPlaceOrder,
-  backList, layList, tickOffsetList, fillOrKillList, bets, onUpdateBackList, onUpdateLayList, onUpdateTickOffsetList, onUpdateFillOrKillList }) => {
+const Countdown = ({ market, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder,
+  backList, layList, tickOffsetList, fillOrKillList, bets, updateBackList, updateLayList, updateTickOffsetList, updateFillOrKillList }) => {
 
   const [timeRemaining, setTimeRemaining] = useState("--");
 
   useInterval(async () => {
-    setTimeRemaining(countDownTime(market, inPlay, inPlayTime, pastEventTime, onPastEventTime));
+    setTimeRemaining(countDownTime(market, inPlay, inPlayTime, pastEventTime, setPastEventTime));
 
     //* BACK Before/After Market
-    const newBackList = await checkBackAndLayOrders(backList, market.marketStartTime, onPlaceOrder, market.marketId, "BACK", bets.matched, bets.unmatched);
+    const newBackList = await checkBackAndLayOrders(backList, market.marketStartTime, placeOrder, market.marketId, "BACK", bets.matched, bets.unmatched);
     if (Object.keys(backList).length > 0) {
-      onUpdateBackList(newBackList);
+      updateBackList(newBackList);
     }
 
     //* LAY Before/After Market
-    const newLayList = await checkBackAndLayOrders(layList, market.marketStartTime, onPlaceOrder, market.marketId, "LAY", bets.matched, bets.unmatched);
+    const newLayList = await checkBackAndLayOrders(layList, market.marketStartTime, placeOrder, market.marketId, "LAY", bets.matched, bets.unmatched);
     if (Object.keys(layList).length > 0) {
-      onUpdateLayList(newLayList);
+      updateLayList(newLayList);
     }
 
     //* FOK
@@ -46,7 +46,7 @@ const Countdown = ({ market, marketOpen, marketStatus, inPlay, inPlayTime, pastE
 
             const newFillOrKillList = Object.assign({}, fillOrKillList);
             delete newFillOrKillList[betId];
-            onUpdateFillOrKillList(newFillOrKillList);
+            updateFillOrKillList(newFillOrKillList);
           }
 
           // * TOS
@@ -60,7 +60,7 @@ const Countdown = ({ market, marketOpen, marketStatus, inPlay, inPlayTime, pastE
 
                 const adjustedTickOffsetList = Object.assign({}, tickOffsetList);
                 delete adjustedTickOffsetList[tickOffsetRfs];
-                onUpdateTickOffsetList(adjustedTickOffsetList);
+                updateTickOffsetList(adjustedTickOffsetList);
               }
             }
           }
@@ -97,15 +97,6 @@ const mapStateToProps = state => {
   };
 };
 
-const matchDispatchToProps = dispatch => {
-  return {
-    onPlaceOrder: order => dispatch(placeOrder(order)),
-    onUpdateLayList: list => dispatch(updateLayList(list)),
-    onUpdateBackList: list => dispatch(updateBackList(list)),
-    onUpdateFillOrKillList: list => dispatch(updateFillOrKillList(list)),
-    onUpdateTickOffsetList: list => dispatch(updateTickOffsetList(list)),
-    onPastEventTime: () => dispatch(setPastEventTime())
-  }
-};
+const matchDispatchToProps = { placeOrder, updateBackList, updateLayList, updateFillOrKillList, updateTickOffsetList, setPastEventTime };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Countdown);

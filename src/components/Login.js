@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { useCookies } from 'react-cookie';
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import * as actions from "../actions/account";
+import { setLoggedIn } from "../actions/account";
 import { getErrorMessage } from "../utils/ErrorMessages/AccountErrors";
 import getQueryVariable from "../utils/Market/GetQueryVariable";
 
@@ -43,14 +43,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Login = props => {
+const Login = ({loggedIn, setLoggedIn}) => {
   const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'username', 'password', 'rememberMe']);
 
   const [rememberMe, setRememberMe] = useState(cookies.rememberMe && cookies.rememberMe === 'yes' ? true : false);
 
   const classes = useStyles();
 
-  props.onLogin(false);
+  setLoggedIn(false);
 
   const handleSubmit = () => e => {
     fetch(`/api/login?user=${cookies.username}&pass=${cookies.password}`)
@@ -72,14 +72,14 @@ const Login = props => {
 
           setRememberMe(true);
 
-          props.onLogin(true);
+          setLoggedIn(true);
         }
       });
   };
 
   return (
     <>
-      {props.loggedIn && cookies.sessionKey ? <Redirect to="/authentication" /> : null}
+      {loggedIn && cookies.sessionKey ? <Redirect to="/authentication" /> : null}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
@@ -153,11 +153,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogin: loggedIn => dispatch(actions.setLoggedIn(loggedIn))
-  };
-};
+const mapDispatchToProps = { setLoggedIn };
 
 export default connect(
   mapStateToProps,

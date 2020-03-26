@@ -1,6 +1,5 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
-import { updateStopLossList } from "../../../actions/stopLoss";
 import { getMatched } from "../../../selectors/marketSelector";
 import { getStopLoss } from "../../../selectors/stopLossSelector";
 import { getTickOffset } from "../../../selectors/tickOffsetSelector";
@@ -50,10 +49,4 @@ const mapStateToProps = (state, props) => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		onChangeStopLossList: list => dispatch(updateStopLossList(list))
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LadderOrderCell);
+export default connect(mapStateToProps)(LadderOrderCell);
