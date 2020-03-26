@@ -21,7 +21,7 @@ import { isPremiumActive } from "../../utils/DateCalculator";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
-import { placeOrder, updateOrders } from "../../actions/order";
+import { placeOrder, updateOrders, removeOrder } from "../../actions/order";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import Draggable from "../Draggable";
 import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
@@ -40,8 +40,8 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules, toggleLadderUnmatched,
   setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries, loadMarket, setEventType,
   closeMarket, loadLadder, setSortedLadder, setRunner, loadRunners,
-  loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateStopLossList,
-  updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, placeOrder, updateOrders, updateFillOrKillList }) => {
+  loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateStopLossList, updateTickOffsetList,
+  updateStopEntryList, updateLayList, updateBackList, placeOrder, updateOrders, updateFillOrKillList }) => {
   const [marketId, setMarketId] = useState(null);
   const [cookies, removeCookie] = useCookies(["sessionKey", "username", "accessToken", "refreshToken", "expiresIn"]);
   const [updates, setUpdates] = useState([]);
@@ -437,75 +437,42 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     let checkForMatchInStopLoss = Object.assign({}, stopLossList);
     let checkForMatchInTickOffset = Object.assign({}, tickOffsetList);
     let tickOffsetOrdersToRemove = [];
+    let i, j, k;
 
-    data.oc.forEach(changes => {
-      if (!changes.orc) return;
-      changes.orc.forEach(runner => {
-        if (runner.uo) {
-          runner.uo.forEach(order => {
+
+    if (data.oc) {
+      for (i = 0; i < data.oc.length; i++) {
+        if (!data.oc[i].orc) continue;
+
+        for (j = 0; j < data.oc[i].orc.length; j++) {
+          if (!data.oc[i].orc[j].uo) continue;
+
+          for (k = 0; k < data.oc[i].orc[j].uo.length; k++) {
             // If the bet isn't in the unmatchedBets, we should delete it.
-            if (order.sr === 0 && order.sm === 0) {
+            if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
               // this is what happens when an order doesn't get any matched
-              delete newUnmatchedBets[order.id];
-            } else if (order.sr === 0) {
+              delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
+            } else if (data.oc[i].orc[j].uo[k].sr === 0) {
               // this is what happens when an order is finished
               // if they canceled early
-              newMatchedBets[order.id] = Object.assign({}, newUnmatchedBets[order.id], {
-                size: parseFloat(order.sm)
-              });
-              delete newUnmatchedBets[order.id];
+              newMatchedBets[data.oc[i].orc[j].uo[k].id] = Object.assign({}, newUnmatchedBets[data.oc[i].orc[j].uo[k].id], { size: parseFloat(data.oc[i].orc[j].uo[k].sm) });
+              delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
             }
-
-            checkForMatchInStopLoss = checkStopLossForMatch(
-              stopLossList,
-              runner.id,
-              order,
-              checkForMatchInStopLoss
-            );
+            updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
+            checkForMatchInStopLoss = checkStopLossForMatch(stopLossList, data.oc[i].id, data.oc[i].orc[j].uo[k], checkForMatchInStopLoss);
 
             // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
-            const tickOffsetCheck = checkTickOffsetForMatch(
-              tickOffsetList,
-              order,
-              placeOrder,
-              tickOffsetOrdersToRemove,
-              checkForMatchInTickOffset,
-              unmatchedBets,
-              matchedBets
-            );
+            const tickOffsetCheck = checkTickOffsetForMatch(tickOffsetList, data.oc[i].orc[j].uo[k], placeOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, unmatchedBets, matchedBets);
             checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
             tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove;
-          });
+            removeOrder(tickOffsetOrdersToRemove);
+          }
         }
-      });
-    });
-
-    if (tickOffsetOrdersToRemove.length > 0) {
-      await fetch("/api/remove-orders", {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify(tickOffsetOrdersToRemove)
-      });
+      }
     }
-
-    if (Object.keys(stopLossList).length > 0) {
-      updateStopLossList(checkForMatchInStopLoss);
-    }
-
-    if (Object.keys(tickOffsetList).length > 0) {
-      updateTickOffsetList(checkForMatchInTickOffset);
-    }
-
-    if (Object.keys(unmatchedBets).length > 0) {
-      updateOrders({
-        unmatched: newUnmatchedBets,
-        matched: newMatchedBets
-      });
-    }
-  }, [matchedBets, updateOrders, updateStopLossList, updateTickOffsetList, placeOrder, stopLossList, tickOffsetList, unmatchedBets]);
+    if (Object.keys(stopLossList).length > 0) updateStopLossList(checkForMatchInStopLoss);
+    if (Object.keys(tickOffsetList).length > 0) updateTickOffsetList(checkForMatchInTickOffset);
+  }, [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList]);
 
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
