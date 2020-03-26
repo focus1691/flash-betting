@@ -261,7 +261,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       loadLadder(updates);
       setIsUpdated(true);
     }
-  }, 50);
+  }, 1000);
 
   useEffect(() => {
     if (!cookies.sessionKey && !cookies.username) {

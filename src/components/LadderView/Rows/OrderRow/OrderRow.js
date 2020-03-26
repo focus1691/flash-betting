@@ -7,6 +7,7 @@ import { UnmatchedBet } from "./UnmatchedBet";
 const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceType, changePriceType}) => {
 
 	const unmatchedBetsArr = useMemo(() => unmatchedBets ? Object.values(unmatchedBets) : [], [unmatchedBets]);
+	const matchedStyle = useMemo(() => matchedBets.length > 0 ? "lay-body" : "", [matchedBets.length]);
 	const unmatchedStyle = useMemo(() => unmatchedBetsArr.length > 0 ? "lay-body" : "", [unmatchedBetsArr.length]);
 
 	const cancelUnmatchedOrder = useCallback(order => {
@@ -14,7 +15,7 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 	}, [cancelSpecialOrders]);
 
 	const cancelAllOrdersOnSelection = useCallback(async () => {
-		cancelSpecialOrders(null, null);
+		cancelSpecialOrders();
 	}, [cancelSpecialOrders]);
 
 	const handleButtonClick = useCallback(() => {
@@ -51,7 +52,7 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 					</td>
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
-							<tbody className={matchedBets.length > 0 ? "lay-body" : ""}>
+							<tbody className={matchedStyle}>
 								{matchedBets.map((bet, idx) => {
 									return (
 										<MatchedBet
@@ -70,8 +71,7 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 
 const mapStateToProps = state => {
 	return {
-		priceType: state.market.priceType,
-		market: state.market.currentMarket
+		priceType: state.market.priceType
 	};
 };
 
