@@ -42,7 +42,8 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, placeOrde
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
 	const [ladderLocked, setLadderLocked] = useState(false);
-
+	
+	const ladderStyle = useMemo(() => listRefSet ? {paddingRight: `${listRef.current.offsetWidth - listRef.current.clientWidth -17}px`} : "", [listRefSet]);
 	const selectionMatchedBets = useMemo(() => Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id)), [matchedBets, id]);
 	const selectionUnmatchedBets = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id], [backList, id, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 	
@@ -226,9 +227,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, placeOrde
 							itemSize={20}
 							width={width}
 							ref={listRef}
-							style={{
-								paddingRight: `${listRefSet ? listRef.current.offsetWidth - listRef.current.clientWidth : -17}px`
-							}}
+							style={ladderStyle}
 							itemData={{
 								selectionId: id,
 								handlePlaceOrder: handlePlaceOrder,
