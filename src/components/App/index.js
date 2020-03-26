@@ -381,19 +381,13 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
 
               // if hedged, get size (price + hedged profit/loss)
               if (adjustedStopLoss.hedged) {
-                const newMatchedBets = Object.values(matchedBets).filter(
-                  bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId)
-                );
-
+                const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
                 adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, "hedged").size;
               }
-
+              
               // if it doesn't have a reference or the order has been matched (STOP LOSS)
-              const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, placeOrder,
-                adjustedStopLossList, unmatchedBets, matchedBets);
-
+              const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, placeOrder, adjustedStopLossList, unmatchedBets, matchedBets);
               stopLossOrdersToRemove = stopLossOrdersToRemove.concat(stopLossMatched.stopLossOrdersToRemove);
-
               adjustedStopLossList = stopLossMatched.adjustedStopLossList;
             }
           } else if (!(mc.rc[i].id in nonRunners)) {
@@ -401,26 +395,10 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
           }
         }
+        if (stopLossOrdersToRemove.length > 0) removeOrder(stopLossOrdersToRemove);
+        if (Object.keys(stopLossList).length > 0) updateStopLossList(adjustedStopLossList);
+        if (Object.keys(stopEntryList).length > 0) updateStopEntryList(newStopEntryList);
 
-        if (stopLossOrdersToRemove.length > 0) {
-          await fetch("/api/remove-orders", {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            method: "POST",
-            body: JSON.stringify(stopLossOrdersToRemove)
-          });
-        }
-
-        if (Object.keys(stopLossList).length > 0) {
-          updateStopLossList(adjustedStopLossList);
-        }
-
-        // so it doesn't mess up the loading of the orders
-        if (Object.keys(stopEntryList).length > 0) {
-          updateStopEntryList(newStopEntryList);
-        }
         setUpdates(ladders);
         setIsUpdated(false);
       }
