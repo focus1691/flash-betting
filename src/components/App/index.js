@@ -21,7 +21,7 @@ import { isPremiumActive } from "../../utils/DateCalculator";
 import PremiumPopup from "../PremiumPopup";
 import { updateLayList } from "../../actions/lay";
 import { updateBackList } from "../../actions/back";
-import { placeOrder, updateOrders, removeOrder } from "../../actions/order";
+import { placeOrder, updateOrders, removeOrder, updateOrder } from "../../actions/order";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import Draggable from "../Draggable";
 import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
@@ -412,7 +412,6 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   const onReceiveOrderMessage = useCallback(async data => {
     const newUnmatchedBets = Object.assign({}, unmatchedBets);
     const newMatchedBets = Object.assign({}, matchedBets);
-    let checkForMatchInStopLoss = Object.assign({}, stopLossList);
     let checkForMatchInTickOffset = Object.assign({}, tickOffsetList);
     let tickOffsetOrdersToRemove = [];
     let i, j, k;
@@ -430,14 +429,25 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
               // this is what happens when an order doesn't get any matched
               delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
+
+              updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
             } else if (data.oc[i].orc[j].uo[k].sr === 0) {
               // this is what happens when an order is finished
               // if they canceled early
               newMatchedBets[data.oc[i].orc[j].uo[k].id] = Object.assign({}, newUnmatchedBets[data.oc[i].orc[j].uo[k].id], { size: parseFloat(data.oc[i].orc[j].uo[k].sm) });
               delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
+
+              updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
             }
-            updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
-            checkForMatchInStopLoss = checkStopLossForMatch(stopLossList, data.oc[i].id, data.oc[i].orc[j].uo[k], checkForMatchInStopLoss);
+
+            let isStopLossMatched = checkStopLossForMatch(stopLossList, data.oc[i].id, data.oc[i].orc[j].uo[k]);
+            if (isStopLossMatched) {
+              let newStopLossList = Object.assign({}, stopLossList);
+              newStopLossList[data.oc[i].id].assignedIsOrderMatched = true;
+              updateStopLossList(newStopLossList);
+              updateOrder(newStopLossList[data.oc[i].id]);
+            }
+
 
             // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
             const tickOffsetCheck = checkTickOffsetForMatch(tickOffsetList, data.oc[i].orc[j].uo[k], placeOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, unmatchedBets, matchedBets);
@@ -448,7 +458,6 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
         }
       }
     }
-    if (Object.keys(stopLossList).length > 0) updateStopLossList(checkForMatchInStopLoss);
     if (Object.keys(tickOffsetList).length > 0) updateTickOffsetList(checkForMatchInTickOffset);
   }, [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList]);
 

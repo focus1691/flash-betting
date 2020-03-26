@@ -8,23 +8,8 @@
  */
 
 export const checkStopLossForMatch = (stopLossList, selectionId, order, previousCheckForMatchArray) => {
-    const checkForMatchInStopLoss = Object.assign({}, previousCheckForMatchArray)
-    // if the strategies are the same and all the order has been matched (STOPLOSS)
-
-    if (stopLossList[selectionId] !== undefined && stopLossList[selectionId].rfs === order.rfs && order.sr === 0) {
-        checkForMatchInStopLoss[selectionId].assignedIsOrderMatched = true;
-
-        fetch('/api/update-order', {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          method: "POST",
-          body: JSON.stringify(checkForMatchInStopLoss[selectionId])
-        })
-    }
-
-    return checkForMatchInStopLoss
+    if (stopLossList[selectionId] && stopLossList[selectionId].rfs === order.rfs && order.sr === 0) return true;
+    return false;
 }
 
 

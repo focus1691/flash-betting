@@ -172,6 +172,7 @@ export const cancelOrders = async (orders, backList, layList, stopLossList, tick
 					break;
 				case "Stop Loss":
 					let stopLossRemoved = await removeOrder(newStopLossList[order.selectionId]);
+					console.log("SL " + stopLossRemoved, newStopLossList[order.selectionId]);
 					if (stopLossRemoved) delete newStopLossList[order.selectionId];
 					break;
 				default:
@@ -331,6 +332,23 @@ export const removeOrder = order => {
 			res(true);
 		})
 		.catch(() => {
+			rej(false);
+		})
+	});
+};
+
+export const updateOrder = order => {
+	return new Promise(async (res, rej) => {
+		fetch('/api/update-order', {
+			headers: {
+			  Accept: "application/json",
+			  "Content-Type": "application/json"
+			},
+			method: "POST",
+			body: JSON.stringify(order)
+		}).then(() => {
+			res(true);
+		}).catch(() => {
 			rej(false);
 		})
 	});
