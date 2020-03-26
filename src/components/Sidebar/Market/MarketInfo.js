@@ -7,9 +7,6 @@ const MarketInfo = props => {
     return { name, description };
   };
 
-  console.log(props.selection);
-  console.log(props.selection.metadata);
-
   const racerDetails = () => {
     const rows = [
       createData("Selection", props.selection.metadata.runnerId || ""),
