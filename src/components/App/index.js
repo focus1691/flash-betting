@@ -304,11 +304,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     socket.on("connection_closed", () => {
       // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
       if (getQueryVariable("marketId") && initialClk && clk && connectionError === "") {
-        socket.emit("market-resubscription", {
-          marketId: getQueryVariable("marketId"),
-          initialClk: initialClk,
-          clk: clk
-        });
+        socket.emit("market-resubscription", { marketId: getQueryVariable("marketId"), initialClk: initialClk, clk: clk });
       }
     });
   }, [clk, initialClk, connectionError, socket]);
@@ -412,10 +408,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   const onReceiveOrderMessage = useCallback(async data => {
     const newUnmatchedBets = Object.assign({}, unmatchedBets);
     const newMatchedBets = Object.assign({}, matchedBets);
-    let checkForMatchInTickOffset = Object.assign({}, tickOffsetList);
-    let tickOffsetOrdersToRemove = [];
     let i, j, k;
-
 
     if (data.oc) {
       for (i = 0; i < data.oc.length; i++) {
@@ -448,17 +441,27 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
               updateOrder(newStopLossList[data.oc[i].id]);
             }
 
-
-            // Checks tick offset and then adds to tickOffsetOrdersToRemove if it passes the test, Gets new tickOffsetList without the Order
-            const tickOffsetCheck = checkTickOffsetForMatch(tickOffsetList, data.oc[i].orc[j].uo[k], placeOrder, tickOffsetOrdersToRemove, checkForMatchInTickOffset, unmatchedBets, matchedBets);
-            checkForMatchInTickOffset = tickOffsetCheck.checkForMatchInTickOffset;
-            tickOffsetOrdersToRemove = tickOffsetCheck.tickOffsetOrdersToRemove;
-            removeOrder(tickOffsetOrdersToRemove);
+            //* Check TOS matched and place order / remove from database
+            let isTickOffsetMatched = checkTickOffsetForMatch(tickOffsetList, data.oc[i].orc[j].uo[k]);
+            if (isTickOffsetMatched) {
+              let newTickOffsetList = Object.assign({}, tickOffsetList);
+              removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
+              placeOrder({
+                marketId: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].marketId,
+                selectionId: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].selectionId,
+                side: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].side,
+                size: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].size,
+                price: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].price, // this is the new price
+                unmatchedBets: unmatchedBets,
+                matchedBets: matchedBets
+              })
+              delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
+              updateTickOffsetList(newTickOffsetList);
+            }
           }
         }
       }
     }
-    if (Object.keys(tickOffsetList).length > 0) updateTickOffsetList(checkForMatchInTickOffset);
   }, [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList]);
 
   useEffect(() => {
