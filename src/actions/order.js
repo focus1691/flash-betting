@@ -19,10 +19,7 @@ export const placeOrder = order => {
 
 	if (parseFloat(newSize) < 2.0) {
 		return async dispatch => {
-			const startingOrder = await placeOrderAction(
-				Object.assign({}, order, { price: 1.01, size: 2, orderCompleteCallBack: undefined })
-			);
-
+			const startingOrder = await placeOrderAction(Object.assign({}, order, { price: order.side === "BACK" ? 1000 : 1.01, size: 2, orderCompleteCallBack: undefined }));
 			if (startingOrder === null) return;
 
 			await dispatch(updateOrders(startingOrder.bets));

@@ -406,11 +406,10 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
    * @param {obj} data The order change message data:
    */
   const onReceiveOrderMessage = useCallback(async data => {
-    const newUnmatchedBets = Object.assign({}, unmatchedBets);
-    const newMatchedBets = Object.assign({}, matchedBets);
-    let i, j, k;
-
     if (data.oc) {
+      const newUnmatchedBets = Object.assign({}, unmatchedBets);
+      const newMatchedBets = Object.assign({}, matchedBets);
+      let i, j, k;
       for (i = 0; i < data.oc.length; i++) {
         if (!data.oc[i].orc) continue;
 
