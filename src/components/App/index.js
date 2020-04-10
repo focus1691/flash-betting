@@ -543,7 +543,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
         unmatched: loadedUnmatchedOrders
       });
     }
-  }, 15000);
+  }, 1000);
 
   useEffect(() => {
     fetch(`/api/list-market-pl?marketId=${marketId}`)
