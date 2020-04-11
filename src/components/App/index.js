@@ -373,8 +373,8 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
 
   const onMarketDisconnect = useCallback(async data => {
     if (GetSubscriptionErrorType(data.errorCode) === "Authentication") window.location.href = window.location.origin + `/?error=${data.errorCode}`;
-    else setConnectionError(data.errorMessage);
-  }, [connectionError]);
+    else setConnectionError(data.errorMessage.split(':')[0]);
+  }, []);
 
   /**
    * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
@@ -450,7 +450,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       socket.off("subscription-error");
       socket.off("market-definition");
     }
-  }, [onReceiveMarketMessage, onReceiveOrderMessage, socket]);
+  }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveMarketMessage, onReceiveOrderMessage, socket]);
 
   useEffect(() => {
     if (Object.keys(unmatchedBets).length > 0) {

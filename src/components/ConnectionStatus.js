@@ -6,7 +6,7 @@ const ConnectionStatus = ({connectionError, setConnectionError, socket, marketId
             socket.emit("market-resubscription", {marketId, initialClk, clk});
             setConnectionError("");
         }
-    }, [clk, initialClk, marketId, socket]);
+    }, [clk, initialClk, marketId, setConnectionError, socket]);
     
     return (
         <div className = "connectionbug-container" style = {{visibility: connectionError !== "" ? 'visible' : 'hidden'}}>
