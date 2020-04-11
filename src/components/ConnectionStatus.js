@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-const ConnectionStatus = ({connectionError, setConnectionError, socket, marketId, initialClk, clk}) => {
+const ConnectionStatus = ({connectionError, setConnectionError, marketId, clk, initialClk, socket}) => {
     const resubscribe = useCallback(() => {
         if (marketId && initialClk && clk) {
             socket.emit("market-resubscription", {marketId, initialClk, clk});

@@ -770,18 +770,13 @@ io.on("connection", async client => {
   // Subscribe to market
   client.on("market-subscription", async data => {
     let accessToken = await database.getToken(betfair.email);
-    const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":["${
-      data.marketId
-    }"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
+    const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
     exchangeStream.makeSubscription(marketSubscription, accessToken);
   });
   client.on("market-resubscription", async data => {
+    console.log(data);
     let accessToken = await database.getToken(betfair.email);
-    const marketSubscription = `{"op":"marketSubscription","id":${id++},"initialClk":${
-      data.initialClk
-    },"clk":${data.clk},marketFilter":{"marketIds":["${
-      data.marketId
-    }"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
+    const marketSubscription = `{"op":"marketSubscription","id":${id++},"initialClk":${data.initialClk},"clk":${data.clk},marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
     exchangeStream.makeSubscription(marketSubscription, accessToken);
   });
   // Subscribe to orders
