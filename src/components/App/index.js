@@ -279,7 +279,6 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   }, []);
 
   const onReceiveMarketDefinition = useCallback(async marketDefinition => {
-    console.log(marketDefinition);
     setMarketStatus(marketDefinition.status);
     setInPlay(marketDefinition.inPlay);
 

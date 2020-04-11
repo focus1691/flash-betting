@@ -101,7 +101,6 @@ const reducer = (state = initialState, action) => {
         }
       };
     case "UPDATE_CUSTOM_STAKE":
-      console.log("UPDATE_CUSTOM_STAKE", action.payload);
       return {
         ...state,
         runners: {
@@ -116,7 +115,6 @@ const reducer = (state = initialState, action) => {
         }
       };
       case "UPDATE_CUSTOM_STAKE_ACTIVE":
-        console.log("UPDATE_CUSTOM_STAKE_ACTIVE", action.payload);
         return {
           ...state,
           runners: {
