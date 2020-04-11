@@ -6,9 +6,8 @@
  * @return {Boolean} Whether the stop loss has been matched
  */
 
-export const checkStopLossForMatch = (stopLossList, selectionId, order, previousCheckForMatchArray) => {
-    if (stopLossList[selectionId] && stopLossList[selectionId].rfs === order.rfs && order.sr === 0) return true;
-    return false;
+export const checkStopLossForMatch = (stopLossList, selectionId, order) => {
+    return stopLossList[selectionId] && stopLossList[selectionId].rfs === order.rfs && order.sr === 0;
 }
 
 /**

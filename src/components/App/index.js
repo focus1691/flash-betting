@@ -26,7 +26,7 @@ import { updateFillOrKillList } from "../../actions/fillOrKill";
 import Draggable from "../Draggable";
 import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
-import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from "../../utils/ExchangeStreaming/MCMHelper";
+import { stopEntryListChange, stopLossCheck } from "../../utils/ExchangeStreaming/MCMHelper";
 import { CreateLadder } from "../../utils/ladder/CreateLadder";
 import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
@@ -279,6 +279,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   }, []);
 
   const onReceiveMarketDefinition = useCallback(async marketDefinition => {
+    console.log(marketDefinition);
     setMarketStatus(marketDefinition.status);
     setInPlay(marketDefinition.inPlay);
 
@@ -323,10 +324,8 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       }
 
       if (mc.rc) {
-        let adjustedStopLossList = Object.assign({}, stopLossList);
         let newStopEntryList = Object.assign({}, stopEntryList);
-        let stopLossOrdersToRemove = [];
-
+        
         for (i = 0; i < mc.rc.length; i++) {
           if (mc.rc[i].id in ladders) {
             // Runner found so we update our object with the raw data
@@ -338,29 +337,45 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, placeOrder, newStopEntryList, unmatchedBets, matchedBets);
 
             // We increment and check the stoplosses
-            if (adjustedStopLossList[mc.rc[i].id]) {
+            if (stopLossList[mc.rc[i].id]) {
               // if it's trailing and the highest LTP went up, then we add a tickoffset
-              // const maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
-              // let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, mc.rc[i].id, currentLTP, maxLTP));
-
-              // // if hedged, get size (price + hedged profit/loss)
-              // if (adjustedStopLoss.hedged) {
-              //   const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
-              //   adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, "hedged").size;
-              // }
+              const maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
               
-              // // if it doesn't have a reference or the order has been matched (STOP LOSS)
-              // const stopLossMatched = stopLossCheck(adjustedStopLoss, mc.rc[i].id, currentLTP, placeOrder, adjustedStopLossList, unmatchedBets, matchedBets);
-              // stopLossOrdersToRemove = stopLossOrdersToRemove.concat(stopLossMatched.stopLossOrdersToRemove);
-              // adjustedStopLossList = stopLossMatched.adjustedStopLossList;
+              let SL = Object.assign({}, stopLossList[ mc.rc[i].id]);
+
+              const stopLossMatched = stopLossCheck(SL, currentLTP);
+              if (stopLossMatched.targetMet) {
+                const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
+                placeOrder({
+                  marketId: SL.marketId,
+                  selectionId: SL.selectionId,
+                  side: SL.side,
+                  size: CalculateLadderHedge(parseFloat(SL.price), newMatchedBets, "hedged").size,
+                  price: stopLossMatched.priceReached,
+                  unmatchedBets: unmatchedBets,
+                  matchedBets: matchedBets
+                });
+                
+                let newStopLossList = Object.assign({}, stopLossList);
+                delete newStopLossList[SL.selectionId];
+                updateStopLossList(newStopLossList)
+
+                removeOrder(SL);
+
+              } else if (SL.trailing && currentLTP > maxLTP) {
+                SL.tickOffset += 1;
+                updateOrder(SL);
+
+                let newStopLossList = Object.assign({}, stopLossList);
+                newStopLossList[SL.selectionId] = SL;
+                updateStopLossList(newStopLossList)
+              }
             }
           } else if (!(mc.rc[i].id in nonRunners)) {
             // Runner found so we create the new object with the raw data
             ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
           }
         }
-        // if (stopLossOrdersToRemove.length > 0) removeOrder(stopLossOrdersToRemove);
-        // if (Object.keys(stopLossList).length > 0) updateStopLossList(adjustedStopLossList);
         if (Object.keys(stopEntryList).length > 0) updateStopEntryList(newStopEntryList);
 
         setUpdates(ladders);

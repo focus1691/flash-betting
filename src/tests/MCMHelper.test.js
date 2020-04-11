@@ -67,60 +67,6 @@ test('mcm should go through all strategies', async () => {
           "tickOffset": 5
         },
     }
-
-    let adjustedStopLossList = Object.assign({}, stopLossList)
-    const adjustedBackList = {}
-    const adjustedLayList = {}
-    let newStopEntryList = Object.assign({}, stopEntryList);
-
-    let stopLossOrdersToRemove = [];
-
-    const marketId = "1.160741054";
-
-    data.rc.map(rc => {
-        ladders[rc.id] = CreateLadder(rc)
-    });
-    
-    await Promise.all(data.rc.map(async rc => {
-
-        if (rc.id in ladders) {
-            // Runner found so we update our object with the raw data
-            ladders[rc.id] = UpdateLadder(ladders[rc.id], rc);
-
-            const currentLTP = ladders[rc.id].ltp[0]
-
-            // stop Entry
-            newStopEntryList = stopEntryListChange(stopEntryList, rc.id, currentLTP, () => {}, newStopEntryList, unmatchedBets, matchedBets);
-            // We increment and check the stoplosses
-            if (stopLossList[rc.id] !== undefined) {
-                
-                // if it's trailing and the highest LTP went up, then we add a tickoffset
-                const maxLTP = ladders[rc.id].ltp.sort((a, b) => b - a)[0];
-                let adjustedStopLoss = Object.assign({}, stopLossTrailingChange(stopLossList, rc.id, currentLTP, maxLTP));
-
-                // if hedged, get size (price + hedged profit/loss)
-                if (adjustedStopLoss.hedged) {
-                    const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(adjustedStopLoss.selectionId));
-
-                    adjustedStopLoss.size = CalculateLadderHedge(parseFloat(adjustedStopLoss.price), newMatchedBets, 'hedged').size
-                }
-
-                // if it doesn't have a reference or the order has been matched (STOP LOSS)
-                const stopLossMatched = stopLossCheck(adjustedStopLoss, rc.id, currentLTP, () => {}, stopLossOrdersToRemove, adjustedStopLossList, unmatchedBets, matchedBets);
-                
-                adjustedStopLossList = stopLossMatched.adjustedStopLossList;
-                stopLossOrdersToRemove = stopLossMatched.stopLossOrdersToRemove;
-            }
-            else if (rc.id in nonRunners === false) {
-                // Runner found so we create the new object with the raw data
-                ladders[rc.id] = CreateLadder(rc);
-            }
-        }
-    }));
-
-    expect(Object.keys(stopLossOrdersToRemove).length).toBe(1)
-    expect(Object.keys(newStopEntryList).length).toBe(0)
-    expect(Object.keys(adjustedBackList).length).toBe(0)
 })
 
 describe('stopEntryList changes depending on LTP', () => {
@@ -186,18 +132,6 @@ describe('tickOffset increase when newLTP > oldLadderLTP', () => {
           "tickOffset": 5
         },
     }
-
-    test('stoploss should increase when newLTP > oldLadderLTP', () => {     
-        expect(stopLossTrailingChange(stopLossList, 237470, 5, 4)).toStrictEqual(Object.assign({}, stopLossList['237470'], {tickOffset: 6}))
-    })
-
-    test('stoploss should stay the same when newLTP == oldLadderLTP', () => { 
-        expect(stopLossTrailingChange(stopLossList, 237470, 4, 4)).toStrictEqual(Object.assign({}, stopLossList['237470'], {tickOffset: 5}))
-    })
-
-    test('stoploss should stay the same when newLTP < oldLadderLTP', () => { 
-        expect(stopLossTrailingChange(stopLossList, 237470, 3, 4)).toStrictEqual(Object.assign({}, stopLossList['237470'], {tickOffset: 5}))
-    })
 })
 
 describe('check if stoploss works', () => {
@@ -223,40 +157,9 @@ describe('check if stoploss works', () => {
             },
         }   
         
-        expect(stopLossCheck(stopLossList[237470], 237470, 26, onPlaceOrder, [], stopLossList)).toStrictEqual({
-            adjustedStopLossList: {},
-            stopLossOrdersToRemove: [stopLossList[237470]],
-        })
+        expect(stopLossCheck(stopLossList[237470], 26)).toBeTruthy();
     })
 
-<<<<<<< HEAD
-    test('order attached to it, assignedOrder is not matched: rfs == 3423423fedjafi', () => {
-        const stopLossList = {
-            237470: {
-              "strategy": "Stop Loss",
-              "trailing": true,
-              "hedged": false,
-              "assignedIsOrderMatched": false,
-              "units": "Ticks",
-              "_id": "5d96d43809bd2142c4321f37",
-              "marketId": "1.159700186",
-              "selectionId": 237470,
-              "side": "LAY",
-              "size": 5,
-              "price": "38",
-              "rfs": '3423423fedjafi',
-              "betId": "4235115",
-              "tickOffset": 5
-            },
-        }   
-        expect(stopLossCheck(stopLossList[237470], 237470, 26, onPlaceOrder, [], stopLossList).adjustedStopLossList).toStrictEqual({
-            adjustedStopLossList: {237470: stopLossList[237470]},
-            stopLossOrdersToRemove: [],
-        })
-    })
-
-=======
->>>>>>> f96bb72e477eb259a539de81ba452a783a98f68d
     test('order attached to it: rfs == 3423423fedjafi', () => {
         const stopLossList = {
             237470: {
@@ -268,17 +171,16 @@ describe('check if stoploss works', () => {
               "_id": "5d96d43809bd2142c4321f37",
               "marketId": "1.159700186",
               "selectionId": 237470,
-              "side": "LAY",
+              "side": "BACK",
               "size": 5,
               "price": "38",
               "rfs": '3423423fedjafi',
               "betId": "4235115",
               "tickOffset": 5
             },
-        }   
-        expect(stopLossCheck(stopLossList[237470], 237470, 26, onPlaceOrder, [], stopLossList)).toStrictEqual({
-            adjustedStopLossList: {},
-            stopLossOrdersToRemove: [stopLossList[237470]],
-        })
+        }
+        expect(stopLossCheck(stopLossList[237470], 35).targetMet).toStrictEqual(false);
+        expect(stopLossCheck(stopLossList[237470], 40).targetMet).toStrictEqual(false);
+        expect(stopLossCheck(stopLossList[237470], 48).targetMet).toBeTruthy();
     })
 })

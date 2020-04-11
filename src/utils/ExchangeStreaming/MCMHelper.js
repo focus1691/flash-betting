@@ -40,21 +40,7 @@ export const stopEntryListChange = async (stopEntryList, selectionId, currentLTP
  * @return {object} The new stoploss with the changes to the tickOffset.
 */
 export const stopLossTrailingChange = (stopLossList, selectionId, currentLTP, oldMaxLadderLTP) => {
-    let adjustedStopLoss = Object.assign({}, stopLossList[selectionId]);
-    if (stopLossList[selectionId].trailing && currentLTP > oldMaxLadderLTP) {
-        adjustedStopLoss.tickOffset = adjustedStopLoss.tickOffset + 1; 
-    }
-
-    fetch('/api/update-order', {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify(adjustedStopLoss)
-    }).catch(console.log)
-
-    return adjustedStopLoss
+    return null;
 }
 
 
@@ -70,37 +56,9 @@ export const stopLossTrailingChange = (stopLossList, selectionId, currentLTP, ol
  * @param {object} matchedBets - The matchedBets that has to be passed into onPlaceOrder.
  * @return {object} The new {adjustedStopLossList, stopLossOrdersToRemove}.
 */
-export const stopLossCheck = (adjustedStopLoss, selectionId, currentLTP, onPlaceOrder, previousAdjustedStopLossList, unmatchedBets, matchedBets) => {
+export const stopLossCheck = (SL, currentLTP) => {
 
-    let newStopLossOrdersToRemove = [];
-    const adjustedStopLossList = Object.assign({}, previousAdjustedStopLossList);
-
-    if (adjustedStopLoss.rfs === undefined || (adjustedStopLoss.rfs && adjustedStopLoss.assignedIsOrderMatched)) {
-        const units = adjustedStopLoss.units ? adjustedStopLoss.units.toLowerCase() : "ticks";
-
-        const stopLossCheck = checkStopLossHit(adjustedStopLoss.size, adjustedStopLoss.price, currentLTP, adjustedStopLoss.side.toLowerCase(), adjustedStopLoss.tickOffset, units, adjustedStopLoss.rfs !== undefined);
-        if (stopLossCheck.targetMet) {
-            onPlaceOrder({
-                marketId: adjustedStopLoss.marketId,
-                selectionId: adjustedStopLoss.selectionId,
-                side: adjustedStopLoss.side,
-                size: adjustedStopLoss.size,
-                price: stopLossCheck.priceReached,
-                unmatchedBets: unmatchedBets,
-                matchedBets: matchedBets
-            })
-
-            newStopLossOrdersToRemove = newStopLossOrdersToRemove.concat(adjustedStopLoss);
-            
-
-            delete adjustedStopLossList[selectionId];
-          
-        } else {
-            adjustedStopLossList[selectionId] = adjustedStopLoss;
-        }
-    }
-    return {
-        adjustedStopLossList: adjustedStopLossList,
-        stopLossOrdersToRemove: newStopLossOrdersToRemove
-    }
+    const units = SL.units ? SL.units.toLowerCase() : "ticks";
+    const stopLossCheck = checkStopLossHit(SL.size, SL.price, currentLTP, SL.side, SL.tickOffset, units, SL.rfs !== undefined);
+    return {targetMet: stopLossCheck.targetMet, priceReached: stopLossCheck.priceReached };
 }
