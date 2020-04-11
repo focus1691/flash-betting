@@ -33,7 +33,7 @@ const isMoving = (prevProps, nextProps) => {
 };
 
 const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, placeOrder, updateOrders, order, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
-				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossTrailing, stopLossList, stopLossUnits, stakeVal, draggingLadder}) => {
+				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossTrailing, stopLossList, stopLossUnits, stakeVal, draggingLadder, customStakeActive, customStake}) => {
 	
 	const containerRef = useRef(null);
 	const listRef = useRef();
@@ -113,9 +113,9 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, placeOrde
 	const handlePlaceOrder = useCallback(async (side, price, marketId, selectionId, stakeVal, stopLossSelected, stopLossData,
 		stopLossUnits, hedgeSize) => {
 		const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
-		
+		const betSize = (customStakeActive && customStake) ? customStake : stakeVal[selectionId];
 		//* Place the order first with BetFair and then execute the tools
-		//! Tool priority: 1) Stop Loss 2) Tick Offset 3) Fill or Kill
+		// //! Tool priority: 1) Stop Loss 2) Tick Offset 3) Fill or Kill
 		const result = await placeOrder({
 			side: side,
 			price: formatPrice(price),
@@ -124,7 +124,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, placeOrde
 			customerStrategyRef: referenceStrategyId,
 			unmatchedBets: unmatchedBets,
 			matchedBets: matchedBets,
-			size: stakeVal[selectionId],
+			size: betSize,
 			orderCompleteCallBack: async betId => {
 				if (stopLossSelected && !stopLossData) {
 					let sl = await placeStopLoss({
@@ -136,7 +136,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, placeOrde
 						units: stopLossUnits,
 						rfs: referenceStrategyId,
 						assignedIsOrderMatched: false,
-						size: stakeVal[selectionId],
+						size: betSize,
 						betId: betId,
 						hedged: stopLossHedged,
 						strategy: "Stop Loss",
@@ -154,7 +154,7 @@ const Ladder = memo(({id, ltp, marketStatus, layFirstCol, setLayFirst, placeOrde
 							tickOffsetTicks,
 							tickOffsetUnits === "Percent"
 						).priceReached,
-						size: tickOffsetHedged ? hedgeSize : stakeVal[selectionId],
+						size: tickOffsetHedged ? hedgeSize : betSize,
 						side: side === "BACK" ? "LAY" : "BACK",
 						percentageTrigger: tickOffsetTrigger,
 						rfs: referenceStrategyId,
@@ -259,6 +259,8 @@ const mapStateToProps = (state, props) => {
 		matchedBets: getMatchedBets(state.order.bets),
 		ladderUnmatched: state.settings.ladderUnmatched,
 		stakeVal: getStakeVal(state.settings.stake, { selectionId: props.id }),
+		customStake: state.market.runners[props.id].order.customStake,
+		customStakeActive: state.market.runners[props.id].order.customStakeActive,
 		draggingLadder: state.market.draggingLadder,
 
 		//* Back/Lay

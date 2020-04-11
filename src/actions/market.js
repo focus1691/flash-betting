@@ -159,6 +159,20 @@ export const changePriceType = priceType => { // stake and liability
   };
 };
 
+export const setCustomStakeActive = ({id, customStakeActive}) => {
+  return {
+      type: "UPDATE_CUSTOM_STAKE_ACTIVE",
+      payload: {id, customStakeActive}
+  }
+}
+
+export const setCustomStake = ({id, customStake}) => {
+  return {
+      type: "UPDATE_CUSTOM_STAKE",
+      payload: {id, customStake}
+  }
+}
+
 export const setOddsHovered = odds => {
   return {
     type: "SET_ODDS_HOVERED",

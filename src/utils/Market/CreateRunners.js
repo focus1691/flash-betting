@@ -14,6 +14,8 @@ const CreateRunners = data => {
         backLay: 0,
         stakeLiability: 0,
         stake: 2,
+        customStake: null,
+        customStakeActive: false,
         price: 0
       };
     }

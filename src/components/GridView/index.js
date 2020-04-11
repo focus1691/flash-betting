@@ -175,18 +175,17 @@ const Grid = ({oneClickOn, oneClickStake, marketOpen, marketStatus, inPlay, mark
 			const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
 			const { name, number, logo, order } = DeconstructRunner(runners[key], market.eventType.id);
 
-			const orderProps =
-				order.stakeLiability === 0
-					? {
-							text: "STAKE",
-							text2: "BACK",
-							prices: stakeBtns
-					  }
-					: {
-							text: "LIABILITY",
-							text2: "LAY",
-							prices: layBtns
-					  };
+			const orderProps = order.stakeLiability === 0 ?
+			{
+				text: "STAKE",
+				text2: "BACK",
+				prices: stakeBtns
+			} :
+			{
+				text: "LIABILITY",
+				text2: "LAY",
+				prices: layBtns
+			};
 
 			orderProps.text2 = order.backLay === 0 ? "BACK" : "LAY";
 			orderProps.bg = order.backLay === 0 ? "#DBEFFF" : "#FEE9EE";

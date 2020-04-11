@@ -338,6 +338,10 @@
 
 }
 
+.price-row th input {
+	width: 100%;
+}
+
 .price-row th {
 	position: sticky;
 	bottom: 0;
@@ -348,5 +352,5 @@
 	-webkit-user-select: none;
 	cursor: pointer;
 	font-size: small;
-	width: 14em;
+	width: 12.5%;
 }

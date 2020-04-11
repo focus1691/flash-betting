@@ -27,9 +27,14 @@ const LightenDarkenColor = (col, amt) => {
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 }
 
-const getOrderBtnBG = (buttonType, stake, oneClickStake, colorContrast) => {
+const getOrderBtnBG = (buttonType, stake, activeStake, colorContrast) => {
     var bg = buttonType === "STAKE" ? "#DBEFFF" : "#FEE9EE";
-    return parseInt(stake) === parseInt(oneClickStake) ? LightenDarkenColor(bg, colorContrast) : bg;
-  }
+    return parseInt(stake) === parseInt(activeStake) ? LightenDarkenColor(bg, colorContrast) : bg;
+}
 
-export { getOrderBtnBG, LightenDarkenColor };
+const getOrderBtnBG2 = (buttonType, selected, colorContrast) => {
+    var bg = buttonType === "STAKE" ? "#DBEFFF" : "#FEE9EE";
+    return selected ? LightenDarkenColor(bg, colorContrast) : bg;
+}
+
+export { getOrderBtnBG, getOrderBtnBG2, LightenDarkenColor };
