@@ -30,7 +30,7 @@ import { stopEntryListChange, stopLossTrailingChange, stopLossCheck } from "../.
 import { CreateLadder } from "../../utils/ladder/CreateLadder";
 import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
-import ConnectionBugDisplay from "../ConnectionBugDisplay";
+import ConnectionStatus from "../ConnectionStatus";
 import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionErrorType";
 import useInterval from "../../utils/CustomHooks/useInterval";
 
@@ -280,50 +280,20 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     loadData();
   }, []);
 
-  useEffect(() => {
-    socket.on("market-definition", async marketDefinition => {
-      // socket.off("market-definition");
-      setMarketStatus(marketDefinition.status);
-      setInPlay(marketDefinition.inPlay);
+  const onReceiveMarketDefinition = useCallback(async marketDefinition => {
+    setMarketStatus(marketDefinition.status);
+    setInPlay(marketDefinition.inPlay);
 
-      if (!market.inPlayTime && marketDefinition.inPlay) {
-        // Start the in-play clock
-        setInPlayTime(new Date());
-      }
+    if (!market.inPlayTime && marketDefinition.inPlay) {
+      // Start the in-play clock
+      setInPlayTime(new Date());
+    }
 
-      if (marketDefinition.status === "CLOSED" && !marketOpen) {
-        closeMarket();
-        cleanupOnMarketClose(getQueryVariable("marketId"));
-      }
-    });
+    if (marketDefinition.status === "CLOSED" && !marketOpen) {
+      closeMarket();
+      cleanupOnMarketClose(getQueryVariable("marketId"));
+    }
   }, [marketStatus, market.inPlayTime, pastEventTime, socket, setMarketStatus, setInPlay, marketOpen, setInPlayTime, closeMarket]);
-
-  useEffect(() => {
-    // A message will be sent here if the connection to the market is disconnected.
-    // We resubscribe to the market here using the initialClk & clk.
-    socket.on("connection_closed", () => {
-      // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-      if (getQueryVariable("marketId") && initialClk && clk && connectionError === "") {
-        socket.emit("market-resubscription", { marketId: getQueryVariable("marketId"), initialClk: initialClk, clk: clk });
-      }
-    });
-  }, [clk, initialClk, connectionError, socket]);
-
-  useEffect(() => {
-    socket.on("subscription-error", async data => {
-      socket.off("subscription-error");
-      if (data.statusCode === "FAILURE") {
-        if (GetSubscriptionErrorType(data.errorCode) === "Authentication") {
-          window.location.href = window.location.origin + `/?error=${data.errorCode}`;
-        } else {
-          setConnectionError(data.errorMessage);
-        }
-      } else {
-        setConnectionError("");
-      }
-    });
-  }, [connectionError, socket]);
-
   
   /**
    * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
@@ -401,6 +371,11 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     });
   }, [matchedBets, nonRunners, updateStopEntryList, updateStopLossList, placeOrder, loadNonRunners, stopEntryList, stopLossList, unmatchedBets, updates]);
 
+  const onMarketDisconnect = useCallback(async data => {
+    if (GetSubscriptionErrorType(data.errorCode) === "Authentication") window.location.href = window.location.origin + `/?error=${data.errorCode}`;
+    else setConnectionError(data.errorMessage);
+  }, [connectionError]);
+
   /**
    * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
    * @param {obj} data The order change message data:
@@ -466,10 +441,14 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
     socket.on("ocm", onReceiveOrderMessage);
+    socket.on("subscription-error", onMarketDisconnect);
+    socket.on("market-definition", onReceiveMarketDefinition);
 
     return () => {
       socket.off("mcm");
       socket.off("ocm");
+      socket.off("subscription-error");
+      socket.off("market-definition");
     }
   }, [onReceiveMarketMessage, onReceiveOrderMessage, socket]);
 
@@ -566,14 +545,13 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
         <Title />
         <Siderbar />
         <main className="content">
-          <ConnectionBugDisplay
+          <ConnectionStatus
             connectionError={connectionError}
+            setConnectionError={setConnectionError}
             marketId={marketId}
             clk={clk}
             initialClk={initialClk}
             socket={socket}
-            setClk={setClk}
-            setInitialClk={setInitialClk}
           />
           <Draggable />
           {Views[view] || <HomeView />}

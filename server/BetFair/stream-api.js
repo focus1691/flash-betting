@@ -44,11 +44,9 @@ class BetFairStreamAPI {
 						this.connectionClosed = result.connectionClosed;
 						if (this.connectionClosed) {
 							const {connectionClosed, errorCode, errorMessage, statusCode} = result;
+							console.log('subscription-error', {connectionClosed, errorCode, errorMessage, statusCode});
 							this.openSocket.emit('subscription-error', {connectionClosed, errorCode, errorMessage, statusCode});
 						} else {
-							this.openSocket.emit('subscription-error', result);
-						}
-						if (!this.connectionClosed) {
 							this.subscriptions.forEach((subscription => {
 								this.client.write(subscription);
 							}));
@@ -78,7 +76,6 @@ class BetFairStreamAPI {
 			this.client.on('close', () => {
 				console.log('Connection closed');
 				this.connectionClosed = true;
-				this.openSocket.emit('connection_closed');
 			});
 
 			this.client.on('error', err => {
