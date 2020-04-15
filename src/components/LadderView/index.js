@@ -5,7 +5,7 @@ import { sortLadder } from "../../utils/ladder/SortLadder";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, updateExcludedLadders, marketOpen, marketStatus, setSortedLadder, excludedLadders, ladderUnmatched }) => {
+const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, updateExcludedLadders, marketOpen, marketStatus, setSortedLadder, excludedLadders }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
@@ -32,12 +32,8 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 	  }, []);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
-		<div
-			className={"ladder-container"}
-			onContextMenu={e => {
-				e.preventDefault();
-				return false;
-			}}>
+		<div className={"ladder-container"}
+			onContextMenu={e => e.preventDefault()}>
 			{marketOpen && sortedLadder
 				? Object.values(ladderOrder)
 						.filter(value => excludedLadders.indexOf(value) === -1)
@@ -46,8 +42,6 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 								id={value}
 								key={value}
 								order={index}
-								ladderUnmatched={ladderUnmatched}
-								marketStatus={marketStatus}
 								layFirstCol={layFirstCol}
 								setLayFirst={setLayFirst}
 							/>
@@ -65,7 +59,6 @@ const mapStateToProps = state => {
 		sortedLadder: state.market.sortedLadder, //! Sorted by LTP
 		ladderOrder: state.market.ladderOrder, //! For the ladderview specifically when swapping ladders
 		excludedLadders: state.market.excludedLadders,
-		ladderUnmatched: state.settings.ladderUnmatched,
 		eventType: state.market.eventType,
 		ladders: state.market.ladder
 	};

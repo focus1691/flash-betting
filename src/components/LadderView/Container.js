@@ -5,8 +5,8 @@ import { updateLadderOrder, setDraggingLadder } from "../../actions/market";
 const LadderContainer = memo(({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
 	ladderOrderList, updateLadderOrder, setIsMoving, setLadderDown, children, setDraggingLadder, draggingLadder}) => {
 	
-	const style = useMemo(() => {
-		return marketStatus === "SUSPENDED" ?
+	const style = useMemo(() => 
+		 marketStatus === "SUSPENDED" ?
 			{
 				left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
 				visibility: isReferenceSet ? "visible" : "collapse",
@@ -17,8 +17,7 @@ const LadderContainer = memo(({marketStatus, isReferenceSet, order, containerRef
 				visibility: isReferenceSet ? "visible" : "collapse",
 				opacity: isMoving ? "0.7" : "1.0",
 				cursor: isLadderDown ? "move" : "default"
-			}
-		}, [containerRef, isLadderDown, isMoving, isReferenceSet, marketStatus, order]);
+			}, [containerRef, isLadderDown, isMoving, isReferenceSet, marketStatus, order]);
 
 	const handleMouseMove = e => {
 		if (containerRef.current === null) return;
@@ -128,6 +127,7 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
 
 const mapStateToProps = state => {
 	return {
+		marketStatus: state.market.status,
 		runners: state.market.runners,
 		ladderOrderList: state.market.ladderOrder,
 		draggingLadder: state.market.draggingLadder
