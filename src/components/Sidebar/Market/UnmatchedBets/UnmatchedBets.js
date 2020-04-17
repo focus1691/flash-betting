@@ -12,8 +12,8 @@ import { getPriceNTicksAway } from "../../../../utils/ladder/CreateFullLadder";
 import { getMatchedBets, getUnmatchedBets } from "../../../../selectors/orderSelector";
 import Bet from "./Bet";
 
-const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, matchedBets, unmatchedBets, onChangeBackList,
-  onChangeLayList, onChangeStopEntryList, onChangeTickOffsetList, onChangeStopLossList, onChangeFillOrKillList, onChangeOrders, rightClickTicks}) => {
+const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, matchedBets, unmatchedBets, updateBackList,
+  updateLayList, updateStopEntryList, updateTickOffsetList, updateStopLossList, updateFillOrKillList, updateOrders, rightClickTicks}) => {
 
   const allOrders = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched);
   const selections = useMemo(() => { return Object.keys(allOrders) }, [allOrders]);
@@ -22,14 +22,14 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
 		if (order) {
       const data = await cancelOrders(order, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, order.side);
       
-			onChangeBackList(data.back);
-			onChangeLayList(data.lay);
-			onChangeStopLossList(data.stopLoss);
-			onChangeTickOffsetList(data.tickOffset);
-			onChangeStopEntryList(data.stopEntry);
-			onChangeFillOrKillList(data.fillOrKill);
+			updateBackList(data.back);
+			updateLayList(data.lay);
+			updateStopLossList(data.stopLoss);
+			updateTickOffsetList(data.tickOffset);
+			updateStopEntryList(data.stopEntry);
+			updateFillOrKillList(data.fillOrKill);
 		}
-  }, [backList, fillOrKillList, layList, matchedBets, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
+  }, [backList, fillOrKillList, layList, matchedBets, updateBackList, updateFillOrKillList, updateLayList, updateStopEntryList, updateStopLossList, updateTickOffsetList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 
   const replaceOrderPrice = useCallback((order, newPrice) => {
     const newOrder = Object.assign({}, order, {price: newPrice})
@@ -38,36 +38,36 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
         const newBackList = Object.assign({}, backList);
         const indexBack = newBackList[order.selectionId].findIndex(item => item.rfs === order.rfs)
         newBackList[order.selectionId][indexBack].price = newPrice;
-        onChangeBackList(newBackList);
+        updateBackList(newBackList);
         break;
       case "Lay":
         const newLayList = Object.assign({}, layList);
         const indexLay = newLayList[order.selectionId].findIndex(item => item.rfs === order.rfs)
         newLayList[order.selectionId][indexLay].price = newPrice;
-        onChangeLayList(newLayList);
+        updateLayList(newLayList);
         break;
       case "Stop Entry":
         const newStopEntryList = Object.assign({}, stopEntryList);
         const indexStopEntry = newStopEntryList[order.selectionId].findIndex(item => item.rfs === order.rfs)
         newStopEntryList[order.selectionId][indexStopEntry].price = newPrice;
-        onChangeStopEntryList(newStopEntryList);
+        updateStopEntryList(newStopEntryList);
         break;
       case "Tick Offset":
         const newTickOffsetList = Object.assign({}, tickOffsetList);
         newTickOffsetList[order.rfs].price = newPrice;
-        onChangeTickOffsetList(newTickOffsetList)
+        updateTickOffsetList(newTickOffsetList)
         break;
       case "Stop Loss":
         const newStopLossList = Object.assign({}, stopLossList);
         newStopLossList[order.selectionId].price = newPrice;
-        onChangeStopLossList(newStopLossList)
+        updateStopLossList(newStopLossList)
         break;
       case "None":
         // if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
         if (fillOrKillList[order.betId] !== undefined) {
           const newFillOrKill = Object.assign({}, fillOrKillList)
           newFillOrKill[order.betId].price = newPrice;
-          onChangeFillOrKillList(newFillOrKill)
+          updateFillOrKillList(newFillOrKill)
 
         }
 
@@ -96,7 +96,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
 
             delete newUnmatched[order.betId];
 
-            onChangeOrders({
+            updateOrders({
               unmatched: newUnmatched,
               matched: bets.matched,
             })
@@ -119,7 +119,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
     } catch (e) {
 
     }
-  }, [backList, bets.matched, bets.unmatched, fillOrKillList, layList, onChangeBackList, onChangeFillOrKillList, onChangeLayList, onChangeOrders, onChangeStopEntryList, onChangeStopLossList, onChangeTickOffsetList, stopEntryList, stopLossList, tickOffsetList]);
+  }, [backList, bets.matched, bets.unmatched, fillOrKillList, layList, updateBackList, updateFillOrKillList, updateLayList, updateOrders, updateStopEntryList, updateStopLossList, updateTickOffsetList, stopEntryList, stopLossList, tickOffsetList]);
 
   const handleRightClick = order => {
     replaceOrderPrice(order, getPriceNTicksAway(parseFloat(order.price), rightClickTicks))
@@ -155,7 +155,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
               if (selectionObject === undefined) return null;
 
               return (
-                <React.Fragment>
+                <>
                   <tr className="menu-bets-selection" colSpan={4}>
                     <td>{selectionObject.runnerName}</td>
                   </tr>
@@ -171,7 +171,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
                       })
                     )
                   }
-                </React.Fragment>
+                </>
               )
             })
             : null}
@@ -198,19 +198,6 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onChangeOrders: orders => dispatch(updateOrders(orders)),
-    onChangeStopLossList: list => dispatch(updateStopLossList(list)),
-    onChangeTickOffsetList: list => dispatch(updateTickOffsetList(list)),
-    onChangeStopEntryList: list => dispatch(updateStopEntryList(list)),
-    onChangeLayList: list => dispatch(updateLayList(list)),
-    onChangeBackList: list => dispatch(updateBackList(list)),
-    onChangeFillOrKillList: list => dispatch(updateFillOrKillList(list))
-  };
-};
+const mapDispatchToProps = { updateOrders, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, updateFillOrKillList };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UnmatchedBets);
+export default connect(mapStateToProps, mapDispatchToProps)(UnmatchedBets);
