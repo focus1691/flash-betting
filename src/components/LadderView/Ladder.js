@@ -44,8 +44,6 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 	const [ladderLocked, setLadderLocked] = useState(false);
 	
 	const ladderStyle = useMemo(() => listRefSet ? {paddingRight: `${listRef.current.offsetWidth - listRef.current.clientWidth -17}px`} : "", [listRefSet]);
-	const selectionMatchedBets = useMemo(() => Object.values(matchedBets).filter(order => parseFloat(order.selectionId) === parseFloat(id)), [matchedBets, id]);
-	const selectionUnmatchedBets = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id], [backList, id, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
 	
 	const setReferenceSent = () => {
 		setIsReferenceSet(true);
@@ -180,10 +178,10 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 			}
 		});
 		if (result.bets) updateOrders(result.bets);
-	}, [placeOrder, unmatchedBets, matchedBets, updateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
+	}, [customStakeActive, customStake, placeOrder, unmatchedBets, matchedBets, updateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
 
 	const cancelSpecialOrders = useCallback(async (order, side) => {
-		let betsToPass = order ? order : selectionUnmatchedBets ? selectionUnmatchedBets : null;
+		let betsToPass = order ? order : combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id];
 
 		if (betsToPass) {
 			const data = await cancelOrders(betsToPass, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
@@ -195,7 +193,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 			updateStopEntryList(data.stopEntry);
 			updateFillOrKillList(data.fillOrKill);
 		}
-	}, [backList, fillOrKillList, layList, updateBackList, updateFillOrKillList, updateLayList, updateStopEntryList, updateStopLossList, updateTickOffsetList, selectionUnmatchedBets, stopEntryList, stopLossList, tickOffsetList]);
+	}, [backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets, id, fillOrKillList, updateBackList, updateLayList, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateFillOrKillList]);
 
 	return (
 		<Container
@@ -243,8 +241,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 			</div>
 			<PriceRow selectionId={id} />
 			<OrderRow 
-				matchedBets={selectionMatchedBets}
-				unmatchedBets={selectionUnmatchedBets}
+				selectionId={id}
 				cancelSpecialOrders={cancelSpecialOrders}
 			/>
 		</Container>

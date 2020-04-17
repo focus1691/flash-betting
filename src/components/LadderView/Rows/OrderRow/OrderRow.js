@@ -1,14 +1,11 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import { connect } from "react-redux";
 import { changePriceType } from "../../../../actions/market";
 import { MatchedBet } from "./MatchedBet";
 import { UnmatchedBet } from "./UnmatchedBet";
+import { getMatchedBets, getUnmatchedBets } from "../../../../selectors/orderSelector";
 
-const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceType, changePriceType}) => {
-
-	const unmatchedBetsArr = useMemo(() => unmatchedBets ? Object.values(unmatchedBets) : [], [unmatchedBets]);
-	const matchedStyle = useMemo(() => matchedBets.length > 0 ? "lay-body" : "", [matchedBets.length]);
-	const unmatchedStyle = useMemo(() => unmatchedBetsArr.length > 0 ? "lay-body" : "", [unmatchedBetsArr.length]);
+const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layList, slList, tosList, fokList, seList, cancelSpecialOrders, priceType, changePriceType}) => {
 
 	const cancelUnmatchedOrder = useCallback(order => {
 		cancelSpecialOrders(order);
@@ -22,21 +19,59 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 		changePriceType(priceType === "STAKE" ? "LIABILITY" : "STAKE");
 	}, [priceType, changePriceType]);
 
+	const createUnmatchedBetRow = (bet, index) => {
+		return (
+			<UnmatchedBet
+				key={`ladder-matched-bet-${bet.selectionId}-${bet.rfs}-${index}`}
+				bet={bet}
+				cancelBet={cancelUnmatchedOrder} />
+		);
+	};
+
+	const renderUnmatchedBets = bets => {
+		const list = [];
+		for (var id in bets) {
+			if (Array.isArray(bets[id])) {
+				for (var i = 0; i < bets[id].length; i++) {
+					if (selectionId == bets[id][i].selectionId) list.push(createUnmatchedBetRow(bets[id][i], i));
+				}
+			} else {
+				if (selectionId == bets[id].selectionId) list.push(createUnmatchedBetRow(bets[id], id));
+			}
+		}
+		return list;
+	};
+
+	const createMatchedBetRow = (bet, index) => {
+		return (
+			<MatchedBet
+				key={`ladder-matched-bet-${bet.selectionId}-${index}`}
+				bet={bet} index={index} />
+		);
+	};
+
+	const renderMatchedBets = bets => {
+		const list = [];
+		for (var id in bets) {
+			if (selectionId == bets[id].selectionId) list.push(createMatchedBetRow(bets[id], id));
+		}
+		return list;
+	};
+
 	return (
 		<div className={"order-row"}>
 			<table>
 				<tbody>
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
-							<tbody className={unmatchedStyle}>
-								{unmatchedBetsArr.map(rfs => rfs.map((bet, id) => {
-									return (
-										<UnmatchedBet
-											key={`ladder-matched-bet-${bet.selectionId}-${bet.rfs}-${id}`}
-											bet={bet}
-											cancelBet={cancelUnmatchedOrder} />
-									);
-								}))}
+							<tbody className="lay-body">
+								{renderUnmatchedBets(unmatchedBets)}
+								{renderUnmatchedBets(backList)}
+								{renderUnmatchedBets(layList)}
+								{renderUnmatchedBets(slList)}
+								{renderUnmatchedBets(tosList)}
+								{renderUnmatchedBets(fokList)}
+								{renderUnmatchedBets(seList)}
 							</tbody>
 						</table>
 					</td>
@@ -52,14 +87,8 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 					</td>
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
-							<tbody className={matchedStyle}>
-								{matchedBets.map((bet, idx) => {
-									return (
-										<MatchedBet
-											key={`ladder-matched-bet-${bet.selectionId}-${idx}`}
-											bet={bet} index={idx} />
-									);
-								})}
+							<tbody className="lay-body">
+								{renderMatchedBets(matchedBets)}
 							</tbody>
 						</table>
 					</td>
@@ -71,7 +100,15 @@ const OrderRow = memo(({matchedBets, unmatchedBets, cancelSpecialOrders, priceTy
 
 const mapStateToProps = state => {
 	return {
-		priceType: state.market.priceType
+		priceType: state.market.priceType,
+		matchedBets: getMatchedBets(state.order.bets),
+		unmatchedBets: getUnmatchedBets(state.order.bets),
+		backList: state.back.list,
+		layList: state.lay.list,
+		slList: state.stopLoss.list,
+		tosList: state.tickOffset.list,
+		fokList: state.fillOrKill.list,
+		seList: state.stopEntry.list
 	};
 };
 
