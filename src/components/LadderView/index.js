@@ -35,22 +35,13 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 		}
 	}, [ladders]);
 
-	//* Initialise the ladder order to the sorted positions
-	//! Used for dragging & dropping ladders
-	// useEffect(() => {
-	// 	const newOrderList = {};
-
-	// 	for (var i = 0; i < sortedLadder.length; i++) {
-	// 		newOrderList[i] = sortedLadder[i];
-	// 	}
-	// 	updateLadderOrder(newOrderList);
-	// }, []);
-
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div className={"ladder-container"} onContextMenu={(e) => e.preventDefault()}>
 			{Object.values(ladderOrder)
-						.filter(v => excludedLadders.indexOf(v) === -1)
-						.map((v, i) => <Ladder id={v} key={v} index={i} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />)}
+				.filter((v) => excludedLadders.indexOf(v) === -1)
+				.map((v, i) => (
+					<Ladder id={v} key={v} index={i} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />
+				))}
 			<SuspendedWarning marketStatus={marketStatus} />
 		</div>
 	) : null;
