@@ -161,9 +161,9 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
                   </tr>
                   {
                     Object.values(allOrders[selection]).map(rfs =>
-                      rfs.map(order => {
+                      rfs.map(bet => {
                         return <Bet
-                                  order={order}
+                                  bet={bet}
                                   handleRightClick={handleRightClick}
                                   cancelOrder={cancelOrder}
                                   marketStartTime={market.marketStartTime}
