@@ -11,48 +11,52 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 		setLayFirstCol(!layFirstCol);
 	}, [layFirstCol]);
 
+	//* Sort ladder on market open, excluding ladders are first 6
 	useEffect(() => {
-		//! If it's not a Greyhound Race (4339), we sort by the LTP
 		if (eventType !== "4339") {
-		  var sortedLadderIndices = sortLadder(ladders);
-		  setSortedLadder(sortedLadderIndices);
-		  updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-		}
-	  }, [eventType, ladders, updateExcludedLadders, updateLadderOrder, setSortedLadder]);
+			var sortedLadderIndices = sortLadder(ladders);
+			setSortedLadder(sortedLadderIndices);
+			updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
 
-	  //* Initialise the ladder order to the sorted positions
-	  //! Used for dragging & dropping ladders
-	  useEffect(() => {
-		const newOrderList = {};
-	
-		for (var i = 0; i < sortedLadder.length; i++) {
-			newOrderList[i] = sortedLadder[i];
+			//! Used to track ladder order when dragging & dropping ladders
+			const newOrderList = {};
+			for (var i = 0; i < sortedLadderIndices.length; i++) {
+				newOrderList[i] = sortedLadderIndices[i];
+			}
+			updateLadderOrder(newOrderList);
 		}
-		updateLadderOrder(newOrderList);
-	  }, []);
+	}, [marketOpen, eventType]);
+
+	//* Sort ladders each time the ladder changes
+	useEffect(() => {
+		if (eventType !== "4339") {
+			var sortedLadderIndices = sortLadder(ladders);
+			setSortedLadder(sortedLadderIndices);
+		}
+	}, [ladders]);
+
+	//* Initialise the ladder order to the sorted positions
+	//! Used for dragging & dropping ladders
+	// useEffect(() => {
+	// 	const newOrderList = {};
+
+	// 	for (var i = 0; i < sortedLadder.length; i++) {
+	// 		newOrderList[i] = sortedLadder[i];
+	// 	}
+	// 	updateLadderOrder(newOrderList);
+	// }, []);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
-		<div className={"ladder-container"}
-			onContextMenu={e => e.preventDefault()}>
-			{marketOpen && sortedLadder
-				? Object.values(ladderOrder)
-						.filter(value => excludedLadders.indexOf(value) === -1)
-						.map((value, index) => (
-							<Ladder
-								id={value}
-								key={value}
-								order={index}
-								layFirstCol={layFirstCol}
-								setLayFirst={setLayFirst}
-							/>
-						))
-				: null}
+		<div className={"ladder-container"} onContextMenu={(e) => e.preventDefault()}>
+			{Object.values(ladderOrder)
+						.filter(v => excludedLadders.indexOf(v) === -1)
+						.map((v, i) => <Ladder id={v} key={v} index={i} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />)}
 			<SuspendedWarning marketStatus={marketStatus} />
 		</div>
 	) : null;
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		marketOpen: state.market.marketOpen,
 		marketStatus: state.market.status,
@@ -60,7 +64,7 @@ const mapStateToProps = state => {
 		ladderOrder: state.market.ladderOrder, //! For the ladderview specifically when swapping ladders
 		excludedLadders: state.market.excludedLadders,
 		eventType: state.market.eventType,
-		ladders: state.market.ladder
+		ladders: state.market.ladder,
 	};
 };
 

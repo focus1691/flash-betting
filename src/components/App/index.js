@@ -96,11 +96,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
      */
     await fetch(`/api/premium-status`)
       .then(res => res.json())
-      .then(expiryDate => {
-        let now = new Date();
-        const isActive = isPremiumActive(now, expiryDate);
-        setPremiumStatus(isActive);
-      });
+      .then(expiryDate => setPremiumStatus(isPremiumActive(new Date(), expiryDate)));
   };
 
   const retrieveMarket = async () => {

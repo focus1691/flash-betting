@@ -2,27 +2,27 @@ import React, { memo, useMemo } from "react";
 import { connect } from "react-redux";
 import { updateLadderOrder, setDraggingLadder } from "../../actions/market";
 
-const LadderContainer = memo(({marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
+const LadderContainer = memo(({marketStatus, isReferenceSet, index, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
 	ladderOrderList, updateLadderOrder, setIsMoving, setLadderDown, children, setDraggingLadder, draggingLadder}) => {
 	
 	const style = useMemo(() => 
 		 marketStatus === "SUSPENDED" ?
 			{
-				left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
+				left: isReferenceSet ? `${index * containerRef.current.clientWidth}px` : `0px`,
 				visibility: isReferenceSet ? "visible" : "collapse",
 				opacity: "0.3",
 				zIndex: -1
 			} : {
-				left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : `0px`,
+				left: isReferenceSet ? `${index * containerRef.current.clientWidth}px` : `0px`,
 				visibility: isReferenceSet ? "visible" : "collapse",
 				opacity: isMoving ? "0.7" : "1.0",
 				cursor: isLadderDown ? "move" : "default"
-			}, [containerRef, isLadderDown, isMoving, isReferenceSet, marketStatus, order]);
+			}, [containerRef, isLadderDown, isMoving, isReferenceSet, marketStatus, index]);
 
 	const handleMouseMove = e => {
 		if (containerRef.current === null) return;
 		if (!isLadderDown) return;
-		moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, order, runners, ladderOrderList, updateLadderOrder, setIsMoving);
+		moveLadder(e.movementX, e.clientX, isReferenceSet, containerRef, index, runners, ladderOrderList, updateLadderOrder, setIsMoving);
 		if (!draggingLadder) setDraggingLadder(false);
 	};
 
@@ -31,7 +31,7 @@ const LadderContainer = memo(({marketStatus, isReferenceSet, order, containerRef
 		if (!isLadderDown) return;
 		setDraggingLadder(false);
 		setLadderDown(false);
-		returnToOrderedPos(containerRef, order, setIsMoving);
+		returnToOrderedPos(containerRef, index, setIsMoving);
 	};
 
 	const handleMouseLeave = e => {
@@ -39,7 +39,7 @@ const LadderContainer = memo(({marketStatus, isReferenceSet, order, containerRef
 		if (!isLadderDown) return;
 		setDraggingLadder(false);
 		setLadderDown(false);
-		returnToOrderedPos(containerRef, order, setIsMoving);
+		returnToOrderedPos(containerRef, index, setIsMoving);
 	};
 
 	return (
@@ -56,13 +56,13 @@ const LadderContainer = memo(({marketStatus, isReferenceSet, order, containerRef
 	);
 });
 
-const returnToOrderedPos = (containerRef, order, setIsMoving) => {
-	containerRef.current.style.left = `${order * containerRef.current.clientWidth}px`;
+const returnToOrderedPos = (containerRef, index, setIsMoving) => {
+	containerRef.current.style.left = `${index * containerRef.current.clientWidth}px`;
 	containerRef.current.style["z-index"] = 0;
 	setIsMoving(false);
 };
 
-const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, order, runners, ladderOrderList, updateLadderOrder, setIsMoving) => {
+const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, index, runners, ladderOrderList, updateLadderOrder, setIsMoving) => {
 	if (!isReferenceSet) return;
 	containerRef.current.style.left = `${parseInt(containerRef.current.style.left, 10) + offsetPos}px`;
 	containerRef.current.style["z-index"] = 9999;
@@ -70,7 +70,7 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
 	// filter out the current ladder
 	const otherNodes = {};
 	for (const key in containerRef.current.parentNode.childNodes) {
-		if (key == order + 1 || key == order - 1) {
+		if (key == index + 1 || key == index - 1) {
 			// check for only the one before and after it
 			otherNodes[key] = containerRef.current.parentNode.childNodes[key];
 		}
@@ -85,7 +85,7 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
 		const midPoint = parseInt(otherNodes[key].style.left, 10) + otherNodes[key].clientWidth / 2;
 
 		// move right or left
-		if ((relativeCursorPosition > midPoint && order < key) || (relativeCursorPosition < midPoint && order > key)) {
+		if ((relativeCursorPosition > midPoint && index < key) || (relativeCursorPosition < midPoint && index > key)) {
 			// we have to find the actual id if one of the ladders are hidden in the sidebar market
 			const thisLadderIndex = Object.values(runners).findIndex(
 				item =>
@@ -117,7 +117,7 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
 
 			updateLadderOrder(newOrderList);
 
-			otherNodes[key].style.left = `${order * containerRef.current.clientWidth}px`;
+			otherNodes[key].style.left = `${index * containerRef.current.clientWidth}px`;
 
 			break;
 		}
