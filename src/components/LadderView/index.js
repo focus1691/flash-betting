@@ -14,6 +14,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 	//* Sort ladder on market open, excluding ladders are first 6
 	useEffect(() => {
 		if (eventType !== "4339") {
+			console.log("ladder", true);
 			var sortedLadderIndices = sortLadder(ladders);
 			setSortedLadder(sortedLadderIndices);
 			updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
@@ -25,7 +26,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 			}
 			updateLadderOrder(newOrderList);
 		}
-	}, [marketOpen, eventType]);
+	}, [Object.keys(ladders).length > 0]);
 
 	//* Sort ladders each time the ladder changes
 	useEffect(() => {
@@ -38,9 +39,9 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div className={"ladder-container"} onContextMenu={(e) => e.preventDefault()}>
 			{Object.values(ladderOrder)
-				.filter((v) => excludedLadders.indexOf(v) === -1)
-				.map((v, i) => (
-					<Ladder id={v} key={v} index={i} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />
+				.filter((value) => excludedLadders.indexOf(value) === -1)
+				.map((value, index) => (
+					<Ladder id={value} key={value} order={index} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />
 				))}
 			<SuspendedWarning marketStatus={marketStatus} />
 		</div>

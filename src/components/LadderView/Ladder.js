@@ -32,7 +32,7 @@ const isMoving = (prevProps, nextProps) => {
 	}
 };
 
-const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, index, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
+const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, order, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
 				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossTrailing, stopLossList, stopLossUnits, stakeVal, draggingLadder, customStakeActive, customStake}) => {
 	
 	const containerRef = useRef(null);
@@ -198,7 +198,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 	return (
 		<Container
 			isReferenceSet={isReferenceSet}
-			index={index}
+			order={order}
 			containerRef={containerRef}
 			isMoving={isMoving}
 			isLadderDown={isLadderDown}
