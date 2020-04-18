@@ -342,6 +342,11 @@
 	width: 100%;
 }
 
+.price-row th:first-child {
+	width: 19.5%;
+}
+
+
 .price-row th {
 	position: sticky;
 	bottom: 0;
@@ -352,5 +357,5 @@
 	-webkit-user-select: none;
 	cursor: pointer;
 	font-size: small;
-	width: 12.5%;
+	width: 11.5%;
 }
