@@ -54,13 +54,9 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   const ONE_SECOND = 1000;
 
   const loadSession = async () => {
-    await fetch(
-      `/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(
-        cookies.username
-      )}`
-    );
+    await fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`);
   };
-
+  
   const loadSettings = async () => {
     /**
      * Fetch settings from the database and load them into redux state

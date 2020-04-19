@@ -13,15 +13,24 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 
 	//* Sort ladder on market open, excluding ladders are first 6
 	useEffect(() => {
-		if (eventType !== "4339") {
-			console.log("ladder", true);
+		var i;
+		if (eventType === "4339") {
+			//! Used to track ladder order when dragging & dropping ladders
+			const newOrderList = {};
+			for (i = 0; i < sortedLadder.length; i++) {
+				newOrderList[i] = sortedLadder[i];
+			}
+			updateLadderOrder(newOrderList);
+
+		} else {
+			console.log('sorting ladders');
 			var sortedLadderIndices = sortLadder(ladders);
 			setSortedLadder(sortedLadderIndices);
 			updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
 
 			//! Used to track ladder order when dragging & dropping ladders
 			const newOrderList = {};
-			for (var i = 0; i < sortedLadderIndices.length; i++) {
+			for (i = 0; i < sortedLadderIndices.length; i++) {
 				newOrderList[i] = sortedLadderIndices[i];
 			}
 			updateLadderOrder(newOrderList);

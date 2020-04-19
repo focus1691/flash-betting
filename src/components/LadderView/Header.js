@@ -59,7 +59,7 @@ const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderD
 					<span
 						className="contender-odds"
 						style={{
-							visibility: ordersOnMarket ? "visible" : "hidden",
+							display: ordersOnMarket ? "inline-block" : "none",
 							color: PL >= 0 ? "rgb(106, 177, 79)" : "red"
 						}}>
 						{twoDecimalPlaces(PL) || null}
@@ -70,7 +70,7 @@ const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderD
 					<span
 						className="contender-odds"
 						style={{
-							visibility: oddsHovered.odds > 0 && ordersOnMarket ? "visible" : "hidden",
+							display: oddsHovered.odds > 0 && ordersOnMarket ? "inline-block" : "none",
 							color: oddsHoveredCalc >= 0 ? "rgb(106, 177, 79)" : "red"
 						}}>
 						{twoDecimalPlaces(oddsHoveredCalc)}
@@ -80,14 +80,14 @@ const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderD
 			<div>
 				<span
 					style={{
-						visibility: parseFloat(ladderLTPHedge) === 0 ? "hidden" : "visible",
+						display: parseFloat(ladderLTPHedge) === 0 ? "none" : "inline-block",
 						color: parseFloat(ladderLTPHedge).toFixed(2) >= 0 ? "rgb(106, 177, 79)" : "red"
 					}}>
 					{twoDecimalPlaces(ladderLTPHedge)}
 				</span>
 				<span
 					style={{
-						visibility: LTPHedgeSize === 0 ? "hidden" : "visible",
+						display: LTPHedgeSize === 0 ? "none" : "inline-block",
 						color: parseFloat(LTPHedgeSize).toFixed(2) >= 0 ? "#88c6f7" : "red"
 					}}
 					id="ltphedgesize">
