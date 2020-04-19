@@ -42,12 +42,26 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
 	const [ladderLocked, setLadderLocked] = useState(false);
+	const [ladderLastHovered, setLadderLastHovered] = useState(new Date().getTime());
 	
 	const ladderStyle = useMemo(() => listRefSet ? {paddingRight: `${listRef.current.offsetWidth - listRef.current.clientWidth -17}px`} : "", [listRefSet]);
 	
 	const setReferenceSent = () => {
 		setIsReferenceSet(true);
 	};
+
+	const onHoverLadder = useCallback(() => {
+		if (!ladderLocked) {
+			setLadderLocked(true);
+			setLadderLastHovered(new Date().getTime());
+		}
+	}, [ladderLocked]);
+
+	const overLeaveLadder = useCallback(() => {
+		if (ladderLocked && new Date().getTime() - ladderLastHovered > 100) {
+			setLadderLocked(false);
+		}
+	}, [ladderLastHovered, ladderLocked]);
 
 	const scrollToLTP = useCallback(() => {
 		const ltpIndex = ALL_PRICES.findIndex(item => parseFloat(item) === parseFloat(ltp[0]));
@@ -205,9 +219,9 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 			setIsReferenceSet={setReferenceSent}
 			setIsMoving={setIsMoving}
 			setLadderDown={setLadderDown} >
-			<Header selectionId={id} setLadderDown={setLadderDown} ladderLocked={ladderLocked} setLadderLocked={setLadderLocked} />
+			<Header selectionId={id} setLadderDown={setLadderDown} />
 
-			<div className={"ladder"} onContextMenu={() => false}>
+			<div className={"ladder"} onContextMenu={() => false} onPointerOver={onHoverLadder} onPointerLeave={overLeaveLadder}>
 				<PercentageRow
 					setLadderSideLeft={setLadderSideLeft}
 					selectionId={id}

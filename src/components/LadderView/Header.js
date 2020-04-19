@@ -8,9 +8,8 @@ import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcHedgeAtLTP, calcHedgeSize } from "../../utils/TradingStategy/HedingCalculator";
 import { calcOddsOnPriceHover } from "../../utils/Bets/HedgeProfit";
-import Tooltip from "@material-ui/core/Tooltip";
 
-const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderDown, oddsHovered, ltp, PL, setDraggingLadder, selectionMatchedBets, ladderLocked, setLadderLocked }) => {
+const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderDown, oddsHovered, ltp, PL, setDraggingLadder, selectionMatchedBets }) => {
 	const ordersOnMarket = useMemo(() => selectionMatchedBets.length > 0, [selectionMatchedBets.length]);
 	const oddsHoveredCalc = useMemo(() => calcOddsOnPriceHover(oddsHovered.odds, oddsHovered.side, selectionId, oddsHovered.selectionId, PL), [
 		PL,
@@ -59,7 +58,7 @@ const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderD
 					<span
 						className="contender-odds"
 						style={{
-							display: ordersOnMarket ? "inline-block" : "none",
+							display: ordersOnMarket ? "block" : "none",
 							color: PL >= 0 ? "rgb(106, 177, 79)" : "red"
 						}}>
 						{twoDecimalPlaces(PL) || null}
@@ -70,7 +69,7 @@ const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderD
 					<span
 						className="contender-odds"
 						style={{
-							display: oddsHovered.odds > 0 && ordersOnMarket ? "inline-block" : "none",
+							display: oddsHovered.odds > 0 && ordersOnMarket ? "block" : "none",
 							color: oddsHoveredCalc >= 0 ? "rgb(106, 177, 79)" : "red"
 						}}>
 						{twoDecimalPlaces(oddsHoveredCalc)}
@@ -80,22 +79,19 @@ const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderD
 			<div>
 				<span
 					style={{
-						display: parseFloat(ladderLTPHedge) === 0 ? "none" : "inline-block",
+						display: parseFloat(ladderLTPHedge) === 0 ? "none" : "block",
 						color: parseFloat(ladderLTPHedge).toFixed(2) >= 0 ? "rgb(106, 177, 79)" : "red"
 					}}>
 					{twoDecimalPlaces(ladderLTPHedge)}
 				</span>
 				<span
 					style={{
-						display: LTPHedgeSize === 0 ? "none" : "inline-block",
+						display: LTPHedgeSize === 0 ? "none" : "block",
 						color: parseFloat(LTPHedgeSize).toFixed(2) >= 0 ? "#88c6f7" : "red"
 					}}
 					id="ltphedgesize">
 					{twoDecimalPlaces(LTPHedgeSize)}
 				</span>
-				<Tooltip title={`Lock LTP scrolling`} aria-label="Lock LTP scrolling">
-					<img alt={"Lock"} id="lock-ladder" src={`${window.location.origin}/icons/${ladderLocked ? 'locked.png' : 'unlocked.png'}`} onClick={e => setLadderLocked(!ladderLocked)}/>
-				</Tooltip>
 			</div>
 		</div>
 	);
