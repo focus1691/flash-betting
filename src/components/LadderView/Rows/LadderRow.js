@@ -31,14 +31,9 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 	const HedgeSize = useMemo(() => selectionMatchedBets.length > 0
 		? CalculateLadderHedge(key, selectionMatchedBets, "hedged", stakeVal, PL).size
 		: undefined, [selectionMatchedBets, key, stakeVal, PL]);
-
-	const handleContextMenu = e => {
-		e.preventDefault();
-		return false;
-	};
-
+		
 	return (
-		<div key={key} onContextMenu={handleContextMenu} className={"tr"} style={style}>
+		<div key={key} onContextMenu={e => e.preventDefault()} className={"tr"} style={style}>
 			<VolumeCell selectionId={selectionId} price={key} isMoving={isMoving} />
 			<HedgeCell
 				marketId={marketId}

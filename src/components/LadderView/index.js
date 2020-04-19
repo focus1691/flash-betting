@@ -23,7 +23,6 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 			updateLadderOrder(newOrderList);
 
 		} else {
-			console.log('sorting ladders');
 			var sortedLadderIndices = sortLadder(ladders);
 			setSortedLadder(sortedLadderIndices);
 			updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));

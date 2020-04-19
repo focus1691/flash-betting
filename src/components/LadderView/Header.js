@@ -8,9 +8,10 @@ import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
 import { calcHedgeAtLTP, calcHedgeSize } from "../../utils/TradingStategy/HedingCalculator";
 import { calcOddsOnPriceHover } from "../../utils/Bets/HedgeProfit";
+import { marketHasBets } from "../../utils/Bets/GetProfitAndLoss";
 
-const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderDown, oddsHovered, ltp, PL, setDraggingLadder, selectionMatchedBets }) => {
-	const ordersOnMarket = useMemo(() => selectionMatchedBets.length > 0, [selectionMatchedBets.length]);
+const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, setLadderDown, oddsHovered, ltp, PL, setDraggingLadder, selectionMatchedBets, bets }) => {
+	const ordersOnMarket = useMemo(() => marketHasBets(marketId, bets), [bets, marketId]);
 	const oddsHoveredCalc = useMemo(() => calcOddsOnPriceHover(oddsHovered.odds, oddsHovered.side, selectionId, oddsHovered.selectionId, PL), [
 		PL,
 		oddsHovered.odds,
@@ -99,13 +100,14 @@ const LadderHeader = memo(({ selectionId, sportId, runner, setRunner, setLadderD
 
 const mapStateToProps = (state, { selectionId }) => {
 	return {
-		market: state.market.currentMarket,
+		marketId: state.market.currentMarket.marketId,
 		sportId: getSportId(state.market.currentMarket),
 		runner: getRunner(state.market.runners, { selectionId }),
 		ltp: getLTP(state.market.ladder, { selectionId }),
 		oddsHovered: state.market.oddsHovered,
 		PL: getPL(state.market.marketPL, { selectionId }),
-		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId })
+		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
+		bets: state.order.bets
 	};
 };
 
