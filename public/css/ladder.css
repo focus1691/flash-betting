@@ -26,7 +26,7 @@
 .ladder-header {
 	display: flex !important;
 	flex-direction: row;
-	/* height: auto !important; */
+	width: 100%;
 }
 
 .ladder-header > div:nth-child(1) {
@@ -92,12 +92,6 @@
 	overflow-y: hidden;
 	overflow-x: hidden;
 	height: 75%;
-}
-
-.ladder-header {
-	display: block;
-	width: 100%;
-	height: 8%;
 }
 
 .ladder > div > .List {
