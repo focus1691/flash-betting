@@ -191,7 +191,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 				}
 			}
 		});
-		if (result.bets) updateOrders(result.bets);
+		if (result && result.bets) updateOrders(result.bets);
 	}, [customStakeActive, customStake, placeOrder, unmatchedBets, matchedBets, updateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
 
 	const cancelSpecialOrders = useCallback(async (order, side) => {

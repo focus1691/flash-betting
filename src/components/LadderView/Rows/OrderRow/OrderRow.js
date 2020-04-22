@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { changePriceType } from "../../../../actions/market";
 import { MatchedBet } from "./MatchedBet";
 import { UnmatchedBet } from "./UnmatchedBet";
-import { getMatchedBets, getUnmatchedBets } from "../../../../selectors/orderSelector";
+import { getSelectionMatchedBets, getSelectionUnmatchedBets } from "../../../../selectors/orderSelector";
 
 const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layList, slList, tosList, fokList, seList, cancelSpecialOrders, priceType, changePriceType}) => {
 
@@ -28,7 +28,7 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 		);
 	};
 
-	const renderUnmatchedBets = useCallback(bets => {
+	const renderSpecialBets = useCallback(bets => {
 		const list = [];
 		for (var id in bets) {
 			if (Array.isArray(bets[id])) {
@@ -40,17 +40,22 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 			}
 		}
 		return list;
-	}, [selectionId, unmatchedBets, backList, layList, slList, tosList, fokList, seList]);
+	}, [selectionId, backList, layList, slList, tosList, fokList, seList]);
+
+	const renderUnmatchedBets = useCallback(() => {
+		const list = [];
+		for (var i = 0; i < unmatchedBets.length; i++) {
+			list.push(createUnmatchedBetRow(unmatchedBets[i], i));
+		}
+		return list;
+	}, [unmatchedBets.length]);
 
 	const renderMatchedBets = useCallback(() => {
 		const list = [];
-		for (var id in matchedBets) {
-			if (selectionId == matchedBets[id].selectionId) {
-				list.push(<MatchedBet
-					key={`ladder-matched-bet-${matchedBets[id].selectionId}-${id}`}
-					bet={matchedBets[id]} index={id} />)
-
-			}
+		for (var i = 0; i < matchedBets.length; i++) {
+			list.push(<MatchedBet
+				key={`ladder-matched-bet-${matchedBets[i].selectionId}-${i}`}
+				bet={matchedBets[i]} index={i} />);
 		}
 		return list;
 	}, [matchedBets.length]);
@@ -62,13 +67,13 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
 							<tbody className="lay-body">
-								{renderUnmatchedBets(unmatchedBets)}
-								{renderUnmatchedBets(backList)}
-								{renderUnmatchedBets(layList)}
-								{renderUnmatchedBets(slList)}
-								{renderUnmatchedBets(tosList)}
-								{renderUnmatchedBets(fokList)}
-								{renderUnmatchedBets(seList)}
+								{renderUnmatchedBets()}
+								{renderSpecialBets(backList)}
+								{renderSpecialBets(layList)}
+								{renderSpecialBets(slList)}
+								{renderSpecialBets(tosList)}
+								{renderSpecialBets(fokList)}
+								{renderSpecialBets(seList)}
 							</tbody>
 						</table>
 					</td>
@@ -95,11 +100,11 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 	);
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, { selectionId }) => {
 	return {
 		priceType: state.market.priceType,
-		matchedBets: getMatchedBets(state.order.bets),
-		unmatchedBets: getUnmatchedBets(state.order.bets),
+		matchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
+		unmatchedBets: getSelectionUnmatchedBets(state.order.bets, { selectionId }),
 		backList: state.back.list,
 		layList: state.lay.list,
 		slList: state.stopLoss.list,
