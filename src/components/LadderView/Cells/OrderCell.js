@@ -1,5 +1,6 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
+import { setOddsHovered } from "../../../actions/market";
 import { getMatched } from "../../../selectors/marketSelector";
 import { getStopLoss } from "../../../selectors/stopLossSelector";
 import { getTickOffset } from "../../../selectors/tickOffsetSelector";
@@ -10,10 +11,10 @@ const isMoving = (prevProps, nextProps) => {
 };
 
 const LadderOrderCell = memo(({ side, price, marketId, selectionId, handlePlaceOrder, stopLoss, stopLossUnits,
-	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, onHover, onLeave, stakeVal, cellMatched }) => {
+	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched }) => {
 
 	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
-	const orderText = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
+	const text = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
 	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched), [side, stopLoss, tickOffset, cellMatched, totalMatched]);
 
 	const handleClick = useCallback(() => {
@@ -25,14 +26,22 @@ const LadderOrderCell = memo(({ side, price, marketId, selectionId, handlePlaceO
 		replaceStopLossOrder({ price, stopLoss });
 	}, [price, replaceStopLossOrder, stopLoss]);
 
+	const handleMouseEnter = useCallback(() => {
+		setOddsHovered({ selectionId, odds: price, side });
+	}, [selectionId, price, side]);
+
+	const handleMouseLeave = useCallback(() => {
+		setOddsHovered({ selectionId, odds: 0, side });
+	}, [selectionId, side]);
+
 	return (
 		<div className="td"
 			style={style}
-			onMouseEnter={onHover}
-			onMouseLeave={onLeave}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
 			onClick={handleClick}
 			onContextMenu={handleRightClick}>
-			{orderText}
+			{text}
 		</div>
 	);
 }, isMoving);
@@ -49,4 +58,6 @@ const mapStateToProps = (state, props) => {
 	};
 };
 
-export default connect(mapStateToProps)(LadderOrderCell);
+const mapDispatchToProps = { setOddsHovered };
+
+export default connect(mapStateToProps, mapDispatchToProps)(LadderOrderCell);

@@ -11,7 +11,7 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 		cancelSpecialOrders(order);
 	}, [cancelSpecialOrders]);
 
-	const cancelAllOrdersOnSelection = useCallback(async () => {
+	const cancelAllOrdersOnSelection = useCallback(() => {
 		cancelSpecialOrders();
 	}, [cancelSpecialOrders]);
 
@@ -28,7 +28,7 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 		);
 	};
 
-	const renderUnmatchedBets = bets => {
+	const renderUnmatchedBets = useCallback(bets => {
 		const list = [];
 		for (var id in bets) {
 			if (Array.isArray(bets[id])) {
@@ -40,23 +40,20 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 			}
 		}
 		return list;
-	};
+	}, [selectionId, unmatchedBets, backList, layList, slList, tosList, fokList, seList]);
 
-	const createMatchedBetRow = (bet, index) => {
-		return (
-			<MatchedBet
-				key={`ladder-matched-bet-${bet.selectionId}-${index}`}
-				bet={bet} index={index} />
-		);
-	};
-
-	const renderMatchedBets = bets => {
+	const renderMatchedBets = useCallback(() => {
 		const list = [];
-		for (var id in bets) {
-			if (selectionId == bets[id].selectionId) list.push(createMatchedBetRow(bets[id], id));
+		for (var id in matchedBets) {
+			if (selectionId == matchedBets[id].selectionId) {
+				list.push(<MatchedBet
+					key={`ladder-matched-bet-${matchedBets[id].selectionId}-${id}`}
+					bet={matchedBets[id]} index={id} />)
+
+			}
 		}
 		return list;
-	};
+	}, [matchedBets.length]);
 
 	return (
 		<div className={"order-row"}>
@@ -88,7 +85,7 @@ const OrderRow = memo(({selectionId, matchedBets, unmatchedBets, backList, layLi
 					<td colSpan={3} rowSpan={4} style={{ verticalAlign: "top" }}>
 						<table className="lay-table">
 							<tbody className="lay-body">
-								{renderMatchedBets(matchedBets)}
+								{renderMatchedBets()}
 							</tbody>
 						</table>
 					</td>

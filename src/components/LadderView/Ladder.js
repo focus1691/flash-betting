@@ -108,7 +108,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 
 		} else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
 			const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
-			const result = placeOrder({
+			const result = await placeOrder({
 				marketId: marketId,
 				side: side,
 				size: PLHedgeNumber.size,

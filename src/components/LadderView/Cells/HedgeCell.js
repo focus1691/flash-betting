@@ -12,23 +12,25 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow
 	const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber, side]);
 	const style = useMemo(() => hedgeStyle(unmatchedBetsOnRow, hedgePL), [unmatchedBetsOnRow, hedgePL]);
 	const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBetsOnRow), [unmatchedBetsOnRow]);
+	const text = useMemo(() => unmatchedStake > 0 ? unmatchedStake : hedgingAvailable ? hedgePL : null, [unmatchedStake, hedgingAvailable, hedgePL]);
 
 	const handleClick = useCallback(() => {
 		handleHedgeCellClick(marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber);
-	}, [PLHedgeNumber, handleHedgeCellClick, marketId, price, selectionId, side, unmatchedBetsOnRow]);
+	}, [handleHedgeCellClick, marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber]);
 
 	return (
 		<div
 			className="td"
 			style={style}
 			onClick={handleClick}>
-			{hedgingAvailable ? unmatchedStake || hedgePL || null : null}
+			{text}
 		</div>
 	);
 });
 
 const mapStateToProps = (state, { selectionId, price, side }) => {
 	return {
+		marketId: state.market.currentMarket.marketId,
 		unmatchedBetsOnRow: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side })
 	};
 };

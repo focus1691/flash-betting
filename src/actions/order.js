@@ -148,7 +148,6 @@ export const cancelOrders = async (orders, backList, layList, stopLossList, tick
 						let backOrderRemoved = await removeOrder(newBackList[order.selectionId][backIdx]);
 						if (backOrderRemoved) newBackList[order.selectionId].splice(backIdx, 1);
 					}
-					cancelBetFairOrder(order);
 					break;
 				case "Lay":
 					let layIdx = newLayList[order.selectionId].findIndex(v => v.rfs === order.rfs);
@@ -156,7 +155,6 @@ export const cancelOrders = async (orders, backList, layList, stopLossList, tick
 						let layOrderRemoved = await removeOrder(newLayList[order.selectionId][layIdx]);
 						if (layOrderRemoved) newLayList[order.selectionId].splice(layIdx, 1);
 					}
-					cancelBetFairOrder(order);
 					break;
 				case "Stop Entry":
 					let seIdx = newStopEntryList[order.selectionId].findIndex(v => v.rfs === order.rfs);
@@ -168,12 +166,10 @@ export const cancelOrders = async (orders, backList, layList, stopLossList, tick
 				case "Tick Offset":
 					let tickOffsetRemoved = await removeOrder(newTickOffsetList[order.rfs]);
 					if (tickOffsetRemoved) delete newTickOffsetList[order.rfs];
-					cancelBetFairOrder(order);
 					break;
 				case "Stop Loss":
 					let stopLossRemoved = await removeOrder(newStopLossList[order.selectionId]);
 					if (stopLossRemoved) delete newStopLossList[order.selectionId];
-					cancelBetFairOrder(order);
 					break;
 				default:
 					// if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
