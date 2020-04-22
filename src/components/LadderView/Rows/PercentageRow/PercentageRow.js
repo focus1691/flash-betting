@@ -25,27 +25,21 @@ const PercentageRow = memo(({ltp, tv, percent, ltpDelta, layFirstCol, setLayFirs
 
 	return (
 		<div className={"percentage-row"}>
-			{/* Total Traded */}
 			<div colSpan={3} className={"th"}>
 				{tv}
 			</div>
-			{/* Cancel Back */}
 			<CancelOrders cancelOrders={layFirstCol ? cancelLayOrders : cancelBackOrders} side={"lay"} layFirstCol={layFirstCol} />
-			{/* Back/Lay */}
 			<div className={"th"} style={{ backgroundColor: layFirstCol ? "#FCC9D3" : "#BCE4FC" }}>
 				{`${percent[layFirstCol ? "lay" : "back"]}%`}
 			</div>
-			{/* LTP */}
 			<Tooltip title={`Swap Back/Lay Columns`} aria-label="Swap matched columns">
 				<div className={"th"} style={ltpStyle} onClick={setLayFirst}>
 					{ltp[0]}
 				</div>
 			</Tooltip>
-			{/* Lay/Back */}
 			<div className={"th"} style={{ backgroundColor: layFirstCol ? "#BCE4FC" : "#FCC9D3" }}>
 				{`${percent[layFirstCol ? "back" : "lay"]}%`}
 			</div>
-			{/* Cancel Lay */}
 			<CancelOrders cancelOrders={layFirstCol ? cancelBackOrders : cancelLayOrders} side={"back"} layFirstCol={layFirstCol} />
 		</div>
 	);

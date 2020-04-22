@@ -33,7 +33,7 @@ const isMoving = (prevProps, nextProps) => {
 };
 
 const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, order, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
-				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossTrailing, stopLossList, stopLossUnits, stakeVal, draggingLadder, customStakeActive, customStake}) => {
+				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossList, stopLossUnits, stakeVal, draggingLadder, customStakeActive, customStake}) => {
 	
 	const containerRef = useRef(null);
 	const listRef = useRef();

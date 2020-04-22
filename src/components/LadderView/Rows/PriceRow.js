@@ -15,7 +15,7 @@ const PriceRow = ({ selectionId, buttonType, stake, lay, stakeVal, setStakeInOne
 	};
 
 	useEffect(() => {
-		if (stakeVal[selectionId] === undefined) setStakeInOneClick({ selectionId, price: 2 });
+		if (!stakeVal[selectionId]) setStakeInOneClick({ selectionId, price: 2 });
 	}, []);
 
 	return (
