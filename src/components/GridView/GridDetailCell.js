@@ -8,13 +8,11 @@ import { selectionHasBets } from "../../utils/Bets/SelectionHasBets";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { isHedgingOnSelectionAvailable } from "../../utils/TradingStategy/HedingCalculator";
+import { getSelectionMatchedBets } from "../../selectors/orderSelector";
 
-const GridDetailCell = ({ setRunner, placeOrder, sportId, market, runner, name, number, logo, ltp, tv, bets, PL, hedge, ltpStyle }) => {
-	const selectionMatchedBets = Object.values(bets.matched).filter(
-		bet => parseInt(bet.selectionId) === parseInt(runner.selectionId)
-	);
+const GridDetailCell = ({ selectionMatchedBets, setRunner, placeOrder, sportId, market, runner, name, number, logo, ltp, tv, bets, PL, hedge, ltpStyle }) => {
 
-	const side = useMemo(() =>  selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) <= 0 ? "BACK" : "LAY", [selectionMatchedBets]);
+	const side = useMemo(() => selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === "BACK" ? 0 : 1), 0) <= 0 ? "BACK" : "LAY", [selectionMatchedBets]);
 
 	const handleImageError = () => e => {
 		e.target.onerror = null;
@@ -22,7 +20,7 @@ const GridDetailCell = ({ setRunner, placeOrder, sportId, market, runner, name, 
 	};
 
 	const executeHedgeBet = () => e => {
-		if (isHedgingOnSelectionAvailable(market.marketId, runner.selectionId, bets)) {
+		if (isHedgingOnSelectionAvailable(selectionMatchedBets)) {
 			const referenceStrategyId = crypto
 				.randomBytes(15)
 				.toString("hex")
@@ -53,19 +51,19 @@ const GridDetailCell = ({ setRunner, placeOrder, sportId, market, runner, name, 
 		<td className="grid-runner-details" onClick={handleRunnerSelection}>
 			<img src={logo} alt={""} onError={handleImageError()} />
 			<span>{`${number}${name}`}</span>
-			<span style={ltpStyle}>{ltp[0] ? ltp[0] : ""}</span>
+			<span style={ltpStyle}>{ltp[0] || ""}</span>
 
 			<div className={"grid-pl"}>
 				<span
 					style={{
-						color: !isHedgingOnSelectionAvailable(market.marketId, runner.selectionId, bets)
+						color: !isHedgingOnSelectionAvailable(selectionMatchedBets)
 							? "#D3D3D3"
 							: hedge < 0
 							? "red"
 							: "#01CC41"
 					}}
 					onClick={executeHedgeBet()}>
-					{selectionHasBets(market.marketId, runner.selectionId, bets) ? hedge : ""}
+					{selectionHasBets(selectionMatchedBets) ? hedge : ""}
 				</span>
 				<span style={{ color: PL.color }}>{PL.val}</span>
 				<span>{tv[0] ? Math.floor(tv[0]).toLocaleString() : ""}</span>
@@ -74,6 +72,12 @@ const GridDetailCell = ({ setRunner, placeOrder, sportId, market, runner, name, 
 	);
 };
 
+const mapStateToProps = (state, { runner: { selectionId } }) => {
+	return {
+		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
+	}
+};
+
 const mapDispatchToProps = { setRunner, placeOrder };
 
-export default connect(null, mapDispatchToProps)(GridDetailCell);
+export default connect(mapStateToProps, mapDispatchToProps)(GridDetailCell);

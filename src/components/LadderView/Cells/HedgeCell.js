@@ -8,7 +8,7 @@ const isMoving = (prevProps, nextProps) => {
 	return nextProps.isMoving;
 };
 
-const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow, side, PLHedgeNumber, handleHedgeCellClick }) => {
+const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow, side, hedgingAvailable, PLHedgeNumber, handleHedgeCellClick }) => {
 	const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber, side]);
 	const style = useMemo(() => hedgeStyle(unmatchedBetsOnRow, hedgePL), [unmatchedBetsOnRow, hedgePL]);
 	const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBetsOnRow), [unmatchedBetsOnRow]);
@@ -22,7 +22,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow
 			className="td"
 			style={style}
 			onClick={handleClick}>
-			{unmatchedStake || hedgePL || null}
+			{hedgingAvailable ? unmatchedStake || hedgePL || null : null}
 		</div>
 	);
 });

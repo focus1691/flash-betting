@@ -97,24 +97,15 @@ const getHedgedBetsToMake = (marketId, bets, ltps) => {
     return getHedgedBets(betsToMake, ltps);
 };
 
-const isHedgingOnSelectionAvailable = (marketId, selectionId, bets) => {
+const isHedgingOnSelectionAvailable = bets => {
     const counter = [0, 0];
+    if (!bets) return false;
 
-    Object.values(bets.matched)
-        .filter(bet => bet.marketId === marketId && bet.selectionId == selectionId)
-        .map(bet => {
-            switch (bet.side) {
-                case "BACK":
-                    counter[0]++;
-                    break;
-                case "LAY":
-                    counter[1]++;
-                    break;
-                default:
-                    break;
-            }
-        });
-    return counter[0] > 0 && counter[1] === 0 || counter[0] === 0 && counter[1] > 0;
+    for (var i =0; i < bets.length; i++) {
+        if (bets[i].side === "BACK") counter[0]++;
+        else if (bets[i].side === "LAY") counter[1]++;
+    }
+    return counter[0] !== counter[1];
 };
 
 export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP, calcHedgeSize };
