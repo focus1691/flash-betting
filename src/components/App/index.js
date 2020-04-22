@@ -365,7 +365,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
                 updateStopLossList(newStopLossList)
               }
             }
-          } else if (!(mc.rc[i].id in nonRunners)) {
+          } else if (!(mc.rc[i].id in nonRunners) && !(mc.rc[i].id in updatedNonRunners) ) {
             // Runner found so we create the new object with the raw data
             ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
           }
