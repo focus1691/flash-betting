@@ -6,10 +6,6 @@ import { getStopLoss } from "../../../selectors/stopLossSelector";
 import { getTickOffset } from "../../../selectors/tickOffsetSelector";
 import { getTotalMatched, orderStyle, textForOrderCell } from "../../../utils/Bets/GetMatched";
 
-const isMoving = (prevProps, nextProps) => {
-	return nextProps.isMoving;
-};
-
 const LadderOrderCell = memo(({ side, price, marketId, selectionId, handlePlaceOrder, stopLoss, stopLossUnits,
 	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched }) => {
 
@@ -44,7 +40,7 @@ const LadderOrderCell = memo(({ side, price, marketId, selectionId, handlePlaceO
 			{text}
 		</div>
 	);
-}, isMoving);
+});
 
 const mapStateToProps = (state, props) => {
 	return {

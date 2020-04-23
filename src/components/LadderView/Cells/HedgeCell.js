@@ -4,10 +4,6 @@ import { getUnmatchedBetsOnRow } from "../../../selectors/orderSelector";
 import { calcHedgeProfit, hedgeStyle } from "../../../utils/Bets/HedgeProfit";
 import GetUnmatchedStake from "../../../utils/Bets/GetUnmatchedStake";
 
-const isMoving = (prevProps, nextProps) => {
-	return nextProps.isMoving;
-};
-
 const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow, side, hedgingAvailable, PLHedgeNumber, handleHedgeCellClick }) => {
 	const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber, side]);
 	const style = useMemo(() => hedgeStyle(unmatchedBetsOnRow, hedgePL), [unmatchedBetsOnRow, hedgePL]);
