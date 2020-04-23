@@ -286,7 +286,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       closeMarket();
       window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
     }
-  }, [marketStatus, market.inPlayTime, pastEventTime, socket, setMarketStatus, setInPlay, marketOpen, setInPlayTime, closeMarket]);
+  }, [setMarketStatus, setInPlay, market.inPlayTime, marketOpen, setInPlayTime, closeMarket, marketId]);
   
   /**
    * Listen for Market Change Messages from the Exchange Streaming socket and create/update them

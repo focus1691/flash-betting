@@ -9,13 +9,13 @@ import { updateStopLossList } from "../../../../actions/stopLoss";
 import { updateTickOffsetList } from "../../../../actions/tickOffset";
 import { combineUnmatchedOrders } from '../../../../utils/Bets/CombineUnmatchedOrders';
 import { getPriceNTicksAway } from "../../../../utils/ladder/CreateFullLadder";
-import { getMatchedBets, getUnmatchedBets } from "../../../../selectors/orderSelector";
+import { getMarketMatchedBets, getMarketUnmatchedBets } from "../../../../selectors/orderSelector";
 import Bet from "./Bet";
 
-const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, bets, matchedBets, unmatchedBets, updateBackList,
+const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, matchedBets, unmatchedBets, updateBackList,
   updateLayList, updateStopEntryList, updateTickOffsetList, updateStopLossList, updateFillOrKillList, updateOrders, rightClickTicks}) => {
 
-  const allOrders = combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, bets.unmatched);
+  const allOrders = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets), [backList, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets] );
   const selections = useMemo(() => { return Object.keys(allOrders) }, [allOrders]);
 
   const cancelOrder = useCallback(async order => {
@@ -29,7 +29,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
 			updateStopEntryList(data.stopEntry);
 			updateFillOrKillList(data.fillOrKill);
 		}
-  }, [backList, fillOrKillList, layList, matchedBets, updateBackList, updateFillOrKillList, updateLayList, updateStopEntryList, updateStopLossList, updateTickOffsetList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
+  }, [backList, fillOrKillList, layList, updateBackList, updateFillOrKillList, updateLayList, updateStopEntryList, updateStopLossList, updateTickOffsetList, stopEntryList, stopLossList, tickOffsetList]);
 
   const replaceOrderPrice = useCallback((order, newPrice) => {
     const newOrder = Object.assign({}, order, {price: newPrice})
@@ -87,7 +87,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
         .then(res => res.json())
         .then(res => {
           if (res.status === "SUCCESS") {
-            const newUnmatched = Object.assign({}, bets.unmatched);
+            const newUnmatched = Object.assign({}, unmatchedBets);
             
             const newBetId = res.instructionReports[0].placeInstructionReport.betId;
             newUnmatched[newBetId] = Object.assign({}, newUnmatched[order.betId]);
@@ -96,10 +96,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
 
             delete newUnmatched[order.betId];
 
-            updateOrders({
-              unmatched: newUnmatched,
-              matched: bets.matched,
-            })
+            updateOrders({ unmatched: newUnmatched, matched: matchedBets });
           }
         });
         break;
@@ -119,7 +116,7 @@ const UnmatchedBets = ({market, marketOpen, backList, layList, stopEntryList, ti
     } catch (e) {
 
     }
-  }, [backList, bets.matched, bets.unmatched, fillOrKillList, layList, updateBackList, updateFillOrKillList, updateLayList, updateOrders, updateStopEntryList, updateStopLossList, updateTickOffsetList, stopEntryList, stopLossList, tickOffsetList]);
+  }, [backList, updateBackList, layList, updateLayList, stopEntryList, updateStopEntryList, tickOffsetList, updateTickOffsetList, stopLossList, updateStopLossList, fillOrKillList, updateFillOrKillList, unmatchedBets, updateOrders, matchedBets]);
 
   const handleRightClick = order => {
     replaceOrderPrice(order, getPriceNTicksAway(parseFloat(order.price), rightClickTicks))
@@ -191,10 +188,9 @@ const mapStateToProps = state => {
     layList: state.lay.list,
     backList: state.back.list,
     fillOrKillList: state.fillOrKill.list,
-    bets: state.order.bets,
+    matchedBets: getMarketMatchedBets(state.order.bets, { marketId: state.market.currentMarket.marketId }),
+    unmatchedBets: getMarketUnmatchedBets(state.order.bets, { marketId: state.market.currentMarket.marketId }),
     rightClickTicks: state.settings.rightClickTicks,
-		unmatchedBets: getUnmatchedBets(state.order.bets),
-		matchedBets: getMatchedBets(state.order.bets)
   };
 };
 
