@@ -5,7 +5,8 @@ import  { setIsLoading, setPremiumStatus, setDefaultView, setActiveView, toggleS
         toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules,  toggleLadderUnmatched,
         setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries } from "../../actions/settings";
 import { loadMarket, setEventType, closeMarket, loadLadder, setSortedLadder, setRunner, loadRunners,
-        loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL } from "../../actions/market";
+        loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL,
+        updateLadderOrder, updateExcludedLadders } from "../../actions/market";
 import { updateStopLossList } from "../../actions/stopLoss";
 import { updateTickOffsetList } from "../../actions/tickOffset";
 import { updateStopEntryList } from "../../actions/stopEntry";
@@ -24,7 +25,7 @@ import { updateBackList } from "../../actions/back";
 import { placeOrder, updateOrders, removeOrder, updateOrder } from "../../actions/order";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import Draggable from "../Draggable";
-import { sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
+import { sortLadder, sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
 import { stopEntryListChange, stopLossCheck } from "../../utils/ExchangeStreaming/MCMHelper";
 import { CreateLadder } from "../../utils/ladder/CreateLadder";
@@ -40,7 +41,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   setDefaultView, setActiveView, toggleSound, toggleTools, toggleUnmatchedBets,
   toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules, toggleLadderUnmatched,
   setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries, loadMarket, setEventType,
-  closeMarket, loadLadder, setSortedLadder, setRunner, loadRunners,
+  closeMarket, loadLadder, setSortedLadder, updateExcludedLadders, setRunner, loadRunners,
   loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateStopLossList, updateTickOffsetList,
   updateStopEntryList, updateLayList, updateBackList, placeOrder, updateOrders, updateFillOrKillList }) => {
   const [marketId, setMarketId] = useState(null);
@@ -368,6 +369,28 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
           } else if (!(mc.rc[i].id in nonRunners) && !(mc.rc[i].id in updatedNonRunners) ) {
             // Runner found so we create the new object with the raw data
             ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
+
+            if (i === mc.rc.length -1) {
+              var j;
+              if (market.eventType === "4339") {
+                //! Used to track ladder order when dragging & dropping ladders
+                const newOrderList = {};
+                for (j = 0; j < market.sortedLadder.length; j++) {
+                  newOrderList[j] = market.sortedLadder[j];
+                }
+                updateLadderOrder(newOrderList);
+              } else {
+                var sortedLadderIndices = sortLadder(ladders);
+                setSortedLadder(sortedLadderIndices);
+                updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));          
+                //! Used to track ladder order when dragging & dropping ladders
+                const newOrderList = {};
+                for (j = 0; j < sortedLadderIndices.length; j++) {
+                  newOrderList[j] = sortedLadderIndices[j];
+                }
+                updateLadderOrder(newOrderList);
+              }
+            }
           }
         }
         if (Object.keys(stopEntryList).length > 0) updateStopEntryList(newStopEntryList);
@@ -562,9 +585,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = { setIsLoading, setPremiumStatus, setDefaultView, setActiveView, toggleSound, toggleTools,
-  toggleUnmatchedBets, toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules, toggleLadderUnmatched,
-  setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries, loadMarket, setEventType, closeMarket, loadLadder,
-  setSortedLadder, setRunner, loadRunners, loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateStopLossList,
-  updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, placeOrder, updateOrders, updateFillOrKillList };
+  toggleUnmatchedBets, toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules,
+  toggleLadderUnmatched, setStakeBtns, setLayBtns, updateRightClickTicks, setHorseRacingCountries, loadMarket, setEventType,
+  closeMarket, loadLadder, setSortedLadder, updateLadderOrder, updateExcludedLadders, setRunner, loadRunners, loadNonRunners,
+  setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateStopLossList, updateTickOffsetList, updateStopEntryList,
+  updateLayList, updateBackList, placeOrder, updateOrders, updateFillOrKillList };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppWithSocket);

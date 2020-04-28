@@ -54,7 +54,7 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
 		return sortedLadder.map((selectionId) => {
 			const { atb, atl, ltp, ltpStyle } = deconstructLadder(ladder[selectionId]);
 			return (
-				<tr key={"sidebar-ladder" + runners[selectionId].runnerName}>
+				<tr key={`sidebar-ladder${runners[selectionId].runnerName}`}>
 					<td>{runners[selectionId].runnerName}</td>
 					<td>{atl}</td>
 					<td style={ltpStyle}>{ltp}</td>

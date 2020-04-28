@@ -25,7 +25,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 		} else {
 			var sortedLadderIndices = sortLadder(ladders);
 			setSortedLadder(sortedLadderIndices);
-			updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
+			// updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
 
 			//! Used to track ladder order when dragging & dropping ladders
 			const newOrderList = {};

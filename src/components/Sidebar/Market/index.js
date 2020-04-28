@@ -13,7 +13,7 @@ import { setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatched
 import { updateStopEntryList } from "../../../actions/stopEntry";
 import { updateStopLossList } from "../../../actions/stopLoss";
 import { updateTickOffsetList } from "../../../actions/tickOffset";
-import { updateLadderOrder, setSortedLadder } from "../../../actions/market";
+import { updateLadderOrder, setSortedLadder, updateExcludedLadders } from "../../../actions/market";
 import Graph from "./Graphs";
 import Ladders from "./Ladders";
 import MarketInfo from "./MarketInfo";
@@ -65,11 +65,14 @@ const useStyles = makeStyles(theme => ({
 const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, stopLossList, tickOffsetList, stopEntryList,
   layList, backList, fillOrKillList, laddersExpanded, toolsExpanded, unmatchedBetsExpanded, matchedBetsExpanded, graphExpanded, marketInfoExpanded,
   rulesExpanded, unmatchedOrders, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, updateFillOrKillList,
-  setLaddersExpanded, setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded, setGraphExpanded, setMarketInfoExpanded, setRulesExpanded, ladders, eventType}) => {
+  setLaddersExpanded, setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded, setGraphExpanded, setMarketInfoExpanded, setRulesExpanded,
+  ladders, eventType, excludedLadders, setSortedLadder, updateExcludedLadders, updateLadderOrder}) => {
 
   const classes = useStyles();
 
-  const cancelAllUnmatchedOrders = useCallback(async () => {
+  const cancelAllUnmatchedOrders = useCallback(async e => {
+    e.stopPropagation();
+    setUnmatchedBetsExpanded(true);
 		if (unmatchedOrders) {
 			const data = await cancelOrders(unmatchedOrders, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, null);
 			updateBackList(data.back);
@@ -78,18 +81,23 @@ const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, s
 			updateTickOffsetList(data.tickOffset);
 			updateStopEntryList(data.stopEntry);
 			updateFillOrKillList(data.fillOrKill);
-			setUnmatchedBetsExpanded(true);
     }
   }, [backList, fillOrKillList, layList, updateBackList, updateFillOrKillList, updateLayList, updateStopEntryList, updateStopLossList, updateTickOffsetList, setUnmatchedBetsExpanded, stopEntryList, stopLossList, tickOffsetList, unmatchedOrders]);
 
-  const reorderByLTP = useCallback(async () => {
+  const reorderByLTP = useCallback(e => {
+    e.stopPropagation();
+    setLaddersExpanded(true);
     if (eventType !== "4339") {
 			var sortedLadderIndices = sortLadder(ladders);
       setSortedLadder(sortedLadderIndices);
-      updateLadderOrder({});
-      setLaddersExpanded(true);
-		}
-  }, [eventType, ladders, setLaddersExpanded]);
+      updateExcludedLadders(sortedLadderIndices);
+      const newOrderList = {};
+      for (var j = 0; j < sortedLadderIndices.length; j++) {
+        newOrderList[j] = sortedLadderIndices[j];
+      }
+      updateLadderOrder(newOrderList);
+    }
+  }, [eventType, ladders, setLaddersExpanded, setSortedLadder, updateExcludedLadders, updateLadderOrder]);
 
   const renderTitle = (name, position) => {
     return (
@@ -233,7 +241,8 @@ const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, s
 const mapStateToProps = state => {
   return {
     ladders: state.market.ladder,
-		eventType: state.market.eventType,
+    eventType: state.market.eventType,
+    excludedLadders: state.market.excludedLadders,
     tools: state.settings.tools,
     unmatchedBets: state.settings.unmatchedBets,
     matchedBets: state.settings.matchedBets,
@@ -258,7 +267,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = { updateBackList, updateLayList, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateFillOrKillList, setLaddersExpanded,
-  setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded, setGraphExpanded, setMarketInfoExpanded, setRulesExpanded };
+  setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded, setGraphExpanded, setMarketInfoExpanded, setRulesExpanded, updateLadderOrder, setSortedLadder, updateExcludedLadders };
 
 
 
