@@ -282,7 +282,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       setInPlayTime(new Date());
     }
 
-    if (marketDefinition.status === "CLOSED" && !marketOpen) {
+    if (marketDefinition.status === "CLOSED" && marketOpen) {
       closeMarket();
       window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
     }

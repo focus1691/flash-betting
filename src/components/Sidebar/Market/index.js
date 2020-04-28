@@ -13,6 +13,7 @@ import { setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatched
 import { updateStopEntryList } from "../../../actions/stopEntry";
 import { updateStopLossList } from "../../../actions/stopLoss";
 import { updateTickOffsetList } from "../../../actions/tickOffset";
+import { updateLadderOrder, setSortedLadder } from "../../../actions/market";
 import Graph from "./Graphs";
 import Ladders from "./Ladders";
 import MarketInfo from "./MarketInfo";
@@ -21,6 +22,7 @@ import Tools from "./OrderTools";
 import Rules from "./Rules";
 import UnmatchedBets from "./UnmatchedBets/UnmatchedBets";
 import { getMarketUnmatchedBets } from "../../../selectors/orderSelector";
+import { sortLadder } from "../../../utils/ladder/SortLadder";
 
 const ExpansionPanel = withStyles({
   root: {
@@ -63,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, stopLossList, tickOffsetList, stopEntryList,
   layList, backList, fillOrKillList, laddersExpanded, toolsExpanded, unmatchedBetsExpanded, matchedBetsExpanded, graphExpanded, marketInfoExpanded,
   rulesExpanded, unmatchedOrders, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, updateFillOrKillList,
-  setLaddersExpanded, setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded, setGraphExpanded, setMarketInfoExpanded, setRulesExpanded}) => {
+  setLaddersExpanded, setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded, setGraphExpanded, setMarketInfoExpanded, setRulesExpanded, ladders, eventType}) => {
 
   const classes = useStyles();
 
@@ -80,6 +82,15 @@ const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, s
     }
   }, [backList, fillOrKillList, layList, updateBackList, updateFillOrKillList, updateLayList, updateStopEntryList, updateStopLossList, updateTickOffsetList, setUnmatchedBetsExpanded, stopEntryList, stopLossList, tickOffsetList, unmatchedOrders]);
 
+  const reorderByLTP = useCallback(async () => {
+    if (eventType !== "4339") {
+			var sortedLadderIndices = sortLadder(ladders);
+      setSortedLadder(sortedLadderIndices);
+      updateLadderOrder({});
+      setLaddersExpanded(true);
+		}
+  }, [eventType, ladders, setLaddersExpanded]);
+
   const renderTitle = (name, position) => {
     return (
       <AppBar className={classes.appBar} position={position || "absolute"}>
@@ -93,19 +104,42 @@ const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, s
   const createExpansionPanelSummary = name => {
     return (
       <ExpansionPanelSummary
-        aria-controls="panel1a-content"
-        id="panel1a-header"
+        aria-controls={`${name}-content`}
+        id={`${name}-header`}
       >
         {renderTitle(name)}
       </ExpansionPanelSummary>
     );
   };
 
+  const createExpansionPanelSummaryLadders = name => {
+    return (
+      <ExpansionPanelSummary
+        aria-controls={`${name}-content`}
+        id={`${name}-header`}
+      >
+        <AppBar className={classes.appBar} position={"absolute"}>
+          <Typography variant="h6" className={classes.title}>
+            {name}
+            <button
+              className={"refresh-btn"}
+              style={{ height: "22px", width: "auto", display: "inline-block", zIndex: "999", float: "right", marginTop: "0.3em" }}
+              onClick={reorderByLTP}
+            >
+              <img src={`${window.location.origin}/icons/refresh.png`} alt="R" />
+            </button>
+          </Typography>
+        </AppBar>
+      </ExpansionPanelSummary>
+    );
+  };
+
+
   const createExpansionPanelSummaryUnmatchedBets = name => {
     return (
       <ExpansionPanelSummary
-        aria-controls="panel1a-content"
-        id="panel1a-header"
+        aria-controls="unmatched-bets-content"
+        id="unmatched-bets-header"
       >
         <AppBar className={classes.appBar} position={"absolute"}>
           <Typography variant="h6" className={classes.title}>
@@ -129,7 +163,7 @@ const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, s
         expanded={laddersExpanded}
         onChange={e => setLaddersExpanded(!laddersExpanded)}
       >
-        {createExpansionPanelSummary("Ladders")}
+        {createExpansionPanelSummaryLadders("Ladders")}
         <Ladders />
       </ExpansionPanel>
 
@@ -198,6 +232,8 @@ const Market = ({tools, unmatchedBets, matchedBets, graphs, marketInfo, rules, s
 
 const mapStateToProps = state => {
   return {
+    ladders: state.market.ladder,
+		eventType: state.market.eventType,
     tools: state.settings.tools,
     unmatchedBets: state.settings.unmatchedBets,
     matchedBets: state.settings.matchedBets,
