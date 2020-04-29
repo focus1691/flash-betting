@@ -16,6 +16,7 @@ const LadderOrderCell = memo(({ selectionId, side, price, marketId, handlePlaceO
 	
 
 	const handleClick = useCallback(async () => {
+		if (betPending) return;
 		setBetPending(true);
 		await handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
 		setBetPending(false);

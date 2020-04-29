@@ -95,7 +95,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 		if (res.status) updateStopLossList(res.data);
 	}, [id, updateStopLossList, stakeVal, stopLossHedged, stopLossList, stopLossUnits]);
 
-	const handleHedgeCellClick = useCallback(async (marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber) => {
+	const handleHedgeCellClick = useCallback(async (marketId, selectionId, unmatchedBetsOnRow, side, price, hedge) => {
 		if (unmatchedBetsOnRow) {
 
 			const data = await cancelOrders(unmatchedBetsOnRow, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
@@ -106,12 +106,12 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 			updateStopEntryList(data.stopEntry);
 			updateFillOrKillList(data.fillOrKill);
 
-		} else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
+		} else if (hedge && hedge.size > 0) {
 			const referenceStrategyId = crypto.randomBytes(15).toString("hex").substring(0, 15);
 			const result = await placeOrder({
 				marketId: marketId,
 				side: side,
-				size: PLHedgeNumber.size,
+				size: hedge.size,
 				price: price,
 				selectionId: selectionId,
 				customerStrategyRef: referenceStrategyId,

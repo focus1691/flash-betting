@@ -86,7 +86,7 @@ const getHedgedBetsToMake = (marketId, bets, ltps) => {
         acc.indexOf(cur.selectionId) === -1 ? acc.concat(cur.selectionId) : acc, []);
 
     var betsToMake = selections.map(selection => {
-        if (isHedgingOnSelectionAvailable(marketId, selection, bets)) {
+        if (isHedgingOnSelectionAvailable(bets)) {
 
             return Object.values(bets.matched)
                 .filter(bet => bet.marketId === marketId && bet.selectionId == selection)
@@ -101,10 +101,12 @@ const isHedgingOnSelectionAvailable = bets => {
     const counter = [0, 0];
     if (!bets) return false;
 
-    for (var i =0; i < bets.length; i++) {
+    for (var i = 0; i < bets.length; i++) {
         if (bets[i].side === "BACK") counter[0]++;
         else if (bets[i].side === "LAY") counter[1]++;
     }
+    return 
+
     return counter[0] !== counter[1];
 };
 
