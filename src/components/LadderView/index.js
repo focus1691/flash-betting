@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import { updateLadderOrder, setSortedLadder, updateExcludedLadders } from "../../actions/market";
+import { updateLadderOrder, setSortedLadder } from "../../actions/market";
 import { sortLadder } from "../../utils/ladder/SortLadder";
 import SuspendedWarning from "../GridView/SuspendedWarning";
 import Ladder from "./Ladder";
 
-const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, updateExcludedLadders, marketOpen, marketStatus, setSortedLadder, excludedLadders }) => {
+const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, marketOpen, marketStatus, setSortedLadder, excludedLadders }) => {
 	const [layFirstCol, setLayFirstCol] = useState(true);
 	const setLayFirst = useCallback(() => {
 		setLayFirstCol(!layFirstCol);
@@ -15,7 +15,6 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 	useEffect(() => {
 		var i;
 		if (eventType === "4339") {
-			//! Used to track ladder order when dragging & dropping ladders
 			const newOrderList = {};
 			for (i = 0; i < sortedLadder.length; i++) {
 				newOrderList[i] = sortedLadder[i];
@@ -25,9 +24,6 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 		} else {
 			var sortedLadderIndices = sortLadder(ladders);
 			setSortedLadder(sortedLadderIndices);
-			// updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-
-			//! Used to track ladder order when dragging & dropping ladders
 			const newOrderList = {};
 			for (i = 0; i < sortedLadderIndices.length; i++) {
 				newOrderList[i] = sortedLadderIndices[i];
@@ -35,14 +31,6 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 			updateLadderOrder(newOrderList);
 		}
 	}, [Object.keys(ladders).length > 0]);
-
-	//* Sort ladders each time the ladder changes
-	useEffect(() => {
-		if (eventType !== "4339") {
-			var sortedLadderIndices = sortLadder(ladders);
-			setSortedLadder(sortedLadderIndices);
-		}
-	}, [ladders]);
 
 	return marketOpen && (marketStatus === "SUSPENDED" || marketStatus === "OPEN" || marketStatus === "RUNNING") ? (
 		<div className={"ladder-container"} onContextMenu={(e) => e.preventDefault()}>
@@ -68,6 +56,6 @@ const mapStateToProps = (state) => {
 	};
 };
 
-const mapDispatchToProps = { updateLadderOrder, updateExcludedLadders, setSortedLadder };
+const mapDispatchToProps = { updateLadderOrder, setSortedLadder };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ladders);

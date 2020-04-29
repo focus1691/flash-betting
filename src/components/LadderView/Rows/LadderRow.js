@@ -40,15 +40,15 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 			<HedgeCell
 				selectionId={selectionId}
 				price={key}
+				side={side.left}
 				PLHedgeNumber={PLHedgeNumber}
 				hedgingAvailable={hedgingAvailable}
-				side={side.left}
 				handleHedgeCellClick={handleHedgeCellClick}
 			/>
 			<OrderCell
-				side={side.left}
 				selectionId={selectionId}
 				price={key}
+				side={side.left}
 				handlePlaceOrder={handlePlaceOrder}
 				replaceStopLossOrder={replaceStopLossOrder}
 				hedgeSize={HedgeSize}
@@ -59,9 +59,9 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 				isMoving={isMoving}
 			/>
 			<OrderCell
-				side={side.right}
 				selectionId={selectionId}
 				price={key}
+				side={side.right}
 				handlePlaceOrder={handlePlaceOrder}
 				replaceStopLossOrder={replaceStopLossOrder}
 				hedgeSize={HedgeSize}

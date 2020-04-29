@@ -11,8 +11,16 @@ const getTotalMatched = (cellMatched, cellUnmatched) => {
 	return totalMatched;
 };
 
-const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched) => {
+const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, bets) => {
+	if (bets) {
+		for (var i = 0; i < bets.length; i++) {
+			if (bets[i].delayed) {
+				return { background: "red" };
+			}
+		}
+	}
 	if (stopLoss) return { background: "yellow" };
+	else if (tickOffset) return { background: "yellow" };
 	else if (cellMatched.side === "BACK" && totalMatched > 0 && side) return { background: "#75C2FD" };
 	else if (cellMatched.side === "LAY" && totalMatched > 0 && side === "LAY") return { background: "#F694AA" };
 	else if (side === "LAY") return { background: "#FCC9D3" };
@@ -31,6 +39,17 @@ const textForOrderCell = (stopLoss, totalMatched) => {
 	return null
 };
 
+const isOrderPending = (price, bets) => {
+	const pending = { BACK: false, LAY: false };
+    for (var i =0; i < bets.length; i++) {
+		if (bets[i].delayed && parseInt(bets[i].price) === parseInt(price)) {
+			if (bets[i].side === "BACK") pending.BACK = true;
+			else if (bets[i].side === "LAY") pending.LAY = true;
+		}
+	}
+	return pending;
+};
+
 const getMatchedSide = firstCol => {
 	return {
 		left: firstCol ? "LAY" : "BACK",
@@ -38,4 +57,4 @@ const getMatchedSide = firstCol => {
 	}
 };
 
-export { getTotalMatched, textForOrderCell, orderStyle, getMatchedSide };
+export { getTotalMatched, textForOrderCell, orderStyle, getMatchedSide, isOrderPending };

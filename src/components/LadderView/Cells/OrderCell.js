@@ -1,17 +1,18 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { setOddsHovered } from "../../../actions/market";
+import { getUnmatchedBetsOnRow } from "../../../selectors/orderSelector";
 import { getMatched } from "../../../selectors/marketSelector";
 import { getStopLoss } from "../../../selectors/stopLossSelector";
 import { getTickOffset } from "../../../selectors/tickOffsetSelector";
 import { getTotalMatched, orderStyle, textForOrderCell } from "../../../utils/Bets/GetMatched";
 
-const LadderOrderCell = memo(({ side, price, marketId, selectionId, handlePlaceOrder, stopLoss, stopLossUnits,
-	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched }) => {
+const LadderOrderCell = memo(({ selectionId, side, price, marketId, handlePlaceOrder, stopLoss, stopLossUnits,
+	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched, unmatchedBetsOnRow }) => {
 
 	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
 	const text = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
-	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched), [side, stopLoss, tickOffset, cellMatched, totalMatched]);
+	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched, unmatchedBetsOnRow), [side, stopLoss, tickOffset, cellMatched, totalMatched, unmatchedBetsOnRow]);
 
 	const handleClick = useCallback(() => {
 		handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
@@ -50,7 +51,8 @@ const mapStateToProps = (state, props) => {
 		stopLossUnits: state.stopLoss.units,
 		tickOffset: getTickOffset(state.tickOffset.list, props),
 		stakeVal: state.settings.stake,
-		cellMatched: getMatched(state.market.ladder, props)
+		cellMatched: getMatched(state.market.ladder, props),
+		unmatchedBetsOnRow: getUnmatchedBetsOnRow(state.order.bets, { selectionId: props.selectionId, price: props.price, side: props.side }),
 	};
 };
 
