@@ -11,15 +11,9 @@ const getTotalMatched = (cellMatched, cellUnmatched) => {
 	return totalMatched;
 };
 
-const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, bets) => {
-	if (bets) {
-		for (var i = 0; i < bets.length; i++) {
-			if (bets[i].delayed) {
-				return { background: "red" };
-			}
-		}
-	}
-	if (stopLoss) return { background: "yellow" };
+const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, pendingBets) => {
+	if (pendingBets) return { background: "red" };
+	else if (stopLoss) return { background: "yellow" };
 	else if (tickOffset) return { background: "yellow" };
 	else if (cellMatched.side === "BACK" && totalMatched > 0 && side) return { background: "#75C2FD" };
 	else if (cellMatched.side === "LAY" && totalMatched > 0 && side === "LAY") return { background: "#F694AA" };

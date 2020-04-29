@@ -7,6 +7,20 @@ export const updateOrders = order => {
 	};
 };
 
+export const addPendingOrders = order => {
+	return {
+		type: "UPDATE_PENDING",
+		payload: order
+	};
+};
+
+export const removePendingOrder = price => {
+	return {
+		type: "REMOVE_PENDING",
+		payload: price
+	};
+};
+
 export const placeOrder = order => {
 	const newSize = order.side === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size);
 

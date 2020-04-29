@@ -107,8 +107,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             size: bet.status === "EXECUTION_COMPLETE" ? bet.sizeMatched : bet.priceSize.size,
             selectionId: bet.selectionId,
             rfs: bet.customerStrategyRef ? bet.customerStrategyRef : "None",
-            betId: bet.betId,
-            delayed: bet.status === "EXECUTABLE" && market.inPlay
+            betId: bet.betId
           }
           if (bet.status === "EXECUTION_COMPLETE") matched[order.betId] = order;
           else if (bet.status === "EXECUTABLE") unmatched[order.betId] = order;

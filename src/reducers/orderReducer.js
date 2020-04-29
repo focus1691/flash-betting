@@ -1,6 +1,6 @@
 const initialState = {
   bets: {
-    matched: {}, // betId: {}
+    matched: {},
     unmatched: {}
   }
 };

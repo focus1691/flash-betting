@@ -1,21 +1,24 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { useState, memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { setOddsHovered } from "../../../actions/market";
-import { getUnmatchedBetsOnRow } from "../../../selectors/orderSelector";
 import { getMatched } from "../../../selectors/marketSelector";
 import { getStopLoss } from "../../../selectors/stopLossSelector";
 import { getTickOffset } from "../../../selectors/tickOffsetSelector";
 import { getTotalMatched, orderStyle, textForOrderCell } from "../../../utils/Bets/GetMatched";
 
 const LadderOrderCell = memo(({ selectionId, side, price, marketId, handlePlaceOrder, stopLoss, stopLossUnits,
-	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched, unmatchedBetsOnRow }) => {
+	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched }) => {
 
+	const [betPending, setBetPending] = useState(false);
 	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
 	const text = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
-	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched, unmatchedBetsOnRow), [side, stopLoss, tickOffset, cellMatched, totalMatched, unmatchedBetsOnRow]);
+	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched, betPending), [side, stopLoss, tickOffset, cellMatched, totalMatched, betPending]);
+	
 
-	const handleClick = useCallback(() => {
-		handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
+	const handleClick = useCallback(async () => {
+		setBetPending(true);
+		await handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
+		setBetPending(false);
 	}, [handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossSelected, stopLossUnits]);
 
 	const handleRightClick = useCallback(() => e => {
@@ -51,8 +54,7 @@ const mapStateToProps = (state, props) => {
 		stopLossUnits: state.stopLoss.units,
 		tickOffset: getTickOffset(state.tickOffset.list, props),
 		stakeVal: state.settings.stake,
-		cellMatched: getMatched(state.market.ladder, props),
-		unmatchedBetsOnRow: getUnmatchedBetsOnRow(state.order.bets, { selectionId: props.selectionId, price: props.price, side: props.side }),
+		cellMatched: getMatched(state.market.ladder, props)
 	};
 };
 
