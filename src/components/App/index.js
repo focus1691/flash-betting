@@ -54,9 +54,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
 
   const ONE_SECOND = 1000;
 
-  const loadSession = async () => {
-    await fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`);
-  };
+  const loadSession = async () => await fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`);
   
   const loadSettings = async () => {
     /**
@@ -82,10 +80,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
         setLayBtns(settings.layBtns);
         updateRightClickTicks(settings.rightClickTicks);
         setHorseRacingCountries(settings.horseRaces);
-      })
-      .catch(e => {
-        window.location.href = window.location.origin + "/?error=USER_SETTINGS_NOT_FOUND";
-      });
+      }).catch(e => window.location.href = window.location.origin + "/?error=USER_SETTINGS_NOT_FOUND");
 
     /**
      * @return {Boolean} premiumStatus
@@ -94,6 +89,37 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     await fetch(`/api/premium-status`)
       .then(res => res.json())
       .then(expiryDate => setPremiumStatus(isPremiumActive(new Date(), expiryDate)));
+  };
+
+  const retrieveBets = async () => {
+    if (marketId) {
+      try {
+        const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+        const unmatched = {};
+        const matched = {};
+        for (var i = 0; i < betfairBets.length; i++) {
+          const bet = betfairBets[i];
+          const order = {
+            strategy: "None",
+            marketId: bet.marketId,
+            side: bet.side,
+            price: bet.status === "EXECUTION_COMPLETE" ? bet.averagePriceMatched : bet.priceSize.price,
+            size: bet.status === "EXECUTION_COMPLETE" ? bet.sizeMatched : bet.priceSize.size,
+            selectionId: bet.selectionId,
+            rfs: bet.customerStrategyRef ? bet.customerStrategyRef : "None",
+            betId: bet.betId,
+            delayed: bet.status === "EXECUTABLE" && market.inPlay
+          }
+          if (bet.status === "EXECUTION_COMPLETE") matched[order.betId] = order;
+          else if (bet.status === "EXECUTABLE") unmatched[order.betId] = order;
+        }
+        if (!compareKeys(matched, matchedBets) || !compareKeys(unmatched, unmatchedBets)) {
+          updateOrders({matched, unmatched});
+        }
+      } catch (e) {
+
+      }
+    }
   };
 
   const retrieveMarket = async () => {
@@ -140,7 +166,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
                 })
               });
 
-              // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+              //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
               socket.emit("market-subscription", { marketId: data.result[0].marketId});
 
               let loadedBackOrders = {};
@@ -149,26 +175,12 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
               let loadedTickOffsetOrders = {};
               let loadedFillOrKillOrders = {};
               let loadedStopLossOrders = {};
-              let loadedUnmatchedOrders = {};
-              let loadedMatchedOrders = {};
 
               await fetch(`/api/get-all-orders`)
                 .then(res => res.json())
                 .then(async orders => {
                   const loadOrders = async orders => {
-                    const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`)
-                      .then(res => res.json())
-                      .then(res => res.currentOrders);
-                    const currentOrdersObject = {};
-                    currentOrders.forEach(item => {
-                      currentOrdersObject[item.betId] = item;
-                      if (item.status === "EXECUTION_COMPLETE") {
-                        currentOrdersObject[item.betId].price = item.averagePriceMatched;
-                      } else {
-                        currentOrdersObject[item.betId].price = item.priceSize.price;
-                      }
-                    });
-
+                    retrieveBets();
                     orders.map(async order => {
                       if (order.marketId === marketId) {
                         switch (order.strategy) {
@@ -195,9 +207,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
                             break;
                           case "Fill Or Kill":
                             // this should only keep the fill or kill if the order isn't completed already
-                            if (currentOrdersObject[order.betId] === "EXECUTABLE") {
                               loadedFillOrKillOrders[order.betId] = order;
-                            }
                             break;
                           case "Stop Loss":
                             loadedStopLossOrders[order.selectionId] = order;
@@ -207,36 +217,9 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
                         }
                       }
                     });
-
-                    // handle orders not in the there
-                    Object.keys(currentOrdersObject).map(async betId => {
-                      const order = currentOrdersObject[betId];
-
-                      const orderData = {
-                        strategy: "None",
-                        marketId: order.marketId,
-                        side: order.side,
-                        price: order.price,
-                        size: order.status === "EXECUTION_COMPLETE" ? order.sizeMatched : order.priceSize.size,
-                        selectionId: order.selectionId,
-                        rfs: order.customerStrategyRef ? order.customerStrategyRef : "None",
-                        betId: betId
-                      };
-
-                      if (order.status === "EXECUTION_COMPLETE") {
-                        loadedMatchedOrders[order.betId] = orderData;
-                      } else if (order.status === "EXECUTABLE") {
-                        loadedUnmatchedOrders[order.betId] = orderData;
-                      }
-                    });
                   };
                   await loadOrders(orders);
-                })
-                .then(() => {
-                  updateOrders({
-                    matched: loadedMatchedOrders,
-                    unmatched: loadedUnmatchedOrders
-                  });
+                }).then(() => {
                   updateBackList(loadedBackOrders);
                   updateLayList(loadedLayOrders);
                   updateStopEntryList(loadedStopEntryOrders);
@@ -270,7 +253,6 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       await retrieveMarket();
       setIsLoading(false);
     };
-
     loadData();
   }, []);
 
@@ -493,35 +475,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     }
   }, [unmatchedBets]);
 
-  useInterval(async () => {
-    if (marketId) {
-      try {
-        const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-        const unmatched = {};
-        const matched = {};
-        for (var i = 0; i < betfairBets.length; i++) {
-          const bet = betfairBets[i];
-          const order = {
-            strategy: "None",
-            marketId: bet.marketId,
-            side: bet.side,
-            price: bet.status === "EXECUTION_COMPLETE" ? bet.averagePriceMatched : bet.priceSize.price,
-            size: bet.status === "EXECUTION_COMPLETE" ? bet.sizeMatched : bet.priceSize.size,
-            selectionId: bet.selectionId,
-            rfs: bet.customerStrategyRef ? bet.customerStrategyRef : "None",
-            betId: bet.betId
-          }
-          if (bet.status === "EXECUTION_COMPLETE") matched[order.betId] = order;
-          else if (bet.status === "EXECUTABLE") unmatched[order.betId] = order;
-        }
-        if (!compareKeys(matched, matchedBets) || !compareKeys(unmatched, unmatchedBets)) {
-          updateOrders({matched, unmatched});
-        }
-      } catch (e) {
-
-      }
-    }
-  }, ONE_SECOND);
+  useInterval(async () => retrieveBets(), ONE_SECOND);
 
   useEffect(() => {
     fetch(`/api/list-market-pl?marketId=${marketId}`)
