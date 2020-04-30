@@ -105,9 +105,10 @@ const isHedgingOnSelectionAvailable = bets => {
         if (bets[i].side === "BACK") counter[0]++;
         else if (bets[i].side === "LAY") counter[1]++;
     }
-    return 
 
-    return counter[0] !== counter[1];
+    if (counter[0] === 0 && counter[1] === 0) return false;
+
+    return counter[0] === counter[1];
 };
 
 export { calcLiability, calcHedge, calcHedgedPL2, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP, calcHedgeSize };

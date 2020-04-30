@@ -11,10 +11,11 @@ import { updateStopEntryList } from "../../actions/stopEntry";
 import { updateFillOrKillList } from "../../actions/fillOrKill";
 import { cancelOrders, placeOrder, updateOrders, placeStopLoss, replaceStopLoss, placeTickOffset, placeFillOrKill } from "../../actions/order";
 import { getLTP } from "../../selectors/marketSelector";
-import { getMatchedBets, getUnmatchedBets } from "../../selectors/orderSelector";
+import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from "../../selectors/orderSelector";
 import { combineUnmatchedOrders } from "../../utils/Bets/CombineUnmatchedOrders";
 import { getStakeVal } from "../../selectors/settingsSelector";
 import { ALL_PRICES, formatPrice } from "../../utils/ladder/CreateFullLadder";
+import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import { findTickOffset } from "../../utils/TradingStategy/TickOffset";
 import { findStopPosition } from "../../utils/TradingStategy/StopLoss";
 import Container from "./Container";
@@ -32,7 +33,7 @@ const isMoving = (prevProps, nextProps) => {
 	}
 };
 
-const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, order, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
+const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, order, selectionMatchedBets, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
 				tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossList, stopLossUnits, stakeVal, draggingLadder, customStakeActive, customStake}) => {
 	
 	const containerRef = useRef(null);
@@ -45,6 +46,8 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 	const [ladderLastHovered, setLadderLastHovered] = useState(new Date().getTime());
 	
 	const ladderStyle = useMemo(() => listRefSet ? {paddingRight: `${listRef.current.offsetWidth - listRef.current.clientWidth -17}px`} : "", [listRefSet]);
+	const ltpHedge = useMemo(() => CalculateLadderHedge(ltp, selectionMatchedBets, "hedged"), [ltp, selectionMatchedBets]);
+	const hedgingAvailable = useMemo(() => ltpHedge.size > 0.01, [ltpHedge]);
 	
 	const setReferenceSent = () => {
 		setIsReferenceSet(true);
@@ -219,7 +222,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 			setIsReferenceSet={setReferenceSent}
 			setIsMoving={setIsMoving}
 			setLadderDown={setLadderDown} >
-			<Header selectionId={id} setLadderDown={setLadderDown} />
+			<Header selectionId={id} setLadderDown={setLadderDown} hedge={ltpHedge} />
 
 			<div className={"ladder"} onContextMenu={() => false} onPointerOver={onHoverLadder} onPointerLeave={overLeaveLadder}>
 				<PercentageRow
@@ -246,7 +249,8 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 								handleHedgeCellClick: handleHedgeCellClick,
 								replaceStopLossOrder: replaceStopLossOrder,
 								layFirstCol: layFirstCol,
-								isMoving: isMoving
+								isMoving: isMoving,
+								hedgingAvailable: hedgingAvailable
 							}}>
 							{LadderRow}
 						</List>
@@ -265,6 +269,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 const mapStateToProps = (state, props) => {
 	return {
 		ltp: getLTP(state.market.ladder, { selectionId: props.id }),
+		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId: props.id }),
 		unmatchedBets: getUnmatchedBets(state.order.bets),
 		matchedBets: getMatchedBets(state.order.bets),
 		stakeVal: getStakeVal(state.settings.stake, { selectionId: props.id }),

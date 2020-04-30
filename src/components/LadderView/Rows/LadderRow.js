@@ -10,13 +10,12 @@ import { getSelectionMatchedBets } from "../../../selectors/orderSelector";
 import { getStakeVal } from "../../../selectors/settingsSelector";
 import { getPL } from "../../../selectors/marketSelector";
 import { getMatchedSide } from "../../../utils/Bets/GetMatched";
-import { isHedgingOnSelectionAvailable } from "../../../utils/TradingStategy/HedingCalculator";
 
 const isMoving = (prevProps, nextProps) => {
 	return nextProps.data.isMoving;
 };
 
-const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick, replaceStopLossOrder, isMoving, handlePlaceOrder },
+const LadderRow = memo(({ data: { selectionId, layFirstCol, hedgingAvailable, handleHedgeCellClick, replaceStopLossOrder, isMoving, handlePlaceOrder },
 	PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index }) => {
 
 	const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
@@ -31,8 +30,6 @@ const LadderRow = memo(({ data: { selectionId, layFirstCol, handleHedgeCellClick
 	const HedgeSize = useMemo(() => selectionMatchedBets.length > 0
 		? CalculateLadderHedge(key, selectionMatchedBets, "hedged", stakeVal, PL).size
 		: undefined, [selectionMatchedBets, key, stakeVal, PL]);
-
-	const hedgingAvailable = useMemo(() => isHedgingOnSelectionAvailable(selectionMatchedBets), [selectionMatchedBets]);
 		
 	return (
 		<div key={key} onContextMenu={e => e.preventDefault()} className={"tr"} style={style}>

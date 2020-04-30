@@ -1,16 +1,14 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { connect } from "react-redux";
 import { setRunner, setDraggingLadder } from "../../actions/market";
-import { getLTP, getRunner, getSportId, getPL } from "../../selectors/marketSelector";
-import { getSelectionMatchedBets } from "../../selectors/orderSelector";
+import { getRunner, getSportId, getPL } from "../../selectors/marketSelector";
 import { twoDecimalPlaces } from "../../utils/Bets/BettingCalculations";
 import { iconForEvent } from "../../utils/Market/EventIcons";
 import { getTrainerAndJockey } from "../../utils/Market/GetTrainerAndJockey";
-import { calcHedgeAtLTP, calcHedgeSize } from "../../utils/TradingStategy/HedingCalculator";
 import { calcOddsOnPriceHover } from "../../utils/Bets/HedgeProfit";
 import { marketHasBets } from "../../utils/Bets/GetProfitAndLoss";
 
-const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, setLadderDown, oddsHovered, ltp, PL, setDraggingLadder, selectionMatchedBets, bets }) => {
+const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, setLadderDown, oddsHovered, PL, setDraggingLadder, bets, hedge }) => {
 	const ordersOnMarket = useMemo(() => marketHasBets(marketId, bets), [bets, marketId]);
 	const oddsHoveredCalc = useMemo(() => calcOddsOnPriceHover(oddsHovered.odds, oddsHovered.side, selectionId, oddsHovered.selectionId, PL), [
 		PL,
@@ -19,8 +17,6 @@ const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, 
 		oddsHovered.side,
 		selectionId
 	]);
-	const ladderLTPHedge = useMemo(() => calcHedgeAtLTP(selectionMatchedBets, ltp), [ltp, selectionMatchedBets]);
-	const LTPHedgeSize = useMemo(() => calcHedgeSize(selectionMatchedBets, ltp), [selectionMatchedBets, ltp]);
 
 	const handleMouseDown = () => {
 		setLadderDown(true);
@@ -80,18 +76,18 @@ const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, 
 			<div>
 				<span
 					style={{
-						display: parseFloat(ladderLTPHedge) === 0 ? "none" : "block",
-						color: parseFloat(ladderLTPHedge).toFixed(2) >= 0 ? "rgb(106, 177, 79)" : "red"
+						display: parseFloat(hedge.profit) === 0 ? "none" : "block",
+						color: parseFloat(hedge.profit) >= 0 ? "rgb(106, 177, 79)" : "red"
 					}}>
-					{twoDecimalPlaces(ladderLTPHedge)}
+					{twoDecimalPlaces(hedge.profit)}
 				</span>
 				<span
 					style={{
-						display: LTPHedgeSize === 0 ? "none" : "block",
-						color: parseFloat(LTPHedgeSize).toFixed(2) >= 0 ? "#88c6f7" : "red"
+						display: twoDecimalPlaces(hedge.size) <= 0 ? "none" : "block",
+						color: hedge.side === "BACK" ? "#DBEFFF" : "#F694AA"
 					}}
 					id="ltphedgesize">
-					{twoDecimalPlaces(LTPHedgeSize)}
+					{twoDecimalPlaces(hedge.size)}
 				</span>
 			</div>
 		</div>
@@ -103,10 +99,8 @@ const mapStateToProps = (state, { selectionId }) => {
 		marketId: state.market.currentMarket.marketId,
 		sportId: getSportId(state.market.currentMarket),
 		runner: getRunner(state.market.runners, { selectionId }),
-		ltp: getLTP(state.market.ladder, { selectionId }),
 		oddsHovered: state.market.oddsHovered,
 		PL: getPL(state.market.marketPL, { selectionId }),
-		selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
 		bets: state.order.bets
 	};
 };
