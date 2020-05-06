@@ -499,7 +499,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   useEffect(() => {
     if (Object.keys(unmatchedBets).length > 0) {
       socket.emit("order-subscription", {
-        customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map(bet => bet.rfs))
+        customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).filter(bet => bet.rfs &&  bet))
       });
       return () => {
         socket.off("order-subscription");
