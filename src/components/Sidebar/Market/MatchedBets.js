@@ -1,14 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import { calcBackProfit, twoDecimalPlaces } from "../../../utils/Bets/BettingCalculations";
+import { combinePartiallyMatchedBets } from "../../../utils/Bets/CombineUnmatchedOrders";
 
-const MatchedBets = props => {
+const MatchedBets = ({marketOpen, market, bets}) => {
 
-  const reducer = (acc, cur) => {
-    return acc.indexOf(cur.selectionId) === -1 ?  acc.concat(cur.selectionId) : acc; 
-  }
-  
-  const selections = Object.values(props.bets.matched).reduce(reducer, [])
+  const selections = useMemo(() => combinePartiallyMatchedBets(bets) ,[bets]);
 
   return (
     <div>
@@ -32,15 +29,15 @@ const MatchedBets = props => {
           </tr>
           <tr>
             <td className="menu-bets-event" colSpan={4}>
-              {props.market.competition !== undefined ? props.market.marketName + " " + props.market.competition.name : null}
+              {market.competition !== undefined ? `${market.marketName} ${market.competition.name}` : null}
             </td>
           </tr>
-          {props.marketOpen
+          {marketOpen
             ? selections.map((selection, idx) => {
-              const selectionObject = props.market.runners.find(runner => runner.selectionId === selection);
+              const selectionObject = market.runners.find(runner => runner.selectionId === selection);
               if (selectionObject === undefined) return null;
 
-              const filteredOrders = Object.values(props.bets.matched).filter(order => order.selectionId === selection);
+              const filteredOrders = Object.values(bets.matched).filter(order => order.selectionId === selection);
               return (
             
                 <React.Fragment key={`sidebar-matched-bet-${selection}-${idx}`}>
@@ -65,7 +62,7 @@ const MatchedBets = props => {
                               </td>
 
                               <td>{twoDecimalPlaces(order.price)}</td>
-                              <td>{order.size}</td>
+                              <td>{order.sizeMatched}</td>
                               <td
                                 id="pl-style"
                                 style={{
@@ -105,6 +102,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps
-)(MatchedBets);
+export default connect(mapStateToProps)(MatchedBets);

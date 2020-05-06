@@ -36,7 +36,7 @@ import ConnectionStatus from "../ConnectionStatus";
 import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionErrorType";
 import useInterval from "../../utils/CustomHooks/useInterval";
 
-const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen, nonRunners,
+const App = ({ view, isLoading, market, marketOpen, nonRunners,
   unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, socket, setIsLoading, setPremiumStatus,
   setDefaultView, setActiveView, toggleSound, toggleTools, toggleUnmatchedBets,
   toggleMatchedBets, toggleGraph, toggleMarketInformation, setWinMarketsOnly, toggleRules, toggleLadderUnmatched,
@@ -94,6 +94,7 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
   const retrieveBets = async () => {
     if (marketId) {
       try {
+        let betsChanged = false;
         const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
         const unmatched = {};
         const matched = {};
@@ -105,155 +106,46 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
             side: bet.side,
             price: bet.status === "EXECUTION_COMPLETE" ? bet.averagePriceMatched : bet.priceSize.price,
             size: bet.status === "EXECUTION_COMPLETE" ? bet.sizeMatched : bet.priceSize.size,
+            sizeMatched: bet.sizeMatched,
+            sizeRemaining: bet.sizeRemaining,
             selectionId: bet.selectionId,
             rfs: bet.customerStrategyRef ? bet.customerStrategyRef : "None",
             betId: bet.betId
           }
-          if (bet.status === "EXECUTION_COMPLETE") matched[order.betId] = order;
-          else if (bet.status === "EXECUTABLE") unmatched[order.betId] = order;
+
+          //! Stop Loss found
+          if (stopLossList[bet.selectionId]) {
+            let SL = Object.assign({}, stopLossList[bet.selectionId]);
+
+            const stopLossMatched = stopLossCheck(SL, updates[bet.selectionId].ltp[0]);
+            if (stopLossMatched.targetMet) {
+              let selectionMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
+            }
+          }
+
+          if (bet.status === "EXECUTION_COMPLETE") {
+            matched[order.betId] = order;
+          
+            if (matchedBets[order.betId] !== undefined && !('sizeMatched' in matchedBets[order.betId]) || matchedBets[order.betId].sizeMatched != order.sizeMatched)  {
+              betsChanged = true;
+            }
+          }
+          else if (bet.status === "EXECUTABLE") {
+            unmatched[order.betId] = order;
+
+            if (unmatchedBets[order.betId] !== undefined && !('sizeRemaining' in unmatchedBets[order.betId]) || unmatchedBets[order.betId].sizeRemaining != order.sizeRemaining) {
+              betsChanged = true;
+            }
+          }
         }
-        if (!compareKeys(matched, matchedBets) || !compareKeys(unmatched, unmatchedBets)) {
+        if (betsChanged || !compareKeys(matched, matchedBets) || !compareKeys(unmatched, unmatchedBets)) {
           updateOrders({matched, unmatched});
         }
       } catch (e) {
-
+        console.log(e);
       }
     }
   };
-
-  const retrieveMarket = async () => {
-    let marketId = getQueryVariable("marketId");
-
-    // Check if the page has query parameter 'marketId'
-    // Load the market if found
-    if (marketId !== false) {
-      await fetch(`/api/get-market-info?marketId=${marketId}`)
-        .then(res => res.json())
-        .then(async data => {
-          if (data.error) {
-            removeCookie("sessionKey");
-            removeCookie("accessToken");
-            removeCookie("refreshToken");
-            removeCookie("expiresIn");
-            window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
-          } else {
-            setMarketId(marketId);
-            if (data.result.length > 0) {
-              const runners = CreateRunners(data.result[0].runners);
-              setSortedLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
-              setEventType(data.result[0].eventType.id);
-              loadRunners(runners);
-              loadMarket(data.result[0]);
-              setRunner(data.result[0].runners[0]);
-              const selectionNames = {};
-
-              let runnerIds = Object.keys(runners);
-
-              for (var i = 0; i < runnerIds.length; i++) {
-                selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
-              }
-
-              fetch("/api/save-runner-names", {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify({
-                  marketId: marketId,
-                  selectionNames: selectionNames
-                })
-              });
-
-              //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-              socket.emit("market-subscription", { marketId: data.result[0].marketId});
-
-              let loadedBackOrders = {};
-              let loadedLayOrders = {};
-              let loadedStopEntryOrders = {};
-              let loadedTickOffsetOrders = {};
-              let loadedFillOrKillOrders = {};
-              let loadedStopLossOrders = {};
-
-              await fetch(`/api/get-all-orders`)
-                .then(res => res.json())
-                .then(async orders => {
-                  const loadOrders = async orders => {
-                    retrieveBets();
-                    orders.map(async order => {
-                      if (order.marketId === marketId) {
-                        switch (order.strategy) {
-                          case "Back":
-                            loadedBackOrders[order.selectionId] =
-                              loadedBackOrders[order.selectionId] === undefined
-                                ? [order]
-                                : loadedBackOrders[order.selectionId].concat(order);
-                            break;
-                          case "Lay":
-                            loadedLayOrders[order.selectionId] =
-                              loadedLayOrders[order.selectionId] === undefined
-                                ? [order]
-                                : loadedLayOrders[order.selectionId].concat(order);
-                            break;
-                          case "Stop Entry":
-                            loadedStopEntryOrders[order.selectionId] =
-                              loadedStopEntryOrders[order.selectionId] === undefined
-                                ? [order]
-                                : loadedStopEntryOrders[order.selectionId].concat(order);
-                            break;
-                          case "Tick Offset":
-                            loadedTickOffsetOrders[order.rfs] = order;
-                            break;
-                          case "Fill Or Kill":
-                            // this should only keep the fill or kill if the order isn't completed already
-                              loadedFillOrKillOrders[order.betId] = order;
-                            break;
-                          case "Stop Loss":
-                            loadedStopLossOrders[order.selectionId] = order;
-                            break;
-                          default:
-                            break;
-                        }
-                      }
-                    });
-                  };
-                  await loadOrders(orders);
-                }).then(() => {
-                  updateBackList(loadedBackOrders);
-                  updateLayList(loadedLayOrders);
-                  updateStopEntryList(loadedStopEntryOrders);
-                  updateTickOffsetList(loadedTickOffsetOrders);
-                  updateFillOrKillList(loadedFillOrKillOrders);
-                  updateStopLossList(loadedStopLossOrders);
-                });
-            }
-          }
-        });
-    }
-  };
-  
-  useInterval(() => {
-    if (!isUpdated) {
-      loadLadder(updates);
-      setIsUpdated(true);
-    }
-  }, ONE_SECOND);
-
-  useEffect(() => {
-    if (!cookies.sessionKey && !cookies.username) {
-      window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
-    }
-  }, [cookies.sessionKey, cookies.username]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      await loadSession();
-      await loadSettings();
-      await retrieveMarket();
-      setIsLoading(false);
-    };
-    loadData();
-  }, []);
 
   const onReceiveMarketDefinition = useCallback(async marketDefinition => {
     setMarketStatus(marketDefinition.status);
@@ -395,14 +287,13 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
     if (data.oc) {
       const newUnmatchedBets = Object.assign({}, unmatchedBets);
       const newMatchedBets = Object.assign({}, matchedBets);
-      let i, j, k;
-      for (i = 0; i < data.oc.length; i++) {
+      for (let i = 0; i < data.oc.length; i++) {
         if (!data.oc[i].orc) continue;
 
-        for (j = 0; j < data.oc[i].orc.length; j++) {
+        for (let j = 0; j < data.oc[i].orc.length; j++) {
           if (!data.oc[i].orc[j].uo) continue;
 
-          for (k = 0; k < data.oc[i].orc[j].uo.length; k++) {
+          for (let k = 0; k < data.oc[i].orc[j].uo.length; k++) {
             // If the bet isn't in the unmatchedBets, we should delete it.
             if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
               // this is what happens when an order doesn't get any matched
@@ -448,6 +339,139 @@ const App = ({ view, isLoading, market, marketStatus, pastEventTime, marketOpen,
       }
     }
   }, [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList]);
+
+  const retrieveMarket = async () => {
+    let marketId = getQueryVariable("marketId");
+
+    // Check if the page has query parameter 'marketId'
+    // Load the market if found
+    if (marketId !== false) {
+      await fetch(`/api/get-market-info?marketId=${marketId}`)
+        .then(res => res.json())
+        .then(async data => {
+          if (data.error) {
+            removeCookie("sessionKey");
+            removeCookie("accessToken");
+            removeCookie("refreshToken");
+            removeCookie("expiresIn");
+            window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
+          } else {
+            setMarketId(marketId);
+            if (data.result.length > 0) {
+              const runners = CreateRunners(data.result[0].runners);
+              setSortedLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
+              setEventType(data.result[0].eventType.id);
+              loadRunners(runners);
+              loadMarket(data.result[0]);
+              setRunner(data.result[0].runners[0]);
+              const selectionNames = {};
+
+              let runnerIds = Object.keys(runners);
+
+              for (var i = 0; i < runnerIds.length; i++) {
+                selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
+              }
+
+              fetch("/api/save-runner-names", {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify({
+                  marketId: marketId,
+                  selectionNames: selectionNames
+                })
+              });
+
+              //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+              socket.emit("market-subscription", { marketId: data.result[0].marketId});
+
+              let loadedBackOrders = {};
+              let loadedLayOrders = {};
+              let loadedStopEntryOrders = {};
+              let loadedTickOffsetOrders = {};
+              let loadedFillOrKillOrders = {};
+              let loadedStopLossOrders = {};
+
+              await fetch(`/api/get-all-orders`)
+                .then(res => res.json())
+                .then(async orders => {
+                  const loadOrders = async orders => {
+                    orders.map(async order => {
+                      if (order.marketId === marketId) {
+                        switch (order.strategy) {
+                          case "Back":
+                            loadedBackOrders[order.selectionId] =
+                              loadedBackOrders[order.selectionId] === undefined
+                                ? [order]
+                                : loadedBackOrders[order.selectionId].concat(order);
+                            break;
+                          case "Lay":
+                            loadedLayOrders[order.selectionId] =
+                              loadedLayOrders[order.selectionId] === undefined
+                                ? [order]
+                                : loadedLayOrders[order.selectionId].concat(order);
+                            break;
+                          case "Stop Entry":
+                            loadedStopEntryOrders[order.selectionId] =
+                              loadedStopEntryOrders[order.selectionId] === undefined
+                                ? [order]
+                                : loadedStopEntryOrders[order.selectionId].concat(order);
+                            break;
+                          case "Tick Offset":
+                            loadedTickOffsetOrders[order.rfs] = order;
+                            break;
+                          case "Fill Or Kill":
+                            // this should only keep the fill or kill if the order isn't completed already
+                              loadedFillOrKillOrders[order.betId] = order;
+                            break;
+                          case "Stop Loss":
+                            loadedStopLossOrders[order.selectionId] = order;
+                            break;
+                          default:
+                            break;
+                        }
+                      }
+                    });
+                  };
+                  await loadOrders(orders);
+                }).then(() => {
+                  updateBackList(loadedBackOrders);
+                  updateLayList(loadedLayOrders);
+                  updateStopEntryList(loadedStopEntryOrders);
+                  updateTickOffsetList(loadedTickOffsetOrders);
+                  updateFillOrKillList(loadedFillOrKillOrders);
+                  updateStopLossList(loadedStopLossOrders);
+                });
+            }
+          }
+        });
+    }
+  };
+  
+  useInterval(() => {
+    if (!isUpdated) {
+      loadLadder(updates);
+      setIsUpdated(true);
+    }
+  }, ONE_SECOND);
+
+  useEffect(() => {
+    if (!cookies.sessionKey && !cookies.username) {
+      window.location.href = window.location.origin + "/?error=INVALID_SESSION_INFORMATION";
+    }
+  }, [cookies.sessionKey, cookies.username]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      await loadSession();
+      await loadSettings();
+      await retrieveMarket();
+      setIsLoading(false);
+    };
+    loadData();
+  }, []);
 
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
@@ -523,9 +547,7 @@ const mapStateToProps = state => {
     view: state.settings.view,
     isLoading: state.settings.isLoading,
     market: state.market.currentMarket,
-    marketStatus: state.market.status,
     inPlay: state.market.inPlay,
-    pastEventTime: state.market.pastEventTime,
     marketOpen: state.market.marketOpen,
     ladders: state.market.ladder,
     nonRunners: state.market.nonRunners,

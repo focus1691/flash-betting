@@ -7,7 +7,7 @@ const UnmatchedBet = memo(({bet, cancelBet}) => {
 
     const handleClick = useCallback(() => {
         cancelBet(bet);
-	}, []);
+	}, [bet, cancelBet]);
 
 	return (
 		<tr
@@ -20,7 +20,7 @@ const UnmatchedBet = memo(({bet, cancelBet}) => {
 					style={{ cursor: "pointer" }}
 					onClick={handleClick}
 				/>
-				{`${bet.size} @ ${twoDecimalPlaces(bet.price)} ${strategySuffix}`}
+				{`${bet.sizeRemaining || bet.size} @ ${twoDecimalPlaces(bet.price)} ${strategySuffix}`}
 			</td>
 		</tr>
 	);

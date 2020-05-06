@@ -45,18 +45,23 @@ const OrderRow = memo(({ selectionId, matchedBets, unmatchedBets, backList, layL
 	const renderUnmatchedBets = useCallback(() => {
 		const list = [];
 		for (var i = 0; i < unmatchedBets.length; i++) {
-			list.push(<UnmatchedBet key={`ladder-matched-bet-${unmatchedBets[i].selectionId}-${unmatchedBets[i].rfs}-${i}`} bet={unmatchedBets[i]} cancelBet={cancelUnmatchedOrder} />);
+			list.push(<UnmatchedBet key={`ladder-unmatched-bet-${unmatchedBets[i].selectionId}-${unmatchedBets[i].rfs}-${i}`} bet={unmatchedBets[i]} cancelBet={cancelUnmatchedOrder} />);
 		}
 		return list;
-	}, [cancelUnmatchedOrder, unmatchedBets.length]);
+	}, [cancelUnmatchedOrder, unmatchedBets]);
 
 	const renderMatchedBets = useCallback(() => {
 		const list = [];
-		for (var i = 0; i < matchedBets.length; i++) {
-			list.push(<MatchedBet key={`ladder-matched-bet-${matchedBets[i].selectionId}-${i}`} bet={matchedBets[i]} index={i} />);
+		for (var i = 0; i < unmatchedBets.length; i++) {
+			if (unmatchedBets[i].sizeMatched > 0) {
+				list.push(<MatchedBet key={`ladder-matched-bet-${unmatchedBets[i].selectionId}-${i}`} bet={matchedBets[i]}/>);
+			}
+		}
+		for (var j = 0; j < matchedBets.length; j++) {
+			list.push(<MatchedBet key={`ladder-matched-bet-${matchedBets[j].selectionId}-${j + list.length + 1}`} bet={matchedBets[j]} />);
 		}
 		return list;
-	}, [matchedBets.length]);
+	}, [matchedBets, unmatchedBets]);
 
 	return (
 		<div className={"order-row"}>

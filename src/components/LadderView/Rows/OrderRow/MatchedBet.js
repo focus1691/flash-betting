@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from "react";
 import { twoDecimalPlaces } from "../../../../utils/Bets/BettingCalculations";
 
-const MatchedBet = memo(({ bet, index }) => {
+const MatchedBet = memo(({ bet }) => {
     
     const style = useMemo(() => {
         return {
@@ -13,7 +13,7 @@ const MatchedBet = memo(({ bet, index }) => {
 	return (
 		<tr
 			style={style}>
-			<td>{`${bet.size} @ ${twoDecimalPlaces(bet.price)}`}</td>
+			<td>{`${bet.sizeMatched} @ ${twoDecimalPlaces(bet.price)}`}</td>
 		</tr>
 	);
 });
