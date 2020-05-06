@@ -17,6 +17,6 @@ export const checkStopLossForMatch = (stopLossList, selectionId, order) => {
  * @return {Boolean} Whether or not the tick offset has been matched.
  */
 export const checkTickOffsetForMatch = (tickOffsetList, order) => {
-    if (tickOffsetList[order.selectionId] && order.sm / tickOffsetList[order.selectionId].size >= tickOffsetList[order.selectionId].percentageTrigger / 100) return true;
+    if (tickOffsetList[order.rfs] && order.sm / tickOffsetList[order.rfs].size >= tickOffsetList[order.rfs].percentageTrigger / 100) return true;
     return false;
 }

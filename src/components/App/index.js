@@ -194,12 +194,12 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
             // stop Entry
             newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, placeOrder, newStopEntryList, unmatchedBets, matchedBets);
 
-            // We increment and check the stoplosses
-            if (stopLossList[mc.rc[i].id]) {
+            // Increment and check the stoplosses
+            if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
+              let SL = Object.assign({}, stopLossList[mc.rc[i].id]);
+
               // if it's trailing and the highest LTP went up, then we add a tickoffset
-              const maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
-              
-              let SL = Object.assign({}, stopLossList[ mc.rc[i].id]);
+              let maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
 
               const stopLossMatched = stopLossCheck(SL, currentLTP);
               if (stopLossMatched.targetMet) {
@@ -286,7 +286,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
           for (let k = 0; k < data.oc[i].orc[j].uo.length; k++) {
             // If the bet isn't in the unmatchedBets, we should delete it.
             if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
-              // this is what happens when an order doesn't get any matched
+              //! this is what happens when an order doesn't get any matched
               delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
 
               updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
@@ -299,7 +299,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
             }
 
-            let isStopLossMatched = checkStopLossForMatch(stopLossList, data.oc[i].id, data.oc[i].orc[j].uo[k]);
+            let isStopLossMatched = checkStopLossForMatch(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
             if (isStopLossMatched) {
               let newStopLossList = Object.assign({}, stopLossList);
               newStopLossList[data.oc[i].id].assignedIsOrderMatched = true;
@@ -311,18 +311,18 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
             let isTickOffsetMatched = checkTickOffsetForMatch(tickOffsetList, data.oc[i].orc[j].uo[k]);
             if (isTickOffsetMatched) {
               let newTickOffsetList = Object.assign({}, tickOffsetList);
-              removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
-              placeOrder({
-                marketId: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].marketId,
-                selectionId: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].selectionId,
-                side: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].side,
-                size: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].size,
-                price: tickOffsetList[data.oc[i].orc[j].uo[k].selectionId].price, // this is the new price
+              await removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
+              await placeOrder({
+                marketId: tickOffsetList[data.oc[i].id],
+                selectionId: tickOffsetList[data.oc[i].orc[j].id],
+                side: tickOffsetList[data.oc[i].orc[j].id].side,
+                size: tickOffsetList[data.oc[i].orc[j].id].size,
+                price: tickOffsetList[data.oc[i].orc[j].id].price, // this is the new price
                 unmatchedBets: unmatchedBets,
                 matchedBets: matchedBets
               })
               delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
-              updateTickOffsetList(newTickOffsetList);
+              await updateTickOffsetList(newTickOffsetList);
             }
           }
         }
