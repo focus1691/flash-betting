@@ -115,10 +115,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
           if (bet.status === "EXECUTION_COMPLETE") {
             matched[order.betId] = order;
-          
-            if (matchedBets[order.betId] !== undefined && !('sizeMatched' in matchedBets[order.betId]) || matchedBets[order.betId].sizeMatched != order.sizeMatched)  {
-              betsChanged = true;
-            }
           }
           else if (bet.status === "EXECUTABLE") {
             unmatched[order.betId] = order;
@@ -286,6 +282,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
           for (let k = 0; k < data.oc[i].orc[j].uo.length; k++) {
             // If the bet isn't in the unmatchedBets, we should delete it.
             if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
+              console.log(data.oc[i].orc[j].uo[k]);
               //! this is what happens when an order doesn't get any matched
               delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
 
