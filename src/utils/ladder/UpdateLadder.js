@@ -2,7 +2,6 @@ import { formatPriceKey, calcBackLayPercentages } from "./CreateFullLadder";
 import { sortAsc, sortDes } from "../Algorithms/Sort";
 
 const UpdateLadder = (ladder, rawData) => {
-  var i;
 
   if (rawData.ltp) {
     ladder.ltp = [rawData.ltp, ...ladder.ltp];
@@ -13,7 +12,8 @@ const UpdateLadder = (ladder, rawData) => {
   }
 
   if (rawData.trd) {
-    for (i = 0; i < rawData.trd.length; i++) {
+    for (var i = 0; i < rawData.trd.length; i++) {
+      if (!rawData.trd[i]) continue;
       let price = rawData.trd[i][0];
       let volumeMatched = Math.floor(rawData.trd[i][1]);
       let index = ladder.trd.map(trd => trd[0]).findIndex(val => val === price);
@@ -32,6 +32,7 @@ const UpdateLadder = (ladder, rawData) => {
 
   if (rawData.atb) {
     for (i = 0; i < rawData.atb.length; i++) {
+      if (!rawData.atb[i]) continue;
       let price = rawData.atb[i][0];
       let matched = Math.floor(rawData.atb[i][1]);
 
@@ -69,6 +70,7 @@ const UpdateLadder = (ladder, rawData) => {
 
   if (rawData.atl) {
     for (i = 0; i < rawData.atl.length; i++) {
+      if (!rawData.atl[i]) continue;
       let price = rawData.atl[i][0];
       let matched = Math.floor(rawData.atl[i][1]);
 
