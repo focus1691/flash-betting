@@ -16,31 +16,35 @@ const GetClosedMarketStats = () => {
             await fetch(`/api/list-market-book?marketId=${marketId}`)
                 .then(res => res.json())
                 .then(async data => {
-                    if (!data || !data.response.result || (data.response.result[0] && data.response.result[0].status !== "CLOSED")) {
+                    if (!data || !data.response.result || (data.response.result[0])) {
                         window.location.href = window.location.origin + '/dashboard';
                     } else {
-                        const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-                        const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE");
-                        setCompletedOrders(completedOrders);
-
-                        const marketBook = data.response.result[0];
-
-                        // take the runner status from the marketBook and add it to the runnerResults
-                        const runnersStatusObject = {} // selectionId: status
-                        marketBook.runners.forEach(item => {
-                            runnersStatusObject[item.selectionId] = item.status;
-                        });
-
-                        let runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then(res => res.json()).catch(err => {
-                            window.location.href = window.location.origin + '/dashboard';
-                        });
-                        const marketInfoRunners = Object.keys(runnerResults).map(key => ({ selectionId: key, runnerName: runnerResults[key] }));
-
-                        const runnersWithStatusArray = marketInfoRunners.map(item => {
-                            return Object.assign({}, item, { status: runnersStatusObject[item.selectionId] });
-                        });
-
-                        setRunners(runnersWithStatusArray);
+                        try {
+                            const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+                            const completedOrders = currentOrders.filter(order => order.status === "EXECUTION_COMPLETE");
+                            setCompletedOrders(completedOrders);
+    
+                            const marketBook = data.response.result[0];
+    
+                            // take the runner status from the marketBook and add it to the runnerResults
+                            const runnersStatusObject = {} // selectionId: status
+                            marketBook.runners.forEach(item => {
+                                runnersStatusObject[item.selectionId] = item.status;
+                            });
+    
+                            let runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then(res => res.json()).catch(err => {
+                                window.location.href = window.location.origin + '/dashboard';
+                            });
+                            const marketInfoRunners = Object.keys(runnerResults).map(key => ({ selectionId: key, runnerName: runnerResults[key] }));
+    
+                            const runnersWithStatusArray = marketInfoRunners.map(item => {
+                                return Object.assign({}, item, { status: runnersStatusObject[item.selectionId] });
+                            });
+    
+                            setRunners(runnersWithStatusArray);
+                        } catch (e) {
+                            console.err("cannot show closed market report");
+                        }
                     }
                 });
 
