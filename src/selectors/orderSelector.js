@@ -21,7 +21,7 @@ export const getMarketUnmatchedBets = createSelector(getMarketUnmatchedBetsSelec
 const getSelectionUnmatchedBetsSelector = (state, {selectionId}) => ({bets: state.unmatched, selectionId: selectionId})
 
 export const getSelectionUnmatchedBets = createSelector(getSelectionUnmatchedBetsSelector, ({bets, selectionId}) => {
-        return Object.values(bets).filter(bet => (parseInt(bet.selectionId) === parseInt(selectionId)));
+        return Object.values(bets).filter(bet => bet.selectionId == selectionId);
     }
 );
 

@@ -54,7 +54,7 @@ const OrderRow = memo(({ selectionId, matchedBets, unmatchedBets, backList, layL
 		const list = [];
 		for (var i = 0; i < unmatchedBets.length; i++) {
 			if (unmatchedBets[i].sizeMatched > 0) {
-				list.push(<MatchedBet key={`ladder-matched-bet-${unmatchedBets[i].selectionId}-${i}`} bet={matchedBets[i]}/>);
+				list.push(<MatchedBet key={`ladder-matched-bet-${unmatchedBets[i].selectionId}-${i}`} bet={unmatchedBets[i]}/>);
 			}
 		}
 		for (var j = 0; j < matchedBets.length; j++) {

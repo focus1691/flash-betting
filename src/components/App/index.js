@@ -29,7 +29,7 @@ import { sortLadder, sortGreyHoundMarket } from "../../utils/ladder/SortLadder";
 import { UpdateLadder } from "../../utils/ladder/UpdateLadder";
 import { stopEntryListChange, stopLossCheck } from "../../utils/ExchangeStreaming/MCMHelper";
 import { CreateLadder } from "../../utils/ladder/CreateLadder";
-import { checkStopLossForMatch, checkTickOffsetForMatch } from "../../utils/ExchangeStreaming/OCMHelper";
+import { checkStopLossTrigger, checkTickOffsetTrigger } from "../../utils/ExchangeStreaming/OCMHelper";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import compareKeys from "../../utils/Algorithms/CompareKeys";
 import ConnectionStatus from "../ConnectionStatus";
@@ -94,6 +94,29 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   const retrieveBets = async () => {
     if (marketId) {
       try {
+        //! Test script
+        // console.log("market id: ", marketId);
+
+        // let unm = {};
+        // const order = {
+        //   strategy: "None",
+        //   marketId: "1.170387824",
+        //   side: "BACK",
+        //   price: 2,
+        //   size: 2,
+        //   sizeMatched: 1,
+        //   sizeRemaining: 1,
+        //   selectionId: "28344744",
+        //   rfs: 4242424,
+        //   betId: 244242
+        // }
+        // unm[order.betId] = order;
+
+        // if (!compareKeys(unm, unmatchedBets)) {
+        //   updateOrders({matched: {}, unmatched: unm});
+        // }
+        
+
         let betsChanged = false;
         const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
         const unmatched = {};
@@ -119,7 +142,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
           else if (bet.status === "EXECUTABLE") {
             unmatched[order.betId] = order;
 
-            if (unmatchedBets[order.betId] !== undefined && !('sizeRemaining' in unmatchedBets[order.betId]) || unmatchedBets[order.betId].sizeRemaining != order.sizeRemaining) {
+            if (unmatchedBets[order.betId] !== undefined && (!('sizeRemaining' in unmatchedBets[order.betId]) || unmatchedBets[order.betId].sizeRemaining != order.sizeRemaining) ) {
               betsChanged = true;
             }
           }
@@ -282,7 +305,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
           for (let k = 0; k < data.oc[i].orc[j].uo.length; k++) {
             // If the bet isn't in the unmatchedBets, we should delete it.
             if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
-              console.log(data.oc[i].orc[j].uo[k]);
               //! this is what happens when an order doesn't get any matched
               delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
 
@@ -296,25 +318,25 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
             }
 
-            let isStopLossMatched = checkStopLossForMatch(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
+            let isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
             if (isStopLossMatched) {
               let newStopLossList = Object.assign({}, stopLossList);
-              newStopLossList[data.oc[i].id].assignedIsOrderMatched = true;
+              newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
               updateStopLossList(newStopLossList);
-              updateOrder(newStopLossList[data.oc[i].id]);
+              updateOrder(newStopLossList[data.oc[i].orc[j].id]);
             }
 
             //* Check TOS matched and place order / remove from database
-            let isTickOffsetMatched = checkTickOffsetForMatch(tickOffsetList, data.oc[i].orc[j].uo[k]);
-            if (isTickOffsetMatched) {
+            let tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
+            if (tosTriggered) {
               let newTickOffsetList = Object.assign({}, tickOffsetList);
               await removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
               await placeOrder({
-                marketId: tickOffsetList[data.oc[i].id],
-                selectionId: tickOffsetList[data.oc[i].orc[j].id],
-                side: tickOffsetList[data.oc[i].orc[j].id].side,
-                size: tickOffsetList[data.oc[i].orc[j].id].size,
-                price: tickOffsetList[data.oc[i].orc[j].id].price, // this is the new price
+                marketId: data.oc[i].id,
+                selectionId: data.oc[i].orc[j].id,
+                side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
+                size: data.oc[i].orc[j].uo[k].s,
+                price: data.oc[i].orc[j].uo[k].p,
                 unmatchedBets: unmatchedBets,
                 matchedBets: matchedBets
               })

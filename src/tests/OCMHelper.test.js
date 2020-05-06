@@ -1,4 +1,4 @@
-import { checkStopLossForMatch } from '../utils/ExchangeStreaming/OCMHelper';
+import { checkStopLossTrigger } from '../utils/ExchangeStreaming/OCMHelper';
 
 test('stopLossList should match when sr == 0', () => {
     const stopLossList = {
@@ -24,7 +24,7 @@ test('stopLossList should match when sr == 0', () => {
         sr: 0
     }
     const checkForMatchInStopLoss = Object.assign({}, stopLossList)
-    const checkMatch = checkStopLossForMatch(stopLossList, 237470, order, checkForMatchInStopLoss);
+    const checkMatch = checkStopLossTrigger(stopLossList, 237470, order, checkForMatchInStopLoss);
 
     expect(checkMatch).toBeTruthy();
 })
