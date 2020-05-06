@@ -113,16 +113,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
             betId: bet.betId
           }
 
-          //! Stop Loss found
-          if (stopLossList[bet.selectionId]) {
-            let SL = Object.assign({}, stopLossList[bet.selectionId]);
-
-            const stopLossMatched = stopLossCheck(SL, updates[bet.selectionId].ltp[0]);
-            if (stopLossMatched.targetMet) {
-              let selectionMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
-            }
-          }
-
           if (bet.status === "EXECUTION_COMPLETE") {
             matched[order.betId] = order;
           
