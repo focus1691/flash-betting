@@ -193,6 +193,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
             // Increment and check the stoplosses
             if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
+              console.log(`stop loss check, order assigned`);
               let SL = Object.assign({}, stopLossList[mc.rc[i].id]);
 
               // if it's trailing and the highest LTP went up, then we add a tickoffset
@@ -200,6 +201,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
               const stopLossMatched = stopLossCheck(SL, currentLTP);
               if (stopLossMatched.targetMet) {
+                console.log(`stop loss target met ${stopLossMatched}`);
                 const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
                 placeOrder({
                   marketId: SL.marketId,
@@ -296,17 +298,24 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
             }
 
+            const { sm, sr } = data.oc[i].orc[j].uo[k];
+            console.log(`matched:${sm}, remaining:${sr}`);
+
             let isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
             if (isStopLossMatched) {
+              console.log(`stop loss triggered. matched:${sm}, remaining:${sr}`);
               let newStopLossList = Object.assign({}, stopLossList);
               newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
               updateStopLossList(newStopLossList);
               updateOrder(newStopLossList[data.oc[i].orc[j].id]);
+            } else {
+              console.log(`stop loss not triggered. matched:${sm}, remaining:${sr}`);
             }
 
             //* Check TOS matched and place order / remove from database
             let tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
             if (tosTriggered) {
+              console.log(`tick offset triggered. matched:${sm}, remaining:${sr}`);
               let newTickOffsetList = Object.assign({}, tickOffsetList);
               await removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
               await placeOrder({
@@ -320,6 +329,8 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               })
               delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
               await updateTickOffsetList(newTickOffsetList);
+            } else {
+              console.log(`tick offset not triggered. matched:${sm}, remaining:${sr}`);
             }
           }
         }
