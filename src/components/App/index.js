@@ -94,29 +94,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   const retrieveBets = async () => {
     if (marketId) {
       try {
-        //! Test script
-        // console.log("market id: ", marketId);
-
-        // let unm = {};
-        // const order = {
-        //   strategy: "None",
-        //   marketId: "1.170387824",
-        //   side: "BACK",
-        //   price: 2,
-        //   size: 2,
-        //   sizeMatched: 1,
-        //   sizeRemaining: 1,
-        //   selectionId: "28344744",
-        //   rfs: 4242424,
-        //   betId: 244242
-        // }
-        // unm[order.betId] = order;
-
-        // if (!compareKeys(unm, unmatchedBets)) {
-        //   updateOrders({matched: {}, unmatched: unm});
-        // }
-        
-
         let betsChanged = false;
         const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
         const unmatched = {};
