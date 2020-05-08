@@ -200,6 +200,10 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               let maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
 
               const stopLossMatched = stopLossCheck(SL, currentLTP);
+              for (var spProp in stopLossMatched) {
+                console.log(`sl check: prop=${spProp} val=${stopLossMatched[spProp]}`);
+              }
+
               if (stopLossMatched.targetMet) {
                 console.log(`stop loss target met ${stopLossMatched}`);
                 const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));

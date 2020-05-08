@@ -7,6 +7,9 @@
  */
 
 export const checkStopLossTrigger = (stopLossList, selectionId, order) => {
+    console.log(`checkStopLossTrigger ${stopLossList[selectionId].rfs} ${order.rfs} ${order.sr}`);
+    console.log(stopLossList[selectionId]);
+    console.log(stopLossList[selectionId] && stopLossList[selectionId].rfs == order.rfs && order.sr == 0);
     return stopLossList[selectionId] && stopLossList[selectionId].rfs == order.rfs && order.sr == 0;
 }
 
