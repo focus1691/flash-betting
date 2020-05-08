@@ -50,6 +50,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   const [isUpdated, setIsUpdated] = useState(true);
   const [initialClk, setInitialClk] = useState(null);
   const [clk, setClk] = useState(null);
+  const [connectionId, setConnectionId] = useState("");
   const [connectionError, setConnectionError] = useState("");
 
   const ONE_SECOND = 1000;
@@ -94,29 +95,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   const retrieveBets = async () => {
     if (marketId) {
       try {
-        //! Test script
-        // console.log("market id: ", marketId);
-
-        // let unm = {};
-        // const order = {
-        //   strategy: "None",
-        //   marketId: "1.170387824",
-        //   side: "BACK",
-        //   price: 2,
-        //   size: 2,
-        //   sizeMatched: 1,
-        //   sizeRemaining: 1,
-        //   selectionId: "28344744",
-        //   rfs: 4242424,
-        //   betId: 244242
-        // }
-        // unm[order.betId] = order;
-
-        // if (!compareKeys(unm, unmatchedBets)) {
-        //   updateOrders({matched: {}, unmatched: unm});
-        // }
-        
-
         let betsChanged = false;
         const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
         const unmatched = {};
@@ -285,7 +263,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
   const onMarketDisconnect = useCallback(async data => {
     if (GetSubscriptionErrorType(data.errorCode) === "Authentication") window.location.href = window.location.origin + `/?error=${data.errorCode}`;
-    else setConnectionError(data.errorMessage.split(':')[0]);
+    else setConnectionError(`${data.errorMessage.split(':')[0]}, connection id: ${connectionId}`);
   }, []);
 
   /**
@@ -485,12 +463,14 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
     socket.on("ocm", onReceiveOrderMessage);
+    socket.on("connection-id", connectionId => setConnectionId(connectionId));
     socket.on("subscription-error", onMarketDisconnect);
     socket.on("market-definition", onReceiveMarketDefinition);
 
     return () => {
       socket.off("mcm");
       socket.off("ocm");
+      socket.off("connection-id");
       socket.off("subscription-error");
       socket.off("market-definition");
     }

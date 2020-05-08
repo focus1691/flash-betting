@@ -47,6 +47,8 @@ class BetFairStreamAPI {
 							this.openSocket.emit('subscription-error', {connectionClosed, errorCode, errorMessage, statusCode});
 						} else {
 							this.subscriptions.forEach((subscription => this.client.write(subscription)));
+							this.openSocket.emit('connection-id', result.connectionId
+							);
 						}
 						this.subscriptions = [];
 					}

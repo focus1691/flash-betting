@@ -22,16 +22,12 @@ export const removePendingOrder = price => {
 };
 
 export const placeOrder = order => {
-	const newSize = order.side === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size);
-
-	if (!order.unmatchedBets || !order.matchedBets || isNaN(newSize)) {
-		return;
-	}
-
-	order.size = newSize;
+	order.size = order.side === "LAY" ? calcLayBet(order.price, order.size).liability : parseFloat(order.size);
 	order.price = parseFloat(order.price);
 
-	if (parseFloat(newSize) < 2.0) {
+	if (!order.unmatchedBets || !order.matchedBets || isNaN(order.size)) return;
+
+	if (parseFloat(order.size) < 2.0) {
 		return async dispatch => {
 			const startingOrder = await placeOrderAction(Object.assign({}, order, { price: order.side === "BACK" ? 1000 : 1.01, size: 2, orderCompleteCallBack: undefined }));
 			if (startingOrder === null) return;
@@ -43,7 +39,7 @@ export const placeOrder = order => {
 				Object.assign({}, startingOrder.order, {
 					unmatchedBets: startingOrder.bets.unmatched,
 					matchedBets: startingOrder.bets.matched,
-					sizeReduction: parseFloat((2 - newSize).toFixed(2))
+					sizeReduction: parseFloat((2 - order.size).toFixed(2))
 				})
 			);
 
@@ -69,6 +65,8 @@ export const placeOrder = order => {
 				newUnmatchedBets[startingOrder.order.betId].price = order.price;
 				delete newUnmatchedBets[startingOrder.order.betId].unmatchedBets;
 				delete newUnmatchedBets[startingOrder.order.betId].matchedBets;
+
+				await order.orderCompleteCallBack(startingOrder.order.betId, newUnmatchedBets);
 
 				return dispatch(
 					updateOrders({
