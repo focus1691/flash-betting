@@ -50,6 +50,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   const [isUpdated, setIsUpdated] = useState(true);
   const [initialClk, setInitialClk] = useState(null);
   const [clk, setClk] = useState(null);
+  const [connectionId, setConnectionId] = useState("");
   const [connectionError, setConnectionError] = useState("");
 
   const ONE_SECOND = 1000;
@@ -192,13 +193,19 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
             // Increment and check the stoplosses
             if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
+              console.log(`stop loss check, order assigned`);
               let SL = Object.assign({}, stopLossList[mc.rc[i].id]);
 
               // if it's trailing and the highest LTP went up, then we add a tickoffset
               let maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
 
               const stopLossMatched = stopLossCheck(SL, currentLTP);
+              for (var spProp in stopLossMatched) {
+                console.log(`sl check: prop=${spProp} val=${stopLossMatched[spProp]}`);
+              }
+
               if (stopLossMatched.targetMet) {
+                console.log(`stop loss target met ${stopLossMatched}`);
                 const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
                 placeOrder({
                   marketId: SL.marketId,
@@ -262,7 +269,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
   const onMarketDisconnect = useCallback(async data => {
     if (GetSubscriptionErrorType(data.errorCode) === "Authentication") window.location.href = window.location.origin + `/?error=${data.errorCode}`;
-    else setConnectionError(data.errorMessage.split(':')[0]);
+    else setConnectionError(`${data.errorMessage.split(':')[0]}, connection id: ${connectionId}`);
   }, []);
 
   /**
@@ -295,17 +302,24 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
             }
 
+            const { sm, sr } = data.oc[i].orc[j].uo[k];
+            console.log(`matched:${sm}, remaining:${sr}`);
+
             let isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
             if (isStopLossMatched) {
+              console.log(`stop loss triggered. matched:${sm}, remaining:${sr}`);
               let newStopLossList = Object.assign({}, stopLossList);
               newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
               updateStopLossList(newStopLossList);
               updateOrder(newStopLossList[data.oc[i].orc[j].id]);
+            } else {
+              console.log(`stop loss not triggered. matched:${sm}, remaining:${sr}`);
             }
 
             //* Check TOS matched and place order / remove from database
             let tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
             if (tosTriggered) {
+              console.log(`tick offset triggered. matched:${sm}, remaining:${sr}`);
               let newTickOffsetList = Object.assign({}, tickOffsetList);
               await removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
               await placeOrder({
@@ -319,6 +333,8 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               })
               delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
               await updateTickOffsetList(newTickOffsetList);
+            } else {
+              console.log(`tick offset not triggered. matched:${sm}, remaining:${sr}`);
             }
           }
         }
@@ -462,12 +478,14 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
     socket.on("ocm", onReceiveOrderMessage);
+    socket.on("connection-id", connectionId => setConnectionId(connectionId));
     socket.on("subscription-error", onMarketDisconnect);
     socket.on("market-definition", onReceiveMarketDefinition);
 
     return () => {
       socket.off("mcm");
       socket.off("ocm");
+      socket.off("connection-id");
       socket.off("subscription-error");
       socket.off("market-definition");
     }
