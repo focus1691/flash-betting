@@ -145,7 +145,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
         else if (bet.status === "EXECUTABLE") {
           unmatched[order.betId] = order;
 
-          if (unmatchedBets[order.betId] !== undefined && (!('sizeRemaining' in unmatchedBets[order.betId]) || unmatchedBets[order.betId].sizeRemaining != order.sizeRemaining) ) {
+          if (unmatchedBets[order.betId] && (!('sizeRemaining' in unmatchedBets[order.betId]) || unmatchedBets[order.betId].sizeRemaining != order.sizeRemaining || unmatchedBets[order.betId].sizeMatched != order.sizeMatched) ) {
             betsChanged = true;
           }
         }
