@@ -58,7 +58,7 @@ const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, 
 							display: ordersOnMarket ? "block" : "none",
 							color: PL >= 0 ? "rgb(106, 177, 79)" : "red"
 						}}>
-						{PL.toFixed(2) || null}
+						{ (PL && PL.toFixed(2)) || null}
 					</span>
 					<div className={"contender-details"}>
 						<span>{getTrainerAndJockey(runner.metadata)}</span>
@@ -69,7 +69,7 @@ const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, 
 							display: oddsHovered.odds > 0 && ordersOnMarket ? "block" : "none",
 							color: oddsHoveredCalc >= 0 ? "rgb(106, 177, 79)" : "red"
 						}}>
-						{oddsHoveredCalc.toFixed(2) || null}
+						{ (oddsHoveredCalc && oddsHoveredCalc.toFixed(2)) || null}
 					</span>
 				</div>
 			</div>
@@ -87,7 +87,7 @@ const LadderHeader = memo(({ marketId, selectionId, sportId, runner, setRunner, 
 						color: hedge.side === "BACK" ? "#DBEFFF" : "#F694AA"
 					}}
 					id="ltphedgesize">
-					{hedge.size.toFixed(2) || null}
+					{ (hedge.size && hedge.size.toFixed(2)) || null}
 				</span>
 			</div>
 		</div>

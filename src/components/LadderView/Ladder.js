@@ -17,7 +17,7 @@ import { getStakeVal } from "../../selectors/settingsSelector";
 import { ALL_PRICES, formatPrice } from "../../utils/ladder/CreateFullLadder";
 import CalculateLadderHedge from "../../utils/ladder/CalculateLadderHedge";
 import { findTickOffset } from "../../utils/TradingStategy/TickOffset";
-import { findStopPosition } from "../../utils/TradingStategy/StopLoss";
+import { findStop } from "../../utils/TradingStategy/StopLoss";
 import Container from "./Container";
 import Header from "./Header";
 import LadderRow from "./Rows/LadderRow";
@@ -146,9 +146,10 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 						marketId: marketId,
 						selectionId: parseInt(id),
 						side: side === "BACK" ? "LAY" : "BACK",
-						price: findStopPosition(price, stopLossOffset, side),
+						price: findStop(price, stopLossOffset, side),
 						custom: false,
 						units: stopLossUnits,
+						ticks: stopLossOffset,
 						rfs: referenceStrategyId,
 						assignedIsOrderMatched: false,
 						size: betSize,

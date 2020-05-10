@@ -21,7 +21,9 @@ test('stopLossList should match when sr == 0', () => {
     }
     const order = {
         rfs: "1e4786863a6577c",
-        sr: 0
+        sizeRemaining: 0,
+        assignedIsOrderMatched: true,
+
     }
     const checkForMatchInStopLoss = Object.assign({}, stopLossList)
     const checkMatch = checkStopLossTrigger(stopLossList, 237470, order, checkForMatchInStopLoss);

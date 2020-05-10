@@ -66,7 +66,7 @@ export const placeOrder = order => {
 				delete newUnmatchedBets[startingOrder.order.betId].unmatchedBets;
 				delete newUnmatchedBets[startingOrder.order.betId].matchedBets;
 
-				await order.orderCompleteCallBack(startingOrder.order.betId, newUnmatchedBets);
+				if (order.orderCompleteCallBack) await order.orderCompleteCallBack(startingOrder.order.betId, newUnmatchedBets);
 
 				return dispatch(
 					updateOrders({

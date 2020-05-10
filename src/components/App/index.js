@@ -93,44 +93,68 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   };
 
   const retrieveBets = async () => {
-    if (marketId) {
-      try {
-        let betsChanged = false;
-        const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
-        const unmatched = {};
-        const matched = {};
-        for (var i = 0; i < betfairBets.length; i++) {
-          const bet = betfairBets[i];
-          const order = {
-            strategy: "None",
-            marketId: bet.marketId,
-            side: bet.side,
-            price: bet.status === "EXECUTION_COMPLETE" ? bet.averagePriceMatched : bet.priceSize.price,
-            size: bet.status === "EXECUTION_COMPLETE" ? bet.sizeMatched : bet.priceSize.size,
-            sizeMatched: bet.sizeMatched,
-            sizeRemaining: bet.sizeRemaining,
+    if (!marketId) return;
+    try {
+      let betsChanged = false;
+      const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then(res => res.json()).then(res => res.currentOrders);
+      const unmatched = {};
+      const matched = {};
+      for (var i = 0; i < betfairBets.length; i++) {
+        const bet = betfairBets[i];
+        const order = {
+          strategy: "None",
+          marketId: bet.marketId,
+          side: bet.side,
+          price: bet.status === "EXECUTION_COMPLETE" ? bet.averagePriceMatched : bet.priceSize.price,
+          size: bet.status === "EXECUTION_COMPLETE" ? bet.sizeMatched : bet.priceSize.size,
+          sizeMatched: bet.sizeMatched,
+          sizeRemaining: bet.sizeRemaining,
+          selectionId: bet.selectionId,
+          rfs: bet.customerStrategyRef ? bet.customerStrategyRef : "None",
+          betId: bet.betId
+        }
+
+        let isStopLossMatched = checkStopLossTrigger(stopLossList, bet.selectionId, order);
+        if (isStopLossMatched) {
+          let newStopLossList = Object.assign({}, stopLossList);
+          newStopLossList[bet.selectionId].assignedIsOrderMatched = true;
+          updateStopLossList(newStopLossList);
+          updateOrder(newStopLossList[bet.selectionId]);
+        }
+
+        let tosTriggered = checkTickOffsetTrigger(tickOffsetList, order);
+        if (tosTriggered) {
+          let newTickOffsetList = Object.assign({}, tickOffsetList);
+          await removeOrder(newTickOffsetList[order.rfs]);
+          await placeOrder({
+            marketId: marketId,
             selectionId: bet.selectionId,
-            rfs: bet.customerStrategyRef ? bet.customerStrategyRef : "None",
-            betId: bet.betId
-          }
+            side: tickOffsetList[order.rfs].side,
+            size: tickOffsetList[order.rfs].size,
+            price: tickOffsetList[order.rfs].price,
+            unmatchedBets: unmatchedBets,
+            matchedBets: matchedBets
+          })
+          delete newTickOffsetList[order.rfs];
+          await updateTickOffsetList(newTickOffsetList);
+        }
 
-          if (bet.status === "EXECUTION_COMPLETE") {
-            matched[order.betId] = order;
-          }
-          else if (bet.status === "EXECUTABLE") {
-            unmatched[order.betId] = order;
+        if (bet.status === "EXECUTION_COMPLETE") {
+          matched[order.betId] = order;
+        }
+        else if (bet.status === "EXECUTABLE") {
+          unmatched[order.betId] = order;
 
-            if (unmatchedBets[order.betId] !== undefined && (!('sizeRemaining' in unmatchedBets[order.betId]) || unmatchedBets[order.betId].sizeRemaining != order.sizeRemaining) ) {
-              betsChanged = true;
-            }
+          if (unmatchedBets[order.betId] !== undefined && (!('sizeRemaining' in unmatchedBets[order.betId]) || unmatchedBets[order.betId].sizeRemaining != order.sizeRemaining) ) {
+            betsChanged = true;
           }
         }
-        if (betsChanged || !compareKeys(matched, matchedBets) || !compareKeys(unmatched, unmatchedBets)) {
-          updateOrders({matched, unmatched});
-        }
-      } catch (e) {
-        console.log(e);
       }
+      if (betsChanged || !compareKeys(matched, matchedBets) || !compareKeys(unmatched, unmatchedBets)) {
+        updateOrders({matched, unmatched});
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -183,10 +207,10 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
         
         for (i = 0; i < mc.rc.length; i++) {
           if (mc.rc[i].id in ladders) {
-            // Runner found so we update our object with the raw data
+            //* Runner found so we update our object with the mc runner data
             ladders[mc.rc[i].id] = UpdateLadder(ladders[mc.rc[i].id], mc.rc[i]);
 
-            const currentLTP = ladders[mc.rc[i].id].ltp[0];
+            const currentLTP = mc.rc[i].ltp || ladders[mc.rc[i].id].ltp[0];
 
             // stop Entry
             newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, placeOrder, newStopEntryList, unmatchedBets, matchedBets);
@@ -200,9 +224,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
               let maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
 
               const stopLossMatched = stopLossCheck(SL, currentLTP);
-              for (var spProp in stopLossMatched) {
-                console.log(`sl check: prop=${spProp} val=${stopLossMatched[spProp]}`);
-              }
 
               if (stopLossMatched.targetMet) {
                 console.log(`stop loss target met ${stopLossMatched}`);
@@ -212,7 +233,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
                   selectionId: SL.selectionId,
                   side: SL.side,
                   size: CalculateLadderHedge(parseFloat(SL.price), newMatchedBets, "hedged").size,
-                  price: stopLossMatched.priceReached,
+                  price: stopLossMatched.stopPrice,
                   unmatchedBets: unmatchedBets,
                   matchedBets: matchedBets
                 });
@@ -271,76 +292,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
     if (GetSubscriptionErrorType(data.errorCode) === "Authentication") window.location.href = window.location.origin + `/?error=${data.errorCode}`;
     else setConnectionError(`${data.errorMessage.split(':')[0]}, connection id: ${connectionId}`);
   }, []);
-
-  /**
-   * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
-   * @param {obj} data The order change message data:
-   */
-  const onReceiveOrderMessage = useCallback(async data => {
-    if (data.oc) {
-      const newUnmatchedBets = Object.assign({}, unmatchedBets);
-      const newMatchedBets = Object.assign({}, matchedBets);
-      for (let i = 0; i < data.oc.length; i++) {
-        if (!data.oc[i].orc) continue;
-
-        for (let j = 0; j < data.oc[i].orc.length; j++) {
-          if (!data.oc[i].orc[j].uo) continue;
-
-          for (let k = 0; k < data.oc[i].orc[j].uo.length; k++) {
-            // If the bet isn't in the unmatchedBets, we should delete it.
-            if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
-              //! this is what happens when an order doesn't get any matched
-              delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
-
-              updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
-            } else if (data.oc[i].orc[j].uo[k].sr === 0) {
-              // this is what happens when an order is finished
-              // if they canceled early
-              newMatchedBets[data.oc[i].orc[j].uo[k].id] = Object.assign({}, newUnmatchedBets[data.oc[i].orc[j].uo[k].id], { size: parseFloat(data.oc[i].orc[j].uo[k].sm) });
-              delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
-
-              updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
-            }
-
-            const { sm, sr } = data.oc[i].orc[j].uo[k];
-            console.log(`matched:${sm}, remaining:${sr}`);
-
-            let isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
-            if (isStopLossMatched) {
-              console.log(`stop loss triggered. matched:${sm}, remaining:${sr}`);
-              let newStopLossList = Object.assign({}, stopLossList);
-              newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
-              updateStopLossList(newStopLossList);
-              updateOrder(newStopLossList[data.oc[i].orc[j].id]);
-            } else {
-              console.log(`stop loss not triggered. matched:${sm}, remaining:${sr}`);
-            }
-
-            //* Check TOS matched and place order / remove from database
-            let tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
-            if (tosTriggered) {
-              console.log(`tick offset triggered. matched:${sm}, remaining:${sr}`);
-              let newTickOffsetList = Object.assign({}, tickOffsetList);
-              await removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
-              await placeOrder({
-                marketId: data.oc[i].id,
-                selectionId: data.oc[i].orc[j].id,
-                side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
-                size: data.oc[i].orc[j].uo[k].s,
-                price: data.oc[i].orc[j].uo[k].p,
-                unmatchedBets: unmatchedBets,
-                matchedBets: matchedBets
-              })
-              delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
-              await updateTickOffsetList(newTickOffsetList);
-            } else {
-              console.log(`tick offset not triggered. matched:${sm}, remaining:${sr}`);
-            }
-          }
-        }
-      }
-    }
-  }, [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList]);
 
   const retrieveMarket = async () => {
     let marketId = getQueryVariable("marketId");
@@ -477,7 +428,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
-    socket.on("ocm", onReceiveOrderMessage);
     socket.on("connection-id", connectionId => setConnectionId(connectionId));
     socket.on("subscription-error", onMarketDisconnect);
     socket.on("market-definition", onReceiveMarketDefinition);
@@ -489,18 +439,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
       socket.off("subscription-error");
       socket.off("market-definition");
     }
-  }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveMarketMessage, onReceiveOrderMessage, socket]);
-
-  useEffect(() => {
-    if (Object.keys(unmatchedBets).length > 0) {
-      socket.emit("order-subscription", {
-        customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map(bet => bet.rfs))
-      });
-      return () => {
-        socket.off("order-subscription");
-      };
-    }
-  }, [unmatchedBets]);
+  }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveMarketMessage, socket]);
 
   useInterval(async () => retrieveBets(), ONE_SECOND);
 
