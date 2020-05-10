@@ -125,8 +125,8 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
         let tosTriggered = checkTickOffsetTrigger(tickOffsetList, order);
         if (tosTriggered) {
           let newTickOffsetList = Object.assign({}, tickOffsetList);
-          await removeOrder(newTickOffsetList[order.rfs]);
-          await placeOrder({
+          removeOrder(newTickOffsetList[order.rfs]);
+          placeOrder({
             marketId: marketId,
             selectionId: bet.selectionId,
             side: tickOffsetList[order.rfs].side,
@@ -136,7 +136,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
             matchedBets: matchedBets
           })
           delete newTickOffsetList[order.rfs];
-          await updateTickOffsetList(newTickOffsetList);
+          updateTickOffsetList(newTickOffsetList);
         }
 
         if (bet.status === "EXECUTION_COMPLETE") {
