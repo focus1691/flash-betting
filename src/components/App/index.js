@@ -211,6 +211,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
             ladders[mc.rc[i].id] = UpdateLadder(ladders[mc.rc[i].id], mc.rc[i]);
 
             const currentLTP = mc.rc[i].ltp || ladders[mc.rc[i].id].ltp[0];
+            const prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
 
             // stop Entry
             newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, placeOrder, newStopEntryList, unmatchedBets, matchedBets);
@@ -219,9 +220,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
             if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
               console.log(`stop loss check, order assigned`);
               let SL = Object.assign({}, stopLossList[mc.rc[i].id]);
-
-              // if it's trailing and the highest LTP went up, then we add a tickoffset
-              let maxLTP = ladders[mc.rc[i].id].ltp.sort((a, b) => b - a)[0];
 
               const stopLossMatched = stopLossCheck(SL, currentLTP);
 
@@ -244,10 +242,10 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
                 removeOrder(SL);
 
-              } else if (SL.trailing && currentLTP > maxLTP) {
+              }
+              else if ((SL.trailing) && ((currentLTP < prevLTP && SL.side == "BACK") || (currentLTP > prevLTP && SL.side == "LAY")) ) {
                 SL.tickOffset += 1;
                 updateOrder(SL);
-
                 let newStopLossList = Object.assign({}, stopLossList);
                 newStopLossList[SL.selectionId] = SL;
                 updateStopLossList(newStopLossList)
