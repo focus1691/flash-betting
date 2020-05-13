@@ -10,7 +10,7 @@ const LadderOrderCell = memo(({ selectionId, side, price, marketId, handlePlaceO
 	stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched }) => {
 
 	const [betPending, setBetPending] = useState(false);
-	const totalMatched = useMemo(() => getTotalMatched(cellMatched, null), [cellMatched]);
+	const totalMatched = useMemo(() => getTotalMatched(betPending, stakeVal[selectionId], cellMatched, null), [betPending, cellMatched, selectionId, stakeVal]);
 	const text = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
 	const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched, betPending), [side, stopLoss, tickOffset, cellMatched, totalMatched, betPending]);
 	
@@ -20,7 +20,7 @@ const LadderOrderCell = memo(({ selectionId, side, price, marketId, handlePlaceO
 		setBetPending(true);
 		await handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
 		setBetPending(false);
-	}, [handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossSelected, stopLossUnits]);
+	}, [betPending, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossSelected, stopLossUnits]);
 
 	const handleRightClick = useCallback(() => e => {
 		e.preventDefault();

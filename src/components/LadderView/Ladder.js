@@ -43,7 +43,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 	const [isMoving, setIsMoving] = useState(false);
 	const [isLadderDown, setLadderDown] = useState(false);
 	const [ladderLocked, setLadderLocked] = useState(false);
-	const [ladderLastHovered, setLadderLastHovered] = useState(new Date().getTime());
+	const [ladderLastHovered, setLadderLastHovered] = useState(Date.now());
 	
 	const ladderStyle = useMemo(() => listRefSet ? {paddingRight: `${listRef.current.offsetWidth - listRef.current.clientWidth -17}px`} : "", [listRefSet]);
 	const ltpHedge = useMemo(() => CalculateLadderHedge(ltp, selectionMatchedBets, "hedged"), [ltp, selectionMatchedBets]);
@@ -56,12 +56,12 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 	const onHoverLadder = useCallback(() => {
 		if (!ladderLocked) {
 			setLadderLocked(true);
-			setLadderLastHovered(new Date().getTime());
+			setLadderLastHovered(Date.now());
 		}
 	}, [ladderLocked]);
 
 	const overLeaveLadder = useCallback(() => {
-		if (ladderLocked && new Date().getTime() - ladderLastHovered > 100) {
+		if (ladderLocked && Date.now() - ladderLastHovered > 100) {
 			setLadderLocked(false);
 		}
 	}, [ladderLastHovered, ladderLocked]);
@@ -178,7 +178,7 @@ const Ladder = memo(({id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrder
 						hedged: tickOffsetHedged,
 						minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1
 					}, tickOffsetList);
-					if (tos) updateTickOffsetList(tos.data);
+					if (tos.status) updateTickOffsetList(tos.data);
 				}
 
 				if (!stopLossSelected && fillOrKillSelected) {

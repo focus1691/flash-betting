@@ -17,5 +17,9 @@ export const checkStopLossTrigger = (stopLossList, selectionId, order) => {
  * @return {Boolean} Whether or not the tick offset has been matched.
  */
 export const checkTickOffsetTrigger = (tickOffsetList, order) => {
-    return tickOffsetList[order.rfs] && order.sizeMatched / tickOffsetList[order.rfs].size >= tickOffsetList[order.rfs].percentageTrigger / 100
+    // if (tickOffsetList[order.rfs]) {
+    //     console.log(`size matched: ${order.sizeMatched}, TOS size: ${tickOffsetList[order.rfs].size}, Trigger: ${tickOffsetList[order.rfs].percentageTrigger}, Triggered? 
+    //     ${tickOffsetList[order.rfs] && order.sizeMatched / tickOffsetList[order.rfs].size >= tickOffsetList[order.rfs].percentageTrigger / 100}`);
+    // }
+    return tickOffsetList[order.rfs] && order.sizeMatched / tickOffsetList[order.rfs].size >= tickOffsetList[order.rfs].percentageTrigger / 100;
 }

@@ -1,8 +1,8 @@
-const getTotalMatched = (cellMatched, cellUnmatched) => {
+const getTotalMatched = (betPending, stake, cellMatched, cellUnmatched) => {
 	let totalMatched = 0;
-	if (cellMatched.matched) {
-		totalMatched += cellMatched.matched;
-	}
+	
+	if (betPending) totalMatched += stake;
+	if (cellMatched.matched) totalMatched += cellMatched.matched;
 	if (cellUnmatched) {
 		totalMatched += cellUnmatched.reduce(function (acc, bet) {
 			return parseFloat(acc) + parseFloat(bet.size);
@@ -23,14 +23,14 @@ const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, pendi
 };
 
 const textForOrderCell = (stopLoss, totalMatched) => {
-	if (stopLoss) {
-		if (stopLoss.stopLoss) {
-			if (stopLoss.stopLoss.hedged) return "H";
-			else return stopLoss.stopLoss.size;
-		}
+	if (stopLoss && stopLoss.stopLoss) { // stop loss on cell
+		if (stopLoss.stopLoss.hedged) return "H";
+		else return stopLoss.stopLoss.size;
 	}
-	else if (totalMatched > 0) return totalMatched;
-	return null
+	else if (totalMatched > 0) {
+		return totalMatched;
+	}
+	return null;
 };
 
 const isOrderPending = (price, bets) => {

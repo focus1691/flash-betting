@@ -13,10 +13,9 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 
 	//* Sort ladder on market open, excluding ladders are first 6
 	useEffect(() => {
-		var i;
 		if (eventType === "4339") {
 			const newOrderList = {};
-			for (i = 0; i < sortedLadder.length; i++) {
+			for (let i = 0; i < sortedLadder.length; i++) {
 				newOrderList[i] = sortedLadder[i];
 			}
 			updateLadderOrder(newOrderList);
@@ -25,7 +24,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
 			var sortedLadderIndices = sortLadder(ladders);
 			setSortedLadder(sortedLadderIndices);
 			const newOrderList = {};
-			for (i = 0; i < sortedLadderIndices.length; i++) {
+			for (let i = 0; i < sortedLadderIndices.length; i++) {
 				newOrderList[i] = sortedLadderIndices[i];
 			}
 			updateLadderOrder(newOrderList);

@@ -36,6 +36,9 @@ import ConnectionStatus from "../ConnectionStatus";
 import GetSubscriptionErrorType from "../../utils/ErrorMessages/GetSubscriptionErrorType";
 import useInterval from "../../utils/CustomHooks/useInterval";
 
+const ONE_SECOND = 1000;
+const TWO_HUNDRED_AND_FIFTY_MILLISECONDS = 250;
+
 const App = ({ view, isLoading, market, marketOpen, nonRunners,
   unmatchedBets, matchedBets, stopLossList, tickOffsetList, stopEntryList, socket, setIsLoading, setPremiumStatus,
   setDefaultView, setActiveView, toggleSound, toggleTools, toggleUnmatchedBets,
@@ -52,8 +55,6 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
   const [clk, setClk] = useState(null);
   const [connectionId, setConnectionId] = useState("");
   const [connectionError, setConnectionError] = useState("");
-
-  const ONE_SECOND = 1000;
 
   const loadSession = async () => await fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`);
   
@@ -154,7 +155,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
         updateOrders({matched, unmatched});
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
 
@@ -211,21 +212,21 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
             ladders[mc.rc[i].id] = UpdateLadder(ladders[mc.rc[i].id], mc.rc[i]);
 
             const currentLTP = mc.rc[i].ltp || ladders[mc.rc[i].id].ltp[0];
-            const prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
 
             // stop Entry
             newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, placeOrder, newStopEntryList, unmatchedBets, matchedBets);
 
             // Increment and check the stoplosses
             if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
-              console.log(`stop loss check, order assigned`);
+              // console.log(`stop loss check, order assigned`);
               let SL = Object.assign({}, stopLossList[mc.rc[i].id]);
+              let prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
 
-              const stopLossMatched = stopLossCheck(SL, currentLTP);
+              let stopLossMatched = stopLossCheck(SL, currentLTP);
 
               if (stopLossMatched.targetMet) {
-                console.log(`stop loss target met ${stopLossMatched}`);
-                const newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
+                // console.log(`stop loss target met ${stopLossMatched}`);
+                let newMatchedBets = Object.values(matchedBets).filter(bet => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
                 placeOrder({
                   marketId: SL.marketId,
                   selectionId: SL.selectionId,
@@ -242,9 +243,8 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
                 removeOrder(SL);
 
-              }
-              else if ((SL.trailing) && ((currentLTP < prevLTP && SL.side == "BACK") || (currentLTP > prevLTP && SL.side == "LAY")) ) {
-                SL.tickOffset += 1;
+              } else if ((SL.trailing) && ((currentLTP < prevLTP && SL.side == "BACK") || (currentLTP > prevLTP && SL.side == "LAY")) ) {
+                SL.ticks += 1;
                 updateOrder(SL);
                 let newStopLossList = Object.assign({}, stopLossList);
                 newStopLossList[SL.selectionId] = SL;
@@ -284,12 +284,12 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
         setIsUpdated(false);
       }
     });
-  }, [matchedBets, nonRunners, updateStopEntryList, updateStopLossList, placeOrder, loadNonRunners, stopEntryList, stopLossList, unmatchedBets, updates]);
+  }, [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, updateStopLossList, market.eventType, market.sortedLadder, setSortedLadder, updateExcludedLadders]);
 
   const onMarketDisconnect = useCallback(async data => {
     if (GetSubscriptionErrorType(data.errorCode) === "Authentication") window.location.href = window.location.origin + `/?error=${data.errorCode}`;
     else setConnectionError(`${data.errorMessage.split(':')[0]}, connection id: ${connectionId}`);
-  }, []);
+  }, [connectionId]);
 
   const retrieveMarket = async () => {
     let marketId = getQueryVariable("marketId");
@@ -439,7 +439,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
     }
   }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveMarketMessage, socket]);
 
-  useInterval(async () => retrieveBets(), ONE_SECOND);
+  useInterval(() => retrieveBets(), TWO_HUNDRED_AND_FIFTY_MILLISECONDS);
 
   useEffect(() => {
     fetch(`/api/list-market-pl?marketId=${marketId}`)
