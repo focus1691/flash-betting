@@ -286,6 +286,67 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
     });
   }, [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, updateStopLossList, market.eventType, market.sortedLadder, setSortedLadder, updateExcludedLadders]);
 
+  /**
+   * Listen for Order Change Messages from the Exchange Streaming socket and create/update them
+   * @param {obj} data The order change message data:
+   */
+  const onReceiveOrderMessage = useCallback(async data => {
+    if (data.oc) {
+      const newUnmatchedBets = Object.assign({}, unmatchedBets);
+      const newMatchedBets = Object.assign({}, matchedBets);
+      for (let i = 0; i < data.oc.length; i++) {
+        if (!data.oc[i].orc) continue;
+
+        for (let j = 0; j < data.oc[i].orc.length; j++) {
+          if (!data.oc[i].orc[j].uo) continue;
+
+          for (let k = 0; k < data.oc[i].orc[j].uo.length; k++) {
+            // If the bet isn't in the unmatchedBets, we should delete it.
+            if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
+              //! this is what happens when an order doesn't get any matched
+              delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
+
+              updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
+            } else if (data.oc[i].orc[j].uo[k].sr === 0) {
+              // this is what happens when an order is finished
+              // if they canceled early
+              newMatchedBets[data.oc[i].orc[j].uo[k].id] = Object.assign({}, newUnmatchedBets[data.oc[i].orc[j].uo[k].id], { size: parseFloat(data.oc[i].orc[j].uo[k].sm) });
+              delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
+
+              updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
+            }
+
+            let isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
+            if (isStopLossMatched) {
+              let newStopLossList = Object.assign({}, stopLossList);
+              newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
+              updateStopLossList(newStopLossList);
+              updateOrder(newStopLossList[data.oc[i].orc[j].id]);
+            }
+
+            //* Check TOS matched and place order / remove from database
+            let tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
+            if (tosTriggered) {
+              let newTickOffsetList = Object.assign({}, tickOffsetList);
+              await removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
+              await placeOrder({
+                marketId: data.oc[i].id,
+                selectionId: data.oc[i].orc[j].id,
+                side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
+                size: data.oc[i].orc[j].uo[k].s,
+                price: data.oc[i].orc[j].uo[k].p,
+                unmatchedBets: unmatchedBets,
+                matchedBets: matchedBets
+              })
+              delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
+              await updateTickOffsetList(newTickOffsetList);
+            }
+          }
+        }
+      }
+    }
+  }, [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList]);
+
   const onMarketDisconnect = useCallback(async data => {
     if (GetSubscriptionErrorType(data.errorCode) === "Authentication") window.location.href = window.location.origin + `/?error=${data.errorCode}`;
     else setConnectionError(`${data.errorMessage.split(':')[0]}, connection id: ${connectionId}`);
@@ -426,6 +487,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
 
   useEffect(() => {
     socket.on("mcm", onReceiveMarketMessage);
+    socket.on("ocm", onReceiveOrderMessage);
     socket.on("connection-id", connectionId => setConnectionId(connectionId));
     socket.on("subscription-error", onMarketDisconnect);
     socket.on("market-definition", onReceiveMarketDefinition);
@@ -437,7 +499,7 @@ const App = ({ view, isLoading, market, marketOpen, nonRunners,
       socket.off("subscription-error");
       socket.off("market-definition");
     }
-  }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveMarketMessage, socket]);
+  }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveMarketMessage, onReceiveOrderMessage, socket]);
 
   useInterval(() => retrieveBets(), TWO_HUNDRED_AND_FIFTY_MILLISECONDS);
 
