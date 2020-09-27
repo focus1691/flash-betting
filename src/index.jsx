@@ -1,19 +1,21 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import reducers from "./utils/Reducers";
-import { createStore, applyMiddleware, compose, combineReducers } from "redux";
-import thunk from "redux-thunk";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Login from "./components/Login";
-import Logout from "./components/Logout";
-import App from "./components/App/";
-import GetClosedMarketStats from "./components/GetClosedMarketStats";
-import Authentication from "./components/Authentication";
-import OAuthRedirect from "./components/OAuthRedirect";
-import openSocket from "socket.io-client";
-import SocketContext from "./SocketContext";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import {
+  createStore, applyMiddleware, compose, combineReducers,
+} from 'redux';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import thunk from 'redux-thunk';
+import openSocket from 'socket.io-client';
 import { CookiesProvider } from 'react-cookie';
+import reducers from './utils/Reducers';
+import Login from './components/Login';
+import Logout from './components/Logout';
+import App from './components/App';
+import GetClosedMarketStats from './components/GetClosedMarketStats';
+import Authentication from './components/Authentication';
+import OAuthRedirect from './components/OAuthRedirect';
+import SocketContext from './SocketContext';
 
 const socket = openSocket('http://localhost:3001');
 
@@ -23,7 +25,7 @@ const rootReducer = combineReducers(reducers);
 
 const store = createStore(
   rootReducer,
-  composeEnhancers(applyMiddleware(thunk))
+  composeEnhancers(applyMiddleware(thunk)),
 );
 
 ReactDOM.render(
@@ -43,5 +45,5 @@ ReactDOM.render(
       </SocketContext.Provider>
     </CookiesProvider>
   </Provider>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );

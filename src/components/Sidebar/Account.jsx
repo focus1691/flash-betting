@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { setAccountDetails, setBalance } from "../../actions/account";
 import FlagIcon from "./FlagIcon";
 import Clock from "./Clock";
-import { formatCurrency } from "./../../utils/NumberFormat";
+import { formatCurrency } from "../../utils/NumberFormat";
 import { useCookies } from "react-cookie";
 
 const Account = ({name, countryCode, currencyCode, localeCode, balance, bets, setAccountDetails, setBalance, onUpdateTime}) => {

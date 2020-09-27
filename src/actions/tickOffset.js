@@ -1,55 +1,39 @@
-export const setTickOffsetSelected = isSelected => {
-    return {
-        type: "SET_TICK_OFFSET_SELECTED",
-        payload: isSelected
-    }
-};
+export const setTickOffsetSelected = (isSelected) => ({
+  type: 'SET_TICK_OFFSET_SELECTED',
+  payload: isSelected,
+});
 
-export const setTicks = ticks => {
-    return {
-        type: "SET_TICK_OFFSET_TICKS",
-        payload: ticks
-    }
-};
+export const setTicks = (ticks) => ({
+  type: 'SET_TICK_OFFSET_TICKS',
+  payload: ticks,
+});
 
-export const setUnit = unit => {
-    return {
-        type: "SET_TICK_OFFSET_UNIT",
-        payload: unit
-    }
-};
+export const setUnit = (unit) => ({
+  type: 'SET_TICK_OFFSET_UNIT',
+  payload: unit,
+});
 
-export const setPercentTrigger = percent => {
-    return {
-        type: "SET_TICK_OFFSET_PERCENT_TRIGGER",
-        payload: percent
-    }
-};
+export const setPercentTrigger = (percent) => ({
+  type: 'SET_TICK_OFFSET_PERCENT_TRIGGER',
+  payload: percent,
+});
 
-export const setHedged = selected => {
-    return {
-        type: "TOGGLE_TICK_OFFSET_HEDGED",
-        payload: selected
-    }
-};
+export const setHedged = (selected) => ({
+  type: 'TOGGLE_TICK_OFFSET_HEDGED',
+  payload: selected,
+});
 
-export const setDisplayText = text => {
-    return {
-        type: "SET_TICK_OFFSET_TEXT",
-        payload: text
-    }
-};
+export const setDisplayText = (text) => ({
+  type: 'SET_TICK_OFFSET_TEXT',
+  payload: text,
+});
 
-export const updateTickOffsetList = list => {
-    return {
-        type: "UPDATE_TICK_OFFSET_LIST",
-        payload: list
-    }
-};
+export const updateTickOffsetList = (list) => ({
+  type: 'UPDATE_TICK_OFFSET_LIST',
+  payload: list,
+});
 
-export const removeTickOffsetOrder = order => {
-    return {
-        type: "REMOVE_TICK_OFFSET_ORDER",
-        payload: order
-    }
-};
+export const removeTickOffsetOrder = (order) => ({
+  type: 'REMOVE_TICK_OFFSET_ORDER',
+  payload: order,
+});

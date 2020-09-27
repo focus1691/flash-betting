@@ -1,16 +1,15 @@
 const initialState = {
   bets: {
     matched: {},
-    unmatched: {}
-  }
+    unmatched: {},
+  },
 };
 
 const reducer = (state = initialState, action) => {
-
   switch (action.type) {
-    case "PLACE_ORDER":
+    case 'PLACE_ORDER':
       return { ...state, bets: action.payload };
-    case "UPDATE_BET":
+    case 'UPDATE_BET':
       return { ...state, bets: action.payload };
     default:
       return state;

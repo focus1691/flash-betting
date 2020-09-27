@@ -8,9 +8,9 @@ import { green } from '@material-ui/core/colors';
 import Account from "./Account";
 import Toolbar from "./Toolbar";
 import Event from "./Event";
-import Menu from "./Menu/";
-import Market from "./Market/";
-import Settings from "./Settings/";
+import Menu from "./Menu";
+import Market from "./Market";
+import Settings from "./Settings";
 
 const BootstrapButton = withStyles({
     root: {

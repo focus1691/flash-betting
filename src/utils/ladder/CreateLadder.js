@@ -1,7 +1,7 @@
-import { sortAsc, sortDes } from "../Algorithms/Sort";
-import { calcBackLayPercentages, formatPriceKey } from "./CreateFullLadder";
+import { sortAsc, sortDes } from '../Algorithms/Sort';
+import { calcBackLayPercentages, formatPriceKey } from './CreateFullLadder';
 
-const CreateLadder = data => {
+const CreateLadder = (data) => {
   const runner = data;
   runner.id = data.id;
   runner.ltp = runner.ltp ? [runner.ltp] : [null];
@@ -18,21 +18,21 @@ const CreateLadder = data => {
     backLay: 0,
     stakeLiability: 0,
     stake: 2,
-    price: 0
+    price: 0,
   };
 
   // make it easier for ladder
-  runner.trd.forEach(trd => {
+  runner.trd.forEach((trd) => {
     runner.trdo[formatPriceKey(trd[0])] = trd[1];
   });
 
-  for (var i = 0; i < runner.atb.length; i++) {
-    let price = formatPriceKey(runner.atb[i][0]);
+  for (let i = 0; i < runner.atb.length; i += 1) {
+    const price = formatPriceKey(runner.atb[i][0]);
     const matched = Math.floor(runner.atb[i][1]);
 
     if (matched <= 0) {
       runner.atb.splice(i, 1);
-      i--;
+      i -= 1;
     } else {
       // Alter the value to round down
       runner.atb[i][1] = matched;
@@ -41,13 +41,13 @@ const CreateLadder = data => {
     }
   }
 
-  for (i = 0; i < runner.atl.length; i++) {
-    let price = formatPriceKey(runner.atl[i][0]);
+  for (let i = 0; i < runner.atl.length; i += 1) {
+    const price = formatPriceKey(runner.atl[i][0]);
     const matched = Math.floor(runner.atl[i][1]);
 
     if (matched <= 0) {
       runner.atl.splice(i, 1);
-      i--;
+      i -= 1;
     } else {
       // Alter the value to round down
       runner.atl[i][1] = matched;
@@ -63,11 +63,10 @@ const CreateLadder = data => {
   runner.percent = calcBackLayPercentages(
     runner.atbo,
     runner.atlo,
-    runner.ltp[0]
+    runner.ltp[0],
   );
 
   return runner;
 };
 
 export { CreateLadder };
-

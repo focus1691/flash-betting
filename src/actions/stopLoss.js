@@ -1,61 +1,43 @@
-export const setStopLossSelected = isSelected => {
-    return {
-        type: "SET_STOP_LOSS_SELECTED",
-        payload: isSelected
-    }
-};
+export const setStopLossSelected = (isSelected) => ({
+  type: 'SET_STOP_LOSS_SELECTED',
+  payload: isSelected,
+});
 
-export const setStopLossOffset = offset => {
-    return {
-        type: "SET_STOP_LOSS_OFFSET",
-        payload: offset
-    }
-};
+export const setStopLossOffset = (offset) => ({
+  type: 'SET_STOP_LOSS_OFFSET',
+  payload: offset,
+});
 
-export const setStopLossUnit = unit => {
-    return {
-        type: "SET_STOP_LOSS_UNITS",
-        payload: unit
-    }
-};
+export const setStopLossUnit = (unit) => ({
+  type: 'SET_STOP_LOSS_UNITS',
+  payload: unit,
+});
 
-export const toggleStopLossTrailing = selected => {
-    return {
-        type: "TOGGLE_STOP_LOSS_TRAILING",
-        payload: selected
-    }
-};
-export const toggleStopLossHedged = selected => {
-    return {
-        type: "TOGGLE_STOP_LOSS_HEDGED",
-        payload: selected
-    }
-};
+export const toggleStopLossTrailing = (selected) => ({
+  type: 'TOGGLE_STOP_LOSS_TRAILING',
+  payload: selected,
+});
+export const toggleStopLossHedged = (selected) => ({
+  type: 'TOGGLE_STOP_LOSS_HEDGED',
+  payload: selected,
+});
 
-export const setDisplayText = text => {
-    return {
-        type: "SET_STOP_LOSS_TEXT",
-        payload: text
-    }
-};
+export const setDisplayText = (text) => ({
+  type: 'SET_STOP_LOSS_TEXT',
+  payload: text,
+});
 
-export const updateStopLossList = list => {
-    return {
-        type: "UPDATE_STOP_LOSS_LIST",
-        payload: list
-    }
-};
+export const updateStopLossList = (list) => ({
+  type: 'UPDATE_STOP_LOSS_LIST',
+  payload: list,
+});
 
-export const setSelections = selections => {
-    return {
-        type: "SET_STOP_LOSS_SELECTIONS",
-        payload: selections
-    }
-}
+export const setSelections = (selections) => ({
+  type: 'SET_STOP_LOSS_SELECTIONS',
+  payload: selections,
+});
 
-export const removeStopLossOrder = order => {
-    return {
-        type: "REMOVE_STOP_LOSS_ORDER",
-        payload: order
-    }
-};
+export const removeStopLossOrder = (order) => ({
+  type: 'REMOVE_STOP_LOSS_ORDER',
+  payload: order,
+});

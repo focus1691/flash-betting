@@ -5,59 +5,59 @@ const initialState = {
   offset: {
     hours: 0,
     minutes: 0,
-    seconds: 0
+    seconds: 0,
   },
-  executionTime: "Before",
+  executionTime: 'Before',
   selections: null,
-  list: {} //! {selectionId(parameter): [{executionTime: Before, timeOffset: (seconds) , size: (2) , price: (750) },]  }
+  list: {}, //! {selectionId(parameter): [{executionTime: Before, timeOffset: (seconds) , size: (2) , price: (750) },]  }
 };
 initialState.text = `${initialState.stake} @ ${initialState.price}`;
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_LAY_SELECTED":
+    case 'SET_LAY_SELECTED':
       return { ...state, selected: !state.selected };
-    case "SET_LAY_TEXT":
+    case 'SET_LAY_TEXT':
       return { ...state, text: action.payload };
-    case "SET_LAY_STAKE":
+    case 'SET_LAY_STAKE':
       return { ...state, stake: action.payload };
-    case "SET_LAY_PRICE":
+    case 'SET_LAY_PRICE':
       return { ...state, price: action.payload };
-    case "SET_LAY_HOURS":
+    case 'SET_LAY_HOURS':
       return {
         ...state,
         offset: {
           hours: action.payload,
           minutes: state.offset.minutes,
-          seconds: state.offset.seconds
-        }
+          seconds: state.offset.seconds,
+        },
       };
-    case "SET_LAY_MINUTES":
+    case 'SET_LAY_MINUTES':
       return {
         ...state,
         offset: {
           hours: state.offset.hours,
           minutes: action.payload,
-          seconds: state.offset.seconds
-        }
+          seconds: state.offset.seconds,
+        },
       };
-    case "SET_LAY_SECONDS":
+    case 'SET_LAY_SECONDS':
       return {
         ...state,
         offset: {
           hours: state.offset.hours,
           minutes: state.offset.minutes,
-          seconds: action.payload
-        }
+          seconds: action.payload,
+        },
       };
-    case "TOGGLE_LAY_EXECUTION_BEFORE_OR_AFTER":
+    case 'TOGGLE_LAY_EXECUTION_BEFORE_OR_AFTER':
       return { ...state, executionTime: action.payload };
-    case "SET_LAY_SELECTIONS":
+    case 'SET_LAY_SELECTIONS':
       return { ...state, selections: action.payload };
-    case "UPDATE_LAY_LIST":
-      return { ...state, list: action.payload }; 
-    case "REMOVE_LAY_ORDER":
-      let newList = Object.assign({}, state.list);
+    case 'UPDATE_LAY_LIST':
+      return { ...state, list: action.payload };
+    case 'REMOVE_LAY_ORDER':
+      const newList = { ...state.list };
       delete newList[action.payload.selectionId];
       return { ...state, list: newList };
     default:

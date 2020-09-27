@@ -1,20 +1,20 @@
-const dropdownRunnerStyle = theme => ({
+const dropdownRunnerStyle = () => ({
   runnerList: {
     '& ul': {
       paddingTop: 0,
-      paddingBottom: 0
+      paddingBottom: 0,
     },
     '& li': {
-      margin: 0
-    }
+      margin: 0,
+    },
   },
   runnerItem: {
     margin: 0,
     '& .Mui-selected': {
       margin: 0,
-      padding: 0
-    }
-  }
+      padding: 0,
+    },
+  },
 });
 
 export default dropdownRunnerStyle;

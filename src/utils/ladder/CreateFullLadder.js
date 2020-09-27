@@ -18,11 +18,9 @@ const ALL_PRICES = Array(100).fill()
  * @param {number} key - The price (1.01 - 1000)
  * @return {string} The formatted price
  */
-const formatPriceKey = key => {
-  return (Math.round(key * 100) / 100).toFixed(2);
-};
+const formatPriceKey = (key) => (Math.round(key * 100) / 100).toFixed(2);
 
-const formatPrice = odds => {
+const formatPrice = (odds) => {
   odds = parseFloat(odds);
 
   switch (true) {
@@ -39,51 +37,42 @@ const formatPrice = odds => {
 
 const getNextPrice = (prevPrice, nextPrice) => {
   if (prevPrice === nextPrice) return prevPrice;
-  
-  let priceIncreased = prevPrice < nextPrice;
-  let index = ALL_PRICES.indexOf(prevPrice) + (priceIncreased ? 1 : -1);
-  return ALL_PRICES[index];
-}
 
-const findPriceStep = v => {
+  const priceIncreased = prevPrice < nextPrice;
+  const index = ALL_PRICES.indexOf(prevPrice) + (priceIncreased ? 1 : -1);
+  return ALL_PRICES[index];
+};
+
+const findPriceStep = (v) => {
   if (v >= 1.01 && v < 2) {
     return 0.01;
-  }
-  else if (v >= 2 && v < 3) {
+  } if (v >= 2 && v < 3) {
     return 0.02;
-  }
-  else if (v >= 3 && v < 4) {
+  } if (v >= 3 && v < 4) {
     return 0.05;
-  }
-  else if (v >= 4 && v < 6) {
+  } if (v >= 4 && v < 6) {
     return 0.05;
-  }
-  else if (v >= 6 && v < 10) {
+  } if (v >= 6 && v < 10) {
     return 0.1;
-  }
-  else if (v >= 10 && v < 20) {
+  } if (v >= 10 && v < 20) {
     return 0.5;
-  }
-  else if (v >= 20 && v < 30) {
+  } if (v >= 20 && v < 30) {
     return 1;
-  }
-  else if (v >= 30 && v < 50) {
+  } if (v >= 30 && v < 50) {
     return 2;
-  }
-  else if (v >= 50 && v < 100) {
+  } if (v >= 50 && v < 100) {
     return 5;
-  }
-  else if (v >= 100 && v <= 1000) {
+  } if (v >= 100 && v <= 1000) {
     return 10;
   }
 };
 
 const getPriceNTicksAway = (price, N) => {
-  if (N === undefined || N === null || typeof N != "number") return null;
+  if (N === undefined || N === null || typeof N !== 'number') return null;
   if (N <= 0) return price;
 
-  let index = ALL_PRICES.indexOf(price) + N;
-  let newPrice = ALL_PRICES[index];
+  const index = ALL_PRICES.indexOf(price) + N;
+  const newPrice = ALL_PRICES[index];
 
   if (newPrice === -1) return price;
   return newPrice;
@@ -95,12 +84,12 @@ const getPriceNTicksAway = (price, N) => {
  * @param {number} ltp - The Last Traded Price
  * @return {object} The keys of back/lay price objects 5 places either side of the LTP
  */
-const fivePricesAway = ltp => {
-  var index = ALL_PRICES.indexOf(ltp);
+const fivePricesAway = (ltp) => {
+  const index = ALL_PRICES.indexOf(ltp);
 
   return {
     back: ALL_PRICES.slice(index + 1, index + 6).map((s, v) => formatPrice(s)),
-    lay: ALL_PRICES.slice(index - 5, index).map((s, v) => formatPrice(s))
+    lay: ALL_PRICES.slice(index - 5, index).map((s, v) => formatPrice(s)),
   };
 };
 
@@ -118,22 +107,23 @@ const calcBackLayPercentages = (atbo, atlo, ltp) => {
   // Get the prices for both back/lay trading 5 places either side of the LTP
   const indices = fivePricesAway(ltp);
 
-  var layMatched = 0, backMatched = 0;
-  var i;
+  let layMatched = 0; let
+    backMatched = 0;
+  let i;
 
   // Add the back total
   for (i = 0; i < indices.back.length; i++) {
-    let price = indices.back[i];
-    let matched = atbo[formatPriceKey(price)];
+    const price = indices.back[i];
+    const matched = atbo[formatPriceKey(price)];
     if (matched) {
       backMatched += matched;
     }
   }
 
   // Add the lay total
-  for (i = 0; i < indices.lay.length; i++) {
-    let price = indices.lay[i];
-    let matched = atlo[formatPriceKey(price)];
+  for (i = 0; i < indices.lay.length; i += 1) {
+    const price = indices.lay[i];
+    const matched = atlo[formatPriceKey(price)];
 
     if (matched) {
       layMatched += matched;
@@ -145,7 +135,7 @@ const calcBackLayPercentages = (atbo, atlo, ltp) => {
   const backPercent = Math.round((backMatched / total) * 100);
   const layPercent = Math.round((layMatched / total) * 100);
 
-  return { back: backPercent ? backPercent : 0, lay: layPercent ? layPercent : 0 };
+  return { back: backPercent || 0, lay: layPercent || 0 };
 };
 
 export {
@@ -155,5 +145,5 @@ export {
   calcBackLayPercentages,
   getNextPrice,
   findPriceStep,
-  getPriceNTicksAway
+  getPriceNTicksAway,
 };

@@ -1,9 +1,6 @@
-export default (unmatchedBetsOnRow => {
-	if (unmatchedBetsOnRow) {
-		return unmatchedBetsOnRow.reduce(function(acc, bet) {
-			return parseFloat(acc) + parseFloat(bet.size);
-		}, 0);
-	} else {
-        return 0;
-    }
+export default ((unmatchedBetsOnRow) => {
+  if (unmatchedBetsOnRow) {
+    return unmatchedBetsOnRow.reduce((acc, bet) => parseFloat(acc) + parseFloat(bet.size), 0);
+  }
+  return 0;
 });

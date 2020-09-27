@@ -1,5 +1,5 @@
-import { calcPercentDifference } from "../Bets/BettingCalculations";
-import { ALL_PRICES } from "../ladder/CreateFullLadder";
+import { calcPercentDifference } from '../Bets/BettingCalculations';
+import { ALL_PRICES } from '../ladder/CreateFullLadder';
 
 /**
  * This function is used to calculate whether the stop loss has been triggered.
@@ -13,14 +13,14 @@ import { ALL_PRICES } from "../ladder/CreateFullLadder";
  * @return {Object} {targetMet, stopPrice or stopPrice}
  */
 const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
-	//* We turn the prices into floating point numbers in case strings are passed
-	matchedPrice = parseFloat(matchedPrice);
-	LTP = parseFloat(LTP);
+  //* We turn the prices into floating point numbers in case strings are passed
+  matchedPrice = parseFloat(matchedPrice);
+  LTP = parseFloat(LTP);
 
-	if (((side === "BACK" && LTP <= matchedPrice) || (side === "LAY" && LTP >= matchedPrice))) return { targetMet: false };
-	else if (strategy== "ticks") return findStopPosition(matchedPrice, LTP, ticks, side);
-	else if (strategy == "percent") return findStopPositionForPercent(size, matchedPrice, LTP, ticks, side);
-	return findStopPosition(matchedPrice, LTP, ticks, side);
+  if (((side === 'BACK' && LTP <= matchedPrice) || (side === 'LAY' && LTP >= matchedPrice))) return { targetMet: false };
+  if (strategy == 'ticks') return findStopPosition(matchedPrice, LTP, ticks, side);
+  if (strategy == 'percent') return findStopPositionForPercent(size, matchedPrice, LTP, ticks, side);
+  return findStopPosition(matchedPrice, LTP, ticks, side);
 };
 
 /**
@@ -33,25 +33,25 @@ const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
  * @return {Object} {targetMet, stopPrice}
  */
 
- const findStop = (matchedPrice, ticks, side) => {
-	matchedPrice = parseFloat(matchedPrice);
-	ticks = side == "BACK" ? +ticks : -ticks;
-	const stopAt = Math.floor(ALL_PRICES.indexOf(matchedPrice) + ticks);
-	return parseFloat(ALL_PRICES[stopAt]).toFixed(2);
- };
+const findStop = (matchedPrice, ticks, side) => {
+  matchedPrice = parseFloat(matchedPrice);
+  ticks = side == 'BACK' ? +ticks : -ticks;
+  const stopAt = Math.floor(ALL_PRICES.indexOf(matchedPrice) + ticks);
+  return parseFloat(ALL_PRICES[stopAt]).toFixed(2);
+};
 
 const findStopPosition = (matchedPrice, LTP, ticks, side) => {
-	matchedPrice = parseFloat(matchedPrice);
-	LTP = parseFloat(LTP);
-	ticks = side == "BACK" ? +ticks : -ticks;
+  matchedPrice = parseFloat(matchedPrice);
+  LTP = parseFloat(LTP);
+  ticks = side == 'BACK' ? +ticks : -ticks;
 
-	const stopAt = Math.floor(ALL_PRICES.indexOf(matchedPrice) + ticks);
-	const ltpIndex = Math.floor(ALL_PRICES.indexOf(LTP));
+  const stopAt = Math.floor(ALL_PRICES.indexOf(matchedPrice) + ticks);
+  const ltpIndex = Math.floor(ALL_PRICES.indexOf(LTP));
 
-	return {
-		targetMet: (side == "BACK" && ltpIndex >= stopAt) || (side == "LAY" && ltpIndex <= stopAt),
-		stopPrice: parseFloat(ALL_PRICES[stopAt]).toFixed(2),
-	};
+  return {
+    targetMet: (side == 'BACK' && ltpIndex >= stopAt) || (side == 'LAY' && ltpIndex <= stopAt),
+    stopPrice: parseFloat(ALL_PRICES[stopAt]).toFixed(2),
+  };
 };
 
 /**
@@ -63,28 +63,26 @@ const findStopPosition = (matchedPrice, LTP, ticks, side) => {
  * @return {string} The price at which the trade will stop
  */
 const findStopPositionForPercent = (size, matchedPrice, LTP, percent, side) => {
-	matchedPrice = parseFloat(matchedPrice);
+  matchedPrice = parseFloat(matchedPrice);
 
-  if (side == "BACK") {
-    let percentIncrease = calcPercentDifference(size, matchedPrice, LTP);
-    let percentOfPrice = matchedPrice + (matchedPrice * percent) / 100;
+  if (side == 'BACK') {
+    const percentIncrease = calcPercentDifference(size, matchedPrice, LTP);
+    const percentOfPrice = matchedPrice + (matchedPrice * percent) / 100;
     return {
       targetMet: percentIncrease >= percent && LTP >= matchedPrice,
-      stopPrice: ALL_PRICES.reduce(function(prev, curr) {
-        return (Math.abs(curr - percentOfPrice) < Math.abs(prev - percentOfPrice) ? curr : prev);
-      })
-    }
+      stopPrice: ALL_PRICES.reduce((prev, curr) => (Math.abs(curr - percentOfPrice) < Math.abs(prev - percentOfPrice) ? curr : prev)),
+    };
   }
-  else if (side == "LAY") {
-    let percentIncrease = calcPercentDifference(size, matchedPrice, LTP);
-    let percentOfPrice = matchedPrice - (matchedPrice * percent) / 100;
+  if (side == 'LAY') {
+    const percentIncrease = calcPercentDifference(size, matchedPrice, LTP);
+    const percentOfPrice = matchedPrice - (matchedPrice * percent) / 100;
     return {
       targetMet: percentIncrease >= percent && LTP <= matchedPrice,
-      stopPrice: ALL_PRICES.reduce(function(prev, curr) {
-        return (Math.abs(curr - percentOfPrice) < Math.abs(prev - percentOfPrice) ? curr : prev);
-      })
-    }
+      stopPrice: ALL_PRICES.reduce((prev, curr) => (Math.abs(curr - percentOfPrice) < Math.abs(prev - percentOfPrice) ? curr : prev)),
+    };
   }
 };
 
-export { checkStopLossHit, findStop, findStopPosition, findStopPositionForPercent };
+export {
+  checkStopLossHit, findStop, findStopPosition, findStopPositionForPercent,
+};

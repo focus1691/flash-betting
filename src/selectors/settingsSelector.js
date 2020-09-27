@@ -1,8 +1,8 @@
-import { createSelector } from 'reselect'
+import { createSelector } from 'reselect';
 
-const getStakeSelector = (state, {selectionId}) => state[selectionId]
+const getStakeSelector = (state, { selectionId }) => state[selectionId];
 
 export const getStakeVal = createSelector(
-    getStakeSelector,
-    state => state
-)
+  getStakeSelector,
+  (state) => state,
+);

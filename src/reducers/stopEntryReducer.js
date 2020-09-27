@@ -1,34 +1,34 @@
 const initialState = {
   selected: false,
-  operator: "<",
+  operator: '<',
   ticks: 3,
   stake: 2,
   price: 2,
   side: 'BACK',
   list: {}, //! {selectionId(parameter): [{targetLTP: , stopEntryCondition: , side: , size: , price: },]  }
-  selections: null
+  selections: null,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_STOP_ENTRY_SELECTED":
+    case 'SET_STOP_ENTRY_SELECTED':
       return { ...state, selected: !state.selected };
-    case "SET_STOP_ENTRY_OPERATOR":
+    case 'SET_STOP_ENTRY_OPERATOR':
       return { ...state, operator: action.payload };
-    case "SET_STOP_ENTRY_TICKS":
+    case 'SET_STOP_ENTRY_TICKS':
       return { ...state, ticks: action.payload };
-    case "SET_STOP_ENTRY_STAKE":
+    case 'SET_STOP_ENTRY_STAKE':
       return { ...state, stake: action.payload };
-    case "SET_STOP_ENTRY_PRICE":
+    case 'SET_STOP_ENTRY_PRICE':
       return { ...state, price: action.payload };
-    case "SET_STOP_ENTRY_SIDE":
+    case 'SET_STOP_ENTRY_SIDE':
       return { ...state, side: action.payload };
-    case "UPDATE_STOP_ENTRY_LIST":
+    case 'UPDATE_STOP_ENTRY_LIST':
       return { ...state, list: action.payload };
-    case "SET_STOP_ENTRY_SELECTIONS":
+    case 'SET_STOP_ENTRY_SELECTIONS':
       return { ...state, selections: action.payload };
-    case "REMOVE_STOP_ENTRY_ORDER":
-      let newList = Object.assign({}, state.list);
+    case 'REMOVE_STOP_ENTRY_ORDER':
+      const newList = { ...state.list };
       delete newList[action.payload.selectionId];
       return { ...state, list: newList };
     default:

@@ -1,61 +1,61 @@
-import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import React, { useState } from "react";
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import Container from '@material-ui/core/Container';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { setLoggedIn } from "../actions/account";
-import { getErrorMessage } from "../utils/ErrorMessages/AccountErrors";
-import getQueryVariable from "../utils/Market/GetQueryVariable";
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { setLoggedIn } from '../actions/account';
+import { getErrorMessage } from '../utils/ErrorMessages/AccountErrors';
+import getQueryVariable from '../utils/Market/GetQueryVariable';
 
-const useStyles = makeStyles(theme => ({
-  "@global": {
+const useStyles = makeStyles((theme) => ({
+  '@global': {
     body: {
-      backgroundColor: "theme.palette.common.white"
-    }
+      backgroundColor: 'theme.palette.common.white',
+    },
   },
   paper: {
     marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    backgroundColor: "#FFB80C",
-    borderRadius: "25px",
-    border: "5px solid #000"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#FFB80C',
+    borderRadius: '25px',
+    border: '5px solid #000',
   },
   avatar: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
     margin: theme.spacing(5),
-    padding: "25px"
+    padding: '25px',
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
-const Login = ({loggedIn, setLoggedIn}) => {
+const Login = ({ loggedIn, setLoggedIn }) => {
   const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'username', 'password', 'rememberMe']);
 
-  const [rememberMe, setRememberMe] = useState(cookies.rememberMe && cookies.rememberMe === 'yes' ? true : false);
+  const [rememberMe, setRememberMe] = useState(!!(cookies.rememberMe && cookies.rememberMe === 'yes'));
 
   const classes = useStyles();
 
   setLoggedIn(false);
 
-  const handleSubmit = () => e => {
+  const handleSubmit = () => (e) => {
     fetch(`/api/login?user=${cookies.username}&pass=${cookies.password}`)
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         if (res.error) {
           removeCookie('sessionKey');
           removeCookie('username');
@@ -63,7 +63,7 @@ const Login = ({loggedIn, setLoggedIn}) => {
           setCookie('rememberMe', 'no');
           setRememberMe(false);
 
-          window.location.href = window.location.origin + "/?error=" + (res.error || "GENERAL_AUTH_ERROR");
+          window.location.href = `${window.location.origin}/?error=${res.error || 'GENERAL_AUTH_ERROR'}`;
         } else {
           setCookie('sessionKey', res.sessionKey);
           setCookie('username', cookies.username);
@@ -84,15 +84,20 @@ const Login = ({loggedIn, setLoggedIn}) => {
         <CssBaseline />
         <div className={classes.paper}>
           <img
-            src={window.location.origin + "/images/Webp.net-resizeimage.png"}
+            src={`${window.location.origin}/images/Webp.net-resizeimage.png`}
             alt="Betfair"
             className={classes.avatar}
           />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Typography component="p" style={{ backgroundColor: '#C71585', marginTop: '1%', width: '100%', padding: getQueryVariable("error") ? 2 : 0, textAlign: 'center', color: 'white' }}>
-            {getErrorMessage(getQueryVariable("error"))}
+          <Typography
+            component="p"
+            style={{
+              backgroundColor: '#C71585', marginTop: '1%', width: '100%', padding: getQueryVariable('error') ? 2 : 0, textAlign: 'center', color: 'white',
+            }}
+          >
+            {getErrorMessage(getQueryVariable('error'))}
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
@@ -104,7 +109,7 @@ const Login = ({loggedIn, setLoggedIn}) => {
               label="Email Address"
               name="email"
               value={cookies.username}
-              onChange={e => {
+              onChange={(e) => {
                 setCookie('username', e.target.value);
               }}
               autoComplete="email"
@@ -117,7 +122,7 @@ const Login = ({loggedIn, setLoggedIn}) => {
               fullWidth
               name="password"
               value={cookies.password}
-              onChange={e => {
+              onChange={(e) => {
                 setCookie('password', e.target.value);
               }}
               label="Password"
@@ -147,15 +152,13 @@ const Login = ({loggedIn, setLoggedIn}) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    loggedIn: state.account.loggedIn
-  };
-};
+const mapStateToProps = (state) => ({
+  loggedIn: state.account.loggedIn,
+});
 
 const mapDispatchToProps = { setLoggedIn };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Login);

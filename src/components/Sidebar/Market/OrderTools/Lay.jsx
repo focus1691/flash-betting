@@ -1,39 +1,41 @@
-import Button from "@material-ui/core/Button";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
+import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 import crypto from 'crypto';
-import React, { useState, useEffect, useCallback } from "react";
-import { connect } from "react-redux";
-import * as actions from "../../../../actions/lay";
-import { formatPrice, findPriceStep } from "../../../../utils/ladder/CreateFullLadder";
-import StyledMenu from "../../../MaterialUI/StyledMenu";
-import StyledMenuItem from "../../../MaterialUI/StyledMenuItem";
-import dropdownRunnerStyle from "../../../../assets/jss/DropdownList";
+import React, { useState, useEffect, useCallback } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../../../actions/lay';
+import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
+import StyledMenu from '../../../MaterialUI/StyledMenu';
+import StyledMenuItem from '../../../MaterialUI/StyledMenuItem';
+import dropdownRunnerStyle from '../../../../assets/jss/DropdownList';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   button: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
   },
   textField: {
     width: 40,
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   textField2: {
     width: 30,
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
   },
-  ...dropdownRunnerStyle(theme)
+  ...dropdownRunnerStyle(theme),
 }));
 
-const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market, runners, selections, list,
+const Lay = ({
+  text, stake, price, hours, minutes, seconds, executionTime, market, runners, selections, list,
   onTextUpdate, onReceiveStake, onReceivePrice, onReceiveHours, onReceiveMinutes, onReceiveSeconds,
-  onToggleExecutionTime, onSelection, onUpdateLayList}) => {
+  onToggleExecutionTime, onSelection, onUpdateLayList,
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [step, setStep] = useState(findPriceStep(price));
@@ -45,16 +47,16 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
 
   // Load all the runners / set All / The Field as the default
   useEffect(() => {
-    onSelection((Object.keys(runners).map(key => [
-      runners[key].selectionId
+    onSelection((Object.keys(runners).map((key) => [
+      runners[key].selectionId,
     ])));
   }, [onSelection, runners]);
 
-  const handleClickListItem = () => e => {
+  const handleClickListItem = () => (e) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuItemClick = index => e => {
+  const handleMenuItemClick = (index) => (e) => {
     onSelection(index);
     setAnchorEl(null);
   };
@@ -63,21 +65,20 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
     setAnchorEl(null);
   };
 
-  const updateStep = useCallback(e => {
-    let v = e.target.value;
+  const updateStep = useCallback((e) => {
+    const v = e.target.value;
 
     // Set empty String for non-numbers
     if (isNaN(parseInt(v))) {
-      onReceivePrice("");
+      onReceivePrice('');
       return;
-    }
-    else if (price === "" && parseInt(v) === 1) {
+    } if (price === '' && parseInt(v) === 1) {
       setStep(0.01);
       onReceivePrice(1.01);
       return;
     }
-    
-    let newStep = findPriceStep(v);
+
+    const newStep = findPriceStep(v);
 
     if (newStep !== step) {
       setStep(newStep);
@@ -87,40 +88,39 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
   }, [price, step, onReceivePrice]);
 
   // Handle Submit click to place an order
-  const placeOrder = () => async e => {
+  const placeOrder = () => async (e) => {
+    const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
-    const selectedRunners = typeof selections == "string" ? [selections] : selections
-
-    const newLayList = Object.assign({}, list)
+    const newLayList = { ...list };
 
     await Promise.all(selectedRunners.map(async (selection, index) => {
-      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15)
+      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const convertedSelection = parseInt(selection);
       const addedOrder = {
-        strategy: "Lay",
+        strategy: 'Lay',
         marketId: market.marketId,
         selectionId: convertedSelection,
-        executionTime: executionTime,
+        executionTime,
         timeOffset: (hours * 3600) + (minutes * 60) + parseInt(seconds),
         size: stake,
         price: formatPrice(price),
-        rfs: referenceStrategyId
+        rfs: referenceStrategyId,
       };
 
       // make sure request is processed before saving it
 
       await fetch('/api/save-order', {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        method: "POST",
-        body: JSON.stringify(addedOrder)
+        method: 'POST',
+        body: JSON.stringify(addedOrder),
       }).then(() => {
         if (newLayList[convertedSelection] === undefined) {
-          newLayList[convertedSelection] = [addedOrder]
+          newLayList[convertedSelection] = [addedOrder];
         } else {
-          newLayList[convertedSelection] = newLayList[convertedSelection].concat(addedOrder)
+          newLayList[convertedSelection] = newLayList[convertedSelection].concat(addedOrder);
         }
       });
     }));
@@ -141,10 +141,10 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
             primary="Lay"
             secondary={
               selections
-                ? typeof selections === "string"
+                ? typeof selections === 'string'
                   ? runners[selections].runnerName
-                  : "Lay All / The Field"
-                : ""
+                  : 'Lay All / The Field'
+                : ''
             }
           />
         </ListItem>
@@ -159,10 +159,10 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
         {/* The Menu Item for Back All / the Field */}
         {runners ? (
           <StyledMenuItem
-            key={`lay-order-all/field`}
+            key="lay-order-all/field"
             className={classes.root}
-            selected={typeof selections != "string"}
-            onClick={handleMenuItemClick(Object.keys(runners).map(key => [runners[key].selectionId]))}
+            selected={typeof selections !== 'string'}
+            onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}
           >
             Lay All / The Field
           </StyledMenuItem>
@@ -171,7 +171,7 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
         {/* Create Menu Items for all the runners and display their names
          * Store their selectionId to be used to place bets for event clicks
          */}
-        {Object.keys(runners).map(key => (
+        {Object.keys(runners).map((key) => (
           <StyledMenuItem
             key={`lay-order-${runners[key].runnerName}`}
             className={classes.root}
@@ -182,15 +182,15 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
           </StyledMenuItem>
         ))}
       </StyledMenu>
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           id="standard-number"
           className={classes.textField}
           type="number"
           label="stake"
           value={stake}
-          inputProps={{ min: "1", style: { fontSize: 10 } }}
-          onChange={e => onReceiveStake(e.target.value)}
+          inputProps={{ min: '1', style: { fontSize: 10 } }}
+          onChange={(e) => onReceiveStake(e.target.value)}
           margin="normal"
         />
         <TextField
@@ -199,7 +199,9 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
           type="number"
           label="@"
           value={price}
-          inputProps={{ min: "1.00", max: "1000", step: step, style: { fontSize: 10 } }}
+          inputProps={{
+            min: '1.00', max: '1000', step, style: { fontSize: 10 },
+          }}
           onChange={updateStep}
           margin="normal"
         />
@@ -208,15 +210,15 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
         </Button>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           id="standard-number"
           className={classes.textField2}
           type="number"
           label="hh"
           value={hours}
-          inputProps={{ min: "0", style: { fontSize: 10 } }}
-          onChange={e => onReceiveHours(e.target.value)}
+          inputProps={{ min: '0', style: { fontSize: 10 } }}
+          onChange={(e) => onReceiveHours(e.target.value)}
           margin="normal"
         />
         <TextField
@@ -225,8 +227,8 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
           type="number"
           label="mm"
           value={minutes}
-          inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={e => onReceiveMinutes(e.target.value)}
+          inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }}
+          onChange={(e) => onReceiveMinutes(e.target.value)}
           margin="normal"
         />
         <TextField
@@ -235,8 +237,8 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
           type="number"
           label="ss"
           value={seconds}
-          inputProps={{ min: "0", max: "59", style: { fontSize: 10 } }}
-          onChange={e => onReceiveSeconds(e.target.value)}
+          inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }}
+          onChange={(e) => onReceiveSeconds(e.target.value)}
           margin="normal"
         />
 
@@ -244,7 +246,7 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
           aria-label="orderexecution"
           name="orderexecution"
           value={executionTime}
-          onChange={e => onToggleExecutionTime(e.target.value)}
+          onChange={(e) => onToggleExecutionTime(e.target.value)}
         >
           <FormControlLabel
             value="Before"
@@ -264,37 +266,33 @@ const Lay = ({text, stake, price, hours, minutes, seconds, executionTime, market
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    text: state.lay.text,
-    stake: state.lay.stake,
-    price: state.lay.price,
-    hours: state.lay.offset.hours,
-    minutes: state.lay.offset.minutes,
-    seconds: state.lay.offset.seconds,
-    executionTime: state.lay.executionTime,
-    market: state.market.currentMarket,
-    runners: state.market.runners,
-    selections: state.lay.selections,
-    list: state.lay.list
-  };
-};
+const mapStateToProps = (state) => ({
+  text: state.lay.text,
+  stake: state.lay.stake,
+  price: state.lay.price,
+  hours: state.lay.offset.hours,
+  minutes: state.lay.offset.minutes,
+  seconds: state.lay.offset.seconds,
+  executionTime: state.lay.executionTime,
+  market: state.market.currentMarket,
+  runners: state.market.runners,
+  selections: state.lay.selections,
+  list: state.lay.list,
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onTextUpdate: text => dispatch(actions.setDisplayText(text)),
-    onReceiveStake: stake => dispatch(actions.setStake(stake)),
-    onReceivePrice: price => dispatch(actions.setPrice(price)),
-    onReceiveHours: hours => dispatch(actions.setHours(hours)),
-    onReceiveMinutes: minutes => dispatch(actions.setMinutes(minutes)),
-    onReceiveSeconds: seconds => dispatch(actions.setSeconds(seconds)),
-    onToggleExecutionTime: time => dispatch(actions.toggleExecutionTime(time)),
-    onSelection: selections => dispatch(actions.setSelections(selections)),
-    onUpdateLayList: list => dispatch(actions.updateLayList(list))
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  onTextUpdate: (text) => dispatch(actions.setDisplayText(text)),
+  onReceiveStake: (stake) => dispatch(actions.setStake(stake)),
+  onReceivePrice: (price) => dispatch(actions.setPrice(price)),
+  onReceiveHours: (hours) => dispatch(actions.setHours(hours)),
+  onReceiveMinutes: (minutes) => dispatch(actions.setMinutes(minutes)),
+  onReceiveSeconds: (seconds) => dispatch(actions.setSeconds(seconds)),
+  onToggleExecutionTime: (time) => dispatch(actions.toggleExecutionTime(time)),
+  onSelection: (selections) => dispatch(actions.setSelections(selections)),
+  onUpdateLayList: (list) => dispatch(actions.updateLayList(list)),
+});
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Lay);

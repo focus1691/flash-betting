@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { setLoggedIn } from "../actions/account";
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { setLoggedIn } from '../actions/account';
 
-const Logout = ({loggedIn, setLoggedIn}) => {
+const Logout = ({ loggedIn, setLoggedIn }) => {
   const [removeCookie] = useCookies(['sessionKey', 'accessToken', 'refreshToken', 'expiresIn']);
   useEffect(() => {
-    fetch("/api/logout")
-      .then(res => res.json())
-      .then(logout => {
+    fetch('/api/logout')
+      .then((res) => res.json())
+      .then((logout) => {
         removeCookie('sessionKey');
         removeCookie('accessToken');
         removeCookie('refreshToken');
@@ -27,11 +27,9 @@ const Logout = ({loggedIn, setLoggedIn}) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    loggedIn: state.account.loggedIn
-  };
-};
+const mapStateToProps = (state) => ({
+  loggedIn: state.account.loggedIn,
+});
 
 const mapDispatchToProps = { setLoggedIn };
 
