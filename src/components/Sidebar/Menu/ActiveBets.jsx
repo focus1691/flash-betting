@@ -19,14 +19,14 @@ const ActiveBets = () => {
   return (
     <List>
       {Array.isArray(events)
-				&& events.map((event) => (
+&& events.map((event) => (
   <>
     <ListItem key={`active-bets-${event.marketId}`} button onClick={openMarket(event.marketId)}>
       <ListItemText className="active-bet-name">{event.marketName}</ListItemText>
     </ListItem>
     <Divider />
   </>
-				))}
+))}
     </List>
   );
 };

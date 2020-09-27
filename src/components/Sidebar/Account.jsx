@@ -1,47 +1,49 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { setAccountDetails, setBalance } from "../../actions/account";
-import FlagIcon from "./FlagIcon";
-import Clock from "./Clock";
-import { formatCurrency } from "../../utils/NumberFormat";
-import { useCookies } from "react-cookie";
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { useCookies } from 'react-cookie';
+import { setAccountDetails, setBalance } from '../../actions/account';
+import FlagIcon from './FlagIcon';
+import Clock from './Clock';
+import { formatCurrency } from '../../utils/NumberFormat';
 
-const Account = ({name, countryCode, currencyCode, localeCode, balance, bets, setAccountDetails, setBalance, onUpdateTime}) => {
+const Account = ({
+  name, countryCode, currencyCode, localeCode, balance, bets, setAccountDetails, setBalance, onUpdateTime,
+}) => {
   const [loggedIn, setLoggedIn] = useState(true);
   const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
-  const handleLogout = () => e => {
+  const handleLogout = () => (e) => {
     setLoggedIn(false);
   };
 
   const getAccountDetails = async () => {
-    await fetch(`/api/get-account-details`)
-    .then(res => res.json())
-    .then(res => { 
-      if (res.error) {
-        window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
-      } else {
-        setAccountDetails(res);
-      }
-    });
+    await fetch('/api/get-account-details')
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          window.location.href = `${window.location.origin}/?error=${res.error.data ? res.error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
+        } else {
+          setAccountDetails(res);
+        }
+      });
   };
 
   const getAccountBalance = async () => {
-    await fetch(`/api/get-account-balance`)
-    .then(res => res.json())
-    .then(res =>  {
-      if (res.error) {
-        window.location.href = window.location.origin + "/?error=" + (res.error.data ? res.error.data.AccountAPINGException.errorCode : "GENERAL_AUTH_ERROR");
-      } else {
-        setBalance(res.balance);
-      }
-    });
+    await fetch('/api/get-account-balance')
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          window.location.href = `${window.location.origin}/?error=${res.error.data ? res.error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
+        } else {
+          setBalance(res.balance);
+        }
+      });
   };
 
   useEffect(() => {
-      getAccountDetails();
-      getAccountBalance();
+    getAccountDetails();
+    getAccountBalance();
   }, []);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const Account = ({name, countryCode, currencyCode, localeCode, balance, bets, se
     removeCookie('expiresIn');
     removeCookie('username');
 
-    window.location.href = window.location.origin + "/?error=" + error;
+    window.location.href = `${window.location.origin}/?error=${error}`;
   } else {
     return (
       <div id="sidebar-header">
@@ -63,13 +65,14 @@ const Account = ({name, countryCode, currencyCode, localeCode, balance, bets, se
           {name}
           <button id="logout" onClick={handleLogout()}>
             <img
-              alt={"Logout"}
-              src={window.location.origin + "/icons/logout.png"}
+              alt="Logout"
+              src={`${window.location.origin}/icons/logout.png`}
             />
           </button>
         </p>
         <p>
-          <FlagIcon code={countryCode || "gb"} />{" "}
+          <FlagIcon code={countryCode || 'gb'} />
+          {' '}
           {formatCurrency(localeCode, currencyCode, balance)}
         </p>
         <Clock />
@@ -78,20 +81,18 @@ const Account = ({name, countryCode, currencyCode, localeCode, balance, bets, se
   }
 };
 
-const mapStateToProps = state => {
-  return {
-    name: state.account.name,
-    countryCode: state.account.countryCode,
-    currencyCode: state.account.currencyCode,
-    localeCode: state.account.localeCode,
-    balance: state.account.balance,
-    bets: state.order.bets
-  };
-};
+const mapStateToProps = (state) => ({
+  name: state.account.name,
+  countryCode: state.account.countryCode,
+  currencyCode: state.account.currencyCode,
+  localeCode: state.account.localeCode,
+  balance: state.account.balance,
+  bets: state.order.bets,
+});
 
 const mapDispatchToProps = { setAccountDetails, setBalance };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Account);
