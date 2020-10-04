@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FillOrKill = ({ seconds, onTextUpdate }) => {
+const FillOrKill = ({ seconds, onTextUpdate, onReceiveFillOrKill }) => {
   const classes = useStyles();
 
   React.useEffect(() => {

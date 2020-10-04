@@ -30,11 +30,11 @@ const OrderRow = memo(({
         if (Array.isArray(bets[id])) {
           for (let i = 0; i < bets[id].length; i += 1) {
             if (selectionId == bets[id][i].selectionId) {
-              list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id][i].selectionId}-${bets[id][i].rfs}-${i}`} bet={bets[id][i]} cancelBet={cancelUnmatchedOrder} />);
+              list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id][i].selectionId}-${bets[id][i].rfs}`} bet={bets[id][i]} cancelBet={cancelUnmatchedOrder} />);
             }
           }
         } else if (selectionId == bets[id].selectionId) {
-          list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id].selectionId}-${bets[id].rfs}-${i}`} bet={bets[id]} cancelBet={cancelUnmatchedOrder} />);
+          list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id].selectionId}-${bets[id].rfs}`} bet={bets[id]} cancelBet={cancelUnmatchedOrder} />);
         }
       }
       return list;

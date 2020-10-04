@@ -2,14 +2,6 @@
 // Access with process.env
 require('dotenv').config();
 
-// The BetFair session class below contains all the methods
-// to call the BetFair API. Some samples are commented below to demonstrate their utility.
-const BetFairSession = require('./BetFair/session.js');
-const ExchangeStream = require('./BetFair/stream-api.js');
-
-const vendor = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
-const betfair = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
-
 const braintree = require('braintree');
 
 const gateway = braintree.connect({
@@ -23,21 +15,38 @@ const express = require('express');
 
 const app = express();
 
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
+const path = require('path');
+
 const fetch = require('node-fetch');
 
 const bodyParser = require('body-parser');
+
+// The BetFair session class below contains all the methods
+// to call the BetFair API. Some samples are commented below to demonstrate their utility.
+const BetFairSession = require('./BetFair/session.js');
+const ExchangeStream = require('./BetFair/stream-api.js');
+
+const vendor = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
+const betfair = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
+
+async function useBetFair(req, res, next) {
+  req.betfair = betfair;
+  next();
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(useBetFair);
 
 const database = require('./Database/helper');
 const User = require('./Database/models/users');
 
 if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
-
   const publicPath = path.join(__dirname, '../');
   app.use(express.static(path.join(publicPath, 'build')));
 
@@ -189,6 +198,7 @@ app.get('/api/request-access-token', async (request, response) => {
 });
 
 app.get('/api/login', (request, response) => {
+  console.log(request);
   betfair
     .login(request.query.user, request.query.pass)
     .then((res) => {
@@ -748,9 +758,6 @@ process.on(
 );
 
 const port = process.env.PORT || 3001;
-
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
 
 server.listen(port, () => console.log(`Server started on port: ${port}`));
 
