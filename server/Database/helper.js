@@ -6,7 +6,7 @@ const Market = require('./models/markets');
 const Transaction = require('./models/transaction');
 
 class DatabaseHelper extends Database {
-  static setUser(username, sessionKey) {
+  setUser(username, sessionKey) {
     User.findOne({
       email: username,
     }).then((doc) => {
@@ -32,7 +32,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static getPremiumStatus(user) {
+  getPremiumStatus(user) {
     return new Promise((res, rej) => {
       User.findOne({
         email: user,
@@ -44,7 +44,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static getSettings(user) {
+  getSettings(user) {
     return new Promise((res, rej) => {
       User.findOne({ email: user })
         .then((doc) => res(doc.settings))
@@ -52,7 +52,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static updateSettings(user, settings) {
+  updateSettings(user, settings) {
     return new Promise((res, rej) => {
       User.findOneAndUpdate(
         { email: user },
@@ -71,7 +71,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static setPremium(user, expiresIn) {
+  setPremium(user, expiresIn) {
     return new Promise((res, rej) => {
       User.findOneAndUpdate(
         { email: user },
@@ -87,7 +87,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static setToken(user, tokenInfo) {
+  setToken(user, tokenInfo) {
     return new Promise((res, rej) => {
       User.findOneAndUpdate({ email: user }, tokenInfo, {
         new: true,
@@ -109,7 +109,7 @@ class DatabaseHelper extends Database {
       .catch((err) => err);
   }
 
-  static async getTokenData(user) {
+  async getTokenData(user) {
     return User.findOne({ email: user })
       .then((doc) => ({
         accessToken: doc.accessToken,
@@ -119,7 +119,7 @@ class DatabaseHelper extends Database {
       .catch((err) => err);
   }
 
-  static saveMarket(user, newMarket) {
+  saveMarket(user, newMarket) {
     // Create the object with our Order Schema
     newMarket = new Market(newMarket);
     return new Promise((res, rej) => {
@@ -135,7 +135,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static removeMarket(user, marketToRemove) {
+  removeMarket(user, marketToRemove) {
     return new Promise((res, rej) => {
       User.findOne({ email: user })
         .then((user) => {
@@ -155,7 +155,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static getAllOrders(user) {
+  getAllOrders(user) {
     return new Promise((res, rej) => {
       User.findOne({ email: user })
         .then((user) => {
@@ -167,7 +167,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static saveOrder(user, order) {
+  saveOrder(user, order) {
     // Create the object with our Order Schema
     order = new Order(order);
     return new Promise((res, rej) => {
@@ -183,7 +183,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static updateOrder(user, newOrder) {
+  updateOrder(user, newOrder) {
     // Create the object with our Order Schema
     newOrder = new Order(newOrder);
     return new Promise((res, rej) => {
@@ -202,7 +202,7 @@ class DatabaseHelper extends Database {
     });
   }
 
-  static removeOrders(user, orders) {
+  removeOrders(user, orders) {
     // Create the object with our Order Schema
     const formattedOrders = orders.map((order) => new Order(order));
 

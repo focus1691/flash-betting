@@ -36,10 +36,6 @@ class BetfairInvocation {
     BetfairInvocation.applicationKey = appKey;
   }
 
-  setIsVendor(isVendor) {
-    this.isVendor = isVendor;
-  }
-
   static startInvocationLog(logger) {
     BetfairInvocation.logger = logger;
   }
@@ -69,7 +65,7 @@ class BetfairInvocation {
     this.service = this.apiEndpoint.service;
     this.request = {
       jsonrpc: '2.0',
-      id: BetfairInvocation.jsonRpcId++,
+      id: BetfairInvocation.jsonRpcId += 1,
       method: `${this.apiEndpoint.type}/${this.apiEndpoint.version}/${this.method}`,
       params: this.params,
     };

@@ -25,7 +25,8 @@ class BetFairStreamAPI {
 
       this.client.setEncoding('utf8');
 
-      this.client.write(`${'{"op": "authentication", "appKey": "' + 'qI6kop1fEslEArVO' + '", "session":"' + 'BEARER' + ' '}${sessionKey}"}\r\n`);
+      console.log(sessionKey);
+      this.client.write(`${'{"op": "authentication", "appKey": "' + '9ARELQ7SYtAsy7G4' + '", "session": "'}${sessionKey}"}\r\n`);
 
       this.client.on('data', (data) => {
         // console.log('Received: ' + data);

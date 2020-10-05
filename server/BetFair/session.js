@@ -67,7 +67,6 @@ class BetfairSession {
   constructor(applicationKey, sessionKey = null) {
     this.sessionKey = sessionKey;
     this.applicationKey = applicationKey;
-    this.accessToken = null;
     this.email = null;
     this.allSports = {};
     BetfairInvocation.setApplicationKey(applicationKey);
@@ -137,9 +136,6 @@ class BetfairSession {
         throw ('params should be object');
       }
       const invocation = new BetfairInvocation(api, methodName, params);
-      if (methodName === 'token') {
-        invocation.setIsVendor(true);
-      }
 
       invocation.execute((err, result) => {
         if (err) {
