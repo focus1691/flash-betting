@@ -2,14 +2,14 @@ import parse from 'html-react-parser';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
-const Rules = (props) => {
+const Rules = ({ market }) => {
   const [rules, setRules] = useState(null);
 
   useEffect(() => {
-    if (props.market.description) {
-      setRules(props.market.description.rules);
+    if (market.description) {
+      setRules(market.description.rules);
     }
-  }, [props.market]);
+  }, [market]);
 
   return (
     <div>

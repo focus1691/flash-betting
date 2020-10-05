@@ -32,16 +32,10 @@ const ExchangeStream = require('./BetFair/stream-api.js');
 const vendor = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
 const betfair = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
 
-async function useBetFair(req, res, next) {
-  req.betfair = betfair;
-  next();
-}
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(useBetFair);
 
 const database = require('./Database/helper');
 const User = require('./Database/models/users');
@@ -197,17 +191,16 @@ app.get('/api/request-access-token', async (request, response) => {
   }
 });
 
-app.get('/api/login', (request, response) => {
-  console.log(request);
-  betfair
-    .login(request.query.user, request.query.pass)
-    .then((res) => {
-      response.json({ sessionKey: res.sessionKey });
+app.post('/api/login', (req, res) => {
+  const { user, password } = req.body;
+  betfair.login(user, password)
+    .then(({ sessionKey }) => {
       // Check if user exists, if doesn't exist, then create a new user
-      database.setUser(request.query.user, res.sessionKey);
+      database.setUser(user, sessionKey);
+      req.sessionKey = sessionKey;
+      res.json({ sessionKey });
     })
-    .bind(this)
-    .catch((err) => response.json({ error: err }));
+    .catch((err) => res.json({ error: err }));
 });
 
 app.get('/api/logout', (request, response) => {

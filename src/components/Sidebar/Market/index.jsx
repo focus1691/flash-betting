@@ -69,7 +69,7 @@ const Market = ({
   layList, backList, fillOrKillList, laddersExpanded, toolsExpanded, unmatchedBetsExpanded, matchedBetsExpanded, graphExpanded, marketInfoExpanded,
   rulesExpanded, unmatchedOrders, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateLayList, updateBackList, updateFillOrKillList,
   setLaddersExpanded, setToolsExpanded, setUnmatchedBetsExpanded, setMatchedBetsExpanded, setGraphExpanded, setMarketInfoExpanded, setRulesExpanded,
-  ladders, eventType, excludedLadders, setSortedLadder, updateExcludedLadders, updateLadderOrder,
+  ladders, eventType, setSortedLadder, updateExcludedLadders, updateLadderOrder,
 }) => {
   const classes = useStyles();
 
@@ -95,7 +95,7 @@ const Market = ({
       setSortedLadder(sortedLadderIndices);
       updateExcludedLadders(sortedLadderIndices);
       const newOrderList = {};
-      for (let j = 0; j < sortedLadderIndices.length; j++) {
+      for (let j = 0; j < sortedLadderIndices.length; j += 1) {
         newOrderList[j] = sortedLadderIndices[j];
       }
       updateLadderOrder(newOrderList);

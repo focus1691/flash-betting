@@ -52,97 +52,68 @@ const Login = ({ loggedIn, setLoggedIn }) => {
 
   setLoggedIn(false);
 
-  const handleSubmit = () => (e) => {
-    fetch(`/api/login?user=${cookies.username}&pass=${cookies.password}`)
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          removeCookie('sessionKey');
-          removeCookie('username');
-          removeCookie('password');
-          setCookie('rememberMe', 'no');
-          setRememberMe(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { email, password } = e.currentTarget;
+    const response = await fetch('/api/login', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({ user: email.value, password: password.value }),
+    });
+    const data = await response.json();
+    const { error, sessionKey } = data;
 
-          window.location.href = `${window.location.origin}/?error=${res.error || 'GENERAL_AUTH_ERROR'}`;
-        } else {
-          setCookie('sessionKey', res.sessionKey);
-          setCookie('username', cookies.username);
-          setCookie('password', cookies.password);
-          setCookie('rememberMe', 'yes');
+    if (error) {
+      removeCookie('sessionKey');
+      removeCookie('username');
+      removeCookie('password');
+      setCookie('rememberMe', 'no');
+      setRememberMe(false);
 
-          setRememberMe(true);
+      window.location.href = `${window.location.origin}/?error=${error || 'GENERAL_AUTH_ERROR'}`;
+    } else {
+      setCookie('sessionKey', sessionKey);
+      setCookie('username', email.value);
+      setCookie('password', password.value);
+      setCookie('rememberMe', 'yes');
 
-          setLoggedIn(true);
-        }
-      });
+      setRememberMe(true);
+
+      setLoggedIn(true);
+    }
   };
 
   return (
     <>
-      {loggedIn && cookies.sessionKey ? <Redirect to="/authentication" /> : null}
+      {loggedIn && cookies.sessionKey ? <Redirect to="/dashboard" /> : null}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <img
-            src={`${window.location.origin}/images/Webp.net-resizeimage.png`}
-            alt="Betfair"
-            className={classes.avatar}
-          />
+          <img src={`${window.location.origin}/images/Webp.net-resizeimage.png`} alt="Betfair" className={classes.avatar} />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
           <Typography
             component="p"
             style={{
-              backgroundColor: '#C71585', marginTop: '1%', width: '100%', padding: getQueryVariable('error') ? 2 : 0, textAlign: 'center', color: 'white',
+              backgroundColor: '#C71585',
+              marginTop: '1%',
+              width: '100%',
+              padding: getQueryVariable('error') ? 2 : 0,
+              textAlign: 'center',
+              color: 'white',
             }}
           >
             {getErrorMessage(getQueryVariable('error'))}
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              value={cookies.username}
-              onChange={(e) => {
-                setCookie('username', e.target.value);
-              }}
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              value={cookies.password}
-              onChange={(e) => {
-                setCookie('password', e.target.value);
-              }}
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-              checked={rememberMe}
-              onChange={(e, checked) => setRememberMe(checked)}
-            />
-            <Button
-              onClick={handleSubmit()}
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
+          <form className={classes.form} noValidate onSubmit={handleSubmit}>
+            <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" value={cookies.username} autoComplete="email" autoFocus />
+            <TextField variant="outlined" margin="normal" required fullWidth name="password" value={cookies.password} label="Password" type="password" id="password" autoComplete="current-password" />
+            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" checked={rememberMe} onChange={(e, checked) => setRememberMe(checked)} />
+            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
               Sign In
             </Button>
           </form>
@@ -158,7 +129,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = { setLoggedIn };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

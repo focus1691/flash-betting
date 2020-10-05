@@ -1,42 +1,42 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const MarketInfo = (props) => {
+const MarketInfo = ({ marketOpen, market, selection }) => {
   const createData = (name, description) => ({ name, description });
 
   const racerDetails = () => {
     const rows = [
-      createData('Selection', props.selection.metadata.runnerId || ''),
-      createData('Silk', <img src={props.selection.metadata.COLOURS_FILENAME ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${props.selection.metadata.COLOURS_FILENAME}` : ''} alt="" />),
-      createData('Trainer Name', props.selection.metadata.TRAINER_NAME || ''),
-      createData('Age & Weight', `${props.selection.metadata.AGE || ''} years / ${props.selection.metadata.WEIGHT_VALUE || ''} ${props.selection.metadata.WEIGHT_UNITS || ''}`),
-      createData('Form', props.selection.metadata.FORM || ''),
-      createData('Days Since Last Run', props.selection.metadata.DAYS_SINCE_LAST_RUN || ''),
-      createData("Jockey's Claim", props.selection.metadata.JOCKEY_CLAIM || ''),
-      createData('Wearing Equipment', props.selection.metadata.COLOURS_DESCRIPTION || ''),
-      createData('Saddle Cloth Number', props.selection.metadata.CLOTH_NUMBER || ''),
-      createData('Stall Draw', props.selection.metadata.STALL_DRAW || ''),
-      createData('Owner Name', props.selection.metadata.OWNER_NAME || ''),
-      createData('Jockey Name', props.selection.metadata.JOCKEY_NAME || ''),
-      createData('Colour of Horse', props.selection.metadata.COLOUR_TYPE || ''),
-      createData('Gender', props.selection.metadata.SEX_TYPE || ''),
-      createData('Forecast Price', `${props.selection.metadata.FORECASTPRICE_NUMERATOR || ''}/${props.selection.metadata.FORECASTPRICE_DENOMINATOR || ''}`),
-      createData('Official Rating', props.selection.metadata.OFFICIAL_RATING || ''),
+      createData('Selection', selection.metadata.runnerId || ''),
+      createData('Silk', <img src={selection.metadata.COLOURS_FILENAME ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${selection.metadata.COLOURS_FILENAME}` : ''} alt="" />),
+      createData('Trainer Name', selection.metadata.TRAINER_NAME || ''),
+      createData('Age & Weight', `${selection.metadata.AGE || ''} years / ${selection.metadata.WEIGHT_VALUE || ''} ${selection.metadata.WEIGHT_UNITS || ''}`),
+      createData('Form', selection.metadata.FORM || ''),
+      createData('Days Since Last Run', selection.metadata.DAYS_SINCE_LAST_RUN || ''),
+      createData("Jockey's Claim", selection.metadata.JOCKEY_CLAIM || ''),
+      createData('Wearing Equipment', selection.metadata.COLOURS_DESCRIPTION || ''),
+      createData('Saddle Cloth Number', selection.metadata.CLOTH_NUMBER || ''),
+      createData('Stall Draw', selection.metadata.STALL_DRAW || ''),
+      createData('Owner Name', selection.metadata.OWNER_NAME || ''),
+      createData('Jockey Name', selection.metadata.JOCKEY_NAME || ''),
+      createData('Colour of Horse', selection.metadata.COLOUR_TYPE || ''),
+      createData('Gender', selection.metadata.SEX_TYPE || ''),
+      createData('Forecast Price', `${selection.metadata.FORECASTPRICE_NUMERATOR || ''}/${selection.metadata.FORECASTPRICE_DENOMINATOR || ''}`),
+      createData('Official Rating', selection.metadata.OFFICIAL_RATING || ''),
     ];
     return rows;
   };
 
   const renderRacerDetails = () => (
     <>
-      <tr key={`market-info-${props.selection.metadata.CLOTH_NUMBER}.${props.selection.runnerName}`}>
-        <td>{`${props.selection.metadata.CLOTH_NUMBER ? `${props.selection.metadata.CLOTH_NUMBER}.` : ''}${props.selection.runnerName}`}</td>
+      <tr key={`market-info-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
+        <td>{`${selection.metadata.CLOTH_NUMBER ? `${selection.metadata.CLOTH_NUMBER}.` : ''}${selection.runnerName}`}</td>
       </tr>
       {racerDetails().map(((row) => (
         <>
-          <tr key={`market-info-name-${props.selection.metadata.CLOTH_NUMBER}.${props.selection.runnerName}`}>
+          <tr key={`market-info-name-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
             <td>{row.name}</td>
           </tr>
-          <tr key={`market-info-description-${props.selection.metadata.CLOTH_NUMBER}.${props.selection.runnerName}`}>
+          <tr key={`market-info-description-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
             <td>{row.description}</td>
           </tr>
         </>
@@ -47,9 +47,9 @@ const MarketInfo = (props) => {
   return (
     <table id="menu-market-info">
       <tbody>
-        {props.marketOpen
-          && props.market.eventType
-          && props.market.eventType.id === '7'
+        {marketOpen
+          && market.eventType
+          && market.eventType.id === '7'
           ? renderRacerDetails()
           : null}
       </tbody>
