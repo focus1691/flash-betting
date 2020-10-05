@@ -88,16 +88,12 @@ class BetfairInvocation {
     const httpOptions = {
       headers: {
         'X-Application': this.applicationKey,
+        'X-Authentication': this.sessionKey,
         'Content-Type': 'application/json',
         'Content-Length': this.jsonRequestBody.length,
         Connection: 'keep-alive',
       },
     };
-    if (this.isVendor) {
-      httpOptions.headers['X-Authentication'] = this.sessionKey;
-    } else {
-      httpOptions.headers.Authorization = `BEARER ${this.accessToken}`;
-    }
 
     HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
       if (err) {

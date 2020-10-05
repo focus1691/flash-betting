@@ -6,7 +6,8 @@ class Database {
   }
 
   _connect() {
-    mongoose.connect(`mongodb+srv://${'admin'}:${'Cy9dwtcgVi7EGuuV'}@cluster0-gg0gq.mongodb.net/test?retryWrites=true&w=majority`, {
+    const { DB_USER, DB_PASS } = process.env;
+    mongoose.connect(`mongodb+srv://${DB_USER}:${DB_PASS}@cluster0-gg0gq.mongodb.net/test?retryWrites=true&w=majority`, {
       useCreateIndex: true,
       useNewUrlParser: true,
     })
