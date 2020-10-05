@@ -36,10 +36,6 @@ class BetfairInvocation {
     BetfairInvocation.applicationKey = appKey;
   }
 
-  static setAccessToken(accessToken) {
-    BetfairInvocation.accessToken = accessToken;
-  }
-
   setIsVendor(isVendor) {
     this.isVendor = isVendor;
   }
@@ -69,9 +65,7 @@ class BetfairInvocation {
 
     // Request and Response stuff
     this.apiEndpoint = BETFAIR_API_ENDPOINTS[api] || BETFAIR_API_ENDPOINTS.betting;
-    this.sessionKey = BetfairInvocation.sessionKey;
     this.applicationKey = BetfairInvocation.applicationKey;
-    this.accessToken = BetfairInvocation.accessToken;
     this.service = this.apiEndpoint.service;
     this.request = {
       jsonrpc: '2.0',
@@ -88,7 +82,7 @@ class BetfairInvocation {
     const httpOptions = {
       headers: {
         'X-Application': this.applicationKey,
-        'X-Authentication': this.sessionKey,
+        'X-Authentication': BetfairInvocation.sessionKey,
         'Content-Type': 'application/json',
         'Content-Length': this.jsonRequestBody.length,
         Connection: 'keep-alive',

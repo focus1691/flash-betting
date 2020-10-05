@@ -115,8 +115,6 @@ const App = ({
   const [connectionId, setConnectionId] = useState('');
   const [connectionError, setConnectionError] = useState('');
 
-  const loadSession = () => fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`);
-
   const loadSettings = async () => {
     /**
      * Fetch settings from the database and load them into redux state
@@ -538,7 +536,6 @@ const App = ({
 
   useEffect(() => {
     const loadData = async () => {
-      await loadSession();
       await loadSettings();
       await retrieveMarket();
       setIsLoading(false);

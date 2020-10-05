@@ -1,10 +1,8 @@
 const formatCurrency = (localeCode, currencyCode, number) => new Intl.NumberFormat(
-  localeCode
-    ? `${localeCode}-${localeCode.toUpperCase()}`
-    : 'gb-GB',
+  'gb-GB',
   {
     style: 'currency',
-    currency: currencyCode || 'GBP',
+    currency: 'GBP',
   },
 ).format(number);
 

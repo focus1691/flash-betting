@@ -83,24 +83,20 @@ class BetfairSession {
     BetfairInvocation.setSessionKey(sessionKey);
   }
 
-  setAccessToken(accessToken) {
-    this.accessToken = accessToken;
-    BetfairInvocation.setAccessToken(accessToken);
-  }
-
   setEmailAddress(email) {
     this.email = email;
   }
 
   login(login, password, cb = () => {}) {
     return new Promise((res, rej) => {
-      auth.loginInteractive(login, password, (err, result) => {
-        if (err) rej(err);
+      auth.loginInteractive(login, password, (error, result) => {
+        console.log(error, result);
+        if (error) rej(error);
         if (result) {
           this.setActiveSession(result.sessionKey);
           this.setEmailAddress(login);
         }
-        res(this);
+        res({ sessionKey: result.sessionKey });
       });
     });
   }

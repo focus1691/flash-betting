@@ -66,24 +66,26 @@ const Login = ({ loggedIn, setLoggedIn }) => {
     const data = await response.json();
     const { error, sessionKey } = data;
 
-    if (error) {
-      removeCookie('sessionKey');
-      removeCookie('username');
-      removeCookie('password');
-      setCookie('rememberMe', 'no');
-      setRememberMe(false);
+    console.log(data);
 
-      window.location.href = `${window.location.origin}/?error=${error || 'GENERAL_AUTH_ERROR'}`;
-    } else {
-      setCookie('sessionKey', sessionKey);
-      setCookie('username', email.value);
-      setCookie('password', password.value);
-      setCookie('rememberMe', 'yes');
+    // if (error) {
+    //   removeCookie('sessionKey');
+    //   removeCookie('username');
+    //   removeCookie('password');
+    //   setCookie('rememberMe', 'no');
+    //   setRememberMe(false);
 
-      setRememberMe(true);
+    //   window.location.href = `${window.location.origin}/?error=${error || 'GENERAL_AUTH_ERROR'}`;
+    // } else {
+    //   setCookie('sessionKey', sessionKey);
+    //   setCookie('username', email.value);
+    //   setCookie('password', password.value);
+    //   setCookie('rememberMe', 'yes');
 
-      setLoggedIn(true);
-    }
+    //   setRememberMe(true);
+
+    //   setLoggedIn(true);
+    // }
   };
 
   return (
