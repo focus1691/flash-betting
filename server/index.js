@@ -6,9 +6,9 @@ const braintree = require('braintree');
 
 const gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
-  merchantId: process.env.MERCHANT_ID || 'dp55wnmzp8bn9w4k',
-  publicKey: process.env.PUBLIC_KEY || '9xhp89m3jjxbt7b6',
-  privateKey: process.env.PRIVATE_KEY || 'f168b4ef387400987a86423ac6beb1a1',
+  merchantId: process.env.MERCHANT_ID,
+  publicKey: process.env.PUBLIC_KEY,
+  privateKey: process.env.PRIVATE_KEY,
 });
 
 const express = require('express');
