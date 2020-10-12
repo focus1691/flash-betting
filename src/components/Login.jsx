@@ -110,8 +110,8 @@ const Login = ({ loggedIn, setLoggedIn }) => {
             {getErrorMessage(getQueryVariable('error'))}
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" value={cookies.username} autoComplete="email" autoFocus />
-            <TextField variant="outlined" margin="normal" required fullWidth name="password" value={cookies.password} label="Password" type="password" id="password" autoComplete="current-password" />
+            <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" autoFocus />
+            <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="current-password" />
             <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" checked={rememberMe} onChange={(e, checked) => setRememberMe(checked)} />
             <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
               Sign In

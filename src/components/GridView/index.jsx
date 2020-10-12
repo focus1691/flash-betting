@@ -23,7 +23,7 @@ import SuspendedWarning from './SuspendedWarning';
 
 const Grid = ({
   oneClickOn, oneClickStake, marketOpen, marketStatus, inPlay, market, ladder,
-  sortedLadder, runners, nonRunners, stakeBtns, layBtns, countryCode, currencyCode, localeCode, bets,
+  sortedLadder, runners, nonRunners, stakeBtns, layBtns, currencyCode, localeCode, bets,
   setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility,
   toggleStakeAndLiability, toggleBackAndLay, toggleOneClick, setStakeInOneClick, placeOrder,
 }) => {
@@ -278,10 +278,7 @@ marketHasBets(market.marketId, bets)
             marketOpen={marketOpen}
             inPlay={inPlay}
             status={marketStatus}
-            country={{
-              localeCode,
-              countryCode,
-            }}
+            country={{ localeCode, currencyCode }}
             oneClickRef={oneClickRef}
             oneClickOn={oneClickOn}
             toggleOneClick={handleOneClickPress}
@@ -316,7 +313,6 @@ const mapStateToProps = (state) => ({
   nonRunners: state.market.nonRunners,
   stakeBtns: state.settings.stakeBtns,
   layBtns: state.settings.layBtns,
-  countryCode: state.account.countryCode,
   currencyCode: state.account.currencyCode,
   localeCode: state.account.localeCode,
   bets: state.order.bets,
