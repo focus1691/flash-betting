@@ -219,6 +219,7 @@ app.get('/api/get-events-with-active-bets', (request, response) => {
     if (!res.result) {
       response.json({});
     } else {
+      console.log(res.result);
       const filteredOrders = (res.result.currentOrders = await res.result.currentOrders.filter((data, index, order) => index === order.findIndex((t) => t.marketId === data.marketId)).map((order) => order.marketId));
 
       betfair.listMarketCatalogue(

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 const ActiveBets = () => {
   const [events, setEvents] = useState([]);
 
-  const openMarket = (marketId) => (e) => {
+  const openMarket = (marketId) => () => {
     window.open(`/dashboard?marketId=${marketId}`);
   };
 
