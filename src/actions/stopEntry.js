@@ -1,6 +1,5 @@
-export const setStopEntrySelected = (isSelected) => ({
+export const setStopEntrySelected = () => ({
   type: 'SET_STOP_ENTRY_SELECTED',
-  payload: isSelected,
 });
 
 export const setLTPOperator = (operator) => ({

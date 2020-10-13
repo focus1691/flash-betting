@@ -1,6 +1,5 @@
-export const setFillOrKillSelected = (isSelected) => ({
+export const setFillOrKillSelected = () => ({
   type: 'SET_FILL_OR_KILL_SELECTED',
-  payload: isSelected,
 });
 
 export const setFillOrKill = (seconds) => ({

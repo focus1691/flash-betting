@@ -1,6 +1,5 @@
-export const setTickOffsetSelected = (isSelected) => ({
+export const setTickOffsetSelected = () => ({
   type: 'SET_TICK_OFFSET_SELECTED',
-  payload: isSelected,
 });
 
 export const setTicks = (ticks) => ({

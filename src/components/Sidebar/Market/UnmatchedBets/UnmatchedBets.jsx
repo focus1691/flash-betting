@@ -147,15 +147,18 @@ const UnmatchedBets = ({
       <table className="menu-bets">
         <tbody>
           <tr className="menu-bets-heading">
-            <button
-              style={{
-                height: '22px',
-                width: 'auto',
-                backgroundColor: 'transparent',
-                visibility: 'collapse',
-                pointerEvents: 'none',
-              }}
-            />
+            <td>
+              <button
+                type="button"
+                style={{
+                  height: '22px',
+                  width: 'auto',
+                  backgroundColor: 'transparent',
+                  visibility: 'collapse',
+                  pointerEvents: 'none',
+                }}
+              />
+            </td>
             <td>Odds</td>
             <td>Stake</td>
             <td>P/L</td>

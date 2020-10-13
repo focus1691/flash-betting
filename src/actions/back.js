@@ -1,6 +1,5 @@
-export const setBackSelected = (isSelected) => ({
+export const setBackSelected = () => ({
   type: 'SET_BACK_SELECTED',
-  payload: isSelected,
 });
 
 export const setStake = (stake) => ({

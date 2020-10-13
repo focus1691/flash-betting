@@ -1,6 +1,5 @@
-export const setLaySelected = (isSelected) => ({
+export const setLaySelected = () => ({
   type: 'SET_LAY_SELECTED',
-  payload: isSelected,
 });
 
 export const setStake = (stake) => ({
