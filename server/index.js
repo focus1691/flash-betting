@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const braintree = require('braintree');
+const _ = require('lodash');
 
 const gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
@@ -216,24 +217,23 @@ app.get('/api/get-account-details', (request, response) => {
 
 app.get('/api/get-events-with-active-bets', (request, response) => {
   betfair.listCurrentOrders({ filter: {} }, async (err, res) => {
-    if (!res.result) {
-      response.json({});
-    } else {
-      console.log(res.result);
-      const filteredOrders = (res.result.currentOrders = await res.result.currentOrders.filter((data, index, order) => index === order.findIndex((t) => t.marketId === data.marketId)).map((order) => order.marketId));
+    if (!res.result) return response.json([]);
 
-      betfair.listMarketCatalogue(
-        {
-          filter: {
-            marketIds: filteredOrders,
-          },
-          maxResults: 100,
+    const filteredOrders = _.uniq(res.result.currentOrders.map((order) => order.marketId));
+
+    if (filteredOrders <= 0) return response.json([]);
+
+    betfair.listMarketCatalogue(
+      {
+        filter: {
+          marketIds: filteredOrders,
         },
-        (err, res) => {
-          response.json(res.result);
-        },
-      );
-    }
+        maxResults: 100,
+      },
+      (err, res) => {
+        response.json(res.result);
+      },
+    );
   });
 });
 
