@@ -127,6 +127,7 @@ const MyMarkets = (props) => {
       {/* { Deselecting Items } */}
       {Object.keys(submenuList).map((type, index) => (
         <DeselectSport
+          key={`my-markets-deselect-${submenuList[type].name}`}
           type={type}
           data={submenuList[type]}
           isLast={index === Object.keys(submenuList).length - 1}
