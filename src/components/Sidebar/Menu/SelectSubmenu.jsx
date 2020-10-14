@@ -22,10 +22,11 @@ export default ({
   };
   return dataWithoutRaces.map((sport) => (
     <React.Fragment key={`select-submenu-${sport.id}`}>
-      <tr
+      <ListItem
         style={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'row-reverse',
+          color: 'blue',
           height: '3em',
           paddingBottom: '2px',
           marginTop: '0.5em',
@@ -36,7 +37,7 @@ export default ({
         <ListItem button onClick={handleMarketClick(sport)}>
           <ListItemText>{sport.name}</ListItemText>
         </ListItem>
-      </tr>
+      </ListItem>
       <Divider />
     </React.Fragment>
   ));

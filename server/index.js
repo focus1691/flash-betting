@@ -282,12 +282,12 @@ app.post('/api/remove-orders', (request, response) => {
   });
 });
 
-app.post('/api/fetch-all-sports', async (request, response) => {
-  const headers = {
+app.get('/api/fetch-all-sports', async (request, response) => {
+  betfair.allSports = {};
+  fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
     'X-Application': process.env.APP_KEY,
     'X-Authentication': betfair.sessionKey,
-  };
-  fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', { headers })
+  })
     .then((res) => res.json())
     .then((res) => {
       res.children.forEach((item) => {
@@ -295,7 +295,7 @@ app.post('/api/fetch-all-sports', async (request, response) => {
       });
       response.sendStatus(200);
     })
-    .catch((err) => {
+    .catch(() => {
       response.sendStatus(400);
     });
 });

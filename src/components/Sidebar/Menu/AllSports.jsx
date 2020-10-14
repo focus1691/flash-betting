@@ -1,6 +1,5 @@
-import List from '@material-ui/core/List';
 import React, { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
+import List from '@material-ui/core/List';
 import { connect } from 'react-redux';
 import { loadMyMarkets } from '../../../actions/market';
 import * as actions from '../../../actions/sport';
@@ -10,21 +9,9 @@ import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
 
 const AllSports = (props) => {
-  const [cookies] = useCookies(['sessionKey', 'username']);
-
   useEffect(() => {
     // gets all the sports and saves them on the server
-    fetch('/api/fetch-all-sports', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        sessionKey: decodeURIComponent(cookies.sessionKey),
-      }),
-    });
+    fetch('/api/fetch-all-sports');
   }, []);
 
   useEffect(() => {

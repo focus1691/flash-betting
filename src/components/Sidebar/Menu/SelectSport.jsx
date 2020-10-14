@@ -4,10 +4,18 @@ import MarketSaveButton from './MarketSaveButton';
 
 export default ({ sports, setSubmenu }) => sports.map((sport) => (
   <React.Fragment key={`select-sport-${sport.eventType.id}`}>
-    <tr style={{
-      display: 'flex', flexDirection: 'row', height: '3em', paddingBottom: '2px', marginTop: '0.5em', marginLeft: '1rem',
-    }}
+    <ListItem
+      style={{
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        color: 'blue',
+        height: '3em',
+        paddingBottom: '2px',
+        marginTop: '0.5em',
+        marginLeft: '1rem',
+      }}
     >
+
       <MarketSaveButton sport={{
         id: sport.eventType.id, name: sport.eventType.name, type: 'EVENT_TYPE', data: {},
       }}
@@ -24,7 +32,7 @@ export default ({ sports, setSubmenu }) => sports.map((sport) => (
       >
         <ListItemText>{sport.eventType.name}</ListItemText>
       </ListItem>
-    </tr>
+    </ListItem>
     <Divider />
   </React.Fragment>
 ));
