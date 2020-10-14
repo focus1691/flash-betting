@@ -14,8 +14,9 @@ export default ({
 
     return (
       <button
+        type="button"
         className="save-btn"
-        onClick={(e) => {
+        onClick={() => {
           saveSetting({ 'settings.rules': { visible: rules.visible, open: rules.open } });
           setChangeMade(false);
         }}
@@ -38,7 +39,7 @@ export default ({
             value="checkedB"
             color="primary"
             checked={rules.visible}
-            onChange={(val) => {
+            onChange={() => {
               setChangeMade(true);
               toggleRules({ visible: !rules.visible, open: rules.open });
             }}
@@ -53,7 +54,7 @@ export default ({
             value="checkedB"
             color="primary"
             checked={rules.open}
-            onChange={(val) => {
+            onChange={() => {
               setChangeMade(true);
               toggleRules({ visible: rules.visible, open: !rules.open });
             }}
