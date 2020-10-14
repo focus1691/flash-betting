@@ -465,7 +465,7 @@ const App = ({
               });
 
               //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-              socket.emit('market-subscription', { marketId: data.result[0].marketId });
+              socket.emit('market-subscription', { marketId });
 
               const loadedBackOrders = {};
               const loadedLayOrders = {};
