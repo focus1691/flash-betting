@@ -284,10 +284,11 @@ app.post('/api/remove-orders', (request, response) => {
 
 app.get('/api/fetch-all-sports', async (request, response) => {
   betfair.allSports = {};
-  fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
+  const headers = {
     'X-Application': process.env.APP_KEY,
     'X-Authentication': betfair.sessionKey,
-  })
+  };
+  fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', { headers })
     .then((res) => res.json())
     .then((res) => {
       res.children.forEach((item) => {
