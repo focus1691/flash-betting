@@ -32,14 +32,14 @@ const MarketInfo = ({ marketOpen, market, selection }) => {
         <td>{`${selection.metadata.CLOTH_NUMBER ? `${selection.metadata.CLOTH_NUMBER}.` : ''}${selection.runnerName}`}</td>
       </tr>
       {racerDetails().map(((row) => (
-        <>
+        <React.Fragment key={`runner-info-${row.name}`}>
           <tr key={`market-info-name-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
             <td>{row.name}</td>
           </tr>
           <tr key={`market-info-description-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
             <td>{row.description}</td>
           </tr>
-        </>
+        </React.Fragment>
       )))}
     </>
   );
