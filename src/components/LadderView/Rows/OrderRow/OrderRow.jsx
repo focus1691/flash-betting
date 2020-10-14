@@ -67,29 +67,31 @@ const OrderRow = memo(({
     <div className="order-row">
       <table>
         <tbody>
-          <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
-            <table className="lay-table">
-              <tbody className="lay-body">
-                {renderUnmatchedBets()}
-                {renderSpecialBets(backList)}
-                {renderSpecialBets(layList)}
-                {renderSpecialBets(slList)}
-                {renderSpecialBets(tosList)}
-                {renderSpecialBets(fokList)}
-                {renderSpecialBets(seList)}
-              </tbody>
-            </table>
-          </td>
-          <td colSpan={1} rowSpan={4} style={{ verticalAlign: 'top', minHeight: '1.675em' }}>
-            <button>0</button>
-            <button onClick={handleButtonClick}>{priceType === 'STAKE' ? 'S' : 'L'}</button>
-            <button onClick={cancelAllOrdersOnSelection}>K</button>
-          </td>
-          <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
-            <table className="lay-table">
-              <tbody className="lay-body">{renderMatchedBets()}</tbody>
-            </table>
-          </td>
+          <tr>
+            <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
+              <table className="lay-table">
+                <tbody className="lay-body">
+                  {renderUnmatchedBets()}
+                  {renderSpecialBets(backList)}
+                  {renderSpecialBets(layList)}
+                  {renderSpecialBets(slList)}
+                  {renderSpecialBets(tosList)}
+                  {renderSpecialBets(fokList)}
+                  {renderSpecialBets(seList)}
+                </tbody>
+              </table>
+            </td>
+            <td colSpan={1} rowSpan={4} style={{ verticalAlign: 'top', minHeight: '1.675em' }}>
+              <button>0</button>
+              <button onClick={handleButtonClick}>{priceType === 'STAKE' ? 'S' : 'L'}</button>
+              <button onClick={cancelAllOrdersOnSelection}>K</button>
+            </td>
+            <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
+              <table className="lay-table">
+                <tbody className="lay-body">{renderMatchedBets()}</tbody>
+              </table>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
