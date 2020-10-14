@@ -14,7 +14,7 @@ export default ({ username, premiumMember, classes }) => (
       <Chip className={classes.username} color="primary" label={`${username} | Support ID 24442`} />
       <Chip
         className={classes.subscription}
-        color="#F44336"
+        color="primary"
         label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`}
       />
     </Grid>

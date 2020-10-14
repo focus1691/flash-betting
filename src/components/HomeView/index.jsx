@@ -83,10 +83,10 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
             {' '}
             <span>{data.subscribed}</span>
           </Typography>
-          <Typography variant="p">{data.information}</Typography>
+          <Typography variant="body1">{data.information}</Typography>
         </Grid>
         <Grid container alignItems="center">
-          <Typography className={`${classes.textMargin}`} gutterBottom variant="p">
+          <Typography className={`${classes.textMargin}`} gutterBottom variant="body1">
             Contact us on
             {' '}
             <a href="mailto:joshbetting30@yahoo.com">joshbetting30@yahoo.com</a>
