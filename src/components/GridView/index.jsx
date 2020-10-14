@@ -269,8 +269,8 @@ marketHasBets(market.marketId, bets)
 
   return (
     <div id="grid-container">
+      <SuspendedWarning marketStatus={marketStatus} />
       <table style={marketStatus === 'SUSPENDED' ? { opacity: 0.75 } : {}} className="grid-view">
-        <SuspendedWarning marketStatus={marketStatus} />
         <tbody>
           <GridHeader
             market={market}

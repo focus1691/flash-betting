@@ -6,7 +6,7 @@ export default ({
   runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize,
   updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, market, bets, price, side, size,
 }) => {
-  const executeOrder = () => (e) => {
+  const executeOrder = () => () => {
     const referenceStrategyId = crypto
       .randomBytes(15)
       .toString('hex')
@@ -37,8 +37,9 @@ export default ({
               {orderProps.text}
             </li>
 
-            {orderProps.prices.map((size) => (
+            {orderProps.prices.map((size, index) => (
               <li
+                key={`grid-order-${index}`}
                 style={{ background: size === order.stake ? LightenDarkenColor(orderProps.bg, -20) : '' }}
                 onClick={updateOrderSize({
                   id: runnerId,
@@ -81,7 +82,7 @@ export default ({
               })}
             />
 
-            <button className="execute-order-btn" onClick={executeOrder()}>
+            <button type="button" className="execute-order-btn" onClick={executeOrder()}>
               Submit
             </button>
 
