@@ -39,6 +39,8 @@ const LadderOrderCell = memo(({
 
   return (
     <div
+      role="button"
+      tabIndex="0"
       className="td"
       style={style}
       onMouseEnter={handleMouseEnter}
