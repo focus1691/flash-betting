@@ -19,7 +19,7 @@ const DraggableGraph = ({
     <div className="popup-graph" style={{ opacity: transparent ? 0.5 : 1 }}>
       <div>
         <span>{selection.runnerName}</span>
-        <span className="popup-graph-toggle-transparency" onClick={changeGraphTransparency()}>
+        <span role="button" tabIndex="0" className="popup-graph-toggle-transparency" onClick={changeGraphTransparency()}>
           {transparent ? 'Solid' : 'Transparent'}
         </span>
         <img
