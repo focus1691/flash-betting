@@ -411,9 +411,9 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
 
   //* Just remove it if the stop loss position is clicked
   if (SL && SL.stopLoss && SL.stopLoss) {
-    const result = await removeOrder(newStopLossList[data.id]);
+    const result = await removeOrder(newStopLossList[data.selectionId]);
 
-    delete newStopLossList[data.id];
+    delete newStopLossList[data.selectionId];
 
     return {
       status: result,
@@ -421,7 +421,7 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
     };
     //* Otherwise update the stop position
   } if (stopLossList) {
-    const newStopLoss = { ...newStopLossList[data.id] };
+    const newStopLoss = { ...newStopLossList[data.selectionId] };
     let result = await removeOrder(newStopLoss);
 
     //! Update the stop loss
@@ -434,7 +434,7 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
     newStopLoss.tickOffset = 0;
     newStopLoss.hedged = data.stopLossHedged;
 
-    newStopLossList[data.id] = newStopLoss;
+    newStopLossList[data.selectionId] = newStopLoss;
 
     result = await saveOrder(newStopLoss);
 

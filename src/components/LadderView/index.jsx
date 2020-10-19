@@ -35,8 +35,8 @@ const Ladders = ({
   return marketOpen && (marketStatus === 'SUSPENDED' || marketStatus === 'OPEN' || marketStatus === 'RUNNING') ? (
     <div className="ladder-container" onContextMenu={(e) => e.preventDefault()}>
       {Object.values(ladderOrder)
-        .filter((value) => excludedLadders.indexOf(value) === -1).map((value, index) => (
-          <Ladder id={value} key={value} order={index} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />
+        .filter((value) => excludedLadders.indexOf(value) === -1).map((selectionId, index) => (
+          <Ladder selectionId={selectionId} key={selectionId} order={index} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />
         ))}
       <SuspendedWarning marketStatus={marketStatus} />
     </div>

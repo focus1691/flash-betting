@@ -29,15 +29,10 @@ import OrderRow from './Rows/OrderRow/OrderRow';
 import PercentageRow from './Rows/PercentageRow/PercentageRow';
 import PriceRow from './Rows/PriceRow';
 
-const isMoving = (prevProps, nextProps) => {
-  if (nextProps.draggingLadder === nextProps.id && prevProps.order === nextProps.order) {
-    return true;
-  }
-  return false;
-};
+const isMoving = (prevProps, nextProps) => nextProps.draggingLadder === nextProps.selectionId && prevProps.order === nextProps.order;
 
 const Ladder = memo(({
-  id, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, order, selectionMatchedBets, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
+  selectionId, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, order, selectionMatchedBets, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
   tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossList, stopLossUnits, stakeVal, draggingLadder, customStakeActive, customStake,
 }) => {
   const containerRef = useRef(null);
@@ -93,14 +88,14 @@ const Ladder = memo(({
 
   const replaceStopLossOrder = useCallback(async ({ price, stopLoss }) => {
     const res = await replaceStopLoss(stopLoss, stopLossList, {
-      id,
+      selectionId,
       stakeVal,
       price: formatPrice(price),
       units: stopLossUnits,
       stopLossHedged,
     });
     if (res.status) updateStopLossList(res.data);
-  }, [id, updateStopLossList, stakeVal, stopLossHedged, stopLossList, stopLossUnits]);
+  }, [selectionId, updateStopLossList, stakeVal, stopLossHedged, stopLossList, stopLossUnits]);
 
   const handleHedgeCellClick = useCallback(async (marketId, selectionId, unmatchedBetsOnRow, side, price, hedge) => {
     if (unmatchedBetsOnRow) {
@@ -146,7 +141,7 @@ const Ladder = memo(({
         if (stopLossSelected && !stopLossData) {
           const sl = await placeStopLoss({
             marketId,
-            selectionId: parseInt(id),
+            selectionId: parseInt(selectionId),
             side: side === 'BACK' ? 'LAY' : 'BACK',
             price: findStop(price, stopLossOffset, side),
             custom: false,
@@ -197,10 +192,10 @@ const Ladder = memo(({
       },
     });
     if (result && result.bets) updateOrders(result.bets);
-  }, [customStakeActive, customStake, placeOrder, unmatchedBets, matchedBets, updateOrders, tickOffsetSelected, fillOrKillSelected, id, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
+  }, [customStakeActive, customStake, placeOrder, unmatchedBets, matchedBets, updateOrders, tickOffsetSelected, fillOrKillSelected, selectionId, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
 
   const cancelSpecialOrders = useCallback(async (order, side) => {
-    const betsToPass = order || combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[id];
+    const betsToPass = order || combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[selectionId];
 
     if (betsToPass) {
       const data = await cancelOrders(betsToPass, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
@@ -212,7 +207,7 @@ const Ladder = memo(({
       updateStopEntryList(data.stopEntry);
       updateFillOrKillList(data.fillOrKill);
     }
-  }, [backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets, id, fillOrKillList, updateBackList, updateLayList, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateFillOrKillList]);
+  }, [backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets, selectionId, fillOrKillList, updateBackList, updateLayList, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateFillOrKillList]);
 
   return (
     <Container
@@ -225,12 +220,12 @@ const Ladder = memo(({
       setIsMoving={setIsMoving}
       setLadderDown={setLadderDown}
     >
-      <Header selectionId={id} setLadderDown={setLadderDown} hedge={ltpHedge} />
+      <Header selectionId={selectionId} setLadderDown={setLadderDown} hedge={ltpHedge} />
 
       <div className="ladder" onContextMenu={() => false} onPointerOver={onHoverLadder} onPointerLeave={overLeaveLadder}>
         <PercentageRow
           setLadderSideLeft={setLadderSideLeft}
-          selectionId={id}
+          selectionId={selectionId}
           layFirstCol={layFirstCol}
           setLayFirst={setLayFirst}
           cancelSpecialOrders={cancelSpecialOrders}
@@ -246,7 +241,7 @@ const Ladder = memo(({
               ref={listRef}
               style={ladderStyle}
               itemData={{
-                selectionId: id,
+                selectionId,
                 handlePlaceOrder,
                 cancelSpecialOrders,
                 handleHedgeCellClick,
@@ -261,23 +256,23 @@ const Ladder = memo(({
           )}
         </AutoSizer>
       </div>
-      <PriceRow selectionId={id} />
+      <PriceRow selectionId={selectionId} />
       <OrderRow
-        selectionId={id}
+        selectionId={selectionId}
         cancelSpecialOrders={cancelSpecialOrders}
       />
     </Container>
   );
 }, isMoving);
 
-const mapStateToProps = (state, props) => ({
-  ltp: getLTP(state.market.ladder, { selectionId: props.id }),
-  selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId: props.id }),
+const mapStateToProps = (state, { selectionId }) => ({
+  ltp: getLTP(state.market.ladder, { selectionId }),
+  selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
   unmatchedBets: getUnmatchedBets(state.order.bets),
   matchedBets: getMatchedBets(state.order.bets),
-  stakeVal: getStakeVal(state.settings.stake, { selectionId: props.id }),
-  customStake: state.market.runners[props.id].order.customStake,
-  customStakeActive: state.market.runners[props.id].order.customStakeActive,
+  stakeVal: getStakeVal(state.settings.stake, { selectionId }),
+  customStake: state.market.runners[selectionId].order.customStake,
+  customStakeActive: state.market.runners[selectionId].order.customStakeActive,
   draggingLadder: state.market.draggingLadder,
 
   //* Back/Lay
