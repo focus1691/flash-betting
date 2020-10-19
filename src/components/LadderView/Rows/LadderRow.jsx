@@ -15,9 +15,9 @@ const isMoving = (prevProps, nextProps) => nextProps.data.isMoving;
 
 const LadderRow = memo(({
   data: {
-    selectionId, layFirstCol, hedgingAvailable, handleHedgeCellClick, replaceStopLossOrder, isMoving, handlePlaceOrder,
+    selectionId, hedgingAvailable, handleHedgeCellClick, replaceStopLossOrder, isMoving, handlePlaceOrder,
   },
-  PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index,
+  PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol,
 }) => {
   const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
   const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
@@ -81,6 +81,7 @@ const mapStateToProps = (state, { data: { selectionId } }) => ({
   selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
   stakeVal: getStakeVal(state.settings.stake, { selectionId }),
   PL: getPL(state.market.marketPL, { selectionId }),
+  layFirstCol: state.market.layFirstCol,
 });
 
 export default connect(mapStateToProps)(LadderRow);

@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
+import { setBackLayColOrder } from '../../../../actions/market';
 import {
   getLTP, getLTPDelta, getPercent, getTV,
 } from '../../../../selectors/marketSelector';
@@ -9,7 +10,7 @@ import { getUnmatchedBetsOnRow } from '../../../../selectors/orderSelector';
 import CancelOrders from './CancelOrders';
 
 const PercentageRow = memo(({
-  ltp, tv, percent, ltpDelta, layFirstCol, setLayFirst, cancelSpecialOrders, unmatchedBackBets, unmatchedLayBets,
+  ltp, tv, percent, ltpDelta, layFirstCol, setBackLayColOrder, cancelSpecialOrders, unmatchedBackBets, unmatchedLayBets,
 }) => {
   const ltpStyle = useMemo(() => getLTPstyle(ltp, ltpDelta), [ltp, ltpDelta]);
 
@@ -35,7 +36,7 @@ const PercentageRow = memo(({
         {`${percent[layFirstCol ? 'lay' : 'back']}%`}
       </div>
       <Tooltip title="Swap Back/Lay Columns" aria-label="Swap matched columns">
-        <div className="th" style={ltpStyle} onClick={setLayFirst}>
+        <div className="th" style={ltpStyle} onClick={() => setBackLayColOrder()}>
           {ltp[0]}
         </div>
       </Tooltip>
@@ -55,6 +56,9 @@ const mapStateToProps = (state, { selectionId, price }) => ({
   ltpDelta: getLTPDelta(state.market.ladder, { selectionId }),
   unmatchedBackBets: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side: 'BACK' }),
   unmatchedLayBets: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side: 'LAY' }),
+  layFirstCol: state.market.layFirstCol,
 });
 
-export default connect(mapStateToProps)(PercentageRow);
+const mapDispatchToProps = { setBackLayColOrder };
+
+export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow);

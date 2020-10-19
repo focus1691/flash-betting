@@ -63,6 +63,11 @@ export const updateLadderOrder = (orderList) => ({
   payload: orderList,
 });
 
+export const setBackLayColOrder = (layFirstCol) => ({
+  type: 'SET_BACK_LAY_COL_LADDER_ORDER',
+  payload: layFirstCol,
+});
+
 export const setRunner = (runner) => ({
   type: 'SELECT_RUNNER',
   payload: runner,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { updateLadderOrder, setSortedLadder } from '../../actions/market';
 import { sortLadder } from '../../utils/ladder/SortLadder';
@@ -8,11 +8,6 @@ import Ladder from './Ladder';
 const Ladders = ({
   eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, marketOpen, marketStatus, setSortedLadder, excludedLadders,
 }) => {
-  const [layFirstCol, setLayFirstCol] = useState(true);
-  const setLayFirst = useCallback(() => {
-    setLayFirstCol(!layFirstCol);
-  }, [layFirstCol]);
-
   //* Sort ladder on market open, excluding ladders are first 6
   useEffect(() => {
     if (eventType === '4339') {
@@ -36,7 +31,7 @@ const Ladders = ({
     <div className="ladder-container" onContextMenu={(e) => e.preventDefault()}>
       {Object.values(ladderOrder)
         .filter((value) => excludedLadders.indexOf(value) === -1).map((selectionId, index) => (
-          <Ladder selectionId={selectionId} key={selectionId} order={index} layFirstCol={layFirstCol} setLayFirst={setLayFirst} />
+          <Ladder selectionId={selectionId} key={selectionId} order={index} />
         ))}
       <SuspendedWarning marketStatus={marketStatus} />
     </div>

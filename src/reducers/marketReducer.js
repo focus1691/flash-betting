@@ -13,6 +13,7 @@ const initialState = {
   sortedLadder: [],
   excludedLadders: [],
   ladderOrder: {},
+  layFirstCol: true,
   oneClickOn: false,
   priceType: 'STAKE',
   myMarkets: [],
@@ -49,6 +50,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, excludedLadders: action.payload };
     case 'UPDATE_LADDER_ORDER':
       return { ...state, ladderOrder: action.payload };
+    case 'SET_BACK_LAY_COL_LADDER_ORDER':
+      return { ...state, layFirstCol: !state.layFirstCol };
     case 'SELECT_RUNNER':
       return { ...state, runnerSelection: action.payload };
     case 'TOGGLE_ONE_CLICK':

@@ -32,7 +32,7 @@ import PriceRow from './Rows/PriceRow';
 const isMoving = (prevProps, nextProps) => nextProps.draggingLadder === nextProps.selectionId && prevProps.order === nextProps.order;
 
 const Ladder = memo(({
-  selectionId, ltp, layFirstCol, setLayFirst, placeOrder, updateOrders, order, selectionMatchedBets, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
+  selectionId, ltp, placeOrder, updateOrders, order, selectionMatchedBets, unmatchedBets, matchedBets, setLadderSideLeft, updateStopLossList, backList, updateBackList, layList, updateLayList, stopLossHedged, tickOffsetList, tickOffsetSelected, tickOffsetTicks,
   tickOffsetUnits, tickOffsetTrigger, tickOffsetHedged, fillOrKillSelected, fillOrKillSeconds, fillOrKillList, updateFillOrKillList, stopEntryList, updateStopEntryList, updateTickOffsetList, stopLossOffset, stopLossList, stopLossUnits, stakeVal, draggingLadder, customStakeActive, customStake,
 }) => {
   const containerRef = useRef(null);
@@ -226,8 +226,6 @@ const Ladder = memo(({
         <PercentageRow
           setLadderSideLeft={setLadderSideLeft}
           selectionId={selectionId}
-          layFirstCol={layFirstCol}
-          setLayFirst={setLayFirst}
           cancelSpecialOrders={cancelSpecialOrders}
         />
         <AutoSizer>
@@ -246,7 +244,6 @@ const Ladder = memo(({
                 cancelSpecialOrders,
                 handleHedgeCellClick,
                 replaceStopLossOrder,
-                layFirstCol,
                 isMoving,
                 hedgingAvailable,
               }}
