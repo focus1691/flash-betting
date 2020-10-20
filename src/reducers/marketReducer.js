@@ -1,10 +1,15 @@
 const initialState = {
   marketOpen: false,
+  marketId: null,
+  marketName: '',
+  description: {},
   inPlay: false,
   inPlayTime: null,
+  marketStartTime: null,
   pastEventTime: false,
   status: 'OPEN',
-  eventType: null,
+  event: { id: null, name: null },
+  eventType: {},
   currentMarket: {},
   runnerSelection: 0,
   nonRunners: {},
@@ -24,18 +29,26 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'SET_MARKET_NAME':
+      return { ...state, marketName: action.payload };
+    case 'SET_MARKET_ID':
+      return { ...state, marketId: action.payload };
     case 'NEW_MARKET_STATUS':
       return { ...state, status: action.payload };
+    case 'SET_MARKET_DESCRIPTION':
+      return { ...state, description: action.payload };
+    case 'SET_MARKET_START_TIME':
+      return { ...state, marketStartTime: action.payload };
     case 'SET_IN_PLAY':
       return { ...state, inPlay: action.payload };
     case 'SET_IN_PLAY_TIME':
       return { ...state, inPlayTime: action.payload };
     case 'SET_PAST_EVENT_TIME':
       return { ...state, pastEventTime: action.payload };
-    case 'LOAD_MARKET':
-      return { ...state, currentMarket: action.payload };
     case 'CLOSE_MARKET':
       return { ...state, marketOpen: action.payload };
+    case 'SET_EVENT':
+      return { ...state, event: action.payload };
     case 'SET_EVENT_TYPE':
       return { ...state, eventType: action.payload };
     case 'LOAD_LADDER':

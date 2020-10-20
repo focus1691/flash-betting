@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Lay = ({
-  text, stake, price, hours, minutes, seconds, executionTime, market, runners, selections, list,
+  stake, price, hours, minutes, seconds, executionTime, marketId, runners, selections, list,
   onTextUpdate, onReceiveStake, onReceivePrice, onReceiveHours, onReceiveMinutes, onReceiveSeconds,
   onToggleExecutionTime, onSelection, onUpdateLayList,
 }) => {
@@ -93,12 +93,12 @@ const Lay = ({
 
     const newLayList = { ...list };
 
-    await Promise.all(selectedRunners.map(async (selection, index) => {
+    await Promise.all(selectedRunners.map(async (selection) => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const convertedSelection = parseInt(selection);
       const addedOrder = {
         strategy: 'Lay',
-        marketId: market.marketId,
+        marketId,
         selectionId: convertedSelection,
         executionTime,
         timeOffset: (hours * 3600) + (minutes * 60) + parseInt(seconds),
@@ -267,14 +267,12 @@ const Lay = ({
 };
 
 const mapStateToProps = (state) => ({
-  text: state.lay.text,
   stake: state.lay.stake,
   price: state.lay.price,
   hours: state.lay.offset.hours,
   minutes: state.lay.offset.minutes,
   seconds: state.lay.offset.seconds,
   executionTime: state.lay.executionTime,
-  market: state.market.currentMarket,
   runners: state.market.runners,
   selections: state.lay.selections,
   list: state.lay.list,

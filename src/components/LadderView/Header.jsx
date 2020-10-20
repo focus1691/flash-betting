@@ -101,8 +101,8 @@ const LadderHeader = memo(({
 });
 
 const mapStateToProps = (state, { selectionId }) => ({
-  marketId: state.market.currentMarket.marketId,
-  sportId: getSportId(state.market.currentMarket),
+  marketId: state.market.marketId,
+  sportId: getSportId(state.market.eventType),
   runner: getRunner(state.market.runners, { selectionId }),
   oddsHovered: state.market.oddsHovered,
   PL: getPL(state.market.marketPL, { selectionId }),

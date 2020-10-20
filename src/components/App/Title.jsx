@@ -2,21 +2,25 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 
-const Title = ({ marketOpen, market }) => (
+const Title = ({
+  marketOpen, marketName, event, marketStartTime,
+}) => (
   marketOpen ? (
     <Helmet>
       <title>
-        {`${new Date(market.marketStartTime).toLocaleTimeString(navigator.language, {
+        {`${new Date(marketStartTime).toLocaleTimeString(navigator.language, {
           hour: '2-digit',
           minute: '2-digit',
-        })} ${market.marketName}  ${market.event.venue || ''}`}
+        })} ${marketName}  ${event.venue || ''}`}
       </title>
     </Helmet>
   ) : null);
 
 const mapStateToProps = (state) => ({
-  market: state.market.currentMarket,
   marketOpen: state.market.marketOpen,
+  marketName: state.market.marketName,
+  event: state.market.event,
+  marketStartTime: state.market.marketStartTime,
 });
 
 export default connect(mapStateToProps)(Title);

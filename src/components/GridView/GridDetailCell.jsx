@@ -11,7 +11,7 @@ import { isHedgingOnSelectionAvailable } from '../../utils/TradingStategy/Heding
 import { getSelectionMatchedBets } from '../../selectors/orderSelector';
 
 const GridDetailCell = ({
-  selectionMatchedBets, setRunner, placeOrder, sportId, market, runner, name, number, logo, ltp, tv, bets, PL, hedge, ltpStyle,
+  selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, bets, PL, hedge, ltpStyle,
 }) => {
   const side = useMemo(() => (selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === 'BACK' ? 0 : 1), 0) <= 0 ? 'BACK' : 'LAY'), [selectionMatchedBets]);
 
@@ -31,7 +31,7 @@ const GridDetailCell = ({
         : undefined;
 
       placeOrder({
-        marketId: market.marketId,
+        marketId,
         side,
         size: hedgeSize,
         price: ltp[0],

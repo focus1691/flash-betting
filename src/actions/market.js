@@ -1,3 +1,13 @@
+export const setMarketName = (marketName) => ({
+  type: 'SET_MARKET_NAME',
+  payload: marketName,
+});
+
+export const setMarketStartTime = (marketStartTime) => ({
+  type: 'SET_MARKET_START_TIME',
+  payload: marketStartTime,
+});
+
 export const setInPlay = (inPlay) => ({
   type: 'SET_IN_PLAY',
   payload: inPlay,
@@ -18,14 +28,24 @@ export const setMarketStatus = (status) => ({
   payload: status,
 });
 
-export const loadMarket = (market) => ({
-  type: 'LOAD_MARKET',
-  payload: market,
-});
+export const setMarketDescription = (description) => ({
+  type: 'SET_MARKET_DESCRIPTION',
+  payload: description,
+})
 
 export const closeMarket = () => ({
   type: 'CLOSE_MARKET',
   payload: false,
+});
+
+export const setMarketId = (marketId) => ({
+  type: 'SET_MARKET_ID',
+  payload: marketId,
+});
+
+export const setEvent = (event) => ({
+  type: 'SET_EVENT',
+  payload: event,
 });
 
 export const setEventType = (eventType) => ({

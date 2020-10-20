@@ -14,22 +14,22 @@ import { msToHMS } from '../../utils/DateCalculator';
 const ONE_SECOND = 1000;
 
 const Countdown = ({
-  market, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder,
+  marketId, marketStartTime, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder,
   backList, layList, tickOffsetList, fillOrKillList, bets, updateBackList, updateLayList, updateTickOffsetList, updateFillOrKillList,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState('--');
 
   useInterval(async () => {
-    setTimeRemaining(countDownTime(market, inPlay, inPlayTime, pastEventTime, setPastEventTime));
+    setTimeRemaining(countDownTime(marketOpen, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime));
 
     //* BACK Before/After Market
-    const newBackList = await checkBackAndLayOrders(backList, market.marketStartTime, placeOrder, market.marketId, 'BACK', bets.matched, bets.unmatched);
+    const newBackList = await checkBackAndLayOrders(backList, marketStartTime, placeOrder, marketId, 'BACK', bets.matched, bets.unmatched);
     if (Object.keys(backList).length > 0) {
       updateBackList(newBackList);
     }
 
     //* LAY Before/After Market
-    const newLayList = await checkBackAndLayOrders(layList, market.marketStartTime, placeOrder, market.marketId, 'LAY', bets.matched, bets.unmatched);
+    const newLayList = await checkBackAndLayOrders(layList, marketStartTime, placeOrder, marketId, 'LAY', bets.matched, bets.unmatched);
     if (Object.keys(layList).length > 0) {
       updateLayList(newLayList);
     }
@@ -83,11 +83,12 @@ const Countdown = ({
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
+  marketId: state.market.marketId,
   marketStatus: state.market.status,
+  marketStartTime: state.market.marketStartTime,
   inPlay: state.market.inPlay,
   inPlayTime: state.market.inPlayTime,
   pastEventTime: state.market.pastEventTime,
-  market: state.market.currentMarket,
   layList: state.lay.list,
   backList: state.back.list,
   fillOrKillList: state.fillOrKill.list,

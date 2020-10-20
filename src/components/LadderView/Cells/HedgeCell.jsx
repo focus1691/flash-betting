@@ -18,6 +18,8 @@ const LadderHedgeCell = memo(({
 
   return (
     <div
+      role="button"
+      tabIndex="0"
       className="td"
       style={style}
       onClick={handleClick}
@@ -28,7 +30,7 @@ const LadderHedgeCell = memo(({
 });
 
 const mapStateToProps = (state, { selectionId, price, side }) => ({
-  marketId: state.market.currentMarket.marketId,
+  marketId: state.market.marketId,
   unmatchedBetsOnRow: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side }),
 });
 

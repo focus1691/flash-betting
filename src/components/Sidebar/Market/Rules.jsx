@@ -2,14 +2,14 @@ import parse from 'html-react-parser';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
-const Rules = ({ market }) => {
+const Rules = ({ description }) => {
   const [rules, setRules] = useState(null);
 
   useEffect(() => {
-    if (market.description) {
-      setRules(market.description.rules);
+    if (description) {
+      setRules(description.rules);
     }
-  }, [market]);
+  }, [description]);
 
   return (
     <div>
@@ -19,9 +19,7 @@ const Rules = ({ market }) => {
 };
 
 const mapStateToProps = (state) => ({
-  market: state.market.currentMarket,
-  marketOpen: state.market.marketOpen,
-  selection: state.market.runnerSelection,
+  description: state.market.description,
 });
 
 export default connect(mapStateToProps)(Rules);

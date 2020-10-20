@@ -48,15 +48,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StopEntry = (props) => {
+const StopEntry = ({
+  marketId, runners, selections, price, stopEntryList, ticks, operator, side, stake, onUpdateStopEntryList, onSelection, onReceivePrice, onReceiveTicks, onReceiveStake, onReceiveOperator, 
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [step, setStep] = useState(findPriceStep(props.price));
+  const [step, setStep] = useState(findPriceStep(price));
 
   // Load all the runners / set All / The Field as the default
   useEffect(() => {
-    props.onSelection(
-      Object.keys(props.runners).map((key) => [props.runners[key].selectionId]),
+    onSelection(
+      Object.keys(runners).map((key) => [runners[key].selectionId]),
     );
   }, []);
 
@@ -65,7 +67,7 @@ const StopEntry = (props) => {
   };
 
   const handleMenuItemClick = (index) => (e) => {
-    props.onSelection(index);
+    onSelection(index);
     setAnchorEl(null);
   };
 
@@ -78,11 +80,11 @@ const StopEntry = (props) => {
 
     // Set empty String for non-numbers
     if (isNaN(parseInt(v))) {
-      props.onReceivePrice('');
+      onReceivePrice('');
       return;
-    } if (props.price === '' && parseInt(v) === 1) {
+    } if (price === '' && parseInt(v) === 1) {
       setStep(0.01);
-      props.onReceivePrice(1.01);
+      onReceivePrice(1.01);
       return;
     }
 
@@ -92,27 +94,27 @@ const StopEntry = (props) => {
       setStep(newStep);
     }
 
-    props.onReceivePrice(v);
-  }, [step, props.price]);
+    onReceivePrice(v);
+  }, [step, price]);
 
   // Handle Submit click to place an order
   const placeOrder = () => async (e) => {
-    const selections = typeof props.selections === 'string' ? [props.selections] : props.selections;
+    const selections = typeof selections === 'string' ? [selections] : selections;
 
-    const newStopEntryList = { ...props.stopEntryList };
+    const newStopEntryList = { ...stopEntryList };
 
     await Promise.all(selections.map(async (selection) => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const convertedSelection = parseInt(selection);
       const addedOrder = {
         strategy: 'Stop Entry',
-        marketId: props.market.marketId,
+        marketId,
         selectionId: convertedSelection,
-        targetLTP: props.ticks,
-        stopEntryCondition: props.operator,
-        side: props.side,
-        size: props.stake,
-        price: formatPrice(props.price),
+        targetLTP: ticks,
+        stopEntryCondition: operator,
+        side,
+        size: stake,
+        price: formatPrice(price),
         rfs: referenceStrategyId,
       };
 
@@ -132,7 +134,7 @@ const StopEntry = (props) => {
       });
     }));
 
-    props.onUpdateStopEntryList(newStopEntryList);
+    onUpdateStopEntryList(newStopEntryList);
   };
 
   return (
@@ -148,9 +150,9 @@ const StopEntry = (props) => {
           <ListItemText
             primary="Runners"
             secondary={
-              props.selections
-                ? typeof props.selections === 'string'
-                  ? props.runners[props.selections].runnerName
+              selections
+                ? typeof selections === 'string'
+                  ? runners[selections].runnerName
                   : 'All / The Field'
                 : ''
             }
@@ -165,12 +167,12 @@ const StopEntry = (props) => {
         onClose={handleClose}
       >
         {/* The Menu Item for All / the Field */}
-        {props.runners ? (
+        {runners ? (
           <StyledMenuItem
             key="stop-loss-order-all/field"
             className={classes.root}
-            selected={typeof props.selections !== 'string'}
-            onClick={handleMenuItemClick(Object.keys(props.runners).map((key) => [props.runners[key].selectionId]))}
+            selected={typeof selections !== 'string'}
+            onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}
           >
             All / The Field
           </StyledMenuItem>
@@ -178,14 +180,14 @@ const StopEntry = (props) => {
         {/* Create Menu Items for all the runners and display their names
          * Store their selectionId to be used to place bets for event clicks
          */}
-        {Object.keys(props.runners).map((key) => (
+        {Object.keys(runners).map((key) => (
           <StyledMenuItem
-            key={`stop-entry-order-${props.runners[key].runnerName}`}
+            key={`stop-entry-order-${runners[key].runnerName}`}
             className={classes.root}
-            selected={key === props.selections}
+            selected={key === selections}
             onClick={handleMenuItemClick(key)}
           >
-            {props.runners[key].runnerName}
+            {runners[key].runnerName}
           </StyledMenuItem>
         ))}
       </StyledMenu>
@@ -195,8 +197,8 @@ const StopEntry = (props) => {
           <Select
             native
             className={classes.select}
-            value={props.operator}
-            onChange={(e) => props.onReceiveOperator(e.target.value)}
+            value={operator}
+            onChange={(e) => onReceiveOperator(e.target.value)}
             input={<OutlinedInput name="age" />}
           >
             <option value="" />
@@ -210,9 +212,9 @@ const StopEntry = (props) => {
           className={classes.textField}
           type="number"
           label="Ticks"
-          value={props.ticks}
+          value={ticks}
           inputProps={{ min: '1', max: '100' }}
-          onChange={(e) => props.onReceiveTicks(e.target.value)}
+          onChange={(e) => onReceiveTicks(e.target.value)}
           margin="normal"
         />
       </div>
@@ -222,9 +224,9 @@ const StopEntry = (props) => {
           className={classes.backPriceTextFields}
           type="number"
           label="Back"
-          value={props.stake}
+          value={stake}
           inputProps={{ min: '1' }}
-          onChange={(e) => props.onReceiveStake(e.target.value)}
+          onChange={(e) => onReceiveStake(e.target.value)}
           margin="normal"
         />
         <TextField
@@ -232,7 +234,7 @@ const StopEntry = (props) => {
           className={classes.backPriceTextFields}
           type="number"
           label="@"
-          value={props.price}
+          value={price}
           inputProps={{ min: '1.00', max: '1000', step }}
           onChange={updateStep}
           margin="normal"
@@ -255,10 +257,10 @@ const mapStateToProps = (state) => ({
   ticks: state.stopEntry.ticks,
   stake: state.stopEntry.stake,
   price: state.stopEntry.price,
-  runners: state.market.runners,
   side: state.stopEntry.side,
   stopEntryList: state.stopEntry.list,
-  market: state.market.currentMarket,
+  marketId: state.market.marketId,
+  runners: state.market.runners,
   selections: state.stopEntry.selections,
 });
 

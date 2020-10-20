@@ -54,7 +54,7 @@ const LadderOrderCell = memo(({
 });
 
 const mapStateToProps = (state, props) => ({
-  marketId: state.market.currentMarket.marketId,
+  marketId: state.market.marketId,
   stopLoss: getStopLoss(state.stopLoss.list, props),
   stopLossSelected: state.stopLoss.selected,
   stopLossUnits: state.stopLoss.units,

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { calcBackProfit, twoDecimalPlaces } from '../../../utils/Bets/BettingCalculations';
 import { combinePartiallyMatchedBets } from '../../../utils/Bets/CombineUnmatchedOrders';
 
-const MatchedBets = ({ marketOpen, market, bets }) => {
+const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
   const selections = useMemo(() => combinePartiallyMatchedBets(bets), [bets]);
 
   return (
@@ -28,13 +28,13 @@ const MatchedBets = ({ marketOpen, market, bets }) => {
           </tr>
           <tr>
             <td className="menu-bets-event" colSpan={4}>
-              {market.competition !== undefined ? `${market.marketName} ${market.competition.name}` : null}
+              {marketName}
             </td>
           </tr>
           {marketOpen
             ? selections.map((selection, idx) => {
-              const selectionObject = market.runners.find((runner) => runner.selectionId === selection);
-              if (selectionObject === undefined) return null;
+              const selectionObject = runners[selection];
+              if (!selectionObject) return null;
 
               const filteredOrders = Object.values(bets.matched).filter((order) => order.selectionId === selection);
               return (
@@ -55,7 +55,7 @@ const MatchedBets = ({ marketOpen, market, bets }) => {
                             }}
                           >
                             <td>
-                              <button style={{ height: '22px', width: 'auto', visibility: 'collapse' }} />
+                              <button type="button" style={{ height: '22px', width: 'auto', visibility: 'collapse' }} />
                             </td>
 
                             <td>{twoDecimalPlaces(order.price)}</td>
@@ -92,7 +92,8 @@ const MatchedBets = ({ marketOpen, market, bets }) => {
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
-  market: state.market.currentMarket,
+  marketName: state.market.marketName,
+  runners: state.market.runners,
   bets: state.order.bets,
 });
 

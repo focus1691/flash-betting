@@ -21,7 +21,8 @@ import {
   setHorseRacingCountries,
 } from '../../actions/settings';
 import {
-  loadMarket, setEventType, closeMarket, loadLadder, setSortedLadder, setRunner, loadRunners, loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateLadderOrder, updateExcludedLadders,
+  setMarketId, setMarketName, setMarketDescription, setMarketStartTime, setEvent, setEventType, closeMarket, loadLadder, setSortedLadder,
+  setRunner, loadRunners, loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateLadderOrder, updateExcludedLadders,
 } from '../../actions/market';
 import { updateStopLossList } from '../../actions/stopLoss';
 import { updateTickOffsetList } from '../../actions/tickOffset';
@@ -58,8 +59,8 @@ const TWO_HUNDRED_AND_FIFTY_MILLISECONDS = 250;
 const App = ({
   view,
   isLoading,
-  market,
   marketOpen,
+  marketId,
   nonRunners,
   unmatchedBets,
   matchedBets,
@@ -84,16 +85,22 @@ const App = ({
   setLayBtns,
   updateRightClickTicks,
   setHorseRacingCountries,
-  loadMarket,
+  setMarketId,
+  setMarketName,
+  setMarketStartTime,
+  eventType,
+  setEvent,
   setEventType,
   closeMarket,
   loadLadder,
+  sortedLadder,
   setSortedLadder,
   updateExcludedLadders,
   setRunner,
   loadRunners,
   loadNonRunners,
   setMarketStatus,
+  inPlayTime,
   setInPlay,
   setInPlayTime,
   setMarketPL,
@@ -106,7 +113,6 @@ const App = ({
   updateOrders,
   updateFillOrKillList,
 }) => {
-  const [marketId, setMarketId] = useState(null);
   const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
   const [updates, setUpdates] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
@@ -223,7 +229,7 @@ const App = ({
       setMarketStatus(marketDefinition.status);
       setInPlay(marketDefinition.inPlay);
 
-      if (!market.inPlayTime && marketDefinition.inPlay) {
+      if (!inPlayTime && marketDefinition.inPlay) {
         // Start the in-play clock
         setInPlayTime(new Date());
       }
@@ -233,7 +239,7 @@ const App = ({
         window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
       }
     },
-    [setMarketStatus, setInPlay, market.inPlayTime, marketOpen, setInPlayTime, closeMarket, marketId]
+    [setMarketStatus, setInPlay, inPlayTime, marketOpen, setInPlayTime, closeMarket, marketId],
   );
 
   /**
@@ -317,11 +323,11 @@ const App = ({
 
               if (i === mc.rc.length - 1) {
                 let j;
-                if (market.eventType === '4339') {
+                if (eventType.id === '4339') {
                   //! Used to track ladder order when dragging & dropping ladders
                   const newOrderList = {};
-                  for (j = 0; j < market.sortedLadder.length; j += 1) {
-                    newOrderList[j] = market.sortedLadder[j];
+                  for (j = 0; j < sortedLadder.length; j += 1) {
+                    newOrderList[j] = sortedLadder[j];
                   }
                   updateLadderOrder(newOrderList);
                 } else {
@@ -345,7 +351,7 @@ const App = ({
         }
       });
     },
-    [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, updateStopLossList, market.eventType, market.sortedLadder, setSortedLadder, updateExcludedLadders]
+    [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, updateStopLossList, sortedLadder, setSortedLadder, updateExcludedLadders],
   );
 
   /**
@@ -425,7 +431,7 @@ const App = ({
 
     // Check if the page has query parameter 'marketId'
     // Load the market if found
-    if (marketId !== false) {
+    if (marketId) {
       await fetch(`/api/get-market-info?marketId=${marketId}`)
         .then((res) => res.json())
         .then(async (data) => {
@@ -435,88 +441,89 @@ const App = ({
             removeCookie('refreshToken');
             removeCookie('expiresIn');
             window.location.href = `${window.location.origin}/?error=INVALID_SESSION_INFORMATION`;
-          } else {
-            setMarketId(marketId);
-            if (data.result.length > 0) {
-              const runners = CreateRunners(data.result[0].runners);
-              setSortedLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
-              setEventType(data.result[0].eventType.id);
-              loadRunners(runners);
-              loadMarket(data.result[0]);
-              setRunner(data.result[0].runners[0]);
-              const selectionNames = {};
+          } else if (data.result) {
+            const runners = CreateRunners(data.result[0].runners);
+            setSortedLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
+            setMarketId(data.result[0].marketId);
+            setMarketName(data.result[0].marketName);
+            setMarketDescription(data.result[0].description);
+            setMarketStartTime(data.result[0].marketStartTime);
+            setEvent(data.result[0].event);
+            setEventType(data.result[0].eventType);
+            loadRunners(runners);
+            setRunner(data.result[0].runners[0]);
+            const selectionNames = {};
 
-              const runnerIds = Object.keys(runners);
+            const runnerIds = Object.keys(runners);
 
-              for (let i = 0; i < runnerIds.length; i += 1) {
-                selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
-              }
-
-              fetch('/api/save-runner-names', {
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                method: 'POST',
-                body: JSON.stringify({
-                  marketId,
-                  selectionNames,
-                }),
-              });
-
-              //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-              socket.emit('market-subscription', { marketId });
-
-              const loadedBackOrders = {};
-              const loadedLayOrders = {};
-              const loadedStopEntryOrders = {};
-              const loadedTickOffsetOrders = {};
-              const loadedFillOrKillOrders = {};
-              const loadedStopLossOrders = {};
-
-              await fetch('/api/get-all-orders')
-                .then((res) => res.json())
-                .then(async (orders) => {
-                  const loadOrders = async (orders) => {
-                    orders.map(async (order) => {
-                      if (order.marketId === marketId) {
-                        switch (order.strategy) {
-                          case 'Back':
-                            loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order);
-                            break;
-                          case 'Lay':
-                            loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order);
-                            break;
-                          case 'Stop Entry':
-                            loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
-                            break;
-                          case 'Tick Offset':
-                            loadedTickOffsetOrders[order.rfs] = order;
-                            break;
-                          case 'Fill Or Kill':
-                            // this should only keep the fill or kill if the order isn't completed already
-                            loadedFillOrKillOrders[order.betId] = order;
-                            break;
-                          case 'Stop Loss':
-                            loadedStopLossOrders[order.selectionId] = order;
-                            break;
-                          default:
-                            break;
-                        }
-                      }
-                    });
-                  };
-                  await loadOrders(orders);
-                })
-                .then(() => {
-                  updateBackList(loadedBackOrders);
-                  updateLayList(loadedLayOrders);
-                  updateStopEntryList(loadedStopEntryOrders);
-                  updateTickOffsetList(loadedTickOffsetOrders);
-                  updateFillOrKillList(loadedFillOrKillOrders);
-                  updateStopLossList(loadedStopLossOrders);
-                });
+            for (let i = 0; i < runnerIds.length; i += 1) {
+              selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
             }
+
+            fetch('/api/save-runner-names', {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              method: 'POST',
+              body: JSON.stringify({
+                marketId,
+                selectionNames,
+              }),
+            });
+
+            //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+            socket.emit('market-subscription', { marketId });
+
+            const loadedBackOrders = {};
+            const loadedLayOrders = {};
+            const loadedStopEntryOrders = {};
+            const loadedTickOffsetOrders = {};
+            const loadedFillOrKillOrders = {};
+            const loadedStopLossOrders = {};
+
+            await fetch('/api/get-all-orders')
+              .then((res) => res.json())
+              .then(async (orders) => {
+                const loadOrders = async (orders) => {
+                  orders.map(async (order) => {
+                    if (order.marketId === marketId) {
+                      switch (order.strategy) {
+                        case 'Back':
+                          loadedBackOrders[order.selectionId] = loadedBackOrders[order.selectionId] === undefined ? [order] : loadedBackOrders[order.selectionId].concat(order);
+                          break;
+                        case 'Lay':
+                          loadedLayOrders[order.selectionId] = loadedLayOrders[order.selectionId] === undefined ? [order] : loadedLayOrders[order.selectionId].concat(order);
+                          break;
+                        case 'Stop Entry':
+                          loadedStopEntryOrders[order.selectionId] = loadedStopEntryOrders[order.selectionId] === undefined ? [order] : loadedStopEntryOrders[order.selectionId].concat(order);
+                          break;
+                        case 'Tick Offset':
+                          loadedTickOffsetOrders[order.rfs] = order;
+                          break;
+                        case 'Fill Or Kill':
+                          // this should only keep the fill or kill if the order isn't completed already
+                          loadedFillOrKillOrders[order.betId] = order;
+                          break;
+                        case 'Stop Loss':
+                          loadedStopLossOrders[order.selectionId] = order;
+                          break;
+                        default:
+                          break;
+                      }
+                    }
+                  });
+                };
+                await loadOrders(orders);
+              })
+              .then(() => {
+                updateBackList(loadedBackOrders);
+                updateLayList(loadedLayOrders);
+                updateStopEntryList(loadedStopEntryOrders);
+                updateTickOffsetList(loadedTickOffsetOrders);
+                updateFillOrKillList(loadedFillOrKillOrders);
+                updateStopLossList(loadedStopLossOrders);
+              });
           }
         });
     }
@@ -597,10 +604,13 @@ const AppWithSocket = (props) => <SocketContext.Consumer>{(socket) => <App {...p
 const mapStateToProps = (state) => ({
   view: state.settings.view,
   isLoading: state.settings.isLoading,
-  market: state.market.currentMarket,
   inPlay: state.market.inPlay,
+  inPlayTime: state.market.inPlayTime,
   marketOpen: state.market.marketOpen,
+  marketId: state.market.marketId,
+  eventType: state.market.eventType,
   ladders: state.market.ladder,
+  sortedLadder: state.market.sortedLadder,
   nonRunners: state.market.nonRunners,
   unmatchedBets: state.order.bets.unmatched,
   matchedBets: state.order.bets.matched,
@@ -627,7 +637,10 @@ const mapDispatchToProps = {
   setLayBtns,
   updateRightClickTicks,
   setHorseRacingCountries,
-  loadMarket,
+  setMarketId,
+  setMarketName,
+  setMarketStartTime,
+  setEvent,
   setEventType,
   closeMarket,
   loadLadder,
