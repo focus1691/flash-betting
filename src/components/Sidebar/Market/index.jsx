@@ -259,7 +259,7 @@ const mapStateToProps = (state) => ({
   graphExpanded: state.settings.graphExpanded,
   marketInfoExpanded: state.settings.marketInfoExpanded,
   rulesExpanded: state.settings.rulesExpanded,
-  unmatchedOrders: getMarketUnmatchedBets(state.order.bets, { marketId: state.market.currentMarket.marketId }),
+  unmatchedOrders: getMarketUnmatchedBets(state.order.bets, { marketId: state.market.marketId }),
 });
 
 const mapDispatchToProps = {

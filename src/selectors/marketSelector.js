@@ -9,7 +9,7 @@ const getRunnerSelector = (state, { selectionId }) => state[selectionId];
 
 export const getSportId = createSelector(
   (state) => state,
-  (state) => state.eventType.id,
+  (state) => state.id,
 );
 
 export const getRunner = createSelector(

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { openGraph } from '../../actions/draggable';
 
 const DraggableGraph = ({
-  market, selection, open, openGraph,
+  marketId, selection, open, openGraph,
 }) => {
   const [transparent, setTransparent] = useState(false);
 
@@ -32,9 +32,9 @@ const DraggableGraph = ({
       <img
         alt="Chart"
         style={{ pointerEvents: 'none' }}
-        src={`https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${market.marketId.slice(
+        src={`https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId.slice(
           2,
-          market.marketId.length,
+          marketId.length,
         )}&selectionId=${selection.selectionId}&handicap=0`}
       />
     </div>
@@ -42,7 +42,7 @@ const DraggableGraph = ({
 };
 
 const mapStateToProps = (state) => ({
-  market: state.market.currentMarket,
+  marketId: state.market.marketId,
   selection: state.market.runnerSelection,
   open: state.draggable.graphOpen,
 });

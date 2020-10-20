@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const MarketInfo = ({ marketOpen, market, selection }) => {
+const MarketInfo = ({ marketOpen, eventType, selection }) => {
   const createData = (name, description) => ({ name, description });
 
   const racerDetails = () => {
@@ -48,8 +48,8 @@ const MarketInfo = ({ marketOpen, market, selection }) => {
     <table id="menu-market-info">
       <tbody>
         {marketOpen
-          && market.eventType
-          && market.eventType.id === '7'
+          && eventType
+          && eventType.id === '7'
           ? renderRacerDetails()
           : null}
       </tbody>
@@ -58,8 +58,8 @@ const MarketInfo = ({ marketOpen, market, selection }) => {
 };
 
 const mapStateToProps = (state) => ({
-  market: state.market.currentMarket,
   marketOpen: state.market.marketOpen,
+  eventType: state.market.eventType,
   selection: state.market.runnerSelection,
 });
 

@@ -1,17 +1,21 @@
-import crypto from 'crypto';
 import React from 'react';
+import { connect } from 'react-redux';
+import crypto from 'crypto';
 import { sumMatchedBets } from '../../utils/Bets/BettingCalculations';
 import { getOrderBtnBG } from '../../utils/ColorManipulator';
 import { getHedgedBetsToMake } from '../../utils/TradingStategy/HedingCalculator';
 import { formatTotalMatched } from '../../utils/NumberFormat';
 import { renderRaceStatus } from './RaceStatus';
 
-export default ({
-  market,
+const GridHeader = ({
+  marketId,
   ladder,
   marketOpen,
+  marketName,
+  marketStartTime,
+  event,
   inPlay,
-  status,
+  marketStatus,
   country,
   oneClickRef,
   oneClickOn,
@@ -25,18 +29,15 @@ export default ({
   onPlaceOrder,
   marketCashout,
 }) => {
-  const executeMarketCashout = () => (e) => {
-    const hedgedBets = getHedgedBetsToMake(market.marketId, bets, ltpList);
+  const executeMarketCashout = () => () => {
+    const hedgedBets = getHedgedBetsToMake(marketId, bets, ltpList);
 
     if (hedgedBets.length > 0) {
       const recursivePlaceHedge = (index, unmatchedBets) => {
-        const referenceStrategyId = crypto
-          .randomBytes(15)
-          .toString('hex')
-          .substring(0, 15);
+        const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
 
         onPlaceOrder({
-          marketId: market.marketId,
+          marketId,
           side: hedgedBets[index].side,
           size: hedgedBets[index].stake,
           price: hedgedBets[index].buyPrice,
@@ -55,50 +56,40 @@ export default ({
     <>
       <tr id="grid-header">
         <th colSpan="11">
-          <button id="one-click-btn" ref={oneClickRef} onClick={toggleOneClick()}>
+          <button type="button" id="one-click-btn" ref={oneClickRef} onClick={toggleOneClick()}>
             {`Turn One click ${oneClickOn ? 'off' : 'on'}`}
           </button>
           <h1>
             {marketOpen
-              ? `${new Date(market.marketStartTime).toLocaleTimeString(navigator.language, {
+              ? `${new Date(marketStartTime).toLocaleTimeString(navigator.language, {
                 hour: '2-digit',
                 minute: '2-digit',
-              })} ${market.marketName} ${market.event.venue || ''}`
+              })} ${marketName} ${event.venue || ''}`
               : 'No Event Selected'}
           </h1>
           {oneClickOn ? (
             <>
               <div id="one-click-stake">
-                <button>Stake</button>
+                <button type="button">Stake</button>
                 {stakeBtns.map((stake) => (
-                  <button
-                    style={{ background: getOrderBtnBG('STAKE', stake, oneClickStake, -70) }}
-                    onClick={setStakeOneClick(stake)}
-                  >
+                  <button type="button" style={{ background: getOrderBtnBG('STAKE', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
               </div>
               <br />
               <div id="one-click-liability">
-                <button>Liability</button>
+                <button type="button">Liability</button>
                 {layBtns.map((stake) => (
-                  <button
-                    style={{ background: getOrderBtnBG('LAY', stake, oneClickStake, -70) }}
-                    onClick={setStakeOneClick(stake)}
-                  >
+                  <button type="button" style={{ background: getOrderBtnBG('LAY', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
               </div>
             </>
           ) : null}
-          {renderRaceStatus(marketOpen, status, inPlay)}
-          <span id="matched-bets">
-            {marketOpen
-						  ? `Matched: ${formatTotalMatched(country.localeCode, country.currencyCode, sumMatchedBets(ladder))}`
-						  : null}
-          </span>
+          {renderRaceStatus(marketOpen, marketStatus, inPlay)}
+          <span id="matched-bets">{marketOpen ? `Matched: ${formatTotalMatched(country.localeCode, country.currencyCode, sumMatchedBets(ladder))}` : null}</span>
         </th>
       </tr>
       <tr id="grid-subheader">
@@ -108,10 +99,7 @@ export default ({
         */}
         <th id="market-cashout">
           <span>Market Cashout</span>
-          <span
-            style={{ color: marketCashout < 0 ? 'red' : marketCashout > 0 ? '#01CC41' : '#D3D3D3' }}
-            onClick={executeMarketCashout()}
-          >
+          <span style={{ color: marketCashout < 0 ? 'red' : marketCashout > 0 ? '#01CC41' : '#D3D3D3' }} onClick={executeMarketCashout()}>
             {marketCashout}
           </span>
         </th>
@@ -132,3 +120,14 @@ export default ({
     </>
   );
 };
+
+const mapStateToProps = (state) => ({
+  inPlay: state.market.inPlay,
+  marketId: state.market.marketId,
+  marketName: state.market.marketName,
+  marketStartTime: state.market.marketStartTime,
+  marketStatus: state.market.status,
+  event: state.market.event,
+});
+
+export default connect(mapStateToProps)(GridHeader);

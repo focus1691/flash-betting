@@ -15,6 +15,7 @@ import Bet from './Bet';
 const UnmatchedBets = ({
   market,
   marketOpen,
+  marketName,
   backList,
   layList,
   stopEntryList,
@@ -107,10 +108,10 @@ const UnmatchedBets = ({
             .then((res) => res.json())
             .then((res) => {
               if (res.status === 'SUCCESS') {
-                const newUnmatched = Object.assign({}, unmatchedBets);
+                const newUnmatched = { ...unmatchedBets };
 
                 const newBetId = res.instructionReports[0].placeInstructionReport.betId;
-                newUnmatched[newBetId] = Object.assign({}, newUnmatched[order.betId]);
+                newUnmatched[newBetId] = { ...newUnmatched[order.betId] };
                 newUnmatched[newBetId].price = res.instructionReports[0].placeInstructionReport.instruction.limitOrder.price;
                 newUnmatched[newBetId].betId = newBetId;
 
@@ -165,7 +166,7 @@ const UnmatchedBets = ({
           </tr>
           <tr>
             <td className="menu-bets-event" colSpan={4}>
-              {market.competition !== undefined ? market.marketName + ' ' + market.competition.name : null}
+              {marketName}
             </td>
           </tr>
           {marketOpen
@@ -191,15 +192,15 @@ const UnmatchedBets = ({
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
-  market: state.market.currentMarket,
+  marketName: state.market.marketName,
   stopLossList: state.stopLoss.list,
   tickOffsetList: state.tickOffset.list,
   stopEntryList: state.stopEntry.list,
   layList: state.lay.list,
   backList: state.back.list,
   fillOrKillList: state.fillOrKill.list,
-  matchedBets: getMarketMatchedBets(state.order.bets, { marketId: state.market.currentMarket.marketId }),
-  unmatchedBets: getMarketUnmatchedBets(state.order.bets, { marketId: state.market.currentMarket.marketId }),
+  matchedBets: getMarketMatchedBets(state.order.bets, { marketId: state.market.marketId }),
+  unmatchedBets: getMarketUnmatchedBets(state.order.bets, { marketId: state.market.marketId }),
   rightClickTicks: state.settings.rightClickTicks,
 });
 

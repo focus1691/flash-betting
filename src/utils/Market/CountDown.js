@@ -1,8 +1,8 @@
-const countDownTime = (market, inPlay, inPlayTime, pastEventTime, onPastEventTime) => {
-  if (!market) {
+const countDownTime = (marketOpen, marketStartTime, inPlay, inPlayTime, pastEventTime, onPastEventTime) => {
+  if (!marketOpen) {
     return '--';
   }
-  const currentTime = inPlay ? inPlayTime : market.marketStartTime;
+  const currentTime = inPlay ? inPlayTime : marketStartTime;
   if (new Date() < new Date(currentTime)) {
     return new Date(currentTime) - new Date();
   }

@@ -33,7 +33,7 @@ const LadderRow = memo(({
     : undefined), [selectionMatchedBets, key, stakeVal, PL]);
 
   return (
-    <div key={key} onContextMenu={(e) => e.preventDefault()} className="tr" style={style}>
+    <div key={key} className="tr" style={style}>
       <VolumeCell selectionId={selectionId} price={key} isMoving={isMoving} />
       <HedgeCell
         selectionId={selectionId}

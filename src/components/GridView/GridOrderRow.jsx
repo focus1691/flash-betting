@@ -3,8 +3,8 @@ import React from 'react';
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
 export default ({
-  runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize,
-  updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, market, bets, price, side, size,
+  marketId, runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize,
+  updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, bets, price, side, size,
 }) => {
   const executeOrder = () => () => {
     const referenceStrategyId = crypto
@@ -12,7 +12,7 @@ export default ({
       .toString('hex')
       .substring(0, 15);
     onPlaceOrder({
-      marketId: market.marketId,
+      marketId,
       side,
       size,
       price,

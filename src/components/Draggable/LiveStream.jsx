@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { openLiveStream } from '../../actions/draggable';
 
-const LiveStream = ({ market, open, openLiveStream }) => (market && open ? (
+const LiveStream = ({ marketId, open, openLiveStream }) => (marketId && open ? (
   <div className="popup-live-stream">
     <div>
       <img
@@ -13,7 +13,7 @@ const LiveStream = ({ market, open, openLiveStream }) => (market && open ? (
       />
     </div>
     <iframe
-      src={`https://videoplayer.betfair.com/GetPlayer.do?tr=1&mID=${market.marketId}&allowPopup=false`}
+      src={`https://videoplayer.betfair.com/GetPlayer.do?tr=1&mID=${marketId}&allowPopup=false`}
       width="500px"
       height="500px"
       frameBorder="0"
@@ -24,7 +24,7 @@ const LiveStream = ({ market, open, openLiveStream }) => (market && open ? (
 ) : null);
 
 const mapStateToProps = (state) => ({
-  market: state.market.currentMarket,
+  marketId: state.market.marketId,
   open: state.draggable.liveStreamOpen,
 });
 

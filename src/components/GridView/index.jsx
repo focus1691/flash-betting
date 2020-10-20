@@ -1,9 +1,7 @@
 import $ from 'jquery';
 import React, { createRef, useState } from 'react';
 import { connect } from 'react-redux';
-import {
-  setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick,
-} from '../../actions/market';
+import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
 import { placeOrder } from '../../actions/order';
 import { setStakeInOneClick } from '../../actions/settings';
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
@@ -22,10 +20,31 @@ import NonRunners from './NonRunner';
 import SuspendedWarning from './SuspendedWarning';
 
 const Grid = ({
-  oneClickOn, oneClickStake, marketOpen, marketStatus, inPlay, market, ladder,
-  sortedLadder, runners, nonRunners, stakeBtns, layBtns, currencyCode, localeCode, bets,
-  setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility,
-  toggleStakeAndLiability, toggleBackAndLay, toggleOneClick, setStakeInOneClick, placeOrder,
+  oneClickOn,
+  oneClickStake,
+  marketOpen,
+  marketStatus,
+  ladder,
+  marketId,
+  eventType,
+  sortedLadder,
+  runners,
+  nonRunners,
+  stakeBtns,
+  layBtns,
+  currencyCode,
+  localeCode,
+  bets,
+  setRunner,
+  updateOrder,
+  updateOrderValue,
+  updateOrderPrice,
+  toggleVisibility,
+  toggleStakeAndLiability,
+  toggleBackAndLay,
+  toggleOneClick,
+  setStakeInOneClick,
+  placeOrder,
 }) => {
   const [rowHovered, setRowHovered] = useState(null);
   const [activeOrder, setActiveOrder] = useState(null);
@@ -103,20 +122,14 @@ const Grid = ({
     }
   };
 
-  const selectRunner = (runner) => (e) => {
+  const selectRunner = (runner) => () => {
     setRunner(runner);
   };
 
   const renderRow = (betOdds, key, backLay) => {
     // Fill all empty cells if no data found
     if (!betOdds) {
-      return [
-        <td className="grid-cell" />,
-        <td className="grid-cell" />,
-        <td className="grid-cell" />,
-        <td className="grid-cell" />,
-        <td className="grid-cell" />,
-      ];
+      return [<td className="grid-cell" />, <td className="grid-cell" />, <td className="grid-cell" />, <td className="grid-cell" />, <td className="grid-cell" />];
     }
 
     const rows = [];
@@ -135,76 +148,55 @@ const Grid = ({
   };
 
   const createCell = (odds, matched, key, backLay) => (
-    <td
-      key={`grid-${odds}`}
-      className="grid-cell"
-      onMouseEnter={handlePriceHover(key)}
-      onClick={handlePriceClick(key, backLay, odds)}
-      onContextMenu={handlePriceClick(key, (backLay ^= 1), odds)}
-    >
+    <td key={`grid-${odds}`} className="grid-cell" onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, backLay, odds)} onContextMenu={handlePriceClick(key, (backLay ^= 1), odds)}>
       <span>{odds}</span>
       <span>{matched}</span>
     </td>
   );
 
   const renderProfitAndLossAndHedge = (order, color) => ({
-    val: formatCurrency(
-      localeCode,
-      currencyCode,
-      calcBackProfit(order.stake, order.price, order.backLay),
-    ),
+    val: formatCurrency(localeCode, currencyCode, calcBackProfit(order.stake, order.price, order.backLay)),
     color,
   });
 
   const renderTableData = () => (
     <>
       {renderRunners()}
-      <NonRunners
-        sportId={market.eventType.id}
-        nonRunners={nonRunners}
-        runners={runners}
-        selectRunner={selectRunner}
-      />
+      <NonRunners sportId={eventType.id} nonRunners={nonRunners} runners={runners} selectRunner={selectRunner} />
     </>
   );
 
   const renderRunners = () => sortedLadder.map((key) => {
-    const {
-      atb, atl, ltp, tv, ltpStyle,
-    } = DeconstructLadder(ladder[key]);
-    const {
-      name, number, logo, order,
-    } = DeconstructRunner(runners[key], market.eventType.id);
+    const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
+    const { name, number, logo, order } = DeconstructRunner(runners[key], eventType.id);
 
-    const orderProps = order.stakeLiability === 0
-      ? {
-        text: 'STAKE',
-        text2: 'BACK',
-        prices: stakeBtns,
-      }
-      : {
-        text: 'LIABILITY',
-        text2: 'LAY',
-        prices: layBtns,
-      };
+    const orderProps =
+        order.stakeLiability === 0
+          ? {
+            text: 'STAKE',
+            text2: 'BACK',
+            prices: stakeBtns,
+          }
+          : {
+            text: 'LIABILITY',
+            text2: 'LAY',
+            prices: layBtns,
+          };
 
     orderProps.text2 = order.backLay === 0 ? 'BACK' : 'LAY';
     orderProps.bg = order.backLay === 0 ? '#DBEFFF' : '#FEE9EE';
 
     const profitArray = Object.values(bets.matched)
       .filter((bet) => bet.selectionId == runners[key].selectionId)
-      .map(
-        (bet) => (bet.side === 'LAY' ? -1 : 1)
-						* calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])),
-      );
+      .map((bet) => (bet.side === 'LAY' ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
     const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
     return (
       <React.Fragment key={`grid-runner-${key}`}>
         <tr>
           <GridDetailCell
-            sportId={market.eventType.id}
-            market={market}
+            sportId={eventType.id}
+            marketId={marketId}
             runner={runners[key]}
             name={name}
             number={number}
@@ -213,24 +205,17 @@ const Grid = ({
             tv={tv}
             bets={bets}
             PL={
-marketHasBets(market.marketId, bets)
-  ? {
-    val: formatCurrency(
-      localeCode,
-      currencyCode,
-      getPLForRunner(market.marketId, parseInt(key), bets),
-    ),
-    color: colorForBack(
-      order.backLay,
-      getPLForRunner(market.marketId, parseInt(key), bets),
-    ),
-  }
-  : order.visible && rowHovered === key && activeOrder
-    ? renderProfitAndLossAndHedge(order, colorForBack(order.backLay))
-    : rowHovered && rowHovered !== key && activeOrder
-      ? renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
-      : { val: '', color: '' }
-}
+              marketHasBets(marketId, bets)
+                ? {
+                  val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, parseInt(key), bets)),
+                  color: colorForBack(order.backLay, getPLForRunner(marketId, parseInt(key), bets)),
+                }
+                : order.visible && rowHovered === key && activeOrder
+                  ? renderProfitAndLossAndHedge(order, colorForBack(order.backLay))
+                  : rowHovered && rowHovered !== key && activeOrder
+                    ? renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
+                    : { val: '', color: '' }
+            }
             hedge={profit}
             ltpStyle={ltpStyle}
           />
@@ -248,9 +233,9 @@ marketHasBets(market.marketId, bets)
           updateOrderPrice={handlePriceChange}
           toggleOrderRowVisibility={toggleOrderRowVisibility}
           placeOrder={placeOrder}
-          market={market}
+          marketId={marketId}
           bets={bets}
-          price={market.runners[key] ? market.runners[key].order.price : 0}
+          price={runners[key] ? runners[key].order.price : 0}
           side={activeOrder && activeOrder.side == 0 ? 'BACK' : 'LAY'}
           size={activeOrder ? activeOrder.stake : 0}
         />
@@ -265,7 +250,7 @@ marketHasBets(market.marketId, bets)
     ltpSelectionIdObject[key] = ltp[0];
   });
 
-  const marketCashout = getMarketCashout(market.marketId, bets, ladder);
+  const marketCashout = getMarketCashout(marketId, bets, ladder);
 
   return (
     <div id="grid-container">
@@ -273,11 +258,7 @@ marketHasBets(market.marketId, bets)
       <table style={marketStatus === 'SUSPENDED' ? { opacity: 0.75 } : {}} className="grid-view">
         <tbody>
           <GridHeader
-            market={market}
             ladder={ladder}
-            marketOpen={marketOpen}
-            inPlay={inPlay}
-            status={marketStatus}
             country={{ localeCode, currencyCode }}
             oneClickRef={oneClickRef}
             oneClickOn={oneClickOn}
@@ -291,9 +272,7 @@ marketHasBets(market.marketId, bets)
             placeOrder={placeOrder}
             marketCashout={marketCashout}
           />
-          {marketOpen
-&& (marketStatus === 'OPEN' || marketStatus === 'RUNNING' || marketStatus === 'SUSPENDED')
-            ? renderTableData() : null}
+          {marketOpen && (marketStatus === 'OPEN' || marketStatus === 'RUNNING' || marketStatus === 'SUSPENDED') ? renderTableData() : null}
         </tbody>
       </table>
     </div>
@@ -305,12 +284,12 @@ const mapStateToProps = (state) => ({
   oneClickStake: state.settings.stake,
   marketOpen: state.market.marketOpen,
   marketStatus: state.market.status,
-  inPlay: state.market.inPlay,
-  market: state.market.currentMarket,
+  marketId: state.market.marketId,
   ladder: state.market.ladder,
   sortedLadder: state.market.sortedLadder,
   runners: state.market.runners,
   nonRunners: state.market.nonRunners,
+  eventType: state.market.eventType,
   stakeBtns: state.settings.stakeBtns,
   layBtns: state.settings.layBtns,
   currencyCode: state.account.currencyCode,
@@ -319,7 +298,16 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick, setStakeInOneClick, placeOrder,
+  setRunner,
+  updateOrder,
+  updateOrderValue,
+  updateOrderPrice,
+  toggleVisibility,
+  toggleStakeAndLiability,
+  toggleBackAndLay,
+  toggleOneClick,
+  setStakeInOneClick,
+  placeOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);

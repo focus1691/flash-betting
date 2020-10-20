@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Back = ({
-  text, stake, price, hours, minutes, seconds, executionTime, runners, market, selections, list,
+  stake, price, hours, minutes, seconds, executionTime, marketId, runners, selections, list,
   onTextUpdate, onReceiveStake, onReceivePrice, onReceiveHours, onReceiveMinutes, onReceiveSeconds,
   onToggleExecutionTime, onSelection, onUpdateBackList,
 }) => {
@@ -98,7 +98,7 @@ const Back = ({
       const convertedSelection = parseInt(selection);
       const addedOrder = {
         strategy: 'Back',
-        marketId: market.marketId,
+        marketId,
         selectionId: convertedSelection,
         executionTime,
         timeOffset: (hours * 3600) + (minutes * 60) + parseInt(seconds),
@@ -274,22 +274,21 @@ const Back = ({
 };
 
 const mapStateToProps = (state) => ({
-  text: state.back.text,
   stake: state.back.stake,
   price: state.back.price,
   hours: state.back.offset.hours,
   minutes: state.back.offset.minutes,
   seconds: state.back.offset.seconds,
   executionTime: state.back.executionTime,
+  marketId: state.market.marketId,
   runners: state.market.runners,
-  market: state.market.currentMarket,
   selections: state.back.selections,
   list: state.back.list,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onTextUpdate: (text) => dispatch(actions.setDisplayText(text)),
-  onReceiveStake: (stake) => (e) => dispatch(actions.setStake(e.target.value)),
+  onReceiveStake: () => (e) => dispatch(actions.setStake(e.target.value)),
   onReceivePrice: (price) => dispatch(actions.setPrice(price)),
   onReceiveHours: () => (e) => dispatch(actions.setHours(e.target.value)),
   onReceiveMinutes: () => (e) => dispatch(actions.setMinutes(e.target.value)),

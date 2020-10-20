@@ -2,35 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { openGraph } from '../../../actions/draggable';
 
-const Graph = (props) => {
+const Graph = ({ marketOpen, marketId, selection, onOpenGraph }) => {
   const [graph, setGraph] = useState(null);
 
   useEffect(() => {
-    if (props.marketOpen && props.selection) {
-      const marketId = props.market.marketId.slice(
-        2,
-        props.market.marketId.length,
-      );
-      const URI = `https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId}&selectionId=${props.selection.selectionId}&handicap=0`;
+    if (marketOpen && selection) {
+      const URI = `https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId.slice(2, marketId.length)}&selectionId=${selection.selectionId}&handicap=0`;
       setGraph(URI);
     }
-  }, [props.selection, props.market.marketId, props.marketOpen]);
+  }, [selection, marketId, marketOpen]);
 
   return (
     <div id="menu-graph">
-      {graph ? <img alt="Chart" src={graph} onDoubleClick={props.onOpenGraph()} /> : null}
+      {graph ? <img alt="Chart" src={graph} onDoubleClick={onOpenGraph()} /> : null}
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
-  market: state.market.currentMarket,
   marketOpen: state.market.marketOpen,
+  marketId: state.market.marketId,
   selection: state.market.runnerSelection,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onOpenGraph: () => (e) => dispatch(openGraph()),
+  onOpenGraph: () => () => dispatch(openGraph()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Graph);
