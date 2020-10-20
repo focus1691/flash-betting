@@ -36,6 +36,7 @@ const reducer = (state = initialState, action) => {
     case 'NEW_MARKET_STATUS':
       return { ...state, status: action.payload };
     case 'SET_MARKET_DESCRIPTION':
+      console.log(action.payload);
       return { ...state, description: action.payload };
     case 'SET_MARKET_START_TIME':
       return { ...state, marketStartTime: action.payload };

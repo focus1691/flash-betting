@@ -87,6 +87,7 @@ const App = ({
   setHorseRacingCountries,
   setMarketId,
   setMarketName,
+  setMarketDescription,
   setMarketStartTime,
   eventType,
   setEvent,
@@ -351,7 +352,7 @@ const App = ({
         }
       });
     },
-    [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, updateStopLossList, sortedLadder, setSortedLadder, updateExcludedLadders],
+    [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, updateStopLossList, eventType.id, sortedLadder, setSortedLadder, updateExcludedLadders],
   );
 
   /**
@@ -639,6 +640,7 @@ const mapDispatchToProps = {
   setHorseRacingCountries,
   setMarketId,
   setMarketName,
+  setMarketDescription,
   setMarketStartTime,
   setEvent,
   setEventType,

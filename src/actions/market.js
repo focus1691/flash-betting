@@ -31,7 +31,7 @@ export const setMarketStatus = (status) => ({
 export const setMarketDescription = (description) => ({
   type: 'SET_MARKET_DESCRIPTION',
   payload: description,
-})
+});
 
 export const closeMarket = () => ({
   type: 'CLOSE_MARKET',
