@@ -5,7 +5,7 @@ require('dotenv').config();
 const braintree = require('braintree');
 const _ = require('lodash');
 
-const gateway = braintree.connect({
+const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.MERCHANT_ID,
   publicKey: process.env.PUBLIC_KEY,
