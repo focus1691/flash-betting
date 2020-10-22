@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const Database = require('./database');
 const User = require('./models/users');
 const Settings = require('./models/settings');

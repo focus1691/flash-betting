@@ -1,5 +1,3 @@
-// This adds environment-specific variables on new lines in the form of NAME=VALUE
-// Access with process.env
 require('dotenv').config();
 
 const braintree = require('braintree');
@@ -39,6 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const Database = require('./Database/helper');
+const SQLiteDatabase = require('./Database/SQLite/database');
 const User = require('./Database/models/users');
 
 if (process.env.NODE_ENV === 'production') {
