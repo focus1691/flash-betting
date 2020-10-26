@@ -289,7 +289,7 @@ export const reduceSizeAction = async (order) => {
 };
 
 export const saveOrder = (order) => new Promise(async (res, rej) => {
-  await fetch('/api/save-order', {
+  await fetch('/api/save-bet', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

@@ -108,7 +108,7 @@ const Back = ({
       };
 
       // make sure request is processed before saving it
-      await fetch('/api/save-order', {
+      await fetch('/api/save-bet', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',

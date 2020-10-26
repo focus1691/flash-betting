@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('sqlite-async');
 
 const fakeBet = {
   strategy: 'BACK',
@@ -14,41 +14,52 @@ const fakeBet = {
   assignedIsOrderMatched: false,
 };
 
+const fakeBet2 = {
+  strategy: 'Stop Loss',
+  marketId: '1.6633432',
+  size: 50,
+  price: '5.5',
+  side: 'LAY',
+  betId: '555555555',
+  rfs: '1vsdfsfds5345',
+  trailing: false,
+  hedged: false,
+  assignedIsOrderMatched: false,
+};
+
 class SQLiteDatabase {
   constructor() {
-    this.db = new sqlite3.Database(':memory:');
-    this.create();
-    this.addBet(fakeBet);
-    this.getBets();
+    this.setup();
   }
 
-  create() {
-    this.db.serialize(() => {
-      this.db.run('CREATE TABLE bets (strategy TEXT, marketId TEXT, size INT, price TEXT, side TEXT, betId TEXT, rfs TEXT, trailing BOOLEAN, hedged BOOLEAN, assignedIsOrderMatched BOOLEAN, tickOffset INT, units TEXT, percentageTrigger INT, executionTime TEXT, timeOffset INT, seconds INT, startTime INT, targetLTP INT, stopEntryCondition TEXT)');
-    });
+  async setup() {
+    this.db = await Database.open(':memory:').then(async (db) => db);
+    await this.db.run(
+      'CREATE TABLE bets (strategy TEXT, marketId TEXT, size INT, price TEXT, side TEXT, betId TEXT, rfs TEXT, trailing BOOLEAN, hedged BOOLEAN, assignedIsOrderMatched BOOLEAN, tickOffset INT, units TEXT, percentageTrigger INT, executionTime TEXT, timeOffset INT, seconds INT, startTime INT, targetLTP INT, stopEntryCondition TEXT)'
+    );
+    await this.addBet(fakeBet);
+    await this.addBet(fakeBet2);
+    await this.getBets();
   }
 
   async addBet(bet) {
     const {
-      strategy, marketId, size, price, side, betId, rfs, trailing, hedged, assignedIsOrderMatched, tickOffset, units, percentageTrigger, executionTime, timeOffset, seconds, startTime, targetLTP, stopEntryCondition,
+      strategy, marketId, size, price, side, betId, rfs, trailing, hedged, assignedIsOrderMatched, tickOffset, units, percentageTrigger, executionTime, timeOffset, seconds, startTime, targetLTP, stopEntryCondition
     } = bet;
-    const stmt = this.db.prepare('INSERT INTO bets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    const stmt = await this.db.prepare('INSERT INTO bets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     stmt.run(strategy, marketId, size, price, side, betId, rfs, trailing, hedged, assignedIsOrderMatched, tickOffset, units, percentageTrigger, executionTime, timeOffset, seconds, startTime, targetLTP, stopEntryCondition);
     stmt.finalize();
   }
 
-  updateBet() {
-  }
-
-  removeBet() {
-  }
-
   async getBets() {
     const rows = [];
-    await this.db.each('SELECT strategy, marketId, size, price, side, betId, rfs, trailing, hedged, assignedIsOrderMatched, tickOffset, units, percentageTrigger, executionTime, timeOffset, seconds, startTime, targetLTP, stopEntryCondition FROM bets', function(err, row) {
-      rows.push(row);
-      console.log(row);
-    });
+    await this.db.each(
+      'SELECT strategy, marketId, size, price, side, betId, rfs, trailing, hedged, assignedIsOrderMatched, tickOffset, units, percentageTrigger, executionTime, timeOffset, seconds, startTime, targetLTP, stopEntryCondition FROM bets',
+      (err, row) => {
+        rows.push(row);
+      },
+    );
+    return rows;
   }
 
   close() {

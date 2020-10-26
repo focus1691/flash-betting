@@ -280,13 +280,13 @@ app.post('/api/save-user-settings', (request, response) => {
   });
 });
 
-app.get('/api/get-all-orders', (request, response) => {
+app.get('/api/get-all-bets', (request, response) => {
   database.getAllOrders(betfair.email).then((res) => {
     response.json(res);
   });
 });
 
-app.post('/api/save-order', (request, response) => {
+app.post('/api/save-bet', (request, response) => {
   database.saveOrder(betfair.email, request.body).then((res) => {
     response.sendStatus(res);
   });

@@ -257,14 +257,14 @@ app.post('/api/save-user-settings', (request, response) => {
   });
 });
 
-app.get('/api/get-all-orders', (request, response) => {
-  Database.getAllOrders(betfair.email).then((res) => {
+app.get('/api/get-all-bets', (request, response) => {
+  SQLiteDatabase.getBets().then((res) => {
     response.json(res);
   });
 });
 
-app.post('/api/save-order', (request, response) => {
-  SQLiteDatabase.saveOrder(request.body).then(() => {
+app.post('/api/save-bet', (request, response) => {
+  SQLiteDatabase.addBet(request.body).then(() => {
     response.sendStatus(200);
   });
 });
