@@ -264,8 +264,8 @@ app.get('/api/get-all-orders', (request, response) => {
 });
 
 app.post('/api/save-order', (request, response) => {
-  Database.saveOrder(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
+  SQLiteDatabase.saveOrder(request.body).then(() => {
+    response.sendStatus(200);
   });
 });
 
