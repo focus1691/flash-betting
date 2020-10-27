@@ -88,23 +88,22 @@ const Back = ({
   }, [price, step, onReceivePrice]);
 
   // Handle Submit click to place an order
-  const placeOrder = () => async (e) => {
+  const placeOrder = () => async () => {
     const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
     const newBackList = { ...list };
 
-    await Promise.all(selectedRunners.map(async (selection, index) => {
-      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      const convertedSelection = parseInt(selection);
+    await Promise.all(selectedRunners.map(async (selectionId) => {
+      const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const addedOrder = {
         strategy: 'Back',
         marketId,
-        selectionId: convertedSelection,
+        selectionId,
         executionTime,
-        timeOffset: (hours * 3600) + (minutes * 60) + parseInt(seconds),
+        timeOffset: (hours * 3600) + (minutes * 60) + seconds,
         size: stake,
         price: formatPrice(price),
-        rfs: referenceStrategyId,
+        rfs: customerStrategyRef,
       };
 
       // make sure request is processed before saving it
@@ -116,10 +115,10 @@ const Back = ({
         method: 'POST',
         body: JSON.stringify(addedOrder),
       }).then(() => {
-        if (newBackList[convertedSelection] === undefined) {
-          newBackList[convertedSelection] = [addedOrder];
+        if (newBackList[selectionId] === undefined) {
+          newBackList[selectionId] = [addedOrder];
         } else {
-          newBackList[convertedSelection] = newBackList[convertedSelection].concat(addedOrder);
+          newBackList[selectionId] = newBackList[selectionId].concat(addedOrder);
         }
       });
     }));

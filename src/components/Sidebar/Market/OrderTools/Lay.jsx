@@ -88,23 +88,22 @@ const Lay = ({
   }, [price, step, onReceivePrice]);
 
   // Handle Submit click to place an order
-  const placeOrder = () => async (e) => {
+  const placeOrder = () => async () => {
     const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
     const newLayList = { ...list };
 
-    await Promise.all(selectedRunners.map(async (selection) => {
-      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      const convertedSelection = parseInt(selection);
+    await Promise.all(selectedRunners.map(async (selectionId) => {
+      const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const addedOrder = {
         strategy: 'Lay',
         marketId,
-        selectionId: convertedSelection,
+        selectionId,
         executionTime,
-        timeOffset: (hours * 3600) + (minutes * 60) + parseInt(seconds),
+        timeOffset: (hours * 3600) + (minutes * 60) + seconds,
         size: stake,
         price: formatPrice(price),
-        rfs: referenceStrategyId,
+        rfs: customerStrategyRef,
       };
 
       // make sure request is processed before saving it
@@ -117,10 +116,10 @@ const Lay = ({
         method: 'POST',
         body: JSON.stringify(addedOrder),
       }).then(() => {
-        if (newLayList[convertedSelection] === undefined) {
-          newLayList[convertedSelection] = [addedOrder];
+        if (newLayList[selectionId] === undefined) {
+          newLayList[selectionId] = [addedOrder];
         } else {
-          newLayList[convertedSelection] = newLayList[convertedSelection].concat(addedOrder);
+          newLayList[selectionId] = newLayList[selectionId].concat(addedOrder);
         }
       });
     }));

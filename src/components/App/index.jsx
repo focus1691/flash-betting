@@ -39,7 +39,7 @@ import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
-import { placeOrder, updateOrders, removeOrder, updateOrder } from '../../actions/bet';
+import { placeOrder, updateOrders, removeOrder, updateOrder } from '../../actions/order';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';

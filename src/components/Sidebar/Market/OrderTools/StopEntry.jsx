@@ -98,18 +98,17 @@ const StopEntry = ({
   }, [step, price]);
 
   // Handle Submit click to place an order
-  const placeOrder = () => async (e) => {
-    const selections = typeof selections === 'string' ? [selections] : selections;
+  const placeOrder = () => async () => {
+    const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
     const newStopEntryList = { ...stopEntryList };
 
-    await Promise.all(selections.map(async (selection) => {
+    await Promise.all(selectedRunners.map(async (selectionId) => {
       const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      const convertedSelection = parseInt(selection);
       const addedOrder = {
         strategy: 'Stop Entry',
         marketId,
-        selectionId: convertedSelection,
+        selectionId,
         targetLTP: ticks,
         stopEntryCondition: operator,
         side,
@@ -126,10 +125,10 @@ const StopEntry = ({
         method: 'POST',
         body: JSON.stringify(addedOrder),
       }).then(() => {
-        if (newStopEntryList[convertedSelection] === undefined) {
-          newStopEntryList[convertedSelection] = [addedOrder];
+        if (newStopEntryList[selectionId] === undefined) {
+          newStopEntryList[selectionId] = [addedOrder];
         } else {
-          newStopEntryList[convertedSelection] = newStopEntryList[convertedSelection].concat(addedOrder);
+          newStopEntryList[selectionId] = newStopEntryList[selectionId].concat(addedOrder);
         }
       });
     }));
