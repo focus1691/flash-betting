@@ -6,7 +6,7 @@
     "node": true
   },
   "plugins": [
-    "react-hooks"
+    "react", "react-hooks", "jest"
   ],
   "rules": {
     "no-underscore-dangle": [
@@ -33,6 +33,11 @@
         ]
       }
     ],
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/click-events-have-key-events": "off",

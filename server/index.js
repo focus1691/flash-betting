@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const Database = require('./Database/helper');
-const SQLiteDatabase = require('./Database/SQLite/database');
+const SQLiteDatabase = require('./Database/SQLite/database').setup();
 const User = require('./Database/models/users');
 
 if (process.env.NODE_ENV === 'production') {
