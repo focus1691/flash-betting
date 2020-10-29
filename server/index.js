@@ -42,27 +42,16 @@ const User = require('./Database/models/users');
 
 if (process.env.NODE_ENV === 'production') {
   const publicPath = path.join(__dirname, '../');
+  const bundlePath = `${publicPath}build/index.html`;
+
   app.use(express.static(path.join(publicPath, 'build')));
 
-  app.get('/', (req, res) => {
-    res.sendFile(`${publicPath}build/index.html`);
-  });
-
-  app.get('/dashboard', (req, res) => {
-    res.sendFile(`${publicPath}build/index.html`);
-  });
-  app.get('/getClosedMarketStats', (req, res) => {
-    res.sendFile(`${publicPath}build/index.html`);
-  });
-  app.get('/authentication', (req, res) => {
-    res.sendFile(`${publicPath}build/index.html`);
-  });
-  app.get('/validation', (req, res) => {
-    res.sendFile(`${publicPath}build/index.html`);
-  });
-  app.get('/logout', (req, res) => {
-    res.sendFile(`${publicPath}build/index.html`);
-  });
+  app.get('/', (req, res) => res.sendFile(bundlePath));
+  app.get('/dashboard', (req, res) => res.sendFile(bundlePath));
+  app.get('/getClosedMarketStats', (req, res) => res.sendFile(bundlePath));
+  app.get('/authentication', (req, res) => res.sendFile(bundlePath));
+  app.get('/validation', (req, res) => res.sendFile(bundlePath));
+  app.get('/logout', (req, res) => res.sendFile(bundlePath));
 }
 
 app.get('/api/generate-client-token', (request, response) => {
