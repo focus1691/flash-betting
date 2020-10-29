@@ -88,7 +88,7 @@ const Login = ({ loggedIn, setLoggedIn }) => {
 
   return (
     <>
-      {loggedIn && cookies.sessionKey ? <Redirect to="/dashboard" /> : null}
+      {loggedIn && cookies.sessionKey ? <Redirect to="/authentication" /> : null}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>

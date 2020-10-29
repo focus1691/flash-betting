@@ -97,8 +97,12 @@ app.post('/api/checkout', (request, result) => {
 });
 
 app.get('/api/get-subscription-status', async (req, res) => {
-  const { vendorId } = await betfair.getDeveloperAppKeys({ filter: {} },
-    (err, res) => res.result[1].appVersions[0]);
+  const { vendorId } = await new Promise((resolve, reject) => {
+    betfair.getDeveloperAppKeys({ filter: {} },
+      (err, res) => {
+        if (res) resolve(res.result[1].appVersions[0]);
+      });
+  });
 
   betfair.isAccountSubscribedToWebApp({ vendorId },
     async (err, { result }) => {
@@ -113,8 +117,12 @@ app.get('/api/get-subscription-status', async (req, res) => {
 app.get('/api/request-access-token', async (request, response) => {
   const { tokenType } = request.query;
 
-  const { vendorId, vendorSecret } = await betfair.getDeveloperAppKeys({ filter: {} },
-    (err, res) => res.result[1].appVersions[0]);
+  const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
+    betfair.getDeveloperAppKeys({ filter: {} },
+      (err, res) => {
+        if (res) resolve(res.result[1].appVersions[0]);
+      });
+  });
 
   const params = {
     client_id: vendorId,
@@ -611,12 +619,14 @@ app.post('/paypal-transaction-complete', (request, response) => {
 });
 
 // A call to get required params for O-auth (vendorId, vendorSecret)
-app.get('/api/get-developer-application-keys', (request, response) => {
-  betfair.getDeveloperAppKeys({ filter: {} },
-    (err, res) => {
-      const { vendorId, vendorSecret } = res.result[1].appVersions[0];
-      response.json({ vendorId, vendorSecret });
-    });
+app.get('/api/get-developer-application-keys', async (request, response) => {
+  const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
+    betfair.getDeveloperAppKeys({ filter: {} },
+      (err, res) => {
+        if (res) resolve(res.result[1].appVersions[0]);
+      });
+  });
+  return response.json({ vendorId, vendorSecret });
 });
 
 process.stdin.resume(); // so the program will not close instantly

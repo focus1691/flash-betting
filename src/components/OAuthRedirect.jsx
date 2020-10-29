@@ -9,24 +9,25 @@ const OAuthRedirect = ({ loggedIn, setLoggedIn }) => {
   const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
 
   useEffect(() => {
-    const code = getQueryVariable('code');
-    if (cookies.sessionKey) {
-      if (code) {
-        fetch(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.error) {
-              setLoggedIn(false);
-              window.location.href = `${window.location.origin}/?error=${data.error.data ? data.error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
-            } else {
-              setCookie('accessToken', data.accessToken);
-              setCookie('refreshToken', data.refreshToken);
-              setCookie('expiresIn', data.expiresIn);
-              setLoggedIn(true);
-            }
-          });
+    const applyCode = async () => {
+      const code = getQueryVariable('code');
+      if (!code) return;
+
+      const {
+        error, accessToken, refreshToken, expiresIn,
+      } = await fetch(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`);
+
+      if (error) {
+        setLoggedIn(false);
+        window.location.href = `${window.location.origin}/?error=${error.data ? error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
+      } else {
+        setCookie('accessToken', accessToken);
+        setCookie('refreshToken', refreshToken);
+        setCookie('expiresIn', expiresIn);
+        setLoggedIn(true);
       }
-    }
+    };
+    applyCode();
   }, []);
 
   if (loggedIn) {

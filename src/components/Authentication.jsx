@@ -11,34 +11,32 @@ const Authentication = (props) => {
   const [tokenGranted, setTokenGranted] = useState(null);
 
   useEffect(() => {
-    if (cookies.sessionKey) {
-      fetch('/api/get-subscription-status')
-        .then((res) => res.json())
-        .then((res) => {
-          setSubscribed(res.isSubscribed);
+    const authenticateUser = async () => {
+      if (!cookies.sessionKey) return;
+      const { isSubscribed, accessToken } = await fetch('/api/get-subscription-status').then((res) => res.json());
+      setSubscribed(isSubscribed);
+      if (isSubscribed === false || !accessToken) {
+        window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${CLIENT_ID}&response_type=code&redirect_uri=validation`;
+      } else {
+        const {
+          error, accessToken, refreshToken, expiresIn,
+        } = await fetch('/api/request-access-token?tokenType=REFRESH_TOKEN').then((res) => res.json());
 
-          if (isSubscribed === false || !res.accessToken) {
-            window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${CLIENT_ID}&response_type=code&redirect_uri=validation`;
-          } else {
-            fetch('/api/request-access-token?tokenType=REFRESH_TOKEN')
-              .then((res) => res.json())
-              .then((res) => {
-                if (res.error) {
-                  props.onLogin(false);
-                  window.location.href = `${window.location.origin}/?error=${res.error.data ? res.error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
-                } else {
-                  setCookie('accessToken', res.accessToken);
-                  setCookie('refreshToken', res.refreshToken);
-                  setCookie('expiresIn', res.expiresIn);
+        if (error) {
+          props.onLogin(false);
+          window.location.href = `${window.location.origin}/?error=${error.data ? error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
+        } else {
+          setCookie('accessToken', accessToken);
+          setCookie('refreshToken', refreshToken);
+          setCookie('expiresIn', expiresIn);
 
-                  setTokenGranted(true);
-                  window.location.href = `${window.location.origin}/dashboard`;
-                }
-              });
-          }
-        });
-    }
-  });
+          setTokenGranted(true);
+          window.location.href = `${window.location.origin}/dashboard`;
+        }
+      }
+    };
+    authenticateUser();
+  }, []);
   return (
     <>
       {tokenGranted === true && isSubscribed === true ? <Redirect to="/dashboard" /> : null}
