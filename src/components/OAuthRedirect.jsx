@@ -11,24 +11,21 @@ const OAuthRedirect = ({ loggedIn, setLoggedIn }) => {
   useEffect(() => {
     const code = getQueryVariable('code');
     if (cookies.sessionKey) {
-      fetch(`/api/load-session?sessionKey=${encodeURIComponent(cookies.sessionKey)}&email=${encodeURIComponent(cookies.username)}`)
-        .then((res) => {
-          if (code && res.status === 200) {
-            fetch(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`)
-              .then((res) => res.json())
-              .then((data) => {
-                if (data.error) {
-                  setLoggedIn(false);
-                  window.location.href = `${window.location.origin}/?error=${data.error.data ? data.error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
-                } else {
-                  setCookie('accessToken', data.accessToken);
-                  setCookie('refreshToken', data.refreshToken);
-                  setCookie('expiresIn', data.expiresIn);
-                  setLoggedIn(true);
-                }
-              });
-          }
-        });
+      if (code) {
+        fetch(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.error) {
+              setLoggedIn(false);
+              window.location.href = `${window.location.origin}/?error=${data.error.data ? data.error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
+            } else {
+              setCookie('accessToken', data.accessToken);
+              setCookie('refreshToken', data.refreshToken);
+              setCookie('expiresIn', data.expiresIn);
+              setLoggedIn(true);
+            }
+          });
+      }
     }
   }, []);
 

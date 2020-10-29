@@ -107,18 +107,6 @@ app.post('/api/checkout', (request, result) => {
   });
 });
 
-app.get('/api/load-session', async (request, response) => {
-  betfair.setActiveSession(request.query.sessionKey);
-
-  betfair.setEmailAddress(request.query.email);
-
-  const accessToken = await database.getToken(request.query.email);
-
-  betfair.setAccessToken(accessToken);
-
-  response.sendStatus(200);
-});
-
 app.get('/api/get-subscription-status', (request, response) => {
   betfair.isAccountSubscribedToWebApp(
     {
