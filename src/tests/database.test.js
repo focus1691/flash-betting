@@ -67,10 +67,10 @@ describe('update', () => {
     await SQLiteDatabase.setup();
     await SQLiteDatabase.addBet(fakeBet2);
 
-    fakeBet2.assignedIsOrderMatched = true;
-    await SQLiteDatabase.updateOrderMatched(fakeBet2);
+    fakeBet2.price = 55;
+    await SQLiteDatabase.updatePrice(fakeBet2);
     updatedFakeBet2 = await SQLiteDatabase.getBet(fakeBet2.rfs);
 
-    expect(updatedFakeBet2.assignedIsOrderMatched).toBeTruthy();
+    expect(updatedFakeBet2.price).toEqual('55');
   });
 });
