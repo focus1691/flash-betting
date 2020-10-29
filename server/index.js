@@ -254,7 +254,7 @@ app.post('/api/save-user-settings', (request, response) => {
 });
 
 app.get('/api/get-all-bets', (request, response) => {
-  SQLiteDatabase.getBets().then((res) => {
+  SQLiteDatabase.getBets(request.query.marketId).then((res) => {
     response.json(res);
   });
 });
@@ -686,22 +686,21 @@ io.on('connection', async (client) => {
   let exchangeStream = new ExchangeStream(client);
 
   // Subscribe to market
-  client.on('market-subscription', async (data) => {
-    console.log(data.marketId, betfair.sessionKey);
+  client.on('market-subscription', async ({ marketId }) => {
     const marketSubscription = `{"op":"marketSubscription","id":${id += 1},"marketFilter":{"marketIds":["${
-      data.marketId
+      marketId
     }"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
     exchangeStream.makeSubscription(marketSubscription, betfair.sessionKey);
   });
-  client.on('market-resubscription', async (data) => {
-    const marketSubscription = `{"op":"marketSubscription","id":${id += 1},"initialClk":${data.initialClk},"clk":${data.clk},marketFilter":{"marketIds":["${
-      data.marketId
+  client.on('market-resubscription', async ({ marketId, initialClk, clk }) => {
+    const marketSubscription = `{"op":"marketSubscription","id":${id += 1},"initialClk":${initialClk},"clk":${clk},marketFilter":{"marketIds":["${
+      marketId
     }"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
     exchangeStream.makeSubscription(marketSubscription, betfair.sessionKey);
   });
   // Subscribe to orders
-  client.on('order-subscription', async (data) => {
-    const orderSubscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
+  client.on('order-subscription', async ({ customerStrategyRefs }) => {
+    const orderSubscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
     exchangeStream.makeSubscription(orderSubscription, betfair.sessionKey);
   });
   client.on('disconnect', async () => {

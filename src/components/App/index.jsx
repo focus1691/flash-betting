@@ -482,7 +482,7 @@ const App = ({
             const loadedFillOrKillOrders = {};
             const loadedStopLossOrders = {};
 
-            await fetch('/api/get-all-bets')
+            await fetch(`/api/get-all-bets?marketId=${encodeURIComponent(marketId)}`)
               .then((res) => res.json())
               .then(async (bets) => {
                 const loadOrders = async (bets) => {
