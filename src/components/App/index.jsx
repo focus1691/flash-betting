@@ -569,6 +569,7 @@ const App = ({
   useInterval(() => retrieveBets(), TWO_HUNDRED_AND_FIFTY_MILLISECONDS);
 
   useEffect(() => {
+    if (!marketId) return;
     fetch(`/api/list-market-pl?marketId=${marketId}`)
       .then((res) => res.json())
       .then((res) => {
