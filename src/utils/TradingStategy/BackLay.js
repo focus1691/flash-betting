@@ -1,5 +1,5 @@
 import { secToMin } from '../DateCalculator';
-import { removeOrder } from '../../actions/order';
+import { removeBet } from '../../http/helper';
 
 const isOrderBeforeMarketReady = (marketStartTime, order) => {
   const remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);
@@ -34,7 +34,7 @@ const checkBackAndLayOrders = async (list, marketStartTime, onPlaceOrder, market
 
         indexesToRemove = indexesToRemove.concat(index);
 
-        removeOrder(order);
+        removeBet(order);
       }
     });
 

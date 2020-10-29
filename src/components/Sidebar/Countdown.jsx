@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useInterval from 'react-useinterval';
-import { placeOrder, cancelBetFairOrder, removeOrder } from '../../actions/order';
+import { placeOrder, cancelBetFairOrder } from '../../actions/order';
+import { removeBet } from '../../http/helper';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
@@ -42,7 +43,7 @@ const Countdown = ({
           const isCancelled = await cancelBetFairOrder(order);
 
           if (isCancelled) {
-            await removeOrder(order);
+            await removeBet(order);
 
             const newFillOrKillList = { ...fillOrKillList };
             delete newFillOrKillList[betId];
@@ -56,7 +57,7 @@ const Countdown = ({
               const isCancelled = await cancelBetFairOrder(order);
 
               if (isCancelled) {
-                await removeOrder(adjustedTickOffsetList[tickOffsetRfs]);
+                await removeBet(adjustedTickOffsetList[tickOffsetRfs]);
 
                 const adjustedTickOffsetList = { ...tickOffsetList };
                 delete adjustedTickOffsetList[tickOffsetRfs];

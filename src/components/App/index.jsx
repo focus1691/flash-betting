@@ -39,9 +39,8 @@ import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
-import {
-  placeOrder, updateOrders, removeOrder, updateTicks, updateOrderMatched,
-} from '../../actions/order';
+import { placeOrder, updateOrders } from '../../actions/order';
+import { removeBet, updateTicks, updateOrderMatched } from '../../http/helper';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
@@ -195,7 +194,7 @@ const App = ({
         const tosTriggered = checkTickOffsetTrigger(tickOffsetList, bet);
         if (tosTriggered) {
           const newTickOffsetList = { ...tickOffsetList };
-          removeOrder(newTickOffsetList[bet.rfs]);
+          removeBet(newTickOffsetList[bet.rfs]);
           placeOrder({
             marketId,
             selectionId: bet.selectionId,
@@ -311,7 +310,7 @@ const App = ({
                   delete newStopLossList[SL.selectionId];
                   updateStopLossList(newStopLossList);
 
-                  removeOrder(SL);
+                  removeBet(SL);
                 } else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
                   SL.ticks += 1;
                   updateTicks(SL); //! Update SQLite with new ticks
@@ -400,8 +399,8 @@ const App = ({
               const tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
               if (tosTriggered) {
                 const newTickOffsetList = { ...tickOffsetList };
-                await removeOrder(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
-                await placeOrder({
+                removeBet(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
+                placeOrder({
                   marketId: data.oc[i].id,
                   selectionId: data.oc[i].orc[j].id,
                   side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
@@ -411,7 +410,7 @@ const App = ({
                   matchedBets,
                 });
                 delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
-                await updateTickOffsetList(newTickOffsetList);
+                updateTickOffsetList(newTickOffsetList);
               }
             }
           }
