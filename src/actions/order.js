@@ -1,4 +1,5 @@
 import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
+import { saveBet, removeBet } from '../http/helper';
 
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
@@ -153,31 +154,31 @@ export const cancelOrders = async (orders, backList, layList, stopLossList, tick
         case 'Back':
           const backIdx = newBackList[order.selectionId].findIndex((v) => v.rfs === order.rfs);
           if (backIdx > -1) {
-            const backOrderRemoved = await removeOrder(newBackList[order.selectionId][backIdx]);
-            if (backOrderRemoved) newBackList[order.selectionId].splice(backIdx, 1);
+            removeBet(newBackList[order.selectionId][backIdx]);
+            newBackList[order.selectionId].splice(backIdx, 1);
           }
           break;
         case 'Lay':
           const layIdx = newLayList[order.selectionId].findIndex((v) => v.rfs === order.rfs);
           if (layIdx > -1) {
-            const layOrderRemoved = await removeOrder(newLayList[order.selectionId][layIdx]);
-            if (layOrderRemoved) newLayList[order.selectionId].splice(layIdx, 1);
+            removeBet(newLayList[order.selectionId][layIdx]);
+            newLayList[order.selectionId].splice(layIdx, 1);
           }
           break;
         case 'Stop Entry':
           const seIdx = newStopEntryList[order.selectionId].findIndex((v) => v.rfs === order.rfs);
           if (seIdx > -1) {
-            const seOrderRemoved = await removeOrder(newStopEntryList[order.selectionId][seIdx]);
-            if (seOrderRemoved) newStopEntryList[order.selectionId].splice(seIdx, 1);
+            removeBet(newStopEntryList[order.selectionId][seIdx]);
+            newStopEntryList[order.selectionId].splice(seIdx, 1);
           }
           break;
         case 'Tick Offset':
-          const tickOffsetRemoved = await removeOrder(newTickOffsetList[order.rfs]);
-          if (tickOffsetRemoved) delete newTickOffsetList[order.rfs];
+          removeBet(newTickOffsetList[order.rfs]);
+          delete newTickOffsetList[order.rfs];
           break;
         case 'Stop Loss':
-          const stopLossRemoved = await removeOrder(newStopLossList[order.selectionId]);
-          if (stopLossRemoved) delete newStopLossList[order.selectionId];
+          removeBet(newStopLossList[order.selectionId]);
+          delete newStopLossList[order.selectionId];
           break;
         default:
           // if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
@@ -288,23 +289,6 @@ export const reduceSizeAction = async (order) => {
   };
 };
 
-export const saveOrder = (order) => new Promise(async (res, rej) => {
-  await fetch('/api/save-bet', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(order),
-  })
-    .then(() => {
-      res(true);
-    })
-    .catch((err) => {
-      rej(false);
-    });
-});
-
 export const cancelBetFairOrder = (order) => new Promise(async (res, rej) => {
   await fetch('/api/cancel-order', {
     headers: {
@@ -318,45 +302,6 @@ export const cancelBetFairOrder = (order) => new Promise(async (res, rej) => {
     .catch((err) => rej(err));
 });
 
-export const removeOrder = (order) => new Promise(async (res, rej) => {
-  await fetch('/api/remove-orders', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify([order]),
-  })
-    .then(() => {
-      res(true);
-    })
-    .catch(() => {
-      rej(false);
-    });
-});
-
-export const updateTicks = (bet) => {
-  fetch('/api/update-ticks', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  });
-};
-
-export const updateOrderMatched = (bet) => {
-  fetch('/api/update-order-matched', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  });
-};
-
 /**
  * This function saves the new stop loss to the database
  * @param {*} stopLoss New stop loss
@@ -367,12 +312,9 @@ export const placeStopLoss = async (stopLoss, stopLossList) => {
   const newStopLossList = { ...stopLossList };
   newStopLossList[stopLoss.selectionId] = stopLoss;
 
-  const result = await saveOrder(stopLoss);
+  saveBet(stopLoss);
 
-  return {
-    status: result,
-    data: newStopLossList,
-  };
+  return newStopLossList;
 };
 
 /**
@@ -385,12 +327,9 @@ export const placeTickOffset = async (tickOffset, tickOffsetList) => {
   const newTickOffsetList = { ...tickOffsetList };
   newTickOffsetList[tickOffset.rfs] = tickOffset;
 
-  const result = await saveOrder(tickOffset);
+  saveBet(tickOffset);
 
-  return {
-    status: result,
-    data: newTickOffsetList,
-  };
+  return newTickOffsetList;
 };
 
 /**
@@ -403,31 +342,25 @@ export const placeFillOrKill = async (fillOrKill, fillOrKillList) => {
   const newFillOrKillList = { ...fillOrKillList };
   newFillOrKillList[fillOrKill.betId] = fillOrKill;
 
-  const result = await saveOrder(fillOrKill);
+  saveBet(fillOrKill);
 
-  return {
-    isSaved: result,
-    data: newFillOrKillList,
-  };
+  return newFillOrKillList;
 };
 
 export const replaceStopLoss = async (SL, stopLossList, data) => {
   const newStopLossList = { ...stopLossList };
 
   //* Just remove it if the stop loss position is clicked
-  if (SL && SL.stopLoss && SL.stopLoss) {
-    const result = await removeOrder(newStopLossList[data.selectionId]);
+  if (SL && SL.stopLoss) {
+    removeBet(newStopLossList[data.selectionId]);
 
     delete newStopLossList[data.selectionId];
 
-    return {
-      status: result,
-      data: newStopLossList,
-    };
+    return newStopLossList;
     //* Otherwise update the stop position
   } if (stopLossList) {
     const newStopLoss = { ...newStopLossList[data.selectionId] };
-    let result = await removeOrder(newStopLoss);
+    removeBet(newStopLoss);
 
     //! Update the stop loss
     newStopLoss.size = data.stakeVal;
@@ -441,12 +374,9 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
 
     newStopLossList[data.selectionId] = newStopLoss;
 
-    result = await saveOrder(newStopLoss);
+    saveBet(newStopLoss);
 
-    return {
-      status: result,
-      data: newStopLossList,
-    };
+    return newStopLossList;
   }
-  return { status: null };
+  return {};
 };
