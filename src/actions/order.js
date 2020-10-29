@@ -335,7 +335,18 @@ export const removeOrder = (order) => new Promise(async (res, rej) => {
     });
 });
 
-export const updateOrder = (order) => new Promise(async (res, rej) => {
+export const updateTicks = (bet) => {
+  fetch('/api/update-ticks', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(bet),
+  });
+};
+
+export const updateOrder = (order) => new Promise((res, rej) => {
   fetch('/api/update-order', {
     headers: {
       Accept: 'application/json',
@@ -347,8 +358,8 @@ export const updateOrder = (order) => new Promise(async (res, rej) => {
     .then(() => {
       res(true);
     })
-    .catch(() => {
-      rej(false);
+    .catch((err) => {
+      rej(err);
     });
 });
 

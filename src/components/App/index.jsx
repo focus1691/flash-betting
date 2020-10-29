@@ -39,7 +39,7 @@ import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
-import { placeOrder, updateOrders, removeOrder, updateOrder } from '../../actions/order';
+import { placeOrder, updateOrders, removeOrder, updateOrder, updateTicks } from '../../actions/order';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
@@ -312,7 +312,7 @@ const App = ({
                   removeOrder(SL);
                 } else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
                   SL.ticks += 1;
-                  updateOrder(SL);
+                  updateTicks(SL); //! Update SQLite with new ticks
                   const newStopLossList = { ...stopLossList };
                   newStopLossList[SL.selectionId] = SL;
                   updateStopLossList(newStopLossList);
