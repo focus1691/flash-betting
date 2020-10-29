@@ -111,51 +111,43 @@ app.get('/api/get-subscription-status', (req, res) => {
 });
 
 app.get('/api/request-access-token', async (request, response) => {
+  const { tokenType } = request.query;
   const params = {
     client_id: process.env.APP_ID,
-    grant_type: request.query.tokenType,
+    grant_type: tokenType,
     client_secret: process.env.APP_SECRET,
   };
 
   const token = async () => {
     vendor.login(process.env.BETFAIR_USER, process.env.BETFAIR_PASS).then((res) => {
       if (res.error) {
-        response.status(400).json(res);
-      } else {
-        vendor.token(params, (err, res) => {
-          if (res.error) {
-            response.status(400).json(res);
-          } else {
-            const tokenInfo = {
-              accessToken: res.result.access_token,
-              expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
-              refreshToken: res.result.refresh_token,
-            };
-            // Update the user details with the token information
-            Database.setToken(betfair.email, tokenInfo).then(() => {
-              response.json(tokenInfo);
-            });
-          }
-        });
+        return response.status(400).json(res);
       }
+      vendor.token(params, async (err, res) => {
+        if (res.error) {
+          return response.status(400).json(res);
+        }
+        const tokenInfo = {
+          accessToken: res.result.access_token,
+          expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
+          refreshToken: res.result.refresh_token,
+        };
+        // Update the user details with the token information
+        await Database.setToken(betfair.email, tokenInfo);
+        return response.json(tokenInfo);
+      });
     });
   };
 
-  switch (request.query.tokenType) {
-    case 'REFRESH_TOKEN':
-      var storedTokenData = await Database.getTokenData(betfair.email);
-      if (storedTokenData.expiresIn < new Date()) {
-        params.refresh_token = storedTokenData.refreshToken;
-        token();
-      } else {
-        response.json(storedTokenData);
-      }
-      break;
-    case 'AUTHORIZATION_CODE':
-      params.code = request.query.code;
+  if (tokenType === 'REFRESH_TOKEN') {
+    const storedTokenData = await Database.getTokenData(betfair.email);
+    if (storedTokenData.expiresIn < new Date()) {
+      params.refresh_token = storedTokenData.refreshToken;
       token();
-      break;
-    default:
+    } else return response.json(storedTokenData);
+  } else if (tokenType === 'AUTHORIZATION_CODE') {
+    params.code = request.query.code;
+    token();
   }
 });
 

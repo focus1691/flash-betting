@@ -156,34 +156,6 @@ class DatabaseHelper extends Database {
     });
   }
 
-  getAllOrders(user) {
-    return new Promise((res, rej) => {
-      User.findOne({ email: user })
-        .then((user) => {
-          res(user.orders);
-        })
-        .catch((err) => {
-          rej(err);
-        });
-    });
-  }
-
-  saveOrder(user, order) {
-    // Create the object with our Order Schema
-    order = new Order(order);
-    return new Promise((res, rej) => {
-      User.findOne({ email: user })
-        .then((user) => {
-          user.orders.push(order);
-          user.save();
-          res(200);
-        })
-        .catch((err) => {
-          rej(400);
-        });
-    });
-  }
-
   removeOrders(user, orders) {
     // Create the object with our Order Schema
     const formattedOrders = orders.map((order) => new Order(order));
