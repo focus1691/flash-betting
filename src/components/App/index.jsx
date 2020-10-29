@@ -39,7 +39,9 @@ import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
-import { placeOrder, updateOrders, removeOrder, updateOrder, updateTicks } from '../../actions/order';
+import {
+  placeOrder, updateOrders, removeOrder, updateTicks, updateOrderMatched,
+} from '../../actions/order';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
@@ -187,7 +189,7 @@ const App = ({
           const newStopLossList = { ...stopLossList };
           newStopLossList[bet.selectionId].assignedIsOrderMatched = true;
           updateStopLossList(newStopLossList);
-          updateOrder(newStopLossList[bet.selectionId]);
+          updateOrderMatched(newStopLossList[bet.selectionId]);
         }
 
         const tosTriggered = checkTickOffsetTrigger(tickOffsetList, bet);
@@ -391,7 +393,7 @@ const App = ({
                 const newStopLossList = { ...stopLossList };
                 newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
                 updateStopLossList(newStopLossList);
-                updateOrder(newStopLossList[data.oc[i].orc[j].id]);
+                updateOrderMatched(newStopLossList[data.oc[i].orc[j].id]);
               }
 
               //* Check TOS matched and place bet / remove from database

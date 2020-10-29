@@ -346,6 +346,17 @@ export const updateTicks = (bet) => {
   });
 };
 
+export const updateOrderMatched = (bet) => {
+  fetch('/api/update-order-matched', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(bet),
+  });
+};
+
 export const updateOrder = (order) => new Promise((res, rej) => {
   fetch('/api/update-order', {
     headers: {

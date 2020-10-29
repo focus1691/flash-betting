@@ -281,6 +281,12 @@ app.post('/api/update-ticks', (request, response) => {
   });
 });
 
+app.post('/api/update-order-matched', (request, response) => {
+  SQLiteDatabase.updateOrderMatched(request.body).then((res) => {
+    response.sendStatus(res);
+  });
+});
+
 app.post('/api/remove-orders', (request, response) => {
   Database.removeOrders(betfair.email, request.body).then((res) => {
     response.sendStatus(res);

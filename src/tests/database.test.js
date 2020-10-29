@@ -40,14 +40,26 @@ describe('insert', () => {
 });
 
 describe('update', () => {
+  let updatedFakeBet2;
   it('should update ticks', async () => {
     await SQLiteDatabase.setup();
     await SQLiteDatabase.addBet(fakeBet2);
 
     fakeBet2.ticks += 1;
     await SQLiteDatabase.updateTicks(fakeBet2);
-    const updatedFakeBet2 = await SQLiteDatabase.getBet(fakeBet2.rfs);
+    updatedFakeBet2 = await SQLiteDatabase.getBet(fakeBet2.rfs);
 
     expect(updatedFakeBet2.ticks).toEqual(3);
+  });
+
+  it('should update bet matched', async () => {
+    await SQLiteDatabase.setup();
+    await SQLiteDatabase.addBet(fakeBet2);
+
+    fakeBet2.assignedIsOrderMatched = true;
+    await SQLiteDatabase.updateOrderMatched(fakeBet2);
+    updatedFakeBet2 = await SQLiteDatabase.getBet(fakeBet2.rfs);
+
+    expect(updatedFakeBet2.assignedIsOrderMatched).toBeTruthy();
   });
 });
