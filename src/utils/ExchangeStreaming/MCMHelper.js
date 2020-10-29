@@ -55,6 +55,5 @@ export const stopLossTrailingChange = (stopLossList, selectionId, currentLTP, ol
 */
 export const stopLossCheck = (SL, LTP) => {
   const units = SL.units ? SL.units : 'ticks';
-  console.log(`stop loss details: ${SL.size} ${SL.price} ${LTP} ${SL.side} ${SL.ticks} ${units}`);
   return checkStopLossHit(SL.size, SL.price, LTP, SL.side, SL.ticks, units);
 };

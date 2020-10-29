@@ -37,8 +37,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const Database = require('./Database/helper');
-const SQLiteDatabase = require('./Database/SQLite/database').setup();
+const SQLiteDatabase = require('./Database/SQLite/database');
+
 const User = require('./Database/models/users');
+
+SQLiteDatabase.setup();
 
 if (process.env.NODE_ENV === 'production') {
   const publicPath = path.join(__dirname, '../');

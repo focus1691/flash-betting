@@ -6,7 +6,6 @@ const Rules = ({ description }) => {
   const [rules, setRules] = useState(null);
 
   useEffect(() => {
-    console.log(description);
     if (description) {
       setRules(description.rules);
     }

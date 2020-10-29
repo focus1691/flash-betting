@@ -288,14 +288,12 @@ const App = ({
 
               // Increment and check the stoplosses
               if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
-                // console.log(`stop loss check, bet assigned`);
                 const SL = { ...stopLossList[mc.rc[i].id] };
                 const prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
 
                 const stopLossMatched = stopLossCheck(SL, currentLTP);
 
                 if (stopLossMatched.targetMet) {
-                  // console.log(`stop loss target met ${stopLossMatched}`);
                   const newMatchedBets = Object.values(matchedBets).filter((bet) => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
                   placeOrder({
                     marketId: SL.marketId,

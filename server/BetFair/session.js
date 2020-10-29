@@ -87,7 +87,6 @@ class BetfairSession {
   login(login, password, cb = () => {}) {
     return new Promise((res, rej) => {
       auth.loginInteractive(login, password, (error, result) => {
-        console.log(error, result);
         if (error) rej(error);
         if (result) {
           this.setActiveSession(result.sessionKey);
