@@ -275,6 +275,12 @@ app.post('/api/update-order', (request, response) => {
   });
 });
 
+app.post('/api/update-price', (request, response) => {
+  SQLiteDatabase.updatePrice(request.body).then((res) => {
+    response.sendStatus(res);
+  });
+});
+
 app.post('/api/update-ticks', (request, response) => {
   SQLiteDatabase.updateTicks(request.body).then((res) => {
     response.sendStatus(res);

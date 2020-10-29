@@ -107,14 +107,14 @@ const Ladder = memo(({
       updateStopEntryList(data.stopEntry);
       updateFillOrKillList(data.fillOrKill);
     } else if (hedge && hedge.size > 0) {
-      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+      const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const result = await placeOrder({
         marketId,
         side,
         size: hedge.size,
         price,
         selectionId,
-        customerStrategyRef: referenceStrategyId,
+        customerStrategyRef,
         unmatchedBets,
         matchedBets,
       });
@@ -124,7 +124,7 @@ const Ladder = memo(({
 
   const handlePlaceOrder = useCallback(async (side, price, marketId, selectionId, stakeVal, stopLossSelected, stopLossData,
     stopLossUnits, hedgeSize) => {
-    const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+    const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
     const betSize = (customStakeActive && customStake) ? customStake : stakeVal[selectionId];
     //* Place the order first with BetFair and then execute the tools
     // //! Tool priority: 1) Stop Loss 2) Tick Offset 3) Fill or Kill
@@ -133,7 +133,7 @@ const Ladder = memo(({
       price: formatPrice(price),
       marketId,
       selectionId,
-      customerStrategyRef: referenceStrategyId,
+      customerStrategyRef,
       unmatchedBets,
       matchedBets,
       size: betSize,
@@ -147,7 +147,7 @@ const Ladder = memo(({
             custom: false,
             units: stopLossUnits,
             ticks: stopLossOffset,
-            rfs: referenceStrategyId,
+            rfs: customerStrategyRef,
             assignedIsOrderMatched: false,
             size: betSize,
             betId,
@@ -169,7 +169,7 @@ const Ladder = memo(({
             size: tickOffsetHedged ? hedgeSize : betSize,
             side: side === 'BACK' ? 'LAY' : 'BACK',
             percentageTrigger: tickOffsetTrigger,
-            rfs: referenceStrategyId,
+            rfs: customerStrategyRef,
             betId,
             hedged: tickOffsetHedged,
             minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1,
@@ -185,7 +185,7 @@ const Ladder = memo(({
             seconds: fillOrKillSeconds,
             startTime: Date.now(),
             betId,
-            rfs: referenceStrategyId,
+            rfs: customerStrategyRef,
           }, fillOrKillList);
           if (fok.isSaved) updateFillOrKillList(fok.data);
         }

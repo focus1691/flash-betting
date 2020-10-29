@@ -62,4 +62,15 @@ describe('update', () => {
 
     expect(updatedFakeBet2.assignedIsOrderMatched).toBeTruthy();
   });
+
+  it('should update the price', async () => {
+    await SQLiteDatabase.setup();
+    await SQLiteDatabase.addBet(fakeBet2);
+
+    fakeBet2.assignedIsOrderMatched = true;
+    await SQLiteDatabase.updateOrderMatched(fakeBet2);
+    updatedFakeBet2 = await SQLiteDatabase.getBet(fakeBet2.rfs);
+
+    expect(updatedFakeBet2.assignedIsOrderMatched).toBeTruthy();
+  });
 });

@@ -35,6 +35,15 @@ class SQLiteDatabase {
     return rows;
   }
 
+  async updatePrice(bet) {
+    const {
+      rfs, price,
+    } = bet;
+    const stmt = await this.db.prepare('UPDATE bets SET price = (?) WHERE rfs = (?)');
+    await stmt.run(price, rfs);
+    await stmt.finalize();
+  }
+
   async updateTicks(bet) {
     const {
       rfs, ticks,

@@ -357,23 +357,6 @@ export const updateOrderMatched = (bet) => {
   });
 };
 
-export const updateOrder = (order) => new Promise((res, rej) => {
-  fetch('/api/update-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(order),
-  })
-    .then(() => {
-      res(true);
-    })
-    .catch((err) => {
-      rej(err);
-    });
-});
-
 /**
  * This function saves the new stop loss to the database
  * @param {*} stopLoss New stop loss
