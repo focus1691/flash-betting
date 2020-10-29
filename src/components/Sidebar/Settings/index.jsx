@@ -39,7 +39,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Settings = (props) => {
+const Settings = ({
+  premiumMember, defaultView, onToggleDefaultView, onReceiveTrainingBalance, sounds, onToggleSounds, tools, onToggleTools,
+  unmatchedBets, onToggleUnmatchedBets, matchedBets, onToggleMatchedBets, graphs, onToggleGraph, marketInfo, onToggleMarketInformation,
+  winMarketsOnly, onUpdateWinMarketsOnly, rules, onToggleRules, trainingLadderAutoCenter, toggleTrainingLadderAutoCenter, ladderUnmatched,
+  onToggleLadderUnmatched, stakeBtns, onUpdateStakeBtn, layBtns, onUpdateLayBtn, rightClickTicks, onUpdateRightClickTicks, horseRaces, onUpdateHorseRaces,
+}) => {
   const classes = useStyles();
 
   const saveSetting = (setting) => {
@@ -56,112 +61,112 @@ const Settings = (props) => {
   return (
     <div>
       <DefaultView
-        defaultView={props.defaultView}
-        toggleDefaultView={props.onToggleDefaultView}
+        defaultView={defaultView}
+        toggleDefaultView={onToggleDefaultView}
         saveSetting={saveSetting}
-        premiumMember={props.premiumMember}
+        premiumMember={premiumMember}
         classes={classes}
       />
 
       <TrainingBank
-        receiveTrainingBalance={(balance) => props.onReceiveTrainingBalance(balance)}
+        receiveTrainingBalance={(balance) => onReceiveTrainingBalance(balance)}
         styles={classes}
       />
 
       <Sounds
-        sounds={props.sounds}
-        toggleSounds={props.onToggleSounds}
+        sounds={sounds}
+        toggleSounds={onToggleSounds}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <Tools
-        tools={props.tools}
-        toggleTools={props.onToggleTools}
+        tools={tools}
+        toggleTools={onToggleTools}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <UnmatchedBets
-        unmatchedBets={props.unmatchedBets}
-        toggleUnmatchedBets={props.onToggleUnmatchedBets}
+        unmatchedBets={unmatchedBets}
+        toggleUnmatchedBets={onToggleUnmatchedBets}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <MatchedBets
-        matchedBets={props.matchedBets}
-        toggleMatchedBets={props.onToggleMatchedBets}
+        matchedBets={matchedBets}
+        toggleMatchedBets={onToggleMatchedBets}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <Graphs
-        graphs={props.graphs}
-        toggleGraph={props.onToggleGraph}
+        graphs={graphs}
+        toggleGraph={onToggleGraph}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <MarketInformation
-        marketInfo={props.marketInfo}
-        toggleMarketInformation={props.onToggleMarketInformation}
+        marketInfo={marketInfo}
+        toggleMarketInformation={onToggleMarketInformation}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <WinMarkets
-        winMarketsOnly={props.winMarketsOnly}
-        updateWinMarketsOnly={props.onUpdateWinMarketsOnly}
+        winMarketsOnly={winMarketsOnly}
+        updateWinMarketsOnly={onUpdateWinMarketsOnly}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <Rules
-        rules={props.rules}
-        toggleRules={props.onToggleRules}
+        rules={rules}
+        toggleRules={onToggleRules}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <LadderAutoCenter
-        trainingLadderAutoCenter={props.trainingLadderAutoCenter}
-        toggleTrainingLadderAutoCenter={props.toggleTrainingLadderAutoCenter}
+        trainingLadderAutoCenter={trainingLadderAutoCenter}
+        toggleTrainingLadderAutoCenter={toggleTrainingLadderAutoCenter}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <LadderUnmatchedCol
-        ladderUnmatched={props.ladderUnmatched}
-        toggleLadderUnmatched={props.onToggleLadderUnmatched}
+        ladderUnmatched={ladderUnmatched}
+        toggleLadderUnmatched={onToggleLadderUnmatched}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <StakeButtons
-        stakeBtns={props.stakeBtns}
-        updateStakeBtn={props.onUpdateStakeBtn}
+        stakeBtns={stakeBtns}
+        updateStakeBtn={onUpdateStakeBtn}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <LayButtons
-        layBtns={props.layBtns}
-        updateLayBtn={props.onUpdateLayBtn}
+        layBtns={layBtns}
+        updateLayBtn={onUpdateLayBtn}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <RightClickTicks
-        rightClickTicks={props.rightClickTicks}
-        updateRightClickTicks={props.onUpdateRightClickTicks}
+        rightClickTicks={rightClickTicks}
+        updateRightClickTicks={onUpdateRightClickTicks}
         saveSetting={saveSetting}
         classes={classes}
       />
 
       <HorseRacing
-        horseRaces={props.horseRaces}
-        toggleHorseRaces={props.onUpdateHorseRaces}
+        horseRaces={horseRaces}
+        toggleHorseRaces={onUpdateHorseRaces}
         saveSetting={saveSetting}
         classes={classes}
       />
