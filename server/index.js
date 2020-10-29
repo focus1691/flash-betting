@@ -269,12 +269,6 @@ app.post('/api/save-bet', (request, response) => {
   });
 });
 
-app.post('/api/update-order', (request, response) => {
-  Database.updateOrder(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
-  });
-});
-
 app.post('/api/update-price', (request, response) => {
   SQLiteDatabase.updatePrice(request.body).then((res) => {
     response.sendStatus(res);

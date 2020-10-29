@@ -126,7 +126,7 @@ const UnmatchedBets = ({
       }
 
       try {
-        fetch('/api/update-order', {
+        fetch('/api/update-price', {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',

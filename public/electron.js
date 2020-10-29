@@ -292,12 +292,6 @@ app.post('/api/save-bet', (request, response) => {
   });
 });
 
-app.post('/api/update-order', (request, response) => {
-  database.updateOrder(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
-  });
-});
-
 app.post('/api/remove-orders', (request, response) => {
   database.removeOrders(betfair.email, request.body).then((res) => {
     response.sendStatus(res);
