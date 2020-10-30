@@ -62,33 +62,33 @@ const Settings = ({
   setDefaultView,
   setTrainingBalance,
   sounds,
-  onToggleSounds,
+  toggleSound,
   tools,
-  onToggleTools,
+  toggleTools,
   unmatchedBets,
-  onToggleUnmatchedBets,
+  toggleUnmatchedBets,
   matchedBets,
-  onToggleMatchedBets,
+  toggleMatchedBets,
   graphs,
-  onToggleGraph,
+  toggleGraph,
   marketInfo,
-  onToggleMarketInformation,
+  toggleMarketInformation,
   winMarketsOnly,
-  onUpdateWinMarketsOnly,
+  setWinMarketsOnly,
   rules,
-  onToggleRules,
+  toggleRules,
   trainingLadderAutoCenter,
   toggleTrainingLadderAutoCenter,
   ladderUnmatched,
-  onToggleLadderUnmatched,
+  toggleLadderUnmatched,
   stakeBtns,
-  onUpdateStakeBtn,
+  updateStakeBtn,
   layBtns,
-  onUpdateLayBtn,
+  updateLayBtn,
   rightClickTicks,
-  onUpdateRightClickTicks,
+  updateRightClickTicks,
   horseRaces,
-  onUpdateHorseRaces,
+  setHorseRacingCountries,
 }) => {
   const classes = useStyles();
 
@@ -109,33 +109,33 @@ const Settings = ({
 
       <TrainingBank receiveTrainingBalance={(balance) => setTrainingBalance(balance)} styles={classes} />
 
-      <Sounds sounds={sounds} toggleSounds={onToggleSounds} saveSetting={saveSetting} classes={classes} />
+      <Sounds sounds={sounds} toggleSounds={toggleSound} saveSetting={saveSetting} classes={classes} />
 
-      <Tools tools={tools} toggleTools={onToggleTools} saveSetting={saveSetting} classes={classes} />
+      <Tools tools={tools} toggleTools={toggleTools} saveSetting={saveSetting} classes={classes} />
 
-      <UnmatchedBets unmatchedBets={unmatchedBets} toggleUnmatchedBets={onToggleUnmatchedBets} saveSetting={saveSetting} classes={classes} />
+      <UnmatchedBets unmatchedBets={unmatchedBets} toggleUnmatchedBets={toggleUnmatchedBets} saveSetting={saveSetting} classes={classes} />
 
-      <MatchedBets matchedBets={matchedBets} toggleMatchedBets={onToggleMatchedBets} saveSetting={saveSetting} classes={classes} />
+      <MatchedBets matchedBets={matchedBets} toggleMatchedBets={toggleMatchedBets} saveSetting={saveSetting} classes={classes} />
 
-      <Graphs graphs={graphs} toggleGraph={onToggleGraph} saveSetting={saveSetting} classes={classes} />
+      <Graphs graphs={graphs} toggleGraph={toggleGraph} saveSetting={saveSetting} classes={classes} />
 
-      <MarketInformation marketInfo={marketInfo} toggleMarketInformation={onToggleMarketInformation} saveSetting={saveSetting} classes={classes} />
+      <MarketInformation marketInfo={marketInfo} toggleMarketInformation={toggleMarketInformation} saveSetting={saveSetting} classes={classes} />
 
-      <WinMarkets winMarketsOnly={winMarketsOnly} updateWinMarketsOnly={onUpdateWinMarketsOnly} saveSetting={saveSetting} classes={classes} />
+      <WinMarkets winMarketsOnly={winMarketsOnly} updateWinMarketsOnly={setWinMarketsOnly} saveSetting={saveSetting} classes={classes} />
 
-      <Rules rules={rules} toggleRules={onToggleRules} saveSetting={saveSetting} classes={classes} />
+      <Rules rules={rules} toggleRules={toggleRules} saveSetting={saveSetting} classes={classes} />
 
       <LadderAutoCenter trainingLadderAutoCenter={trainingLadderAutoCenter} toggleTrainingLadderAutoCenter={toggleTrainingLadderAutoCenter} saveSetting={saveSetting} classes={classes} />
 
-      <LadderUnmatchedCol ladderUnmatched={ladderUnmatched} toggleLadderUnmatched={onToggleLadderUnmatched} saveSetting={saveSetting} classes={classes} />
+      <LadderUnmatchedCol ladderUnmatched={ladderUnmatched} toggleLadderUnmatched={toggleLadderUnmatched} saveSetting={saveSetting} classes={classes} />
 
-      <StakeButtons stakeBtns={stakeBtns} updateStakeBtn={onUpdateStakeBtn} saveSetting={saveSetting} classes={classes} />
+      <StakeButtons stakeBtns={stakeBtns} updateStakeBtn={updateStakeBtn} saveSetting={saveSetting} classes={classes} />
 
-      <LayButtons layBtns={layBtns} updateLayBtn={onUpdateLayBtn} saveSetting={saveSetting} classes={classes} />
+      <LayButtons layBtns={layBtns} updateLayBtn={updateLayBtn} saveSetting={saveSetting} classes={classes} />
 
-      <RightClickTicks rightClickTicks={rightClickTicks} updateRightClickTicks={onUpdateRightClickTicks} saveSetting={saveSetting} classes={classes} />
+      <RightClickTicks rightClickTicks={rightClickTicks} updateRightClickTicks={updateRightClickTicks} saveSetting={saveSetting} classes={classes} />
 
-      <HorseRacing horseRaces={horseRaces} toggleHorseRaces={onUpdateHorseRaces} saveSetting={saveSetting} classes={classes} />
+      <HorseRacing horseRaces={horseRaces} toggleHorseRaces={setHorseRacingCountries} saveSetting={saveSetting} classes={classes} />
     </div>
   );
 };
