@@ -32,7 +32,7 @@ export const updateTicks = (bet) => {
 };
 
 export const updateOrderMatched = (bet) => {
-  fetch('/api/update-order-matched', {
+  fetch('/api/update-bet-matched', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

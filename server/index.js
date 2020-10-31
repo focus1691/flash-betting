@@ -255,7 +255,7 @@ app.post('/api/update-ticks', (request, response) => {
   });
 });
 
-app.post('/api/update-order-matched', (request, response) => {
+app.post('/api/update-bet-matched', (request, response) => {
   SQLiteDatabase.updateOrderMatched(request.body).then((res) => {
     response.sendStatus(res);
   });
