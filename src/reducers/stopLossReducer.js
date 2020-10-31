@@ -7,9 +7,7 @@ const initialState = {
   list: {}, //! {marketId: , selectionId: , price(matchedPrice): , side: , size: , tickOffset: , trailing: , units: , rfs(reference strategy): , assignedIsOrderMatched: false}
   selections: null,
 };
-initialState.text = `${initialState.offset} ${initialState.units} [${
-  initialState.trailing ? 'x' : '-'
-}][${initialState.hedged ? 'x' : '-'}]`;
+initialState.text = `${initialState.offset} ${initialState.units} [${initialState.trailing ? 'x' : '-'}][${initialState.hedged ? 'x' : '-'}]`;
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

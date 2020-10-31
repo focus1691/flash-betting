@@ -5,7 +5,7 @@
     "browser": true,
     "node": true
   },
-  "plugins": ["react", "react-hooks", "jest", "prettier"],
+  "plugins": ["react", "react-hooks", "jest"],
   "rules": {
     "no-underscore-dangle": [
       "error",
@@ -31,7 +31,6 @@
         ]
       }
     ],
-    "prettier/prettier": ["error"],
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
