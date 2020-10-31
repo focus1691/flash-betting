@@ -124,36 +124,6 @@ const App = ({
   const [connectionError, setConnectionError] = useState('');
 
   const loadSettings = async () => {
-    /**
-     * Fetch settings from the database and load them into redux state
-     * @return {Object} settings
-     *   User settings.
-     */
-    await fetch('/api/get-user-settings')
-      .then((res) => res.json())
-      .then((settings) => {
-        setDefaultView(settings.defaultView);
-        setActiveView(settings.defaultView);
-        toggleSound(settings.sounds);
-        toggleTools(settings.tools);
-        toggleUnmatchedBets(settings.unmatchedBets);
-        toggleMatchedBets(settings.matchedBets);
-        toggleGraph(settings.graphs);
-        toggleMarketInformation(settings.marketInfo);
-        setWinMarketsOnly(settings.winMarketsOnly);
-        toggleRules(settings.rules);
-        toggleLadderUnmatched(settings.ladderUnmatched);
-        setStakeBtns(settings.stakeBtns);
-        setLayBtns(settings.layBtns);
-        updateRightClickTicks(settings.rightClickTicks);
-        setHorseRacingCountries(settings.horseRaces);
-      })
-      .catch((e) => (window.location.href = window.location.origin + '/?error=USER_SETTINGS_NOT_FOUND'));
-
-    /**
-     * @return {Boolean} premiumStatus
-     *   Premium membership status required to access the LadderView.
-     */
     await fetch('/api/premium-status')
       .then((res) => res.json())
       .then((expiryDate) => setPremiumStatus(isPremiumActive(new Date(), expiryDate)));

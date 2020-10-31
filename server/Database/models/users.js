@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Settings = require('./settings');
-const Strategies = require('./trading');
 const Orders = require('./orders');
 const Markets = require('./markets');
 
@@ -29,7 +28,6 @@ const userSchema = mongoose.Schema({
     default: new Date(),
   },
   settings: Settings.schema,
-  strategies: Strategies.schema,
   orders: [{ type: Orders.schema }],
 });
 
