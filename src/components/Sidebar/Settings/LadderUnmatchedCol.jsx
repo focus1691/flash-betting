@@ -4,10 +4,9 @@ import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  ladderUnmatched, toggleLadderUnmatched, saveSetting, classes,
-}) => {
+export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -16,8 +15,8 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
-          saveSetting({ 'settings.ladderUnmatched': ladderUnmatched });
+        onClick={() => {
+          setItem('ladderUnmatched', ladderUnmatched);
           setChangeMade(false);
         }}
       >
@@ -44,24 +43,9 @@ export default ({
           toggleLadderUnmatched(e.target.value);
         }}
       >
-        <FormControlLabel
-          value="blank"
-          control={<Radio color="primary" />}
-          label="Unmatched Bets Only"
-          labelPlacement="end"
-        />
-        <FormControlLabel
-          value="pl"
-          control={<Radio color="primary" />}
-          label="Unmatched Bets + P/L"
-          labelPlacement="end"
-        />
-        <FormControlLabel
-          value="hedged"
-          control={<Radio color="primary" />}
-          label="Unmatched Bets + Hedge"
-          labelPlacement="end"
-        />
+        <FormControlLabel value="blank" control={<Radio color="primary" />} label="Unmatched Bets Only" labelPlacement="end" />
+        <FormControlLabel value="pl" control={<Radio color="primary" />} label="Unmatched Bets + P/L" labelPlacement="end" />
+        <FormControlLabel value="hedged" control={<Radio color="primary" />} label="Unmatched Bets + Hedge" labelPlacement="end" />
       </RadioGroup>
     </>
   );

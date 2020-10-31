@@ -3,10 +3,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  graphs, toggleGraph, saveSetting, classes,
-}) => {
+export default ({ graphs, toggleGraph, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -15,8 +14,8 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
-          saveSetting({ 'settings.graphs': { visible: graphs.visible, open: graphs.open } });
+        onClick={() => {
+          setItem('graphs', graphs);
           setChangeMade(false);
         }}
       >
@@ -33,32 +32,32 @@ export default ({
         </Typography>
       </AppBar>
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
             checked={graphs.visible}
             onChange={(e) => {
-						  setChangeMade(true);
-						  toggleGraph({ visible: !graphs.visible, open: graphs.open });
+              setChangeMade(true);
+              toggleGraph({ visible: !graphs.visible, open: graphs.open });
             }}
           />
-   )}
+        }
         label="Show Panel"
       />
       {renderSaveBtn()}
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
             checked={graphs.open}
             onChange={(e) => {
-						  setChangeMade(true);
-						  toggleGraph({ visible: graphs.visible, open: !graphs.open });
+              setChangeMade(true);
+              toggleGraph({ visible: graphs.visible, open: !graphs.open });
             }}
           />
-   )}
+        }
         label="Panel Open"
       />
     </>

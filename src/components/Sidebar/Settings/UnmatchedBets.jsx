@@ -3,10 +3,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  unmatchedBets, toggleUnmatchedBets, saveSetting, classes,
-}) => {
+export default ({ unmatchedBets, toggleUnmatchedBets, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -15,8 +14,8 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
-          saveSetting({ 'settings.unmatchedBets': { visible: unmatchedBets.visible, open: unmatchedBets.open } });
+        onClick={() => {
+          setItem('unmatchedBets', unmatchedBets);
           setChangeMade(false);
         }}
       >
@@ -33,7 +32,7 @@ export default ({
         </Typography>
       </AppBar>
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -43,12 +42,12 @@ export default ({
               toggleUnmatchedBets({ visible: !unmatchedBets.visible, open: unmatchedBets.open });
             }}
           />
-   )}
+        }
         label="Show Panel"
       />
       {renderSaveBtn()}
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -58,7 +57,7 @@ export default ({
               toggleUnmatchedBets({ visible: unmatchedBets.visible, open: !unmatchedBets.open });
             }}
           />
-   )}
+        }
         label="Panel Open"
       />
     </>

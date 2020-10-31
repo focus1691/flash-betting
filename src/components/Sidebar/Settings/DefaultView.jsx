@@ -1,13 +1,12 @@
+import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Typography from '@material-ui/core/Typography';
-import React, { useState } from 'react';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  defaultView, toggleDefaultView, saveSetting, premiumMember, classes,
-}) => {
+export default ({ defaultView, toggleDefaultView, premiumMember, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const handleViewChange = () => (e) => {
@@ -23,8 +22,8 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
-          saveSetting({ 'settings.defaultView': defaultView });
+        onClick={() => {
+          setItem('defaultView', defaultView);
           setChangeMade(false);
         }}
       >
@@ -41,31 +40,10 @@ export default ({
         </Typography>
       </AppBar>
       {renderSaveBtn()}
-      <RadioGroup
-        aria-label="Default View"
-        name="View"
-        className={classes.group}
-        value={defaultView}
-        onChange={handleViewChange()}
-      >
-        <FormControlLabel
-          value="LadderView"
-          control={<Radio color="primary" />}
-          label="Ladder"
-          labelPlacement="end"
-        />
-        <FormControlLabel
-          value="GridView"
-          control={<Radio color="primary" />}
-          label="Grid"
-          labelPlacement="end"
-        />
-        <FormControlLabel
-          value="HomeView"
-          control={<Radio color="primary" />}
-          label="Home"
-          labelPlacement="end"
-        />
+      <RadioGroup aria-label="Default View" name="View" className={classes.group} value={defaultView} onChange={handleViewChange()}>
+        <FormControlLabel value="LadderView" control={<Radio color="primary" />} label="Ladder" labelPlacement="end" />
+        <FormControlLabel value="GridView" control={<Radio color="primary" />} label="Grid" labelPlacement="end" />
+        <FormControlLabel value="HomeView" control={<Radio color="primary" />} label="Home" labelPlacement="end" />
       </RadioGroup>
     </>
   );

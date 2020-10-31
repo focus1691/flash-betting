@@ -3,10 +3,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  sounds, toggleSounds, saveSetting, classes,
-}) => {
+export default ({ sounds, toggleSounds, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -15,8 +14,8 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
-          saveSetting({ 'settings.sounds': sounds });
+        onClick={() => {
+          setItem('sounds', sounds);
           setChangeMade(false);
         }}
       >
@@ -33,7 +32,7 @@ export default ({
         </Typography>
       </AppBar>
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -43,7 +42,7 @@ export default ({
               toggleSounds(!sounds);
             }}
           />
-                  )}
+        }
         label="Sounds"
       />
       {renderSaveBtn()}

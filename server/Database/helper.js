@@ -53,25 +53,6 @@ class DatabaseHelper extends Database {
     });
   }
 
-  updateSettings(user, settings) {
-    return new Promise((res, rej) => {
-      User.findOneAndUpdate(
-        { email: user },
-        settings,
-        {
-          new: true,
-          useFindAndModify: false,
-        },
-        (err, doc) => {
-          if (err) {
-            rej(404);
-          }
-          res(200);
-        },
-      );
-    });
-  }
-
   setPremium(user, expiresIn) {
     return new Promise((res, rej) => {
       User.findOneAndUpdate(

@@ -33,11 +33,6 @@ export const setFullscreen = (fullscreenSelected) => ({
   payload: fullscreenSelected,
 });
 
-export const setTrainingBalance = (balance) => ({
-  type: 'SET_TRAINING_BALANCE',
-  payload: balance,
-});
-
 export const toggleLadderColourContrast = (isSelected) => ({
   type: 'TOGGLE_LADDER_COLOUR_CONTRAST',
   payload: isSelected,
@@ -91,11 +86,6 @@ export const setWinMarketsOnly = (isChecked) => ({
 export const toggleRules = (settings) => ({
   type: 'TOGGLE_RULES',
   payload: settings,
-});
-
-export const toggleTrainingLadderAutoCenter = (isSelected) => ({
-  type: 'TOGGLE_TRAINING_LADDER_AUTO_CENTER',
-  payload: isSelected,
 });
 
 export const toggleLadderUnmatched = (unmatchedColumn) => ({

@@ -3,9 +3,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { setItem } from '../../../localStorage/settings';
 
 export default ({
-  marketInfo, toggleMarketInformation, saveSetting, classes,
+  marketInfo, toggleMarketInformation, classes,
 }) => {
   const [changeMade, setChangeMade] = useState(false);
 
@@ -15,8 +16,8 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
-          saveSetting({ 'settings.marketInfo': { visible: marketInfo.visible, open: marketInfo.open } });
+        onClick={() => {
+          setItem('marketInfo', marketInfo);
           setChangeMade(false);
         }}
       >

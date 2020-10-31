@@ -247,12 +247,6 @@ app.get('/api/get-user-settings', (request, response) => {
   });
 });
 
-app.post('/api/save-user-settings', (request, response) => {
-  Database.updateSettings(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
-  });
-});
-
 app.get('/api/get-all-bets', (request, response) => {
   SQLiteDatabase.getBets(request.query.marketId).then((res) => {
     response.json(res);

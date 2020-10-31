@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  stakeBtns, updateStakeBtn, saveSetting, classes,
-}) => {
+export default ({ stakeBtns, updateStakeBtn, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -14,8 +13,8 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
-          saveSetting({ 'settings.stakeBtns': stakeBtns });
+        onClick={() => {
+          setItem('stakeBtns', stakeBtns);
           setChangeMade(false);
         }}
       >

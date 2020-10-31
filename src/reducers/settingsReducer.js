@@ -1,68 +1,37 @@
 import update from 'immutability-helper';
+import { setupStorage } from '../localStorage/settings';
+
+setupStorage();
 
 const initialState = {
-  defaultView: null,
+  defaultView: localStorage.getItem('defaultView'),
   view: null,
   isLoading: true,
   premiumMember: false,
   selectedPremium: 'monthly',
   premiumPopupOpen: false,
   fullscreen: false,
-  trainingBalance: 1000,
-  sounds: false,
-  tools: {
-    visible: true,
-    open: false,
-  },
-  unmatchedBets: {
-    visible: false,
-    open: false,
-  },
-  matchedBets: {
-    visible: false,
-    open: false,
-  },
-  graphs: {
-    visible: false,
-    open: false,
-  },
-  marketInfo: {
-    visible: false,
-    open: false,
-  },
-  winMarketsOnly: true,
-  rules: {
-    visible: false,
-    open: false,
-  },
-  trainingLadderAutoCenter: false,
-  ladderUnmatched: 'hedged',
-  stakeBtns: [2, 4, 6, 8, 10, 12, 14],
-  layBtns: [2.5, 5, 7.5, 10, 12.5, 15, 17.5],
+  sounds: JSON.parse(localStorage.getItem('sounds')),
+  tools: JSON.parse(localStorage.getItem('tools')),
+  unmatchedBets: JSON.parse(localStorage.getItem('unmatchedBets')),
+  matchedBets: JSON.parse(localStorage.getItem('matchedBets')),
+  graphs: JSON.parse(localStorage.getItem('graphs')),
+  marketInfo: JSON.parse(localStorage.getItem('marketInfo')),
+  winMarketsOnly: JSON.parse(localStorage.getItem('winMarketsOnly')),
+  rules: JSON.parse(localStorage.getItem('rules')),
+  ladderUnmatched: localStorage.getItem('ladderUnmatched'),
+  stakeBtns: JSON.parse(localStorage.getItem('stakeBtns')),
+  layBtns: JSON.parse(localStorage.getItem('layBtns')),
   stake: {},
-  rightClickTicks: 1,
-  horseRaces: {
-    GB: true,
-    IE: false,
-    FR: false,
-    DE: false,
-    IT: false,
-    AE: false,
-    TR: false,
-    SG: false,
-    SE: false,
-    US: false,
-    AU: false,
-    NZ: false,
-    ZA: false,
-  },
-  laddersExpanded: true,
-  toolsExpanded: true,
-  unmatchedBetsExpanded: true,
-  matchedBetsExpanded: true,
-  graphExpanded: true,
-  marketInfoExpanded: true,
-  rulesExpanded: true,
+  rightClickTicks: JSON.parse(localStorage.getItem('rightClickTicks')),
+  horseRaces: JSON.parse(localStorage.getItem('horseRaces')),
+  laddersExpanded: JSON.parse(localStorage.getItem('laddersExpanded')),
+  toolsExpanded: JSON.parse(localStorage.getItem('toolsExpanded')),
+  unmatchedBetsExpanded: JSON.parse(localStorage.getItem('unmatchedBetsExpanded')),
+  matchedBetsExpanded: JSON.parse(localStorage.getItem('matchedBetsExpanded')),
+  graphExpanded: JSON.parse(localStorage.getItem('graphExpanded')),
+  marketInfoExpanded: JSON.parse(localStorage.getItem('marketInfoExpanded')),
+  rulesExpanded: JSON.parse(localStorage.getItem('rulesExpanded')),
 };
 
 const reducer = (state = initialState, action) => {
@@ -81,8 +50,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, selectedPremium: action.payload };
     case 'FULL_SCREEN':
       return { ...state, fullscreen: action.payload };
-    case 'SET_TRAINING_BALANCE':
-      return { ...state, trainingBalance: action.payload };
     case 'TOGGLE_SOUNDS':
       return { ...state, sounds: action.payload };
     case 'TOGGLE_TOOLS':
@@ -99,8 +66,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, winMarketsOnly: action.payload };
     case 'TOGGLE_RULES':
       return { ...state, rules: action.payload };
-    case 'TOGGLE_TRAINING_LADDER_AUTO_CENTER':
-      return { ...state, trainingLadderAutoCenter: action.payload };
     case 'TOGGLE_LADDER_UNMATCHED_COLUMN':
       return { ...state, ladderUnmatched: action.payload };
     case 'SET_STAKE_BUTTONS':
@@ -120,18 +85,25 @@ const reducer = (state = initialState, action) => {
     case 'SET_HORSE_RACE_COUNTRIES':
       return { ...state, horseRaces: action.payload };
     case 'SET_LADDERS_EXPANDED':
+      localStorage.setItem('laddersExpanded', JSON.stringify(action.payload));
       return { ...state, laddersExpanded: action.payload };
     case 'SET_TOOLS_EXPANDED':
+      localStorage.setItem('toolsExpanded', JSON.stringify(action.payload));
       return { ...state, toolsExpanded: action.payload };
     case 'SET_UNMATCHED_BETS_EXPANDED':
+      localStorage.setItem('unmatchedBetsExpanded', JSON.stringify(action.payload));
       return { ...state, unmatchedBetsExpanded: action.payload };
     case 'SET_MATCHED_BETS_EXPANDED':
+      localStorage.setItem('matchedBetsExpanded', JSON.stringify(action.payload));
       return { ...state, matchedBetsExpanded: action.payload };
     case 'SET_GRAPHS_EXPANDED':
+      localStorage.setItem('graphExpanded', JSON.stringify(action.payload));
       return { ...state, graphExpanded: action.payload };
     case 'SET_MARKET_INFO_EXPANDED':
+      localStorage.setItem('marketInfoExpanded', JSON.stringify(action.payload));
       return { ...state, marketInfoExpanded: action.payload };
     case 'SET_RULES_EXPANDED':
+      localStorage.setItem('rulesExpanded', JSON.stringify(action.payload));
       return { ...state, rulesExpanded: action.payload };
     default:
       return state;

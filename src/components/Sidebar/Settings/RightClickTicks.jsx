@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  rightClickTicks, updateRightClickTicks, saveSetting, classes,
-}) => {
+export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -14,9 +13,9 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
+        onClick={() => {
           setChangeMade(false);
-          saveSetting({ 'settings.rightClickTicks': rightClickTicks });
+          setItem('rightClickTicks', rightClickTicks);
         }}
       >
         <img alt="Save" src={`${window.location.origin}/icons/save.png`} />

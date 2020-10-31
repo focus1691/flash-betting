@@ -3,10 +3,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  rules, toggleRules, saveSetting, classes,
-}) => {
+export default ({ rules, toggleRules, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -17,7 +16,7 @@ export default ({
         type="button"
         className="save-btn"
         onClick={() => {
-          saveSetting({ 'settings.rules': { visible: rules.visible, open: rules.open } });
+          setItem('rules', rules);
           setChangeMade(false);
         }}
       >
@@ -34,7 +33,7 @@ export default ({
         </Typography>
       </AppBar>
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -44,12 +43,12 @@ export default ({
               toggleRules({ visible: !rules.visible, open: rules.open });
             }}
           />
-   )}
+        }
         label="Show Panel"
       />
       {renderSaveBtn()}
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -59,7 +58,7 @@ export default ({
               toggleRules({ visible: rules.visible, open: !rules.open });
             }}
           />
-   )}
+        }
         label="Panel Open"
       />
     </>

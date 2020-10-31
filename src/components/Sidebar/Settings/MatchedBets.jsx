@@ -3,10 +3,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  matchedBets, toggleMatchedBets, saveSetting, classes,
-}) => {
+export default ({ matchedBets, toggleMatchedBets, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -15,9 +14,9 @@ export default ({
     return (
       <button
         className="save-btn"
-        onClick={(e) => {
+        onClick={() => {
           setChangeMade(false);
-          saveSetting({ 'settings.matchedBets': { visible: matchedBets.visible, open: matchedBets.open } });
+          setItem('matchedBets', matchedBets);
         }}
       >
         <img alt="Save" src={`${window.location.origin}/icons/save.png`} />
@@ -33,7 +32,7 @@ export default ({
         </Typography>
       </AppBar>
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -43,12 +42,12 @@ export default ({
               toggleMatchedBets({ visible: !matchedBets.visible, open: matchedBets.open });
             }}
           />
-   )}
+        }
         label="Show Panel"
       />
       {renderSaveBtn()}
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -58,7 +57,7 @@ export default ({
               toggleMatchedBets({ visible: matchedBets.visible, open: !matchedBets.open });
             }}
           />
-   )}
+        }
         label="Panel Open"
       />
     </>

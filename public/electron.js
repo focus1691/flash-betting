@@ -262,12 +262,6 @@ app.get('/api/get-user-settings', (request, response) => {
   });
 });
 
-app.post('/api/save-user-settings', (request, response) => {
-  database.updateSettings(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
-  });
-});
-
 app.get('/api/get-all-bets', (request, response) => {
   database.getAllOrders(betfair.email).then((res) => {
     response.json(res);

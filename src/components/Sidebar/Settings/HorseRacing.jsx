@@ -3,10 +3,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { setItem } from '../../../localStorage/settings';
 
-export default ({
-  horseRaces, toggleHorseRaces, saveSetting, classes,
-}) => {
+export default ({ horseRaces, toggleHorseRaces, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const renderSaveBtn = () => {
@@ -17,23 +16,7 @@ export default ({
         className="save-btn"
         onClick={(e) => {
           setChangeMade(false);
-          saveSetting({
-            'settings.horseRaces': {
-              GB: horseRaces.GB,
-              IE: horseRaces.IE,
-              FR: horseRaces.FR,
-              DE: horseRaces.DE,
-              IT: horseRaces.IT,
-              AE: horseRaces.AE,
-              TR: horseRaces.TR,
-              SG: horseRaces.SG,
-              SE: horseRaces.SE,
-              US: horseRaces.US,
-              AU: horseRaces.AU,
-              NZ: horseRaces.NZ,
-              ZA: horseRaces.ZA,
-            },
-          });
+          setItem('horseRaces', horseRaces);
         }}
       >
         <img alt="Save" src={`${window.location.origin}/icons/save.png`} />
@@ -49,7 +32,7 @@ export default ({
         </Typography>
       </AppBar>
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -73,13 +56,13 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="UK Races"
       />
       <br />
       {renderSaveBtn()}
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -103,11 +86,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="Irish Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -131,11 +114,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="French Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -159,11 +142,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="German Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -187,12 +170,12 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="Italian Races"
       />
       <br />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -216,11 +199,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="UAE Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -244,11 +227,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="Turkish Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -272,11 +255,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="Singaporean Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -300,11 +283,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="Swedish Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -328,11 +311,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="USA Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -356,11 +339,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="Australian Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -384,11 +367,11 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="New Zealand Races"
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             value="checkedB"
             color="primary"
@@ -412,7 +395,7 @@ export default ({
               });
             }}
           />
-                  )}
+        }
         label="South African Races"
       />
     </>
