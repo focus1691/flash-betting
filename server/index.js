@@ -21,8 +21,6 @@ const path = require('path');
 
 const fetch = require('node-fetch');
 
-const bodyParser = require('body-parser');
-
 // The BetFair session class below contains all the methods
 // to call the BetFair API. Some samples are commented below to demonstrate their utility.
 const BetFairSession = require('./BetFair/session.js');
@@ -31,8 +29,6 @@ const ExchangeStream = require('./BetFair/stream-api.js');
 const vendor = new BetFairSession(process.env.APP_KEY);
 const betfair = new BetFairSession(process.env.APP_KEY);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

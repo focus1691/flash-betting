@@ -35,10 +35,6 @@ const gateway = braintree.connect({
   privateKey: process.env.PRIVATE_KEY || 'f168b4ef387400987a86423ac6beb1a1',
 });
 
-const bodyParser = require('body-parser');
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
