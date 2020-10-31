@@ -5,7 +5,7 @@ const Market = require('./models/markets');
 const Transaction = require('./models/transaction');
 
 class DatabaseHelper extends Database {
-  setUser(username, sessionKey) {
+  setUser(username) {
     User.findOne({
       email: username,
     }).then((doc) => {

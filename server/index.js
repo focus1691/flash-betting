@@ -165,7 +165,7 @@ app.post('/api/login', (req, res) => {
     .login(user, password)
     .then(({ sessionKey }) => {
       // Check if user exists, if doesn't exist, then create a new user
-      Database.setUser(user, sessionKey);
+      Database.setUser(user);
       res.json({ sessionKey });
     })
     .catch((error) => res.json({ error }));
