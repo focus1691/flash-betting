@@ -7,7 +7,7 @@ export default ({ username, premiumMember, classes }) => (
   <Grid container alignItems="center">
     <Grid item xs>
       <Typography className={classes.title} gutterBottom variant="h4">
-        Welcome to Trader Pro
+        Welcome to Flash Betting
       </Typography>
     </Grid>
     <Grid item lg container justify="flex-end">

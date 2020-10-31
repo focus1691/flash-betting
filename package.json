@@ -1,7 +1,7 @@
 {
-  "name": "trader-pro",
-  "author": "Trader Pro",
-  "description": "Sports Trading on the BetFair Exchange",
+  "name": "flash-betting",
+  "author": "Joshua",
+  "description": "Bet Trading on the BetFair Exchange",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

@@ -108,7 +108,7 @@ const PremiumPopup = ({
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Sports Trader Pro Licence
+            Sports Flash Betting Licence
           </Typography>
         </Toolbar>
       </AppBar>
@@ -117,7 +117,7 @@ const PremiumPopup = ({
           You are required to pay the monthly subscription fee of £
           {selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99}
           {' '}
-          in order to access Trader Pro's advanced features.
+          in order to access Flash Betting's advanced features.
         </DialogContentText>
 
         {renderForm()}

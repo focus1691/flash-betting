@@ -60,7 +60,7 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
 			  })
       : setData({
         subscribed: 'Inactive',
-        information: ' and you have restricted access to Trader Pro.',
+        information: ' and you have restricted access to Flash Betting.',
         color: '#F44336',
 			  });
   }, [premiumMember]);
@@ -72,14 +72,14 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
         <Divider className={classes.divider} />
         <Grid container alignItems="center">
           <Typography className={classes.subheading} style={{ whiteSpace: 'pre-wrap' }} variant="h5">
-            Trader Pro Membership is
+            Flash Betting Membership is
             {' '}
             <span style={{ color: data.color }}>{data.subscribed}</span>
           </Typography>
         </Grid>
         <Grid container alignItems="center">
           <Typography className={`${classes.premiumStatus} ${classes.textMargin}`} gutterBottom variant="h6">
-            Your Trader Pro Membership is
+            Your Flash Betting Membership is
             {' '}
             <span>{data.subscribed}</span>
           </Typography>
@@ -92,7 +92,7 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
             <a href="mailto:joshbetting30@yahoo.com">joshbetting30@yahoo.com</a>
             {' '}
             if you experience any
-            issues when using Trader Pro.
+            issues when using Flash Betting.
           </Typography>
         </Grid>
         <Divider className={classes.divider} />
