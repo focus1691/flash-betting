@@ -97,30 +97,27 @@ app.post('/api/checkout', (request, result) => {
 
 app.get('/api/get-subscription-status', async (req, res) => {
   const { vendorId } = await new Promise((resolve, reject) => {
-    betfair.getDeveloperAppKeys({ filter: {} },
-      (err, res) => {
-        if (res) resolve(res.result[1].appVersions[0]);
-      });
+    betfair.getDeveloperAppKeys({ filter: {} }, (err, res) => {
+      if (res) resolve(res.result[1].appVersions[0]);
+    });
   });
 
-  betfair.isAccountSubscribedToWebApp({ vendorId },
-    async (err, { result }) => {
-      const accessToken = await Database.getToken(betfair.email);
-      res.json({
-        isSubscribed: result,
-        accessToken,
-      });
+  betfair.isAccountSubscribedToWebApp({ vendorId }, async (err, { result }) => {
+    const accessToken = await Database.getToken(betfair.email);
+    res.json({
+      isSubscribed: result,
+      accessToken,
     });
+  });
 });
 
 app.get('/api/request-access-token', async (request, response) => {
   const { tokenType } = request.query;
 
   const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
-    betfair.getDeveloperAppKeys({ filter: {} },
-      (err, res) => {
-        if (res) resolve(res.result[1].appVersions[0]);
-      });
+    betfair.getDeveloperAppKeys({ filter: {} }, (err, res) => {
+      if (res) resolve(res.result[1].appVersions[0]);
+    });
   });
 
   const params = {
@@ -605,10 +602,9 @@ app.post('/paypal-transaction-complete', (request, response) => {
 // A call to get required params for O-auth (vendorId, vendorSecret)
 app.get('/api/get-developer-application-keys', async (request, response) => {
   const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
-    betfair.getDeveloperAppKeys({ filter: {} },
-      (err, res) => {
-        if (res) resolve(res.result[1].appVersions[0]);
-      });
+    betfair.getDeveloperAppKeys({ filter: {} }, (err, res) => {
+      if (res) resolve(res.result[1].appVersions[0]);
+    });
   });
   return response.json({ vendorId, vendorSecret });
 });
@@ -668,15 +664,11 @@ io.on('connection', async (client) => {
 
   // Subscribe to market
   client.on('market-subscription', async ({ marketId }) => {
-    const marketSubscription = `{"op":"marketSubscription","id":${id += 1},"marketFilter":{"marketIds":["${
-      marketId
-    }"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
+    const marketSubscription = `{"op":"marketSubscription","id":${(id += 1)},"marketFilter":{"marketIds":["${marketId}"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
     exchangeStream.makeSubscription(marketSubscription, betfair.sessionKey);
   });
   client.on('market-resubscription', async ({ marketId, initialClk, clk }) => {
-    const marketSubscription = `{"op":"marketSubscription","id":${id += 1},"initialClk":${initialClk},"clk":${clk},marketFilter":{"marketIds":["${
-      marketId
-    }"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
+    const marketSubscription = `{"op":"marketSubscription","id":${(id += 1)},"initialClk":${initialClk},"clk":${clk},marketFilter":{"marketIds":["${marketId}"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
     exchangeStream.makeSubscription(marketSubscription, betfair.sessionKey);
   });
   // Subscribe to orders
@@ -685,7 +677,7 @@ io.on('connection', async (client) => {
     exchangeStream.makeSubscription(orderSubscription, betfair.sessionKey);
   });
   client.on('disconnect', async () => {
-    const marketSubscription = `{"op":"marketSubscription","id":${id += 1},"marketFilter":{"marketIds":[""]},"marketDataFilter":{"ladderLevels": 2}}\r\n`;
+    const marketSubscription = `{"op":"marketSubscription","id":${(id += 1)},"marketFilter":{"marketIds":[""]},"marketDataFilter":{"ladderLevels": 2}}\r\n`;
     exchangeStream.makeSubscription(marketSubscription, betfair.sessionKey);
     exchangeStream.client.destroy();
     exchangeStream = null;
