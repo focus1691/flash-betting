@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const Settings = require('./settings');
-const Orders = require('./orders');
 const Markets = require('./markets');
 
 const userSchema = mongoose.Schema({
@@ -27,8 +25,6 @@ const userSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  settings: Settings.schema,
-  orders: [{ type: Orders.schema }],
 });
 
 module.exports = mongoose.model('User', userSchema);

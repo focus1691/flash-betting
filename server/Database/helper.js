@@ -1,8 +1,6 @@
 /* eslint-disable class-methods-use-this */
 const Database = require('./database');
 const User = require('./models/users');
-const Settings = require('./models/settings');
-const Order = require('./models/orders');
 const Market = require('./models/markets');
 const Transaction = require('./models/transaction');
 
@@ -16,8 +14,6 @@ class DatabaseHelper extends Database {
         const user = new User({
           email: username,
         });
-        const settings = new Settings();
-        user.settings = settings;
         user.save();
       }
     });
@@ -122,27 +118,6 @@ class DatabaseHelper extends Database {
           user.markets = user.markets.filter((item, itemIndex) => itemIndex !== index);
           user.save();
           res(user.markets);
-        })
-        .catch((err) => {
-          rej(400);
-        });
-    });
-  }
-
-  removeOrders(user, orders) {
-    // Create the object with our Order Schema
-    const formattedOrders = orders.map((order) => new Order(order));
-
-    return new Promise((res, rej) => {
-      User.findOne({ email: user })
-        .then((user) => {
-          formattedOrders.find((order) => {
-            const index = user.orders.findIndex((item) => item.rfs === order.rfs);
-            user.orders.splice(index, 1);
-          });
-
-          user.save();
-          res(200);
         })
         .catch((err) => {
           rej(400);
