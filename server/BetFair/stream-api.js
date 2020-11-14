@@ -29,7 +29,7 @@ class BetFairStreamAPI {
 
       const req = {
         op: 'authentication',
-        appKey: process.env.xmUgVmsGTyVivKl4,
+        appKey: process.env.APP_KEY,
         session: `BEARER ${accessToken}`
       }
 
@@ -58,6 +58,7 @@ class BetFairStreamAPI {
               const {
                 connectionClosed, errorCode, errorMessage, statusCode,
               } = result;
+              console.log(result);
               this.openSocket.emit('subscription-error', {
                 connectionClosed, errorCode, errorMessage, statusCode,
               });
