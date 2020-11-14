@@ -98,15 +98,17 @@ app.post('/api/checkout', (request, result) => {
 app.get('/api/get-subscription-status', async (req, res) => {
   const { vendorId } = await new Promise((resolve, reject) => {
     betfair.getDeveloperAppKeys({ filter: {} }, (err, res) => {
-      if (res) resolve(res.result[1].appVersions[0]);
+      const app = res.result.find((apps) => apps.appName === 'Flash Betting');
+      if (res) resolve(app.appVersions[0]);
     });
   });
 
-  betfair.isAccountSubscribedToWebApp({ vendorId }, async (err, { result }) => {
+  vendor.isAccountSubscribedToWebApp({ vendorId }, async (err, { result }) => {
     const accessToken = await Database.getToken(betfair.email);
     res.json({
       isSubscribed: result,
       accessToken,
+      vendorId,
     });
   });
 });
@@ -115,8 +117,9 @@ app.get('/api/request-access-token', async (request, response) => {
   const { tokenType } = request.query;
 
   const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
-    betfair.getDeveloperAppKeys({ filter: {} }, (err, res) => {
-      if (res) resolve(res.result[1].appVersions[0]);
+    vendor.getDeveloperAppKeys({ filter: {} }, (err, res) => {
+      const app = res.result.find((apps) => apps.appName === 'Flash Betting');
+      if (res) resolve(app.appVersions[0]);
     });
   });
 
@@ -163,9 +166,11 @@ app.post('/api/login', (req, res) => {
   const { user, password } = req.body;
   betfair
     .login(user, password)
-    .then(({ sessionKey }) => {
+    .then(async ({ sessionKey }) => {
       // Check if user exists, if doesn't exist, then create a new user
       Database.setUser(user);
+      const accessToken = await Database.getToken(betfair.email);
+      betfair.setAccessToken(accessToken);
       res.json({ sessionKey });
     })
     .catch((error) => res.json({ error }));
@@ -603,7 +608,8 @@ app.post('/paypal-transaction-complete', (request, response) => {
 app.get('/api/get-developer-application-keys', async (request, response) => {
   const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
     betfair.getDeveloperAppKeys({ filter: {} }, (err, res) => {
-      if (res) resolve(res.result[1].appVersions[0]);
+      const app = res.result.find((apps) => apps.appName === 'Flash Betting');
+      if (res) resolve(app.appVersions[0]);
     });
   });
   return response.json({ vendorId, vendorSecret });
@@ -617,51 +623,26 @@ const exitHandler = (options, exitCode) => {
 };
 
 // App is closing
-process.on(
-  'exit',
-  exitHandler.bind(null, {
-    cleanup: true,
-  }),
-);
+process.on('exit', exitHandler.bind(null, { cleanup: true }));
 
 // Catches ctrl+c event
-process.on(
-  'SIGINT',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
+process.on('SIGINT', exitHandler.bind(null, { exit: true}));
 
 // Catches "kill pid" (for example: nodemon restart)
-process.on(
-  'SIGUSR1',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
-process.on(
-  'SIGUSR2',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
+process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
+process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 
 // Catches uncaught exceptions
-process.on(
-  'uncaughtException',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
+process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
 const port = process.env.PORT || 3001;
 
 server.listen(port, () => console.log(`Server started on port: ${port}`));
-
 let id = 1;
+
 io.on('connection', async (client) => {
   let exchangeStream = new ExchangeStream(client);
-
+  console.log('new connection');
   // Subscribe to market
   client.on('market-subscription', async ({ marketId }) => {
     const accessToken = await Database.getToken(betfair.email);

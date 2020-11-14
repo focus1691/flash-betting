@@ -1,3 +1,5 @@
+const { access } = require('fs');
+const { method } = require('lodash');
 const _ = require('lodash');
 const auth = require('./auth.js');
 const BetfairInvocation = require('./invocation.js');
@@ -80,6 +82,12 @@ class BetfairSession {
     BetfairInvocation.setSessionKey(sessionKey);
   }
 
+  setAccessToken(accessToken) {
+    console.log('setAccessTOken', accessToken);
+    this.accessToken = accessToken;
+    BetfairInvocation.setAccessToken(accessToken);
+  }
+
   setEmailAddress(email) {
     this.email = email;
   }
@@ -132,7 +140,7 @@ class BetfairSession {
       if (!_.isObject(params)) {
         throw ('params should be object');
       }
-      const invocation = new BetfairInvocation(api, methodName, params);
+      const invocation = new BetfairInvocation(api, methodName, methodName === 'token' || methodName === 'getDeveloperAppKeys' || methodName === 'isAccountSubscribedToWebApp', params);
 
       invocation.execute((err, result) => {
         if (err) {

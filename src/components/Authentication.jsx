@@ -3,8 +3,6 @@ import { useCookies } from 'react-cookie';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
-const CLIENT_ID = 74333;
-
 const Authentication = (props) => {
   const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
   const [isSubscribed, setSubscribed] = useState(null);
@@ -13,10 +11,10 @@ const Authentication = (props) => {
   useEffect(() => {
     const authenticateUser = async () => {
       if (!cookies.sessionKey) return;
-      const { isSubscribed, accessToken } = await fetch('/api/get-subscription-status').then((res) => res.json());
+      const { vendorId, isSubscribed, accessToken } = await fetch('/api/get-subscription-status').then((res) => res.json());
       setSubscribed(isSubscribed);
       if (isSubscribed === false || !accessToken) {
-        window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${CLIENT_ID}&response_type=code&redirect_uri=validation`;
+        window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
       } else {
         const {
           error, accessToken, refreshToken, expiresIn,

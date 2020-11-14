@@ -15,7 +15,7 @@ class BetFairStreamAPI {
     this.subscriptions = [];
   }
 
-  authenticate(sessionKey) {
+  authenticate(accessToken) {
     const options = {
       host: 'stream-api.betfair.com',
       port: 443,
@@ -25,11 +25,21 @@ class BetFairStreamAPI {
 
       this.client.setEncoding('utf8');
 
-      console.log(sessionKey);
-      this.client.write('{"op": "authentication", "appKey": "' + 'xmUgVmsGTyVivKl4' + '", "session":"' + 'BEARER' + ' ' + sessionKey + '"}\r\n');
+      console.log('ACCESS TOKEN:', accessToken);
+
+      const req = {
+        op: 'authentication',
+        appKey: process.env.xmUgVmsGTyVivKl4,
+        session: `BEARER ${accessToken}`
+      }
+
+      console.log(`${JSON.stringify(req)}\r\n`)
+
+      // this.client.write('{"op": "authentication", "appKey": "' + 'xmUgVmsGTyVivKl4' + '", "session":"' + 'BEARER' + ' ' + accessToken + '"}\r\n');
+      this.client.write(`${JSON.stringify(req)}\r\n`);
 
       this.client.on('data', (data) => {
-        // console.log('Received: ' + data);
+        console.log('Received: ', data);
 
         // Read the data into Buffer
         const bufferedData = Buffer.from(data);
