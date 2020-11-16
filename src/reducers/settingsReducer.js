@@ -4,8 +4,8 @@ import { setupStorage } from '../localStorage/settings';
 setupStorage();
 
 const initialState = {
-  defaultView: localStorage.getItem('defaultView'),
-  view: null,
+  defaultView: localStorage.getItem('defaultView').replace(/['"]+/g, ''),
+  view: localStorage.getItem('defaultView').replace(/['"]+/g, ''),
   isLoading: true,
   premiumMember: false,
   selectedPremium: 'monthly',

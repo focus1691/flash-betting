@@ -35,9 +35,13 @@ class DatabaseHelper extends Database {
         email: user,
       })
         .then((doc) => {
+          console.log(doc);
           res(doc.premiumSubscription);
         })
-        .catch((err) => rej(err));
+        .catch((err) => {
+          console.log(err);
+          rej(err);
+        })
     });
   }
 
