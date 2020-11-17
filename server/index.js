@@ -266,8 +266,8 @@ app.post('/api/update-bet-matched', (request, response) => {
   });
 });
 
-app.post('/api/remove-orders', (request, response) => {
-  Database.removeOrders(betfair.email, request.body).then((res) => {
+app.post('/api/remove-bets', (request, response) => {
+  SQLiteDatabase.removeBet(request.body).then((res) => {
     response.sendStatus(res);
   });
 });

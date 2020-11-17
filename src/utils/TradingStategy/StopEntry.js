@@ -15,7 +15,7 @@ const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatche
   });
   if (ordersToRemove.length > 0) {
     if (!testing) {
-      await fetch('/api/remove-orders', {
+      await fetch('/api/remove-bets', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',

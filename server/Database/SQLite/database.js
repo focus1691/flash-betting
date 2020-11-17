@@ -62,10 +62,11 @@ class SQLiteDatabase {
     await stmt.finalize();
   }
 
-  async updateBet(bet) {
-    const stmt = await this.db.prepare('INSERT INTO bets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    stmt.run(strategy, marketId, size, price, side, betId, rfs, trailing, hedged, assignedIsOrderMatched, tickOffset, units, percentageTrigger, executionTime, timeOffset, seconds, startTime, targetLTP, stopEntryCondition);
-    stmt.finalize();
+  async removeBet(bet) {
+    const { rfs } = bet;
+    const stmt = await this.db.prepare('DELETE FROM bets WHERE rfs = (?)');
+    await stmt.run(rfs);
+    await stmt.finalize();
   }
 
   close() {

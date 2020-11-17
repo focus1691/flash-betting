@@ -73,4 +73,17 @@ describe('update', () => {
 
     expect(updatedFakeBet2.price).toEqual('55');
   });
+
+  it('should remove the bet', async () => {
+    await SQLiteDatabase.setup();
+    await SQLiteDatabase.addBet(fakeBet);
+    await SQLiteDatabase.addBet(fakeBet2);
+
+
+    await SQLiteDatabase.removeBet(fakeBet2);
+
+    const bets = await SQLiteDatabase.getBets('1.232323');
+    
+    expect(bets).toHaveLength(1);
+  });
 });
