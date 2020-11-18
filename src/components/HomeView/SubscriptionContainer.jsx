@@ -1,19 +1,21 @@
 import React from 'react';
+import clsx from  'clsx';
 
 export default ({
-  plan = 'Monthly', price = 9.99, color = 'gray', openPremiumMenu, setSelectedPremium,
+  plan = 'Monthly', price = 9.99, color = 'gray', openPremiumMenu, setSelectedPremium, classes,
 }) => (
-  <div className="subscription-container">
-    <div className="subscription-header" style={color === 'green' ? { backgroundColor: '#26C281' } : null}>
+  <div className={classes.subscriptionContainer}>
+    <div className={classes.subscriptionHeader} style={color === 'green' ? { backgroundColor: '#26C281' } : null}>
       {plan}
     </div>
-    <p className="subscription-price">
+    <p className={classes.subscriptionPrice}>
       £
       {price}
     </p>
-    <p className="subscription-text">per month</p>
+    <p className={classes.subscriptionText}>per month</p>
     <button
-      className={`subscription-button subscription-${color}-button`}
+      type="button"
+      className={clsx(classes.subscriptionButton, `${color}-button}`)}
       onClick={() => {
 				  openPremiumMenu(true);
 				  setSelectedPremium(plan.toLowerCase());

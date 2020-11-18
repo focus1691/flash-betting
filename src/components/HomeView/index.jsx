@@ -1,6 +1,5 @@
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -9,47 +8,12 @@ import { openPremiumDialog, setSelectedPremium } from '../../actions/settings';
 import SocketContext from '../../SocketContext';
 import Header from './Header';
 import SubscriptionContainer from './SubscriptionContainer';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  textMargin: {
-    margin: '10px 5px 10px 0px',
-  },
-  title: {
-    marginLeft: '5px',
-  },
-  username: {
-    marginLeft: '10px',
-    background: '#000',
-    color: '#fff',
-  },
-  subscription: (props) => ({
-    background: props.subscribed ? '#4CAF50' : '#F44336',
-    color: '#000',
-    marginLeft: '10px',
-  }),
-  subheading: {
-    marginTop: '10px',
-  },
-  premiumStatus: {
-    margin: '10px 5px 10px 0px',
-    fontWeight: 'bold',
-    textDecoration: 'underline',
-  },
-  divider: {
-    backgroundColor: '#000',
-  },
-}));
+import useStyles from '../../assets/jss/components/HomeView/homeViewStyle';
 
 const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   const [cookies] = useCookies(['username']);
-  const styleProps = { subscribed: premiumMember };
   const [data, setData] = useState({});
-
-  const classes = useStyles(styleProps);
+  const classes = useStyles({ subscribed: premiumMember });
 
   useEffect(() => {
     premiumMember
@@ -66,19 +30,19 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   }, [premiumMember]);
 
   return (
-    <div id="home-view-container" className={classes.root}>
-      <div className={classes.section2} id="home-view">
+    <div className={classes.root}>
+      <div className={classes.homeView}>
         <Header username={cookies.username} premiumMember={premiumMember} classes={classes} />
         <Divider className={classes.divider} />
         <Grid container alignItems="center">
-          <Typography className={classes.subheading} style={{ whiteSpace: 'pre-wrap' }} variant="h5">
+          <Typography className={classes.subheading} variant="h5">
             Flash Betting Membership is
             {' '}
             <span style={{ color: data.color }}>{data.subscribed}</span>
           </Typography>
         </Grid>
         <Grid container alignItems="center">
-          <Typography className={`${classes.premiumStatus} ${classes.textMargin}`} gutterBottom variant="h6">
+          <Typography className={classes.premiumStatus} gutterBottom variant="h6">
             Your Flash Betting Membership is
             {' '}
             <span>{data.subscribed}</span>
@@ -86,7 +50,7 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
           <Typography variant="body1">{data.information}</Typography>
         </Grid>
         <Grid container alignItems="center">
-          <Typography className={`${classes.textMargin}`} gutterBottom variant="body1">
+          <Typography className={classes.textMargin} gutterBottom variant="body1">
             Contact us on
             {' '}
             <a href="mailto:joshbetting30@yahoo.com">joshbetting30@yahoo.com</a>
@@ -96,12 +60,13 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
           </Typography>
         </Grid>
         <Divider className={classes.divider} />
-        <div className="subscription-list">
+        <div className={classes.subscriptionList}>
           {premiumMember ? null : (
             <>
               <SubscriptionContainer
                 openPremiumDialog={openPremiumDialog}
                 setSelectedPremium={setSelectedPremium}
+                classes={classes}
               />
               <SubscriptionContainer
                 plan="Biannually"
@@ -109,12 +74,14 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
                 color="green"
                 openPremiumDialog={openPremiumDialog}
                 setSelectedPremium={setSelectedPremium}
+                classes={classes}
               />
               <SubscriptionContainer
                 plan="Annually"
                 price={99.99}
                 openPremiumDialog={openPremiumDialog}
                 setSelectedPremium={setSelectedPremium}
+                classes={classes}
               />
             </>
           )}
