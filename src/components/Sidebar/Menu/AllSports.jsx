@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import List from '@material-ui/core/List';
 import { connect } from 'react-redux';
-import { loadMyMarkets } from '../../../actions/market';
-import * as actions from '../../../actions/sport';
+import { setAllSports, updateSubmenuList, updateCurrentSubmenu } from '../../../actions/sport';
 import { sortSports } from '../../../utils/Algorithms/SortSports';
 import DeselectSport from './DeselectSport';
 import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
 
-const AllSports = (props) => {
+const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
   useEffect(() => {
     // gets all the sports and saves them on the server
     fetch('/api/fetch-all-sports');
@@ -21,37 +20,32 @@ const AllSports = (props) => {
         sports.push({ eventType: { id: 'TC-7', name: "Horse Racing - Today's Card" } });
         sports.push({ eventType: { id: 'TC-4339', name: "Greyhound Racing - Today's Card" } });
         sports = sortSports(sports);
-        props.onReceiveAllSports(sports);
+        setAllSports(sports);
       });
   }, []);
 
-  const {
-    sports,
-    submenuList,
-    currentSubmenu,
-  } = props.sports;
-
   useEffect(() => {
     if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
-      props.onUpdateSubmenuCurrent('');
-      props.onUpdateSubmenuList({});
+      updateCurrentSubmenu('');
+      updateSubmenuList({});
     }
-  }, [props.winMarketsOnly, props.horseRaces]);
+  }, [winMarketsOnly, horseRaces, submenuList.EVENT_TYPE, updateCurrentSubmenu, updateSubmenuList]);
 
   const getSportInfo = (name, newSubmenuType, submenuList, selectedId, apiToCall) => async (e) => {
     const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
     // gets the country names and makes it an array ex... [GB]
-    const countryNames = Object.keys(props.horseRaces).reduce((acc, item) => {
-      if (props.horseRaces[item] === true) {
+    const countryNames = Object.keys(horseRaces).reduce((acc, item) => {
+      if (horseRaces[item] === true) {
         return [item, ...acc];
       }
       return acc;
     }, []);
 
     // call the api with the id and get new selections
-    const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${props.winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
-      .then((res) => res.json()).catch((err) => { });
+    const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
+      .then((res) => res.json())
+      .catch(() => {});
 
     // set the old submenu as the newSubmenuType: children we received from the api
     if (data) {
@@ -59,8 +53,8 @@ const AllSports = (props) => {
 
       newSubmenuList[newSubmenuType] = { name, data };
 
-      props.onUpdateSubmenuCurrent(newSubmenuType);
-      props.onUpdateSubmenuList(newSubmenuList);
+      updateCurrentSubmenu(newSubmenuType);
+      updateSubmenuList(newSubmenuList);
     }
   };
 
@@ -68,14 +62,14 @@ const AllSports = (props) => {
     const newSubmenuList = { ...submenuList };
     newSubmenuList[newSubmenuType] = { name, data };
 
-    props.onUpdateSubmenuCurrent(newSubmenuType);
-    props.onUpdateSubmenuList(newSubmenuList);
+    updateCurrentSubmenu(newSubmenuType);
+    updateSubmenuList(newSubmenuList);
   };
 
   const deselectSubmenu = (newSubmenuType, submenuList) => {
     if (newSubmenuType === 'ROOT') {
-      props.onUpdateSubmenuCurrent('');
-      props.onUpdateSubmenuList({});
+      updateCurrentSubmenu('');
+      updateSubmenuList({});
       return;
     }
 
@@ -99,60 +93,39 @@ const AllSports = (props) => {
       }
     });
 
-    props.onUpdateSubmenuCurrent(newSubmenuType);
-    props.onUpdateSubmenuList(newSubmenuList);
+    updateCurrentSubmenu(newSubmenuType);
+    updateSubmenuList(newSubmenuList);
   };
 
   return (
     <List className="all-sports">
       {Object.keys(submenuList).map((type, index) => (
-        <DeselectSport
-          key={`all-sports-deselect-${submenuList[type].name}`}
-          type={type}
-          data={submenuList[type]}
-          isLast={index === Object.keys(submenuList).length - 1}
-          submenuList={submenuList}
-          deselectSubmenu={deselectSubmenu}
-        />
+        <DeselectSport key={`all-sports-deselect-${submenuList[type].name}`} type={type} data={submenuList[type]} isLast={index === Object.keys(submenuList).length - 1} submenuList={submenuList} deselectSubmenu={deselectSubmenu} />
       ))}
 
-      { // Selecting Item
+      {
+        // Selecting Item
         submenuList.EVENT_TYPE === undefined || currentSubmenu === '' ? (
-          <SelectSport
-            sports={sports}
-            setSubmenu={getSportInfo}
-          />
+          <SelectSport sports={sports} setSubmenu={getSportInfo} />
+        ) : (
+          <SelectSubmenu data={submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={submenuList} />
         )
-          : (
-            <SelectSubmenu
-              data={submenuList[currentSubmenu].data}
-              setSubmenu={setSubmenu}
-              submenuList={submenuList}
-              winMarketsOnly={props.winMarketsOnly}
-            />
-          )
-}
+      }
     </List>
   );
 };
 
 const mapStateToProps = (state) => ({
   sports: state.sports,
-  currentSport: state.currentSport,
   myMarkets: state.market.myMarkets,
   winMarketsOnly: state.settings.winMarketsOnly,
   horseRaces: state.settings.horseRaces,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onReceiveAllSports: (sports) => dispatch(actions.setAllSports(sports)),
-  onUpdateCurrentSport: (sport) => dispatch(actions.setCurrentSport(sport)),
-  onUpdateMyMarkets: (markets) => dispatch(loadMyMarkets(markets)),
-  onUpdateSubmenuList: (submenuList) => dispatch(actions.updateSubmenuList(submenuList)),
-  onUpdateSubmenuCurrent: (submenuCurrent) => dispatch(actions.updateCurrentSubmenu(submenuCurrent)),
-});
+const mapDispatchToProps = {
+  setAllSports,
+  updateSubmenuList,
+  updateCurrentSubmenu,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AllSports);
+export default connect(mapStateToProps, mapDispatchToProps)(AllSports);

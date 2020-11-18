@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
-const Authentication = (props) => {
+const Authentication = ({ onLogin }) => {
   const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
   const [isSubscribed, setSubscribed] = useState(null);
   const [tokenGranted, setTokenGranted] = useState(null);
@@ -21,7 +21,7 @@ const Authentication = (props) => {
         } = await fetch('/api/request-access-token?tokenType=REFRESH_TOKEN').then((res) => res.json());
 
         if (error) {
-          props.onLogin(false);
+          onLogin(false);
           window.location.href = `${window.location.origin}/?error=${error.data ? error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
         } else {
           setCookie('accessToken', accessToken);

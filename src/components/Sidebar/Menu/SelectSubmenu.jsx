@@ -3,7 +3,7 @@ import React from 'react';
 import MarketSaveButton from './MarketSaveButton';
 
 export default ({
-  data, setSubmenu, submenuList, winMarketsOnly,
+  data, setSubmenu, submenuList,
 }) => {
   const dataWithoutRaces = data.filter((sport) => sport.type !== 'RACE');
 

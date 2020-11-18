@@ -146,7 +146,6 @@ const MyMarkets = (props) => {
           }
           setSubmenu={setSubmenu}
           submenuList={submenuList}
-          winMarketsOnly={props.winMarketsOnly}
         />
       }
     </List>

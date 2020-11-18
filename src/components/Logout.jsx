@@ -9,7 +9,7 @@ const Logout = ({ loggedIn, setLoggedIn }) => {
   useEffect(() => {
     fetch('/api/logout')
       .then((res) => res.json())
-      .then((logout) => {
+      .then(() => {
         removeCookie('sessionKey');
         removeCookie('accessToken');
         removeCookie('refreshToken');

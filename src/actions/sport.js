@@ -23,11 +23,6 @@ export const updateSubmenuMyMarkets = (submenu) => ({
   payload: submenu,
 });
 
-export const setCurrentSport = (sport) => ({
-  type: 'SPORTS_CURRENT',
-  payload: sport,
-});
-
 export const setCurrentMarket = (market) => ({
   type: 'CURRENT_MARKET',
   payload: market,

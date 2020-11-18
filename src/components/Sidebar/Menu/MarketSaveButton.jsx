@@ -3,10 +3,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { loadMyMarkets } from '../../../actions/market';
 
-const MarketSaveButton = ({ sport, myMarkets, onUpdateMyMarkets }) => {
+const MarketSaveButton = ({ sport, myMarkets, loadMyMarkets }) => {
   const marketItemSaved = myMarkets.findIndex((item) => item.id === sport.id && item.type == sport.type && item.name == sport.name) !== -1;
 
-  const updateMyMarkets = (marketItemSaved, id, name, type, children) => (e) => {
+  const updateMyMarkets = (marketItemSaved, id, name, type, children) => () => {
     /*
       marketItemSaved - whether it is saved or not
       id - id for the selection
@@ -16,6 +16,8 @@ const MarketSaveButton = ({ sport, myMarkets, onUpdateMyMarkets }) => {
     const marketSelection = {
       id, name, type, children,
     };
+
+    console.log(marketSelection);
 
     fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
       headers: {
@@ -27,9 +29,9 @@ const MarketSaveButton = ({ sport, myMarkets, onUpdateMyMarkets }) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        onUpdateMyMarkets(res);
+        loadMyMarkets(res);
       })
-      .catch((res) => { });
+      .catch(() => {});
   };
 
   return (
@@ -52,11 +54,8 @@ const mapStateToProps = (state) => ({
   myMarkets: state.market.myMarkets,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onUpdateMyMarkets: (markets) => dispatch(loadMyMarkets(markets)),
-});
+const mapDispatchToProps = {
+  loadMyMarkets,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MarketSaveButton);
+export default connect(mapStateToProps, mapDispatchToProps)(MarketSaveButton);

@@ -4,9 +4,6 @@ const initialState = {
   submenuListMyMarkets: {},
   currentSubmenu: '',
   currentSubmenuMyMarkets: '',
-  currentSport: {
-    currentEvent: undefined,
-  },
   currentMarket: undefined,
 };
 
@@ -22,8 +19,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, currentSubmenu: action.payload };
     case 'UPDATE_SUBMENU_CURRENT_MYMARKETS':
       return { ...state, currentSubmenuMyMarkets: action.payload };
-    case 'SPORTS_CURRENT':
-      return { ...state, currentSport: action.payload };
     case 'CURRENT_MARKET':
       return { ...state, currentMarket: action.payload };
     default:

@@ -1,9 +1,7 @@
 import { Divider, ListItem, ListItemText } from '@material-ui/core';
 import React from 'react';
 
-export default ({
-  type, data, isLast, submenuList, deselectSubmenu,
-}) => (
+export default ({ type, data, isLast, submenuList, deselectSubmenu }) => (
   <>
     <ListItem
       button
@@ -17,9 +15,7 @@ export default ({
       }}
       style={{ background: '#f2ececc9' }}
     >
-      <ListItemText style={{ zIndex: 500, color: isLast ? 'black' : '#999797' }}>
-        {data.name}
-      </ListItemText>
+      <ListItemText style={{ zIndex: 500, color: isLast ? 'black' : '#999797' }}>{data.name}</ListItemText>
     </ListItem>
     <Divider />
   </>

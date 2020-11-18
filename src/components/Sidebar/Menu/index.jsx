@@ -5,9 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import {
-  updateCurrentSubmenu, updateSubmenuList, updateSubmenuListMyMarkets, updateSubmenuMyMarkets,
-} from '../../../actions/sport';
+import { updateCurrentSubmenu, updateSubmenuList, updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from '../../../actions/sport';
 import useStyles from '../../Styles/Styles';
 import ActiveBets from './ActiveBets';
 import AllSports from './AllSports';
@@ -42,28 +40,25 @@ const ExpansionPanelSummary = withStyles({
   },
 })(MultiExpansionPanelSummary);
 
-const Menu = (props) => {
+const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const [expanded, setExpanded] = useState('my_markets');
 
   const classes = useStyles();
 
   const handleChange = (tab) => (event, newExpanded) => {
     if (expanded === tab && tab === 'all_sports') {
-      props.onUpdateSubmenuCurrent('');
-      props.onUpdateSubmenuList({});
+      updateCurrentSubmenu('');
+      updateSubmenuList({});
     } else if (expanded === tab && tab === 'my_markets') {
-      props.onUpdateSubmenuMyMarkets('');
-      props.onUpdateSubmenuListMyMarkets({});
+      updateSubmenuMyMarkets('');
+      updateSubmenuListMyMarkets({});
       return;
     }
     setExpanded(newExpanded ? tab : false);
   };
 
   const createExpansionPanelSummary = (name) => (
-    <ExpansionPanelSummary
-      aria-controls="panel1a-content"
-      id="panel1a-header"
-    >
+    <ExpansionPanelSummary aria-controls="panel1a-content" id="panel1a-header">
       {createTitle(name)}
     </ExpansionPanelSummary>
   );
@@ -78,26 +73,17 @@ const Menu = (props) => {
 
   return (
     <>
-      <ExpansionPanel
-        expanded={expanded === 'my_markets'}
-        onChange={handleChange('my_markets')}
-      >
+      <ExpansionPanel expanded={expanded === 'my_markets'} onChange={handleChange('my_markets')}>
         {createExpansionPanelSummary('My Markets')}
         <MyMarkets />
       </ExpansionPanel>
 
-      <ExpansionPanel
-        expanded={expanded === 'all_sports'}
-        onChange={handleChange('all_sports')}
-      >
+      <ExpansionPanel expanded={expanded === 'all_sports'} onChange={handleChange('all_sports')}>
         {createExpansionPanelSummary('All Sports')}
         <AllSports />
       </ExpansionPanel>
 
-      <ExpansionPanel
-        expanded={expanded === 'active_bets'}
-        onChange={handleChange('active_bets')}
-      >
+      <ExpansionPanel expanded={expanded === 'active_bets'} onChange={handleChange('active_bets')}>
         {createExpansionPanelSummary('Active Bets')}
         <ActiveBets />
       </ExpansionPanel>
@@ -105,11 +91,11 @@ const Menu = (props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  onUpdateSubmenuCurrent: (submenuCurrent) => dispatch(updateCurrentSubmenu(submenuCurrent)),
-  onUpdateSubmenuList: (submenuList) => dispatch(updateSubmenuList(submenuList)),
-  onUpdateSubmenuMyMarkets: (submenuCurrent) => dispatch(updateSubmenuMyMarkets(submenuCurrent)),
-  onUpdateSubmenuListMyMarkets: (submenu) => dispatch(updateSubmenuListMyMarkets(submenu)),
-});
+const mapDispatchToProps = {
+  updateCurrentSubmenu,
+  updateSubmenuList,
+  updateSubmenuMyMarkets,
+  updateSubmenuListMyMarkets,
+};
 
 export default connect(null, mapDispatchToProps)(Menu);
