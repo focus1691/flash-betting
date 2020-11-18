@@ -12,6 +12,7 @@ export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setChangeMade(false);

@@ -63,7 +63,7 @@ const Account = ({
       <div id="sidebar-header">
         <p id="flag-name">
           {name}
-          <button id="logout" onClick={handleLogout()}>
+          <button type="button" id="logout" onClick={handleLogout()}>
             <img
               alt="Logout"
               src={`${window.location.origin}/icons/logout.png`}

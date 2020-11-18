@@ -13,8 +13,9 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
-        onClick={(e) => {
+        onClick={() => {
           setChangeMade(false);
           setItem('horseRaces', horseRaces);
         }}
@@ -32,12 +33,12 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         </Typography>
       </AppBar>
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.GB}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: !horseRaces.GB,
@@ -56,18 +57,18 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="UK Races"
       />
       <br />
       {renderSaveBtn()}
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.IE}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -86,16 +87,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="Irish Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.FR}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -114,16 +115,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="French Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.DE}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -142,16 +143,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="German Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.IT}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -170,17 +171,17 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="Italian Races"
       />
       <br />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.AE}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -199,16 +200,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="UAE Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.TR}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -227,16 +228,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="Turkish Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.SG}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -255,16 +256,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="Singaporean Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.SE}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -283,16 +284,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="Swedish Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.US}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -311,16 +312,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="USA Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.AU}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -339,16 +340,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="Australian Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.NZ}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -367,16 +368,16 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="New Zealand Races"
       />
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={horseRaces.ZA}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleHorseRaces({
                 GB: horseRaces.GB,
@@ -395,7 +396,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
               });
             }}
           />
-        }
+        )}
         label="South African Races"
       />
     </>

@@ -13,6 +13,7 @@ export default ({ sounds, toggleSounds, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setItem('sounds', sounds);

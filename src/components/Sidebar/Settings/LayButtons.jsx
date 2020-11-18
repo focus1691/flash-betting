@@ -12,6 +12,7 @@ export default ({ layBtns, updateLayBtn, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setItem('layBtns', layBtns);

@@ -84,7 +84,7 @@ const PremiumPopup = ({
             options={{ authorization: clientToken }}
             onInstance={(instance) => { setInstance(instance); }}
           />
-          <button onClick={buy}>Buy</button>
+          <button type="button" onClick={buy}>Buy</button>
         </>
       );
     }

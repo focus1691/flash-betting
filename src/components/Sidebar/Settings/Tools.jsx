@@ -13,6 +13,7 @@ export default ({ tools, toggleTools, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setChangeMade(false);

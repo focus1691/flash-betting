@@ -15,6 +15,7 @@ export default ({
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setItem('marketInfo', marketInfo);

@@ -13,6 +13,7 @@ export default ({ winMarketsOnly, updateWinMarketsOnly, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setItem('winMarketsOnly', winMarketsOnly);

@@ -13,6 +13,7 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
           <tr className="menu-bets-heading">
             <td>
               <button
+                type="button"
                 style={{
                   height: '22px',
                   width: 'auto',

@@ -13,7 +13,7 @@ const ConnectionStatus = ({
   return (
     <div className="connectionbug-container" style={{ visibility: connectionError !== '' ? 'visible' : 'hidden' }}>
       <p className="connectionbug-text">{connectionError}</p>
-      <button onClick={resubscribe}>Resubscribe</button>
+      <button type="button" onClick={resubscribe}>Resubscribe</button>
     </div>
   );
 };

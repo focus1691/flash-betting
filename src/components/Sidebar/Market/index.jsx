@@ -128,6 +128,7 @@ const Market = ({
         <Typography variant="h6" className={classes.title}>
           {name}
           <button
+            type="button"
             className="refresh-btn"
             style={{
               height: '22px', width: 'auto', display: 'inline-block', zIndex: '999', float: 'right', marginTop: '0.3em',
@@ -150,6 +151,7 @@ const Market = ({
         <Typography variant="h6" className={classes.title}>
           {name}
           <button
+            type="button"
             className="cancel-order-btn"
             style={{
               height: '22px', width: 'auto', display: 'inline-block', zIndex: '999', float: 'right', marginTop: '0.3em',

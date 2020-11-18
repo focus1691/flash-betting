@@ -82,9 +82,9 @@ const OrderRow = memo(({
               </table>
             </td>
             <td colSpan={1} rowSpan={4} style={{ verticalAlign: 'top', minHeight: '1.675em' }}>
-              <button>0</button>
-              <button onClick={handleButtonClick}>{priceType === 'STAKE' ? 'S' : 'L'}</button>
-              <button onClick={cancelAllOrdersOnSelection}>K</button>
+              <button type="button">0</button>
+              <button type="button" onClick={handleButtonClick}>{priceType === 'STAKE' ? 'S' : 'L'}</button>
+              <button type="button" onClick={cancelAllOrdersOnSelection}>K</button>
             </td>
             <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
               <table className="lay-table">

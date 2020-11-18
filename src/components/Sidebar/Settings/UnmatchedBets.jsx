@@ -13,6 +13,7 @@ export default ({ unmatchedBets, toggleUnmatchedBets, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setItem('unmatchedBets', unmatchedBets);

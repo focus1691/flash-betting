@@ -19,7 +19,7 @@ const Bet = memo(({
         handleRightClick(bet);
       }}
     >
-      <button className="cancel-order-btn" style={{ height: '22px', width: 'auto' }} onClick={handleClick}>
+      <button type="button" className="cancel-order-btn" style={{ height: '22px', width: 'auto' }} onClick={handleClick}>
         <img src={`${window.location.origin}/icons/error.png`} alt="X" />
       </button>
       <td>{twoDecimalPlaces(bet.price)}</td>

@@ -21,6 +21,7 @@ export default ({ defaultView, toggleDefaultView, premiumMember, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setItem('defaultView', defaultView);

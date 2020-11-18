@@ -13,6 +13,7 @@ export default ({ graphs, toggleGraph, classes }) => {
 
     return (
       <button
+        type="button"
         className="save-btn"
         onClick={() => {
           setItem('graphs', graphs);
