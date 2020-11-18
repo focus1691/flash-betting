@@ -122,52 +122,56 @@ const App = ({
       const unmatched = {};
       const matched = {};
       for (let i = 0; i < betfairBets.length; i += 1) {
-        const data = betfairBets[i];
-        const bet = {
-          strategy: 'None',
-          marketId: data.marketId,
-          side: data.side,
-          price: data.status === 'EXECUTION_COMPLETE' ? data.averagePriceMatched : data.priceSize.price,
-          size: data.status === 'EXECUTION_COMPLETE' ? data.sizeMatched : data.priceSize.size,
-          sizeMatched: data.sizeMatched,
-          sizeRemaining: data.sizeRemaining,
-          selectionId: data.selectionId,
-          rfs: data.customerStrategyRef ? data.customerStrategyRef : 'None',
-          betId: data.betId,
-        };
+        const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef } = betfairBets[i];
 
-        const isStopLossMatched = checkStopLossTrigger(stopLossList, bet.selectionId, bet);
-        if (isStopLossMatched) {
-          const newStopLossList = { ...stopLossList };
-          newStopLossList[bet.selectionId].assignedIsOrderMatched = true;
-          updateStopLossList(newStopLossList);
-          updateOrderMatched(newStopLossList[bet.selectionId]);
-        }
-
-        const tosTriggered = checkTickOffsetTrigger(tickOffsetList, bet);
-        if (tosTriggered) {
-          const newTickOffsetList = { ...tickOffsetList };
-          removeBet(newTickOffsetList[bet.rfs]);
-          placeOrder({
+        if (!customerStrategyRef) {
+          const bet = {
+            strategy: 'None',
             marketId,
-            selectionId: bet.selectionId,
-            side: tickOffsetList[bet.rfs].side,
-            size: tickOffsetList[bet.rfs].size,
-            price: tickOffsetList[bet.rfs].price,
-            unmatchedBets,
-            matchedBets,
-          });
-          delete newTickOffsetList[bet.rfs];
-          updateTickOffsetList(newTickOffsetList);
-        }
-
-        if (bet.status === 'EXECUTION_COMPLETE') {
-          matched[bet.betId] = bet;
-        } else if (bet.status === 'EXECUTABLE') {
-          unmatched[bet.betId] = bet;
-
-          if (unmatchedBets[bet.betId] && (!('sizeRemaining' in unmatchedBets[bet.betId]) || unmatchedBets[bet.betId].sizeRemaining != bet.sizeRemaining || unmatchedBets[bet.betId].sizeMatched != bet.sizeMatched)) {
-            betsChanged = true;
+            side,
+            price: status === 'EXECUTION_COMPLETE' ? averagePriceMatched : priceSize.price,
+            size: status === 'EXECUTION_COMPLETE' ? sizeMatched : priceSize.size,
+            sizeMatched,
+            sizeRemaining,
+            selectionId,
+            rfs: customerStrategyRef || 'None',
+            betId,
+          };
+  
+          const isStopLossMatched = checkStopLossTrigger(stopLossList, selectionId, bet);
+          if (isStopLossMatched) {
+            const newStopLossList = { ...stopLossList };
+            newStopLossList[selectionId].assignedIsOrderMatched = true;
+            updateStopLossList(newStopLossList);
+            updateOrderMatched(newStopLossList[selectionId]);
+          }
+  
+          const tosTriggered = checkTickOffsetTrigger(tickOffsetList, bet);
+          if (tosTriggered) {
+            const newTickOffsetList = { ...tickOffsetList };
+            removeBet(newTickOffsetList[bet.rfs]);
+            placeOrder({
+              marketId,
+              selectionId,
+              side: tickOffsetList[bet.rfs].side,
+              size: tickOffsetList[bet.rfs].size,
+              price: tickOffsetList[bet.rfs].price,
+              unmatchedBets,
+              matchedBets,
+            });
+            delete newTickOffsetList[bet.rfs];
+            updateTickOffsetList(newTickOffsetList);
+          }
+  
+          if (status === 'EXECUTION_COMPLETE') {
+            matched[betId] = bet;
+          }
+          else if (status === 'EXECUTABLE') {
+            unmatched[betId] = bet;
+  
+            if (unmatchedBets[betId] && (!('sizeRemaining' in unmatchedBets[betId]) || unmatchedBets[betId].sizeRemaining != sizeRemaining || unmatchedBets[betId].sizeMatched != sizeMatched)) {
+              betsChanged = true;
+            }
           }
         }
       }
