@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { openGraph } from '../../../actions/draggable';
 
-const Graph = ({ marketOpen, marketId, selection, onOpenGraph }) => {
+const Graph = ({ marketOpen, marketId, selection, openGraph }) => {
   const [graph, setGraph] = useState(null);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const Graph = ({ marketOpen, marketId, selection, onOpenGraph }) => {
 
   return (
     <div id="menu-graph">
-      {graph ? <img alt="Chart" src={graph} onDoubleClick={onOpenGraph()} /> : null}
+      {graph ? <img alt="Chart" src={graph} onDoubleClick={openGraph} /> : null}
     </div>
   );
 };
@@ -25,8 +25,6 @@ const mapStateToProps = (state) => ({
   selection: state.market.runnerSelection,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onOpenGraph: () => () => dispatch(openGraph()),
-});
+const mapDispatchToProps = { openGraph };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Graph);
