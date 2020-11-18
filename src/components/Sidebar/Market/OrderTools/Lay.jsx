@@ -12,8 +12,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions/lay';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
-import StyledMenu from '../../../MaterialUI/StyledMenu';
-import StyledMenuItem from '../../../MaterialUI/StyledMenuItem';
+import StyledMenu from '../../../../assets/jss/StyledMenu';
+import StyledMenuItem from '../../../../assets/jss/StyledMenuItem';
 import dropdownRunnerStyle from '../../../../assets/jss/DropdownList';
 
 const useStyles = makeStyles((theme) => ({

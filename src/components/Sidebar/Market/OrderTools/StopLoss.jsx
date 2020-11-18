@@ -10,8 +10,8 @@ import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions/stopLoss';
-import StyledMenu from '../../../MaterialUI/StyledMenu';
-import StyledMenuItem from '../../../MaterialUI/StyledMenuItem';
+import StyledMenu from '../../../../assets/jss/StyledMenu';
+import StyledMenuItem from '../../../../assets/jss/StyledMenuItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
