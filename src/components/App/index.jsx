@@ -3,8 +3,24 @@ import { useCookies } from 'react-cookie';
 import { connect } from 'react-redux';
 import { setIsLoading, setPremiumStatus } from '../../actions/settings';
 import {
-  setMarketId, setMarketName, setMarketDescription, setMarketStartTime, setEvent, setEventType, closeMarket, loadLadder, setSortedLadder,
-  setRunner, loadRunners, loadNonRunners, setMarketStatus, setInPlay, setInPlayTime, setMarketPL, updateLadderOrder, updateExcludedLadders,
+  setMarketId,
+  setMarketName,
+  setMarketDescription,
+  setMarketStartTime,
+  setEvent,
+  setEventType,
+  closeMarket,
+  loadLadder,
+  setSortedLadder,
+  setRunner,
+  loadRunners,
+  loadNonRunners,
+  setMarketStatus,
+  setInPlay,
+  setInPlayTime,
+  setMarketPL,
+  updateLadderOrder,
+  updateExcludedLadders,
 } from '../../actions/market';
 import { updateStopLossList } from '../../actions/stopLoss';
 import { updateTickOffsetList } from '../../actions/tickOffset';
@@ -301,58 +317,58 @@ const App = ({
         const newUnmatchedBets = { ...unmatchedBets };
         const newMatchedBets = { ...matchedBets };
         for (let i = 0; i < data.oc.length; i += 1) {
-          if (!data.oc[i].orc) continue;
+          if (data.oc[i].orc) {
+            for (let j = 0; j < data.oc[i].orc.length; j += 1) {
+              if (data.oc[i].orc[j].uo) {
+                for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
+                  // If the bet isn't in the unmatchedBets, we should delete it.
+                  if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
+                    //! this is what happens when an bet doesn't get any matched
+                    delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
 
-          for (let j = 0; j < data.oc[i].orc.length; j += 1) {
-            if (!data.oc[i].orc[j].uo) continue;
+                    updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
+                  } else if (data.oc[i].orc[j].uo[k].sr === 0) {
+                    // this is what happens when an bet is finished
+                    // if they canceled early
+                    newMatchedBets[data.oc[i].orc[j].uo[k].id] = { ...newUnmatchedBets[data.oc[i].orc[j].uo[k].id], size: parseFloat(data.oc[i].orc[j].uo[k].sm) };
+                    delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
 
-            for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
-              // If the bet isn't in the unmatchedBets, we should delete it.
-              if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
-                //! this is what happens when an bet doesn't get any matched
-                delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
+                    updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
+                  }
 
-                updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
-              } else if (data.oc[i].orc[j].uo[k].sr === 0) {
-                // this is what happens when an bet is finished
-                // if they canceled early
-                newMatchedBets[data.oc[i].orc[j].uo[k].id] = { ...newUnmatchedBets[data.oc[i].orc[j].uo[k].id], size: parseFloat(data.oc[i].orc[j].uo[k].sm) };
-                delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
+                  const isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
+                  if (isStopLossMatched) {
+                    const newStopLossList = { ...stopLossList };
+                    newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
+                    updateStopLossList(newStopLossList);
+                    updateOrderMatched(newStopLossList[data.oc[i].orc[j].id]);
+                  }
 
-                updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
-              }
-
-              const isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
-              if (isStopLossMatched) {
-                const newStopLossList = { ...stopLossList };
-                newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
-                updateStopLossList(newStopLossList);
-                updateOrderMatched(newStopLossList[data.oc[i].orc[j].id]);
-              }
-
-              //* Check TOS matched and place bet / remove from database
-              const tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
-              if (tosTriggered) {
-                const newTickOffsetList = { ...tickOffsetList };
-                removeBet(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
-                placeOrder({
-                  marketId: data.oc[i].id,
-                  selectionId: data.oc[i].orc[j].id,
-                  side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
-                  size: data.oc[i].orc[j].uo[k].s,
-                  price: data.oc[i].orc[j].uo[k].p,
-                  unmatchedBets,
-                  matchedBets,
-                });
-                delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
-                updateTickOffsetList(newTickOffsetList);
+                  //* Check TOS matched and place bet / remove from database
+                  const tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
+                  if (tosTriggered) {
+                    const newTickOffsetList = { ...tickOffsetList };
+                    removeBet(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
+                    placeOrder({
+                      marketId: data.oc[i].id,
+                      selectionId: data.oc[i].orc[j].id,
+                      side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
+                      size: data.oc[i].orc[j].uo[k].s,
+                      price: data.oc[i].orc[j].uo[k].p,
+                      unmatchedBets,
+                      matchedBets,
+                    });
+                    delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
+                    updateTickOffsetList(newTickOffsetList);
+                  }
+                }
               }
             }
           }
         }
       }
     },
-    [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList]
+    [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList],
   );
 
   const onMarketDisconnect = useCallback(
