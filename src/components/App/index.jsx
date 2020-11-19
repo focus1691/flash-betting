@@ -116,12 +116,9 @@ const App = ({
   const retrieveBets = async () => {
     if (!marketId) return;
     try {
-      let betsChanged = false;
       const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`)
         .then((res) => res.json())
         .then((res) => res.currentOrders);
-      const unmatched = {};
-      const matched = {};
       for (let i = 0; i < betfairBets.length; i += 1) {
         const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef } = betfairBets[i];
 
@@ -174,25 +171,11 @@ const App = ({
             if (!unmatchedBets[betId]) {
               // Add it to unmatched
             }
-            else if (unmatched[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {
+            else if (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {
               // update the prices
             }
           }
-  
-          if (status === 'EXECUTION_COMPLETE') {
-            matched[betId] = bet;
-          }
-          else if (status === 'EXECUTABLE') {
-            unmatched[betId] = bet;
-  
-            if (unmatchedBets[betId] && (!unmatchedBets[betId].sizeRemaining || unmatchedBets[betId].sizeRemaining != sizeRemaining || unmatchedBets[betId].sizeMatched != sizeMatched)) {
-              betsChanged = true;
-            }
-          }
         }
-      }
-      if (betsChanged || !compareKeys(matched, matchedBets) || !compareKeys(unmatched, unmatchedBets)) {
-        updateOrders({ matched, unmatched });
       }
     } catch (e) {
       // console.log(e);
