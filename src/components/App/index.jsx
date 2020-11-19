@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 import { connect } from 'react-redux';
@@ -158,9 +159,24 @@ const App = ({
               price: tickOffsetList[bet.rfs].price,
               unmatchedBets,
               matchedBets,
+              customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
             });
             delete newTickOffsetList[bet.rfs];
             updateTickOffsetList(newTickOffsetList);
+          }
+
+          // Moved from unmatched to matched
+          if (status === 'EXECUTION_COMPLETE' && !matchedBets[betId]) {
+            //
+          }
+
+          else if (status === 'EXECUTABLE') {
+            if (!unmatchedBets[betId]) {
+              // Add it to unmatched
+            }
+            else if (unmatched[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {
+              // update the prices
+            }
           }
   
           if (status === 'EXECUTION_COMPLETE') {
@@ -169,7 +185,7 @@ const App = ({
           else if (status === 'EXECUTABLE') {
             unmatched[betId] = bet;
   
-            if (unmatchedBets[betId] && (!('sizeRemaining' in unmatchedBets[betId]) || unmatchedBets[betId].sizeRemaining != sizeRemaining || unmatchedBets[betId].sizeMatched != sizeMatched)) {
+            if (unmatchedBets[betId] && (!unmatchedBets[betId].sizeRemaining || unmatchedBets[betId].sizeRemaining != sizeRemaining || unmatchedBets[betId].sizeMatched != sizeMatched)) {
               betsChanged = true;
             }
           }
@@ -234,7 +250,7 @@ const App = ({
         if (mc.rc) {
           let newStopEntryList = { ...stopEntryList };
           for (i = 0; i < mc.rc.length; i += 1) {
-            if (mc.rc[i].id in ladders) {
+            if (ladders[mc.rc[i].id]) {
               //* Runner found so we update our object with the mc runner data
               ladders[mc.rc[i].id] = UpdateLadder(ladders[mc.rc[i].id], mc.rc[i]);
 
@@ -260,6 +276,7 @@ const App = ({
                     price: stopLossMatched.stopPrice,
                     unmatchedBets,
                     matchedBets,
+                    customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                   });
                   const newStopLossList = { ...stopLossList };
                   delete newStopLossList[SL.selectionId];
@@ -361,6 +378,7 @@ const App = ({
                       price: data.oc[i].orc[j].uo[k].p,
                       unmatchedBets,
                       matchedBets,
+                      customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                     });
                     delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
                     updateTickOffsetList(newTickOffsetList);

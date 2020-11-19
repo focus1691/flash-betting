@@ -6,14 +6,9 @@ export const updateOrders = (order) => ({
   payload: order,
 });
 
-export const addPendingOrders = (order) => ({
-  type: 'UPDATE_PENDING',
-  payload: order,
-});
-
-export const removePendingOrder = (price) => ({
-  type: 'REMOVE_PENDING',
-  payload: price,
+export const addUnmatchedBet = (bet) => ({
+  type: 'ADD_UNMATCHED_BET',
+  payload: bet,
 });
 
 export const placeOrder = (order) => {
