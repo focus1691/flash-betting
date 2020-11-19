@@ -48,7 +48,6 @@ import { stopEntryListChange, stopLossCheck } from '../../utils/ExchangeStreamin
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/ExchangeStreaming/OCMHelper';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
-import compareKeys from '../../utils/Algorithms/CompareKeys';
 import ConnectionStatus from '../ConnectionStatus';
 import GetSubscriptionErrorType from '../../utils/ErrorMessages/GetSubscriptionErrorType';
 import useInterval from '../../utils/CustomHooks/useInterval';
@@ -123,20 +122,8 @@ const App = ({
         const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef } = betfairBets[i];
 
         if (!customerStrategyRef) {
-          const bet = {
-            strategy: 'None',
-            marketId,
-            side,
-            price: status === 'EXECUTION_COMPLETE' ? averagePriceMatched : priceSize.price,
-            size: status === 'EXECUTION_COMPLETE' ? sizeMatched : priceSize.size,
-            sizeMatched,
-            sizeRemaining,
-            selectionId,
-            rfs: customerStrategyRef || 'None',
-            betId,
-          };
   
-          const isStopLossMatched = checkStopLossTrigger(stopLossList, selectionId, bet);
+          const isStopLossMatched = checkStopLossTrigger(stopLossList[selectionId], customerStrategyRef, sizeRemaining);
           if (isStopLossMatched) {
             const newStopLossList = { ...stopLossList };
             newStopLossList[selectionId].assignedIsOrderMatched = true;
@@ -144,22 +131,25 @@ const App = ({
             updateOrderMatched(newStopLossList[selectionId]);
           }
   
-          const tosTriggered = checkTickOffsetTrigger(tickOffsetList, bet);
-          if (tosTriggered) {
-            const newTickOffsetList = { ...tickOffsetList };
-            removeBet(newTickOffsetList[bet.rfs]);
-            placeOrder({
-              marketId,
-              selectionId,
-              side: tickOffsetList[bet.rfs].side,
-              size: tickOffsetList[bet.rfs].size,
-              price: tickOffsetList[bet.rfs].price,
-              unmatchedBets,
-              matchedBets,
-              customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
-            });
-            delete newTickOffsetList[bet.rfs];
-            updateTickOffsetList(newTickOffsetList);
+
+          if (tickOffsetList[customerStrategyRef]) {
+            const tosTriggered = checkTickOffsetTrigger(tickOffsetList[customerStrategyRef], sizeMatched);
+            if (tosTriggered) {
+              const newTickOffsetList = { ...tickOffsetList };
+              removeBet(newTickOffsetList[customerStrategyRef]);
+              placeOrder({
+                marketId,
+                selectionId,
+                side: tickOffsetList[customerStrategyRef].side,
+                size: tickOffsetList[customerStrategyRef].size,
+                price: tickOffsetList[customerStrategyRef].price,
+                unmatchedBets,
+                matchedBets,
+                customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
+              });
+              delete newTickOffsetList[customerStrategyRef];
+              updateTickOffsetList(newTickOffsetList);
+            }
           }
 
           // Moved from unmatched to matched
@@ -340,31 +330,34 @@ const App = ({
                     updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
                   }
 
-                  const isStopLossMatched = checkStopLossTrigger(stopLossList, data.oc[i].orc[j].id, data.oc[i].orc[j].uo[k]);
-                  if (isStopLossMatched) {
-                    const newStopLossList = { ...stopLossList };
-                    newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
-                    updateStopLossList(newStopLossList);
-                    updateOrderMatched(newStopLossList[data.oc[i].orc[j].id]);
+                  if (stopLossList[data.oc[i].orc[j].id]) {
+                    const isStopLossMatched = checkStopLossTrigger(stopLossList[data.oc[i].orc[j].id], data.oc[i].orc[j].uo[k].rfs, data.oc[i].orc[j].uo[k].sr);
+                    if (isStopLossMatched) {
+                      const newStopLossList = { ...stopLossList };
+                      newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
+                      updateStopLossList(newStopLossList);
+                      updateOrderMatched(newStopLossList[data.oc[i].orc[j].id]);
+                    }
                   }
 
-                  //* Check TOS matched and place bet / remove from database
-                  const tosTriggered = checkTickOffsetTrigger(tickOffsetList, data.oc[i].orc[j].uo[k]);
-                  if (tosTriggered) {
-                    const newTickOffsetList = { ...tickOffsetList };
-                    removeBet(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
-                    placeOrder({
-                      marketId: data.oc[i].id,
-                      selectionId: data.oc[i].orc[j].id,
-                      side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
-                      size: data.oc[i].orc[j].uo[k].s,
-                      price: data.oc[i].orc[j].uo[k].p,
-                      unmatchedBets,
-                      matchedBets,
-                      customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
-                    });
-                    delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
-                    updateTickOffsetList(newTickOffsetList);
+                  if (tickOffsetList[data.oc[i].orc[j].uo[k].rfs]) {
+                    const tosTriggered = checkTickOffsetTrigger(tickOffsetList[data.oc[i].orc[j].uo[k].rfs], data.oc[i].orc[j].uo[k].sm);
+                    if (tosTriggered) {
+                      const newTickOffsetList = { ...tickOffsetList };
+                      removeBet(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
+                      placeOrder({
+                        marketId: data.oc[i].id,
+                        selectionId: data.oc[i].orc[j].id,
+                        side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
+                        size: data.oc[i].orc[j].uo[k].s,
+                        price: data.oc[i].orc[j].uo[k].p,
+                        unmatchedBets,
+                        matchedBets,
+                        customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
+                      });
+                      delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
+                      updateTickOffsetList(newTickOffsetList);
+                    }
                   }
                 }
               }
