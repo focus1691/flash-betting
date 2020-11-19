@@ -123,14 +123,15 @@ const App = ({
 
         if (!customerStrategyRef) {
   
-          const isStopLossMatched = checkStopLossTrigger(stopLossList[selectionId], customerStrategyRef, sizeRemaining);
-          if (isStopLossMatched) {
-            const newStopLossList = { ...stopLossList };
-            newStopLossList[selectionId].assignedIsOrderMatched = true;
-            updateStopLossList(newStopLossList);
-            updateOrderMatched(newStopLossList[selectionId]);
-          }
-  
+          if (stopLossList[selectionId]) {
+            const isStopLossMatched = checkStopLossTrigger(stopLossList[selectionId], customerStrategyRef, sizeRemaining);
+            if (isStopLossMatched) {
+              const newStopLossList = { ...stopLossList };
+              newStopLossList[selectionId].assignedIsOrderMatched = true;
+              updateStopLossList(newStopLossList);
+              updateOrderMatched(newStopLossList[selectionId]);
+            }
+          }  
 
           if (tickOffsetList[customerStrategyRef]) {
             const tosTriggered = checkTickOffsetTrigger(tickOffsetList[customerStrategyRef], sizeMatched);
