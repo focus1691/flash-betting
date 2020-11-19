@@ -97,10 +97,10 @@ describe('bets reducer', () => {
     })
   });
 
-  it('should handle UPDATE_BET_EXECUTION_COMPLETE', () => {
+  it('should handle SET_BET_EXECUTION_COMPLETE', () => {
     expect(
       reducer(state1, {
-        type: 'UPDATE_BET_EXECUTION_COMPLETE',
+        type: 'SET_BET_EXECUTION_COMPLETE',
         payload: {
           betId: '23232232',
           sizeMatched: 2,

@@ -39,7 +39,7 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'UPDATE_BET_EXECUTION_COMPLETE':
+    case 'SET_BET_EXECUTION_COMPLETE':
       return {
         ...state,
         bets: {

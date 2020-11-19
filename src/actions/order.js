@@ -11,6 +11,16 @@ export const addUnmatchedBet = (bet) => ({
   payload: bet,
 });
 
+export const updateSizeMatched = (data) => ({
+  type: 'UPDATE_SIZE_MATCHED',
+  payload: data,
+});
+
+export const setBetExecutionComplete = (data) => ({
+  type: 'SET_BET_EXECUTION_COMPLETE',
+  payload: data,
+});
+
 export const placeOrder = (order) => {
   order.size = order.side === 'LAY' ? calcLayBet(order.price, order.size).liability : parseFloat(order.size);
   order.price = parseFloat(order.price);

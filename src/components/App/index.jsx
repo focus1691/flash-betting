@@ -38,7 +38,7 @@ import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
-import { placeOrder, updateOrders } from '../../actions/order';
+import { placeOrder, updateOrders, addUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/order';
 import { removeBet, updateTicks, updateOrderMatched } from '../../http/helper';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';
@@ -96,6 +96,9 @@ const App = ({
   updateBackList,
   placeOrder,
   updateOrders,
+  addUnmatchedBet,
+  updateSizeMatched,
+  setBetExecutionComplete,
   updateFillOrKillList,
 }) => {
   const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
@@ -153,17 +156,30 @@ const App = ({
             }
           }
 
-          // Moved from unmatched to matched
+          // Move from unmatched to matched
           if (status === 'EXECUTION_COMPLETE' && !matchedBets[betId]) {
-            //
+            setBetExecutionComplete({ betId, sizeMatched, sizeRemaining });
           }
 
           else if (status === 'EXECUTABLE') {
             if (!unmatchedBets[betId]) {
               // Add it to unmatched
+              addUnmatchedBet({
+                strategy: 'None',
+                marketId,
+                side,
+                price: priceSize.price,
+                size: priceSize.size,
+                sizeMatched,
+                sizeRemaining,
+                selectionId,
+                rfs: customerStrategyRef || 'None',
+                betId,
+              })
             }
             else if (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {
               // update the prices
+              updateSizeMatched({ betId, sizeMatched, sizeRemaining });
             }
           }
         }
@@ -600,6 +616,9 @@ const mapDispatchToProps = {
   updateBackList,
   placeOrder,
   updateOrders,
+  addUnmatchedBet,
+  updateSizeMatched,
+  setBetExecutionComplete,
   updateFillOrKillList,
 };
 
