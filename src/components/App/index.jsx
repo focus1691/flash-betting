@@ -38,7 +38,7 @@ import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
-import { placeOrder, updateOrders, addUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/order';
+import { placeOrder, addUnmatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/order';
 import { removeBet, updateTicks, updateOrderMatched } from '../../http/helper';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';
@@ -95,8 +95,8 @@ const App = ({
   updateLayList,
   updateBackList,
   placeOrder,
-  updateOrders,
   addUnmatchedBet,
+  removeUnmatchedBet,
   updateSizeMatched,
   setBetExecutionComplete,
   updateFillOrKillList,
@@ -325,54 +325,51 @@ const App = ({
   const onReceiveOrderMessage = useCallback(
     async (data) => {
       if (data.oc) {
-        const newUnmatchedBets = { ...unmatchedBets };
-        const newMatchedBets = { ...matchedBets };
+        // const newUnmatchedBets = { ...unmatchedBets };
+        // const newMatchedBets = { ...matchedBets };
         for (let i = 0; i < data.oc.length; i += 1) {
           if (data.oc[i].orc) {
+            const { id: marketId } = data.oc[i];
             for (let j = 0; j < data.oc[i].orc.length; j += 1) {
               if (data.oc[i].orc[j].uo) {
+                const { id: selectionId } = data.oc[i].orc[j];
                 for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
                   // If the bet isn't in the unmatchedBets, we should delete it.
-                  if (data.oc[i].orc[j].uo[k].sr === 0 && data.oc[i].orc[j].uo[k].sm === 0) {
+                  const { id: betId, s: size, p: price, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
+                  if (sizeRemaining === 0 && sizeMatched === 0) {
                     //! this is what happens when an bet doesn't get any matched
-                    delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
-
-                    updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
-                  } else if (data.oc[i].orc[j].uo[k].sr === 0) {
-                    // this is what happens when an bet is finished
-                    // if they canceled early
-                    newMatchedBets[data.oc[i].orc[j].uo[k].id] = { ...newUnmatchedBets[data.oc[i].orc[j].uo[k].id], size: parseFloat(data.oc[i].orc[j].uo[k].sm) };
-                    delete newUnmatchedBets[data.oc[i].orc[j].uo[k].id];
-
-                    updateOrders({ unmatched: newUnmatchedBets, matched: newMatchedBets });
+                    removeUnmatchedBet({ betId })
+                  }
+                  else if (sizeRemaining === 0 || status === 'EXECUTION_COMPLETE') {
+                    setBetExecutionComplete({ betId, sizeMatched, sizeRemaining });
                   }
 
-                  if (stopLossList[data.oc[i].orc[j].id]) {
-                    const isStopLossMatched = checkStopLossTrigger(stopLossList[data.oc[i].orc[j].id], data.oc[i].orc[j].uo[k].rfs, data.oc[i].orc[j].uo[k].sr);
+                  if (stopLossList[selectionId]) {
+                    const isStopLossMatched = checkStopLossTrigger(stopLossList[selectionId], rfs, sizeRemaining);
                     if (isStopLossMatched) {
                       const newStopLossList = { ...stopLossList };
-                      newStopLossList[data.oc[i].orc[j].id].assignedIsOrderMatched = true;
+                      newStopLossList[selectionId].assignedIsOrderMatched = true;
                       updateStopLossList(newStopLossList);
-                      updateOrderMatched(newStopLossList[data.oc[i].orc[j].id]);
+                      updateOrderMatched(newStopLossList[selectionId]);
                     }
                   }
 
-                  if (tickOffsetList[data.oc[i].orc[j].uo[k].rfs]) {
-                    const tosTriggered = checkTickOffsetTrigger(tickOffsetList[data.oc[i].orc[j].uo[k].rfs], data.oc[i].orc[j].uo[k].sm);
+                  if (tickOffsetList[rfs]) {
+                    const tosTriggered = checkTickOffsetTrigger(tickOffsetList[rfs], sizeMatched);
                     if (tosTriggered) {
                       const newTickOffsetList = { ...tickOffsetList };
-                      removeBet(newTickOffsetList[data.oc[i].orc[j].uo[k].rfs]);
+                      removeBet(newTickOffsetList[rfs]);
                       placeOrder({
-                        marketId: data.oc[i].id,
-                        selectionId: data.oc[i].orc[j].id,
-                        side: tickOffsetList[data.oc[i].orc[j].uo[k].rfs].side,
-                        size: data.oc[i].orc[j].uo[k].s,
-                        price: data.oc[i].orc[j].uo[k].p,
+                        marketId,
+                        selectionId,
+                        side: tickOffsetList[rfs].side,
+                        size,
+                        price,
                         unmatchedBets,
                         matchedBets,
                         customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                       });
-                      delete newTickOffsetList[data.oc[i].orc[j].uo[k].rfs];
+                      delete newTickOffsetList[rfs];
                       updateTickOffsetList(newTickOffsetList);
                     }
                   }
@@ -383,7 +380,7 @@ const App = ({
         }
       }
     },
-    [unmatchedBets, matchedBets, stopLossList, tickOffsetList, updateOrders, placeOrder, updateStopLossList, updateTickOffsetList],
+    [stopLossList, tickOffsetList, removeUnmatchedBet, setBetExecutionComplete, updateStopLossList, placeOrder, unmatchedBets, matchedBets, updateTickOffsetList],
   );
 
   const onMarketDisconnect = useCallback(
@@ -615,8 +612,8 @@ const mapDispatchToProps = {
   updateLayList,
   updateBackList,
   placeOrder,
-  updateOrders,
   addUnmatchedBet,
+  removeUnmatchedBet,
   updateSizeMatched,
   setBetExecutionComplete,
   updateFillOrKillList,

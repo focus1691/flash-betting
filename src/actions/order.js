@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
 import { saveBet, removeBet } from '../http/helper';
 
@@ -8,6 +9,11 @@ export const updateOrders = (order) => ({
 
 export const addUnmatchedBet = (bet) => ({
   type: 'ADD_UNMATCHED_BET',
+  payload: bet,
+});
+
+export const removeUnmatchedBet = (bet) => ({
+  type: 'REMOVE_UNMATCHED_BET',
   payload: bet,
 });
 

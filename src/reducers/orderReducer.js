@@ -24,6 +24,14 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
+    case 'REMOVE_UNMATCHED_BET':
+      return {
+        ...state,
+        bets: {
+          ...state.bets,
+          unmatched: omit(state.bets.unmatched, action.payload.betId),
+        },
+      };
     case 'UPDATE_SIZE_MATCHED':
       return {
         ...state,
