@@ -36,7 +36,7 @@ export const setSelections = (selections) => ({
   payload: selections,
 });
 
-export const removeStopLossOrder = (order) => ({
-  type: 'REMOVE_STOP_LOSS_ORDER',
+export const removeStopLoss = (order) => ({
+  type: 'REMOVE_STOP_LOSS',
   payload: order,
 });

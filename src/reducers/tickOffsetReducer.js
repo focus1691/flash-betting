@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 const initialState = {
   selected: false,
   ticks: 2,
@@ -6,9 +8,7 @@ const initialState = {
   hedged: false,
   list: {}, //! rfs: {marketId: , selectionId: , price: , size: , side: , percentageTrigger: , rfs:}
 };
-initialState.text = `${initialState.ticks} ${initialState.units} [${
-  initialState.hedged ? 'x' : '-'
-}]`;
+initialState.text = `${initialState.ticks} ${initialState.units} [${initialState.hedged ? 'x' : '-'}]`;
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -26,10 +26,11 @@ const reducer = (state = initialState, action) => {
       return { ...state, hedged: action.payload };
     case 'UPDATE_TICK_OFFSET_LIST':
       return { ...state, list: action.payload };
-    case 'REMOVE_TICK_OFFSET_ORDER':
-      const newList = { ...state.list };
-      delete newList[action.payload.selectionId];
-      return { ...state, list: newList };
+    case 'REMOVE_TICK_OFFSET':
+      return {
+        ...state,
+        list: omit(state.list, action.payload.rfs),
+      };
     default:
       return state;
   }

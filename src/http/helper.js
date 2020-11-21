@@ -10,7 +10,7 @@ export const saveBet = (order) => {
 };
 
 export const removeBet = (bet) => {
-  fetch('/api/remove-bets', {
+  fetch('/api/remove-bet', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

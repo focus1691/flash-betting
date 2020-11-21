@@ -37,7 +37,7 @@ export const setSelections = (selections) => ({
   payload: selections,
 });
 
-export const removeStopEntryOrder = (order) => ({
-  type: 'REMOVE_STOP_ENTRY_ORDER',
-  payload: order,
+export const removeStopEntryBet = (data) => ({
+  type: 'REMOVE_STOP_ENTRY_BET',
+  payload: data,
 });

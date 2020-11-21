@@ -61,9 +61,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: {
           ...state.list,
-          [action.payload.selectionId]: [
-            ...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs),
-          ]
+          [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs)],
         },
       };
     default:

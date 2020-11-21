@@ -1,4 +1,4 @@
-import { omit } from 'lodash'
+import { omit } from 'lodash';
 
 const initialState = {
   bets: {

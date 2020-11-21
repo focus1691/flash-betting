@@ -1,6 +1,11 @@
 /* eslint-disable consistent-return */
 import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
 import { saveBet, removeBet } from '../http/helper';
+import removeBackBet from "./back";
+import removeLayBet from "./lay";
+import removeStopEntryBet from './stopEntry';
+import removeTickOffset from './tickOffset';
+import removeStopLoss from './stopLoss';
 
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
@@ -36,7 +41,6 @@ export const placeOrder = async (bet) => {
   bet.size = bet.side === 'LAY' ? calcLayBet(bet.price, bet.size).liability : parseFloat(bet.size);
   bet.price = parseFloat(bet.price);
 
-  // if (!order.unmatchedBets || !order.matchedBets || isNaN(order.size)) return;
   if (isNaN(bet.size)) return null;
 
   if (parseFloat(bet.size) < 2.0) {
@@ -45,24 +49,15 @@ export const placeOrder = async (bet) => {
         ...bet,
         price: bet.side === 'BACK' ? 1000 : 1.01,
         size: 2,
-        // orderCompleteCallBack: undefined,
       });
       if (!startingBet) return null;
 
-      // await dispatch(updateOrders(startingBet.bets));
-
       // cancel part of the first one
       await executeReduceSize({
-        // ...startingBet.bet,
-        // unmatchedBets: startingBet.bets.unmatched,
-        // matchedBets: startingBet.bets.matched,
-        // ...startingBet.bet,
         marketId: startingBet.marketId,
         betId: startingBet.betId,
         sizeReduction: parseFloat((2 - startingBet.size).toFixed(2)),
       });
-
-      // await dispatch(updateOrders(reducedOrderBets));
 
       // replaceOrder, editing the price
       const ReplaceExecutionReport = await fetch('/api/replace-orders', {
@@ -72,10 +67,6 @@ export const placeOrder = async (bet) => {
         },
         method: 'POST',
         body: JSON.stringify({
-          // marketId: startingBet.bet.marketId,
-          // betId: startingBet.bet.betId,
-          // newPrice: bet.price,
-          // customerStrategyRef: bet.customerStrategyRef,
           marketId: startingBet.marketId,
           betId: startingBet.betId,
           newPrice: bet.price,
@@ -83,67 +74,43 @@ export const placeOrder = async (bet) => {
       }).then((res) => res.json());
 
       if (ReplaceExecutionReport && ReplaceExecutionReport.status === 'SUCCESS') {
-        // const newUnmatchedBets = { ...reducedOrderBets.unmatched };
-        // newUnmatchedBets[startingBet.bet.betId].price = bet.price;
-        // delete newUnmatchedBets[startingBet.bet.betId].unmatchedBets;
-        // delete newUnmatchedBets[startingBet.bet.betId].matchedBets;
-
-        // if (bet.orderCompleteCallBack) await bet.orderCompleteCallBack(startingBet.bet.betId, newUnmatchedBets);
 
         if (ReplaceExecutionReport.instructionReports[0] && ReplaceExecutionReport.instructionReports[0].placeInstructionReport) {
-          const { betId, orderStatus, sizeMatched, averagePriceMatched } = ReplaceExecutionReport.instructionReports[0].placeInstructionReport;
+          const { betId, orderStatus, sizeMatched } = ReplaceExecutionReport.instructionReports[0].placeInstructionReport;
 
           startingBet.betId = betId;
   
           if (orderStatus === 'EXECUTION_COMPLETE') {
-            addMatchedBet({
+            dispatch(addMatchedBet({
               ...startingBet,
+              sizeMatched,
               sizeRemaining: 0,
-            })
+            }));
           }
           else if (orderStatus === 'EXECUTABLE') {
-            addUnmatchedBet({
+            dispatch(addUnmatchedBet({
               ...startingBet,
               sizeMatched,
               sizeRemaining: bet.size - sizeMatched,
-            })
+            }))
           }
         }
         return startingBet.betId;
-
-        // return dispatch(
-        //   updateOrders({
-        //     unmatched: newUnmatchedBets,
-        //     matched: startingBet.bets.matched,
-        //   }),
-        // );
       }
-      // eslint-disable-next-line consistent-return
-      // return dispatch(
-      //   updateOrders({
-      //     unmatched: startingBet.bets.unmatched,
-      //     matched: startingBet.bets.matched,
-      //   }),
-      // );
     };
   }
 
   return async (dispatch) => {
-    const betId = await executeBet(bet);
-    return betId;
+    const adjustedBet = await executeBet(bet);
+    if (!adjustedBet) return null;
+    if (adjustedBet.status === 'EXECUTION_COMPLETE') dispatch(addMatchedBet(adjustedBet));
+    else if (adjustedBet.status === 'EXECUTABLE') dispatch(addUnmatchedBet(adjustedBet));
+
+    return adjustedBet.betId;
   };
 };
 
 export const executeBet = async (bet) => {
-  //! order without anything that might make the payload too large
-  // const minimalOrder = {};
-
-  // Object.keys(order).forEach((key) => {
-  //   if (key !== 'unmatchedBets' && key !== 'matchedBets' && key !== 'orderCompleteCallBack') {
-  //     minimalOrder[key] = order[key];
-  //   }
-  // });
-
   bet.size = parseFloat(bet.size).toFixed(2);
 
   const PlaceExecutionReport = await fetch('/api/place-order', {
@@ -155,10 +122,9 @@ export const executeBet = async (bet) => {
     body: JSON.stringify(bet),
   })
   .then((res) => res.json())
-    // .then(async (PlaceExecutionReport) => {
   if (!PlaceExecutionReport || PlaceExecutionReport.status === 'FAILURE') return null;
 
-  const { betId } = PlaceExecutionReport.instructionReports[0];
+  const { orderStatus, sizeMatched, betId } = PlaceExecutionReport.instructionReports[0];
 
   if (!betId) return null;
 
@@ -166,96 +132,84 @@ export const executeBet = async (bet) => {
   adjustedBet.rfs = bet.customerStrategyRef;
   delete adjustedBet.customerStrategyRef;
   adjustedBet.betId = betId;
+  adjustedBet.status = orderStatus;
+  adjustedBet.sizeMatched = sizeMatched;
+  adjustedBet.sizeRemaining = bet.size - sizeMatched;
   adjustedBet.strategy = 'None';
 
-  // const newUnmatchedBets = { ...order.unmatchedBets };
-  // newUnmatchedBets[betId] = adjustedBet;
-
-  // const newBets = {
-  //   unmatched: newUnmatchedBets,
-  //   matched: order.matchedBets == undefined ? {} : order.matchedBets,
-  // };
-
-  // if (order.orderCompleteCallBack !== undefined) await order.orderCompleteCallBack(betId, newUnmatchedBets);
-
-  // return { bet: adjustedOrder, bets: newBets };
-
   return adjustedBet;
-    // });
 };
 
-export const cancelOrders = async (orders, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side) => {
-  const newBackList = { ...backList };
-  const newLayList = { ...layList };
-  const newStopEntryList = { ...stopEntryList };
-  const newTickOffsetList = { ...tickOffsetList };
-  const newStopLossList = { ...stopLossList };
-  const newFillOrKill = { ...fillOrKillList };
+export const executeReduceSize = async (bet) => {
+  const cancelOrder = await fetch('/api/cancel-order', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(bet),
+  })
+    .then((res) => res.json())
+    .catch(() => false);
 
-  const cancelSpecialOrder = async (order) => {
-    //! Run only if side is undefined or side matches order
-    if (!side || side === order.side) {
-      //! figure out which strategy it's using and make a new array without it
-      switch (order.strategy) {
+  return cancelOrder && cancelOrder.status === 'SUCCESS';
+};
+
+export const executeCancelBet = (order) => new Promise(async (res, rej) => {
+  await fetch('/api/cancel-order', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(order),
+  })
+    .then((data) => res(data.json()))
+    .catch((err) => rej(err));
+});
+2
+export const cancelOrders = (orders, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side) => {
+  return async (dispatch) => {
+
+    const cancelSpecialOrder = (bet) => {
+      if (side && side != bet.side) return;
+      switch (bet.strategy) {
         case 'Back':
-          const backIdx = newBackList[order.selectionId].findIndex((v) => v.rfs === order.rfs);
-          if (backIdx > -1) {
-            removeBet(newBackList[order.selectionId][backIdx]);
-            newBackList[order.selectionId].splice(backIdx, 1);
-          }
+          dispatch(removeBackBet({ rfs: bet.rfs, selectionId: bet.selectionId }));
           break;
         case 'Lay':
-          const layIdx = newLayList[order.selectionId].findIndex((v) => v.rfs === order.rfs);
-          if (layIdx > -1) {
-            removeBet(newLayList[order.selectionId][layIdx]);
-            newLayList[order.selectionId].splice(layIdx, 1);
-          }
+          dispatch(removeLayBet({ rfs: bet.rfs, selectionId: bet.selectionId }));
           break;
         case 'Stop Entry':
-          const seIdx = newStopEntryList[order.selectionId].findIndex((v) => v.rfs === order.rfs);
-          if (seIdx > -1) {
-            removeBet(newStopEntryList[order.selectionId][seIdx]);
-            newStopEntryList[order.selectionId].splice(seIdx, 1);
-          }
+          dispatch(removeStopEntryBet({ rfs: bet.rfs, selectionId: bet.selectionId }));
           break;
         case 'Tick Offset':
-          removeBet(newTickOffsetList[order.rfs]);
-          delete newTickOffsetList[order.rfs];
+          dispatch(removeTickOffset({ rfs: bet.rfs }));
           break;
         case 'Stop Loss':
-          removeBet(newStopLossList[order.selectionId]);
-          delete newStopLossList[order.selectionId];
+          dispatch(removeStopLoss({ selectionId: bet.rfs }));
           break;
         default:
-          // if we can find something that fits with the fill or kill, we can remove that (this is because we don't make another row for fill or kill)
-          if (fillOrKillList[order.betId]) delete newFillOrKill[order.betId];
-          await cancelBetFairOrder(order);
+          // if (fillOrKillList[bet.betId]) delete newFillOrKill[bet.betId];
+          executeCancelBet(bet);
           break;
       }
-    }
-  };
+      removeBet({ rfs: bet.rfs });
+    };
 
-  if (Array.isArray(orders)) {
-    for (let i = 0; i < orders.length; i += 1) {
-      cancelSpecialOrder(orders[i]);
-    }
-  } else if (orders.hasOwnProperty('betId') || orders.hasOwnProperty('rfs')) {
-    await cancelSpecialOrder(orders);
-  } else {
-    await Object.values(orders).forEach((rfs) => {
-      rfs.forEach((orders) => {
-        cancelSpecialOrder(orders);
+    if (Array.isArray(orders)) {
+      for (let i = 0; i < orders.length; i += 1) {
+        cancelSpecialOrder(orders[i]);
+      }
+    } else if (orders.hasOwnProperty('betId') || orders.hasOwnProperty('rfs')) {
+      cancelSpecialOrder(orders);
+    } else {
+      Object.values(orders).forEach((rfs) => {
+        rfs.forEach((orders) => {
+          cancelSpecialOrder(orders);
+        });
       });
-    });
-  }
-
-  return {
-    back: newBackList,
-    lay: newLayList,
-    stopLoss: newStopLossList,
-    stopEntry: newStopEntryList,
-    tickOffset: newTickOffsetList,
-    fillOrKill: newFillOrKill,
+    }
   };
 };
 
@@ -276,7 +230,7 @@ export const cancelOrder = (order) => {
         minimalOrder[key] = order[key];
       }
     });
-    const cancelOrder = await cancelBetFairOrder(minimalOrder);
+    const cancelOrder = await executeCancelBet(minimalOrder);
 
     if (cancelOrder) {
       const newUnmatchedBets = Object.keys(order.unmatchedBets).filter((key) => {
@@ -298,57 +252,6 @@ export const cancelOrder = (order) => {
     }
   };
 };
-
-export const executeReduceSize = async (bet) => {
-  //! order with everything removed that might make the payload too large
-  // const minimalOrder = {};
-  // Object.keys(order).map((key) => {
-  //   if (key !== 'unmatchedBets' && key !== 'matchedBets' && key !== 'callback') {
-  //     minimalOrder[key] = order[key];
-  //   }
-  // });
-
-  const cancelOrder = await fetch('/api/cancel-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  })
-    .then((res) => res.json())
-    .catch(() => false);
-
-  if (cancelOrder && cancelOrder.status === 'SUCCESS') {
-    return true;
-    // const newUnmatchedBets = { ...order.unmatchedBets };
-    // newUnmatchedBets[bet.betId].size = parseFloat((bet.size - cancelOrder.instructionReports[0].sizeCancelled).toFixed(2));
-
-    // const newBets = {
-    //   unmatched: newUnmatchedBets,
-    //   matched: order.matchedBets ? order.matchedBets : {},
-    // };
-    // return newBets;
-  }
-  return false;
-  // return {
-  //   unmatched: order.unmatchedBets ? order.unmatchedBets : {},
-  //   matched: order.matchedBets ? order.matchedBets : {},
-  // };
-};
-
-export const cancelBetFairOrder = (order) => new Promise(async (res, rej) => {
-  await fetch('/api/cancel-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(order),
-  })
-    .then((data) => res(data.json()))
-    .catch((err) => rej(err));
-});
 
 /**
  * This function saves the new stop loss to the database

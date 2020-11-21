@@ -56,16 +56,14 @@ const reducer = (state = initialState, action) => {
       return { ...state, selections: action.payload };
     case 'UPDATE_LAY_LIST':
       return { ...state, list: action.payload };
-      case 'REMOVE_LAY_BET':
-        return {
-          ...state,
-          list: {
-            ...state.list,
-            [action.payload.selectionId]: [
-              ...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs),
-            ]
-          },
-        };
+    case 'REMOVE_LAY_BET':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs)],
+        },
+      };
     default:
       return state;
   }

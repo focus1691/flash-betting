@@ -147,8 +147,6 @@ const App = ({
                 side: tickOffsetList[customerStrategyRef].side,
                 size: tickOffsetList[customerStrategyRef].size,
                 price: tickOffsetList[customerStrategyRef].price,
-                unmatchedBets,
-                matchedBets,
                 customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
               });
               delete newTickOffsetList[customerStrategyRef];
@@ -264,8 +262,6 @@ const App = ({
                     side: SL.side,
                     size: CalculateLadderHedge(parseFloat(SL.price), newMatchedBets, 'hedged').size,
                     price: stopLossMatched.stopPrice,
-                    unmatchedBets,
-                    matchedBets,
                     customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                   });
                   const newStopLossList = { ...stopLossList };
@@ -365,8 +361,6 @@ const App = ({
                         side: tickOffsetList[rfs].side,
                         size,
                         price,
-                        unmatchedBets,
-                        matchedBets,
                         customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                       });
                       delete newTickOffsetList[rfs];

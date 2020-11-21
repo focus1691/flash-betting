@@ -5,7 +5,7 @@ const initialState = {
   stake: 2,
   price: 2,
   side: 'BACK',
-  list: {}, //! {selectionId(parameter): [{targetLTP: , stopEntryCondition: , side: , size: , price: },]  }
+  list: {},
   selections: null,
 };
 
@@ -27,10 +27,14 @@ const reducer = (state = initialState, action) => {
       return { ...state, list: action.payload };
     case 'SET_STOP_ENTRY_SELECTIONS':
       return { ...state, selections: action.payload };
-    case 'REMOVE_STOP_ENTRY_ORDER':
-      const newList = { ...state.list };
-      delete newList[action.payload.selectionId];
-      return { ...state, list: newList };
+    case 'REMOVE_STOP_ENTRY_BET':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs)],
+        },
+      };
     default:
       return state;
   }

@@ -137,11 +137,7 @@ const Ladder = memo(({
       marketId,
       selectionId,
       customerStrategyRef,
-      // unmatchedBets,
-      // matchedBets,
       size: betSize,
-      // orderCompleteCallBack: async (betId) => {
-      // },
     });
     //* betId only returned if the bet was success
     if (betId) {
@@ -197,25 +193,12 @@ const Ladder = memo(({
         updateFillOrKillList(FOK);
       }
     }
-    // if (result && result.bets) updateOrders(result.bets);
   }, [customStakeActive, customStake, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
 
-  const cancelSpecialOrders = useCallback(async (order, side) => {
+  const cancelSpecialOrders = useCallback((order, side) => {
     const betsToPass = order || combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[selectionId];
-
-    if (betsToPass) {
-      const {
-        back, lay, stopLoss, tickOffset, stopEntry, fillOrKill,
-      } = await cancelOrders(betsToPass, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
-
-      updateBackList(back);
-      updateLayList(lay);
-      updateStopLossList(stopLoss);
-      updateTickOffsetList(tickOffset);
-      updateStopEntryList(stopEntry);
-      updateFillOrKillList(fillOrKill);
-    }
-  }, [backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets, selectionId, fillOrKillList, updateBackList, updateLayList, updateStopLossList, updateTickOffsetList, updateStopEntryList, updateFillOrKillList]);
+    if (betsToPass) cancelOrders(betsToPass, side);
+  }, [backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets, selectionId]);
 
   return (
     <Container

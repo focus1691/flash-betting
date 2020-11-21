@@ -1,10 +1,12 @@
+import { omit } from 'lodash';
+
 const initialState = {
   selected: false,
   offset: 5,
   units: 'Ticks',
   trailing: true,
   hedged: true,
-  list: {}, //! {marketId: , selectionId: , price(matchedPrice): , side: , size: , tickOffset: , trailing: , units: , rfs(reference strategy): , assignedIsOrderMatched: false}
+  list: {},
   selections: null,
 };
 initialState.text = `${initialState.offset} ${initialState.units} [${initialState.trailing ? 'x' : '-'}][${initialState.hedged ? 'x' : '-'}]`;
@@ -27,10 +29,11 @@ const reducer = (state = initialState, action) => {
       return { ...state, list: action.payload };
     case 'SET_STOP_LOSS_SELECTIONS':
       return { ...state, selections: action.payload };
-    case 'REMOVE_STOP_LOSS_ORDER':
-      const newList = { ...state.list };
-      delete newList[action.payload.selectionId];
-      return { ...state, list: newList };
+    case 'REMOVE_STOP_LOSS':
+      return {
+        ...state,
+        list: omit(state.list, action.payload.selectionId),
+      };
     default:
       return state;
   }
