@@ -2,7 +2,7 @@ import $ from 'jquery';
 import React, { createRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
-import { placeOrder } from '../../actions/order';
+import { placeOrder } from '../../actions/bet';
 import { setStakeInOneClick } from '../../actions/settings';
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';

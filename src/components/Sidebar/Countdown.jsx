@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useInterval from 'react-useinterval';
-import { placeOrder, cancelBetFairOrder } from '../../actions/order';
+import { placeOrder, cancelBetFairOrder } from '../../actions/bet';
 import { removeBet } from '../../http/helper';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';

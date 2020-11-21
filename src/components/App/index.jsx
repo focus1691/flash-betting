@@ -38,7 +38,7 @@ import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 import { updateLayList } from '../../actions/lay';
 import { updateBackList } from '../../actions/back';
-import { placeOrder, addUnmatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/order';
+import { placeOrder, addUnmatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/bet';
 import { removeBet, updateTicks, updateOrderMatched } from '../../http/helper';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';

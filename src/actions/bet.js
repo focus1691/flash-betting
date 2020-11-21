@@ -167,8 +167,8 @@ export const executeCancelBet = (order) => new Promise(async (res, rej) => {
     .then((data) => res(data.json()))
     .catch((err) => rej(err));
 });
-2
-export const cancelOrders = (orders, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side) => {
+
+export const cancelOrders = (orders, side) => {
   return async (dispatch) => {
 
     const cancelSpecialOrder = (bet) => {
@@ -213,52 +213,6 @@ export const cancelOrders = (orders, backList, layList, stopLossList, tickOffset
   };
 };
 
-/**
- ** Wrapper function to check order and dispatch delete
- * @param {object} order Object to delete
- */
-export const cancelOrder = (order) => {
-  if (!order.unmatchedBets || !order.matchedBets) {
-    return;
-  }
-
-  return async (dispatch) => {
-    // order with everything removed that might make the payload too large
-    const minimalOrder = {};
-    Object.keys(order).map((key) => {
-      if (key !== 'unmatchedBets' && key !== 'matchedBets' && key !== 'callback') {
-        minimalOrder[key] = order[key];
-      }
-    });
-    const cancelOrder = await executeCancelBet(minimalOrder);
-
-    if (cancelOrder) {
-      const newUnmatchedBets = Object.keys(order.unmatchedBets).filter((key) => {
-        if (key != order.betId) return order.unmatchedBets[key];
-      });
-      dispatch(
-        updateOrders({
-          unmatched: newUnmatchedBets,
-          matched: order.matchedBets || {},
-        }),
-      );
-    } else {
-      dispatch(
-        updateOrders({
-          unmatched: order.unmatchedBets || {},
-          matched: order.matchedBets || {},
-        }),
-      );
-    }
-  };
-};
-
-/**
- * This function saves the new stop loss to the database
- * @param {*} stopLoss New stop loss
- * @param {*} stopLossList List of stop loss objects
- * @returns Updated list to be updated in the redux store
- */
 export const placeStopLoss = async (stopLoss, stopLossList) => {
   const newStopLossList = { ...stopLossList };
   newStopLossList[stopLoss.selectionId] = stopLoss;
@@ -268,12 +222,6 @@ export const placeStopLoss = async (stopLoss, stopLossList) => {
   return newStopLossList;
 };
 
-/**
- * This function saves the new tick offset to the database
- * @param {object} tickOffset New tick offset
- * @param {object} tickOffsetList List of tick offset objects
- * @returns Updated list to be updated in the redux store
- */
 export const placeTickOffset = async (tickOffset, tickOffsetList) => {
   const newTickOffsetList = { ...tickOffsetList };
   newTickOffsetList[tickOffset.rfs] = tickOffset;
@@ -282,13 +230,7 @@ export const placeTickOffset = async (tickOffset, tickOffsetList) => {
 
   return newTickOffsetList;
 };
-
-/**
- * This function saves the fill or kill order to the database
- * @param {object} tickOffset New Fill or Kill
- * @param {object} tickOffsetList List of Fill or Kill objects
- * @returns Updated list to be updated in the redux store
- */
+  
 export const placeFillOrKill = async (fillOrKill, fillOrKillList) => {
   const newFillOrKillList = { ...fillOrKillList };
   newFillOrKillList[fillOrKill.betId] = fillOrKill;

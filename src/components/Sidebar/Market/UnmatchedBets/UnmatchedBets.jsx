@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { updateBackList } from '../../../../actions/back';
 import { updateFillOrKillList } from '../../../../actions/fillOrKill';
 import { updateLayList } from '../../../../actions/lay';
-import { cancelOrders, updateOrders } from '../../../../actions/order';
+import { cancelOrders, updateOrders } from '../../../../actions/bet';
 import { updateStopEntryList } from '../../../../actions/stopEntry';
 import { updateStopLossList } from '../../../../actions/stopLoss';
 import { updateTickOffsetList } from '../../../../actions/tickOffset';
@@ -36,7 +36,7 @@ const UnmatchedBets = ({
   const allOrders = useMemo(() => combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets), [backList, layList, stopEntryList, stopLossList, tickOffsetList, unmatchedBets]);
   const selections = useMemo(() => Object.keys(allOrders), [allOrders]);
 
-  const cancelOrder = useCallback(
+  const  = useCallback(
     async (order) => {
       if (order) {
         const data = await cancelOrders(order, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, order.side);

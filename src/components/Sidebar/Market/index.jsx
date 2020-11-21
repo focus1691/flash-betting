@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { updateBackList } from '../../../actions/back';
 import { updateFillOrKillList } from '../../../actions/fillOrKill';
 import { updateLayList } from '../../../actions/lay';
-import { cancelOrders } from '../../../actions/order';
+import { cancelOrders } from '../../../actions/bet';
 import {
   setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatchedBetsExpanded, setRulesExpanded, setToolsExpanded, setUnmatchedBetsExpanded,
 } from '../../../actions/settings';

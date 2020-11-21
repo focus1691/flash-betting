@@ -13,7 +13,7 @@ import { updateStopEntryList } from '../../actions/stopEntry';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import {
   cancelOrders, placeOrder, updateOrders, placeStopLoss, replaceStopLoss, placeTickOffset, placeFillOrKill,
-} from '../../actions/order';
+} from '../../actions/bet';
 import { getLTP } from '../../selectors/marketSelector';
 import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from '../../selectors/orderSelector';
 import { combineUnmatchedOrders } from '../../utils/Bets/CombineUnmatchedOrders';
