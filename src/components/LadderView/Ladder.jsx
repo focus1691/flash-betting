@@ -130,71 +130,75 @@ const Ladder = memo(({
     const betSize = (customStakeActive && customStake) ? customStake : stakeVal[selectionId];
     //* Place the order first with BetFair and then execute the tools
     // //! Tool priority: 1) Stop Loss 2) Tick Offset 3) Fill or Kill
-    const result = await placeOrder({
+    // const result = await placeOrder({
+    const betId = await placeOrder({
       side,
       price: formatPrice(price),
       marketId,
       selectionId,
       customerStrategyRef,
-      unmatchedBets,
-      matchedBets,
+      // unmatchedBets,
+      // matchedBets,
       size: betSize,
-      orderCompleteCallBack: async (betId) => {
-        if (stopLossSelected && !stopLossData) {
-          const SL = await placeStopLoss({
-            marketId,
-            selectionId: parseInt(selectionId),
-            side: side === 'BACK' ? 'LAY' : 'BACK',
-            price: findStop(price, stopLossOffset, side),
-            custom: false,
-            units: stopLossUnits,
-            ticks: stopLossOffset,
-            rfs: customerStrategyRef,
-            assignedIsOrderMatched: false,
-            size: betSize,
-            betId,
-            hedged: stopLossHedged,
-            strategy: 'Stop Loss',
-          }, stopLossList);
-          updateStopLossList(SL);
-        } else if (tickOffsetSelected) {
-          const tos = await placeTickOffset({
-            strategy: 'Tick Offset',
-            marketId,
-            selectionId,
-            price: findTickOffset(
-              formatPrice(price),
-              side.toLowerCase() === 'lay' ? 'back' : 'lay',
-              tickOffsetTicks,
-              tickOffsetUnits === 'Percent',
-            ).priceReached,
-            size: tickOffsetHedged ? hedgeSize : betSize,
-            side: side === 'BACK' ? 'LAY' : 'BACK',
-            percentageTrigger: tickOffsetTrigger,
-            rfs: customerStrategyRef,
-            betId,
-            hedged: tickOffsetHedged,
-            minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1,
-          }, tickOffsetList);
-          updateTickOffsetList(tos);
-        }
-
-        if (!stopLossSelected && fillOrKillSelected) {
-          const FOK = await placeFillOrKill({
-            strategy: 'Fill Or Kill',
-            marketId,
-            selectionId,
-            seconds: fillOrKillSeconds,
-            startTime: Date.now(),
-            betId,
-            rfs: customerStrategyRef,
-          }, fillOrKillList);
-          updateFillOrKillList(FOK);
-        }
-      },
+      // orderCompleteCallBack: async (betId) => {
+      // },
     });
-    if (result && result.bets) updateOrders(result.bets);
-  }, [customStakeActive, customStake, placeOrder, unmatchedBets, matchedBets, updateOrders, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
+    //* betId only returned if the bet was success
+    if (betId) {
+      if (stopLossSelected && !stopLossData) {
+        const SL = await placeStopLoss({
+          marketId,
+          selectionId: parseInt(selectionId),
+          side: side === 'BACK' ? 'LAY' : 'BACK',
+          price: findStop(price, stopLossOffset, side),
+          custom: false,
+          units: stopLossUnits,
+          ticks: stopLossOffset,
+          rfs: customerStrategyRef,
+          assignedIsOrderMatched: false,
+          size: betSize,
+          betId,
+          hedged: stopLossHedged,
+          strategy: 'Stop Loss',
+        }, stopLossList);
+        updateStopLossList(SL);
+      } else if (tickOffsetSelected) {
+        const tos = await placeTickOffset({
+          strategy: 'Tick Offset',
+          marketId,
+          selectionId,
+          price: findTickOffset(
+            formatPrice(price),
+            side.toLowerCase() === 'lay' ? 'back' : 'lay',
+            tickOffsetTicks,
+            tickOffsetUnits === 'Percent',
+          ).priceReached,
+          size: tickOffsetHedged ? hedgeSize : betSize,
+          side: side === 'BACK' ? 'LAY' : 'BACK',
+          percentageTrigger: tickOffsetTrigger,
+          rfs: customerStrategyRef,
+          betId,
+          hedged: tickOffsetHedged,
+          minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1,
+        }, tickOffsetList);
+        updateTickOffsetList(tos);
+      }
+  
+      if (!stopLossSelected && fillOrKillSelected) {
+        const FOK = await placeFillOrKill({
+          strategy: 'Fill Or Kill',
+          marketId,
+          selectionId,
+          seconds: fillOrKillSeconds,
+          startTime: Date.now(),
+          betId,
+          rfs: customerStrategyRef,
+        }, fillOrKillList);
+        updateFillOrKillList(FOK);
+      }
+    }
+    // if (result && result.bets) updateOrders(result.bets);
+  }, [customStakeActive, customStake, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossHedged, stopLossList, updateStopLossList, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, tickOffsetList, updateTickOffsetList, fillOrKillSeconds, fillOrKillList, updateFillOrKillList]);
 
   const cancelSpecialOrders = useCallback(async (order, side) => {
     const betsToPass = order || combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[selectionId];

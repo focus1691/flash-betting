@@ -47,7 +47,7 @@ export const updateLayList = (list) => ({
   payload: list,
 });
 
-export const removeLayOrder = (order) => ({
-  type: 'REMOVE_LAY_ORDER',
-  payload: order,
+export const removeLayBet = (data) => ({
+  type: 'REMOVE_LAY_BET',
+  payload: data,
 });

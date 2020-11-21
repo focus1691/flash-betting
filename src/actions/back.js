@@ -47,7 +47,7 @@ export const updateBackList = (list) => ({
   payload: list,
 });
 
-export const removeBackOrder = (order) => ({
-  type: 'REMOVE_BACK_ORDER',
-  payload: order,
+export const removeBackBet = (data) => ({
+  type: 'REMOVE_BACK_BET',
+  payload: data,
 });

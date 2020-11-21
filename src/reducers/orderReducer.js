@@ -11,6 +11,19 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'UPDATE_BET':
       return { ...state, bets: action.payload };
+      case 'ADD_MATCHED_BET':
+        return {
+          ...state,
+          bets: {
+            ...state.bets,
+            matched: {
+              ...state.bets.matched,
+              [action.payload.betId]: {
+                ...action.payload,
+              },
+            },
+          },
+        };
     case 'ADD_UNMATCHED_BET':
       return {
         ...state,

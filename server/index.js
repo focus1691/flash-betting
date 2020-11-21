@@ -544,7 +544,7 @@ app.post('/api/replace-orders', (request, response) => {
           newPrice: request.body.newPrice,
         },
       ],
-      customerRef: request.body.customerStrategyRef,
+      // customerRef: request.body.customerStrategyRef,
     },
     (err, res) => {
       if (res.error) {
@@ -590,7 +590,7 @@ app.post('/api/cancel-order', (request, response) => {
           sizeReduction: request.body.sizeReduction,
         },
       ],
-      customerRef: request.body.customerRef,
+      // customerRef: request.body.customerRef,
     },
     (err, res) => {
       response.json(res.result);
