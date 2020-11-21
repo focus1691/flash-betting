@@ -114,7 +114,7 @@ describe('bets reducer', () => {
   });
 });
 
-describe('Cancel custom back/lay bets', () => {
+describe('Cancel bets made with tools', () => {
   it('should handle REMOVE_BACK_BET', () => {
     const initialState = {
       list: {
@@ -215,5 +215,11 @@ describe('Cancel custom back/lay bets', () => {
         },
       },
     });
+  });
+});
+
+describe('Add bets made with noobs', () => {
+  it('should handle REMOVE_BACK_BET', () => {
+
   });
 });

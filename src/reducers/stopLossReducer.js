@@ -29,6 +29,16 @@ const reducer = (state = initialState, action) => {
       return { ...state, list: action.payload };
     case 'SET_STOP_LOSS_SELECTIONS':
       return { ...state, selections: action.payload };
+    case 'ADD_STOP_LOSS':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: {
+            ...action.payload,
+          }
+        }
+      }
     case 'REMOVE_STOP_LOSS':
       return {
         ...state,
