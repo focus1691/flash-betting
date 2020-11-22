@@ -1,6 +1,7 @@
 import betReducer from '../reducers/orderReducer';
 import backReducer from '../reducers/backReducer';
 import tosReducer from '../reducers/tickOffsetReducer';
+import SLReducer from '../reducers/stopLossReducer';
 
 describe('bets reducer', () => {
   const emptyState = {
@@ -218,8 +219,31 @@ describe('Cancel bets made with tools', () => {
   });
 });
 
-describe('Add bets made with noobs', () => {
-  it('should handle REMOVE_BACK_BET', () => {
+describe('Add bets made with tools', () => {
+  it('should handle ADD_STOP_LOSS', () => {
+    const initialState = {
+      list: {},
+    };
+    const stopLoss = {
+      marketId: '1.342344',
+      selectionId: 13331,
+      side: 'BACK',
+      price: 3,
+      custom: false,
+      units: 'stopLossUnits',
+      strategy: 'Stop Loss',
+    };
+    const updatedState = {
+      list: {
+        13331: stopLoss,
+      },
+    };
 
+    expect(
+      SLReducer(initialState, {
+        type: 'ADD_STOP_LOSS',
+        payload: stopLoss,
+      }),
+    ).toEqual(updatedState);
   });
 });

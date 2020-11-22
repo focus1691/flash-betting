@@ -36,9 +36,9 @@ const reducer = (state = initialState, action) => {
           ...state.list,
           [action.payload.selectionId]: {
             ...action.payload,
-          }
-        }
-      }
+          },
+        },
+      };
     case 'REMOVE_STOP_LOSS':
       return {
         ...state,

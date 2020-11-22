@@ -6,7 +6,7 @@ const initialState = {
   units: 'Ticks',
   percentTrigger: 2,
   hedged: false,
-  list: {}, //! rfs: {marketId: , selectionId: , price: , size: , side: , percentageTrigger: , rfs:}
+  list: {},
 };
 initialState.text = `${initialState.ticks} ${initialState.units} [${initialState.hedged ? 'x' : '-'}]`;
 
@@ -26,6 +26,16 @@ const reducer = (state = initialState, action) => {
       return { ...state, hedged: action.payload };
     case 'UPDATE_TICK_OFFSET_LIST':
       return { ...state, list: action.payload };
+    case 'ADD_TICK_OFFSET':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.rfs]: {
+            ...action.payload,
+          },
+        },
+      };
     case 'REMOVE_TICK_OFFSET':
       return {
         ...state,

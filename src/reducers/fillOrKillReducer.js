@@ -1,7 +1,9 @@
+import { omit } from 'lodash';
+
 const initialState = {
   selected: false,
   seconds: 10,
-  list: {}, // {betId(parameter): {seconds: , startTime: }   }
+  list: {},
 };
 initialState.text = `${initialState.seconds} seconds`;
 
@@ -15,10 +17,21 @@ const reducer = (state = initialState, action) => {
       return { ...state, seconds: action.payload };
     case 'UPDATE_FILL_OR_KILL_LIST':
       return { ...state, list: action.payload };
-    case 'REMOVE_FILL_OR_KILL_ORDER':
-      const newList = { ...state.list };
-      delete newList[action.payload.selectionId];
-      return { ...state, list: newList };
+    case 'ADD_FILL_OR_KILL':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.betId]: {
+            ...action.payload,
+          },
+        },
+      };
+    case 'REMOVE_FILL_OR_KILL':
+      return {
+        ...state,
+        list: omit(state.list, action.payload.betId),
+      };
     default:
       return state;
   }

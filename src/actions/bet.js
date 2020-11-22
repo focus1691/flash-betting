@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
 import { saveBet, removeBet } from '../http/helper';
 import removeBackBet from "./back";
@@ -211,33 +210,6 @@ export const cancelOrders = (orders, side) => {
       });
     }
   };
-};
-
-export const placeStopLoss = async (stopLoss, stopLossList) => {
-  const newStopLossList = { ...stopLossList };
-  newStopLossList[stopLoss.selectionId] = stopLoss;
-
-  saveBet(stopLoss);
-
-  return newStopLossList;
-};
-
-export const placeTickOffset = async (tickOffset, tickOffsetList) => {
-  const newTickOffsetList = { ...tickOffsetList };
-  newTickOffsetList[tickOffset.rfs] = tickOffset;
-
-  saveBet(tickOffset);
-
-  return newTickOffsetList;
-};
-  
-export const placeFillOrKill = async (fillOrKill, fillOrKillList) => {
-  const newFillOrKillList = { ...fillOrKillList };
-  newFillOrKillList[fillOrKill.betId] = fillOrKill;
-
-  saveBet(fillOrKill);
-
-  return newFillOrKillList;
 };
 
 export const replaceStopLoss = async (SL, stopLossList, data) => {

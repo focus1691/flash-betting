@@ -32,6 +32,11 @@ export const updateTickOffsetList = (list) => ({
   payload: list,
 });
 
+export const addTickOffset = (data) => ({
+  type: 'ADD_TICK_OFFSET',
+  payload: data,
+});
+
 export const removeTickOffset = (data) => ({
   type: 'REMOVE_TICK_OFFSET',
   payload: data,

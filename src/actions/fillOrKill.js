@@ -17,7 +17,12 @@ export const updateFillOrKillList = (list) => ({
   payload: list,
 });
 
-export const removeFillOrKillOrder = (order) => ({
-  type: 'REMOVE_FILL_OR_KILL_ORDER',
-  payload: order,
+export const addFillOrKill = (data) => ({
+  type: 'ADD_FILL_OR_KILL',
+  payload: data,
+});
+
+export const removeFillOrKill = (data) => ({
+  type: 'REMOVE_FILL_OR_KILL',
+  payload: data,
 });
