@@ -154,18 +154,16 @@ export const executeReduceSize = async (bet) => {
   return cancelOrder && cancelOrder.status === 'SUCCESS';
 };
 
-export const executeCancelBet = (order) => new Promise(async (res, rej) => {
-  await fetch('/api/cancel-order', {
+export const executeCancelBet = (bet) => {
+  fetch('/api/cancel-order', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify(order),
+    body: JSON.stringify(bet),
   })
-    .then((data) => res(data.json()))
-    .catch((err) => rej(err));
-});
+};
 
 export const cancelOrders = (orders, side) => {
   return async (dispatch) => {

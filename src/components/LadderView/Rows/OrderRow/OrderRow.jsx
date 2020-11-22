@@ -5,17 +5,15 @@ import { MatchedBet } from './MatchedBet';
 import { UnmatchedBet } from './UnmatchedBet';
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 
-const OrderRow = memo(({
-  selectionId, matchedBets, unmatchedBets, backList, layList, slList, tosList, fokList, seList, cancelSpecialOrders, priceType, changePriceType,
-}) => {
-  const cancelUnmatchedOrder = useCallback(
-    (order) => {
-      cancelSpecialOrders(order);
+const OrderRow = memo(({ selectionId, matchedBets, unmatchedBets, backList, layList, slList, tosList, fokList, seList, cancelSpecialOrders, priceType, changePriceType }) => {
+  const cancelUnmatchedBet = useCallback(
+    (bet) => {
+      cancelSpecialOrders(bet);
     },
     [cancelSpecialOrders],
   );
 
-  const cancelAllOrdersOnSelection = useCallback(() => {
+  const cancelAllSelectionBets = useCallback(() => {
     cancelSpecialOrders();
   }, [cancelSpecialOrders]);
 
@@ -30,25 +28,25 @@ const OrderRow = memo(({
         if (Array.isArray(bets[id])) {
           for (let i = 0; i < bets[id].length; i += 1) {
             if (selectionId == bets[id][i].selectionId) {
-              list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id][i].selectionId}-${bets[id][i].rfs}`} bet={bets[id][i]} cancelBet={cancelUnmatchedOrder} />);
+              list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id][i].selectionId}-${bets[id][i].rfs}`} bet={bets[id][i]} cancelBet={cancelUnmatchedBet} />);
             }
           }
         } else if (selectionId == bets[id].selectionId) {
-          list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id].selectionId}-${bets[id].rfs}`} bet={bets[id]} cancelBet={cancelUnmatchedOrder} />);
+          list.push(<UnmatchedBet key={`ladder-matched-bet-${bets[id].selectionId}-${bets[id].rfs}`} bet={bets[id]} cancelBet={cancelUnmatchedBet} />);
         }
       }
       return list;
     },
-    [selectionId, cancelUnmatchedOrder],
+    [selectionId, cancelUnmatchedBet],
   );
 
   const renderUnmatchedBets = useCallback(() => {
     const list = [];
     for (let i = 0; i < unmatchedBets.length; i += 1) {
-      list.push(<UnmatchedBet key={`ladder-unmatched-bet-${unmatchedBets[i].selectionId}-${unmatchedBets[i].rfs}-${i}`} bet={unmatchedBets[i]} cancelBet={cancelUnmatchedOrder} />);
+      list.push(<UnmatchedBet key={`ladder-unmatched-bet-${unmatchedBets[i].selectionId}-${unmatchedBets[i].rfs}-${i}`} bet={unmatchedBets[i]} cancelBet={cancelUnmatchedBet} />);
     }
     return list;
-  }, [cancelUnmatchedOrder, unmatchedBets]);
+  }, [cancelUnmatchedBet, unmatchedBets]);
 
   const renderMatchedBets = useCallback(() => {
     const list = [];
@@ -83,8 +81,12 @@ const OrderRow = memo(({
             </td>
             <td colSpan={1} rowSpan={4} style={{ verticalAlign: 'top', minHeight: '1.675em' }}>
               <button type="button">0</button>
-              <button type="button" onClick={handleButtonClick}>{priceType === 'STAKE' ? 'S' : 'L'}</button>
-              <button type="button" onClick={cancelAllOrdersOnSelection}>K</button>
+              <button type="button" onClick={handleButtonClick}>
+                {priceType === 'STAKE' ? 'S' : 'L'}
+              </button>
+              <button type="button" onClick={cancelAllSelectionBets}>
+                K
+              </button>
             </td>
             <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
               <table className="lay-table">
