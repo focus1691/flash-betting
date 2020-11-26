@@ -47,7 +47,22 @@ export const updateBackList = (list) => ({
   payload: list,
 });
 
+export const addBackBet = (data) => ({
+  type: 'ADD_BACK_BET',
+  payload: data,
+});
+
 export const removeBackBet = (data) => ({
   type: 'REMOVE_BACK_BET',
+  payload: data,
+});
+
+export const removeBackBetsOnSide = (data) => ({
+  type: 'REMOVE_BACK_BETS_ON_SIDE',
+  payload: data,
+});
+
+export const removeAllBackBets = (data) => ({
+  type: 'REMOVE_ALL_BACK_BETS',
   payload: data,
 });

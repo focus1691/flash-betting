@@ -47,7 +47,22 @@ export const updateLayList = (list) => ({
   payload: list,
 });
 
+export const addLayBet = (data) => ({
+  type: 'ADD_LAY_BET',
+  payload: data,
+});
+
 export const removeLayBet = (data) => ({
   type: 'REMOVE_LAY_BET',
+  payload: data,
+});
+
+export const removeLayBetsOnSide = (data) => ({
+  type: 'REMOVE_LAY_BETS_ON_SIDE',
+  payload: data,
+});
+
+export const removeAllLayBets = (data) => ({
+  type: 'REMOVE_ALL_LAY_BETS',
   payload: data,
 });

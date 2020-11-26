@@ -275,7 +275,6 @@ const Ladder = memo(
                 itemData={{
                   selectionId,
                   handlePlaceOrder,
-                  cancelSpecialOrders,
                   handleHedgeCellClick,
                   replaceStopLossOrder,
                   isMoving,
@@ -288,7 +287,7 @@ const Ladder = memo(
           </AutoSizer>
         </div>
         <PriceRow selectionId={selectionId} />
-        <OrderRow selectionId={selectionId} cancelSpecialOrders={cancelSpecialOrders} />
+        <OrderRow selectionId={selectionId} />
       </Container>
     );
   },

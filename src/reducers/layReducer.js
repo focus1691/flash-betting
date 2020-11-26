@@ -56,6 +56,14 @@ const reducer = (state = initialState, action) => {
       return { ...state, selections: action.payload };
     case 'UPDATE_LAY_LIST':
       return { ...state, list: action.payload };
+    case 'ADD_LAY_BET':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: [ ...state.list[action.payload.selectionId], action.payload ],
+        }
+      };
     case 'REMOVE_LAY_BET':
       return {
         ...state,
@@ -64,6 +72,22 @@ const reducer = (state = initialState, action) => {
           [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs)],
         },
       };
+      case 'REMOVE_LAY_BETS_ON_SIDE':
+        return {
+          ...state,
+          list: {
+            ...state.list,
+            [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.side !== action.payload.side)],
+          },
+        };
+      case 'REMOVE_ALL_LAY_BETS':
+        return {
+          ...state,
+          list: {
+            ...state.list,
+            [action.payload.selectionId]: [],
+          },
+        };
     default:
       return state;
   }

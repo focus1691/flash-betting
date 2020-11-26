@@ -37,7 +37,22 @@ export const setSelections = (selections) => ({
   payload: selections,
 });
 
+export const addStopEntryBet = (data) => ({
+  type: 'ADD_STOP_ENTRY_BET',
+  payload: data,
+});
+
 export const removeStopEntryBet = (data) => ({
   type: 'REMOVE_STOP_ENTRY_BET',
+  payload: data,
+});
+
+export const removeStopEntryBetsOnSide = (data) => ({
+  type: 'REMOVE_STOP_ENTRY_BETS_ON_SIDE',
+  payload: data,
+});
+
+export const removeAllStopEntryBets = (data) => ({
+  type: 'REMOVE_ALL_STOP_ENTRY_BETS',
   payload: data,
 });

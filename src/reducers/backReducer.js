@@ -56,12 +56,36 @@ const reducer = (state = initialState, action) => {
       return { ...state, selections: action.payload };
     case 'UPDATE_BACK_LIST':
       return { ...state, list: action.payload };
+    case 'ADD_BACK_BET':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: [ ...state.list[action.payload.selectionId], action.payload ],
+        }
+      };
     case 'REMOVE_BACK_BET':
       return {
         ...state,
         list: {
           ...state.list,
           [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs)],
+        },
+      };
+    case 'REMOVE_BACK_BETS_ON_SIDE':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.side !== action.payload.side)],
+        },
+      };
+    case 'REMOVE_ALL_BACK_BETS':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: [],
         },
       };
     default:
