@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 const initialState = {
   selected: false,
   operator: '<',
@@ -54,10 +56,7 @@ const reducer = (state = initialState, action) => {
     case 'REMOVE_ALL_STOP_ENTRY_BETS':
       return {
         ...state,
-        list: {
-          ...state.list,
-          [action.payload.selectionId]: [],
-        },
+        list: omit(state.list, action.payload.selectionId),
       };
     default:
       return state;

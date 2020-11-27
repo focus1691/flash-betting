@@ -41,3 +41,8 @@ export const removeTickOffset = (data) => ({
   type: 'REMOVE_TICK_OFFSET',
   payload: data,
 });
+
+export const removeTickOffsetOnSide = (data) => ({
+  type: 'REMOVE_TICK_OFFSET_ON_SIDE',
+  payload: data,
+});

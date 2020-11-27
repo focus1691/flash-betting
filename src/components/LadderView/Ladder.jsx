@@ -261,7 +261,7 @@ const Ladder = memo(
         <Header selectionId={selectionId} setLadderDown={setLadderDown} hedge={ltpHedge} />
 
         <div className="ladder" onContextMenu={() => false} onPointerOver={onHoverLadder} onPointerLeave={overLeaveLadder}>
-          <PercentageRow setLadderSideLeft={setLadderSideLeft} selectionId={selectionId} cancelSpecialOrders={cancelSpecialOrders} />
+          <PercentageRow setLadderSideLeft={setLadderSideLeft} selectionId={selectionId} />
           <AutoSizer>
             {({ height, width }) => (
               <List

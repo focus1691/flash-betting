@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { omit, omitBy } from 'lodash';
 
 const initialState = {
   selected: false,
@@ -38,6 +38,11 @@ const reducer = (state = initialState, action) => {
             ...action.payload,
           },
         },
+      };
+    case 'REMOVE_STOP_LOSS_ON_SIDE':
+      return {
+        ...state,
+        list: omitBy(state.list, () => state.list[action.payload.selectionId].side === action.payload.side),
       };
     case 'REMOVE_STOP_LOSS':
       return {

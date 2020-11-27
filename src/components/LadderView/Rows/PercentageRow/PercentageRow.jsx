@@ -1,30 +1,35 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
+//* Actions
+import { removeAllBackBets } from '../../../../actions/back';
+import { removeAllLayBets } from '../../../../actions/lay';
+import { removeStopLossOnSide } from '../../../../actions/stopLoss';
+import { removeTickOffsetOnSide } from '../../../../actions/tickOffset';
+import { removeStopEntryBetsOnSide } from '../../../../actions/stopEntry';
 import { setBackLayColOrder } from '../../../../actions/market';
-import {
-  getLTP, getLTPDelta, getPercent, getTV,
-} from '../../../../selectors/marketSelector';
+import { getLTP, getLTPDelta, getPercent, getTV } from '../../../../selectors/marketSelector';
 import { getLTPstyle } from '../../../../utils/ladder/DeconstructLadder';
-import { getUnmatchedBetsOnRow } from '../../../../selectors/orderSelector';
 import CancelOrders from './CancelOrders';
 
-const PercentageRow = memo(({
-  ltp, tv, percent, ltpDelta, layFirstCol, setBackLayColOrder, cancelSpecialOrders, unmatchedBackBets, unmatchedLayBets,
-}) => {
+const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstCol, setBackLayColOrder, removeAllBackBets, removeAllLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
   const ltpStyle = useMemo(() => getLTPstyle(ltp, ltpDelta), [ltp, ltpDelta]);
 
-  const cancelAllOrdersOnSide = useCallback(async (orders, side) => {
-    cancelSpecialOrders(orders, side);
-  }, [cancelSpecialOrders]);
-
   const cancelBackOrders = useCallback(() => {
-    cancelAllOrdersOnSide(unmatchedBackBets);
-  }, [cancelAllOrdersOnSide, unmatchedBackBets]);
+    // cancelAllOrdersOnSide(unmatchedBackBets);
+    removeAllBackBets({ selectionId });
+    removeStopLossOnSide({ selectionId, side: 'BACK' });
+    removeTickOffsetOnSide({ selectionId, side: 'BACK' });
+    removeStopEntryBetsOnSide({ selectionId, side: 'BACK' });
+  }, [removeAllBackBets, removeStopEntryBetsOnSide, removeStopLossOnSide, removeTickOffsetOnSide, selectionId]);
 
   const cancelLayOrders = useCallback(() => {
-    cancelAllOrdersOnSide(unmatchedLayBets);
-  }, [cancelAllOrdersOnSide, unmatchedLayBets]);
+    // cancelAllOrdersOnSide(unmatchedLayBets);
+    removeAllLayBets({ selectionId });
+    removeStopLossOnSide({ selectionId, side: 'LAY' });
+    removeTickOffsetOnSide({ selectionId, side: 'LAY' });
+    removeStopEntryBetsOnSide({ selectionId, side: 'LAY' });
+  }, [removeAllLayBets, removeStopEntryBetsOnSide, removeStopLossOnSide, removeTickOffsetOnSide, selectionId]);
 
   return (
     <div className="percentage-row">
@@ -36,7 +41,7 @@ const PercentageRow = memo(({
         {`${percent[layFirstCol ? 'lay' : 'back']}%`}
       </div>
       <Tooltip title="Swap Back/Lay Columns" aria-label="Swap matched columns">
-        <div className="th" style={ltpStyle} onClick={() => setBackLayColOrder()}>
+        <div role="button" tabIndex="0" className="th" style={ltpStyle} onClick={() => setBackLayColOrder()}>
           {ltp[0]}
         </div>
       </Tooltip>
@@ -54,11 +59,9 @@ const mapStateToProps = (state, { selectionId, price }) => ({
   tv: getTV(state.market.ladder, { selectionId }),
   percent: getPercent(state.market.ladder, { selectionId }),
   ltpDelta: getLTPDelta(state.market.ladder, { selectionId }),
-  unmatchedBackBets: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side: 'BACK' }),
-  unmatchedLayBets: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side: 'LAY' }),
   layFirstCol: state.market.layFirstCol,
 });
 
-const mapDispatchToProps = { setBackLayColOrder };
+const mapDispatchToProps = { setBackLayColOrder, removeAllBackBets, removeAllLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow);

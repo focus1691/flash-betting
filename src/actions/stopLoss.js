@@ -45,3 +45,8 @@ export const removeStopLoss = (data) => ({
   type: 'REMOVE_STOP_LOSS',
   payload: data,
 });
+
+export const removeStopLossOnSide = (data) => ({
+  type: 'REMOVE_STOP_LOSS_ON_SIDE',
+  payload: data,
+});

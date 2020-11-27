@@ -57,11 +57,6 @@ export const removeBackBet = (data) => ({
   payload: data,
 });
 
-export const removeBackBetsOnSide = (data) => ({
-  type: 'REMOVE_BACK_BETS_ON_SIDE',
-  payload: data,
-});
-
 export const removeAllBackBets = (data) => ({
   type: 'REMOVE_ALL_BACK_BETS',
   payload: data,

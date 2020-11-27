@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 const initialState = {
   selected: false,
   stake: 2,
@@ -72,21 +74,10 @@ const reducer = (state = initialState, action) => {
           [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs)],
         },
       };
-    case 'REMOVE_BACK_BETS_ON_SIDE':
-      return {
-        ...state,
-        list: {
-          ...state.list,
-          [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.side !== action.payload.side)],
-        },
-      };
     case 'REMOVE_ALL_BACK_BETS':
       return {
         ...state,
-        list: {
-          ...state.list,
-          [action.payload.selectionId]: [],
-        },
+        list: omit(state.list, action.payload.selectionId),
       };
     default:
       return state;

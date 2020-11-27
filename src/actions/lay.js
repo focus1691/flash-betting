@@ -57,11 +57,6 @@ export const removeLayBet = (data) => ({
   payload: data,
 });
 
-export const removeLayBetsOnSide = (data) => ({
-  type: 'REMOVE_LAY_BETS_ON_SIDE',
-  payload: data,
-});
-
 export const removeAllLayBets = (data) => ({
   type: 'REMOVE_ALL_LAY_BETS',
   payload: data,

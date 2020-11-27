@@ -217,6 +217,33 @@ describe('Cancel bets made with tools', () => {
       },
     });
   });
+
+  it('should handle REMOVE_STOP_LOSS_ON_SIDE', () => {
+    const initialState = {
+      list: {
+        13331: {
+          marketId: '1.342344',
+          selectionId: 13331,
+          side: 'BACK',
+          price: 3,
+          custom: false,
+          units: 'stopLossUnits',
+          strategy: 'Stop Loss',
+        },
+      },
+    };
+    expect(
+      SLReducer(initialState, {
+        type: 'REMOVE_STOP_LOSS_ON_SIDE',
+        payload: {
+          selectionId: 13331,
+          side: 'BACK',
+        },
+      }),
+    ).toEqual({
+      list: {},
+    });
+  });
 });
 
 describe('Add bets made with tools', () => {

@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { omit, omitBy } from 'lodash';
 
 const initialState = {
   selected: false,
@@ -36,10 +36,15 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
+    case 'REMOVE_TICK_OFFSET_ON_SIDE':
+      return {
+        ...state,
+        list: omitBy(state.list, () => state.list[action.payload.selectionId].side === action.payload.side),
+      };
     case 'REMOVE_TICK_OFFSET':
       return {
         ...state,
-        list: omit(state.list, action.payload.rfs),
+        list: omit(state.list, action.payload.selectionId),
       };
     default:
       return state;

@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
-// Actions
+//* Actions
 import { changePriceType } from '../../../../actions/market';
 import { removeBackBet, removeAllBackBets } from '../../../../actions/back';
 import { removeLayBet, removeAllLayBets } from '../../../../actions/lay';
