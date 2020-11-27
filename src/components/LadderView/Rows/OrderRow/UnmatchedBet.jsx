@@ -4,7 +4,7 @@ import {
 } from '../../../../utils/Bets/BettingCalculations';
 
 const UnmatchedBet = memo(({ bet, cancelBet }) => {
-  const strategyAbbreviation = useMemo(() => getStrategyAbbreviation(bet.trailing, bet.hedged), []);
+  const strategyAbbreviation = useMemo(() => getStrategyAbbreviation(bet.trailing, bet.hedged), [bet.hedged, bet.trailing]);
   const strategySuffix = useMemo(() => getStrategySuffix(bet.strategy, bet.stopEntryCondition, bet.targetLTP, strategyAbbreviation), []);
 
   const handleClick = useCallback(() => {
