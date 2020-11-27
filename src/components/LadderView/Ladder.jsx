@@ -9,10 +9,9 @@ import { addStopLoss, updateStopLossList } from '../../actions/stopLoss';
 import { addTickOffset, updateTickOffsetList } from '../../actions/tickOffset';
 import { updateStopEntryList } from '../../actions/stopEntry';
 import { addFillOrKill, updateFillOrKillList } from '../../actions/fillOrKill';
-import { cancelOrders, placeOrder, updateOrders, replaceStopLoss } from '../../actions/bet';
+import { cancelBets, placeOrder, updateOrders, replaceStopLoss } from '../../actions/bet';
 import { getLTP } from '../../selectors/marketSelector';
 import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from '../../selectors/orderSelector';
-import { combineUnmatchedOrders } from '../../utils/Bets/CombineUnmatchedOrders';
 import { getStakeVal } from '../../selectors/settingsSelector';
 import { ALL_PRICES, formatPrice } from '../../utils/ladder/CreateFullLadder';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
@@ -137,7 +136,7 @@ const Ladder = memo(
     const handleHedgeCellClick = useCallback(
       async (marketId, selectionId, unmatchedBetsOnRow, side, price, hedge) => {
         if (unmatchedBetsOnRow) {
-          const { back, lay, stopLoss, tickOffset, stopEntry, fillOrKill } = await cancelOrders(unmatchedBetsOnRow, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
+          const { back, lay, stopLoss, tickOffset, stopEntry, fillOrKill } = await cancelBets(unmatchedBetsOnRow, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, side);
           updateBackList(back);
           updateLayList(lay);
           updateStopLossList(stopLoss);
@@ -182,7 +181,7 @@ const Ladder = memo(
     const handlePlaceOrder = useCallback(
       async (side, price, marketId, selectionId, stakeVal, stopLossSelected, stopLossData, stopLossUnits, hedgeSize) => {
         const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-        const betSize = customStakeActive && customStake ? customStake : stakeVal[selectionId];
+        const size = customStakeActive && customStake ? customStake : stakeVal[selectionId];
         //* Place the order first with BetFair and then execute the tools
         const betId = await placeOrder({
           side,
@@ -190,14 +189,14 @@ const Ladder = memo(
           marketId,
           selectionId,
           customerStrategyRef,
-          size: betSize,
+          size,
         });
         //* betId only returned if the bet was success
         if (!betId) return;
         if (stopLossSelected && !stopLossData) {
           const SL = {
             marketId,
-            selectionId: parseInt(selectionId),
+            selectionId,
             side: side === 'BACK' ? 'LAY' : 'BACK',
             price: findStop(price, stopLossOffset, side),
             custom: false,
@@ -205,7 +204,7 @@ const Ladder = memo(
             ticks: stopLossOffset,
             rfs: customerStrategyRef,
             assignedIsOrderMatched: false,
-            size: betSize,
+            size,
             betId,
             hedged: stopLossHedged,
             strategy: 'Stop Loss',
@@ -219,7 +218,7 @@ const Ladder = memo(
             marketId,
             selectionId,
             price: findTickOffset(formatPrice(price), side.toLowerCase() === 'lay' ? 'back' : 'lay', tickOffsetTicks, tickOffsetUnits === 'Percent').priceReached,
-            size: tickOffsetHedged ? hedgeSize : betSize,
+            size: tickOffsetHedged ? hedgeSize : size,
             side: side === 'BACK' ? 'LAY' : 'BACK',
             percentageTrigger: tickOffsetTrigger,
             rfs: customerStrategyRef,
@@ -231,11 +230,12 @@ const Ladder = memo(
           saveBet(TOS);
         }
 
-        if (!stopLossSelected && fillOrKillSelected) {
+        if (fillOrKillSelected) {
           const FOK = {
             strategy: 'Fill Or Kill',
             marketId,
             selectionId,
+            side,
             seconds: fillOrKillSeconds,
             startTime: Date.now(),
             betId,
@@ -246,14 +246,6 @@ const Ladder = memo(
         }
       },
       [customStakeActive, customStake, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossHedged, addStopLoss, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, addTickOffset, fillOrKillSeconds, addFillOrKill],
-    );
-
-    const cancelSpecialOrders = useCallback(
-      (order, side) => {
-        const betsToPass = order || combineUnmatchedOrders(backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets)[selectionId];
-        if (betsToPass) cancelOrders(betsToPass, side);
-      },
-      [backList, layList, stopEntryList, tickOffsetList, stopLossList, unmatchedBets, selectionId],
     );
 
     return (

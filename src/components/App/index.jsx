@@ -449,19 +449,18 @@ const App = ({
                     if (bet.marketId === marketId) {
                       switch (bet.strategy) {
                         case 'Back':
-                          loadedBackOrders[bet.selectionId] = loadedBackOrders[bet.selectionId] === undefined ? [bet] : loadedBackOrders[bet.selectionId].concat(bet);
+                          loadedBackOrders[bet.selectionId] = loadedBackOrders[bet.selectionId] ? loadedBackOrders[bet.selectionId].concat(bet) : [bet];
                           break;
                         case 'Lay':
-                          loadedLayOrders[bet.selectionId] = loadedLayOrders[bet.selectionId] === undefined ? [bet] : loadedLayOrders[bet.selectionId].concat(bet);
+                          loadedLayOrders[bet.selectionId] = loadedLayOrders[bet.selectionId] ? loadedLayOrders[bet.selectionId].concat(bet) : [bet];
                           break;
                         case 'Stop Entry':
-                          loadedStopEntryOrders[bet.selectionId] = loadedStopEntryOrders[bet.selectionId] === undefined ? [bet] : loadedStopEntryOrders[bet.selectionId].concat(bet);
+                          loadedStopEntryOrders[bet.selectionId] = loadedStopEntryOrders[bet.selectionId] ? loadedStopEntryOrders[bet.selectionId].concat(bet) : [bet];
                           break;
                         case 'Tick Offset':
-                          loadedTickOffsetOrders[bet.rfs] = bet;
+                          loadedTickOffsetOrders[bet.selectionId] = bet;
                           break;
                         case 'Fill Or Kill':
-                          // this should only keep the fill or kill if the bet isn't completed already
                           loadedFillOrKillOrders[bet.betId] = bet;
                           break;
                         case 'Stop Loss':

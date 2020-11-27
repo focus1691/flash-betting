@@ -1,10 +1,5 @@
 import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
 import { saveBet, removeBet } from '../http/helper';
-import removeBackBet from "./back";
-import removeLayBet from "./lay";
-import removeStopEntryBet from './stopEntry';
-import removeTickOffset from './tickOffset';
-import removeStopLoss from './stopLoss';
 
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
@@ -24,6 +19,11 @@ export const addUnmatchedBet = (bet) => ({
 export const removeUnmatchedBet = (bet) => ({
   type: 'REMOVE_UNMATCHED_BET',
   payload: bet,
+});
+
+export const removeUnmatchedBets = (bets) => ({
+  type: 'REMOVE_UNMATCHED_BETS',
+  payload: bets,
 });
 
 export const updateSizeMatched = (data) => ({
@@ -78,7 +78,7 @@ export const placeOrder = async (bet) => {
           const { betId, orderStatus, sizeMatched } = ReplaceExecutionReport.instructionReports[0].placeInstructionReport;
 
           startingBet.betId = betId;
-  
+
           if (orderStatus === 'EXECUTION_COMPLETE') {
             dispatch(addMatchedBet({
               ...startingBet,
@@ -120,7 +120,7 @@ export const executeBet = async (bet) => {
     method: 'POST',
     body: JSON.stringify(bet),
   })
-  .then((res) => res.json())
+    .then((res) => res.json())
   if (!PlaceExecutionReport || PlaceExecutionReport.status === 'FAILURE') return null;
 
   const { orderStatus, sizeMatched, betId } = PlaceExecutionReport.instructionReports[0];
@@ -154,8 +154,8 @@ export const executeReduceSize = async (bet) => {
   return cancelOrder && cancelOrder.status === 'SUCCESS';
 };
 
-export const executeCancelBet = (bet) => {
-  fetch('/api/cancel-order', {
+export const executeCancelBet = async (bet) => {
+  await fetch('/api/cancel-order', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -165,48 +165,32 @@ export const executeCancelBet = (bet) => {
   })
 };
 
-export const cancelOrders = (orders, side) => {
+export const cancelBet = async (marketId, betId) => {
+
+  await executeCancelBet({ marketId, betId });
+
   return async (dispatch) => {
+    dispatch(removeUnmatchedBets({ betId }));
+  };
+};
 
-    const cancelSpecialOrder = (bet) => {
-      if (side && side != bet.side) return;
-      switch (bet.strategy) {
-        case 'Back':
-          dispatch(removeBackBet({ rfs: bet.rfs, selectionId: bet.selectionId }));
-          break;
-        case 'Lay':
-          dispatch(removeLayBet({ rfs: bet.rfs, selectionId: bet.selectionId }));
-          break;
-        case 'Stop Entry':
-          dispatch(removeStopEntryBet({ rfs: bet.rfs, selectionId: bet.selectionId }));
-          break;
-        case 'Tick Offset':
-          dispatch(removeTickOffset({ rfs: bet.rfs }));
-          break;
-        case 'Stop Loss':
-          dispatch(removeStopLoss({ selectionId: bet.rfs }));
-          break;
-        default:
-          // if (fillOrKillList[bet.betId]) delete newFillOrKill[bet.betId];
-          executeCancelBet(bet);
-          break;
-      }
-      removeBet({ rfs: bet.rfs });
-    };
+export const cancelBets = (selectionId, side, unmatchedBets) => {
 
-    if (Array.isArray(orders)) {
-      for (let i = 0; i < orders.length; i += 1) {
-        cancelSpecialOrder(orders[i]);
-      }
-    } else if (orders.hasOwnProperty('betId') || orders.hasOwnProperty('rfs')) {
-      cancelSpecialOrder(orders);
-    } else {
-      Object.values(orders).forEach((rfs) => {
-        rfs.forEach((orders) => {
-          cancelSpecialOrder(orders);
-        });
+  const betIds = Object.keys(unmatchedBets);
+  const cancelledBets = [];
+
+  for (let i = 0; i < unmatchedBets.length; i += 1) {
+    if (unmatchedBets[betIds[i]].selectionId === selectionId && (!side || side === unmatchedBets[betIds[i]].side)) {
+      cancelledBets.push(betIds[i]);
+      executeCancelBet({
+        marketId: unmatchedBets[betIds[i]].marketId,
+        betId: unmatchedBets[betIds[i]].betId,
       });
     }
+  }
+
+  return async (dispatch) => {
+    dispatch(removeUnmatchedBets({ betIds: cancelledBets }));
   };
 };
 

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { updateBackList } from '../../../actions/back';
 import { updateFillOrKillList } from '../../../actions/fillOrKill';
 import { updateLayList } from '../../../actions/lay';
-import { cancelOrders } from '../../../actions/bet';
+import { cancelBets } from '../../../actions/bet';
 import {
   setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatchedBetsExpanded, setRulesExpanded, setToolsExpanded, setUnmatchedBetsExpanded,
 } from '../../../actions/settings';
@@ -77,7 +77,7 @@ const Market = ({
     e.stopPropagation();
     setUnmatchedBetsExpanded(true);
     if (unmatchedOrders) {
-      const data = await cancelOrders(unmatchedOrders, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, null);
+      const data = await cancelBets(unmatchedOrders, backList, layList, stopLossList, tickOffsetList, stopEntryList, fillOrKillList, null);
       updateBackList(data.back);
       updateLayList(data.lay);
       updateStopLossList(data.stopLoss);

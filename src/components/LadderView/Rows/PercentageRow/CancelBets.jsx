@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 
-export default (({ cancelOrders, side, layFirstCol }) => {
+export default (({ cancelBets, side, layFirstCol }) => {
   const [text, setText] = useState('');
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default (({ cancelOrders, side, layFirstCol }) => {
   }, [layFirstCol, side]);
 
   const handleClick = () => {
-    cancelOrders();
+    cancelBets();
   };
 
   return (
