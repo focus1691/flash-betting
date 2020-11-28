@@ -1,6 +1,5 @@
 import React, { useCallback, memo } from 'react';
 import { colorForOrder, twoDecimalPlaces } from '../../../../utils/Bets/BettingCalculations';
-
 import BetPL from './BetPL';
 
 const Bet = memo(({

@@ -93,28 +93,20 @@ const getStrategySuffix = (strategy, stopEntryCondition, targetLTP, strategyAbbr
 };
 
 const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartTime) => {
-  let suffix = '';
   switch (order.strategy) {
     case 'Stop Loss':
-      suffix = 'SL ';
-      break;
+      return 'SL ';
     case 'Tick Offset':
-      suffix = 'T.O.';
-      break;
+      return 'T.O.';
     case 'Back':
-      suffix = `${getTimeToDisplay(order, marketStartTime)}s${order.executionTime === 'Before' ? '-' : '+'}`;
-      break;
+      return `${getTimeToDisplay(order, marketStartTime)}s${order.executionTime === 'Before' ? '-' : '+'}`;
     case 'Lay':
-      suffix = `${getTimeToDisplay(order, marketStartTime)}s${order.executionTime === 'Before' ? '-' : '+'}`;
-      break;
+      return `${getTimeToDisplay(order, marketStartTime)}s${order.executionTime === 'Before' ? '-' : '+'}`;
     case 'Stop Entry':
-      suffix = `${order.stopEntryCondition + formatPrice(order.targetLTP)}SE`;
-      break;
+      return `${order.stopEntryCondition + formatPrice(order.targetLTP)}SE`;
     default:
-      suffix = calcBackProfit(order.size, order.price, order.side === 'BACK' ? 0 : 1) + strategyAbbreviation;
-      break;
+      return calcBackProfit(order.size, order.price, order.side === 'BACK' ? 0 : 1) + strategyAbbreviation;
   }
-  return suffix;
 };
 
 export {
