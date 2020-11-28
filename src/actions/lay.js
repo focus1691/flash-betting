@@ -57,7 +57,11 @@ export const removeLayBet = (data) => ({
   payload: data,
 });
 
-export const removeAllLayBets = (data) => ({
-  type: 'REMOVE_ALL_LAY_BETS',
+export const removeAllSelectionLayBets = (data) => ({
+  type: 'REMOVE_ALL_SELECTION_LAY_BETS',
   payload: data,
+});
+
+export const removeAllLayBets = () => ({
+  type: 'REMOVE_ALL_LAY_BETS',
 });

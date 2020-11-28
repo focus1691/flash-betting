@@ -63,8 +63,8 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: {
           ...state.list,
-          [action.payload.selectionId]: [ ...state.list[action.payload.selectionId], action.payload ],
-        }
+          [action.payload.selectionId]: [...state.list[action.payload.selectionId], action.payload],
+        },
       };
     case 'REMOVE_BACK_BET':
       return {
@@ -74,10 +74,15 @@ const reducer = (state = initialState, action) => {
           [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.rfs !== action.payload.rfs)],
         },
       };
-    case 'REMOVE_ALL_BACK_BETS':
+    case 'REMOVE_ALL_SELECTION_BACK_BETS':
       return {
         ...state,
         list: omit(state.list, action.payload.selectionId),
+      };
+    case 'REMOVE_ALL_BACK_BETS':
+      return {
+        ...state,
+        list: {},
       };
     default:
       return state;

@@ -46,6 +46,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: omit(state.list, action.payload.selectionId),
       };
+    case 'REMOVE_ALL_TICK_OFFSET':
+      return {
+        ...state,
+        list: {},
+      };
     default:
       return state;
   }

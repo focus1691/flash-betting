@@ -53,10 +53,15 @@ const reducer = (state = initialState, action) => {
           [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.side !== action.payload.side)],
         },
       };
-    case 'REMOVE_ALL_STOP_ENTRY_BETS':
+    case 'REMOVE_ALL_SELECTION_STOP_ENTRY_BETS':
       return {
         ...state,
         list: omit(state.list, action.payload.selectionId),
+      };
+    case 'REMOVE_ALL_STOP_ENTRY_BETS':
+      return {
+        ...state,
+        list: {},
       };
     default:
       return state;

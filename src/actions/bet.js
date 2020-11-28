@@ -45,8 +45,7 @@ export const executeBet = async (bet) => {
     },
     method: 'POST',
     body: JSON.stringify(bet),
-  })
-    .then((res) => res.json())
+  }).then((res) => res.json());
   if (!PlaceExecutionReport || PlaceExecutionReport.status === 'FAILURE') return null;
 
   const { orderStatus, sizeMatched, betId } = PlaceExecutionReport.instructionReports[0];
@@ -117,25 +116,27 @@ export const placeOrder = async (bet) => {
       }).then((res) => res.json());
 
       if (ReplaceExecutionReport && ReplaceExecutionReport.status === 'SUCCESS') {
-
         if (ReplaceExecutionReport.instructionReports[0] && ReplaceExecutionReport.instructionReports[0].placeInstructionReport) {
           const { betId, orderStatus, sizeMatched } = ReplaceExecutionReport.instructionReports[0].placeInstructionReport;
 
           startingBet.betId = betId;
 
           if (orderStatus === 'EXECUTION_COMPLETE') {
-            dispatch(addMatchedBet({
-              ...startingBet,
-              sizeMatched,
-              sizeRemaining: 0,
-            }));
-          }
-          else if (orderStatus === 'EXECUTABLE') {
-            dispatch(addUnmatchedBet({
-              ...startingBet,
-              sizeMatched,
-              sizeRemaining: bet.size - sizeMatched,
-            }))
+            dispatch(
+              addMatchedBet({
+                ...startingBet,
+                sizeMatched,
+                sizeRemaining: 0,
+              }),
+            );
+          } else if (orderStatus === 'EXECUTABLE') {
+            dispatch(
+              addUnmatchedBet({
+                ...startingBet,
+                sizeMatched,
+                sizeRemaining: bet.size - sizeMatched,
+              }),
+            );
           }
         }
         return startingBet.betId;
@@ -161,11 +162,10 @@ export const executeCancelBet = async (bet) => {
     },
     method: 'POST',
     body: JSON.stringify(bet),
-  })
+  });
 };
 
 export const cancelBet = async (marketId, betId) => {
-
   await executeCancelBet({ marketId, betId });
 
   return async (dispatch) => {
@@ -174,7 +174,6 @@ export const cancelBet = async (marketId, betId) => {
 };
 
 export const cancelBets = (selectionId, side, unmatchedBets) => {
-
   const betIds = Object.keys(unmatchedBets);
   const cancelledBets = [];
 
@@ -186,6 +185,23 @@ export const cancelBets = (selectionId, side, unmatchedBets) => {
         betId: unmatchedBets[betIds[i]].betId,
       });
     }
+  }
+
+  return async (dispatch) => {
+    dispatch(removeUnmatchedBets({ betIds: cancelledBets }));
+  };
+};
+
+export const cancelMarketBets = (marketId, unmatchedBets) => {
+  const cancelledBets = [];
+
+  for (let i = 0; i < unmatchedBets.length; i += 1) {
+
+    cancelledBets.push(unmatchedBets[i].betId);
+    executeCancelBet({
+      marketId: unmatchedBets[i].marketId,
+      betId: unmatchedBets[i].betId,
+    });
   }
 
   return async (dispatch) => {

@@ -78,3 +78,7 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
     }
   };
 };
+
+export const removeAllStopLoss = () => ({
+  type: 'REMOVE_ALL_STOP_LOSS',
+});

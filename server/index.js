@@ -278,6 +278,12 @@ app.post('/api/remove-bet', (request, response) => {
   });
 });
 
+app.post('/api/remove-all-bets', (request, response) => {
+  SQLiteDatabase.removeAllBets(request.body).then((res) => {
+    response.sendStatus(res);
+  });
+});
+
 app.get('/api/fetch-all-sports', async (request, response) => {
   betfair.allSports = {};
   const headers = {

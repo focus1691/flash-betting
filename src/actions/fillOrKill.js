@@ -26,3 +26,7 @@ export const removeFillOrKill = (data) => ({
   type: 'REMOVE_FILL_OR_KILL',
   payload: data,
 });
+
+export const removeAllFillOrKill = () => ({
+  type: 'REMOVE_ALL_FILL_OR_KILL',
+});

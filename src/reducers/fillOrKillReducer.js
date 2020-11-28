@@ -32,6 +32,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: omit(state.list, action.payload.betId),
       };
+    case 'REMOVE_ALL_FILL_OR_KILL':
+      return {
+        ...state,
+        list: {},
+      };
     default:
       return state;
   }

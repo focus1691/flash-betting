@@ -78,6 +78,13 @@ class SQLiteDatabase {
     await stmt.finalize();
   }
 
+  async removeAllBets(bet) {
+    const { marketId } = bet;
+    const stmt = await this.db.prepare('DELETE FROM bets WHERE marketId = (?)');
+    await stmt.run(marketId);
+    await stmt.finalize();
+  }
+
   close() {
     this.db.close();
   }
