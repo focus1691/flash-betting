@@ -1,49 +1,62 @@
 import { secToMin } from '../DateCalculator';
 import { removeBet } from '../../http/helper';
 
-const isOrderBeforeMarketReady = (marketStartTime, order) => {
+const isBetBeforeMarketReady = (marketStartTime, order) => {
   const remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);
   return order.executionTime === 'Before' && remainingTime - order.timeOffset <= 0;
 };
 
-const isOrderAfterMarketReady = (marketStartTime, order) => {
+const isBetAfterMarketReady = (marketStartTime, order) => {
   const timePassed = Math.abs((new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000));
   return order.executionTime === 'After' && timePassed >= order.timeOffset;
 };
 
-const checkBackAndLayOrders = async (list, marketStartTime, onPlaceOrder, marketId, side, matchedBets, unmatchedBets, inPlay) => {
-  const newList = { ...list };
+const checkBackBets = async (list, marketStartTime, placeOrder, inPlay, removeBackBet) => {
+  const selectionIds = Object.keys(list);
 
-  Object.keys(list).map((selectionId) => {
-    const newSelectionArray = newList[selectionId];
-    let indexesToRemove = [];
-    // this is for the remove orders
-    list[selectionId].map((order, index) => {
-      const isReady = inPlay ? isOrderAfterMarketReady(marketStartTime, order) : isOrderBeforeMarketReady(marketStartTime, order);
+  for (let i = 0; i < selectionIds.length; i += 1) {
+    const BACK = list[selectionIds[i]];
+
+    for (let j = 0; j < BACK.length; j += 1) {
+      const isReady = inPlay ? isBetAfterMarketReady(marketStartTime, BACK[j]) : isBetBeforeMarketReady(marketStartTime, BACK[j]);
 
       if (isReady) {
-        onPlaceOrder({
-          marketId,
-          selectionId: parseInt(selectionId),
-          side,
-          size: order.size,
-          price: order.price,
-          matchedBets,
-          unmatchedBets,
+        placeOrder({
+          marketId: BACK[j].marketId,
+          selectionId: BACK[j].selectionId,
+          side: 'BACK',
+          size: BACK[j].size,
+          price: BACK[j].price,
         });
-
-        indexesToRemove = indexesToRemove.concat(index);
-
-        removeBet(order);
+        removeBet({ rfs: BACK[j].rfs }); // DB
+        removeBackBet({ selectionId: BACK[j].selectionId, rfs: BACK[j].rfs }); // Back action
       }
-    });
-
-    newList[selectionId] = newSelectionArray.filter((item, index) => indexesToRemove.indexOf(index) === -1);
-    if (newList[selectionId].length === 0) {
-      delete newList[selectionId];
     }
-  });
-  return newList;
+  }
+};
+
+const checkLayBets = async (list, marketStartTime, placeOrder, inPlay, removeLayBet) => {
+  const selectionIds = Object.keys(list);
+
+  for (let i = 0; i < selectionIds.length; i += 1) {
+    const LAY = list[selectionIds[i]];
+
+    for (let j = 0; j < LAY.length; j += 1) {
+      const isReady = inPlay ? isBetAfterMarketReady(marketStartTime, LAY[j]) : isBetBeforeMarketReady(marketStartTime, LAY[j]);
+
+      if (isReady) {
+        placeOrder({
+          marketId: LAY[j].marketId,
+          selectionId: LAY[j].selectionId,
+          side: 'LAY',
+          size: LAY[j].size,
+          price: LAY[j].price,
+        });
+        removeBet({ rfs: LAY[j].rfs }); // DB
+        removeLayBet({ selectionId: LAY[j].selectionId, rfs: LAY[j].rfs }); // Lay action
+      }
+    }
+  }
 };
 
 const getTimeToDisplay = (order, marketStartTime) => {
@@ -56,4 +69,4 @@ const getTimeToDisplay = (order, marketStartTime) => {
   return secToMin(remainingTime - order.timeOffset);
 };
 
-export { checkBackAndLayOrders, getTimeToDisplay };
+export { checkBackBets, checkLayBets, getTimeToDisplay };

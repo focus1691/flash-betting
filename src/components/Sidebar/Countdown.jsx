@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useInterval from 'react-useinterval';
-import { placeOrder, cancelBetFairOrder } from '../../actions/bet';
-import { removeBet } from '../../http/helper';
-import { updateLayList } from '../../actions/lay';
-import { updateBackList } from '../../actions/back';
-import { updateFillOrKillList } from '../../actions/fillOrKill';
+//* Actions
+import { placeOrder, cancelBet } from '../../actions/bet';
+import { removeBackBet } from '../../actions/back';
+import { removeLayBet } from '../../actions/lay';
+import { removeFillOrKill } from '../../actions/fillOrKill';
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { setPastEventTime } from '../../actions/market';
-import { checkBackAndLayOrders } from '../../utils/TradingStategy/BackLay';
+import { removeBet } from '../../http/helper';
+import { checkBackBets, checkLayBets } from '../../utils/TradingStategy/BackLay';
 import { countDownTime } from '../../utils/Market/CountDown';
 import { msToHMS } from '../../utils/DateCalculator';
 
 const ONE_SECOND = 1000;
 
 const Countdown = ({
-  marketId, marketStartTime, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder,
-  backList, layList, tickOffsetList, fillOrKillList, bets, updateBackList, updateLayList, updateTickOffsetList, updateFillOrKillList,
+  marketStartTime, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder,
+  removeBet, backList, layList, fillOrKillList, removeBackBet, removeLayBet, removeFillOrKill,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState('--');
 
@@ -24,48 +25,20 @@ const Countdown = ({
     setTimeRemaining(countDownTime(marketOpen, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime));
 
     //* BACK Before/After Market
-    const newBackList = await checkBackAndLayOrders(backList, marketStartTime, placeOrder, marketId, 'BACK', bets.matched, bets.unmatched);
-    if (Object.keys(backList).length > 0) {
-      updateBackList(newBackList);
-    }
+    checkBackBets(backList, marketStartTime, placeOrder, inPlay, removeBackBet);
 
     //* LAY Before/After Market
-    const newLayList = await checkBackAndLayOrders(layList, marketStartTime, placeOrder, marketId, 'LAY', bets.matched, bets.unmatched);
-    if (Object.keys(layList).length > 0) {
-      updateLayList(newLayList);
-    }
+    checkLayBets(layList, marketStartTime, placeOrder, inPlay, removeLayBet);
 
     //* FOK
-    for (const betId in fillOrKillList) {
-      if (fillOrKillList.hasOwnProperty(betId)) {
-        const order = fillOrKillList[betId];
-        if ((Date.now() / 1000) - (order.startTime / 1000) >= order.seconds) {
-          const isCancelled = await cancelBetFairOrder(order);
+    const betIds = Object.values(fillOrKillList);
 
-          if (isCancelled) {
-            await removeBet(order);
-
-            const newFillOrKillList = { ...fillOrKillList };
-            delete newFillOrKillList[betId];
-            updateFillOrKillList(newFillOrKillList);
-          }
-
-          // * TOS
-          for (const tickOffsetId in tickOffsetList) {
-            const tickOffsetRfs = tickOffsetList[tickOffsetId].rfs;
-            if (tickOffsetRfs === order.rfs) {
-              const isCancelled = await cancelBetFairOrder(order);
-
-              if (isCancelled) {
-                await removeBet(adjustedTickOffsetList[tickOffsetRfs]);
-
-                const adjustedTickOffsetList = { ...tickOffsetList };
-                delete adjustedTickOffsetList[tickOffsetRfs];
-                updateTickOffsetList(adjustedTickOffsetList);
-              }
-            }
-          }
-        }
+    for (let i = 0; i < betIds.length; i += 1) {
+      const FOK = fillOrKillList[betIds[i]];
+      if (FOK && (Date.now() / 1000) - (FOK.startTime / 1000) >= FOK.seconds) {
+        removeFillOrKill({ betId: FOK.betId }); // FOK Action
+        cancelBet(FOK.marketId, FOK.betId); // BetFair
+        removeBet({ rfs: FOK.rfs }); // DB
       }
     }
   }, ONE_SECOND);
@@ -84,7 +57,6 @@ const Countdown = ({
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
-  marketId: state.market.marketId,
   marketStatus: state.market.status,
   marketStartTime: state.market.marketStartTime,
   inPlay: state.market.inPlay,
@@ -94,11 +66,10 @@ const mapStateToProps = (state) => ({
   backList: state.back.list,
   fillOrKillList: state.fillOrKill.list,
   tickOffsetList: state.tickOffset.list,
-  bets: state.order.bets,
 });
 
 const matchDispatchToProps = {
-  placeOrder, updateBackList, updateLayList, updateFillOrKillList, updateTickOffsetList, setPastEventTime,
+  placeOrder, removeBet, removeBackBet, removeLayBet, removeFillOrKill, updateTickOffsetList, setPastEventTime,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Countdown);
