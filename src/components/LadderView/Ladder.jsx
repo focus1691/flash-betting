@@ -120,7 +120,7 @@ const Ladder = memo(
     }, [ltp, draggingLadder, scrollToLTP, ladderLocked]);
 
     const replaceStopLossOrder = useCallback(
-      async ({ price, stopLoss }) => {
+      async (price, stopLoss) => {
         const newSL = await replaceStopLoss(stopLoss, stopLossList, {
           selectionId,
           stakeVal,

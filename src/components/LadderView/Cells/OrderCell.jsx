@@ -26,7 +26,7 @@ const LadderOrderCell = memo(({
 
   const handleRightClick = useCallback(() => (e) => {
     e.preventDefault();
-    replaceStopLossOrder({ price, stopLoss });
+    replaceStopLossOrder(price, stopLoss);
   }, [price, replaceStopLossOrder, stopLoss]);
 
   const handleMouseEnter = useCallback(() => {
