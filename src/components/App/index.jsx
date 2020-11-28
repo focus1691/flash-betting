@@ -28,7 +28,7 @@ import {
 import { placeOrder, addUnmatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/bet';
 import { updateBackList } from '../../actions/back';
 import { updateLayList } from '../../actions/lay';
-import { updateStopLossList } from '../../actions/stopLoss';
+import { setStopLossBetMatched } from '../../actions/stopLoss';
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { updateStopEntryList } from '../../actions/stopEntry';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
@@ -90,6 +90,7 @@ const App = ({
   setInPlay,
   setInPlayTime,
   setMarketPL,
+  setStopLossBetMatched
   updateStopLossList,
   updateTickOffsetList,
   updateStopEntryList,
@@ -127,14 +128,9 @@ const App = ({
 
         if (!customerStrategyRef) {
   
-          if (stopLossList[selectionId]) {
-            const isStopLossMatched = checkStopLossTrigger(stopLossList[selectionId], customerStrategyRef, sizeRemaining);
-            if (isStopLossMatched) {
-              const newStopLossList = { ...stopLossList };
-              newStopLossList[selectionId].assignedIsOrderMatched = true;
-              updateStopLossList(newStopLossList);
-              updateOrderMatched(newStopLossList[selectionId]);
-            }
+          if (stopLossList[selectionId] && !stopLossList[selectionId].assignedIsOrderMatched && sizeRemaining === 0) {
+            setStopLossBetMatched({ selectionId });
+            updateOrderMatched({ rfs: customerStrategyRef, assignedIsOrderMatched: true });
           }  
 
           if (tickOffsetList[customerStrategyRef]) {
@@ -322,8 +318,6 @@ const App = ({
   const onReceiveOrderMessage = useCallback(
     async (data) => {
       if (data.oc) {
-        // const newUnmatchedBets = { ...unmatchedBets };
-        // const newMatchedBets = { ...matchedBets };
         for (let i = 0; i < data.oc.length; i += 1) {
           if (data.oc[i].orc) {
             const { id: marketId } = data.oc[i];
@@ -344,10 +338,8 @@ const App = ({
                   if (stopLossList[selectionId]) {
                     const isStopLossMatched = checkStopLossTrigger(stopLossList[selectionId], rfs, sizeRemaining);
                     if (isStopLossMatched) {
-                      const newStopLossList = { ...stopLossList };
-                      newStopLossList[selectionId].assignedIsOrderMatched = true;
-                      updateStopLossList(newStopLossList);
-                      updateOrderMatched(newStopLossList[selectionId]);
+                      setStopLossBetMatched({ selectionId });
+                      updateOrderMatched({ rfs, assignedIsOrderMatched: true });
                     }
                   }
 
@@ -600,6 +592,7 @@ const mapDispatchToProps = {
   setInPlay,
   setInPlayTime,
   setMarketPL,
+  setStopLossBetMatched,
   updateStopLossList,
   updateTickOffsetList,
   updateStopEntryList,

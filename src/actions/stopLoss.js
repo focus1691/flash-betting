@@ -53,6 +53,11 @@ export const removeStopLossOnSide = (data) => ({
   payload: data,
 });
 
+export const setStopLossBetMatched = (data) => ({
+  type: 'SET_STOP_LOSS_BET_MATCHED',
+  payload: data,
+});
+
 export const replaceStopLoss = async (SL, stopLossList, data) => {
   return async (dispatch) => {
     //* Just remove it if the stop loss position is clicked

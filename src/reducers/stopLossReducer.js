@@ -37,6 +37,17 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
+    case 'SET_STOP_LOSS_BET_MATCHED':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: {
+            ...state.list[action.payload.selectionId],
+            assignedIsOrderMatched: true,
+          },
+        },
+      };
     case 'REPLACE_STOP_LOSS':
       return {
         ...state,
