@@ -1,4 +1,4 @@
-import { removeBet } from '../http/helper';
+import { removeBet, updateStoredStopLoss } from '../http/helper';
 
 export const setStopLossSelected = () => ({
   type: 'SET_STOP_LOSS_SELECTED',
@@ -63,18 +63,18 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
     //* Change the stop position otherwise
     else if (stopLossList[data.selectionId]) {
       removeBet({ rfs: stopLossList[data.selectionId].rfs });
-      dispatch(
-        updateStopLoss({
-          size: data.stakeVal,
-          rice: data.price,
-          units: data.stopLossUnits,
-          custom: true,
-          assignedIsOrderMatched: false,
-          strategy: 'Stop Loss',
-          tickOffset: 0,
-          hedged: data.stopLossHedged,
-        }),
-      );
+      const SL = {
+        rfs: stopLossList[data.selectionId].rfs,
+        size: data.stakeVal,
+        price: data.price,
+        units: data.stopLossUnits,
+        custom: true,
+        assignedIsOrderMatched: false,
+        tickOffset: 0,
+        hedged: data.stopLossHedged,
+      };
+      updateStoredStopLoss(SL);
+      dispatch(updateStopLoss(SL));
     }
   };
 };

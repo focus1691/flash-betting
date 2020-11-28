@@ -41,3 +41,14 @@ export const updateOrderMatched = (bet) => {
     body: JSON.stringify(bet),
   });
 };
+
+export const updateStoredStopLoss = (bet) => {
+  fetch('/api/update-stop-loss', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(bet),
+  });
+};

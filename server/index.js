@@ -254,6 +254,12 @@ app.post('/api/update-price', (request, response) => {
   });
 });
 
+app.post('/api/update-stop-loss', (request, response) => {
+  SQLiteDatabase.updateStopLoss(request.body).then((res) => {
+    response.sendStatus(res);
+  });
+});
+
 app.post('/api/update-ticks', (request, response) => {
   SQLiteDatabase.updateTicks(request.body).then((res) => {
     response.sendStatus(res);

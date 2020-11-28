@@ -62,6 +62,15 @@ class SQLiteDatabase {
     await stmt.finalize();
   }
 
+  async updateStopLoss(bet) {
+    const {
+      rfs, size, price, units, custom, assignedIsOrderMatched, tickOffset, hedged,
+    } = bet;
+    const stmt = await this.db.prepare('UPDATE bets SET size = (?), price = (?), units = (?), custom = (?), assignedIsOrderMatched = (?), tickOffset = (?), hedged = (?)  WHERE rfs = (?)');
+    await stmt.run(size, price, units, custom, assignedIsOrderMatched, tickOffset, hedged, rfs);
+    await stmt.finalize();
+  }
+
   async removeBet(bet) {
     const { rfs } = bet;
     const stmt = await this.db.prepare('DELETE FROM bets WHERE rfs = (?)');

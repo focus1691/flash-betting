@@ -49,7 +49,6 @@ const reducer = (state = initialState, action) => {
             units: action.payload.units,
             custom: action.payload.custom,
             assignedIsOrderMatched: action.payload.assignedIsOrderMatched,
-            strategy: action.payload.strategy,
             tickOffset: action.payload.tickOffset,
             hedged: action.payload.hedged,
           },
