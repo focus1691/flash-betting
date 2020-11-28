@@ -2,15 +2,19 @@ import React, {
   useState, memo, useMemo, useCallback,
 } from 'react';
 import { connect } from 'react-redux';
+//* Actions
+import { replaceStopLoss } from '../../../actions/stopLoss';
 import { setOddsHovered } from '../../../actions/market';
+//* Selectors
 import { getMatched } from '../../../selectors/marketSelector';
 import { getStopLoss } from '../../../selectors/stopLossSelector';
 import { getTickOffset } from '../../../selectors/tickOffsetSelector';
 import { getTotalMatched, orderStyle, textForOrderCell } from '../../../utils/Bets/GetMatched';
+import { formatPrice } from '../../../utils/ladder/CreateFullLadder';
 
 const LadderOrderCell = memo(({
-  selectionId, side, price, marketId, handlePlaceOrder, stopLoss, stopLossUnits,
-  stopLossSelected, tickOffset, replaceStopLossOrder, hedgeSize, stakeVal, cellMatched,
+  selectionId, side, price, marketId, handlePlaceOrder, stopLossList, stopLoss, stopLossUnits, stopLossHedged,
+  stopLossSelected, tickOffset, hedgeSize, stakeVal, cellMatched, replaceStopLoss,
 }) => {
   const [betPending, setBetPending] = useState(false);
   const totalMatched = useMemo(() => getTotalMatched(betPending, stakeVal[selectionId], cellMatched, null), [betPending, cellMatched, selectionId, stakeVal]);
@@ -26,8 +30,15 @@ const LadderOrderCell = memo(({
 
   const handleRightClick = useCallback(() => (e) => {
     e.preventDefault();
-    replaceStopLossOrder(price, stopLoss);
-  }, [price, replaceStopLossOrder, stopLoss]);
+
+    replaceStopLoss(stopLoss, stopLossList, {
+      selectionId,
+      stakeVal,
+      price: formatPrice(price),
+      units: stopLossUnits,
+      stopLossHedged,
+    });
+  }, [price, replaceStopLoss, selectionId, stakeVal, stopLoss, stopLossHedged, stopLossList, stopLossUnits]);
 
   const handleMouseEnter = useCallback(() => {
     setOddsHovered({ selectionId, odds: price, side });
@@ -55,14 +66,21 @@ const LadderOrderCell = memo(({
 
 const mapStateToProps = (state, props) => ({
   marketId: state.market.marketId,
+
+  //* SL
+  stopLossList: state.stopLoss.list,
   stopLoss: getStopLoss(state.stopLoss.list, props),
   stopLossSelected: state.stopLoss.selected,
   stopLossUnits: state.stopLoss.units,
+  stopLossHedged: state.stopLoss.hedged,
+  
+  //* TOS
   tickOffset: getTickOffset(state.tickOffset.list, props),
+
   stakeVal: state.settings.stake,
   cellMatched: getMatched(state.market.ladder, props),
 });
 
-const mapDispatchToProps = { setOddsHovered };
+const mapDispatchToProps = { setOddsHovered, replaceStopLoss };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LadderOrderCell);

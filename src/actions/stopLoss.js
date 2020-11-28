@@ -1,3 +1,5 @@
+import { removeBet } from '../http/helper';
+
 export const setStopLossSelected = () => ({
   type: 'SET_STOP_LOSS_SELECTED',
 });
@@ -26,8 +28,8 @@ export const setDisplayText = (text) => ({
   payload: text,
 });
 
-export const updateStopLossList = (list) => ({
-  type: 'UPDATE_STOP_LOSS_LIST',
+export const updateStopLoss = (list) => ({
+  type: 'REPLACE_STOP_LOSS',
   payload: list,
 });
 
@@ -50,3 +52,29 @@ export const removeStopLossOnSide = (data) => ({
   type: 'REMOVE_STOP_LOSS_ON_SIDE',
   payload: data,
 });
+
+export const replaceStopLoss = async (SL, stopLossList, data) => {
+  return async (dispatch) => {
+    //* Just remove it if the stop loss position is clicked
+    if (SL && SL.stopLoss) {
+      removeBet({ rfs: stopLossList[data.selectionId].rfs });
+      dispatch(removeStopLoss({ selectionId: data.selectionId }));
+    }
+    //* Change the stop position otherwise
+    else if (stopLossList[data.selectionId]) {
+      removeBet({ rfs: stopLossList[data.selectionId].rfs });
+      dispatch(
+        updateStopLoss({
+          size: data.stakeVal,
+          rice: data.price,
+          units: data.stopLossUnits,
+          custom: true,
+          assignedIsOrderMatched: false,
+          strategy: 'Stop Loss',
+          tickOffset: 0,
+          hedged: data.stopLossHedged,
+        }),
+      );
+    }
+  };
+};

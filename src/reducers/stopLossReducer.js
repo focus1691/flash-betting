@@ -25,8 +25,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, trailing: action.payload };
     case 'TOGGLE_STOP_LOSS_HEDGED':
       return { ...state, hedged: action.payload };
-    case 'UPDATE_STOP_LOSS_LIST':
-      return { ...state, list: action.payload };
     case 'SET_STOP_LOSS_SELECTIONS':
       return { ...state, selections: action.payload };
     case 'ADD_STOP_LOSS':
@@ -36,6 +34,24 @@ const reducer = (state = initialState, action) => {
           ...state.list,
           [action.payload.selectionId]: {
             ...action.payload,
+          },
+        },
+      };
+    case 'REPLACE_STOP_LOSS':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: {
+            ...state.list[action.payload.selectionId],
+            size: action.payload.size,
+            price: action.payload.price,
+            units: action.payload.units,
+            custom: action.payload.custom,
+            assignedIsOrderMatched: action.payload.assignedIsOrderMatched,
+            strategy: action.payload.strategy,
+            tickOffset: action.payload.tickOffset,
+            hedged: action.payload.hedged,
           },
         },
       };

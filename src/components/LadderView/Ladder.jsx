@@ -119,20 +119,6 @@ const Ladder = memo(
       if (!ladderLocked) scrollToLTP();
     }, [ltp, draggingLadder, scrollToLTP, ladderLocked]);
 
-    const replaceStopLossOrder = useCallback(
-      async (price, stopLoss) => {
-        const newSL = await replaceStopLoss(stopLoss, stopLossList, {
-          selectionId,
-          stakeVal,
-          price: formatPrice(price),
-          units: stopLossUnits,
-          stopLossHedged,
-        });
-        updateStopLossList(newSL);
-      },
-      [selectionId, updateStopLossList, stakeVal, stopLossHedged, stopLossList, stopLossUnits],
-    );
-
     const handleHedgeCellClick = useCallback(
       async (marketId, selectionId, unmatchedBetsOnRow, side, price, hedge) => {
         if (unmatchedBetsOnRow) {
@@ -268,7 +254,6 @@ const Ladder = memo(
                   selectionId,
                   handlePlaceOrder,
                   handleHedgeCellClick,
-                  replaceStopLossOrder,
                   isMoving,
                   hedgingAvailable,
                 }}

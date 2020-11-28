@@ -1,5 +1,4 @@
 import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
-import { saveBet, removeBet } from '../http/helper';
 
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
@@ -35,6 +34,51 @@ export const setBetExecutionComplete = (data) => ({
   type: 'SET_BET_EXECUTION_COMPLETE',
   payload: data,
 });
+
+export const executeBet = async (bet) => {
+  bet.size = parseFloat(bet.size).toFixed(2);
+
+  const PlaceExecutionReport = await fetch('/api/place-order', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(bet),
+  })
+    .then((res) => res.json())
+  if (!PlaceExecutionReport || PlaceExecutionReport.status === 'FAILURE') return null;
+
+  const { orderStatus, sizeMatched, betId } = PlaceExecutionReport.instructionReports[0];
+
+  if (!betId) return null;
+
+  const adjustedBet = { ...bet };
+  adjustedBet.rfs = bet.customerStrategyRef;
+  delete adjustedBet.customerStrategyRef;
+  adjustedBet.betId = betId;
+  adjustedBet.status = orderStatus;
+  adjustedBet.sizeMatched = sizeMatched;
+  adjustedBet.sizeRemaining = bet.size - sizeMatched;
+  adjustedBet.strategy = 'None';
+
+  return adjustedBet;
+};
+
+export const executeReduceSize = async (bet) => {
+  const cancelOrder = await fetch('/api/cancel-order', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(bet),
+  })
+    .then((res) => res.json())
+    .catch(() => false);
+
+  return cancelOrder && cancelOrder.status === 'SUCCESS';
+};
 
 export const placeOrder = async (bet) => {
   bet.size = bet.side === 'LAY' ? calcLayBet(bet.price, bet.size).liability : parseFloat(bet.size);
@@ -109,51 +153,6 @@ export const placeOrder = async (bet) => {
   };
 };
 
-export const executeBet = async (bet) => {
-  bet.size = parseFloat(bet.size).toFixed(2);
-
-  const PlaceExecutionReport = await fetch('/api/place-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  })
-    .then((res) => res.json())
-  if (!PlaceExecutionReport || PlaceExecutionReport.status === 'FAILURE') return null;
-
-  const { orderStatus, sizeMatched, betId } = PlaceExecutionReport.instructionReports[0];
-
-  if (!betId) return null;
-
-  const adjustedBet = { ...bet };
-  adjustedBet.rfs = bet.customerStrategyRef;
-  delete adjustedBet.customerStrategyRef;
-  adjustedBet.betId = betId;
-  adjustedBet.status = orderStatus;
-  adjustedBet.sizeMatched = sizeMatched;
-  adjustedBet.sizeRemaining = bet.size - sizeMatched;
-  adjustedBet.strategy = 'None';
-
-  return adjustedBet;
-};
-
-export const executeReduceSize = async (bet) => {
-  const cancelOrder = await fetch('/api/cancel-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  })
-    .then((res) => res.json())
-    .catch(() => false);
-
-  return cancelOrder && cancelOrder.status === 'SUCCESS';
-};
-
 export const executeCancelBet = async (bet) => {
   await fetch('/api/cancel-order', {
     headers: {
@@ -192,38 +191,4 @@ export const cancelBets = (selectionId, side, unmatchedBets) => {
   return async (dispatch) => {
     dispatch(removeUnmatchedBets({ betIds: cancelledBets }));
   };
-};
-
-export const replaceStopLoss = async (SL, stopLossList, data) => {
-  const newStopLossList = { ...stopLossList };
-
-  //* Just remove it if the stop loss position is clicked
-  if (SL && SL.stopLoss) {
-    removeBet(newStopLossList[data.selectionId]);
-
-    delete newStopLossList[data.selectionId];
-
-    return newStopLossList;
-    //* Otherwise update the stop position
-  } if (stopLossList) {
-    const newStopLoss = { ...newStopLossList[data.selectionId] };
-    removeBet(newStopLoss);
-
-    //! Update the stop loss
-    newStopLoss.size = data.stakeVal;
-    newStopLoss.price = data.price;
-    newStopLoss.units = data.stopLossUnits;
-    newStopLoss.custom = true;
-    newStopLoss.assignedIsOrderMatched = false;
-    newStopLoss.strategy = 'Stop Loss';
-    newStopLoss.tickOffset = 0;
-    newStopLoss.hedged = data.stopLossHedged;
-
-    newStopLossList[data.selectionId] = newStopLoss;
-
-    saveBet(newStopLoss);
-
-    return newStopLossList;
-  }
-  return {};
 };

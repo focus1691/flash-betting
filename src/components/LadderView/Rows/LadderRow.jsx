@@ -15,7 +15,7 @@ const isMoving = (prevProps, nextProps) => nextProps.data.isMoving;
 
 const LadderRow = memo(({
   data: {
-    selectionId, hedgingAvailable, handleHedgeCellClick, replaceStopLossOrder, isMoving, handlePlaceOrder,
+    selectionId, hedgingAvailable, handleHedgeCellClick, isMoving, handlePlaceOrder,
   },
   PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol,
 }) => {
@@ -48,7 +48,6 @@ const LadderRow = memo(({
         price={key}
         side={side.left}
         handlePlaceOrder={handlePlaceOrder}
-        replaceStopLossOrder={replaceStopLossOrder}
         hedgeSize={HedgeSize}
       />
       <OddsCell
@@ -61,7 +60,6 @@ const LadderRow = memo(({
         price={key}
         side={side.right}
         handlePlaceOrder={handlePlaceOrder}
-        replaceStopLossOrder={replaceStopLossOrder}
         hedgeSize={HedgeSize}
       />
       <HedgeCell

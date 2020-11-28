@@ -16,7 +16,7 @@ export const removeBet = (bet) => {
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify([bet]),
+    body: JSON.stringify(bet),
   });
 };
 
