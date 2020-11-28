@@ -1,7 +1,9 @@
 import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
-import { useCookies } from 'react-cookie';
 import { connect } from 'react-redux';
+import { useCookies } from 'react-cookie';
+import useInterval from '../../utils/CustomHooks/useInterval';
+//* Actions
 import { setIsLoading, setPremiumStatus } from '../../actions/settings';
 import {
   setMarketId,
@@ -23,9 +25,13 @@ import {
   updateLadderOrder,
   updateExcludedLadders,
 } from '../../actions/market';
+import { placeOrder, addUnmatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/bet';
+import { updateBackList } from '../../actions/back';
+import { updateLayList } from '../../actions/lay';
 import { updateStopLossList } from '../../actions/stopLoss';
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { updateStopEntryList } from '../../actions/stopEntry';
+import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Spinner from './Spinner';
 import Siderbar from '../Sidebar';
 import HomeView from '../HomeView';
@@ -36,11 +42,7 @@ import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
-import { updateLayList } from '../../actions/lay';
-import { updateBackList } from '../../actions/back';
-import { placeOrder, addUnmatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/bet';
 import { removeBet, updateTicks, updateOrderMatched } from '../../http/helper';
-import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Draggable from '../Draggable';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
@@ -50,7 +52,6 @@ import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/Exchan
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 import GetSubscriptionErrorType from '../../utils/ErrorMessages/GetSubscriptionErrorType';
-import useInterval from '../../utils/CustomHooks/useInterval';
 
 const ONE_SECOND = 1000;
 const TWO_HUNDRED_AND_FIFTY_MILLISECONDS = 250;
@@ -374,7 +375,7 @@ const App = ({
         }
       }
     },
-    [stopLossList, tickOffsetList, removeUnmatchedBet, setBetExecutionComplete, updateStopLossList, placeOrder, unmatchedBets, matchedBets, updateTickOffsetList],
+    [stopLossList, tickOffsetList, removeUnmatchedBet, setBetExecutionComplete, updateStopLossList, placeOrder, updateTickOffsetList],
   );
 
   const onMarketDisconnect = useCallback(
