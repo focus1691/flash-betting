@@ -28,8 +28,8 @@ import {
 import { placeOrder, addUnmatchedBet, addMatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/bet';
 import { updateBackList } from '../../actions/back';
 import { updateLayList } from '../../actions/lay';
-import { setStopLossBetMatched, removeStopLoss } from '../../actions/stopLoss';
-import { updateTickOffsetList } from '../../actions/tickOffset';
+import { updateStopLossList, setStopLossBetMatched, removeStopLoss } from '../../actions/stopLoss';
+import { updateTickOffsetList, removeTickOffset } from '../../actions/tickOffset';
 import { updateStopEntryList } from '../../actions/stopEntry';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Spinner from './Spinner';
@@ -93,6 +93,7 @@ const App = ({
   setStopLossBetMatched,
   removeStopLoss,
   updateStopLossList,
+  removeTickOffset,
   updateTickOffsetList,
   updateStopEntryList,
   updateLayList,
@@ -124,7 +125,7 @@ const App = ({
     try {
       const betfairBets = await getBetFairBets(marketId);
       for (let i = 0; i < betfairBets.length; i += 1) {
-        const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef } = betfairBets[i];
+        const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef: rfs } = betfairBets[i];
 
         // Check if the bet isn't in matched/unmatched already and add it if not
         if (!unmatchedBets[betId] && !matchedBets[betId]) {
@@ -138,7 +139,7 @@ const App = ({
               sizeMatched,
               sizeRemaining,
               selectionId,
-              rfs: customerStrategyRef || 'None',
+              rfs: rfs || 'None',
               betId,
             });
           } else if (status === 'EXECUTION_COMPLETE') {
@@ -151,34 +152,32 @@ const App = ({
               sizeMatched,
               sizeRemaining,
               selectionId,
-              rfs: customerStrategyRef || 'None',
+              rfs: rfs || 'None',
               betId,
             });
           }
         }
 
         // We only track the bets if the customerStrategyRef doesn't exist, otherwise OCM handles this
-        else if (!customerStrategyRef) {
+        else if (!rfs) {
           if (stopLossList[selectionId] && !stopLossList[selectionId].assignedIsOrderMatched && sizeRemaining === 0) {
             setStopLossBetMatched({ selectionId });
-            updateOrderMatched({ rfs: customerStrategyRef, assignedIsOrderMatched: true });
+            updateOrderMatched({ rfs, assignedIsOrderMatched: true });
           }
 
-          if (tickOffsetList[customerStrategyRef]) {
-            const tosTriggered = checkTickOffsetTrigger(tickOffsetList[customerStrategyRef], sizeMatched);
+          if (tickOffsetList[rfs]) {
+            const tosTriggered = checkTickOffsetTrigger(tickOffsetList[rfs], sizeMatched);
             if (tosTriggered) {
-              const newTickOffsetList = { ...tickOffsetList };
-              removeBet(newTickOffsetList[customerStrategyRef]);
+              removeTickOffset({ selectionId });
+              removeBet({ rfs });
               placeOrder({
                 marketId,
                 selectionId,
-                side: tickOffsetList[customerStrategyRef].side,
-                size: tickOffsetList[customerStrategyRef].size,
-                price: tickOffsetList[customerStrategyRef].price,
+                side: tickOffsetList[rfs].side,
+                size: tickOffsetList[rfs].size,
+                price: tickOffsetList[rfs].price,
                 customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
               });
-              delete newTickOffsetList[customerStrategyRef];
-              updateTickOffsetList(newTickOffsetList);
             }
           }
 
@@ -371,8 +370,6 @@ const App = ({
                   if (tickOffsetList[rfs]) {
                     const tosTriggered = checkTickOffsetTrigger(tickOffsetList[rfs], sizeMatched);
                     if (tosTriggered) {
-                      const newTickOffsetList = { ...tickOffsetList };
-                      removeBet(newTickOffsetList[rfs]);
                       placeOrder({
                         marketId,
                         selectionId,
@@ -381,8 +378,8 @@ const App = ({
                         price,
                         customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                       });
-                      delete newTickOffsetList[rfs];
-                      updateTickOffsetList(newTickOffsetList);
+                      removeTickOffset({ selectionId });
+                      removeBet({ rfs });
                     }
                   }
                 }
@@ -392,7 +389,7 @@ const App = ({
         }
       }
     },
-    [stopLossList, tickOffsetList, removeUnmatchedBet, setBetExecutionComplete, setStopLossBetMatched, placeOrder, updateTickOffsetList],
+    [stopLossList, tickOffsetList, removeUnmatchedBet, setBetExecutionComplete, setStopLossBetMatched, placeOrder, removeTickOffset],
   );
 
   const onMarketDisconnect = useCallback(
@@ -611,6 +608,7 @@ const mapDispatchToProps = {
   setStopLossBetMatched,
   removeStopLoss,
   updateStopLossList,
+  removeTickOffset,
   updateTickOffsetList,
   updateStopEntryList,
   updateLayList,
