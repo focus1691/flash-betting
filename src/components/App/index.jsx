@@ -25,10 +25,10 @@ import {
   updateLadderOrder,
   updateExcludedLadders,
 } from '../../actions/market';
-import { placeOrder, addUnmatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/bet';
+import { placeOrder, addUnmatchedBet, addMatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../../actions/bet';
 import { updateBackList } from '../../actions/back';
 import { updateLayList } from '../../actions/lay';
-import { setStopLossBetMatched } from '../../actions/stopLoss';
+import { setStopLossBetMatched, removeStopLoss } from '../../actions/stopLoss';
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { updateStopEntryList } from '../../actions/stopEntry';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
@@ -42,7 +42,7 @@ import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
-import { removeBet, updateTicks, updateOrderMatched } from '../../http/helper';
+import { removeBet, updateTicks, updateOrderMatched, getBetFairBets, saveRunnerNames } from '../../http/helper';
 import Draggable from '../Draggable';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
@@ -90,7 +90,8 @@ const App = ({
   setInPlay,
   setInPlayTime,
   setMarketPL,
-  setStopLossBetMatched
+  setStopLossBetMatched,
+  removeStopLoss,
   updateStopLossList,
   updateTickOffsetList,
   updateStopEntryList,
@@ -98,6 +99,7 @@ const App = ({
   updateBackList,
   placeOrder,
   addUnmatchedBet,
+  addMatchedBet,
   removeUnmatchedBet,
   updateSizeMatched,
   setBetExecutionComplete,
@@ -120,18 +122,47 @@ const App = ({
   const retrieveBets = async () => {
     if (!marketId) return;
     try {
-      const betfairBets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`)
-        .then((res) => res.json())
-        .then((res) => res.currentOrders);
+      const betfairBets = await getBetFairBets(marketId);
       for (let i = 0; i < betfairBets.length; i += 1) {
         const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef } = betfairBets[i];
 
-        if (!customerStrategyRef) {
-  
+        // Check if the bet isn't in matched/unmatched already and add it if not
+        if (!unmatchedBets[betId] && !matchedBets[betId]) {
+          if (status === 'EXECUTABLE') {
+            addUnmatchedBet({
+              strategy: 'None',
+              marketId,
+              side,
+              price: priceSize.price,
+              size: priceSize.size,
+              sizeMatched,
+              sizeRemaining,
+              selectionId,
+              rfs: customerStrategyRef || 'None',
+              betId,
+            });
+          } else if (status === 'EXECUTION_COMPLETE') {
+            addMatchedBet({
+              strategy: 'None',
+              marketId,
+              side,
+              price: priceSize.price,
+              size: priceSize.size,
+              sizeMatched,
+              sizeRemaining,
+              selectionId,
+              rfs: customerStrategyRef || 'None',
+              betId,
+            });
+          }
+        }
+
+        // We only track the bets if the customerStrategyRef doesn't exist, otherwise OCM handles this
+        else if (!customerStrategyRef) {
           if (stopLossList[selectionId] && !stopLossList[selectionId].assignedIsOrderMatched && sizeRemaining === 0) {
             setStopLossBetMatched({ selectionId });
             updateOrderMatched({ rfs: customerStrategyRef, assignedIsOrderMatched: true });
-          }  
+          }
 
           if (tickOffsetList[customerStrategyRef]) {
             const tosTriggered = checkTickOffsetTrigger(tickOffsetList[customerStrategyRef], sizeMatched);
@@ -154,9 +185,7 @@ const App = ({
           // Move from unmatched to matched
           if (status === 'EXECUTION_COMPLETE' && !matchedBets[betId]) {
             setBetExecutionComplete({ betId, sizeMatched, sizeRemaining });
-          }
-
-          else if (status === 'EXECUTABLE') {
+          } else if (status === 'EXECUTABLE') {
             if (!unmatchedBets[betId]) {
               // Add it to unmatched
               addUnmatchedBet({
@@ -170,9 +199,8 @@ const App = ({
                 selectionId,
                 rfs: customerStrategyRef || 'None',
                 betId,
-              })
-            }
-            else if (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {
+              });
+            } else if (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {
               // update the prices
               updateSizeMatched({ betId, sizeMatched, sizeRemaining });
             }
@@ -261,18 +289,16 @@ const App = ({
                     price: stopLossMatched.stopPrice,
                     customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                   });
-                  const newStopLossList = { ...stopLossList };
-                  delete newStopLossList[SL.selectionId];
-                  updateStopLossList(newStopLossList);
-
-                  removeBet(SL);
-                } else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
-                  SL.ticks += 1;
-                  updateTicks(SL); //! Update SQLite with new ticks
-                  const newStopLossList = { ...stopLossList };
-                  newStopLossList[SL.selectionId] = SL;
-                  updateStopLossList(newStopLossList);
+                  removeStopLoss({ selectionId: SL.selectionId }); // Remove the SL
+                  removeBet({ rfs: SL.rfs }); // Remove the SL from DB
                 }
+                // else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
+                //   SL.ticks += 1;
+                //   updateTicks(SL); //! Update SQLite with new ticks
+                //   const newStopLossList = { ...stopLossList };
+                //   newStopLossList[SL.selectionId] = SL;
+                //   updateStopLossList(newStopLossList);
+                // }
               }
             } else if (!(mc.rc[i].id in nonRunners) && !(mc.rc[i].id in updatedNonRunners)) {
               // Runner found so we create the new object with the raw data
@@ -308,7 +334,7 @@ const App = ({
         }
       });
     },
-    [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, updateStopLossList, eventType.id, sortedLadder, setSortedLadder, updateExcludedLadders],
+    [updates, nonRunners, loadNonRunners, stopEntryList, updateStopEntryList, placeOrder, unmatchedBets, matchedBets, stopLossList, removeStopLoss, eventType.id, sortedLadder, setSortedLadder, updateExcludedLadders],
   );
 
   /**
@@ -329,9 +355,8 @@ const App = ({
                   const { id: betId, s: size, p: price, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
                   if (sizeRemaining === 0 && sizeMatched === 0) {
                     //! this is what happens when an bet doesn't get any matched
-                    removeUnmatchedBet({ betId })
-                  }
-                  else if (sizeRemaining === 0 || status === 'EXECUTION_COMPLETE') {
+                    removeUnmatchedBet({ betId });
+                  } else if (sizeRemaining === 0 || status === 'EXECUTION_COMPLETE') {
                     setBetExecutionComplete({ betId, sizeMatched, sizeRemaining });
                   }
 
@@ -367,7 +392,7 @@ const App = ({
         }
       }
     },
-    [stopLossList, tickOffsetList, removeUnmatchedBet, setBetExecutionComplete, updateStopLossList, placeOrder, updateTickOffsetList],
+    [stopLossList, tickOffsetList, removeUnmatchedBet, setBetExecutionComplete, setStopLossBetMatched, placeOrder, updateTickOffsetList],
   );
 
   const onMarketDisconnect = useCallback(
@@ -394,16 +419,17 @@ const App = ({
             removeCookie('expiresIn');
             window.location.href = `${window.location.origin}/?error=INVALID_SESSION_INFORMATION`;
           } else if (data.result) {
+            const { marketId, marketName, marketStartTime, description, event, eventType } = data.result[0];
             const runners = CreateRunners(data.result[0].runners);
-            setSortedLadder(sortGreyHoundMarket(data.result[0].eventType.id, runners));
-            setMarketId(data.result[0].marketId);
-            setMarketName(data.result[0].marketName);
-            setMarketDescription(data.result[0].description);
-            setMarketStartTime(data.result[0].marketStartTime);
-            setEvent(data.result[0].event);
-            setEventType(data.result[0].eventType);
+            setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
+            setMarketId(marketId);
+            setMarketName(marketName);
+            setMarketDescription(description);
+            setMarketStartTime(marketStartTime);
+            setEvent(event);
+            setEventType(eventType);
             loadRunners(runners);
-            setRunner(data.result[0].runners[0]);
+            setRunner(runners[0]);
             const selectionNames = {};
 
             const runnerIds = Object.keys(runners);
@@ -412,17 +438,7 @@ const App = ({
               selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
             }
 
-            fetch('/api/save-runner-names', {
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              method: 'POST',
-              body: JSON.stringify({
-                marketId,
-                selectionNames,
-              }),
-            });
+            saveRunnerNames(marketId, selectionNames);
 
             //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
             socket.emit('market-subscription', { marketId });
@@ -593,6 +609,7 @@ const mapDispatchToProps = {
   setInPlayTime,
   setMarketPL,
   setStopLossBetMatched,
+  removeStopLoss,
   updateStopLossList,
   updateTickOffsetList,
   updateStopEntryList,
@@ -600,6 +617,7 @@ const mapDispatchToProps = {
   updateBackList,
   placeOrder,
   addUnmatchedBet,
+  addMatchedBet,
   removeUnmatchedBet,
   updateSizeMatched,
   setBetExecutionComplete,

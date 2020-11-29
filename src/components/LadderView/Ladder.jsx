@@ -170,12 +170,12 @@ const Ladder = memo(
         const size = customStakeActive && customStake ? customStake : stakeVal[selectionId];
         //* Place the order first with BetFair and then execute the tools
         const betId = await placeOrder({
-          side,
-          price: formatPrice(price),
           marketId,
           selectionId,
-          customerStrategyRef,
+          side,
           size,
+          price: formatPrice(price),
+          customerStrategyRef,
         });
         //* betId only returned if the bet was success
         if (!betId) return;
