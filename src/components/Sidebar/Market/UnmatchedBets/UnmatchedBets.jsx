@@ -205,25 +205,30 @@ const UnmatchedBets = ({
           </tr>
           {marketOpen
             ? Object.values(runners).map((({ runnerName, selectionId }) => {
-              const selectionBets = Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-              const BACK = Object.values(backList[selectionId]).map((backBets) => backBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
-              const LAY = Object.values(layList[selectionId]).map((layBets) => layBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
-              const SE = Object.values(stopEntryList[selectionId]).map((seBets) => seBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
-              const FOK = Object.values(fillOrKillList).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+              const list = [];
+              list.concat(Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              
+              if (backList[selectionId]) {
+                list.concat(Object.values(backList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              }
+              if (layList[selectionId]) {
+                list.concat(Object.values(layList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              }
+              if (stopEntryList[selectionId]) {
+                list.concat(Object.values(stopEntryList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              }
 
-              if (selectionBets.length <= 0 && BACK.length <= 0 && LAY.length <= 0 && SE.length <= 0 && FOK.length <= 0 && !stopLossList[selectionId] && !tickOffsetList[selectionId]) return null;
+              list.concat(Object.values(fillOrKillList).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              
+              if (list.length <= 0) return null;
 
                 return (
                   <>
                     <tr className="menu-bets-selection" colSpan={4}>
                       <td>{runnerName}</td>
                     </tr>
-                    {selectionBets}
-                    {BACK}
-                    {LAY}
-                    {SE}
+                    {list}
                     {renderSpecialBets(selectionId)}
-                    {FOK}
                   </>
                 );
               }))
