@@ -16,6 +16,7 @@ const UnmatchedBets = ({
   market,
   marketOpen,
   marketName,
+  marketStartTime,
   backList,
   layList,
   stopEntryList,
@@ -162,18 +163,18 @@ const UnmatchedBets = ({
       const list = [];
 
       if (stopLossList[selectionId]) {
-        list.push(<Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />);
+        list.push(<Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
       }
       if (tickOffsetList[selectionId]) {
-        list.push(<Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />);
+        list.push(<Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
       }
       Object.values(fillOrKillList).forEach((FOK) => {
         if (FOK.selectionId === selectionId) {
-          list.push(<Bet bet={FOK} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />);
+          list.push(<Bet bet={FOK} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
         }
       });
     },
-    [cancelOrder, fillOrKillList, handleRightClick, market.marketStartTime, stopLossList, tickOffsetList],
+    [cancelOrder, fillOrKillList, handleRightClick, marketStartTime, stopLossList, tickOffsetList],
   );
 
   return (
@@ -204,11 +205,11 @@ const UnmatchedBets = ({
           </tr>
           {marketOpen
             ? market.runners.map((({ runnerName, selectionId }) => {
-              const selectionBets = Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />);
-              const BACK = Object.values(backList[selectionId]).map((backBets) => backBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />));
-              const LAY = Object.values(layList[selectionId]).map((layBets) => layBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />));
-              const SE = Object.values(stopEntryList[selectionId]).map((seBets) => seBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />));
-              const FOK = Object.values(fillOrKillList).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={market.marketStartTime} />);
+              const selectionBets = Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+              const BACK = Object.values(backList[selectionId]).map((backBets) => backBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              const LAY = Object.values(layList[selectionId]).map((layBets) => layBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              const SE = Object.values(stopEntryList[selectionId]).map((seBets) => seBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
+              const FOK = Object.values(fillOrKillList).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
 
               if (selectionBets.length <= 0 && BACK.length <= 0 && LAY.length <= 0 && SE.length <= 0 && FOK.length <= 0 && !stopLossList[selectionId] && !tickOffsetList[selectionId]) return null;
 
@@ -236,6 +237,7 @@ const UnmatchedBets = ({
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
   marketName: state.market.marketName,
+  marketStartTime: state.marketStartTime,
   stopLossList: state.stopLoss.list,
   tickOffsetList: state.tickOffset.list,
   stopEntryList: state.stopEntry.list,

@@ -196,7 +196,7 @@ const App = ({
                 sizeMatched,
                 sizeRemaining,
                 selectionId,
-                rfs: customerStrategyRef || 'None',
+                rfs: rfs || 'None',
                 betId,
               });
             } else if (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {

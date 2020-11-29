@@ -60,7 +60,7 @@ export const getBetFairBets = async (marketId) => {
   return bets;
 };
 
-export const saveRunnerNames = (marketId, selectionNames) => {
+export const saveRunnerNames = async (marketId, selectionNames) => {
   fetch('/api/save-runner-names', {
     headers: {
       Accept: 'application/json',

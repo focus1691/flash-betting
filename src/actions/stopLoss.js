@@ -38,6 +38,11 @@ export const setSelections = (selections) => ({
   payload: selections,
 });
 
+export const updateStopLossList = (list) => ({
+  type: 'UPDATE_STOP_LOSS_LIST',
+  payload: list,
+});
+
 export const addStopLoss = (data) => ({
   type: 'ADD_STOP_LOSS',
   payload: data,

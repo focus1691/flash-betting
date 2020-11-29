@@ -7,7 +7,7 @@ import DeselectSport from './DeselectSport';
 import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
 
-const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
+const AllSports = ({ sports, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
   useEffect(() => {
     // gets all the sports and saves them on the server
     fetch('/api/fetch-all-sports');
@@ -25,11 +25,11 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   }, []);
 
   useEffect(() => {
-    if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
+    if (sports.submenuList.EVENT_TYPE && sports.submenuList.EVENT_TYPE.name.includes("Today's Card")) {
       updateCurrentSubmenu('');
       updateSubmenuList({});
     }
-  }, [winMarketsOnly, horseRaces, submenuList.EVENT_TYPE, updateCurrentSubmenu, updateSubmenuList]);
+  }, [winMarketsOnly, horseRaces, sports.submenuList.EVENT_TYPE, updateCurrentSubmenu, updateSubmenuList]);
 
   const getSportInfo = (name, newSubmenuType, submenuList, selectedId, apiToCall) => async (e) => {
     const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
@@ -49,7 +49,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 
     // set the old submenu as the newSubmenuType: children we received from the api
     if (data) {
-      const newSubmenuList = { ...submenuList };
+      const newSubmenuList = { submenuList };
 
       newSubmenuList[newSubmenuType] = { name, data };
 
@@ -99,16 +99,16 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 
   return (
     <List className="all-sports">
-      {Object.keys(submenuList).map((type, index) => (
-        <DeselectSport key={`all-sports-deselect-${submenuList[type].name}`} type={type} data={submenuList[type]} isLast={index === Object.keys(submenuList).length - 1} submenuList={submenuList} deselectSubmenu={deselectSubmenu} />
+      {Object.keys(sports.submenuList).map((type, index) => (
+        <DeselectSport key={`all-sports-deselect-${sports.submenuList[type].name}`} type={type} data={sports.submenuList[type]} isLast={index === Object.keys(sports.submenuList).length - 1} submenuList={sports.submenuList} deselectSubmenu={deselectSubmenu} />
       ))}
 
       {
         // Selecting Item
-        submenuList.EVENT_TYPE === undefined || currentSubmenu === '' ? (
-          <SelectSport sports={sports} setSubmenu={getSportInfo} />
+        sports.submenuList.EVENT_TYPE === undefined || currentSubmenu === '' ? (
+          <SelectSport sports={sports.sports} setSubmenu={getSportInfo} />
         ) : (
-          <SelectSubmenu data={submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={submenuList} />
+          <SelectSubmenu data={sports.submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={sports.submenuList} />
         )
       }
     </List>
