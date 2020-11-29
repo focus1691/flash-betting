@@ -416,8 +416,7 @@ const App = ({
             removeCookie('expiresIn');
             window.location.href = `${window.location.origin}/?error=INVALID_SESSION_INFORMATION`;
           } else if (data.result) {
-            const { marketId, marketName, marketStartTime, description, event, eventType } = data.result[0];
-            const runners = CreateRunners(data.result[0].runners);
+            const { marketId, marketName, marketStartTime, description, event, eventType, runners } = data.result[0];
             setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
             setMarketId(marketId);
             setMarketName(marketName);
@@ -425,7 +424,7 @@ const App = ({
             setMarketStartTime(marketStartTime);
             setEvent(event);
             setEventType(eventType);
-            loadRunners(runners);
+            loadRunners(CreateRunners(runners));
             setRunner(runners[0]);
             const selectionNames = {};
 

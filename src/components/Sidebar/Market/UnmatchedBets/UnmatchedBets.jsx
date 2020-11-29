@@ -13,10 +13,10 @@ import { getMarketMatchedBets, getMarketUnmatchedBets } from '../../../../select
 import Bet from './Bet';
 
 const UnmatchedBets = ({
-  market,
   marketOpen,
   marketName,
   marketStartTime,
+  runners,
   backList,
   layList,
   stopEntryList,
@@ -204,7 +204,7 @@ const UnmatchedBets = ({
             </td>
           </tr>
           {marketOpen
-            ? market.runners.map((({ runnerName, selectionId }) => {
+            ? Object.values(runners).map((({ runnerName, selectionId }) => {
               const selectionBets = Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
               const BACK = Object.values(backList[selectionId]).map((backBets) => backBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
               const LAY = Object.values(layList[selectionId]).map((layBets) => layBets.map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />));
@@ -237,7 +237,8 @@ const UnmatchedBets = ({
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
   marketName: state.market.marketName,
-  marketStartTime: state.marketStartTime,
+  marketStartTime: state.market.marketStartTime,
+  runners: state.market.runners,
   stopLossList: state.stopLoss.list,
   tickOffsetList: state.tickOffset.list,
   stopEntryList: state.stopEntry.list,
