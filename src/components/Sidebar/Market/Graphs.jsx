@@ -7,7 +7,7 @@ const Graph = ({ marketOpen, marketId, selection, openGraph }) => {
 
   useEffect(() => {
     if (marketOpen && selection) {
-      const URI = `https://sportsiteexweb.betfair.com/betting/LoadRunnerInfoChartAction.do?marketId=${marketId.slice(2, marketId.length)}&selectionId=${selection.selectionId}&handicap=0`;
+      const URI = `https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selection.selectionId}`;
       setGraph(URI);
     }
   }, [selection, marketId, marketOpen]);
