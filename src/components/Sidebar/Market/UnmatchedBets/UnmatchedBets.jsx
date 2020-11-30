@@ -189,20 +189,24 @@ const UnmatchedBets = ({
             </td>
           </tr>
           {marketOpen
-            ? Object.values(runners).map((({ runnerName, selectionId }) => {
+            ? Object.values(runners).map(({ runnerName, selectionId }) => {
               const list = [];
 
               const BETS = Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-              list.push(BETS);
+              if (BETS.length.length > 0) {
+                list.push(BETS);
+              }
               
               if (backList[selectionId]) {
                 const BACK = Object.values(backList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
                 list.push(BACK);
               }
+
               if (layList[selectionId]) {
                 const LAY = Object.values(layList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
                 list.push(LAY);
               }
+
               if (stopEntryList[selectionId]) {
                 const SE = Object.values(stopEntryList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
                 list.push(SE);
@@ -212,14 +216,17 @@ const UnmatchedBets = ({
                 const SL = <Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
                 list.push(SL);
               }
+
               if (tickOffsetList[selectionId]) {
                 const TOS = <Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
                 list.push(TOS);
               }
 
               const FOK  = Object.values(fillOrKillList).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-              list.push(FOK);
-              
+              if (FOK.length > 0) {
+                list.push(FOK);
+              }
+
               if (list.length <= 0) return null;
 
                 return (
@@ -230,7 +237,7 @@ const UnmatchedBets = ({
                     {list}
                   </>
                 );
-              }))
+              })
             : null}
         </tbody>
       </table>
