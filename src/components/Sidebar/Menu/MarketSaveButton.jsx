@@ -17,8 +17,6 @@ const MarketSaveButton = ({ sport, myMarkets, loadMyMarkets }) => {
       id, name, type, children,
     };
 
-    console.log(marketSelection);
-
     fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
       headers: {
         Accept: 'application/json',

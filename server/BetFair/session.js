@@ -83,7 +83,6 @@ class BetfairSession {
   }
 
   setAccessToken(accessToken) {
-    console.log('setAccessTOken', accessToken);
     this.accessToken = accessToken;
     BetfairInvocation.setAccessToken(accessToken);
   }

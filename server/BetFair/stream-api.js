@@ -25,17 +25,12 @@ class BetFairStreamAPI {
 
       this.client.setEncoding('utf8');
 
-      console.log('ACCESS TOKEN:', accessToken);
-
       const req = {
         op: 'authentication',
         appKey: process.env.APP_KEY,
         session: `BEARER ${accessToken}`
       }
 
-      console.log(`${JSON.stringify(req)}\r\n`)
-
-      // this.client.write('{"op": "authentication", "appKey": "' + 'xmUgVmsGTyVivKl4' + '", "session":"' + 'BEARER' + ' ' + accessToken + '"}\r\n');
       this.client.write(`${JSON.stringify(req)}\r\n`);
 
       this.client.on('data', (data) => {
@@ -58,7 +53,6 @@ class BetFairStreamAPI {
               const {
                 connectionClosed, errorCode, errorMessage, statusCode,
               } = result;
-              console.log(result);
               this.openSocket.emit('subscription-error', {
                 connectionClosed, errorCode, errorMessage, statusCode,
               });

@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 // (C) 2016 Anton Zemlyanov, rewritten in JavaScript 6 (ES6)
 
 /*

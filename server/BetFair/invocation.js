@@ -33,7 +33,6 @@ class BetfairInvocation {
   }
 
   static setAccessToken(accessToken) {
-    console.log('setAccessTOken 2', accessToken);
     BetfairInvocation.accessToken = accessToken;
   }
 
@@ -91,8 +90,6 @@ class BetfairInvocation {
         Connection: 'keep-alive',
       },
     };
-
-    console.log(this.isVendor, BetfairInvocation.sessionKey, BetfairInvocation.accessToken, this.method);
 
     if (this.isVendor) {
       httpOptions.headers['X-Authentication'] = BetfairInvocation.sessionKey;
