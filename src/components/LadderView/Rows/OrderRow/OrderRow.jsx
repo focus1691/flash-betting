@@ -80,44 +80,40 @@ const OrderRow = memo(
       changePriceType(priceType === 'STAKE' ? 'LIABILITY' : 'STAKE');
     }, [priceType, changePriceType]);
 
-    const renderBetsList = useCallback(() => {
-      const list = [];
-
-      for (let i = 0; i < backList[selectionId]; i += 1) {
-        list.push(<UnmatchedBet key={`ladder-matched-bet-${backList[selectionId][i].selectionId}-${backList[selectionId][i].rfs}`} bet={backList[selectionId][i]} cancelBet={cancelUnmatchedBet} />);
-      }
-      for (let i = 0; i < layList[selectionId]; i += 1) {
-        list.push(<UnmatchedBet key={`ladder-matched-bet-${layList[selectionId][i].selectionId}-${layList[selectionId][i].rfs}`} bet={layList[selectionId][i]} cancelBet={cancelUnmatchedBet} />);
-      }
-      for (let i = 0; i < seList[selectionId]; i += 1) {
-        list.push(<UnmatchedBet key={`ladder-matched-bet-${seList[selectionId][i].selectionId}-${seList[selectionId][i].rfs}`} bet={seList[selectionId][i]} cancelBet={cancelUnmatchedBet} />);
-      }
-      return list;
-    }, [backList, cancelUnmatchedBet, layList, seList, selectionId]);
-
-    const renderSpecialBets = useCallback(() => {
-      const list = [];
-
-      if (slList[selectionId]) {
-        list.push(<UnmatchedBet key={`ladder-matched-bet-${slList[selectionId].selectionId}-${slList[selectionId].rfs}`} bet={slList[selectionId]} cancelBet={cancelUnmatchedBet} />);
-      }
-      if (tosList[selectionId]) {
-        list.push(<UnmatchedBet key={`ladder-matched-bet-${tosList[selectionId].selectionId}-${tosList[selectionId].rfs}`} bet={tosList[selectionId]} cancelBet={cancelUnmatchedBet} />);
-      }
-      Object.values(fokList).forEach((FOK) => {
-        if (FOK.selectionId === selectionId) {
-          list.push(<UnmatchedBet key={`ladder-matched-bet-${FOK.selectionId}-${FOK.rfs}`} bet={FOK} cancelBet={cancelUnmatchedBet} />);
-        }
-      });
-    }, [cancelUnmatchedBet, fokList, selectionId, slList, tosList]);
-
     const renderUnmatchedBets = useCallback(() => {
       const list = [];
-      for (let i = 0; i < unmatchedBets.length; i += 1) {
-        list.push(<UnmatchedBet key={`ladder-unmatched-bet-${unmatchedBets[i].selectionId}-${unmatchedBets[i].rfs}-${i}`} bet={unmatchedBets[i]} cancelBet={cancelUnmatchedBet} />);
+
+      const BETS = Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <UnmatchedBet key={`ladder-matched-bet-${selectionId}-${bet.rfs}`} bet={bet} cancelBet={cancelUnmatchedBet} />);
+      list.push(BETS);
+
+      if (backList[selectionId]) {
+        const BACK = Object.values(backList[selectionId]).map((bet) => <UnmatchedBet key={`ladder-matched-bet-${selectionId}-${bet.rfs}`} bet={bet} cancelBet={cancelUnmatchedBet} />);
+        list.push(BACK);
       }
+
+      if (layList[selectionId]) {
+        const LAY = Object.values(layList[selectionId]).map((bet) => <UnmatchedBet key={`ladder-matched-bet-${selectionId}-${bet.rfs}`} bet={bet} cancelBet={cancelUnmatchedBet} />);
+        list.push(LAY);
+      }
+
+      if (slList[selectionId]) {
+        list.push(<UnmatchedBet key={`ladder-matched-bet-${selectionId}-${slList[selectionId].rfs}`} bet={slList[selectionId]} cancelBet={cancelUnmatchedBet} />);
+      }
+
+      if (tosList[selectionId]) {
+        list.push(<UnmatchedBet key={`ladder-matched-bet-${selectionId}-${tosList[selectionId].rfs}`} bet={tosList[selectionId]} cancelBet={cancelUnmatchedBet} />);
+      }
+
+      if (seList[selectionId]) {
+        const SE = Object.values(seList[selectionId]).map((bet) => <UnmatchedBet key={`ladder-matched-bet-${selectionId}-${bet.rfs}`} bet={bet} cancelBet={cancelUnmatchedBet} />);
+        list.push(SE);
+      }
+
+      const FOK = Object.values(fokList).filter((bet) => bet.selectionId == selectionId).map((bet) => <UnmatchedBet key={`ladder-matched-bet-${selectionId}-${bet.rfs}`} bet={bet} cancelBet={cancelUnmatchedBet} />);
+      list.push(FOK);
+
       return list;
-    }, [cancelUnmatchedBet, unmatchedBets]);
+    }, [backList, cancelUnmatchedBet, fokList, layList, seList, selectionId, slList, tosList, unmatchedBets]);
 
     const renderMatchedBets = useCallback(() => {
       const list = [];
@@ -141,8 +137,6 @@ const OrderRow = memo(
                 <table className="lay-table">
                   <tbody className="lay-body">
                     {renderUnmatchedBets()}
-                    {renderBetsList()}
-                    {renderSpecialBets()}
                   </tbody>
                 </table>
               </td>

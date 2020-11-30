@@ -158,25 +158,6 @@ const UnmatchedBets = ({
     [replaceOrderPrice, rightClickTicks],
   );
 
-  const renderSpecialBets = useCallback(
-    (selectionId) => {
-      const list = [];
-
-      if (stopLossList[selectionId]) {
-        list.push(<Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-      }
-      if (tickOffsetList[selectionId]) {
-        list.push(<Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-      }
-      Object.values(fillOrKillList).forEach((FOK) => {
-        if (FOK.selectionId === selectionId) {
-          list.push(<Bet bet={FOK} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-        }
-      });
-    },
-    [cancelOrder, fillOrKillList, handleRightClick, marketStartTime, stopLossList, tickOffsetList],
-  );
-
   return (
     <div>
       <table className="menu-bets">
@@ -223,6 +204,15 @@ const UnmatchedBets = ({
                 list.push(SE);
               }
 
+              if (stopLossList[selectionId]) {
+                const SL = <Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
+                list.push(SL);
+              }
+              if (tickOffsetList[selectionId]) {
+                const TOS = <Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
+                list.push(TOS);
+              }
+
               const FOK  = Object.values(fillOrKillList).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
               list.push(FOK);
               
@@ -234,7 +224,6 @@ const UnmatchedBets = ({
                       <td>{runnerName}</td>
                     </tr>
                     {list}
-                    {renderSpecialBets(selectionId)}
                   </>
                 );
               }))

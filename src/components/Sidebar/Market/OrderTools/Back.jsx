@@ -124,7 +124,6 @@ const Back = ({
         }
       });
     }));
-    console.log(newBackList);
     onUpdateBackList(newBackList);
   };
 
