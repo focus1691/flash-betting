@@ -94,6 +94,7 @@ const Back = ({
     const newBackList = { ...list };
 
     await Promise.all(selectedRunners.map(async (selectionId) => {
+      console.log(selectionId);
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const addedOrder = {
         strategy: 'Back',
@@ -122,6 +123,7 @@ const Back = ({
         }
       });
     }));
+    console.log(newBackList);
     onUpdateBackList(newBackList);
   };
 

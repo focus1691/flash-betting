@@ -57,6 +57,7 @@ const reducer = (state = initialState, action) => {
     case 'SET_BACK_SELECTIONS':
       return { ...state, selections: action.payload };
     case 'UPDATE_BACK_LIST':
+      console.log('UPDATE_BACK_LIST', action.payload);
       return { ...state, list: action.payload };
     case 'ADD_BACK_BET':
       return {
