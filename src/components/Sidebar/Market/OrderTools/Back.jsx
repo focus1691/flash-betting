@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { connect } from 'react-redux';
+import crypto from 'crypto';
+//* @material-ui core
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import List from '@material-ui/core/List';
@@ -8,8 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import crypto from 'crypto';
-import { connect } from 'react-redux';
+//* Actions
 import * as actions from '../../../../actions/back';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
 import StyledMenu from '../../../../assets/jss/StyledMenu';
@@ -94,7 +96,6 @@ const Back = ({
     const newBackList = { ...list };
 
     await Promise.all(selectedRunners.map(async (selectionId) => {
-      console.log(selectionId);
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
       const addedOrder = {
         strategy: 'Back',
