@@ -61,3 +61,8 @@ export const removeAllSelectionStopEntryBets = (data) => ({
 export const removeAllStopEntryBets = () => ({
   type: 'REMOVE_ALL_STOP_ENTRY_BETS',
 });
+
+export const updateStopEntryBetPrice = (data) => ({
+  type: 'UPDATE_STOP_ENTRY_BET_PRICE',
+  payload: data,
+});

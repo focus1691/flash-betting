@@ -50,3 +50,8 @@ export const removeTickOffsetOnSide = (data) => ({
 export const removeAllTickOffset = () => ({
   type: 'REMOVE_ALL_TICK_OFFSET',
 });
+
+export const updateTickOffsetBetPrice = (data) => ({
+  type: 'UPDATE_TICK_OFFSET_BET_PRICE',
+  payload: data,
+});

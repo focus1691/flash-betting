@@ -65,3 +65,8 @@ export const removeAllSelectionLayBets = (data) => ({
 export const removeAllLayBets = () => ({
   type: 'REMOVE_ALL_LAY_BETS',
 });
+
+export const updateLayBetPrice = (data) => ({
+  type: 'UPDATE_LAY_BET_PRICE',
+  payload: data,
+});

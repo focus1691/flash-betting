@@ -1,4 +1,5 @@
-import { omit } from 'lodash';
+import update from 'immutability-helper';
+import { findIndex, omit } from 'lodash';
 
 const initialState = {
   selected: false,
@@ -84,6 +85,18 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: {},
       };
+    case 'UPDATE_BACK_BET_PRICE':
+      return update(state, {
+        list: {
+          [action.payload.selectionId]: {
+            [findIndex(state.list[action.payload.selectionId], { rfs: action.payload.rfs })]: {
+              price: {
+                $set: action.payload.price,
+              },
+            }
+          },
+        },
+      });
     default:
       return state;
   }

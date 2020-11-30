@@ -2,17 +2,17 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
 import { cancelBet, updateOrders } from '../../../../actions/bet';
-import { removeBackBet } from '../../../../actions/back';
-import { removeLayBet } from '../../../../actions/lay';
-import { removeStopEntryBet } from '../../../../actions/stopEntry';
-import { removeStopLoss } from '../../../../actions/stopLoss';
-import { removeTickOffset } from '../../../../actions/tickOffset';
+import { removeBackBet, updateBackBetPrice } from '../../../../actions/back';
+import { removeLayBet, updateLayBetPrice } from '../../../../actions/lay';
+import { removeStopEntryBet, updateStopEntryBetPrice } from '../../../../actions/stopEntry';
+import { removeStopLoss, updateStopLossBetPrice } from '../../../../actions/stopLoss';
+import { removeTickOffset, updateTickOffsetBetPrice } from '../../../../actions/tickOffset';
 import { removeFillOrKill } from '../../../../actions/fillOrKill';
 //* Selectors
 import { getMarketMatchedBets, getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
 import { getPriceNTicksAway } from '../../../../utils/ladder/CreateFullLadder';
-import { removeBet } from '../../../../http/helper';
+import { removeBet, replaceOrders, updatePrice } from '../../../../http/helper';
 import Bet from './Bet';
 
 const UnmatchedBets = ({
@@ -31,10 +31,15 @@ const UnmatchedBets = ({
   updateOrders,
   cancelBet,
   removeBackBet,
+  updateBackBetPrice,
   removeLayBet,
+  updateLayBetPrice,
   removeStopEntryBet,
+  updateStopEntryBetPrice,
   removeStopLoss,
+  updateStopLossBetPrice,
   removeTickOffset,
+  updateTickOffsetBetPrice,
   removeFillOrKill,
 
   rightClickTicks,
@@ -70,89 +75,46 @@ const UnmatchedBets = ({
   );
 
   const replaceOrderPrice = useCallback(
-    (order, newPrice) => {
-      const newOrder = { ...order, price: newPrice };
-      switch (order.strategy) {
+    async (bet, newPrice) => {
+      switch (bet.strategy) {
         case 'Back':
-          const newBackList = { ...backList };
-          const indexBack = newBackList[order.selectionId].findIndex((item) => item.rfs === order.rfs);
-          newBackList[order.selectionId][indexBack].price = newPrice;
-          // updateBackList(newBackList);
+          updateBackBetPrice({ selectionId: bet.selectionId, rfs: bet.rfs, price: newPrice });
           break;
         case 'Lay':
-          const newLayList = { ...layList };
-          const indexLay = newLayList[order.selectionId].findIndex((item) => item.rfs === order.rfs);
-          newLayList[order.selectionId][indexLay].price = newPrice;
-          // updateLayList(newLayList);
+          updateLayBetPrice({ selectionId: bet.selectionId, rfs: bet.rfs, price: newPrice });
           break;
         case 'Stop Entry':
-          const newStopEntryList = { ...stopEntryList };
-          const indexStopEntry = newStopEntryList[order.selectionId].findIndex((item) => item.rfs === order.rfs);
-          newStopEntryList[order.selectionId][indexStopEntry].price = newPrice;
-          // updateStopEntryList(newStopEntryList);
+          updateStopEntryBetPrice({ selectionId: bet.selectionId, rfs: bet.rfs, price: newPrice });
           break;
         case 'Tick Offset':
-          const newTickOffsetList = { ...tickOffsetList };
-          newTickOffsetList[order.rfs].price = newPrice;
-          // updateTickOffsetList(newTickOffsetList);
+          updateTickOffsetBetPrice({ selectionId: bet.selectionId, price: newPrice });
           break;
         case 'Stop Loss':
-          const newStopLossList = { ...stopLossList };
-          newStopLossList[order.selectionId].price = newPrice;
-          // updateStopLossList(newStopLossList);
+          updateStopLossBetPrice({ selectionId: bet.selectionId, price: newPrice });
           break;
-        case 'None':
-          // if we can find something that fits with the fill or kill, we can remove that too (this is because we don't make another row for fill or kill)
-          if (fillOrKillList[order.betId] !== undefined) {
-            const newFillOrKill = { ...fillOrKillList };
-            newFillOrKill[order.betId].price = newPrice;
-            // updateFillOrKillList(newFillOrKill);
+        case 'None': {
+          const { status, instructionReports } = await replaceOrders(bet.marketId, bet.betId, newPrice);
+
+          if (status === 'SUCCESS') {
+            const newUnmatched = { ...unmatchedBets };
+
+            const newBetId = instructionReports[0].placeInstructionReport.betId;
+            newUnmatched[newBetId] = { ...newUnmatched[bet.betId] };
+            newUnmatched[newBetId].price = instructionReports[0].placeInstructionReport.instruction.limitOrder.price;
+            newUnmatched[newBetId].betId = newBetId;
+
+            delete newUnmatched[bet.betId];
+
+            updateOrders({ unmatched: newUnmatched, matched: matchedBets });
           }
-
-          fetch('/api/replace-orders', {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            method: 'POST',
-            body: JSON.stringify({
-              marketId: order.marketId,
-              betId: order.betId,
-              newPrice,
-            }),
-          })
-            .then((res) => res.json())
-            .then((res) => {
-              if (res.status === 'SUCCESS') {
-                const newUnmatched = { ...unmatchedBets };
-
-                const newBetId = res.instructionReports[0].placeInstructionReport.betId;
-                newUnmatched[newBetId] = { ...newUnmatched[order.betId] };
-                newUnmatched[newBetId].price = res.instructionReports[0].placeInstructionReport.instruction.limitOrder.price;
-                newUnmatched[newBetId].betId = newBetId;
-
-                delete newUnmatched[order.betId];
-
-                updateOrders({ unmatched: newUnmatched, matched: matchedBets });
-              }
-            });
           break;
+        }
         default:
           break;
       }
-
-      try {
-        fetch('/api/update-price', {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify(newOrder),
-        });
-      } catch (e) {}
+      updatePrice({ rfs: bet.rfs, price: newPrice });
     },
-    [backList, layList, stopEntryList, tickOffsetList, stopLossList, fillOrKillList, unmatchedBets, updateOrders, matchedBets],
+    [updateBackBetPrice, updateLayBetPrice, updateStopEntryBetPrice, updateTickOffsetBetPrice, updateStopLossBetPrice, unmatchedBets, updateOrders, matchedBets],
   );
 
   const handleRightClick = useCallback(
@@ -190,44 +152,48 @@ const UnmatchedBets = ({
           </tr>
           {marketOpen
             ? Object.values(runners).map(({ runnerName, selectionId }) => {
-              const list = [];
+                const list = [];
 
-              const BETS = Object.values(unmatchedBets).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-              if (BETS.length.length > 0) {
-                list.push(BETS);
-              }
-              
-              if (backList[selectionId]) {
-                const BACK = Object.values(backList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-                list.push(BACK);
-              }
+                const BETS = Object.values(unmatchedBets)
+                  .filter((bet) => bet.selectionId == selectionId)
+                  .map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                if (BETS.length.length > 0) {
+                  list.push(BETS);
+                }
 
-              if (layList[selectionId]) {
-                const LAY = Object.values(layList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-                list.push(LAY);
-              }
+                if (backList[selectionId]) {
+                  const BACK = Object.values(backList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  list.push(BACK);
+                }
 
-              if (stopEntryList[selectionId]) {
-                const SE = Object.values(stopEntryList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-                list.push(SE);
-              }
+                if (layList[selectionId]) {
+                  const LAY = Object.values(layList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  list.push(LAY);
+                }
 
-              if (stopLossList[selectionId]) {
-                const SL = <Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
-                list.push(SL);
-              }
+                if (stopEntryList[selectionId]) {
+                  const SE = Object.values(stopEntryList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  list.push(SE);
+                }
 
-              if (tickOffsetList[selectionId]) {
-                const TOS = <Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
-                list.push(TOS);
-              }
+                if (stopLossList[selectionId]) {
+                  const SL = <Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
+                  list.push(SL);
+                }
 
-              const FOK  = Object.values(fillOrKillList).filter((bet) => bet.selectionId == selectionId).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
-              if (FOK.length > 0) {
-                list.push(FOK);
-              }
+                if (tickOffsetList[selectionId]) {
+                  const TOS = <Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
+                  list.push(TOS);
+                }
 
-              if (list.length <= 0) return null;
+                const FOK = Object.values(fillOrKillList)
+                  .filter((bet) => bet.selectionId == selectionId)
+                  .map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                if (FOK.length > 0) {
+                  list.push(FOK);
+                }
+
+                if (list.length <= 0) return null;
 
                 return (
                   <>
@@ -261,6 +227,20 @@ const mapStateToProps = (state) => ({
   rightClickTicks: state.settings.rightClickTicks,
 });
 
-const mapDispatchToProps = { updateOrders, cancelBet, removeBackBet, removeLayBet, removeStopEntryBet, removeStopLoss, removeTickOffset, removeFillOrKill };
+const mapDispatchToProps = {
+  updateOrders,
+  cancelBet,
+  removeBackBet,
+  updateBackBetPrice,
+  removeLayBet,
+  updateLayBetPrice,
+  removeStopEntryBet,
+  updateStopEntryBetPrice,
+  removeStopLoss,
+  updateStopLossBetPrice,
+  removeTickOffset,
+  updateTickOffsetBetPrice,
+  removeFillOrKill,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UnmatchedBets);

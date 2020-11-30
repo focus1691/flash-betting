@@ -92,3 +92,8 @@ export const replaceStopLoss = async (SL, stopLossList, data) => {
 export const removeAllStopLoss = () => ({
   type: 'REMOVE_ALL_STOP_LOSS',
 });
+
+export const updateStopLossBetPrice = (data) => ({
+  type: 'UPDATE_STOP_LOSS_BET_PRICE',
+  payload: data,
+});

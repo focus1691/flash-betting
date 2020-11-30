@@ -82,6 +82,17 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: {},
       };
+    case 'UPDATE_STOP_LOSS_BET_PRICE':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: {
+            ...state.list[action.payload.selectionId],
+            price: action.payload.price,
+          },
+        },
+      };
     default:
       return state;
   }

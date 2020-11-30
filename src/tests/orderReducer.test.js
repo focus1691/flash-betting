@@ -113,6 +113,65 @@ describe('bets reducer', () => {
       }),
     ).toEqual(updatedState);
   });
+
+  it('should handle UPDATE_BACK_BET_PRICE', () => {
+    const initialState = {
+      list: {
+        2424242: [
+          {
+            strategy: 'Back',
+            marketId: '1.2525111',
+            selectionId: 2424242,
+            executionTime: 100,
+            timeOffset: 2 * 3600 + 1 * 60 + 10,
+            size: 2,
+            price: '2.02',
+            rfs: '241142114141',
+          },
+          {
+            strategy: 'Back',
+            marketId: '1.2525111',
+            selectionId: 2424242,
+            executionTime: 100,
+            timeOffset: 2 * 3600 + 1 * 60 + 10,
+            size: 2,
+            price: '2.02',
+            rfs: '11111111111',
+          },
+        ],
+      },
+    };
+
+    expect(backReducer(initialState, {
+      type: 'UPDATE_BACK_BET_PRICE',
+      payload: { selectionId: 2424242, price: '3.05', rfs: '11111111111' },
+    })).toEqual({
+      list: {
+        2424242: [
+          {
+            strategy: 'Back',
+            marketId: '1.2525111',
+            selectionId: 2424242,
+            executionTime: 100,
+            timeOffset: 2 * 3600 + 1 * 60 + 10,
+            size: 2,
+            price: '2.02',
+            rfs: '241142114141',
+          },
+          {
+            strategy: 'Back',
+            marketId: '1.2525111',
+            selectionId: 2424242,
+            executionTime: 100,
+            timeOffset: 2 * 3600 + 1 * 60 + 10,
+            size: 2,
+            price: '3.05',
+            rfs: '11111111111',
+          },
+        ],
+      },
+    })
+  });
 });
 
 describe('Cancel bets made with tools', () => {
@@ -197,7 +256,7 @@ describe('Cancel bets made with tools', () => {
       tosReducer(initialState, {
         type: 'REMOVE_TICK_OFFSET',
         payload: {
-          rfs: '111333',
+          selectionId: '111333',
         },
       }),
     ).toEqual({

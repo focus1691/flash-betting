@@ -31,7 +31,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: {
           ...state.list,
-          [action.payload.rfs]: {
+          [action.payload.selectionId]: {
             ...action.payload,
           },
         },
@@ -50,6 +50,17 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         list: {},
+      };
+    case 'UPDATE_TICK_OFFSET_BET_PRICE':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: {
+            ...state.list[action.payload.selectionId],
+            price: action.payload.price,
+          },
+        },
       };
     default:
       return state;

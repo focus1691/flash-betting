@@ -65,3 +65,8 @@ export const removeAllSelectionBackBets = (data) => ({
 export const removeAllBackBets = () => ({
   type: 'REMOVE_ALL_BACK_BETS',
 });
+
+export const updateBackBetPrice = (data) => ({
+  type: 'UPDATE_BACK_BET_PRICE',
+  payload: data,
+});

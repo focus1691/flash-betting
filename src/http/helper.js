@@ -1,16 +1,27 @@
-export const saveBet = (order) => {
+export const saveBet = (bet) => {
   fetch('/api/save-bet', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify(order),
+    body: JSON.stringify(ordbeter),
   });
 };
 
 export const removeBet = (bet) => {
   fetch('/api/remove-bet', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(bet),
+  });
+};
+
+export const updatePrice = (bet) => {
+  fetch('/api/update-price', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -59,6 +70,23 @@ export const getBetFairBets = async (marketId) => {
   .then((res) => res.currentOrders);
   return bets;
 };
+
+export const replaceOrders = async (marketId, betId, newPrice) => {
+  const result = await fetch('/api/replace-orders', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      marketId,
+      betId,
+      newPrice,
+    }),
+  })
+  .then((res) => res.json())
+  return result;
+}
 
 export const saveRunnerNames = async (marketId, selectionNames) => {
   fetch('/api/save-runner-names', {
