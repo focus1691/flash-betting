@@ -13,6 +13,8 @@ import { MatchedBet } from './MatchedBet';
 import { UnmatchedBet } from './UnmatchedBet';
 //* Selectors
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
+//* Utils
+import { removeBet } from '../../../../http/helper';
 
 const OrderRow = memo(
   ({
@@ -40,6 +42,7 @@ const OrderRow = memo(
   }) => {
     const cancelUnmatchedBet = useCallback(
       (bet) => {
+        removeBet({ rfs: bet.rfs });
         switch (bet.strategy) {
           case 'Back':
             removeBackBet({ rfs: bet.rfs, selectionId });

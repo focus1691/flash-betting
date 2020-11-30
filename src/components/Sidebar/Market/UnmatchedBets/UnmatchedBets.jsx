@@ -8,8 +8,11 @@ import { removeStopEntryBet } from '../../../../actions/stopEntry';
 import { removeStopLoss } from '../../../../actions/stopLoss';
 import { removeTickOffset } from '../../../../actions/tickOffset';
 import { removeFillOrKill } from '../../../../actions/fillOrKill';
-import { getPriceNTicksAway } from '../../../../utils/ladder/CreateFullLadder';
+//* Selectors
 import { getMarketMatchedBets, getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
+//* Utils
+import { getPriceNTicksAway } from '../../../../utils/ladder/CreateFullLadder';
+import { removeBet } from '../../../../http/helper';
 import Bet from './Bet';
 
 const UnmatchedBets = ({
@@ -38,6 +41,7 @@ const UnmatchedBets = ({
 }) => {
   const cancelOrder = useCallback(
     async (bet) => {
+      removeBet({ rfs: bet.rfs });
       switch (bet.strategy) {
         case 'Back':
           removeBackBet({ rfs: bet.rfs, selectionId: bet.selectionId });
