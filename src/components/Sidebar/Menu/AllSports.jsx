@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react';
-import List from '@material-ui/core/List';
 import { connect } from 'react-redux';
+//* @material-ui core
+import List from '@material-ui/core/List';
+//* Actions
 import { setAllSports, updateSubmenuList, updateCurrentSubmenu } from '../../../actions/sport';
 import { sortSports } from '../../../utils/Algorithms/SortSports';
 import DeselectSport from './DeselectSport';
 import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/menu';
 
 const AllSports = ({ sports, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
+  const classes = useStyles();
   useEffect(() => {
     // gets all the sports and saves them on the server
     fetch('/api/fetch-all-sports');
@@ -98,7 +103,7 @@ const AllSports = ({ sports, currentSubmenu, winMarketsOnly, horseRaces, setAllS
   };
 
   return (
-    <List className="all-sports">
+    <List className={classes.allSports}>
       {Object.keys(sports.submenuList).map((type, index) => (
         <DeselectSport key={`all-sports-deselect-${sports.submenuList[type].name}`} type={type} data={sports.submenuList[type]} isLast={index === Object.keys(sports.submenuList).length - 1} submenuList={sports.submenuList} deselectSubmenu={deselectSubmenu} />
       ))}

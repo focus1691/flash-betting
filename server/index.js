@@ -231,8 +231,9 @@ app.get('/api/get-events-with-active-bets', (request, response) => {
 });
 
 app.get('/api/premium-status', (request, response) => {
+  if (!betfair.email) return response.json({ error: 'Not logged in' });
   Database.getPremiumStatus(betfair.email).then((expiryDate) => {
-    response.json(expiryDate);
+    response.json({ expiryDate });
   });
 });
 

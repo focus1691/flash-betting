@@ -1,15 +1,17 @@
-import List from '@material-ui/core/List';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+//* @material-ui core
+import List from '@material-ui/core/List';
+//* Actions
 import * as actions from '../../../actions/market';
-import {
-  updateSubmenuListMyMarkets,
-  updateSubmenuMyMarkets,
-} from '../../../actions/sport';
+import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from '../../../actions/sport';
 import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/menu';
 
 const MyMarkets = (props) => {
+  const classes = useStyles();
   const submenuList = props.submenuListMyMarkets;
   const setSubmenuList = props.onUpdateSubmenuListMyMarkets;
   const currentSubmenu = props.currentSubmenuMyMarkets;
@@ -123,7 +125,7 @@ const MyMarkets = (props) => {
   };
 
   return (
-    <List className="all-sports">
+    <List className={classes.allSports}>
       {/* { Deselecting Items } */}
       {Object.keys(submenuList).map((type, index) => (
         <DeselectSport

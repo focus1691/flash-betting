@@ -1,9 +1,13 @@
+import React, { useEffect, useState } from 'react';
+//* @material-ui core
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { ListItemText, Divider } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/menu';
 
 const ActiveBets = () => {
+  const classes = useStyles();
   const [events, setEvents] = useState([]);
 
   const openMarket = (marketId) => () => {
@@ -22,7 +26,7 @@ const ActiveBets = () => {
 && events.map((event) => (
   <>
     <ListItem key={`active-bets-${event.marketId}`} button onClick={openMarket(event.marketId)}>
-      <ListItemText className="active-bet-name">{event.marketName}</ListItemText>
+      <ListItemText className={classes.activeBetName}>{event.marketName}</ListItemText>
     </ListItem>
     <Divider />
   </>

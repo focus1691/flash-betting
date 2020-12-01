@@ -8,7 +8,7 @@ import { openPremiumDialog, setSelectedPremium } from '../../actions/settings';
 import SocketContext from '../../SocketContext';
 import Header from './Header';
 import SubscriptionContainer from './SubscriptionContainer';
-import useStyles from '../../assets/jss/components/HomeView/homeViewStyle';
+import useStyles from '../../jss/components/HomeView/homeViewStyle';
 
 const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   const [cookies] = useCookies(['username']);

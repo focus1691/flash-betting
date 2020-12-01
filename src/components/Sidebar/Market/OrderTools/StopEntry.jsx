@@ -13,8 +13,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions/stopEntry';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
-import StyledMenu from '../../../../assets/jss/StyledMenu';
-import StyledMenuItem from '../../../../assets/jss/StyledMenuItem';
+import StyledMenu from '../../../../jss/StyledMenu';
+import StyledMenuItem from '../../../../jss/StyledMenuItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {

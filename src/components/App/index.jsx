@@ -115,9 +115,13 @@ const App = ({
   const [connectionError, setConnectionError] = useState('');
 
   const loadSettings = async () => {
-    await fetch('/api/premium-status')
-      .then((res) => res.json())
-      .then((expiryDate) => setPremiumStatus(isPremiumActive(new Date(), expiryDate)));
+    const { error, expiryDate } = await fetch('/api/premium-status')
+      .then((res) => res.json());
+      if (error) {
+        window.location.href = `${window.location.origin}`;
+      } else {
+        setPremiumStatus(isPremiumActive(new Date(), expiryDate));
+      }
   };
 
   const retrieveBets = async () => {
@@ -514,11 +518,13 @@ const App = ({
   }, []);
 
   useEffect(() => {
-    console.log('order subscription', JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')));
-    socket.emit('order-subscription', {
-      customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
-    })
-  }, [socket, unmatchedBets]);
+    if (marketId) {
+      console.log('order subscription', JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')));
+      socket.emit('order-subscription', {
+        customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
+      });
+    }
+  }, [marketId, socket, unmatchedBets]);
 
   useEffect(() => {
     socket.on('mcm', onReceiveMarketMessage);
@@ -583,8 +589,8 @@ const mapStateToProps = (state) => ({
   ladders: state.market.ladder,
   sortedLadder: state.market.sortedLadder,
   nonRunners: state.market.nonRunners,
-  unmatchedBets: state.order.unmatched,
-  matchedBets: state.order.matched,
+  unmatchedBets: state.order.bets.unmatched,
+  matchedBets: state.order.bets.matched,
   stopLossList: state.stopLoss.list,
   tickOffsetList: state.tickOffset.list,
   stopEntryList: state.stopEntry.list,

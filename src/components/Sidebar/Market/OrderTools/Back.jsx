@@ -14,9 +14,9 @@ import TextField from '@material-ui/core/TextField';
 //* Actions
 import * as actions from '../../../../actions/back';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
-import StyledMenu from '../../../../assets/jss/StyledMenu';
-import StyledMenuItem from '../../../../assets/jss/StyledMenuItem';
-import dropdownRunnerStyle from '../../../../assets/jss/DropdownList';
+import StyledMenu from '../../../../jss/StyledMenu';
+import StyledMenuItem from '../../../../jss/StyledMenuItem';
+import dropdownRunnerStyle from '../../../../jss/DropdownList';
 
 const useStyles = makeStyles((theme) => ({
   button: {

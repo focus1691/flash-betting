@@ -5,7 +5,7 @@ export const saveBet = (bet) => {
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify(ordbeter),
+    body: JSON.stringify(bet),
   });
 };
 
