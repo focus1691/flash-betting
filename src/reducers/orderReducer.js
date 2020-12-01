@@ -84,6 +84,20 @@ const reducer = (state = initialState, action) => {
           unmatched: omit(state.bets.unmatched, action.payload.betId),
         },
       };
+    case 'UPDATE_BET_PRICE':
+      return {
+        ...state,
+        bets: {
+          ...state.bets,
+          unmatched: {
+            ...state.bets.unmatched,
+            [action.payload.newBetId]: {
+              ...state.bets.unmatched[action.payload.betId],
+              price: action.payload.price,
+            },
+          },
+        },
+      };
     default:
       return state;
   }

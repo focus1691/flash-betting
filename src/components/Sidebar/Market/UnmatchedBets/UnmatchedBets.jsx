@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { cancelBet, updateOrders } from '../../../../actions/bet';
+import { cancelBet, updateBetPrice } from '../../../../actions/bet';
 import { removeBackBet, updateBackBetPrice } from '../../../../actions/back';
 import { removeLayBet, updateLayBetPrice } from '../../../../actions/lay';
 import { removeStopEntryBet, updateStopEntryBetPrice } from '../../../../actions/stopEntry';
@@ -28,7 +28,7 @@ const UnmatchedBets = ({
   fillOrKillList,
   matchedBets,
   unmatchedBets,
-  updateOrders,
+  updateBetPrice,
   cancelBet,
   removeBackBet,
   updateBackBetPrice,
@@ -96,16 +96,8 @@ const UnmatchedBets = ({
           const { status, instructionReports } = await replaceOrders(bet.marketId, bet.betId, newPrice);
 
           if (status === 'SUCCESS') {
-            const newUnmatched = { ...unmatchedBets };
-
-            const newBetId = instructionReports[0].placeInstructionReport.betId;
-            newUnmatched[newBetId] = { ...newUnmatched[bet.betId] };
-            newUnmatched[newBetId].price = instructionReports[0].placeInstructionReport.instruction.limitOrder.price;
-            newUnmatched[newBetId].betId = newBetId;
-
-            delete newUnmatched[bet.betId];
-
-            updateOrders({ unmatched: newUnmatched, matched: matchedBets });
+            const { betId, instruction } = instructionReports[0].placeInstructionReport;
+            updateBetPrice({ betId: bet.betId, newBetId: betId, price: instruction.limitOrder.price });
           }
           break;
         }
@@ -114,7 +106,7 @@ const UnmatchedBets = ({
       }
       updatePrice({ rfs: bet.rfs, price: newPrice });
     },
-    [updateBackBetPrice, updateLayBetPrice, updateStopEntryBetPrice, updateTickOffsetBetPrice, updateStopLossBetPrice, unmatchedBets, updateOrders, matchedBets],
+    [updateBackBetPrice, updateLayBetPrice, updateStopEntryBetPrice, updateTickOffsetBetPrice, updateStopLossBetPrice, updateBetPrice],
   );
 
   const handleRightClick = useCallback(
@@ -228,7 +220,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  updateOrders,
+  updateBetPrice,
   cancelBet,
   removeBackBet,
   updateBackBetPrice,

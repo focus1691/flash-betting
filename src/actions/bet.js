@@ -208,3 +208,8 @@ export const cancelMarketBets = (marketId, unmatchedBets) => {
     dispatch(removeUnmatchedBets({ betIds: cancelledBets }));
   };
 };
+
+export const updateBetPrice = (data) => ({
+  type: 'UPDATE_BET_PRICE',
+  payload: data,
+});

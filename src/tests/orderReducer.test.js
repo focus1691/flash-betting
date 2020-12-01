@@ -172,6 +172,47 @@ describe('bets reducer', () => {
       },
     })
   });
+
+  it('should handle UPDATE_BET_PRICE', () => {
+    expect(betReducer(initialState, {
+      type: 'UPDATE_BET_PRICE',
+      payload: { betId: '23232232', newBetId: '777777', price: '4.50' },
+    })).toEqual({
+      bets: {
+        matched: {},
+        unmatched: {
+          23232232: {
+            strategy: 'BACK',
+            marketId: '1.232323',
+            size: 2,
+            price: '2.02',
+            sizeMatched: 0,
+            sizeRemaining: 2,
+            side: 'BACK',
+            betId: '23232232',
+            rfs: '142124124sdffs',
+            trailing: false,
+            hedged: false,
+            assignedIsOrderMatched: false,
+          },
+          777777: {
+            strategy: 'BACK',
+            marketId: '1.232323',
+            size: 2,
+            price: '4.50',
+            sizeMatched: 0,
+            sizeRemaining: 2,
+            side: 'BACK',
+            betId: '23232232',
+            rfs: '142124124sdffs',
+            trailing: false,
+            hedged: false,
+            assignedIsOrderMatched: false,
+          },
+        },
+      },
+    })
+  })
 });
 
 describe('Cancel bets made with tools', () => {
