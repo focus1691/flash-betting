@@ -14,7 +14,7 @@ export default ({ sounds, toggleSounds, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('sounds', sounds);
           setChangeMade(false);

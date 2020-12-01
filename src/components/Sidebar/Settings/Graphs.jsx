@@ -14,7 +14,7 @@ export default ({ graphs, toggleGraph, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('graphs', graphs);
           setChangeMade(false);

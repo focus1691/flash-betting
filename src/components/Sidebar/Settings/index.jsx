@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+//* @material-ui core
 import { makeStyles } from '@material-ui/core/styles';
+//* Actions
 import {
   setDefaultView,
   toggleSound,
@@ -31,26 +33,8 @@ import StakeButtons from './StakeButtons';
 import LayButtons from './LayButtons';
 import RightClickTicks from './RightClickTicks';
 import HorseRacing from './HorseRacing';
-
-const useStyles = makeStyles((theme) => ({
-  appBar: {
-    background: '#303030',
-    color: 'orange',
-    fontWeight: '900',
-    border: '2px solid #fff',
-  },
-  title: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  group: {
-    margin: theme.spacing(1, 0),
-  },
-  textField: {
-    width: 50,
-    margin: theme.spacing(2),
-  },
-}));
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/settings';
 
 const Settings = ({
   premiumMember,

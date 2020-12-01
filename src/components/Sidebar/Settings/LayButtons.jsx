@@ -13,7 +13,7 @@ export default ({ layBtns, updateLayBtn, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('layBtns', layBtns);
           setChangeMade(false);

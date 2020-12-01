@@ -22,7 +22,7 @@ export default ({ defaultView, toggleDefaultView, premiumMember, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('defaultView', defaultView);
           setChangeMade(false);

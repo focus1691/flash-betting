@@ -16,7 +16,7 @@ export default ({
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('marketInfo', marketInfo);
           setChangeMade(false);

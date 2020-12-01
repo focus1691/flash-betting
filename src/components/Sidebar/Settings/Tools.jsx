@@ -14,7 +14,7 @@ export default ({ tools, toggleTools, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setChangeMade(false);
           setItem('tools', tools);

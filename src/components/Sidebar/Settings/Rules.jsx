@@ -14,7 +14,7 @@ export default ({ rules, toggleRules, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('rules', rules);
           setChangeMade(false);

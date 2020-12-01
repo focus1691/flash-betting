@@ -15,7 +15,7 @@ export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('ladderUnmatched', ladderUnmatched);
           setChangeMade(false);

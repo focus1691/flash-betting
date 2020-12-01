@@ -14,7 +14,7 @@ export default ({ matchedBets, toggleMatchedBets, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setChangeMade(false);
           setItem('matchedBets', matchedBets);

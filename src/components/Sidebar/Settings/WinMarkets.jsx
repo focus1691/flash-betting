@@ -14,7 +14,7 @@ export default ({ winMarketsOnly, updateWinMarketsOnly, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('winMarketsOnly', winMarketsOnly);
           setChangeMade(false);

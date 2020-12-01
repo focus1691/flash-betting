@@ -13,12 +13,12 @@ const useStyles = makeStyles(() => ({
     '& ul': {
         zIndex: '1',
     },
+    '& span': {
+        fontSize: '0.8rem !important',
+    },
   },
   activeBetName: {
     color: '#0000FF',
-  },
-  MuiTypography_body1: {
-    fontSize: '0.8rem !important',
   },
 }));
 

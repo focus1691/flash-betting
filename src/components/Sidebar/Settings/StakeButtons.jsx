@@ -13,7 +13,7 @@ export default ({ stakeBtns, updateStakeBtn, classes }) => {
     return (
       <button
         type="button"
-        className="save-btn"
+        className={classes.saveBtn}
         onClick={() => {
           setItem('stakeBtns', stakeBtns);
           setChangeMade(false);
