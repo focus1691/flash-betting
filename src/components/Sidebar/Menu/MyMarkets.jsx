@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import * as actions from '../../../actions/market';
+import { loadMyMarkets } from '../../../actions/market';
 import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from '../../../actions/sport';
 import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
@@ -13,14 +13,14 @@ import useStyles from '../../../jss/components/Sidebar/menu';
 const MyMarkets = (props) => {
   const classes = useStyles();
   const submenuList = props.submenuListMyMarkets;
-  const setSubmenuList = props.onUpdateSubmenuListMyMarkets;
+  const setSubmenuList = props.updateSubmenuListMyMarkets;
   const currentSubmenu = props.currentSubmenuMyMarkets;
-  const setCurrentSubmenu = props.onUpdateSubmenuMyMarkets;
+  const setCurrentSubmenu = props.updateSubmenuMyMarkets;
 
   useEffect(() => {
     fetch('/api/get-my-markets')
       .then((res) => res.json())
-      .then((markets) => props.onReceiveMyMarkets(markets));
+      .then((markets) => props.loadMyMarkets(markets));
   }, []);
 
   useEffect(() => {
@@ -163,10 +163,8 @@ const mapStateToProps = (state) => ({
   submenuListMyMarkets: state.sports.submenuListMyMarkets,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onReceiveMyMarkets: (markets) => dispatch(actions.loadMyMarkets(markets)),
-  onUpdateSubmenuMyMarkets: (submenuCurrent) => dispatch(updateSubmenuMyMarkets(submenuCurrent)),
-  onUpdateSubmenuListMyMarkets: (submenu) => dispatch(updateSubmenuListMyMarkets(submenu)),
-});
+const mapDispatchToProps = {
+  loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyMarkets);
