@@ -107,7 +107,7 @@ const UnmatchedBets = ({
       }
       updatePrice({ rfs: bet.rfs, price: newPrice });
     },
-    [updateBackBetPrice, updateLayBetPrice, updateStopEntryBetPrice, updateTickOffsetBetPrice, updateStopLossBetPrice, updateBetPrice],
+    [updateBackBetPrice, updateLayBetPrice, updateStopEntryBetPrice, updateTickOffsetBetPrice, updateStopLossBetPrice, updateBetPrice, removeUnmatchedBet],
   );
 
   const handleRightClick = useCallback(
