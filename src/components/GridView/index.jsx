@@ -1,6 +1,7 @@
-import $ from 'jquery';
 import React, { createRef, useState } from 'react';
 import { connect } from 'react-redux';
+import $ from 'jquery';
+//* Actions
 import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
 import { placeOrder } from '../../actions/bet';
 import { setStakeInOneClick } from '../../actions/settings';
@@ -18,6 +19,8 @@ import GridHeader from './GridHeader';
 import GridOrderRow from './GridOrderRow';
 import NonRunners from './NonRunner';
 import SuspendedWarning from './SuspendedWarning';
+//* JSS
+import useStyles from '../../jss/components/GridView/GridView';
 
 const Grid = ({
   oneClickOn,
@@ -46,6 +49,7 @@ const Grid = ({
   setStakeInOneClick,
   placeOrder,
 }) => {
+  const classes = useStyles();
   const [rowHovered, setRowHovered] = useState(null);
   const [activeOrder, setActiveOrder] = useState(null);
   const [ordersVisible, setOrdersVisible] = useState(0);
@@ -129,7 +133,7 @@ const Grid = ({
   const renderRow = (betOdds, key, backLay) => {
     // Fill all empty cells if no data found
     if (!betOdds) {
-      return [<td className="grid-cell" />, <td className="grid-cell" />, <td className="grid-cell" />, <td className="grid-cell" />, <td className="grid-cell" />];
+      return [<td className={classes.gridCell} />, <td className={classes.gridCell} />, <td className={classes.gridCell} />, <td className={classes.gridCell} />, <td className={classes.gridCell} />];
     }
 
     const rows = [];
@@ -141,14 +145,14 @@ const Grid = ({
 
     // Fill the remaining columns with empty cells
     while (rows.length < 5) {
-      rows.push(<td key={rows.length + 1} className="grid-cell" />);
+      rows.push(<td key={rows.length + 1} className={classes.gridCell} />);
     }
 
     return rows;
   };
 
   const createCell = (odds, matched, key, backLay) => (
-    <td key={`grid-${odds}`} className="grid-cell" onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, backLay, odds)} onContextMenu={handlePriceClick(key, (backLay ^= 1), odds)}>
+    <td key={`grid-${odds}`} className={classes.gridCell} onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, backLay, odds)} onContextMenu={handlePriceClick(key, (backLay ^= 1), odds)}>
       <span>{odds}</span>
       <span>{matched}</span>
     </td>
@@ -253,9 +257,9 @@ const Grid = ({
   const marketCashout = getMarketCashout(marketId, bets, ladder);
 
   return (
-    <div id="grid-container">
+    <div className={classes.gridContainer}>
       <SuspendedWarning marketStatus={marketStatus} />
-      <table style={marketStatus === 'SUSPENDED' ? { opacity: 0.75 } : {}} className="grid-view">
+      <table style={marketStatus === 'SUSPENDED' ? { opacity: 0.75 } : {}} className={classes.gridView}>
         <tbody>
           <GridHeader
             ladder={ladder}

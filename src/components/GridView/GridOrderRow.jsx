@@ -1,11 +1,14 @@
 import crypto from 'crypto';
 import React from 'react';
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
+//* JSS
+import useStyles from '../../jss/components/GridView/GridOrderRow';
 
 export default ({
   marketId, runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize,
   updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, bets, price, side, size,
 }) => {
+  const classes = useStyles();
   const executeOrder = () => () => {
     const referenceStrategyId = crypto
       .randomBytes(15)
@@ -31,7 +34,7 @@ export default ({
     >
       {order.visible ? (
         <td colSpan={11}>
-          <ul className="grid-order-row">
+          <ul className={classes.gridOrderRow}>
             <li onClick={toggleStakeAndLiabilityButtons({ id: runnerId })}>
               <img src={`${window.location.origin}/icons/change.png`} alt="Toggle" />
               {orderProps.text}
@@ -51,7 +54,7 @@ export default ({
               </li>
             ))}
             <span
-              className="toggle-back-lay"
+              className={classes.toggleBackLay}
               onClick={toggleBackAndLay({
 							  id: runnerId,
 							  backLay: order.backLay ^ 1,
@@ -82,11 +85,11 @@ export default ({
               })}
             />
 
-            <button type="button" className="execute-order-btn" onClick={executeOrder()}>
+            <button type="button" onClick={executeOrder()}>
               Submit
             </button>
 
-            <span className="grid-img-container">
+            <span className={classes.gridImgContainer}>
               <a
                 href="#"
                 onClick={() => false}

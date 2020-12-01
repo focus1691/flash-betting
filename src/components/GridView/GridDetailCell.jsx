@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import React, { useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
+//* Actions
 import { setRunner } from '../../actions/market';
 import { placeOrder } from '../../actions/bet';
 import { calcBackProfit } from '../../utils/Bets/BettingCalculations';
@@ -9,10 +10,13 @@ import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { iconForEvent } from '../../utils/Market/EventIcons';
 import { isHedgingOnSelectionAvailable } from '../../utils/TradingStategy/HedingCalculator';
 import { getSelectionMatchedBets } from '../../selectors/orderSelector';
+//* JSS
+import useStyles from '../../jss/components/GridView/GridDetailCell';
 
 const GridDetailCell = ({
   selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, bets, PL, hedge, ltpStyle,
 }) => {
+  const classes = useStyles();
   const side = useMemo(() => (selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === 'BACK' ? 0 : 1), 0) <= 0 ? 'BACK' : 'LAY'), [selectionMatchedBets]);
 
   const handleImageError = () => (e) => {
@@ -48,12 +52,12 @@ const GridDetailCell = ({
   }, [runner]);
 
   return (
-    <td className="grid-runner-details" onClick={handleRunnerSelection}>
+    <td className={classes.gridRunnerDetails} onClick={handleRunnerSelection}>
       <img src={logo} alt="" onError={handleImageError()} />
       <span>{`${number}${name}`}</span>
       <span style={ltpStyle}>{ltp[0] || ''}</span>
 
-      <div className="grid-pl">
+      <div className={classes.gridPL}>
         <span
           style={{
 					  color: !isHedgingOnSelectionAvailable(selectionMatchedBets)

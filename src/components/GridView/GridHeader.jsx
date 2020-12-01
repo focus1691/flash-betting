@@ -6,6 +6,8 @@ import { getOrderBtnBG } from '../../utils/ColorManipulator';
 import { getHedgedBetsToMake } from '../../utils/TradingStategy/HedingCalculator';
 import { formatTotalMatched } from '../../utils/NumberFormat';
 import { renderRaceStatus } from './RaceStatus';
+//* JSS
+import useStyles from '../../jss/components/GridView/GridHeader';
 
 const GridHeader = ({
   marketId,
@@ -29,6 +31,7 @@ const GridHeader = ({
   onPlaceOrder,
   marketCashout,
 }) => {
+  const classes = useStyles();
   const executeMarketCashout = () => () => {
     const hedgedBets = getHedgedBetsToMake(marketId, bets, ltpList);
 
@@ -54,9 +57,9 @@ const GridHeader = ({
 
   return (
     <>
-      <tr id="grid-header">
+      <tr className={classes.gridHeader}>
         <th colSpan="11">
-          <button type="button" id="one-click-btn" ref={oneClickRef} onClick={toggleOneClick()}>
+          <button type="button" className={classes.oneClickBtn} ref={oneClickRef} onClick={toggleOneClick()}>
             {`Turn One click ${oneClickOn ? 'off' : 'on'}`}
           </button>
           <h1>
@@ -69,7 +72,7 @@ const GridHeader = ({
           </h1>
           {oneClickOn ? (
             <>
-              <div id="one-click-stake">
+              <div className={classes.oneClickStake} style={{ background: '#DBEFFF' }}>
                 <button type="button">Stake</button>
                 {stakeBtns.map((stake) => (
                   <button type="button" style={{ background: getOrderBtnBG('STAKE', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
@@ -78,7 +81,7 @@ const GridHeader = ({
                 ))}
               </div>
               <br />
-              <div id="one-click-liability">
+              <div className={classes.oneClickStake} style={{ background: '#FEE9EE' }}>
                 <button type="button">Liability</button>
                 {layBtns.map((stake) => (
                   <button type="button" style={{ background: getOrderBtnBG('LAY', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
@@ -88,16 +91,16 @@ const GridHeader = ({
               </div>
             </>
           ) : null}
-          {renderRaceStatus(marketOpen, marketStatus, inPlay)}
-          <span id="matched-bets">{marketOpen ? `Matched: ${formatTotalMatched(country.localeCode, country.currencyCode, sumMatchedBets(ladder))}` : null}</span>
+          {renderRaceStatus(marketOpen, marketStatus, inPlay, classes.inPlay)}
+          <span className={classes.matchedBets}>{marketOpen ? `Matched: ${formatTotalMatched(country.localeCode, country.currencyCode, sumMatchedBets(ladder))}` : null}</span>
         </th>
       </tr>
-      <tr id="grid-subheader">
+      <tr className={classes.gridSubheader}>
         {/* The Cash out figure simply adds all current profit and losses together
             If you click it, then it should place N bets (or how ever many you need)
             to close those positions/
         */}
-        <th id="market-cashout">
+        <th className={classes.marketCashout}>
           <span>Market Cashout</span>
           <span style={{ color: marketCashout < 0 ? 'red' : marketCashout > 0 ? '#01CC41' : '#D3D3D3' }} onClick={executeMarketCashout()}>
             {marketCashout}

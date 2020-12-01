@@ -1,7 +1,12 @@
 import React from 'react';
+//* JSS
+import useStyles from '../../jss/components/GridView/SuspendedWarning';
 
-export default ({ marketStatus }) => (
-  <p style={marketStatus !== 'SUSPENDED' ? { display: 'none' } : {}} id="suspended-message">
-    {marketStatus}
-  </p>
-);
+export default ({ marketStatus }) => {
+  const classes = useStyles();
+  return (
+    <p style={marketStatus !== 'SUSPENDED' ? { display: 'none' } : {}} className={classes.suspendedMessage}>
+      {marketStatus}
+    </p>
+  );
+};

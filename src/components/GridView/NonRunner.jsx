@@ -1,13 +1,16 @@
 import React from 'react';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import GridDetailSuspCell from './GridDetailSuspCell';
+//* JSS
+import useStyles from '../../jss/components/GridView/NonRunner';
 
 export default ({
   sportId, nonRunners, runners, selectRunner,
 }) => Object.keys(nonRunners).map((key) => {
+  const classes = useStyles();
   const { name, number, logo } = DeconstructRunner(runners[key], sportId);
   return (
-    <tr className="grid-non-runner" key={`nonrunners-${key}`}>
+    <tr className={classes.gridNonRunner} key={`nonrunners-${key}`}>
       <GridDetailSuspCell
         sportId={sportId}
         name={name}
