@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { cancelBet, updateBetPrice } from '../../../../actions/bet';
+import { cancelBet, removeUnmatchedBet, updateBetPrice } from '../../../../actions/bet';
 import { removeBackBet, updateBackBetPrice } from '../../../../actions/back';
 import { removeLayBet, updateLayBetPrice } from '../../../../actions/lay';
 import { removeStopEntryBet, updateStopEntryBetPrice } from '../../../../actions/stopEntry';
@@ -9,7 +9,7 @@ import { removeStopLoss, updateStopLossBetPrice } from '../../../../actions/stop
 import { removeTickOffset, updateTickOffsetBetPrice } from '../../../../actions/tickOffset';
 import { removeFillOrKill } from '../../../../actions/fillOrKill';
 //* Selectors
-import { getMarketMatchedBets, getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
+import { getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
 import { getPriceNTicksAway } from '../../../../utils/ladder/CreateFullLadder';
 import { removeBet, replaceOrders, updatePrice } from '../../../../http/helper';
@@ -26,10 +26,10 @@ const UnmatchedBets = ({
   tickOffsetList,
   stopLossList,
   fillOrKillList,
-  matchedBets,
   unmatchedBets,
   updateBetPrice,
   cancelBet,
+  removeUnmatchedBet,
   removeBackBet,
   updateBackBetPrice,
   removeLayBet,
@@ -98,6 +98,7 @@ const UnmatchedBets = ({
           if (status === 'SUCCESS') {
             const { betId, instruction } = instructionReports[0].placeInstructionReport;
             updateBetPrice({ betId: bet.betId, newBetId: betId, price: instruction.limitOrder.price });
+            removeUnmatchedBet({ betId: bet.betId });
           }
           break;
         }
@@ -214,7 +215,6 @@ const mapStateToProps = (state) => ({
   layList: state.lay.list,
   backList: state.back.list,
   fillOrKillList: state.fillOrKill.list,
-  matchedBets: getMarketMatchedBets(state.order.bets, { marketId: state.market.marketId }),
   unmatchedBets: getMarketUnmatchedBets(state.order.bets, { marketId: state.market.marketId }),
   rightClickTicks: state.settings.rightClickTicks,
 });
@@ -222,6 +222,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   updateBetPrice,
   cancelBet,
+  removeUnmatchedBet,
   removeBackBet,
   updateBackBetPrice,
   removeLayBet,
