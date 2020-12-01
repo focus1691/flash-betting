@@ -87,6 +87,7 @@ class BetfairInvocation {
         'X-Authentication': BetfairInvocation.sessionKey,
         'Content-Type': 'application/json',
         'Content-Length': this.jsonRequestBody.length,
+        'Accept-Encoding': 'gzip, deflate',
         Connection: 'keep-alive',
       },
     };

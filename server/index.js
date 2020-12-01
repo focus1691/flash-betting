@@ -166,14 +166,23 @@ app.post('/api/login', (req, res) => {
   const { user, password } = req.body;
   betfair
     .login(user, password)
-    .then(async ({ sessionKey }) => {
+    .then(async (result) => {
       // Check if user exists, if doesn't exist, then create a new user
       Database.setUser(user);
       const accessToken = await Database.getToken(betfair.email);
       betfair.setAccessToken(accessToken);
-      res.json({ sessionKey });
+      res.json(result);
     })
     .catch((error) => res.json({ error }));
+});
+
+app.get('/api/keep-alive', (req, res) => {
+  betfair
+  .keepAlive()
+  .then(async (result) => {
+    res.json(result);
+  })
+  .catch((error) => res.json({ error }));
 });
 
 app.get('/api/logout', (req, res) => {
@@ -290,6 +299,7 @@ app.get('/api/fetch-all-sports', async (request, response) => {
   const headers = {
     'X-Application': process.env.APP_KEY,
     'X-Authentication': betfair.sessionKey,
+    'Accept-Encoding': 'gzip, deflate',
   };
   fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', { headers })
     .then((res) => res.json())

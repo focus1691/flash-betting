@@ -44,6 +44,7 @@ class BetfairAuth {
         'content-type': 'application/x-www-form-urlencoded',
         'content-length': formData.length,
         'x-application': 'BetfairAPI',
+        'Accept-Encoding': 'gzip, deflate',
       },
     };
     HttpRequest.post(AUTH_URLS.interactiveLogin, formData, options, (err, res) => {

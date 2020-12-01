@@ -99,16 +99,16 @@ class BetfairSession {
           this.setActiveSession(result.sessionKey);
           this.setEmailAddress(login);
         }
-        res({ sessionKey: result.sessionKey });
+        res(result);
       });
     });
   }
 
   keepAlive(cb = () => {}) {
     return new Promise((res, rej) => {
-      auth.keepAlive(this.sessionKey, (err, res) => {
+      auth.keepAlive(this.sessionKey, (err, result) => {
         if (err) rej(this);
-        res(this);
+        res(result);
       });
     });
   }
