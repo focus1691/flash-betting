@@ -514,6 +514,13 @@ const App = ({
   }, []);
 
   useEffect(() => {
+    console.log('order subscription', JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')));
+    socket.emit('order-subscription', {
+      customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
+    })
+  }, [socket, unmatchedBets]);
+
+  useEffect(() => {
     socket.on('mcm', onReceiveMarketMessage);
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('connection-id', (connectionId) => setConnectionId(connectionId));
