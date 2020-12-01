@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { connect } from 'react-redux';
+//* @material-ui core
 import Checkbox from '@material-ui/core/Checkbox';
 import Collapse from '@material-ui/core/Collapse';
 import Paper from '@material-ui/core/Paper';
@@ -7,7 +9,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import { connect } from 'react-redux';
+//* Actions
 import { setBackSelected } from '../../../../actions/back';
 import { setFillOrKillSelected } from '../../../../actions/fillOrKill';
 import { setLaySelected } from '../../../../actions/lay';
@@ -61,8 +63,23 @@ const useStyles = makeStyles(() => ({
 }));
 
 const OrderTools = ({
-  backText, backSelected, layText, laySelected, stopLossText, stopLossSelected, tickOffsetText, tickOffsetSelected,
-  fillKillText, fillKillSelected, stopEntrySelected, onBackSelection, onLaySelection, onStopLossSelection, onTickOffsetSelection, onFillOrKillSelection, onStopEntrySelection,
+  backText,
+  backSelected,
+  layText,
+  laySelected,
+  stopLossText,
+  stopLossSelected,
+  tickOffsetText,
+  tickOffsetSelected,
+  fillKillText,
+  fillKillSelected,
+  stopEntrySelected,
+  setBackSelected,
+  setLaySelected,
+  setStopLossSelected,
+  setTickOffsetSelected,
+  setFillOrKillSelected,
+  setStopEntrySelected,
 }) => {
   const classes = useStyles();
 
@@ -73,23 +90,47 @@ const OrderTools = ({
   const [fillOrKill, toggleFillOrKill] = useState(false);
   const [stopEntry, toggleStopEntry] = useState(false);
 
-  const rows = useMemo(() => [
-    createData('Back', 'B', backText, <Back />, back, toggleBack, backSelected, onBackSelection),
-    createData('Lay', 'L', layText, <Lay />, lay, toggleLay, laySelected, onLaySelection),
-    createData('Stop Loss', 'SL', stopLossText, <StopLoss />, stopLoss, toggleStopLoss, stopLossSelected, onStopLossSelection),
-    createData('Tick Offset', 'TO', tickOffsetText, <TickOffset />, tickOffset, toggleTickOffset, tickOffsetSelected, onTickOffsetSelection),
-    createData('Fill or Kill', 'FOK', fillKillText, <FillOrKill />, fillOrKill, toggleFillOrKill, fillKillSelected, onFillOrKillSelection),
-    createData('Stop Entry', 'SE', '', <StopEntry />, stopEntry, toggleStopEntry, stopEntrySelected, onStopEntrySelection),
-  ], [back, backSelected, backText, fillKillSelected, fillKillText, fillOrKill, lay, laySelected, layText, onBackSelection,onFillOrKillSelection, onLaySelection, onStopEntrySelection,
-    onStopLossSelection, onTickOffsetSelection, stopEntry, stopEntrySelected, stopLoss, stopLossSelected, stopLossText, tickOffset, tickOffsetSelected, tickOffsetText]);
+  const rows = useMemo(
+    () => [
+      createData('Back', 'B', backText, <Back />, back, toggleBack, backSelected, setBackSelected),
+      createData('Lay', 'L', layText, <Lay />, lay, toggleLay, laySelected, setLaySelected),
+      createData('Stop Loss', 'SL', stopLossText, <StopLoss />, stopLoss, toggleStopLoss, stopLossSelected, setStopLossSelected),
+      createData('Tick Offset', 'TO', tickOffsetText, <TickOffset />, tickOffset, toggleTickOffset, tickOffsetSelected, setTickOffsetSelected),
+      createData('Fill or Kill', 'FOK', fillKillText, <FillOrKill />, fillOrKill, toggleFillOrKill, fillKillSelected, setFillOrKillSelected),
+      createData('Stop Entry', 'SE', '', <StopEntry />, stopEntry, toggleStopEntry, stopEntrySelected, setStopEntrySelected),
+    ],
+    [
+      back,
+      backSelected,
+      backText,
+      fillKillSelected,
+      fillKillText,
+      fillOrKill,
+      lay,
+      laySelected,
+      layText,
+      setBackSelected,
+      setFillOrKillSelected,
+      setLaySelected,
+      setStopEntrySelected,
+      setStopLossSelected,
+      setTickOffsetSelected,
+      stopEntry,
+      stopEntrySelected,
+      stopLoss,
+      stopLossSelected,
+      stopLossText,
+      tickOffset,
+      tickOffsetSelected,
+      tickOffsetText,
+    ],
+  );
 
   return (
     <Paper className={classes.root}>
       <Table className={`${classes.table} order-settings-tbl`}>
         <TableBody>
-          {rows.map(({
-            name, description, isOpen, selected, toggleSelected, toggleExpand, settings,
-          }) => (
+          {rows.map(({ name, description, isOpen, selected, toggleSelected, toggleExpand, settings }) => (
             <React.Fragment key={`tool-${name}`}>
               <StyledTableRow>
                 <StyledTableCell scope="row" colSpan={4}>
@@ -104,11 +145,7 @@ const OrderTools = ({
                   {description}
                 </StyledTableCell>
                 <StyledTableCell padding="checkbox" colSpan={2}>
-                  <Checkbox
-                    color="primary"
-                    checked={selected}
-                    onChange={() => toggleSelected()}
-                  />
+                  <Checkbox color="primary" checked={selected} onChange={() => toggleSelected()} />
                 </StyledTableCell>
               </StyledTableRow>
 
@@ -147,13 +184,13 @@ const mapStateToProps = (state) => ({
   stopEntrySelected: state.stopEntry.selected,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onBackSelection: () => dispatch(setBackSelected()),
-  onLaySelection: () => dispatch(setLaySelected()),
-  onStopLossSelection: () => dispatch(setStopLossSelected()),
-  onTickOffsetSelection: () => dispatch(setTickOffsetSelected()),
-  onFillOrKillSelection: () => dispatch(setFillOrKillSelected()),
-  onStopEntrySelection: () => dispatch(setStopEntrySelected()),
-});
+const mapDispatchToProps = {
+  setBackSelected,
+  setLaySelected,
+  setStopLossSelected,
+  setTickOffsetSelected,
+  setFillOrKillSelected,
+  setStopEntrySelected,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderTools);
