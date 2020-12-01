@@ -1,3 +1,7 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { connect } from 'react-redux';
+import crypto from 'crypto';
+//* @material-ui core
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -8,10 +12,8 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import crypto from 'crypto';
-import React, { useState, useEffect, useCallback } from 'react';
-import { connect } from 'react-redux';
-import * as actions from '../../../../actions/stopEntry';
+//* Actions
+import { setLTPOperator, setTicks, setStake, setPrice, setSide, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
@@ -48,26 +50,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StopEntry = ({
-  marketId, runners, selections, price, stopEntryList, ticks, operator, side, stake, onUpdateStopEntryList, onSelection, onReceivePrice, onReceiveTicks, onReceiveStake, onReceiveOperator, 
-}) => {
+const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks, operator, side, stake, updateStopEntryList, setSelections, setPrice, setTicks, setStake, setLTPOperator }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [step, setStep] = useState(findPriceStep(price));
 
   // Load all the runners / set All / The Field as the default
   useEffect(() => {
-    onSelection(
-      Object.keys(runners).map((key) => [runners[key].selectionId]),
-    );
+    setSelections(Object.keys(runners).map((key) => [runners[key].selectionId]));
   }, []);
 
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (index) => (e) => {
-    onSelection(index);
+  const handleMenuItemClick = (index) => () => {
+    setSelections(index);
     setAnchorEl(null);
   };
 
@@ -75,27 +73,31 @@ const StopEntry = ({
     setAnchorEl(null);
   };
 
-  const updateStep = useCallback((e) => {
-    const v = e.target.value;
+  const updateStep = useCallback(
+    (e) => {
+      const v = e.target.value;
 
-    // Set empty String for non-numbers
-    if (isNaN(parseInt(v))) {
-      onReceivePrice('');
-      return;
-    } if (price === '' && parseInt(v) === 1) {
-      setStep(0.01);
-      onReceivePrice(1.01);
-      return;
-    }
+      // Set empty String for non-numbers
+      if (isNaN(parseInt(v))) {
+        setPrice('');
+        return;
+      }
+      if (price === '' && parseInt(v) === 1) {
+        setStep(0.01);
+        setPrice(1.01);
+        return;
+      }
 
-    const newStep = findPriceStep(v);
+      const newStep = findPriceStep(v);
 
-    if (newStep !== step) {
-      setStep(newStep);
-    }
+      if (newStep !== step) {
+        setStep(newStep);
+      }
 
-    onReceivePrice(v);
-  }, [step, price]);
+      setPrice(v);
+    },
+    [price, step, setPrice],
+  );
 
   // Handle Submit click to place an order
   const placeOrder = () => async () => {
@@ -103,76 +105,52 @@ const StopEntry = ({
 
     const newStopEntryList = { ...stopEntryList };
 
-    await Promise.all(selectedRunners.map(async (selectionId) => {
-      const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      const addedOrder = {
-        strategy: 'Stop Entry',
-        marketId,
-        selectionId,
-        targetLTP: ticks,
-        stopEntryCondition: operator,
-        side,
-        size: stake,
-        price: formatPrice(price),
-        rfs: referenceStrategyId,
-      };
+    await Promise.all(
+      selectedRunners.map(async (selectionId) => {
+        const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+        const addedOrder = {
+          strategy: 'Stop Entry',
+          marketId,
+          selectionId,
+          targetLTP: ticks,
+          stopEntryCondition: operator,
+          side,
+          size: stake,
+          price: formatPrice(price),
+          rfs: referenceStrategyId,
+        };
 
-      await fetch('/api/save-bet', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(addedOrder),
-      }).then(() => {
-        if (newStopEntryList[selectionId] === undefined) {
-          newStopEntryList[selectionId] = [addedOrder];
-        } else {
-          newStopEntryList[selectionId] = newStopEntryList[selectionId].concat(addedOrder);
-        }
-      });
-    }));
+        await fetch('/api/save-bet', {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify(addedOrder),
+        }).then(() => {
+          if (newStopEntryList[selectionId] === undefined) {
+            newStopEntryList[selectionId] = [addedOrder];
+          } else {
+            newStopEntryList[selectionId] = newStopEntryList[selectionId].concat(addedOrder);
+          }
+        });
+      }),
+    );
 
-    onUpdateStopEntryList(newStopEntryList);
+    updateStopEntryList(newStopEntryList);
   };
 
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="Device settings">
-        <ListItem
-          button
-          aria-haspopup="true"
-          aria-controls="lock-menu"
-          aria-label="Selections"
-          onClick={handleClickListItem}
-        >
-          <ListItemText
-            primary="Runners"
-            secondary={
-              selections
-                ? typeof selections === 'string'
-                  ? runners[selections].runnerName
-                  : 'All / The Field'
-                : ''
-            }
-          />
+        <ListItem button aria-haspopup="true" aria-controls="lock-menu" aria-label="Selections" onClick={handleClickListItem}>
+          <ListItemText primary="Runners" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} />
         </ListItem>
       </List>
-      <StyledMenu
-        id="lock-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
+      <StyledMenu id="lock-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for All / the Field */}
         {runners ? (
-          <StyledMenuItem
-            key="stop-loss-order-all/field"
-            className={classes.root}
-            selected={typeof selections !== 'string'}
-            onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}
-          >
+          <StyledMenuItem key="stop-loss-order-all/field" className={classes.root} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
             All / The Field
           </StyledMenuItem>
         ) : null}
@@ -180,12 +158,7 @@ const StopEntry = ({
          * Store their selectionId to be used to place bets for event clicks
          */}
         {Object.keys(runners).map((key) => (
-          <StyledMenuItem
-            key={`stop-entry-order-${runners[key].runnerName}`}
-            className={classes.root}
-            selected={key === selections}
-            onClick={handleMenuItemClick(key)}
-          >
+          <StyledMenuItem key={`stop-entry-order-${runners[key].runnerName}`} className={classes.root} selected={key === selections} onClick={handleMenuItemClick(key)}>
             {runners[key].runnerName}
           </StyledMenuItem>
         ))}
@@ -193,58 +166,20 @@ const StopEntry = ({
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <FormControl variant="outlined" className={classes.formControl}>
           <InputLabel>LTP</InputLabel>
-          <Select
-            native
-            className={classes.select}
-            value={operator}
-            onChange={(e) => onReceiveOperator(e.target.value)}
-            input={<OutlinedInput name="age" />}
-          >
+          <Select native className={classes.select} value={operator} onChange={(e) => setLTPOperator(e.target.value)} input={<OutlinedInput name="age" />}>
             <option value="" />
             <option value="<">{'<'}</option>
             <option value="=">=</option>
             <option value=">">{'>'}</option>
           </Select>
         </FormControl>
-        <TextField
-          id="standard-number"
-          className={classes.textField}
-          type="number"
-          label="Ticks"
-          value={ticks}
-          inputProps={{ min: '1', max: '100' }}
-          onChange={(e) => onReceiveTicks(e.target.value)}
-          margin="normal"
-        />
+        <TextField id="standard-number" className={classes.textField} type="number" label="Ticks" value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <TextField
-          id="standard-number"
-          className={classes.backPriceTextFields}
-          type="number"
-          label="Back"
-          value={stake}
-          inputProps={{ min: '1' }}
-          onChange={(e) => onReceiveStake(e.target.value)}
-          margin="normal"
-        />
-        <TextField
-          id="standard-number"
-          className={classes.backPriceTextFields}
-          type="number"
-          label="@"
-          value={price}
-          inputProps={{ min: '1.00', max: '1000', step }}
-          onChange={updateStep}
-          margin="normal"
-        />
+        <TextField id="standard-number" className={classes.backPriceTextFields} type="number" label="Back" value={stake} inputProps={{ min: '1' }} onChange={(e) => setStake(e.target.value)} margin="normal" />
+        <TextField id="standard-number" className={classes.backPriceTextFields} type="number" label="@" value={price} inputProps={{ min: '1.00', max: '1000', step }} onChange={updateStep} margin="normal" />
       </div>
-      <Button
-        variant="outlined"
-        color="primary"
-        className={classes.button}
-        onClick={placeOrder()}
-      >
+      <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
         Submit
       </Button>
     </div>
@@ -263,17 +198,6 @@ const mapStateToProps = (state) => ({
   selections: state.stopEntry.selections,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onReceiveOperator: (operator) => dispatch(actions.setLTPOperator(operator)),
-  onReceiveTicks: (ticks) => dispatch(actions.setTicks(ticks)),
-  onReceiveStake: (stake) => dispatch(actions.setStake(stake)),
-  onReceivePrice: (price) => dispatch(actions.setPrice(price)),
-  onRecieveSide: (side) => dispatch(actions.setSide(side)),
-  onUpdateStopEntryList: (list) => dispatch(actions.updateStopEntryList(list)),
-  onSelection: (selections) => dispatch(actions.setSelections(selections)),
-});
+const mapDispatchToProps = { setLTPOperator, setTicks, setStake, setPrice, updateStopEntryList, setSelections };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(StopEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(StopEntry);
