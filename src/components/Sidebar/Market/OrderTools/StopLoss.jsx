@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+//* @material-ui core
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import List from '@material-ui/core/List';
@@ -7,9 +10,9 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import * as actions from '../../../../actions/stopLoss';
+//* Actions
+import { setDisplayText, setStopLossOffset, setStopLossUnit, toggleStopLossTrailing, toggleStopLossHedged, setSelections } from '../../../../actions/stopLoss';
+//* JSS
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
 
@@ -34,24 +37,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StopLoss = (props) => {
+const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDisplayText, setStopLossOffset, setStopLossUnit, toggleStopLossTrailing, toggleStopLossHedged, setSelections }) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // Change the text when the fields change
-  React.useEffect(() => {
-    const box1Val = props.trailing ? 'x' : '-';
-    const box2Val = props.hedged ? 'x' : '-';
-    const unit = props.units === 'Percent' ? '(%)' : props.units;
+  useEffect(() => {
+    const box1Val = trailing ? 'x' : '-';
+    const box2Val = hedged ? 'x' : '-';
+    const unit = units === 'Percent' ? '(%)' : units;
 
-    props.onTextUpdate(`${props.offset} ${unit} [${box1Val}][${box2Val}]`);
-  }, [props.offset, props.units, props.hedged, props.trailing]);
+    setDisplayText(`${offset} ${unit} [${box1Val}][${box2Val}]`);
+  }, [offset, units, hedged, trailing, setDisplayText]);
 
   // Load all the runners / set All / The Field as the default
-  React.useEffect(() => {
-    props.onSelection(
-      Object.keys(props.runners).map((key) => [props.runners[key].selectionId]),
-    );
+  useEffect(() => {
+    setSelections(Object.keys(runners).map((key) => [runners[key].selectionId]));
   }, []);
 
   const handleClickListItem = () => (e) => {
@@ -59,7 +60,7 @@ const StopLoss = (props) => {
   };
 
   const handleMenuItemClick = (index) => (e) => {
-    props.onSelection(index);
+    setSelections(index);
     setAnchorEl(null);
   };
 
@@ -70,116 +71,43 @@ const StopLoss = (props) => {
   return (
     <>
       <List component="nav" aria-label="Device settings">
-        <ListItem
-          button
-          aria-haspopup="true"
-          aria-controls="lock-menu"
-          aria-label="Selections"
-          onClick={handleClickListItem()}
-        >
-          <ListItemText
-            primary="Runners"
-            secondary={
-              props.selections
-                ? typeof props.selections === 'string'
-                  ? props.runners[props.selections].runnerName
-                  : 'All / The Field'
-                : ''
-            }
-          />
+        <ListItem button aria-haspopup="true" aria-controls="lock-menu" aria-label="Selections" onClick={handleClickListItem()}>
+          <ListItemText primary="Runners" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} />
         </ListItem>
       </List>
-      <StyledMenu
-        id="lock-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
+      <StyledMenu id="lock-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for All / the Field */}
-        {props.runners ? (
-          <StyledMenuItem
-            key="stop-loss-order-all/field"
-            className={classes.root}
-            selected={typeof props.selections !== 'string'}
-            onClick={handleMenuItemClick(Object.keys(props.runners).map((key) => [props.runners[key].selectionId]))}
-          >
+        {runners ? (
+          <StyledMenuItem key="stop-loss-order-all/field" className={classes.root} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
             All / The Field
           </StyledMenuItem>
         ) : null}
         {/* Create Menu Items for all the runners and display their names
          * Store their selectionId to be used to place bets for event clicks
          */}
-        {Object.keys(props.runners).map((key) => (
-          <StyledMenuItem
-            key={`stop-loss-order-${props.runners[key].runnerName}`}
-            className={classes.root}
-            selected={key === props.selections}
-            onClick={handleMenuItemClick(key)}
-          >
-            {props.runners[key].runnerName}
+        {Object.keys(runners).map((key) => (
+          <StyledMenuItem key={`stop-loss-order-${runners[key].runnerName}`} className={classes.root} selected={key === selections} onClick={handleMenuItemClick(key)}>
+            {runners[key].runnerName}
           </StyledMenuItem>
         ))}
       </StyledMenu>
 
-      <RadioGroup
-        aria-label="stoploss"
-        name="stoploss"
-        className={classes.group}
-        value={props.units}
-        onChange={(e) => props.onReceiveUnit(e.target.value)}
-      >
+      <RadioGroup aria-label="stoploss" name="stoploss" className={classes.group} value={units} onChange={(e) => setStopLossUnit(e.target.value)}>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <TextField
-            id="standard-number"
-            className={classes.textField}
-            type="number"
-            value={props.offset}
-            inputProps={{ min: '1', max: '100' }}
-            onChange={(e) => props.onReceiveOffset(e.target.value)}
-            margin="normal"
-          />
-          <FormControlLabel
-            value="Ticks"
-            className={classes.formControlLabel}
-            control={<Radio color="primary" />}
-            label={<span>Tick</span>}
-          />
-          <FormControlLabel
-            value="Percent"
-            control={<Radio color="primary" />}
-            label="%"
-          />
+          <TextField id="standard-number" className={classes.textField} type="number" value={offset} inputProps={{ min: '1', max: '100' }} onChange={(e) => setStopLossOffset(e.target.value)} margin="normal" />
+          <FormControlLabel value="Ticks" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Tick</span>} />
+          <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
         </div>
       </RadioGroup>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <FormControlLabel
-          control={(
-            <Checkbox
-              color="primary"
-              checked={props.trailing}
-              onChange={(e) => props.onToggleTrailing(e.target.checked)}
-            />
-          )}
-          label="Trailing"
-        />
-        <FormControlLabel
-          control={(
-            <Checkbox
-              color="primary"
-              checked={props.hedged}
-              onChange={(e) => props.onToggleHedged(e.target.checked)}
-            />
-          )}
-          label="Hedged"
-        />
+        <FormControlLabel control={<Checkbox color="primary" checked={trailing} onChange={(e) => toggleStopLossTrailing(e.target.checked)} />} label="Trailing" />
+        <FormControlLabel control={<Checkbox color="primary" checked={hedged} onChange={(e) => toggleStopLossHedged(e.target.checked)} />} label="Hedged" />
       </div>
     </>
   );
 };
 
 const mapStateToProps = (state) => ({
-  text: state.stopLoss.text,
   offset: state.stopLoss.offset,
   units: state.stopLoss.units,
   trailing: state.stopLoss.trailing,
@@ -188,16 +116,13 @@ const mapStateToProps = (state) => ({
   selections: state.stopLoss.selections,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onTextUpdate: (text) => dispatch(actions.setDisplayText(text)),
-  onReceiveOffset: (offset) => dispatch(actions.setStopLossOffset(offset)),
-  onReceiveUnit: (unit) => dispatch(actions.setStopLossUnit(unit)),
-  onToggleTrailing: (selected) => dispatch(actions.toggleStopLossTrailing(selected)),
-  onToggleHedged: (selected) => dispatch(actions.toggleStopLossHedged(selected)),
-  onSelection: (selections) => dispatch(actions.setSelections(selections)),
-});
+const mapDispatchToProps = {
+  setDisplayText,
+  setStopLossOffset,
+  setStopLossUnit,
+  toggleStopLossTrailing,
+  toggleStopLossHedged,
+  setSelections,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(StopLoss);
+export default connect(mapStateToProps, mapDispatchToProps)(StopLoss);
