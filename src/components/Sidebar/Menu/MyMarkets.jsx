@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
@@ -10,105 +10,80 @@ import SelectSubmenu from './SelectSubmenu';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/menu';
 
-const MyMarkets = (props) => {
+const submenuEnum = {
+  ROOT: 0,
+  EVENT_TYPE: 1,
+  GROUP: 2,
+  EVENT: 3,
+  RACE: 4,
+  MARKET: 5,
+};
+
+const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMarkets, submenuListMyMarkets, loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
-  const submenuList = props.submenuListMyMarkets;
-  const setSubmenuList = props.updateSubmenuListMyMarkets;
-  const currentSubmenu = props.currentSubmenuMyMarkets;
-  const setCurrentSubmenu = props.updateSubmenuMyMarkets;
+
+  const getSportInfo = useCallback(
+    async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {
+      const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
+
+      // gets the country names and makes it an array ex... [GB]
+      const countryNames = Object.keys(horseRaces).reduce((acc, item) => {
+        if (horseRaces[item] === true) {
+          return [item, ...acc];
+        }
+        return acc;
+      }, []);
+
+      // call the api with the id and get new selections
+      const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
+        .then((res) => res.json())
+        .catch(() => false);
+
+      // set the old submenu as the newSubmenuType: children we received from the api
+      if (data) {
+        const newSubmenuList = { ...submenuList };
+        newSubmenuList[newSubmenuType] = { name, data };
+
+        updateSubmenuListMyMarkets(newSubmenuList, {});
+        updateSubmenuMyMarkets(newSubmenuType);
+      }
+    },
+    [horseRaces, updateSubmenuListMyMarkets, updateSubmenuMyMarkets, winMarketsOnly],
+  );
 
   useEffect(() => {
     fetch('/api/get-my-markets')
       .then((res) => res.json())
-      .then((markets) => props.loadMyMarkets(markets));
+      .then((markets) => loadMyMarkets(markets));
   }, []);
 
   useEffect(() => {
-    if (
-      props.submenuListMyMarkets.EVENT_TYPE
-      && props.submenuListMyMarkets.EVENT_TYPE.name.includes("Today's Card")
-    ) {
-      const id = props.submenuListMyMarkets.EVENT_TYPE.name.includes('Horse')
-        ? 7
-        : 4339;
-      getSportInfo(
-        props.submenuListMyMarkets.EVENT_TYPE.name,
-        'EVENT_TYPE',
-        submenuList,
-        id,
-        'list-todays-card',
-      );
+    if (submenuListMyMarkets.EVENT_TYPE && submenuListMyMarkets.EVENT_TYPE.name.includes("Today's Card")) {
+      const id = submenuListMyMarkets.EVENT_TYPE.name.includes('Horse') ? 7 : 4339;
+      getSportInfo(submenuListMyMarkets.EVENT_TYPE.name, 'EVENT_TYPE', submenuListMyMarkets, id, 'list-todays-card');
     }
-  }, [props.winMarketsOnly]);
-
-  const getSportInfo = async (
-    name,
-    newSubmenuType,
-    submenuList,
-    selectedId,
-    apiToCall,
-  ) => {
-    const isHorseRace = (name.startsWith('TC') && name.endsWith('7'))
-      || (name.includes('Horse') && name.includes("Today's Card"));
-
-    // gets the country names and makes it an array ex... [GB]
-    const countryNames = Object.keys(props.horseRaces).reduce((acc, item) => {
-      if (props.horseRaces[item] === true) {
-        return [item, ...acc];
-      }
-      return acc;
-    }, []);
-
-    // call the api with the id and get new selections
-    const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${props.winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
-      .then((res) => res.json())
-      .catch((err) => false);
-
-    // set the old submenu as the newSubmenuType: children we received from the api
-    if (data) {
-      const newSubmenuList = { ...submenuList };
-      newSubmenuList[newSubmenuType] = { name, data };
-
-      setSubmenuList(newSubmenuList, {});
-      setCurrentSubmenu(newSubmenuType);
-    }
-  };
+  }, [getSportInfo, submenuListMyMarkets, winMarketsOnly]);
 
   const setSubmenu = (data, name, newSubmenuType, submenuList, id) => {
     if (id.startsWith('TC-')) {
-      getSportInfo(
-        name,
-        newSubmenuType,
-        submenuList,
-        id.match(/\d+/)[0],
-        'list-todays-card',
-      );
+      getSportInfo(name, newSubmenuType, submenuList, id.match(/\d+/)[0], 'list-todays-card');
     } else if (newSubmenuType === 'EVENT_TYPE') {
       getSportInfo(name, newSubmenuType, submenuList, id, 'fetch-sport-data');
     } else {
       const newSubmenuList = { ...submenuList };
       newSubmenuList[newSubmenuType] = { name, data };
 
-      setSubmenuList(newSubmenuList);
-      setCurrentSubmenu(newSubmenuType);
+      updateSubmenuListMyMarkets(newSubmenuList);
+      updateSubmenuMyMarkets(newSubmenuType);
     }
   };
 
   const deselectSubmenu = (newSubmenuType, submenuList) => {
     if (newSubmenuType === 'ROOT') {
-      setCurrentSubmenu('');
-      setSubmenuList({});
+      updateSubmenuMyMarkets('');
+      updateSubmenuListMyMarkets({});
       return;
     }
-
-    const submenuEnum = {
-      ROOT: 0,
-      EVENT_TYPE: 1,
-      GROUP: 2,
-      EVENT: 3,
-      RACE: 4,
-      MARKET: 5,
-    };
 
     // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
     const newSubmenuList = {};
@@ -120,35 +95,27 @@ const MyMarkets = (props) => {
       }
     });
 
-    setCurrentSubmenu(newSubmenuType);
-    setSubmenuList(newSubmenuList);
+    updateSubmenuMyMarkets(newSubmenuType);
+    updateSubmenuListMyMarkets(newSubmenuList);
   };
 
   return (
     <List className={classes.allSports}>
       {/* { Deselecting Items } */}
-      {Object.keys(submenuList).map((type, index) => (
+      {Object.keys(submenuListMyMarkets).map((type, index) => (
         <DeselectSport
-          key={`my-markets-deselect-${submenuList[type].name}`}
+          key={`my-markets-deselect-${submenuListMyMarkets[type].name}`}
           type={type}
-          data={submenuList[type]}
-          isLast={index === Object.keys(submenuList).length - 1}
-          submenuList={submenuList}
+          data={submenuListMyMarkets[type]}
+          isLast={index === Object.keys(submenuListMyMarkets).length - 1}
+          submenuList={submenuListMyMarkets}
           deselectSubmenu={deselectSubmenu}
         />
       ))}
 
       {
         // Selecting Item
-        <SelectSubmenu
-          data={
-            currentSubmenu === ''
-              ? props.myMarkets
-              : submenuList[currentSubmenu].data
-          }
-          setSubmenu={setSubmenu}
-          submenuList={submenuList}
-        />
+        <SelectSubmenu data={currentSubmenuMyMarkets === '' ? myMarkets : submenuListMyMarkets[currentSubmenuMyMarkets].data} setSubmenu={setSubmenu} submenuList={submenuListMyMarkets} />
       }
     </List>
   );
@@ -156,7 +123,6 @@ const MyMarkets = (props) => {
 
 const mapStateToProps = (state) => ({
   myMarkets: state.market.myMarkets,
-  sports: state.sports,
   winMarketsOnly: state.settings.winMarketsOnly,
   horseRaces: state.settings.horseRaces,
   currentSubmenuMyMarkets: state.sports.currentSubmenuMyMarkets,
@@ -164,7 +130,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets,
+  loadMyMarkets,
+  updateSubmenuMyMarkets,
+  updateSubmenuListMyMarkets,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyMarkets);
