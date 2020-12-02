@@ -14,6 +14,8 @@ const express = require('express');
 
 const app = express();
 
+const cookieParser = require('cookie-parser');
+
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
@@ -31,6 +33,7 @@ const betfair = new BetFairSession(process.env.APP_KEY);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const Database = require('./Database/helper');
 const SQLiteDatabase = require('./Database/SQLite/database');
@@ -164,9 +167,11 @@ app.get('/api/request-access-token', async (request, response) => {
 
 app.post('/api/login', (req, res) => {
   const { user, password } = req.body;
+  console.log(req.cookies);
   betfair
     .login(user, password)
     .then(async (result) => {
+      res.cookie('sessionKey', result.sessionKey);
       // Check if user exists, if doesn't exist, then create a new user
       Database.setUser(user);
       const accessToken = await Database.getToken(betfair.email);
