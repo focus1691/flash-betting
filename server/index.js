@@ -101,7 +101,7 @@ app.post('/api/checkout', (request, result) => {
 app.get('/api/get-subscription-status', async (req, res) => {
   const { vendorId } = await new Promise((resolve, reject) => {
     betfair.getDeveloperAppKeys({ filter: {} }, (err, res) => {
-      const app = res.result.find((apps) => apps.appName === 'Flash Betting');
+      const app = res.result.find(({ appName }) => appName === 'Flash Betting');
       if (res) resolve(app.appVersions[0]);
     });
   });
@@ -121,7 +121,7 @@ app.get('/api/request-access-token', async (request, response) => {
 
   const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
     vendor.getDeveloperAppKeys({ filter: {} }, (err, res) => {
-      const app = res.result.find((apps) => apps.appName === 'Flash Betting');
+      const app = res.result.find(({ appName }) => appName === 'Flash Betting');
       if (res) resolve(app.appVersions[0]);
     });
   });
@@ -195,7 +195,6 @@ app.get('/api/logout', (req, res) => {
     .logout()
     .then((res) => {
       res.clearCookie('sessionKey');
-      console.log(req.cookies);
       res.json(res);
     })
     .catch((err) => res.json({ error: err }));

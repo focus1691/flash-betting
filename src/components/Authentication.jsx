@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 
-const Authentication = ({ onLogin }) => {
-  const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
-  const [isSubscribed, setSubscribed] = useState(null);
-  const [tokenGranted, setTokenGranted] = useState(null);
+const cookies = new Cookies();
+
+const Authentication = () => {
+  const [sessionKey] = useState(cookies.get('sessionKey'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const authenticateUser = async () => {
-      if (!cookies.sessionKey) return;
+      if (!sessionKey) return;
       const { vendorId, isSubscribed, accessToken } = await fetch('/api/get-subscription-status').then((res) => res.json());
-      setSubscribed(isSubscribed);
       if (isSubscribed === false || !accessToken) {
         window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
       } else {
@@ -21,14 +20,10 @@ const Authentication = ({ onLogin }) => {
         } = await fetch('/api/request-access-token?tokenType=REFRESH_TOKEN').then((res) => res.json());
 
         if (error) {
-          onLogin(false);
           window.location.href = `${window.location.origin}/?error=${error.data ? error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
         } else {
-          setCookie('accessToken', accessToken);
-          setCookie('refreshToken', refreshToken);
-          setCookie('expiresIn', expiresIn);
 
-          setTokenGranted(true);
+          setIsAuthenticated(true);
           window.location.href = `${window.location.origin}/dashboard`;
         }
       }
@@ -37,10 +32,11 @@ const Authentication = ({ onLogin }) => {
   }, []);
   return (
     <>
-      {tokenGranted === true && isSubscribed === true ? <Redirect to="/dashboard" /> : null}
+      {!sessionKey ? <Redirect to="/" />  : null }
+      {isAuthenticated ? <Redirect to="/dashboard" /> : null}
       <section>Redirecting...</section>
     </>
   );
 };
 
-export default connect()(Authentication);
+export default Authentication;

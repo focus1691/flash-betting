@@ -12,8 +12,3 @@ export const setTime = (time) => ({
   type: 'UPDATE_TIME',
   payload: time,
 });
-
-export const setLoggedIn = (loggedIn) => ({
-  type: 'LOG_IN',
-  payload: loggedIn,
-});

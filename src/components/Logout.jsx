@@ -1,22 +1,15 @@
-import React, { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import { setLoggedIn } from '../actions/account';
 
-const Logout = ({ loggedIn, setLoggedIn }) => {
-  const [removeCookie] = useCookies(['sessionKey', 'accessToken', 'refreshToken', 'expiresIn']);
+const Logout = () => {
+  const [loggedIn, setLoggedIn] = useState(true);
+
   useEffect(() => {
-    fetch('/api/logout')
-      .then((res) => res.json())
-      .then(() => {
-        removeCookie('sessionKey');
-        removeCookie('accessToken');
-        removeCookie('refreshToken');
-        removeCookie('expiresIn');
-
+      const logout = async () => {
+        await fetch('/api/logout');
         setLoggedIn(false);
-      });
+      };
+      logout();
   }, []);
 
   return (
@@ -27,3 +20,4 @@ const Logout = ({ loggedIn, setLoggedIn }) => {
   );
 };
 
+export default Logout;

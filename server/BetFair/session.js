@@ -91,7 +91,7 @@ class BetfairSession {
     this.email = email;
   }
 
-  login(login, password, cb = () => {}) {
+  login(login, password) {
     return new Promise((res, rej) => {
       auth.loginInteractive(login, password, (error, result) => {
         if (error) rej(error);
@@ -104,16 +104,16 @@ class BetfairSession {
     });
   }
 
-  keepAlive(cb = () => {}) {
+  keepAlive() {
     return new Promise((res, rej) => {
       auth.keepAlive(this.sessionKey, (err, result) => {
-        if (err) rej(this);
+        if (err) rej(err);
         res(result);
       });
     });
   }
 
-  logout(cb = () => {}) {
+  logout() {
     return new Promise((res, rej) => {
       auth.logout(this.sessionKey, (err, result) => {
         if (err) rej(err);

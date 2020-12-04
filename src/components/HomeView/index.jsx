@@ -1,17 +1,19 @@
+import React, { useEffect, useState } from 'react';
+import Cookies from 'universal-cookie';
+import { connect } from 'react-redux';
+//* @material-ui core
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import React, { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { connect } from 'react-redux';
 import { openPremiumDialog, setSelectedPremium } from '../../actions/settings';
 import SocketContext from '../../SocketContext';
 import Header from './Header';
 import SubscriptionContainer from './SubscriptionContainer';
 import useStyles from '../../jss/components/HomeView/homeViewStyle';
 
+const cookies = new Cookies();
+
 const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
-  const [cookies] = useCookies(['username']);
   const [data, setData] = useState({});
   const classes = useStyles({ subscribed: premiumMember });
 
@@ -32,7 +34,7 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   return (
     <div className={classes.root}>
       <div className={classes.homeView}>
-        <Header username={cookies.username} premiumMember={premiumMember} classes={classes} />
+        <Header username={cookies.get('username')} premiumMember={premiumMember} classes={classes} />
         <Divider className={classes.divider} />
         <Grid container alignItems="center">
           <Typography className={classes.subheading} variant="h5">

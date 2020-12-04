@@ -1,13 +1,9 @@
-import React, { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import { setLoggedIn } from '../actions/account';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
 
-const OAuthRedirect = ({ loggedIn, setLoggedIn }) => {
-  const [cookies, setCookie] = useCookies(['sessionKey', 'username', 'refreshToken', 'expiresIn']);
-
+const OAuthRedirect = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   useEffect(() => {
     const applyCode = async () => {
       const code = getQueryVariable('code');
@@ -18,28 +14,18 @@ const OAuthRedirect = ({ loggedIn, setLoggedIn }) => {
       } = await fetch(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`);
 
       if (error) {
-        setLoggedIn(false);
         window.location.href = `${window.location.origin}/?error=${error.data ? error.data.AccountAPINGException.errorCode : 'GENERAL_AUTH_ERROR'}`;
       } else {
-        setCookie('accessToken', accessToken);
-        setCookie('refreshToken', refreshToken);
-        setCookie('expiresIn', expiresIn);
-        setLoggedIn(true);
+        setIsAuthenticated(true);
       }
     };
     applyCode();
   }, []);
 
-  if (loggedIn) {
+  if (isAuthenticated) {
     return <Redirect to="/dashboard" />;
   }
   return (<section>Redirecting...</section>);
 };
 
-const mapStateToProps = (state) => ({
-  loggedIn: state.account.loggedIn,
-});
-
-const mapDispatchToProps = { setLoggedIn };
-
-export default connect(mapStateToProps, mapDispatchToProps)(OAuthRedirect);
+export default OAuthRedirect;

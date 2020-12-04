@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { useCookies } from 'react-cookie';
+import Cookies from 'universal-cookie';
 import useInterval from '../../utils/CustomHooks/useInterval';
 //* Actions
 import { setIsLoading, setPremiumStatus } from '../../actions/settings';
@@ -52,6 +52,8 @@ import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/Exchan
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 import GetSubscriptionErrorType from '../../utils/ErrorMessages/GetSubscriptionErrorType';
+
+const cookies = new Cookies();
 
 const ONE_SECOND = 1000;
 const TWO_HUNDRED_AND_FIFTY_MILLISECONDS = 250;
@@ -106,7 +108,6 @@ const App = ({
   setBetExecutionComplete,
   updateFillOrKillList,
 }) => {
-  const [cookies, removeCookie] = useCookies(['sessionKey', 'username', 'accessToken', 'refreshToken', 'expiresIn']);
   const [updates, setUpdates] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [initialClk, setInitialClk] = useState(null);
@@ -414,10 +415,10 @@ const App = ({
         .then((res) => res.json())
         .then(async (data) => {
           if (data.error) {
-            removeCookie('sessionKey');
-            removeCookie('accessToken');
-            removeCookie('refreshToken');
-            removeCookie('expiresIn');
+            cookies.remove('sessionKey');
+            cookies.remove('accessToken');
+            cookies.remove('refreshToken');
+            cookies.remove('expiresIn');
             window.location.href = `${window.location.origin}/?error=INVALID_SESSION_INFORMATION`;
           } else if (data.result) {
             const { marketId, marketName, marketStartTime, description, event, eventType, runners } = data.result[0];
@@ -503,10 +504,10 @@ const App = ({
   }, ONE_SECOND);
 
   useEffect(() => {
-    if (!cookies.sessionKey && !cookies.username) {
+    if (!cookies.get('sessionKey') && !cookies.get('username')) {
       window.location.href = `${window.location.origin}/?error=INVALID_SESSION_INFORMATION`;
     }
-  }, [cookies.sessionKey, cookies.username]);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
