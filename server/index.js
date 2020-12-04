@@ -167,7 +167,6 @@ app.get('/api/request-access-token', async (request, response) => {
 
 app.post('/api/login', (req, res) => {
   const { user, password } = req.body;
-  console.log(req.cookies);
   betfair
     .login(user, password)
     .then(async (result) => {
@@ -673,7 +672,6 @@ let id = 1;
 
 io.on('connection', async (client) => {
   let exchangeStream = new ExchangeStream(client);
-  console.log('new connection');
   // Subscribe to market
   client.on('market-subscription', async ({ marketId }) => {
     const accessToken = await Database.getToken(betfair.email);
