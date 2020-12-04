@@ -183,17 +183,21 @@ app.post('/api/login', (req, res) => {
 
 app.get('/api/keep-alive', (req, res) => {
   betfair
-  .keepAlive()
-  .then(async (result) => {
-    res.json(result);
-  })
-  .catch((error) => res.json({ error }));
+    .keepAlive()
+    .then(async (result) => {
+      res.json(result);
+    })
+    .catch((error) => res.json({ error }));
 });
 
 app.get('/api/logout', (req, res) => {
   betfair
     .logout()
-    .then((res) => res.json(res))
+    .then((res) => {
+      res.clearCookie('sessionKey');
+      console.log(req.cookies);
+      res.json(res);
+    })
     .catch((err) => res.json({ error: err }));
 });
 
@@ -654,7 +658,7 @@ const exitHandler = (options, exitCode) => {
 process.on('exit', exitHandler.bind(null, { cleanup: true }));
 
 // Catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, { exit: true}));
+process.on('SIGINT', exitHandler.bind(null, { exit: true }));
 
 // Catches "kill pid" (for example: nodemon restart)
 process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));

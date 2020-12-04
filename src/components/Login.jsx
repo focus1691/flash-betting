@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
-import { useCookies } from 'react-cookie';
+import Cookies from 'universal-cookie';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { setLoggedIn } from '../actions/account';
@@ -43,10 +43,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = ({ loggedIn, setLoggedIn }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'username', 'password', 'rememberMe']);
+const cookies = new Cookies();
 
-  const [rememberMe, setRememberMe] = useState(!!(cookies.rememberMe && cookies.rememberMe === 'yes'));
+const Login = ({ loggedIn, setLoggedIn }) => {
+  // const [cookies, setCookie, removeCookie] = useCookies(['sessionKey', 'username', 'password', 'rememberMe']);
+
+  const [sessionKey, setSessionKey] = useState(cookies.get('sessionKey'));
+  console.log(sessionKey);
+
+  // const [rememberMe, setRememberMe] = useState(!!(cookies.rememberMe && cookies.rememberMe === 'yes'));
+  const [rememberMe, setRememberMe] = useState(!!(cookies.get('rememberMe') && cookies.get('rememberMe') === 'yes'));
 
   const classes = useStyles();
 
@@ -55,40 +61,45 @@ const Login = ({ loggedIn, setLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = e.currentTarget;
-    const response = await fetch('/api/login', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({ user: email.value, password: password.value }),
-    });
-    const data = await response.json();
-    const { error, sessionKey } = data;
+    // const response = await fetch('/api/login', {
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   method: 'POST',
+    //   body: JSON.stringify({ user: email.value, password: password.value }),
+    // });
+    // const data = await response.json();
+    // const { error, sessionKey } = data;
 
-    if (error) {
-      removeCookie('sessionKey');
-      removeCookie('username');
-      removeCookie('password');
-      setCookie('rememberMe', 'no');
-      setRememberMe(false);
+    const data = await (await fetch('/api/logout')).json();
 
-      window.location.href = `${window.location.origin}/?error=${error || 'GENERAL_AUTH_ERROR'}`;
+    console.log(cookies.get('sessionKey'), data);
+
+    if (false) {
+      cookies.remove('sessionKey');
+      // removeCookie('sessionKey');
+      // removeCookie('username');
+      // removeCookie('password');
+      // setCookie('rememberMe', 'no');
+      // setRememberMe(false);
+
+      window.location.href = `${window.location.origin}/?error=${1 || 'GENERAL_AUTH_ERROR'}`;
     } else {
-      setCookie('sessionKey', sessionKey);
-      setCookie('username', email.value);
-      setCookie('password', password.value);
-      setCookie('rememberMe', 'yes');
+      // setCookie('sessionKey', sessionKey);
+      // setCookie('username', email.value);
+      // setCookie('password', password.value);
+      // setCookie('rememberMe', 'yes');
 
-      setRememberMe(true);
+      // setRememberMe(true);
 
-      setLoggedIn(true);
+      // setLoggedIn(true);
     }
   };
 
   return (
     <>
-      {loggedIn && cookies.sessionKey ? <Redirect to="/authentication" /> : null}
+      {loggedIn && sessionKey ? <Redirect to="/authentication" /> : null}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>

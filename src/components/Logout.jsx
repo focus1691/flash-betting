@@ -27,10 +27,3 @@ const Logout = ({ loggedIn, setLoggedIn }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  loggedIn: state.account.loggedIn,
-});
-
-const mapDispatchToProps = { setLoggedIn };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Logout);
