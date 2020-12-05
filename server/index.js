@@ -34,6 +34,12 @@ const betfair = new BetFairSession(process.env.APP_KEY);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use('/', (req, res, next) => {
+  if (!betfair.sessionKey && req.cookies.sessionKey) {
+    betfair.setSession(req.cookies.sessionKey)
+  }
+  next();
+});
 
 const Database = require('./Database/helper');
 const SQLiteDatabase = require('./Database/SQLite/database');

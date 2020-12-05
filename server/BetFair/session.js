@@ -77,7 +77,7 @@ class BetfairSession {
     this.createApiMethods('scores', API_SCORES_METHODS);
   }
 
-  setActiveSession(sessionKey) {
+  setSession(sessionKey) {
     this.sessionKey = sessionKey;
     BetfairInvocation.setSessionKey(sessionKey);
   }
@@ -96,7 +96,7 @@ class BetfairSession {
       auth.loginInteractive(login, password, (error, result) => {
         if (error) rej(error);
         if (result) {
-          this.setActiveSession(result.sessionKey);
+          this.setSession(result.sessionKey);
           this.setEmailAddress(login);
         }
         res(result);
