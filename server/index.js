@@ -35,9 +35,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/', (req, res, next) => {
+  if (!betfair.email && req.cookies.username) {
+    console.log('1111111111111111111111');
+    betfair.setEmailAddress(req.cookies.username);
+  }
+
+  else if (!betfair.email && !req.cookies.username) {
+    console.log('222222222222222222');
+    // res.cookie('sessionKey', result.sessionKey);
+    return res.json({ error: 'Not logged in' });
+  }
+
   if (!betfair.sessionKey && req.cookies.sessionKey) {
+    console.log('3333333333333');
     betfair.setSession(req.cookies.sessionKey)
   }
+  betfair.setSession('adaad');
   next();
 });
 
@@ -177,6 +190,7 @@ app.post('/api/login', (req, res) => {
     .login(user, password)
     .then(async (result) => {
       res.cookie('sessionKey', result.sessionKey);
+      res.cookie('username', user);
       // Check if user exists, if doesn't exist, then create a new user
       Database.setUser(user);
       const accessToken = await Database.getToken(betfair.email);
@@ -200,6 +214,7 @@ app.get('/api/logout', (req, res) => {
     .logout()
     .then((res) => {
       res.clearCookie('sessionKey');
+      res.clearCookie('username');
       res.json(res);
     })
     .catch((err) => res.json({ error: err }));
@@ -217,16 +232,17 @@ app.get('/api/get-account-balance', (request, response) => {
 });
 
 app.get('/api/get-account-details', (request, response) => {
-  betfair.getAccountDetails({ filter: {} }, (err, res) => {
-    if (res.error) response.status(400).json(res);
-    else {
+  betfair.getAccountDetails({ filter: {} }, (error, res) => {
+    // if (res.error) response.status(400).json(res);
+    if (res.error) {
+      return response.status(400).json({ error });
+    }
       response.json({
         name: res.result.firstName,
         countryCode: res.result.countryCode,
         currencyCode: res.result.currencyCode,
         localeCode: res.result.localeCode,
       });
-    }
   });
 });
 
@@ -234,7 +250,7 @@ app.get('/api/get-events-with-active-bets', (request, response) => {
   betfair.listCurrentOrders({ filter: {} }, async (err, res) => {
     if (!res.result) return response.json([]);
 
-    const filteredOrders = _.uniq(res.result.currentOrders.map((order) => order.marketId));
+    const filteredOrders = _.uniq(res.result.currentOrders.map((order) => order));
 
     if (filteredOrders <= 0) return response.json([]);
 
@@ -253,7 +269,6 @@ app.get('/api/get-events-with-active-bets', (request, response) => {
 });
 
 app.get('/api/premium-status', (request, response) => {
-  if (!betfair.email) return response.json({ error: 'Not logged in' });
   Database.getPremiumStatus(betfair.email).then((expiryDate) => {
     response.json({ expiryDate });
   });
