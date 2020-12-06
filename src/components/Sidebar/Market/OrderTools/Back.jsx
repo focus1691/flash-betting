@@ -174,11 +174,11 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <TextField id="standard-number" className={classes.textField2} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={setHours()} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={setMinutes()} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={setSeconds()} margin="normal" />
+        <TextField id="standard-number" className={classes.textField2} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={() => setHours()} margin="normal" />
+        <TextField id="standard-number" className={classes.textField2} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setMinutes()} margin="normal" />
+        <TextField id="standard-number" className={classes.textField2} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setSeconds()} margin="normal" />
 
-        <RadioGroup aria-label="orderexecution" name="orderexecution" value={executionTime} onChange={toggleExecutionTime()}>
+        <RadioGroup aria-label="orderexecution" name="orderexecution" value={executionTime} onChange={() => toggleExecutionTime()}>
           <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>-</span>} />
 
           <FormControlLabel value="After" control={<Radio color="primary" />} label="+" />
