@@ -37,7 +37,6 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [step, setStep] = useState(findPriceStep(price));
-
   // Change the text when the fields change
   useEffect(() => {
     setDisplayText(`${stake} @ ${price}`);
@@ -153,7 +152,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
       </StyledMenu>
 
       <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <TextField id="standard-number" className={classes.textField} type="number" label="stake" value={stake} inputProps={{ min: '1', style: { fontSize: 10 } }} onChange={setStake()} margin="normal" />
+        <TextField id="standard-number" className={classes.textField} type="number" label="stake" value={stake} inputProps={{ min: '1', style: { fontSize: 10 } }} onChange={(e) => setStake(e.target.value)} margin="normal" />
         <TextField
           id="standard-number"
           className={classes.textField}
