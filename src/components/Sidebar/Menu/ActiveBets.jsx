@@ -19,6 +19,7 @@ const ActiveBets = () => {
       .then((res) => res.json())
       .then((data) => setEvents(data || []));
   }, []);
+  console.log(events);
 
   return (
     <List>

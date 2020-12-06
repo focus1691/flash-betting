@@ -1,6 +1,6 @@
 import AppBar from '@material-ui/core/AppBar';
-import MultiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MultiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import MultiAccordion from '@material-ui/core/Accordion';
+import MultiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
@@ -11,7 +11,7 @@ import ActiveBets from './ActiveBets';
 import AllSports from './AllSports';
 import MyMarkets from './MyMarkets';
 
-const ExpansionPanel = withStyles({
+const Accordion = withStyles({
   root: {
     border: '1px solid #fff',
     boxShadow: 'none',
@@ -26,9 +26,9 @@ const ExpansionPanel = withStyles({
     display: 'block',
   },
   expanded: {},
-})(MultiExpansionPanel);
+})(MultiAccordion);
 
-const ExpansionPanelSummary = withStyles({
+const AccordionSummary = withStyles({
   root: {
     zIndex: '1',
     '&$expanded': {
@@ -38,7 +38,7 @@ const ExpansionPanelSummary = withStyles({
   expanded: {
     minHeight: '0px',
   },
-})(MultiExpansionPanelSummary);
+})(MultiAccordionSummary);
 
 const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const [expanded, setExpanded] = useState('my_markets');
@@ -57,10 +57,10 @@ const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets,
     setExpanded(newExpanded ? tab : false);
   };
 
-  const createExpansionPanelSummary = (name) => (
-    <ExpansionPanelSummary aria-controls="panel1a-content" id="panel1a-header">
+  const createAccordionSummary = (name) => (
+    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
       {createTitle(name)}
-    </ExpansionPanelSummary>
+    </AccordionSummary>
   );
 
   const createTitle = (name, position) => (
@@ -73,20 +73,20 @@ const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets,
 
   return (
     <>
-      <ExpansionPanel expanded={expanded === 'my_markets'} onChange={handleChange('my_markets')}>
-        {createExpansionPanelSummary('My Markets')}
+      <Accordion expanded={expanded === 'my_markets'} onChange={handleChange('my_markets')}>
+        {createAccordionSummary('My Markets')}
         <MyMarkets />
-      </ExpansionPanel>
+      </Accordion>
 
-      <ExpansionPanel expanded={expanded === 'all_sports'} onChange={handleChange('all_sports')}>
-        {createExpansionPanelSummary('All Sports')}
+      <Accordion expanded={expanded === 'all_sports'} onChange={handleChange('all_sports')}>
+        {createAccordionSummary('All Sports')}
         <AllSports />
-      </ExpansionPanel>
+      </Accordion>
 
-      <ExpansionPanel expanded={expanded === 'active_bets'} onChange={handleChange('active_bets')}>
-        {createExpansionPanelSummary('Active Bets')}
+      <Accordion expanded={expanded === 'active_bets'} onChange={handleChange('active_bets')}>
+        {createAccordionSummary('Active Bets')}
         <ActiveBets />
-      </ExpansionPanel>
+      </Accordion>
     </>
   );
 };

@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* MUI Core
 import AppBar from '@material-ui/core/AppBar';
-import MultiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MultiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import MultiAccordion from '@material-ui/core/Accordion';
+import MultiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 //* Actions
@@ -26,7 +26,7 @@ import UnmatchedBets from './UnmatchedBets/UnmatchedBets';
 import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
 import { sortLadder } from '../../../utils/ladder/SortLadder';
 
-const ExpansionPanel = withStyles({
+const Accordion = withStyles({
   root: {
     border: '1px solid #fff',
     boxShadow: 'none',
@@ -36,9 +36,9 @@ const ExpansionPanel = withStyles({
     },
   },
   expanded: {},
-})(MultiExpansionPanel);
+})(MultiAccordion);
 
-const ExpansionPanelSummary = withStyles({
+const AccordionSummary = withStyles({
   root: {
     zIndex: '1',
     '&$expanded': {
@@ -48,7 +48,7 @@ const ExpansionPanelSummary = withStyles({
   expanded: {
     minHeight: '0px',
   },
-})(MultiExpansionPanelSummary);
+})(MultiAccordionSummary);
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -145,14 +145,14 @@ const Market = ({
     </AppBar>
   );
 
-  const createExpansionPanelSummary = (name) => (
-    <ExpansionPanelSummary aria-controls={`${name}-content`} id={`${name}-header`}>
+  const createAccordionSummary = (name) => (
+    <AccordionSummary aria-controls={`${name}-content`} id={`${name}-header`}>
       {renderTitle(name)}
-    </ExpansionPanelSummary>
+    </AccordionSummary>
   );
 
-  const createExpansionPanelSummaryLadders = (name) => (
-    <ExpansionPanelSummary aria-controls={`${name}-content`} id={`${name}-header`}>
+  const createAccordionSummaryLadders = (name) => (
+    <AccordionSummary aria-controls={`${name}-content`} id={`${name}-header`}>
       <AppBar className={classes.appBar} position="absolute">
         <Typography variant="h6" className={classes.title}>
           {name}
@@ -173,11 +173,11 @@ const Market = ({
           </button>
         </Typography>
       </AppBar>
-    </ExpansionPanelSummary>
+    </AccordionSummary>
   );
 
-  const createExpansionPanelSummaryUnmatchedBets = (name) => (
-    <ExpansionPanelSummary aria-controls="unmatched-bets-content" id="unmatched-bets-header">
+  const createAccordionSummaryUnmatchedBets = (name) => (
+    <AccordionSummary aria-controls="unmatched-bets-content" id="unmatched-bets-header">
       <AppBar className={classes.appBar} position="absolute">
         <Typography variant="h6" className={classes.title}>
           {name}
@@ -198,56 +198,56 @@ const Market = ({
           </button>
         </Typography>
       </AppBar>
-    </ExpansionPanelSummary>
+    </AccordionSummary>
   );
 
   return (
     <>
-      <ExpansionPanel expanded={laddersExpanded} onChange={(e) => setLaddersExpanded(!laddersExpanded)}>
-        {createExpansionPanelSummaryLadders('Ladders')}
+      <Accordion expanded={laddersExpanded} onChange={(e) => setLaddersExpanded(!laddersExpanded)}>
+        {createAccordionSummaryLadders('Ladders')}
         <Ladders />
-      </ExpansionPanel>
+      </Accordion>
 
       {tools.visible ? (
-        <ExpansionPanel expanded={toolsExpanded} onChange={(e) => setToolsExpanded(!toolsExpanded)}>
-          {createExpansionPanelSummary('Tools')}
+        <Accordion expanded={toolsExpanded} onChange={(e) => setToolsExpanded(!toolsExpanded)}>
+          {createAccordionSummary('Tools')}
           <Tools />
-        </ExpansionPanel>
+        </Accordion>
       ) : null}
 
       {unmatchedBets.visible ? (
-        <ExpansionPanel expanded={unmatchedBetsExpanded} onChange={(e) => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
-          {createExpansionPanelSummaryUnmatchedBets('Unmatched Bets')}
+        <Accordion expanded={unmatchedBetsExpanded} onChange={(e) => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
+          {createAccordionSummaryUnmatchedBets('Unmatched Bets')}
           <UnmatchedBets />
-        </ExpansionPanel>
+        </Accordion>
       ) : null}
 
       {matchedBets.visible ? (
-        <ExpansionPanel expanded={matchedBetsExpanded} onChange={(e) => setMatchedBetsExpanded(!matchedBetsExpanded)}>
-          {createExpansionPanelSummary('Matched Bets')}
+        <Accordion expanded={matchedBetsExpanded} onChange={(e) => setMatchedBetsExpanded(!matchedBetsExpanded)}>
+          {createAccordionSummary('Matched Bets')}
           <MatchedBets />
-        </ExpansionPanel>
+        </Accordion>
       ) : null}
 
       {graphs.visible ? (
-        <ExpansionPanel expanded={graphExpanded} onChange={(e) => setGraphExpanded(!graphExpanded)}>
-          {createExpansionPanelSummary('Graphs')}
+        <Accordion expanded={graphExpanded} onChange={(e) => setGraphExpanded(!graphExpanded)}>
+          {createAccordionSummary('Graphs')}
           <Graph />
-        </ExpansionPanel>
+        </Accordion>
       ) : null}
 
       {marketInfo.visible ? (
-        <ExpansionPanel expanded={marketInfoExpanded} onChange={(e) => setMarketInfoExpanded(!marketInfoExpanded)}>
-          {createExpansionPanelSummary('Market Information')}
+        <Accordion expanded={marketInfoExpanded} onChange={(e) => setMarketInfoExpanded(!marketInfoExpanded)}>
+          {createAccordionSummary('Market Information')}
           <MarketInfo />
-        </ExpansionPanel>
+        </Accordion>
       ) : null}
 
       {rules.visible ? (
-        <ExpansionPanel expanded={rulesExpanded} onChange={(e) => setRulesExpanded(!rulesExpanded)}>
-          {createExpansionPanelSummary('Rules')}
+        <Accordion expanded={rulesExpanded} onChange={(e) => setRulesExpanded(!rulesExpanded)}>
+          {createAccordionSummary('Rules')}
           <Rules />
-        </ExpansionPanel>
+        </Accordion>
       ) : null}
     </>
   );
