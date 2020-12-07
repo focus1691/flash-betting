@@ -8,7 +8,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { getErrorMessage } from '../utils/ErrorMessages/AccountErrors';
+import authErrors from '../utils/ErrorMessages/Auth';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 const cookies = new Cookies();
 
 const Login = () => {
-  const [error, setError] = useState(getQueryVariable('error'));
+  const [error, setError] = useState(authErrors[getQueryVariable('error')] || '');
   const [sessionKey, setSessionKey] = useState(cookies.get('sessionKey'));
 
   const classes = useStyles();
@@ -64,9 +64,10 @@ const Login = () => {
     const sessionKey = (cookies.get('sessionKey'));
 
     if (error) {
-      setError(error || 'GENERAL_AUTH_ERROR');
+      setError(authErrors[error] || authErrors.GENERAL_AUTH_ERROR);
     }
     else if (cookies.get('sessionKey')) {
+      setError('');
       setSessionKey(sessionKey);
       cookies.set('username', email);
     }
@@ -93,7 +94,7 @@ const Login = () => {
               color: 'white',
             }}
           >
-            {getErrorMessage(error)}
+            {error}
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" autoFocus />

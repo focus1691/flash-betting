@@ -1,4 +1,5 @@
-const ErrorMessages = {
+/* eslint-disable max-len */
+export default {
   INVALID_INPUT_DATA: 'Invalid input data',
   INVALID_SESSION_INFORMATION: "The session token hasn't been provided, is invalid or has expired",
   INVALID_ACCESS_TOKEN: 'There is an invalid access token',
@@ -66,11 +67,3 @@ const ErrorMessages = {
   USER_SETTINGS_NOT_FOUND: "The User's Settings were not found",
   MAX_CONNECTION_LIMIT_EXCEEDED: 'The User created more connections than alloewd to',
 };
-
-const getErrorMessage = (errorCode) => {
-  if (!errorCode) return null;
-
-  return ErrorMessages[errorCode];
-};
-
-export { getErrorMessage };

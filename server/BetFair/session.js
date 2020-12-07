@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const { access } = require('fs');
 const { method } = require('lodash');
 const _ = require('lodash');
