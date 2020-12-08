@@ -37,7 +37,6 @@ export const setBetExecutionComplete = (data) => ({
 
 export const executeBet = async (bet) => {
   bet.size = parseFloat(bet.size).toFixed(2);
-
   const PlaceExecutionReport = await fetch('/api/place-order', {
     headers: {
       Accept: 'application/json',

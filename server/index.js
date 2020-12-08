@@ -582,12 +582,12 @@ app.post('/api/place-order', (req, res) => {
       ],
       customerStrategyRef: req.body.customerStrategyRef,
     },
-    (err, result) => {
-      if (result.error)
+    (err, { error, result }) => {
+      if (error)
         return res.json({
-          error: result.error,
+          error,
         });
-      return res.json(res.result);
+      return res.json(result);
     },
   );
 });
@@ -604,12 +604,12 @@ app.post('/api/update-orders', (req, res) => {
       ],
       customerStrategyRef: req.body.customerStrategyRef,
     },
-    (err, result) => {
-      if (result.error)
+    (err, { error, result }) => {
+      if (error)
         return res.json({
-          error: result.error,
+          error,
         });
-      return res.json(res.result);
+      return res.json(result);
     },
   );
 });
@@ -625,12 +625,12 @@ app.post('/api/replace-orders', (req, res) => {
         },
       ],
     },
-    (err, result) => {
-      if (result.error)
+    (err, { error, result }) => {
+      if (error)
         return res.json({
-          error: result.error,
+          error,
         });
-      return res.json(res.result);
+      return res.json(result);
     },
   );
 });
@@ -657,12 +657,12 @@ app.get('/api/list-order-to-duplicate', (req, res) => {
       OrderProjection: 'EXECUTABLE',
       SortDir: 'LATEST_TO_EARLIEST',
     },
-    (err, result) => {
-      if (result.error)
+    (err, { error, result }) => {
+      if (error)
         return res.json({
-          error: result.error,
+          error,
         });
-      return res.json(res.result);
+      return res.json(result);
     },
   );
 });
@@ -678,12 +678,12 @@ app.post('/api/cancel-order', (req, res) => {
         },
       ],
     },
-    (err, result) => {
-      if (result.error)
+    (err, { error , result }) => {
+      if (error)
         return res.json({
-          error: result.error,
+          error,
         });
-      return res.json(res.result);
+      return res.json(result);
     },
   );
 });
