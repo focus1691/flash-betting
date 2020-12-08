@@ -8,7 +8,7 @@ import { removeLayBet } from '../../actions/lay';
 import { removeFillOrKill } from '../../actions/fillOrKill';
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { setPastEventTime } from '../../actions/market';
-import { removeBet } from '../../http/helper';
+import { removeBet } from '../../http/dbHelper';
 import { checkBackBets, checkLayBets } from '../../utils/TradingStategy/BackLay';
 import { countDownTime } from '../../utils/Market/CountDown';
 import { msToHMS } from '../../utils/DateCalculator';

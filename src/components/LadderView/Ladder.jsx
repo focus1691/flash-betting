@@ -23,7 +23,7 @@ import LadderRow from './Rows/LadderRow';
 import OrderRow from './Rows/OrderRow/OrderRow';
 import PercentageRow from './Rows/PercentageRow/PercentageRow';
 import PriceRow from './Rows/PriceRow';
-import { saveBet } from '../../http/helper';
+import { saveBet } from '../../http/dbHelper';
 
 const isMoving = (prevProps, nextProps) => nextProps.draggingLadder === nextProps.selectionId && prevProps.order === nextProps.order;
 

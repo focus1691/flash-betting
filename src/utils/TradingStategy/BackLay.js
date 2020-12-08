@@ -1,5 +1,5 @@
 import { secToMin } from '../DateCalculator';
-import { removeBet } from '../../http/helper';
+import { removeBet } from '../../http/dbHelper';
 
 const isBetBeforeMarketReady = (marketStartTime, order) => {
   const remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);

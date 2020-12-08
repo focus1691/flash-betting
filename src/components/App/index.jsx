@@ -42,7 +42,9 @@ import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
-import { removeBet, updateTicks, updateOrderMatched, getBetFairBets, saveRunnerNames } from '../../http/helper';
+//* HTTP
+import fetchData from '../../http/fetchData';
+import { removeBet, updateTicks, updateOrderMatched, getBetFairBets, saveRunnerNames, getAllBets } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
@@ -51,7 +53,7 @@ import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/ExchangeStreaming/OCMHelper';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
-import GetSubscriptionErrorType from '../../utils/ErrorMessages/GetSubscriptionErrorType';
+import GetSubscriptionErrorType from '../../utils/Errors/GetSubscriptionErrorType';
 
 const cookies = new Cookies();
 
@@ -115,14 +117,9 @@ const App = ({
   const [connectionId, setConnectionId] = useState('');
   const [connectionError, setConnectionError] = useState('');
 
-  const loadSettings = async () => {
-    const { error, expiryDate } = await fetch('/api/premium-status')
-      .then((res) => res.json());
-      if (error) {
-        window.location.href = `${window.location.origin}`;
-      } else {
-        setPremiumStatus(isPremiumActive(new Date(), expiryDate));
-      }
+  const getPremiumStatus = async () => {
+    const expiryDate = await fetchData('/api/premium-status');
+    setPremiumStatus(isPremiumActive(new Date(), expiryDate));
   };
 
   const retrieveBets = async () => {
@@ -411,89 +408,72 @@ const App = ({
     // Check if the page has query parameter 'marketId'
     // Load the market if found
     if (marketId) {
-      await fetch(`/api/get-market-info?marketId=${marketId}`)
-        .then((res) => res.json())
-        .then(async (data) => {
-          if (data.error) {
-            cookies.remove('sessionKey');
-            cookies.remove('accessToken');
-            cookies.remove('refreshToken');
-            cookies.remove('expiresIn');
-            window.location.href = `${window.location.origin}/?error=INVALID_SESSION_INFORMATION`;
-          } else if (data.result) {
-            const { marketId, marketName, marketStartTime, description, event, eventType, runners } = data.result[0];
-            setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
-            setMarketId(marketId);
-            setMarketName(marketName);
-            setMarketDescription(description);
-            setMarketStartTime(marketStartTime);
-            setEvent(event);
-            setEventType(eventType);
-            loadRunners(CreateRunners(runners));
-            setRunner(runners[0]);
-            const selectionNames = {};
+      const result = await fetchData(`/api/get-market-info?marketId=${marketId}`);
+      if (result) {
+        const { marketId, marketName, marketStartTime, description, event, eventType, runners } = result[0];
+        setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
+        setMarketId(marketId);
+        setMarketName(marketName);
+        setMarketDescription(description);
+        setMarketStartTime(marketStartTime);
+        setEvent(event);
+        setEventType(eventType);
+        loadRunners(CreateRunners(runners));
+        setRunner(runners[0]);
+        const selectionNames = {};
 
-            const runnerIds = Object.keys(runners);
+        const runnerIds = Object.keys(runners);
 
-            for (let i = 0; i < runnerIds.length; i += 1) {
-              selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
+        for (let i = 0; i < runnerIds.length; i += 1) {
+          selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
+        }
+
+        saveRunnerNames(marketId, selectionNames);
+
+        //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+        socket.emit('market-subscription', { marketId });
+
+        const loadedBackOrders = {};
+        const loadedLayOrders = {};
+        const loadedStopEntryOrders = {};
+        const loadedTickOffsetOrders = {};
+        const loadedFillOrKillOrders = {};
+        const loadedStopLossOrders = {};
+
+        const bets = await getAllBets(marketId);
+        bets.map(async (bet) => {
+          if (bet.marketId === marketId) {
+            switch (bet.strategy) {
+              case 'Back':
+                loadedBackOrders[bet.selectionId] = loadedBackOrders[bet.selectionId] ? loadedBackOrders[bet.selectionId].concat(bet) : [bet];
+                break;
+              case 'Lay':
+                loadedLayOrders[bet.selectionId] = loadedLayOrders[bet.selectionId] ? loadedLayOrders[bet.selectionId].concat(bet) : [bet];
+                break;
+              case 'Stop Entry':
+                loadedStopEntryOrders[bet.selectionId] = loadedStopEntryOrders[bet.selectionId] ? loadedStopEntryOrders[bet.selectionId].concat(bet) : [bet];
+                break;
+              case 'Tick Offset':
+                loadedTickOffsetOrders[bet.selectionId] = bet;
+                break;
+              case 'Fill Or Kill':
+                loadedFillOrKillOrders[bet.betId] = bet;
+                break;
+              case 'Stop Loss':
+                loadedStopLossOrders[bet.selectionId] = bet;
+                break;
+              default:
+                break;
             }
-
-            saveRunnerNames(marketId, selectionNames);
-
-            //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
-            socket.emit('market-subscription', { marketId });
-
-            const loadedBackOrders = {};
-            const loadedLayOrders = {};
-            const loadedStopEntryOrders = {};
-            const loadedTickOffsetOrders = {};
-            const loadedFillOrKillOrders = {};
-            const loadedStopLossOrders = {};
-
-            await fetch(`/api/get-all-bets?marketId=${encodeURIComponent(marketId)}`)
-              .then((res) => res.json())
-              .then(async (bets) => {
-                const loadOrders = async (bets) => {
-                  bets.map(async (bet) => {
-                    if (bet.marketId === marketId) {
-                      switch (bet.strategy) {
-                        case 'Back':
-                          loadedBackOrders[bet.selectionId] = loadedBackOrders[bet.selectionId] ? loadedBackOrders[bet.selectionId].concat(bet) : [bet];
-                          break;
-                        case 'Lay':
-                          loadedLayOrders[bet.selectionId] = loadedLayOrders[bet.selectionId] ? loadedLayOrders[bet.selectionId].concat(bet) : [bet];
-                          break;
-                        case 'Stop Entry':
-                          loadedStopEntryOrders[bet.selectionId] = loadedStopEntryOrders[bet.selectionId] ? loadedStopEntryOrders[bet.selectionId].concat(bet) : [bet];
-                          break;
-                        case 'Tick Offset':
-                          loadedTickOffsetOrders[bet.selectionId] = bet;
-                          break;
-                        case 'Fill Or Kill':
-                          loadedFillOrKillOrders[bet.betId] = bet;
-                          break;
-                        case 'Stop Loss':
-                          loadedStopLossOrders[bet.selectionId] = bet;
-                          break;
-                        default:
-                          break;
-                      }
-                    }
-                  });
-                };
-                await loadOrders(bets);
-              })
-              .then(() => {
-                updateBackList(loadedBackOrders);
-                updateLayList(loadedLayOrders);
-                updateStopEntryList(loadedStopEntryOrders);
-                updateTickOffsetList(loadedTickOffsetOrders);
-                updateFillOrKillList(loadedFillOrKillOrders);
-                updateStopLossList(loadedStopLossOrders);
-              });
           }
         });
+        updateBackList(loadedBackOrders);
+        updateLayList(loadedLayOrders);
+        updateStopEntryList(loadedStopEntryOrders);
+        updateTickOffsetList(loadedTickOffsetOrders);
+        updateFillOrKillList(loadedFillOrKillOrders);
+        updateStopLossList(loadedStopLossOrders);
+      }
     }
   };
   useInterval(() => {
@@ -504,14 +484,8 @@ const App = ({
   }, ONE_SECOND);
 
   useEffect(() => {
-    if (!cookies.get('sessionKey') && !cookies.get('username')) {
-      window.location.href = `${window.location.origin}/?error=INVALID_SESSION_INFORMATION`;
-    }
-  }, []);
-
-  useEffect(() => {
     const loadData = async () => {
-      await loadSettings();
+      await getPremiumStatus();
       await retrieveMarket();
       setIsLoading(false);
     };
@@ -519,12 +493,12 @@ const App = ({
   }, []);
 
   useEffect(() => {
-    // if (marketId) {
-    //   console.log('order subscription', JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')));
-    //   socket.emit('order-subscription', {
-    //     customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
-    //   });
-    // }
+    if (marketId) {
+      console.log('order subscription', JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')));
+      socket.emit('order-subscription', {
+        customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
+      });
+    }
   }, [marketId, socket, unmatchedBets]);
 
   useEffect(() => {
@@ -546,18 +520,19 @@ const App = ({
   useInterval(() => retrieveBets(), TWO_HUNDRED_AND_FIFTY_MILLISECONDS);
 
   useEffect(() => {
-    if (!marketId) return;
-    fetch(`/api/list-market-pl?marketId=${marketId}`)
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.result !== undefined && res.result[0] !== undefined) {
-          const selectionPL = res.result[0].profitAndLosses.reduce((acc, item) => {
-            acc[item.selectionId] = item.ifWin;
-            return acc;
-          }, {});
-          setMarketPL(selectionPL);
-        }
-      });
+    const listMarketPL = async () => {
+      const result = await fetchData(`/api/list-market-pl?marketId=${marketId}`);
+      if (result && result[0]) {
+        const selectionPL = result[0].profitAndLosses.reduce((acc, item) => {
+          acc[item.selectionId] = item.ifWin;
+          return acc;
+        }, {});
+        setMarketPL(selectionPL);
+      }
+    };
+    if (marketId) {
+      listMarketPL();
+    }
   }, [marketId, matchedBets, setMarketPL]);
 
   if (isLoading) return <Spinner />;

@@ -64,10 +64,16 @@ export const updateStoredStopLoss = (bet) => {
   });
 };
 
+export const getAllBets = async (marketId) => {
+  const bets = await fetch(`/api/get-all-bets?marketId=${encodeURIComponent(marketId)}`)
+    .then((res) => res.json());
+  return bets;
+};
+
 export const getBetFairBets = async (marketId) => {
   const bets = await fetch(`/api/listCurrentOrders?marketId=${marketId}`)
-  .then((res) => res.json())
-  .then((res) => res.currentOrders);
+    .then((res) => res.json())
+    .then((res) => res.currentOrders);
   return bets;
 };
 
@@ -84,7 +90,7 @@ export const replaceOrders = async (marketId, betId, newPrice) => {
       newPrice,
     }),
   })
-  .then((res) => res.json())
+    .then((res) => res.json())
   return result;
 }
 

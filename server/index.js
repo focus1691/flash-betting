@@ -39,13 +39,14 @@ app.use(
 );
 app.use(cookieParser());
 app.use('/', (req, res, next) => {
+  if (!req.cookies.username || !req.cookies.sessionKey && req.url !== '/api/login' && req.url !== '/api/logout') {
+    return res.status(401).json({
+      error: 'NO_SESSION',
+    });
+  }
+
   if (!betfair.email && req.cookies.username) {
     betfair.setEmailAddress(req.cookies.username);
-  }
-  if (!betfair.email && !req.cookies.username && req.url !== '/api/login' && req.url !== '/api/logout') {
-    return res.json({
-      error: 'Not logged in',
-    });
   }
 
   if (!betfair.sessionKey && req.cookies.sessionKey) {
@@ -330,7 +331,7 @@ app.get('/api/get-events-with-active-bets', (request, response) => {
 app.get('/api/premium-status', async (req, res) =>
   Database.getPremiumStatus(betfair.email).then((expiryDate) =>
     res.json({
-      expiryDate,
+      result: expiryDate,
     }),
   ),
 );
@@ -511,10 +512,10 @@ app.get('/api/list-market-pl', (req, res) => {
     {
       marketIds: [req.query.marketId],
     },
-    (err, result) => {
+    (err, { error, result }) => {
       if (result.error)
         return res.json({
-          error: result.error,
+          error,
         });
       return res.json(result);
     },
@@ -530,10 +531,10 @@ app.get('/api/get-market-info', (req, res) => {
       marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME', 'MARKET_DESCRIPTION', 'RUNNER_DESCRIPTION', 'RUNNER_METADATA'],
       maxResults: 1,
     },
-    (err, result) => {
-      if (result.error)
+    (err, { result, error }) => {
+      if (error)
         return res.json({
-          error: result.error,
+          error,
         });
       return res.json(result);
     },

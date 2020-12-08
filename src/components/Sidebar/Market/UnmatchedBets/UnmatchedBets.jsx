@@ -12,7 +12,7 @@ import { removeFillOrKill } from '../../../../actions/fillOrKill';
 import { getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
 import { getPriceNTicksAway } from '../../../../utils/ladder/CreateFullLadder';
-import { removeBet, replaceOrders, updatePrice } from '../../../../http/helper';
+import { removeBet, replaceOrders, updatePrice } from '../../../../http/dbHelper';
 import Bet from './Bet';
 
 const UnmatchedBets = ({

@@ -14,7 +14,7 @@ import { UnmatchedBet } from './UnmatchedBet';
 //* Selectors
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
-import { removeBet } from '../../../../http/helper';
+import { removeBet } from '../../../../http/dbHelper';
 
 const OrderRow = memo(
   ({
