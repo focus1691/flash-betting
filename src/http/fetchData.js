@@ -1,8 +1,9 @@
 import { authErrors } from '../utils/Errors/ErrorTypes';
 
-export default async (endpoint,) => {
+export default async (endpoint) => {
 
   const { result, error } = await fetch(endpoint).then((res) => res.json());
+  console.log(result);
 
   if (error) {
     let errorCode = '';

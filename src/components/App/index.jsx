@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import Cookies from 'universal-cookie';
 import useInterval from '../../utils/CustomHooks/useInterval';
 //* Actions
 import { setIsLoading, setPremiumStatus } from '../../actions/settings';
@@ -38,14 +37,15 @@ import HomeView from '../HomeView';
 import Views from '../Views';
 import SocketContext from '../../SocketContext';
 import Title from './Title';
-import getQueryVariable from '../../utils/Market/GetQueryVariable';
-import { CreateRunners } from '../../utils/Market/CreateRunners';
-import { isPremiumActive } from '../../utils/DateCalculator';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
 import { removeBet, updateTicks, updateOrderMatched, getBetFairBets, saveRunnerNames, getAllBets } from '../../http/dbHelper';
 import Draggable from '../Draggable';
+//* Utils
+import getQueryVariable from '../../utils/Market/GetQueryVariable';
+import { CreateRunners } from '../../utils/Market/CreateRunners';
+import { isPremiumActive } from '../../utils/DateCalculator';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { stopEntryListChange, stopLossCheck } from '../../utils/ExchangeStreaming/MCMHelper';
@@ -54,11 +54,8 @@ import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/Exchan
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 import GetSubscriptionErrorType from '../../utils/Errors/GetSubscriptionErrorType';
-
-const cookies = new Cookies();
-
-const ONE_SECOND = 1000;
-const TWO_HUNDRED_AND_FIFTY_MILLISECONDS = 250;
+//* Constants
+import { ONE_SECOND, TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../../constants'
 
 const App = ({
   view,
@@ -493,12 +490,12 @@ const App = ({
   }, []);
 
   useEffect(() => {
-    if (marketId) {
-      console.log('order subscription', JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')));
-      socket.emit('order-subscription', {
-        customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
-      });
-    }
+    // if (marketId) {
+    //   console.log('order subscription', JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')));
+    //   socket.emit('order-subscription', {
+    //     customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
+    //   });
+    // }
   }, [marketId, socket, unmatchedBets]);
 
   useEffect(() => {

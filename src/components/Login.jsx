@@ -69,7 +69,6 @@ const Login = () => {
     else if (cookies.get('sessionKey')) {
       setError('');
       setSessionKey(sessionKey);
-      cookies.set('username', email);
     }
   };
 

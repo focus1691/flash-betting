@@ -422,12 +422,13 @@ app.get('/api/get-all-sports', (req, res) => {
     {
       filter: {},
     },
-    (error, result) => {
-      if (result.error)
+    (err, { error, result }) => {
+      if (error) {
         return res.sendStatus(400).json({
-          error: result.error,
+          error,
         });
-      return res.json(res.result);
+      }
+      return res.json(result);
     },
   );
 });
@@ -541,7 +542,7 @@ app.get('/api/get-market-info', (req, res) => {
         return res.json({
           error,
         });
-      return res.json(result);
+      return res.json({ result });
     },
   );
 });
