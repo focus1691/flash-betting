@@ -634,12 +634,12 @@ app.get('/api/listCurrentOrders', (req, res) => {
     {
       marketIds: [req.query.marketId],
     },
-    (err, result) => {
+    (err, { error, result }) => {
       if (result.error)
         return res.json({
-          error: result.error,
+          error,
         });
-      return res.json(res.result);
+      return res.json(result);
     },
   );
 });
