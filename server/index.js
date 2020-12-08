@@ -39,18 +39,23 @@ app.use(
 );
 app.use(cookieParser());
 app.use('/', (req, res, next) => {
-  if (!req.cookies.username || !req.cookies.sessionKey && req.url !== '/api/login' && req.url !== '/api/logout') {
+  if (!betfair.email && req.cookies.username) {
+    betfair.setEmailAddress(req.cookies.username);
+  }
+  if (!req.cookies.username && req.url !== '/api/login' && req.url !== '/api/logout') {
     return res.status(401).json({
       error: 'NO_SESSION',
     });
   }
 
-  if (!betfair.email && req.cookies.username) {
-    betfair.setEmailAddress(req.cookies.username);
-  }
-
   if (!betfair.sessionKey && req.cookies.sessionKey) {
     betfair.setSession(req.cookies.sessionKey);
+  }
+
+  if (!req.cookies.sessionKey && req.url !== '/api/login' && req.url !== '/api/logout') {
+    return res.status(401).json({
+      error: 'NO_SESSION',
+    });
   }
   next();
 });
