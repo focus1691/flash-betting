@@ -79,7 +79,7 @@ export const executeReduceSize = async (bet) => {
   return cancelOrder && cancelOrder.status === 'SUCCESS';
 };
 
-export const placeOrder = async (bet) => {
+export const placeOrder = (bet) => {
   bet.size = bet.side === 'LAY' ? calcLayBet(bet.price, bet.size).liability : parseFloat(bet.size);
   bet.price = parseFloat(bet.price);
 
