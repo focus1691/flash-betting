@@ -5,11 +5,11 @@ const decoder = new StringDecoder('utf8');
 const tls = require('tls');
 
 class BetFairStreamAPI {
-  constructor(openSocket) {
+  constructor(client) {
     this.awaitingAuthentication = false;
     this.connectionClosed = true;
     this.client = null;
-    this.openSocket = openSocket;
+    this.client = client;
     this.bufferedStr = '';
     this.chunks = [];
     this.subscriptions = [];
@@ -53,12 +53,12 @@ class BetFairStreamAPI {
               const {
                 connectionClosed, errorCode, errorMessage, statusCode,
               } = result;
-              this.openSocket.emit('subscription-error', {
+              this.client.emit('subscription-error', {
                 connectionClosed, errorCode, errorMessage, statusCode,
               });
             } else {
               this.subscriptions.forEach(((subscription) => this.client.write(subscription)));
-              this.openSocket.emit('connection-id', result.connectionId);
+              this.client.emit('connection-id', result.connectionId);
             }
             this.subscriptions = [];
           }
@@ -66,13 +66,13 @@ class BetFairStreamAPI {
           // Market Change Message Data Found
           if (result.op === 'mcm' && result.mc) {
             if (result.mc[0].marketDefinition) {
-              this.openSocket.emit('market-definition', result.mc[0].marketDefinition);
+              this.client.emit('market-definition', result.mc[0].marketDefinition);
             }
-            this.openSocket.emit('mcm', result);
+            this.client.emit('mcm', result);
           }
           // Order Change Message Data Found
           else if (result.op === 'ocm' && result.oc) {
-            this.openSocket.emit('ocm', result);
+            this.client.emit('ocm', result);
           }
           this.chunks = [];
         } catch (e) {}
