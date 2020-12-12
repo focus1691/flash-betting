@@ -146,7 +146,7 @@ const App = ({
               strategy: 'None',
               marketId,
               side,
-              price: priceSize.price,
+              price: averagePriceMatched,
               size: priceSize.size,
               sizeMatched,
               sizeRemaining,
