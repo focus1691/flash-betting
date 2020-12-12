@@ -13,7 +13,7 @@ import { getNextPrice } from '../../utils/ladder/CreateFullLadder';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import { formatCurrency } from '../../utils/NumberFormat';
-import { calcHedgedPL2 } from '../../utils/TradingStategy/HedingCalculator';
+import { calculateHedgePL } from '../../utils/TradingStategy/HedingCalculator';
 import GridDetailCell from './GridDetailCell';
 import GridHeader from './GridHeader';
 import GridOrderRow from './GridOrderRow';
@@ -192,7 +192,7 @@ const Grid = ({
 
     const profitArray = Object.values(bets.matched)
       .filter((bet) => bet.selectionId == runners[key].selectionId)
-      .map((bet) => (bet.side === 'LAY' ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
+      .map((bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgePL(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
     const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
     return (

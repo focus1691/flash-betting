@@ -1,4 +1,4 @@
-import { calcHedgedPL2 } from '../TradingStategy/HedingCalculator';
+import { calculateHedgePL } from '../TradingStategy/HedingCalculator';
 import { calcBackProfit } from '../Bets/BettingCalculations';
 
 /**
@@ -12,7 +12,7 @@ import { calcBackProfit } from '../Bets/BettingCalculations';
 export default (odds, selectionMatchedBets, ladderUnmatched, stake, pl) => {
   if (selectionMatchedBets !== undefined && ladderUnmatched === 'hedged') {
     // calculate the profit based on the current row (the odds decide this)
-    const profitArray = selectionMatchedBets.map((bet) => (bet.side === 'LAY' ? -1 : 1) * calcHedgedPL2(parseFloat(bet.size), parseFloat(bet.price), parseFloat(odds)));
+    const profitArray = selectionMatchedBets.map((bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgePL(parseFloat(bet.size), parseFloat(bet.price), parseFloat(odds)));
 
     // combine this all, this will be the white space
     const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
