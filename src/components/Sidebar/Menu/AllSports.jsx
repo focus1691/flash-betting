@@ -11,7 +11,7 @@ import SelectSubmenu from './SelectSubmenu';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/menu';
 
-const AllSports = ({ sports, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
+const AllSports = ({ sports, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
   const classes = useStyles();
   useEffect(() => {
     // gets all the sports and saves them on the server
@@ -34,9 +34,9 @@ const AllSports = ({ sports, currentSubmenu, winMarketsOnly, horseRaces, setAllS
       updateCurrentSubmenu('');
       updateSubmenuList({});
     }
-  }, [winMarketsOnly, horseRaces, sports.submenuList.EVENT_TYPE, updateCurrentSubmenu, updateSubmenuList]);
+  }, [winMarketsOnly, horseRaces]);
 
-  const getSportInfo = (name, newSubmenuType, submenuList, selectedId, apiToCall) => async (e) => {
+  const getSportInfo = (name, newSubmenuType, submenuList, selectedId, apiToCall) => async () => {
     const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
     // gets the country names and makes it an array ex... [GB]
@@ -105,15 +105,29 @@ const AllSports = ({ sports, currentSubmenu, winMarketsOnly, horseRaces, setAllS
   return (
     <List className={classes.allSports}>
       {Object.keys(sports.submenuList).map((type, index) => (
-        <DeselectSport key={`all-sports-deselect-${sports.submenuList[type].name}`} type={type} data={sports.submenuList[type]} isLast={index === Object.keys(sports.submenuList).length - 1} submenuList={sports.submenuList} deselectSubmenu={deselectSubmenu} />
+        <DeselectSport
+          key={`all-sports-deselect-${sports.submenuList[type].name}`}
+          type={type}
+          data={sports.submenuList[type]}
+          isLast={index === Object.keys(sports.submenuList).length - 1}
+          submenuList={sports.submenuList}
+          deselectSubmenu={deselectSubmenu}
+        />
       ))}
 
       {
         // Selecting Item
-        sports.submenuList.EVENT_TYPE === undefined || currentSubmenu === '' ? (
-          <SelectSport sports={sports.sports} setSubmenu={getSportInfo} />
+        sports.submenuList.EVENT_TYPE === undefined || sports.currentSubmenu === '' ? (
+          <SelectSport
+            sports={sports.sports}
+            setSubmenu={getSportInfo}
+          />
         ) : (
-          <SelectSubmenu data={sports.submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={sports.submenuList} />
+          <SelectSubmenu
+            data={sports.submenuList[sports.currentSubmenu].data}
+            setSubmenu={setSubmenu}
+            submenuList={sports.submenuList}
+          />
         )
       }
     </List>

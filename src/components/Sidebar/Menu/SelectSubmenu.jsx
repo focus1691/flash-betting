@@ -1,13 +1,11 @@
+import React, { useMemo } from 'react';
 import { Divider, ListItem, ListItemText } from '@material-ui/core';
-import React from 'react';
 import MarketSaveButton from './MarketSaveButton';
 
-export default ({
-  data, setSubmenu, submenuList,
-}) => {
-  const dataWithoutRaces = data.filter((sport) => sport.type !== 'RACE');
+export default ({ data, setSubmenu, submenuList }) => {
+  const dataWithoutRaces = useMemo(() => data.filter((sport) => sport.type !== 'RACE'), [data]);
 
-  const handleMarketClick = (sport) => (e) => {
+  const handleMarketClick = (sport) => () => {
     if (sport.type === 'MARKET') {
       window.open(`/dashboard?marketId=${sport.id}`);
     } else {

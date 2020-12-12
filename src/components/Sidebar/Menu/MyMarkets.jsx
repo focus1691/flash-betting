@@ -62,7 +62,7 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
       const id = submenuListMyMarkets.EVENT_TYPE.name.includes('Horse') ? 7 : 4339;
       getSportInfo(submenuListMyMarkets.EVENT_TYPE.name, 'EVENT_TYPE', submenuListMyMarkets, id, 'list-todays-card');
     }
-  }, [getSportInfo, submenuListMyMarkets, winMarketsOnly]);
+  }, [winMarketsOnly]);
 
   const setSubmenu = (data, name, newSubmenuType, submenuList, id) => {
     if (id.startsWith('TC-')) {
@@ -115,7 +115,11 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
 
       {
         // Selecting Item
-        <SelectSubmenu data={currentSubmenuMyMarkets === '' ? myMarkets : submenuListMyMarkets[currentSubmenuMyMarkets].data} setSubmenu={setSubmenu} submenuList={submenuListMyMarkets} />
+        <SelectSubmenu
+          data={currentSubmenuMyMarkets === '' ? myMarkets : submenuListMyMarkets[currentSubmenuMyMarkets].data}
+          setSubmenu={setSubmenu}
+          submenuList={submenuListMyMarkets}
+        />
       }
     </List>
   );
