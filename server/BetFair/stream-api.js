@@ -5,12 +5,11 @@ const decoder = new StringDecoder('utf8');
 const tls = require('tls');
 
 class BetFairStreamAPI {
-  constructor(client) {
+  constructor(socket) {
     this.awaitingAuthentication = false;
     this.connectionClosed = true;
     this.client = null;
-    this.client = client;
-    this.bufferedStr = '';
+    this.socket = socket;
     this.chunks = [];
     this.subscriptions = [];
   }
@@ -34,7 +33,7 @@ class BetFairStreamAPI {
       this.client.write(`${JSON.stringify(req)}\r\n`);
 
       this.client.on('data', (data) => {
-        console.log('Received: ', data);
+        // console.log('Received: ', data);
 
         // Read the data into Buffer
         const bufferedData = Buffer.from(data);
@@ -53,12 +52,12 @@ class BetFairStreamAPI {
               const {
                 connectionClosed, errorCode, errorMessage, statusCode,
               } = result;
-              this.client.emit('subscription-error', {
+              this.socket.emit('subscription-error', {
                 connectionClosed, errorCode, errorMessage, statusCode,
               });
             } else {
               this.subscriptions.forEach(((subscription) => this.client.write(subscription)));
-              this.client.emit('connection-id', result.connectionId);
+              this.socket.emit('connection-id', result.connectionId);
             }
             this.subscriptions = [];
           }
@@ -66,13 +65,13 @@ class BetFairStreamAPI {
           // Market Change Message Data Found
           if (result.op === 'mcm' && result.mc) {
             if (result.mc[0].marketDefinition) {
-              this.client.emit('market-definition', result.mc[0].marketDefinition);
+              this.socket.emit('market-definition', result.mc[0].marketDefinition);
             }
-            this.client.emit('mcm', result);
+            this.socket.emit('mcm', result);
           }
           // Order Change Message Data Found
           else if (result.op === 'ocm' && result.oc) {
-            this.client.emit('ocm', result);
+            this.socket.emit('ocm', result);
           }
           this.chunks = [];
         } catch (e) {}

@@ -341,6 +341,7 @@ const App = ({
    */
   const onReceiveOrderMessage = useCallback(
     async (data) => {
+      console.log('ocm', data);
       if (data.oc) {
         for (let i = 0; i < data.oc.length; i += 1) {
           if (data.oc[i].orc) {
@@ -491,9 +492,12 @@ const App = ({
 
   useEffect(() => {
     if (marketId) {
-      socket.emit('order-subscription', {
-        customerStrategyRefs: JSON.stringify(Object.values(unmatchedBets).map((bet) => bet.rfs || '')),
-      });
+      const betsWithRfs = Object.values(unmatchedBets).filter((bet) => bet.rfs);
+      if (betsWithRfs.length > 0) {
+        socket.emit('order-subscription', {
+          customerStrategyRefs: JSON.stringify(betsWithRfs),
+        });
+      }
     }
   }, [marketId, socket, unmatchedBets]);
 
