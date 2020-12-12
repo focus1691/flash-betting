@@ -407,7 +407,7 @@ const App = ({
     // Load the market if found
     if (marketId) {
       const result = await fetchData(`/api/get-market-info?marketId=${marketId}`);
-      if (result) {
+      if (result && result.length >= 1) {
         const { marketId, marketName, marketStartTime, description, event, eventType, runners } = result[0];
         setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
         setMarketId(marketId);
