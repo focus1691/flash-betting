@@ -5,17 +5,11 @@ import MarketSaveButton from './MarketSaveButton';
 export default ({ data, setSubmenu, submenuList }) => {
   const dataWithoutRaces = useMemo(() => data.filter((sport) => sport.type !== 'RACE'), [data]);
 
-  const handleMarketClick = (sport) => () => {
-    if (sport.type === 'MARKET') {
-      window.open(`/dashboard?marketId=${sport.id}`);
+  const handleMarketClick = ({ id, name, type, children }) => () => {
+    if (type === 'MARKET') {
+      window.open(`/dashboard?marketId=${id}`);
     } else {
-      setSubmenu(
-        sport.children,
-        sport.name,
-        submenuList[sport.type] ? `${sport.type}_1` : sport.type,
-        submenuList,
-        sport.id,
-      );
+      setSubmenu(children, name, submenuList[type] ? `${type}_1` : type, submenuList, id);
     }
   };
   return dataWithoutRaces.map((sport) => (

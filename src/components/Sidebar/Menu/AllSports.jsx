@@ -11,7 +11,7 @@ import SelectSubmenu from './SelectSubmenu';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/menu';
 
-const AllSports = ({ sports, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
+const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
   const classes = useStyles();
   useEffect(() => {
     // gets all the sports and saves them on the server
@@ -30,13 +30,13 @@ const AllSports = ({ sports, winMarketsOnly, horseRaces, setAllSports, updateCur
   }, []);
 
   useEffect(() => {
-    if (sports.submenuList.EVENT_TYPE && sports.submenuList.EVENT_TYPE.name.includes("Today's Card")) {
+    if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
       updateCurrentSubmenu('');
       updateSubmenuList({});
     }
   }, [winMarketsOnly, horseRaces]);
 
-  const getSportInfo = (name, newSubmenuType, submenuList, selectedId, apiToCall) => async () => {
+  const getSportInfo = (name, type, submenuList, sportId, apiEndpoint) => async () => {
     const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
     // gets the country names and makes it an array ex... [GB]
@@ -48,31 +48,31 @@ const AllSports = ({ sports, winMarketsOnly, horseRaces, setAllSports, updateCur
     }, []);
 
     // call the api with the id and get new selections
-    const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
+    const data = await fetch(`/api/${apiEndpoint}/?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
       .then((res) => res.json())
       .catch(() => {});
 
-    // set the old submenu as the newSubmenuType: children we received from the api
+    // set the old submenu as the type: children we received from the api
     if (data) {
       const newSubmenuList = { submenuList };
 
-      newSubmenuList[newSubmenuType] = { name, data };
+      newSubmenuList[type] = { name, data };
 
-      updateCurrentSubmenu(newSubmenuType);
+      updateCurrentSubmenu(type);
       updateSubmenuList(newSubmenuList);
     }
   };
 
-  const setSubmenu = (data, name, newSubmenuType, submenuList) => {
+  const setSubmenu = (data, name, type, submenuList) => {
     const newSubmenuList = { ...submenuList };
-    newSubmenuList[newSubmenuType] = { name, data };
+    newSubmenuList[type] = { name, data };
 
-    updateCurrentSubmenu(newSubmenuType);
+    updateCurrentSubmenu(type);
     updateSubmenuList(newSubmenuList);
   };
 
-  const deselectSubmenu = (newSubmenuType, submenuList) => {
-    if (newSubmenuType === 'ROOT') {
+  const deselectSubmenu = (type, submenuList) => {
+    if (type === 'ROOT') {
       updateCurrentSubmenu('');
       updateSubmenuList({});
       return;
@@ -91,42 +91,42 @@ const AllSports = ({ sports, winMarketsOnly, horseRaces, setAllSports, updateCur
     // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
     const newSubmenuList = {};
 
-    const maxSubmenuLevel = submenuEnum[newSubmenuType];
+    const maxSubmenuLevel = submenuEnum[type];
     Object.keys(submenuList).map((key) => {
       if (!submenuEnum[key] || submenuEnum[key] <= maxSubmenuLevel) {
         newSubmenuList[key] = submenuList[key];
       }
     });
 
-    updateCurrentSubmenu(newSubmenuType);
+    updateCurrentSubmenu(type);
     updateSubmenuList(newSubmenuList);
   };
 
   return (
     <List className={classes.allSports}>
-      {Object.keys(sports.submenuList).map((type, index) => (
+      {Object.keys(submenuList).map((type, index) => (
         <DeselectSport
-          key={`all-sports-deselect-${sports.submenuList[type].name}`}
+          key={`all-sports-deselect-${submenuList[type].name}`}
           type={type}
-          data={sports.submenuList[type]}
-          isLast={index === Object.keys(sports.submenuList).length - 1}
-          submenuList={sports.submenuList}
+          data={submenuList[type]}
+          isLast={index === Object.keys(submenuList).length - 1}
+          submenuList={submenuList}
           deselectSubmenu={deselectSubmenu}
         />
       ))}
 
       {
         // Selecting Item
-        sports.submenuList.EVENT_TYPE === undefined || sports.currentSubmenu === '' ? (
+        !submenuList.EVENT_TYPE || !currentSubmenu ? (
           <SelectSport
-            sports={sports.sports}
+            sports={sports}
             setSubmenu={getSportInfo}
           />
         ) : (
           <SelectSubmenu
-            data={sports.submenuList[sports.currentSubmenu].data}
+            data={submenuList[currentSubmenu].data}
             setSubmenu={setSubmenu}
-            submenuList={sports.submenuList}
+            submenuList={submenuList}
           />
         )
       }
@@ -135,7 +135,9 @@ const AllSports = ({ sports, winMarketsOnly, horseRaces, setAllSports, updateCur
 };
 
 const mapStateToProps = (state) => ({
-  sports: state.sports,
+  sports: state.sports.sports,
+  submenuList: state.sports.submenuList,
+  currentSubmenu: state.sports.currentSubmenu,
   myMarkets: state.market.myMarkets,
   winMarketsOnly: state.settings.winMarketsOnly,
   horseRaces: state.settings.horseRaces,

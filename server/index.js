@@ -408,19 +408,37 @@ app.get('/api/fetch-all-sports', async (request, response) => {
       res.children.forEach((item) => {
         betfair.allSports[item.id] = item.children;
       });
-      response.sendStatus(200);
+      response.status(200).json({ sports: betfair.allSports});
     })
     .catch(() => {
       response.sendStatus(400);
     });
 });
 
-app.get('/api/fetch-sport-data', (request, response) => (betfair.allSports[request.query.id] ? response.json(betfair.allSports[request.query.id]) : response.sendStatus(400).send('All Sports contains no data')));
+app.get('/api/fetch-sport-data', (request, response) => (betfair.allSports[request.query.id] ? response.json(betfair.allSports[request.query.id]) : response.status(400).send('All Sports contains no data')));
 
 app.get('/api/get-all-sports', (req, res) => {
   betfair.listEventTypes(
     {
       filter: {},
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.sendStatus(400).json({
+          error,
+        });
+      }
+      return res.json(result);
+    },
+  );
+});
+
+app.get('/api/get-event', (req, res) => {
+  betfair.listEventTypes(
+    {
+      filter: {
+        competitionIds: ['1575693754'],
+      },
     },
     (err, { error, result }) => {
       if (error) {

@@ -64,17 +64,17 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
     }
   }, [winMarketsOnly]);
 
-  const setSubmenu = (data, name, newSubmenuType, submenuList, id) => {
+  const setSubmenu = (data, name, type, submenuList, id) => {
     if (id.startsWith('TC-')) {
-      getSportInfo(name, newSubmenuType, submenuList, id.match(/\d+/)[0], 'list-todays-card');
-    } else if (newSubmenuType === 'EVENT_TYPE') {
-      getSportInfo(name, newSubmenuType, submenuList, id, 'fetch-sport-data');
+      getSportInfo(name, type, submenuList, id.match(/\d+/)[0], 'list-todays-card');
+    } else if (type === 'EVENT_TYPE') {
+      getSportInfo(name, type, submenuList, id, 'fetch-sport-data');
     } else {
       const newSubmenuList = { ...submenuList };
-      newSubmenuList[newSubmenuType] = { name, data };
+      newSubmenuList[type] = { name, data };
 
       updateSubmenuListMyMarkets(newSubmenuList);
-      updateSubmenuMyMarkets(newSubmenuType);
+      updateSubmenuMyMarkets(type);
     }
   };
 
@@ -116,7 +116,7 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
       {
         // Selecting Item
         <SelectSubmenu
-          data={currentSubmenuMyMarkets === '' ? myMarkets : submenuListMyMarkets[currentSubmenuMyMarkets].data}
+          data={currentSubmenuMyMarkets ? submenuListMyMarkets[currentSubmenuMyMarkets].data : myMarkets}
           setSubmenu={setSubmenu}
           submenuList={submenuListMyMarkets}
         />
