@@ -15,8 +15,11 @@ import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setLTPOperator, setTicks, setStake, setPrice, setSide, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
+//* JSS
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
+//* HTTP
+import { saveBet } from '../../../../http/dbHelper';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -119,21 +122,13 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
           price: formatPrice(price),
           rfs: referenceStrategyId,
         };
+        saveBet(addedOrder);
 
-        await fetch('/api/save-bet', {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify(addedOrder),
-        }).then(() => {
-          if (newStopEntryList[selectionId] === undefined) {
-            newStopEntryList[selectionId] = [addedOrder];
-          } else {
-            newStopEntryList[selectionId] = newStopEntryList[selectionId].concat(addedOrder);
-          }
-        });
+        if (!newStopEntryList[selectionId]) {
+          newStopEntryList[selectionId] = [addedOrder];
+        } else {
+          newStopEntryList[selectionId] = newStopEntryList[selectionId].concat(addedOrder);
+        }
       }),
     );
 

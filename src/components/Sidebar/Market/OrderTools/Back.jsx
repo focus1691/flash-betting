@@ -19,7 +19,7 @@ import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
 import dropdownRunnerStyle from '../../../../jss/DropdownList';
 //* HTTP
-import 
+import { saveBet } from '../../../../http/dbHelper';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -109,21 +109,13 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
           rfs: customerStrategyRef,
         };
 
-        // make sure request is processed before saving it
-        await fetch('/api/save-bet', {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify(addedOrder),
-        }).then(() => {
-          if (newBackList[selectionId] === undefined) {
-            newBackList[selectionId] = [addedOrder];
-          } else {
-            newBackList[selectionId] = newBackList[selectionId].concat(addedOrder);
-          }
-        });
+        saveBet(addedOrder);
+
+        if (!newBackList[selectionId]) {
+          newBackList[selectionId] = [addedOrder];
+        } else {
+          newBackList[selectionId] = newBackList[selectionId].concat(addedOrder);
+        }
       }),
     );
     updateBackList(newBackList);

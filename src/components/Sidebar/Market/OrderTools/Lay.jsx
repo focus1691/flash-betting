@@ -14,9 +14,12 @@ import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateLayList } from '../../../../actions/lay';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
+//* JSS
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
 import dropdownRunnerStyle from '../../../../jss/DropdownList';
+//* HTTP
+import { saveBet } from '../../../../http/dbHelper';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -126,23 +129,13 @@ const Lay = ({
           price: formatPrice(price),
           rfs: customerStrategyRef,
         };
+        saveBet(addedOrder);
 
-        // make sure request is processed before saving it
-
-        await fetch('/api/save-bet', {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify(addedOrder),
-        }).then(() => {
-          if (newLayList[selectionId] === undefined) {
-            newLayList[selectionId] = [addedOrder];
-          } else {
-            newLayList[selectionId] = newLayList[selectionId].concat(addedOrder);
-          }
-        });
+        if (!newLayList[selectionId]) {
+          newLayList[selectionId] = [addedOrder];
+        } else {
+          newLayList[selectionId] = newLayList[selectionId].concat(addedOrder);
+        }
       }),
     );
     updateLayList(newLayList);
