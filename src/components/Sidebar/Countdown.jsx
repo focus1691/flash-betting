@@ -54,7 +54,7 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
     }
   }, ONE_SECOND);
 
-  return <div>{currTime}</div>;
+  return <>{currTime}</>;
 };
 
 const mapStateToProps = (state) => ({
