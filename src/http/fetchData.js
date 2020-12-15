@@ -21,7 +21,7 @@ export default async (endpoint) => {
       window.location.href = `${window.location.origin}/?error=${errorCode}`;
     }
     return {
-      
+      error,
     }
   }
   return result;

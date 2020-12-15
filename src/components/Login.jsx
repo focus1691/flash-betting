@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router-dom';
 //* @material-ui core
@@ -47,6 +47,16 @@ const Login = () => {
   const [sessionKey, setSessionKey] = useState(cookies.get('sessionKey'));
 
   const classes = useStyles();
+
+  useEffect(() => {
+    if (error) {
+      cookies.remove('username');
+      cookies.remove('sessionKey');
+      cookies.remove('accessToken');
+      setSessionKey(null);
+      setError('');
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -394,8 +394,12 @@ const App = ({
 
   const onMarketDisconnect = useCallback(
     async ({ errorCode, errorMessage }) => {
-      if (GetSubscriptionErrorType(errorCode) === 'Authentication') window.location.href = `${window.location.origin}/?error=${errorCode}`;
-      else setConnectionError(`${errorMessage.split(':')[0]}, connection id: ${connectionId}`);
+      if (GetSubscriptionErrorType(errorCode) === 'Authentication') {
+        await fetch('/api/logout');
+        window.location.href = `${window.location.origin}/?error=${errorCode}`;
+      } else {
+        setConnectionError(`${errorMessage.split(':')[0]}, connection id: ${connectionId}`);
+      }
     },
     [connectionId],
   );

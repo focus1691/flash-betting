@@ -1,3 +1,4 @@
+const { access } = require('fs');
 const { StringDecoder } = require('string_decoder');
 
 const decoder = new StringDecoder('utf8');
@@ -5,16 +6,17 @@ const decoder = new StringDecoder('utf8');
 const tls = require('tls');
 
 class BetFairStreamAPI {
-  constructor(socket) {
-    this.awaitingAuthentication = false;
+  constructor(socket, accessToken) {
+    this.id = 1;
     this.connectionClosed = true;
     this.client = null;
     this.socket = socket;
+    this.accessToken = accessToken;
     this.chunks = [];
     this.subscriptions = [];
   }
 
-  authenticate(accessToken) {
+  authenticate() {
     const options = {
       host: 'stream-api.betfair.com',
       port: 443,
@@ -24,16 +26,15 @@ class BetFairStreamAPI {
 
       this.client.setEncoding('utf8');
 
-      const req = {
+      const authParams = {
         op: 'authentication',
         appKey: process.env.APP_KEY,
-        session: `BEARER ${accessToken}`
+        session: `BEARER ${this.accessToken}`
       }
 
-      this.client.write(`${JSON.stringify(req)}\r\n`);
+      this.client.write(`${JSON.stringify(authParams)}\r\n`);
 
       this.client.on('data', (data) => {
-        // console.log('Received: ', data);
 
         // Read the data into Buffer
         const bufferedData = Buffer.from(data);
@@ -47,8 +48,7 @@ class BetFairStreamAPI {
 
           // Connection status
           if (result.op === 'status') {
-            this.connectionClosed = result.connectionClosed;
-            if (this.connectionClosed) {
+            if (result.connectionClosed) {
               const {
                 connectionClosed, errorCode, errorMessage, statusCode,
               } = result;
@@ -56,10 +56,13 @@ class BetFairStreamAPI {
                 connectionClosed, errorCode, errorMessage, statusCode,
               });
             } else {
-              this.subscriptions.forEach(((subscription) => this.client.write(subscription)));
+              for (let i = 0; i < this.subscriptions.length; i += 1) {
+                this.client.write(`${JSON.stringify(this.subscriptions[i])}\r\n`);
+              }
               this.socket.emit('connection-id', result.connectionId);
             }
             this.subscriptions = [];
+            this.connectionClosed = result.connectionClosed;
           }
 
           // Market Change Message Data Found
@@ -74,7 +77,7 @@ class BetFairStreamAPI {
             this.socket.emit('ocm', result);
           }
           this.chunks = [];
-        } catch (e) {}
+        } catch (e) { }
       });
 
       this.client.on('end', (data) => {
@@ -92,15 +95,76 @@ class BetFairStreamAPI {
     });
   }
 
-  makeSubscription(subscription, accessToken) {
+  setAccessToken(accessToken) {
+    this.accessToken = accessToken;
+  }
+
+  subscribe(params) {
     if (this.connectionClosed) {
-      this.authenticate(accessToken);
-      this.subscriptions.push(subscription);
-    } else if (!this.client.connecting) {
-      this.client.write(subscription);
+      this.authenticate();
+      this.subscriptions.push(params);
     } else {
-      this.subscriptions.push(subscription);
+      this.client.write(`${JSON.stringify(params)}\r\n`);
     }
+  }
+
+  unsubscribe() {
+    if (this.client) {
+      const marketSubscriptionParams = {
+        op: 'marketSubscription',
+        id: this.id += 1,
+        marketFilter: {
+          marketIds: [],
+        },
+        marketDataFilter: {
+          ladderLevels: 2,
+        },
+      };
+      this.client.write(`${JSON.stringify(marketSubscriptionParams)}\r\n`);
+      this.client.destroy();
+    }
+  }
+
+  makeMarketSubscription(marketId) {
+    this.subscribe({
+      op: 'marketSubscription',
+      id: this.id += 1,
+      marketFilter: {
+        marketIds: [marketId],
+      },
+      marketDataFilter: {
+        ladderLevels: 2,
+        fields: ['EX_ALL_OFFERS', 'EX_TRADED', 'EX_TRADED_VOL', 'EX_LTP', 'EX_MARKET_DEF'],
+      },
+    });
+  }
+
+  makeMarketResubscription(initialClk, clk, marketId) {
+    this.subscribe({
+      op: 'marketSubscription',
+      id: this.id += 1,
+      initialClk,
+      clk,
+
+      marketFilter: {
+        marketIds: [marketId],
+      },
+      marketDataFilter: {
+        ladderLevels: 2,
+        fields: ['EX_ALL_OFFERS', 'EX_TRADED', 'EX_TRADED_VOL', 'EX_LTP', 'EX_MARKET_DEF'],
+      },
+    });
+  }
+
+  makeOrderSubscription(customerStrategyRefs) {
+    this.subscribe({
+      op: 'orderSubscription',
+      orderFilter: {
+        includeOverallPosition: false,
+        customerStrategyRefs,
+      },
+      segmentationEnabled: true,
+    });
   }
 }
 

@@ -1,9 +1,8 @@
 /* eslint-disable class-methods-use-this */
-const { access } = require('fs');
-const { method } = require('lodash');
 const _ = require('lodash');
 const auth = require('./auth.js');
 const BetfairInvocation = require('./invocation.js');
+const ExchangeStream = require('./exchange-stream');
 
 // ************************************************************************
 // * Betting API - https://api.betfair.com:443/exchange/betting/json-rpc/v1/
@@ -70,6 +69,7 @@ class BetfairSession {
     this.applicationKey = applicationKey;
     this.email = null;
     this.allSports = {};
+    this.exchangeStream = null;
     BetfairInvocation.setApplicationKey(applicationKey);
 
     this.createApiMethods('betting', API_BETTING_METHODS);
@@ -86,6 +86,9 @@ class BetfairSession {
   setAccessToken(accessToken) {
     this.accessToken = accessToken;
     BetfairInvocation.setAccessToken(accessToken);
+    if (this.exchangeStream) {
+      this.exchangeStream.setAccessToken(accessToken);
+    }
   }
 
   setEmailAddress(email) {
@@ -125,6 +128,10 @@ class BetfairSession {
         res(this);
       });
     });
+  }
+
+  createExchangeStream(client, accessToken) {
+    this.exchangeStream = new ExchangeStream(client, accessToken);
   }
 
   // Create multiple Betfair API calls (account API, bettint api, etc)
