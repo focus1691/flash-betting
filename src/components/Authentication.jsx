@@ -11,25 +11,22 @@ const Authentication = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const authenticateUser = async () => {
+    (async () => {
       if (sessionKey) {
         const { vendorId, isSubscribed, accessToken } = await fetchData('/api/get-subscription-status');
         if (isSubscribed === false || !accessToken) {
           window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
         } else {
           const { error } = await fetchData('/api/request-access-token?tokenType=REFRESH_TOKEN');
-  
+
           if (!error) {
             setIsAuthenticated(true);
           }
         }
       }
-    };
-    authenticateUser();
+    })();
   }, []);
-  return (
-    !sessionKey ? <Redirect to="/" />  : isAuthenticated ? <Redirect to="/dashboard" /> : <section>Redirecting...</section>
-  );
+  return !sessionKey ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <section>Redirecting...</section>;
 };
 
 export default Authentication;

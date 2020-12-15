@@ -12,7 +12,6 @@ import fetchData from '../../http/fetchData';
 const cookies = new Cookies();
 
 const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, setAccountDetails, setBalance }) => {
-
   const handleLogout = async () => {
     await fetch('/api/logout');
     cookies.remove('username');

@@ -5,11 +5,10 @@ const Logout = () => {
   const [loggedIn, setLoggedIn] = useState(true);
 
   useEffect(() => {
-      const logout = async () => {
-        await fetch('/api/logout');
-        setLoggedIn(false);
-      };
-      logout();
+    (async () => {
+      await fetch('/api/logout');
+      setLoggedIn(false);
+    })();
   }, []);
 
   return (

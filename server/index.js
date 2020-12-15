@@ -162,7 +162,7 @@ app.get('/api/get-subscription-status', (req, res) => {
               return res.status(401).json({ error });
             }
             const accessToken = await Database.getToken(betfair.email);
-            res.json({
+            return res.json({
               result: {
                 isSubscribed: result,
                 accessToken,
