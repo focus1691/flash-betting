@@ -644,6 +644,28 @@ app.post('/api/place-order', (req, res) => {
   );
 });
 
+app.post('/api/cancel-order', (req, res) => {
+  betfair.cancelOrders(
+    {
+      marketId: req.body.marketId,
+      instructions: [
+        {
+          betId: req.body.betId,
+          sizeReduction: req.body.sizeReduction,
+        },
+      ],
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
 app.post('/api/update-orders', (req, res) => {
   betfair.placeOrders(
     {
@@ -711,28 +733,6 @@ app.get('/api/list-order-to-duplicate', (req, res) => {
       marketIds: [req.query.marketId],
       OrderProjection: 'EXECUTABLE',
       SortDir: 'LATEST_TO_EARLIEST',
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
-});
-
-app.post('/api/cancel-order', (req, res) => {
-  betfair.cancelOrders(
-    {
-      marketId: req.body.marketId,
-      instructions: [
-        {
-          betId: req.body.betId,
-          sizeReduction: req.body.sizeReduction,
-        },
-      ],
     },
     (err, { error, result }) => {
       if (error) {

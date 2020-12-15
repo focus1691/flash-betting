@@ -1,4 +1,5 @@
 import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
+import postData from '../http/postData';
 
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
@@ -37,14 +38,7 @@ export const setBetExecutionComplete = (data) => ({
 
 export const executeBet = async (bet) => {
   bet.size = parseFloat(bet.size).toFixed(2);
-  const PlaceExecutionReport = await fetch('/api/place-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  }).then((res) => res.json());
+  const PlaceExecutionReport = await postData('/api/place-order', bet);
   if (!PlaceExecutionReport || PlaceExecutionReport.status === 'FAILURE') return null;
 
   const { orderStatus, sizeMatched, betId } = PlaceExecutionReport.instructionReports[0];
@@ -64,17 +58,7 @@ export const executeBet = async (bet) => {
 };
 
 export const executeReduceSize = async (bet) => {
-  const cancelOrder = await fetch('/api/cancel-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  })
-    .then((res) => res.json())
-    .catch(() => false);
-
+  const cancelOrder = await postData('/api/cancel-order', bet);
   return cancelOrder && cancelOrder.status === 'SUCCESS';
 };
 
@@ -101,18 +85,11 @@ export const placeOrder = (bet) => {
       });
 
       // replaceOrder, editing the price
-      const ReplaceExecutionReport = await fetch('/api/replace-orders', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          marketId: startingBet.marketId,
-          betId: startingBet.betId,
-          newPrice: bet.price,
-        }),
-      }).then((res) => res.json());
+      const ReplaceExecutionReport = await postData('/api/replace-orders', {
+        marketId: startingBet.marketId,
+        betId: startingBet.betId,
+        newPrice: bet.price,
+      });
 
       if (ReplaceExecutionReport && ReplaceExecutionReport.status === 'SUCCESS') {
         if (ReplaceExecutionReport.instructionReports[0] && ReplaceExecutionReport.instructionReports[0].placeInstructionReport) {
@@ -153,19 +130,8 @@ export const placeOrder = (bet) => {
   };
 };
 
-export const executeCancelBet = async (bet) => {
-  await fetch('/api/cancel-order', {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(bet),
-  });
-};
-
 export const cancelBet = async (marketId, betId) => {
-  await executeCancelBet({ marketId, betId });
+  await postData('/api/cancel-order', { marketId, betId });
 
   return async (dispatch) => {
     dispatch(removeUnmatchedBets({ betId }));
@@ -179,7 +145,7 @@ export const cancelBets = (selectionId, side, unmatchedBets) => {
   for (let i = 0; i < unmatchedBets.length; i += 1) {
     if (unmatchedBets[betIds[i]].selectionId === selectionId && (!side || side === unmatchedBets[betIds[i]].side)) {
       cancelledBets.push(betIds[i]);
-      executeCancelBet({
+      postData('/api/cancel-order', {
         marketId: unmatchedBets[betIds[i]].marketId,
         betId: unmatchedBets[betIds[i]].betId,
       });
@@ -197,7 +163,7 @@ export const cancelMarketBets = (marketId, unmatchedBets) => {
   for (let i = 0; i < unmatchedBets.length; i += 1) {
 
     cancelledBets.push(unmatchedBets[i].betId);
-    executeCancelBet({
+    postData('/api/cancel-order', {
       marketId: unmatchedBets[i].marketId,
       betId: unmatchedBets[i].betId,
     });
