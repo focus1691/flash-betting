@@ -72,7 +72,11 @@ app.use('/', async (req, res, next) => {
   if (!req.cookies.accessToken && !isAuthURL(req.url)) {
     const accessToken = await Database.getToken(betfair.email);
     betfair.setAccessToken(accessToken);
-
+    if (!accessToken) {
+      return res.status(401).json({
+        error: 'NO_SESSION',
+      });
+    }
   }
   next();
 });
