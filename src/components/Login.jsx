@@ -8,6 +8,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+//* Utils
 import authErrors from '../utils/Errors/AuthErrors';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
 

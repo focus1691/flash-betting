@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import DropIn from 'braintree-web-drop-in-react';
+//* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -7,11 +11,11 @@ import Slide from '@material-ui/core/Slide';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+//* @material-ui icons
 import CloseIcon from '@material-ui/icons/Close';
-import DropIn from 'braintree-web-drop-in-react';
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+//* Actions
 import { openPremiumDialog, setPremiumStatus } from '../actions/settings';
+//* Utils
 import { getDate180DaysAhead, getDate1YearAhead, getDate30DaysAhead } from '../utils/DateCalculator';
 
 const useStyles = makeStyles((theme) => ({

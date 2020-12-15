@@ -13,6 +13,8 @@ import { getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
 import { getPriceNTicksAway } from '../../../../utils/ladder/CreateFullLadder';
 import { removeBet, replaceOrders, updatePrice } from '../../../../http/dbHelper';
+//* HTTP
+import postData from '../../../../http/postData';
 import Bet from './Bet';
 
 const UnmatchedBets = ({
@@ -93,7 +95,11 @@ const UnmatchedBets = ({
           updateStopLossBetPrice({ selectionId: bet.selectionId, price: newPrice });
           break;
         case 'None': {
-          const { status, instructionReports } = await replaceOrders(bet.marketId, bet.betId, newPrice);
+          const { status, instructionReports } = await postData('/api/replace-orders', {
+            marketId: bet.marketId,
+            betId: bet.betId,
+            newPrice,
+          });
 
           if (status === 'SUCCESS') {
             const { betId, instruction } = instructionReports[0].placeInstructionReport;

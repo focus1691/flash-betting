@@ -40,7 +40,8 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import { removeBet, updateTicks, updateOrderMatched, getBetFairBets, saveRunnerNames, getAllBets } from '../../http/dbHelper';
+import postData from '../../http/postData';
+import { removeBet, updateTicks, updateOrderMatched, saveRunnerNames, getAllBets } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
@@ -122,7 +123,7 @@ const App = ({
   const retrieveBets = async () => {
     if (!marketId) return;
     try {
-      const betfairBets = await getBetFairBets(marketId);
+      const betfairBets = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
       for (let i = 0; i < betfairBets.length; i += 1) {
         const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef: rfs } = betfairBets[i];
 
@@ -429,7 +430,7 @@ const App = ({
           selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
         }
 
-        saveRunnerNames(marketId, selectionNames);
+        postData('/api/save-runner-names', { marketId, selectionNames });
 
         //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });
