@@ -1,6 +1,8 @@
-import { ListItemIcon } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
+//* @material-ui core
+import { ListItemIcon } from '@material-ui/core';
+//* Actions
 import { loadMyMarkets } from '../../../actions/market';
 
 const MarketSaveButton = ({ sport, myMarkets, loadMyMarkets }) => {

@@ -10,6 +10,8 @@ import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/menu';
+//* HTTP
+import fetchData from '../../../http/fetchData';
 
 const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
   const classes = useStyles();
@@ -19,14 +21,16 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   }, []);
 
   useEffect(() => {
-    fetch('/api/get-all-sports')
-      .then((res) => res.json())
-      .then((sports) => {
-        sports.push({ eventType: { id: 'TC-7', name: "Horse Racing - Today's Card" } });
-        sports.push({ eventType: { id: 'TC-4339', name: "Greyhound Racing - Today's Card" } });
-        sports = sortSports(sports);
-        setAllSports(sports);
-      });
+    const getAllSports = async () => {
+      let sportsList = await fetchData('/api/get-all-sports');
+      if (sportsList) {
+        sportsList.push({ eventType: { id: 'TC-7', name: "Horse Racing - Today's Card" } });
+        sportsList.push({ eventType: { id: 'TC-4339', name: "Greyhound Racing - Today's Card" } });
+        sportsList = sortSports(sportsList);
+        setAllSports(sportsList);
+      }
+    };
+    getAllSports();
   }, []);
 
   useEffect(() => {
@@ -48,9 +52,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
     }, []);
 
     // call the api with the id and get new selections
-    const data = await fetch(`/api/${apiEndpoint}/?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
-      .then((res) => res.json())
-      .catch(() => {});
+    const data = await fetchData(`/api/${apiEndpoint}/?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`);
 
     // set the old submenu as the type: children we received from the api
     if (data) {
@@ -105,30 +107,12 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   return (
     <List className={classes.allSports}>
       {Object.keys(submenuList).map((type, index) => (
-        <DeselectSport
-          key={`all-sports-deselect-${submenuList[type].name}`}
-          type={type}
-          data={submenuList[type]}
-          isLast={index === Object.keys(submenuList).length - 1}
-          submenuList={submenuList}
-          deselectSubmenu={deselectSubmenu}
-        />
+        <DeselectSport key={`all-sports-deselect-${submenuList[type].name}`} type={type} data={submenuList[type]} isLast={index === Object.keys(submenuList).length - 1} submenuList={submenuList} deselectSubmenu={deselectSubmenu} />
       ))}
 
       {
         // Selecting Item
-        !submenuList.EVENT_TYPE || !currentSubmenu ? (
-          <SelectSport
-            sports={sports}
-            setSubmenu={getSportInfo}
-          />
-        ) : (
-          <SelectSubmenu
-            data={submenuList[currentSubmenu].data}
-            setSubmenu={setSubmenu}
-            submenuList={submenuList}
-          />
-        )
+        !submenuList.EVENT_TYPE || !currentSubmenu ? <SelectSport sports={sports} setSubmenu={getSportInfo} /> : <SelectSubmenu data={submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={submenuList} />
       }
     </List>
   );

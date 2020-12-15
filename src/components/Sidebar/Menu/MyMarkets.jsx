@@ -9,6 +9,8 @@ import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/menu';
+//* HTTP
+import fetchData from '../../../http/fetchData';
 
 const submenuEnum = {
   ROOT: 0,
@@ -35,9 +37,7 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
       }, []);
 
       // call the api with the id and get new selections
-      const data = await fetch(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`)
-        .then((res) => res.json())
-        .catch(() => false);
+      const data = await fetchData(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`);
 
       // set the old submenu as the newSubmenuType: children we received from the api
       if (data) {

@@ -17,8 +17,7 @@ const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, s
   };
 
   const getAccountDetails = async () => {
-    const { result } = await fetchData('/api/get-account-details');
-
+    const result = await fetchData('/api/get-account-details');
     if (result) {
       setAccountDetails({
         name: result.firstName,
@@ -30,7 +29,7 @@ const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, s
   };
 
   const getAccountBalance = async () => {
-    const { result } = await fetchData('/api/get-account-balance');
+    const result = await fetchData('/api/get-account-balance');
 
     if (result) {
       setBalance(result.availableToBetBalance);

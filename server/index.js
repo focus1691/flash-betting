@@ -299,7 +299,7 @@ app.get('/api/get-account-balance', (req, res) => {
           error,
         });
       }
-      return res.json(result);
+      return res.json({ result });
     },
   );
 });
@@ -315,26 +315,26 @@ app.get('/api/get-account-details', (req, res) => {
           error,
         });
       }
-      return res.json(result);
+      return res.json({ result });
     },
   );
 });
 
-app.get('/api/get-events-with-active-bets', (request, response) => {
+app.get('/api/get-events-with-active-bets', (req, res) => {
   betfair.listCurrentOrders(
     {
       filter: {},
     },
-    async (err, res) => {
-      if (res.error)
-        return response.status(401).json({
-          error: res.error,
+    async (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
         });
-      // if (!res.result) return response.json([]);
+      }
 
-      const filteredOrders = _.uniq(res.result.currentOrders.map((order) => order));
+      const filteredOrders = _.uniq(result.currentOrders.map((order) => order));
 
-      if (filteredOrders.length <= 0) return response.json([]);
+      if (filteredOrders.length <= 0) return res.json([]);
 
       return betfair.listMarketCatalogue(
         {
@@ -343,8 +343,13 @@ app.get('/api/get-events-with-active-bets', (request, response) => {
           },
           maxResults: 100,
         },
-        (err, res) => {
-          response.json(res.result);
+        (err, { error, result }) => {
+          if (error) {
+            return res.status(401).json({
+              error,
+            });
+          }
+          return res.json({ result });
         },
       );
     },
@@ -434,7 +439,12 @@ app.get('/api/fetch-all-sports', async (request, response) => {
     });
 });
 
-app.get('/api/fetch-sport-data', (request, response) => (betfair.allSports[request.query.id] ? response.json(betfair.allSports[request.query.id]) : response.status(400).send('All Sports contains no data')));
+app.get('/api/fetch-sport-data', (req, res) => {
+  if (betfair.allSports[req.query.id]) {
+    return res.json({ result: betfair.allSports[req.query.id] });
+  }
+  return res.status(400).json({ error: 'All Sports contains no data' });
+});
 
 app.get('/api/get-all-sports', (req, res) => {
   betfair.listEventTypes(
@@ -447,7 +457,7 @@ app.get('/api/get-all-sports', (req, res) => {
           error,
         });
       }
-      return res.json(result);
+      return res.json({ result });
     },
   );
 });
@@ -465,7 +475,7 @@ app.get('/api/get-event', (req, res) => {
           error,
         });
       }
-      return res.json(result);
+      return res.json({ result });
     },
   );
 });
@@ -494,13 +504,13 @@ app.post('/api/remove-market', (request, response) => {
   });
 });
 
-app.get('/api/list-todays-card', (request, response) => {
+app.get('/api/list-todays-card', (req, res) => {
   betfair.listMarketCatalogue(
     {
       filter: {
-        eventTypeIds: [request.query.id],
-        marketTypeCodes: request.query.marketTypes !== 'undefined' ? [request.query.marketTypes] : undefined,
-        marketCountries: request.query.country !== 'undefined' ? JSON.parse(request.query.country) : undefined,
+        eventTypeIds: [req.query.id],
+        marketTypeCodes: req.query.marketTypes !== 'undefined' ? [req.query.marketTypes] : undefined,
+        marketCountries: req.query.country !== 'undefined' ? JSON.parse(req.query.country) : undefined,
         marketStartTime: {
           from: new Date(new Date().setSeconds(new Date().getSeconds() - 3600)).toJSON(),
           to: new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON(),
@@ -510,14 +520,15 @@ app.get('/api/list-todays-card', (request, response) => {
       maxResults: '1000',
       marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME'],
     },
-    (err, res) => {
-      if (res.response.error) {
-        response.sendStatus(400);
-        return;
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
       }
 
       // if its the next day, we have to put the date
-      const mappedResponseNames = res.result.map((item) => {
+      const mappedResponseNames = result.map((item) => {
         const marketStartTime = new Date(item.marketStartTime);
         const currentDay = new Date(Date.now()).getDay();
         const marketStartDay = marketStartTime.getDay();
@@ -545,7 +556,7 @@ app.get('/api/list-todays-card', (request, response) => {
         type: 'MARKET',
       }));
 
-      response.json(mappedResponse);
+      res.json({ result: mappedResponse });
     },
   );
 });
@@ -556,11 +567,12 @@ app.get('/api/list-market-pl', (req, res) => {
       marketIds: [req.query.marketId],
     },
     (err, { error, result }) => {
-      if (result.error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
@@ -575,10 +587,11 @@ app.get('/api/get-market-info', (req, res) => {
       maxResults: 1,
     },
     (err, { result, error }) => {
-      if (error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
+      }
       return res.json({ result });
     },
   );
@@ -592,12 +605,13 @@ app.get('/api/list-market-book', (req, res) => {
         priceData: ['EX_TRADED', 'EX_ALL_OFFERS'],
       },
     },
-    (err, result) => {
-      if (result.error)
-        return res.json({
-          error: result.error,
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
@@ -620,11 +634,12 @@ app.post('/api/place-order', (req, res) => {
       customerStrategyRef: req.body.customerStrategyRef,
     },
     (err, { error, result }) => {
-      if (error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
@@ -642,11 +657,12 @@ app.post('/api/update-orders', (req, res) => {
       customerStrategyRef: req.body.customerStrategyRef,
     },
     (err, { error, result }) => {
-      if (error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
@@ -663,11 +679,12 @@ app.post('/api/replace-orders', (req, res) => {
       ],
     },
     (err, { error, result }) => {
-      if (error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
@@ -678,11 +695,12 @@ app.get('/api/listCurrentOrders', (req, res) => {
       marketIds: [req.query.marketId],
     },
     (err, { error, result }) => {
-      if (result.error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
@@ -695,11 +713,12 @@ app.get('/api/list-order-to-duplicate', (req, res) => {
       SortDir: 'LATEST_TO_EARLIEST',
     },
     (err, { error, result }) => {
-      if (error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
@@ -716,11 +735,12 @@ app.post('/api/cancel-order', (req, res) => {
       ],
     },
     (err, { error, result }) => {
-      if (error)
-        return res.json({
+      if (error) {
+        return res.status(401).json({
           error,
         });
-      return res.json(result);
+      }
+      return res.json({ result });
     },
   );
 });
