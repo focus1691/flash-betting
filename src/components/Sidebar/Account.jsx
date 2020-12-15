@@ -20,32 +20,32 @@ const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, s
     window.location.href = `${window.location.origin}`;
   };
 
-  const getAccountDetails = async () => {
-    const result = await fetchData('/api/get-account-details');
-    if (result) {
-      setAccountDetails({
-        name: result.firstName,
-        countryCode: result.countryCode,
-        currencyCode: result.currencyCode,
-        localeCode: result.localeCode,
-      });
-    }
-  };
-
-  const getAccountBalance = async () => {
-    const result = await fetchData('/api/get-account-balance');
-
-    if (result) {
-      setBalance(result.availableToBetBalance);
-    }
-  };
-
   useEffect(() => {
-    getAccountDetails();
-    getAccountBalance();
+    (async () => {
+      const AccountDetailsResponse = await fetchData('/api/get-account-details');
+      const AccountFundsResponse = await fetchData('/api/get-account-balance');
+
+      if (AccountDetailsResponse) {
+        setAccountDetails({
+          name: AccountDetailsResponse.firstName,
+          countryCode: AccountDetailsResponse.countryCode,
+          currencyCode: AccountDetailsResponse.currencyCode,
+          localeCode: AccountDetailsResponse.localeCode,
+        });
+      }
+      if (AccountFundsResponse) {
+        setBalance(AccountFundsResponse.availableToBetBalance);
+      }
+    })();
   }, []);
 
   useEffect(() => {
+    const getAccountBalance = async () =>{
+      const AccountFundsResponse = await fetchData('/api/get-account-balance');
+      if (AccountFundsResponse) {
+        setBalance(AccountFundsResponse.availableToBetBalance);
+      }
+    }
     getAccountBalance();
   }, [bets]);
 
