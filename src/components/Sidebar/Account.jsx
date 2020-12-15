@@ -9,10 +9,15 @@ import { formatCurrency } from '../../utils/NumberFormat';
 //* HTTP
 import fetchData from '../../http/fetchData';
 
+const cookies = new Cookies();
+
 const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, setAccountDetails, setBalance }) => {
 
   const handleLogout = async () => {
     await fetch('/api/logout');
+    cookies.remove('username');
+    cookies.remove('sessionKey');
+    cookies.remove('accessToken');
     window.location.href = `${window.location.origin}`;
   };
 
