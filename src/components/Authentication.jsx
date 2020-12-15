@@ -17,7 +17,7 @@ const Authentication = () => {
         if (isSubscribed === false || !accessToken) {
           window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
         } else {
-          const { error } = await fetch('/api/request-access-token?tokenType=REFRESH_TOKEN');
+          const { error } = await fetchData('/api/request-access-token?tokenType=REFRESH_TOKEN');
   
           if (!error) {
             setIsAuthenticated(true);

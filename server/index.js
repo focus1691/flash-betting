@@ -146,34 +146,34 @@ app.post('/paypal-transaction-complete', (request, response) =>
 
 app.get('/api/get-subscription-status', (req, res) => {
   betfair.getDeveloperAppKeys({
-        filter: {},
-      },
-      async (err, { error, result }) => {
-        if (error) {
-          return res.status(401).json({ error });
-        }
-        const app = result.find(({ appName }) => appName === 'Flash Betting');
-        if (app) {
-          const { vendorId } = app.appVersions[0];
+    filter: {},
+  },
+    async (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({ error });
+      }
+      const app = result.find(({ appName }) => appName === 'Flash Betting');
+      if (app) {
+        const { vendorId } = app.appVersions[0];
 
-          vendor.isAccountSubscribedToWebApp({ vendorId },
-            async (err, { result }) => {
-              if (error) {
-                return res.status(401).json({ error });
+        vendor.isAccountSubscribedToWebApp({ vendorId },
+          async (err, { result }) => {
+            if (error) {
+              return res.status(401).json({ error });
+            }
+            const accessToken = await Database.getToken(betfair.email);
+            res.json({
+              result: {
+                isSubscribed: result,
+                accessToken,
+                vendorId,
               }
-              const accessToken = await Database.getToken(betfair.email);
-              res.json({
-                result: {
-                  isSubscribed: result,
-                  accessToken,
-                  vendorId,
-                }
-              });
-            },
-          );
-        }
-      },
-    );
+            });
+          },
+        );
+      }
+    },
+  );
 });
 
 app.get('/api/request-access-token', async (req, res) => {
@@ -288,39 +288,34 @@ app.get('/api/logout', (req, res) => {
     );
 });
 
-app.get('/api/get-account-balance', (request, response) => {
+app.get('/api/get-account-balance', (req, res) => {
   betfair.getAccountFunds(
     {
       filter: {},
     },
-    (err, res) => {
-      if (res.error)
-        return response.status(401).json({
-          error: res.error,
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
         });
-      return response.json({
-        balance: res.result.availableToBetBalance,
-      });
+      }
+      return res.json(result);
     },
   );
 });
 
-app.get('/api/get-account-details', (request, response) => {
+app.get('/api/get-account-details', (req, res) => {
   betfair.getAccountDetails(
     {
       filter: {},
     },
-    (error, res) => {
-      if (res.error)
-        return response.status(401).json({
-          error: res.error,
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
         });
-      return response.json({
-        name: res.result.firstName,
-        countryCode: res.result.countryCode,
-        currencyCode: res.result.currencyCode,
-        localeCode: res.result.localeCode,
-      });
+      }
+      return res.json(result);
     },
   );
 });
