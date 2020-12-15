@@ -7,6 +7,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/styles": "^4.11.2",
     "braintree": "^3.0.0",
     "braintree-web-drop-in-react": "^1.2.1",
     "classnames": "^2.2.6",

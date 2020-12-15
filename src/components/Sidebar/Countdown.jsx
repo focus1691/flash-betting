@@ -8,21 +8,32 @@ import { removeLayBet } from '../../actions/lay';
 import { removeFillOrKill } from '../../actions/fillOrKill';
 import { updateTickOffsetList } from '../../actions/tickOffset';
 import { setPastEventTime } from '../../actions/market';
+//* HTTP
 import { removeBet } from '../../http/dbHelper';
+//* Utils
 import { checkBackBets, checkLayBets } from '../../utils/TradingStategy/BackLay';
 import { countDownTime } from '../../utils/Market/CountDown';
 import { msToHMS } from '../../utils/DateCalculator';
 
 const ONE_SECOND = 1000;
 
-const Countdown = ({
-  marketStartTime, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder,
-  removeBet, backList, layList, fillOrKillList, removeBackBet, removeLayBet, removeFillOrKill,
-}) => {
+const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder, removeBet, backList, layList, fillOrKillList, removeBackBet, removeLayBet, removeFillOrKill }) => {
   const [timeRemaining, setTimeRemaining] = useState('--');
+  const [currTime, setCurrTime] = useState(null);
+
+  const setTime = () => {
+    if (marketOpen) {
+      if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') {
+        setCurrTime(msToHMS(timeRemaining));
+      } else if (marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') {
+        setCurrTime(marketStatus);
+      }
+    }
+  };
 
   useInterval(async () => {
     setTimeRemaining(countDownTime(marketOpen, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime));
+    setTime();
 
     //* BACK Before/After Market
     checkBackBets(backList, marketStartTime, placeOrder, inPlay, removeBackBet);
@@ -35,7 +46,7 @@ const Countdown = ({
 
     for (let i = 0; i < betIds.length; i += 1) {
       const FOK = fillOrKillList[betIds[i]];
-      if (FOK && (Date.now() / 1000) - (FOK.startTime / 1000) >= FOK.seconds) {
+      if (FOK && Date.now() / 1000 - FOK.startTime / 1000 >= FOK.seconds) {
         removeFillOrKill({ betId: FOK.betId }); // FOK Action
         cancelBet(FOK.marketId, FOK.betId); // BetFair
         removeBet({ rfs: FOK.rfs }); // DB
@@ -43,16 +54,7 @@ const Countdown = ({
     }
   }, ONE_SECOND);
 
-  const renderTime = () => {
-    if (!marketOpen) return null;
-    if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') return msToHMS(timeRemaining);
-    if (marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return marketStatus;
-    return null;
-  };
-
-  return (
-    <div>{renderTime()}</div>
-  );
+  return <div>{currTime}</div>;
 };
 
 const mapStateToProps = (state) => ({
@@ -69,7 +71,13 @@ const mapStateToProps = (state) => ({
 });
 
 const matchDispatchToProps = {
-  placeOrder, removeBet, removeBackBet, removeLayBet, removeFillOrKill, updateTickOffsetList, setPastEventTime,
+  placeOrder,
+  removeBet,
+  removeBackBet,
+  removeLayBet,
+  removeFillOrKill,
+  updateTickOffsetList,
+  setPastEventTime,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Countdown);
