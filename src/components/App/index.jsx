@@ -41,9 +41,11 @@ import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
 import postData from '../../http/postData';
-import { removeBet, updateTicks, updateOrderMatched, saveRunnerNames, getAllBets } from '../../http/dbHelper';
+import { removeBet, updateTicks, updateOrderMatched, getAllBets } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
+import { authErrors } from '../../utils/Errors/ErrorTypes';
+import handleAuthError from '../../utils/Errors/handleAuthError';
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 import { isPremiumActive } from '../../utils/DateCalculator';
@@ -54,7 +56,6 @@ import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/ExchangeStreaming/OCMHelper';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
-import GetSubscriptionErrorType from '../../utils/Errors/GetSubscriptionErrorType';
 //* Constants
 import { ONE_SECOND, TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../../constants'
 
@@ -394,10 +395,8 @@ const App = ({
 
   const onMarketDisconnect = useCallback(
     async ({ errorCode, errorMessage }) => {
-      if (GetSubscriptionErrorType(errorCode) === 'Authentication') {
-        await fetch('/api/logout');
-        window.location.href = `${window.location.origin}/?error=${errorCode}`;
-      } else {
+      handleAuthError(errorCode);
+      if (errorMessage) {
         setConnectionError(`${errorMessage.split(':')[0]}, connection id: ${connectionId}`);
       }
     },

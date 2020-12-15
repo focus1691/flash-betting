@@ -1,4 +1,4 @@
-import { authErrors } from '../utils/Errors/ErrorTypes';
+import handleAuthError from '../utils/Errors/handleAuthError'
 
 export default async (endpoint) => {
 
@@ -17,9 +17,7 @@ export default async (endpoint) => {
     else {
       errorCode = error;
     }
-    if (authErrors.includes(errorCode)) {
-      window.location.href = `${window.location.origin}/?error=${errorCode}`;
-    }
+    handleAuthError(errorCode);
     return {
       error,
     }
