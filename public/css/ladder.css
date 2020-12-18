@@ -1,12 +1,12 @@
-.ladder-container {
+/* .ladder-container {
 	position: relative;
 	height: 100%;
 	overflow-x:scroll;
 	overflow-y: hidden;
 	white-space:nowrap;
-}
+} */
 
-.odds-table {
+/* .odds-table {
 	position: absolute;
     width: 18rem;
     height: 100%;
@@ -17,7 +17,7 @@
 	z-index: 0;
 	opacity: 1.0;
 	transition: opacity 0.25s ease-in-out 0s;
-}
+} */
 
 /** 
 * Ladder View Detail
@@ -86,7 +86,7 @@
 * The ladder view for a contender in a sporting event, such as
 * horse racing, football team, cricket team.
 **/
-.ladder {
+/* .ladder {
 	position: relative;
 	width: 100%;
 	overflow-y: hidden;
@@ -105,29 +105,29 @@
 
 .ladder > div > .List > div {
 	height: 7014px !important;
-}
+} */
 
-.ladder .tr {
+/* .ladder .tr {
 	display: flex;
-}
+} */
 
-.ladder .td {
+/* .ladder .td {
 	font-size: x-small;
 	text-align: right;
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	width: 12.5%;
-}
-.ladder .td:nth-child(1) {width: 100%}
+} */
+/* .ladder .td:nth-child(1) {width: 100%}
 .ladder .td:nth-child(3) {background-color: #FCC9D3; }
 .ladder .td:nth-child(4) {
 	font-weight: 900;
 }
 
-.ladder .td:nth-child(5) { background-color: #BCE4FC; }
+.ladder .td:nth-child(5) { background-color: #BCE4FC; } */
 
-.ladder .td:not(:first-child) {
+/* .ladder .td:not(:first-child) {
 	text-align: center;
 	font-size: small;
 	font-family: 'roboto';
@@ -136,7 +136,7 @@
 	cursor: pointer;
 	width: 30%;
 	overflow: hidden;
-}
+} */
 
 .candle-stick-col {
 	border-right: 2px solid;

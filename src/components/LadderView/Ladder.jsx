@@ -3,6 +3,7 @@ import React, { memo, useMemo, useCallback, useEffect, useRef, useState } from '
 import { connect } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
+//* Actions
 import { updateBackList } from '../../actions/back';
 import { updateLayList } from '../../actions/lay';
 import { addStopLoss, updateStopLossList } from '../../actions/stopLoss';
@@ -12,11 +13,13 @@ import { addFillOrKill, updateFillOrKillList } from '../../actions/fillOrKill';
 import { cancelBets, placeOrder, updateOrders, replaceStopLoss } from '../../actions/bet';
 import { getLTP } from '../../selectors/marketSelector';
 import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from '../../selectors/orderSelector';
+//* Utils
 import { getStakeVal } from '../../selectors/settingsSelector';
 import { ALL_PRICES, formatPrice } from '../../utils/ladder/CreateFullLadder';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
 import { findStop } from '../../utils/TradingStategy/StopLoss';
+//* Components
 import Container from './Container';
 import Header from './Header';
 import LadderRow from './Rows/LadderRow';
@@ -25,6 +28,8 @@ import PercentageRow from './Rows/PercentageRow/PercentageRow';
 import PriceRow from './Rows/PriceRow';
 //* HTTP
 import { saveBet } from '../../http/dbHelper';
+//* JSS
+import useStyles from '../../jss/components/LadderView/ladderStyle';
 
 const isMoving = (prevProps, nextProps) => nextProps.draggingLadder === nextProps.selectionId && prevProps.order === nextProps.order;
 
@@ -69,6 +74,7 @@ const Ladder = memo(
     customStakeActive,
     customStake,
   }) => {
+    const classes = useStyles();
     const containerRef = useRef(null);
     const listRef = useRef();
     const [listRefSet, setlistRefSet] = useState(false);
@@ -239,12 +245,12 @@ const Ladder = memo(
       <Container isReferenceSet={isReferenceSet} order={order} containerRef={containerRef} isMoving={isMoving} isLadderDown={isLadderDown} setIsReferenceSet={setReferenceSent} setIsMoving={setIsMoving} setLadderDown={setLadderDown}>
         <Header selectionId={selectionId} setLadderDown={setLadderDown} hedge={ltpHedge} />
 
-        <div className="ladder" onContextMenu={() => false} onPointerOver={onHoverLadder} onPointerLeave={overLeaveLadder}>
+        <div className={classes.ladder} onContextMenu={() => false} onPointerOver={onHoverLadder} onPointerLeave={overLeaveLadder}>
           <PercentageRow setLadderSideLeft={setLadderSideLeft} selectionId={selectionId} />
           <AutoSizer>
             {({ height, width }) => (
               <List
-                className="List"
+                className={classes.List}
                 height={height}
                 itemCount={ALL_PRICES.length}
                 itemSize={20}

@@ -1,11 +1,15 @@
 import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
+//* Actions
 import { updateLadderOrder, setDraggingLadder } from '../../actions/market';
+//* JSS
+import useStyles from '../../jss/components/LadderView/containerStyle';
 
 const LadderContainer = memo(({
   marketStatus, isReferenceSet, order, containerRef, isMoving, isLadderDown, setIsReferenceSet, runners,
   ladderOrderList, updateLadderOrder, setIsMoving, setLadderDown, children, setDraggingLadder, draggingLadder,
 }) => {
+  const classes = useStyles();
   const style = useMemo(() => (marketStatus === 'SUSPENDED'
     ? {
       left: isReferenceSet ? `${order * containerRef.current.clientWidth}px` : '0px',
@@ -44,7 +48,7 @@ const LadderContainer = memo(({
 
   return (
     <div
-      className="odds-table"
+      className={classes.container}
       style={style}
       ref={containerRef}
       onLoad={setIsReferenceSet}
