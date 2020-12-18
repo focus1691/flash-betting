@@ -4,6 +4,8 @@ const useStyles = makeStyles(() => ({
   ladderHeader: {
     display: 'flex !important',
     flexDirection: 'row',
+    borderRadius: '40px',
+    backgroundColor: '#242526',
     width: '100%',
     '& > div': {
       '&:nth-child(1)': {
@@ -29,7 +31,7 @@ const useStyles = makeStyles(() => ({
   runnerName: {
     fontSize: '0.9em',
     textAlign: 'left',
-    color: '#000000',
+    color: '#fff',
     fontFamily: 'roboto',
     userSelect: 'none',
     // -moz-user-select: none;
