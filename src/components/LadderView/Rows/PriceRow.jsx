@@ -1,12 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
+//* Actions
 import { setStakeInOneClick } from '../../../actions/settings';
 import { setCustomStake, setCustomStakeActive } from '../../../actions/market';
+//* Utils
 import { getOrderBtnBG, getOrderBtnBG2 } from '../../../utils/ColorManipulator';
+//* JSS
+import useStyles from '../../../jss/components/LadderView/priceRowStyle';
 
 const PriceRow = ({
   selectionId, buttonType, stake, lay, stakeVal, setStakeInOneClick, customStake, customStakeActive, setCustomStake, setCustomStakeActive,
 }) => {
+  const classes = useStyles();
   const buttons = buttonType === 'STAKE' ? stake : lay;
 
   const castedPrices = useMemo(() => (Array.isArray(buttons) ? buttons : Object.values(buttons)), [buttons]);
@@ -21,7 +26,7 @@ const PriceRow = ({
   }, []);
 
   return (
-    <table className="price-row">
+    <table className={classes.priceRow}>
       <tbody>
         <tr colSpan="8">
           <th

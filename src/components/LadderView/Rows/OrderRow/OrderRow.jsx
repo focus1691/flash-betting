@@ -15,6 +15,8 @@ import { UnmatchedBet } from './UnmatchedBet';
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
 import { removeBet } from '../../../../http/dbHelper';
+//* JSS
+import useStyles from '../../../../jss/components/LadderView/OrderRow';
 
 const OrderRow = memo(
   ({
@@ -40,6 +42,7 @@ const OrderRow = memo(
     removeTickOffset,
     removeFillOrKill,
   }) => {
+    const classes = useStyles();
     const cancelUnmatchedBet = useCallback(
       (bet) => {
         removeBet({ rfs: bet.rfs });
@@ -132,13 +135,13 @@ const OrderRow = memo(
     }, [matchedBets, unmatchedBets]);
 
     return (
-      <div className="order-row">
+      <div className={classes.orderRow}>
         <table>
           <tbody>
             <tr>
               <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
-                <table className="lay-table">
-                  <tbody className="lay-body">
+                <table className={classes.orderTable}>
+                  <tbody className={classes.orderBody}>
                     {renderUnmatchedBets()}
                   </tbody>
                 </table>
@@ -153,8 +156,8 @@ const OrderRow = memo(
                 </button>
               </td>
               <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
-                <table className="lay-table">
-                  <tbody className="lay-body">{renderMatchedBets()}</tbody>
+                <table className={classes.orderTable}>
+                  <tbody className={classes.orderBody}>{renderMatchedBets()}</tbody>
                 </table>
               </td>
             </tr>

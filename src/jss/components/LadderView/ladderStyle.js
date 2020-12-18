@@ -7,6 +7,11 @@ const useStyles = makeStyles(() => ({
     overflowY: 'hidden',
     overflowX: 'hidden',
     height: '75%',
+    '& th': {
+      position: 'sticky',
+      top: '0',
+      padding: '0',
+    },
   },
   List: {
     fontFamily: 'roboto, Arial, Helvetica, sans-serif',

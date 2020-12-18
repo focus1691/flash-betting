@@ -14,10 +14,13 @@ import { getLTPstyle } from '../../../../utils/ladder/DeconstructLadder';
 import CancelBets from './CancelBets';
 //* Selectors
 import { getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
+//* JSS
+import useStyles from '../../../../jss/components/LadderView/percentageRowStyle';
 
 const PercentageRow = memo(({
   selectionId, ltp, tv, percent, ltpDelta, layFirstCol, unmatchedBets, setBackLayColOrder, cancelBets, removeAllSelectionBackBets, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide,
 }) => {
+  const classes = useStyles();
   const ltpStyle = useMemo(() => getLTPstyle(ltp, ltpDelta), [ltp, ltpDelta]);
 
   const cancelBackOrders = useCallback(() => {
@@ -37,7 +40,7 @@ const PercentageRow = memo(({
   }, [cancelBets, removeAllSelectionLayBets, removeStopEntryBetsOnSide, removeStopLossOnSide, removeTickOffsetOnSide, selectionId, unmatchedBets]);
 
   return (
-    <div className="percentage-row">
+    <div className={classes.percentageRow}>
       <div colSpan={3} className="th">
         {tv}
       </div>

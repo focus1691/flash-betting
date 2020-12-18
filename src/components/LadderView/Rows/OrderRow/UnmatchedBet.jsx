@@ -2,8 +2,10 @@ import React, { memo, useMemo, useCallback } from 'react';
 import {
   twoDecimalPlaces, getStrategyAbbreviation, getStrategySuffix, colorForOrder,
 } from '../../../../utils/Bets/BettingCalculations';
+import useStyles from '../../../../jss/components/LadderView/OrderRow/unmatchedBetStyle';
 
 const UnmatchedBet = memo(({ bet, cancelBet }) => {
+  const classes = useStyles();
   const strategyAbbreviation = useMemo(() => getStrategyAbbreviation(bet.trailing, bet.hedged), [bet.hedged, bet.trailing]);
   const strategySuffix = useMemo(() => getStrategySuffix(bet.strategy, bet.stopEntryCondition, bet.targetLTP, strategyAbbreviation), []);
 
@@ -17,7 +19,7 @@ const UnmatchedBet = memo(({ bet, cancelBet }) => {
     >
       <td>
         <img
-          className="cancel-order-btn-2"
+          className={classes.cancelButton}
           src={`${window.location.origin}/icons/error.png`}
           alt="X"
           style={{ cursor: 'pointer' }}

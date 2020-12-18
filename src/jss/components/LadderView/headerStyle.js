@@ -1,0 +1,59 @@
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(() => ({
+  ladderHeader: {
+    display: 'flex !important',
+    flexDirection: 'row',
+    width: '100%',
+    '& > div': {
+      '&:nth-child(1)': {
+        marginLeft: '2%',
+        width: '70%',
+      },
+      '&:nth-child(2)': {
+        width: '30%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'rgb(106, 177, 79)',
+        fontWeight: 'bold',
+        textAlign: 'left',
+      }
+    },
+  },
+  runnerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  runnerName: {
+    fontSize: '0.9em',
+    textAlign: 'left',
+    color: '#000000',
+    fontFamily: 'roboto',
+    userSelect: 'none',
+    // -moz-user-select: none;
+    // -webkit-user-select: none;
+    cursor: 'move',
+  },
+  runnerDetails: {
+    fontSize: 'x-small',
+    fontWeight: 'bold',
+    padding: '0 5px',
+  },
+  runnerIcon: {
+    verticalAlign: 'middle',
+    cursor: `url(${window.location.origin}/icons/faq.png), auto`,
+  },
+  runnerodds: {
+    color: 'rgb(106, 177, 79)',
+    fontWeight: 'bold',
+    display: 'block',
+    userSelect: 'none',
+    // -moz-user-select: none;
+    // -webkit-user-select: none;
+    width: '50%',
+  },
+}));
+
+export default useStyles;
