@@ -35,7 +35,7 @@ const useStyles = makeStyles(() => ({
         cursor: 'pointer',
       },
       '&:nth-child(5)': {
-        backgroundColor: '#BCE4FC',
+        backgroundColor: '#007aaf',
       },
       '&:nth-child(6)': {
         cursor: 'pointer',

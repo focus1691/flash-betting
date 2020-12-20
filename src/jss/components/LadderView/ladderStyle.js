@@ -36,20 +36,30 @@ const useStyles = makeStyles(() => ({
       '&:nth-child(1)': {
         width: '100%',
       },
+      '&:nth-child(2)': {
+        backgroundColor: '#525f6c',
+      },
       '&:nth-child(3)': {
+        color: '#fff',
         backgroundColor: '#eba8a6',
       },
       '&:nth-child(4)': {
+        color: '#fff',
         fontWeight: '900',
       },
       '&:nth-child(5)': {
-        backgroundColor: '#BCE4FC',
+        color: '#fff',
+        backgroundColor: '#007aaf',
+      },
+      '&:nth-child(6)': {
+        backgroundColor: '#525f6c',
       },
       '&:not(:first-child)': {
         textAlign: 'center',
         fontSize: 'small',
         fontFamily: 'roboto',
-        border: '1px solid #000000',
+        // border: '1px solid #000000',
+        borderBottom: '1px solid #ecdede',
         padding: '2px',
         cursor: 'pointer',
         width: '30%',

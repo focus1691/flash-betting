@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
         borderRight: '1px solid #a6a6a6',
       },
       '&:nth-child(6)': {
-        backgroundColor: '#BCE4FC',
+        backgroundColor: '#007aaf',
         border: '1px solid #a6a6a6',
       },
       '&:nth-child(7)': {
@@ -40,10 +40,10 @@ const useStyles = makeStyles(() => ({
     '&:hover': {
       background: '#DFDFDF',
       '&:nth-child(6)': {
-        background: '#75C2FD',
+        background: '#0a5271',
       },
       '&:nth-child(7)': {
-        background: '#F694AA',
+        background: '#d4696b',
       },
     },
     '&:nth-child(2)': {

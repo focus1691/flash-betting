@@ -13,7 +13,7 @@ const arePropsEqual = (prevProps, nextProps) => {
 const LadderLTPCell = memo(({
   price, isLTP, ltp, ltpDelta,
 }) => {
-  const ltpStyle = isLTP ? getLTPstyle(ltp, ltpDelta) : { background: '#BBBBBB' };
+  const ltpStyle = isLTP ? getLTPstyle(ltp, ltpDelta) : { background: '#333f4b' };
 
   return (
     <div style={ltpStyle} className="td">

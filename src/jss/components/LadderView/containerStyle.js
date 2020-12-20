@@ -7,7 +7,6 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     float: 'left',
     padding: '0',
-    border: '2px solid #d8d9d9',
     visibility: 'collapse',
     zIndex: '0',
     opacity: '1.0',

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(() => ({
   candleStick: {
     borderRight: '2px solid',
-    backgroundColor: '#4f4d4f',
+    backgroundColor: '#121212',
     position: 'relative',
     '& img': {
       display: 'block',

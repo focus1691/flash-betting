@@ -65,7 +65,7 @@ const useStyles = makeStyles(() => ({
     borderSpacing: '0',
     '& th': {
       '&:nth-child(n+2)': {
-        background: '#BCE4FC',
+        background: '#007aaf',
       },
       '&:nth-child(n+6)': {
         background: '#eba8a6',
