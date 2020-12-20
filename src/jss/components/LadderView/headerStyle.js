@@ -31,16 +31,17 @@ const useStyles = makeStyles((theme) => ({
   runnerName: {
     fontSize: '0.9em',
     textAlign: 'left',
-    color: '#fff',
-    fontFamily: 'roboto',
+    color: '#efecec',
+    fontFamily: 'Lato',
     userSelect: 'none',
     // -moz-user-select: none;
     // -webkit-user-select: none;
     cursor: 'move',
   },
   runnerDetails: {
+    color: '#efecec',
     fontSize: 'x-small',
-    fontWeight: 'bold',
+    fontWeight: '400',
     padding: '0 5px',
   },
   runnerIcon: {

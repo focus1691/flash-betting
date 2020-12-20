@@ -10,7 +10,6 @@ const useStyles = makeStyles(() => ({
       position: 'absolute',
       right: '0',
       top: '0px',
-      width: '3px',
     }
   },
   volumeCol: {
@@ -19,7 +18,7 @@ const useStyles = makeStyles(() => ({
     background: 'rgba(235, 170, 109, 0.767)',
     color: '#fff',
     maxWidth: '100%',
-    fontFamily: 'Open Sans',
+    fontFamily: 'Lato',
     fontSize: '0.7rem',
     fontWeight: 'bold',
     textAlign: 'left',

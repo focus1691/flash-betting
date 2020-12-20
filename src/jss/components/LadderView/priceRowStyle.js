@@ -11,6 +11,7 @@ const useStyles = makeStyles(() => ({
       position: 'sticky',
       bottom: '0',
       color: '#fff',
+      fontSize: 'small',
       background: 'transparent',
       userSelect: 'none',
       // -moz-user-select: none;

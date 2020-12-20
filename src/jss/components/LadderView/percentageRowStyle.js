@@ -9,10 +9,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     '& .th': {
       boxShadow: '0 2px 2px -1px rgba(0, 0, 0, 0.4)',
-      outline: '1px solid rgb(178, 181, 181)',
       width: '28%',
       fontSize: 'small',
-      fontFamily: 'roboto',
+      fontFamily: 'Lato',
       '&:first-child': {
         textAlign: 'center',
         borderRadius: theme.spacing(4, 0, 0, 4),
@@ -22,10 +21,8 @@ const useStyles = makeStyles((theme) => ({
       },
       '&:not(:first-child)': {
         textAlign: 'center',
-        borderTop: '1px solid #000000',
-        borderBottom: '1px solid #000000',
         fontSize: 'small',
-        fontFamily: 'roboto',
+        fontFamily: 'Lato',
       },
       '&:nth-child(2)': {
         backgroundColor: '#525f6c',

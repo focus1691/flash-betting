@@ -6,7 +6,7 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     overflowY: 'hidden',
     overflowX: 'hidden',
-    height: '75%',
+    height: '78%',
     '& th': {
       position: 'sticky',
       top: '0',
@@ -14,10 +14,9 @@ const useStyles = makeStyles(() => ({
     },
   },
   List: {
-    fontFamily: 'roboto, Arial, Helvetica, sans-serif',
+    fontFamily: 'Lato, Arial, Helvetica, sans-serif',
     borderCollapse: 'collapse',
     tableLayout: 'fixed',
-    border: '1px solid rgb(178, 181, 181)',
     width: '100%',
     boxSizing: 'content-box',
     '& > div': {
@@ -57,9 +56,8 @@ const useStyles = makeStyles(() => ({
       '&:not(:first-child)': {
         textAlign: 'center',
         fontSize: 'small',
-        fontFamily: 'roboto',
-        // border: '1px solid #000000',
-        borderBottom: '1px solid #ecdede',
+        fontFamily: 'Lato',
+        border: '1px solid #000000',
         padding: '2px',
         cursor: 'pointer',
         width: '30%',
