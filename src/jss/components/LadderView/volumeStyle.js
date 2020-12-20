@@ -10,6 +10,7 @@ const useStyles = makeStyles(() => ({
       position: 'absolute',
       right: '0',
       top: '0px',
+      width: '3px',
     }
   },
   volumeCol: {

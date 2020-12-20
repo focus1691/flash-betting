@@ -1,10 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   orderRow: {
     bottom: '0',
     height: '10%',
-    background: '#fff',
+    background: '#424242',
     display: 'block',
     width: '100%',
     float: 'left',
@@ -36,20 +36,23 @@ const useStyles = makeStyles(() => ({
       display: 'block',
       width: '100%',
       height: '100%',
+      color: '#efecec',
       backgroundColor: 'Transparent',
       backgroundRepeat: 'no-repeat',
-      border: '1px solid',
+      borderRadius: theme.spacing(3),
+      fontSize: 'small',
+      fontWeight: '700',
       cursor: 'pointer',
       overflow: 'hidden',
       outline: 'none',
       '&:nth-child(1)': {
-        background: 'silver',
+        backgroundImage: 'linear-gradient(180deg, #c2c0c2 0%, #262528 100%)',
       },
       '&:nth-child(2)': {
-        background: 'gold',
+        backgroundImage: 'linear-gradient(180deg, #fdd911 0%, #262528 100%)',
       },
       '&:nth-child(3)': {
-        background: 'crimson',
+        backgroundImage: 'linear-gradient(180deg, #dc123d 0%, #262528 100%)',
       },
     },
   },

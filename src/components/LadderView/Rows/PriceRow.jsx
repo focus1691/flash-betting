@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { setStakeInOneClick } from '../../../actions/settings';
 import { setCustomStake, setCustomStakeActive } from '../../../actions/market';
 //* Utils
-import { getOrderBtnBG, getOrderBtnBG2 } from '../../../utils/ColorManipulator';
+import { getOrderBtnBG, getOrderBtnBG2, LightenDarkenColor } from '../../../utils/ColorManipulator';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/priceRowStyle';
 
@@ -31,15 +31,16 @@ const PriceRow = ({
         <tr colSpan="8">
           <th
             key={`${selectionId}custom-price`}
-            style={{ background: getOrderBtnBG2(buttonType, customStakeActive, -20) }}
-            onClick={(e) => setCustomStakeActive({ id: selectionId, customStakeActive: true })}
+            // style={{ background: getOrderBtnBG2(buttonType, customStakeActive, -20) }}
+            onClick={() => setCustomStakeActive({ id: selectionId, customStakeActive: true })}
           >
             <input type="text" value={customStake} onChange={(e) => setCustomStake({ id: selectionId, customStake: e.target.value })} />
           </th>
           {castedPrices.map((price) => (
             <th
               key={`${selectionId}${price}`}
-              style={{ background: customStakeActive ? getOrderBtnBG(buttonType, parseFloat(price), undefined, -20) : getOrderBtnBG(buttonType, parseFloat(price), stakeVal[selectionId], -20) }}
+              // style={{ background: customStakeActive ? getOrderBtnBG(buttonType, parseFloat(price), undefined, -20) : getOrderBtnBG(buttonType, parseFloat(price), stakeVal[selectionId], -20) }}
+              // style={{ background: LightenDarkenColor }}
               onClick={handleStakeChanged(price)}
             >
               {price}

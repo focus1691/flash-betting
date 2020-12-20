@@ -1,10 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   ladderHeader: {
     display: 'flex !important',
     flexDirection: 'row',
-    borderRadius: '40px',
+    borderRadius: theme.spacing(0, 0, 3, 3),
     backgroundColor: '#242526',
     width: '100%',
     '& > div': {

@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   percentageRow: {
     fontFamily: 'Open Sans',
     fontWeight: '600',
@@ -14,7 +14,9 @@ const useStyles = makeStyles(() => ({
       fontSize: 'small',
       fontFamily: 'roboto',
       '&:first-child': {
-        background: 'linear-gradient(315deg, #29539b 0%, #1e3b70 74%)',
+        textAlign: 'center',
+        borderRadius: theme.spacing(4, 0, 0, 4),
+        backgroundImage: 'linear-gradient(-39deg, #4c82c2 0%, #254b8f 100%)',
         color: 'white',
         width: '81%',
       },
@@ -26,18 +28,22 @@ const useStyles = makeStyles(() => ({
         fontFamily: 'roboto',
       },
       '&:nth-child(2)': {
+        backgroundColor: '#525f6c',
         cursor: 'pointer',
       },
       '&:nth-child(3)': {
-        backgroundColor: '#eba8a6',
+        color: '#fff',
+        backgroundColor: '#de8384',
       },
       '&:nth-child(4)': {
         cursor: 'pointer',
       },
       '&:nth-child(5)': {
-        backgroundColor: '#007aaf',
+        color: '#fff',
+        backgroundColor: '#2a7595',
       },
       '&:nth-child(6)': {
+        backgroundColor: '#525f6c',
         cursor: 'pointer',
       },
     },
