@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
         border: '1px solid #a6a6a6',
       },
       '&:nth-child(7)': {
-        backgroundColor: '#FCC9D3',
+        backgroundColor: '#eba8a6',
         border: '1px solid #a6a6a6',
       },
     },

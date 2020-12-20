@@ -37,7 +37,7 @@ const useStyles = makeStyles(() => ({
         width: '100%',
       },
       '&:nth-child(3)': {
-        backgroundColor: '#FCC9D3',
+        backgroundColor: '#eba8a6',
       },
       '&:nth-child(4)': {
         fontWeight: '900',

@@ -15,7 +15,7 @@ const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, pendi
   if (tickOffset) return { background: 'yellow' };
   if (cellMatched.side === 'BACK' && totalMatched > 0 && side) return { background: '#75C2FD' };
   if (cellMatched.side === 'LAY' && totalMatched > 0 && side === 'LAY') return { background: '#F694AA' };
-  if (side === 'LAY') return { background: '#FCC9D3' };
+  if (side === 'LAY') return { background: '#eba8a6' };
   if (side === 'BACK') return { background: '#BCE4FC' };
   return null;
 };

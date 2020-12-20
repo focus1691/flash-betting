@@ -68,7 +68,7 @@ const useStyles = makeStyles(() => ({
         background: '#BCE4FC',
       },
       '&:nth-child(n+6)': {
-        background: '#FCC9D3',
+        background: '#eba8a6',
       },
     },
   },

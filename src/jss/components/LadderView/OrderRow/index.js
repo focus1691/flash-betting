@@ -70,7 +70,7 @@ const useStyles = makeStyles(() => ({
       },
       '&:nth-child(odd)': {
         width: '100%',
-        background: '#FCC9D3',
+        background: '#eba8a6',
       },
     },
     '& td': {

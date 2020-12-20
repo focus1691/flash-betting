@@ -45,7 +45,7 @@ const PercentageRow = memo(({
         {tv}
       </div>
       <CancelBets cancelBets={layFirstCol ? cancelLayOrders : cancelBackOrders} side="lay" layFirstCol={layFirstCol} />
-      <div className="th" style={{ backgroundColor: layFirstCol ? '#FCC9D3' : '#BCE4FC' }}>
+      <div className="th" style={{ backgroundColor: layFirstCol ? '#eba8a6' : '#BCE4FC' }}>
         {`${percent[layFirstCol ? 'lay' : 'back']}%`}
       </div>
       <Tooltip title="Swap Back/Lay Columns" aria-label="Swap matched columns">
@@ -53,7 +53,7 @@ const PercentageRow = memo(({
           {ltp[0]}
         </div>
       </Tooltip>
-      <div className="th" style={{ backgroundColor: layFirstCol ? '#BCE4FC' : '#FCC9D3' }}>
+      <div className="th" style={{ backgroundColor: layFirstCol ? '#BCE4FC' : '#eba8a6' }}>
         {`${percent[layFirstCol ? 'back' : 'lay']}%`}
       </div>
       <CancelBets cancelBets={layFirstCol ? cancelBackOrders : cancelLayOrders} side="back" layFirstCol={layFirstCol} />
