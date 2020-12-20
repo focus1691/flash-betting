@@ -28,7 +28,7 @@ const BootstrapButton = withStyles({
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
-      'Roboto',
+      'Lato',
       '"Helvetica Neue"',
       'Arial',
       'sans-serif',
