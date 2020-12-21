@@ -1,9 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+//* Actions
 import { setActiveView, setFullscreen, openPremiumDialog } from '../../actions/settings';
 import { openLiveStream } from '../../actions/draggable';
+//* JSS
+import useStyles from '../../jss/components/Sidebar/toolbarStyle';
 
 const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, setFullscreen, openPremiumDialog, openLiveStream }) => {
+  const classes = useStyles();
   const handleClick = (view) => () => {
     setActiveView(view);
   };
@@ -13,7 +17,7 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
   };
 
   return (
-    <div id="toolbar">
+    <div className={classes.toolbar}>
       <button type="button" onClick={openLiveStream} style={videoOpen ? { background: '#389C41' } : {}}>
         <img alt="Video" src={`${window.location.origin}/icons/youtube.png`} />
       </button>

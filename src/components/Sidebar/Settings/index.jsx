@@ -34,7 +34,7 @@ import LayButtons from './LayButtons';
 import RightClickTicks from './RightClickTicks';
 import HorseRacing from './HorseRacing';
 //* JSS
-import useStyles from '../../../jss/components/Sidebar/settings';
+import useStyles from '../../../jss/components/Sidebar/settingsStyle';
 
 const Settings = ({
   premiumMember,

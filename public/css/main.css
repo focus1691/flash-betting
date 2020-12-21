@@ -32,10 +32,10 @@ html, body, #root, #root > div {
 	height: 100vh;
 }
 
-.sticky {
+/* .sticky {
 	position: sticky;
 	top: 0;
-}
+} */
 
 .box {
 	display: flex;

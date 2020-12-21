@@ -9,7 +9,7 @@ import DeselectSport from './DeselectSport';
 import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
-import useStyles from '../../../jss/components/Sidebar/menu';
+import useStyles from '../../../jss/components/Sidebar/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 

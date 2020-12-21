@@ -8,7 +8,7 @@ import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from '../../../act
 import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
-import useStyles from '../../../jss/components/Sidebar/menu';
+import useStyles from '../../../jss/components/Sidebar/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 

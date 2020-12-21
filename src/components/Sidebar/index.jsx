@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { ThemeProvider } from '@material-ui/styles';
+//* @material-ui core
 import Drawer from '@material-ui/core/Drawer';
 import { createMuiTheme, withStyles } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import { green } from '@material-ui/core/colors';
 import Account from './Account';
@@ -11,6 +12,8 @@ import Event from './Event';
 import Menu from './Menu';
 import Market from './Market';
 import Settings from './Settings';
+//* JSS
+import useStyles from '../../jss/components/Sidebar';
 
 const BootstrapButton = withStyles({
   root: {
@@ -58,6 +61,7 @@ const theme = createMuiTheme({
 });
 
 const Sidebar = ({ fullscreen }) => {
+  const classes = useStyles();
   const [openTab, setOpenTab] = useState(2);
   const activeStyle = '#389C41';
 
@@ -72,7 +76,7 @@ const Sidebar = ({ fullscreen }) => {
         color="primary"
         style={openTab === tab ? { background: activeStyle } : {}}
         onClick={changeTab(tab)}
-        className="toggle-button"
+        className={classes.toggleButton}
       >
         {name}
       </BootstrapButton>
@@ -90,14 +94,14 @@ const Sidebar = ({ fullscreen }) => {
 
   return (
     <Drawer
-      className="sidebar"
+      className={classes.sidebar}
       variant="permanent"
       classes={{
-        paper: 'sidebar',
+        paper: classes.sidebar,
       }}
       anchor="left"
     >
-      <div className="sticky" style={{ zIndex: '2' }}>
+      <div className={classes.topSection}>
         {fullscreen ? null : <Account />}
         <Toolbar />
         <Event />

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+//* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
-import useStyles from '../Styles/Styles';
 import CountDown from './Countdown';
+//* JSS
+import useStyles from '../../jss/components/Sidebar/eventStyle';
 
 const Event = ({
   marketOpen, marketName, marketStatus, marketStartTime, inPlay, pastEventTime, event,
@@ -29,9 +31,9 @@ const Event = ({
   }, [marketStatus, inPlay, pastEventTime, marketStartTime]);
 
   return (
-    <div id="sidebar-event">
-      <div id="sidebar-event-section-1">
-        <div id="sidebar-event-section-2" style={{ background: bgColour }}>
+    <div className={classes.event}>
+      <div>
+        <div style={{ background: bgColour }}>
           <span>
             <CountDown />
           </span>
