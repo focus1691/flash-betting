@@ -1,24 +1,26 @@
 import React, { useCallback, memo } from 'react';
-import { colorForOrder, twoDecimalPlaces } from '../../../../utils/Bets/BettingCalculations';
 import BetPL from './BetPL';
+//* Utils
+import { colorForOrder, twoDecimalPlaces } from '../../../../utils/Bets/BettingCalculations';
+//* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/betRowStyle';
 
-const Bet = memo(({
-  bet, handleRightClick, cancelOrder, marketStartTime,
-}) => {
+const Bet = memo(({ bet, handleRightClick, cancelOrder, marketStartTime }) => {
+  const classes = useStyles();
   const handleClick = useCallback(() => {
     cancelOrder(bet);
   }, [cancelOrder, bet]);
 
   return (
     <tr
-      id="menu-unmatched-bet"
+      id={classes.betRow}
       style={colorForOrder(bet.side, bet.strategy)}
       onContextMenu={(e) => {
         e.preventDefault();
         handleRightClick(bet);
       }}
     >
-      <button type="button" className="cancel-order-btn" style={{ height: '22px', width: 'auto' }} onClick={handleClick}>
+      <button type="button" className={classes.cancelBetButton} onClick={handleClick}>
         <img src={`${window.location.origin}/icons/error.png`} alt="X" />
       </button>
       <td>{twoDecimalPlaces(bet.price)}</td>

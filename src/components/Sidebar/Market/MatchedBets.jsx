@@ -1,26 +1,24 @@
 import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
+//* Utils
 import { calcBackProfit, twoDecimalPlaces } from '../../../utils/Bets/BettingCalculations';
 import { combinePartiallyMatchedBets } from '../../../utils/Bets/CombineUnmatchedOrders';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/market/betsStyle';
 
 const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
+  const classes = useStyles();
   const selections = useMemo(() => combinePartiallyMatchedBets(bets), [bets]);
 
   return (
     <div>
-      <table className="menu-bets">
+      <table className={classes.menuBets}>
         <tbody>
-          <tr className="menu-bets-heading">
+          <tr className={classes.heading}>
             <td>
               <button
                 type="button"
-                style={{
-                  height: '22px',
-                  width: 'auto',
-                  backgroundColor: 'transparent',
-                  visibility: 'collapse',
-                  pointerEvents: 'none',
-                }}
+                className={classes.button}
               />
             </td>
             <td>Odds</td>
@@ -28,7 +26,7 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
             <td>P/L</td>
           </tr>
           <tr>
-            <td className="menu-bets-event" colSpan={4}>
+            <td className={classes.event} colSpan={4}>
               {marketName}
             </td>
           </tr>
@@ -41,7 +39,7 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
               return (
 
                 <React.Fragment key={`sidebar-matched-bet-${selection}-${idx}`}>
-                  <tr className="menu-bets-selection" colSpan={4}>
+                  <tr className={classes.selection} colSpan={4}>
                     <td>{selectionObject.runnerName}</td>
                   </tr>
                   {
@@ -50,7 +48,7 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
                       return (
                         <React.Fragment key={`sidebar-matched-bet-filtered-${order.selectionId}-${idx}`}>
                           <tr
-                            id="menu-matched-bet"
+                            className={classes.matchedBet}
                             style={{
                               backgroundColor: order.side === 'BACK' ? '#A6D8FF' : '#FAC9D7',
                             }}
@@ -62,7 +60,7 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
                             <td>{twoDecimalPlaces(order.price)}</td>
                             <td>{order.sizeMatched}</td>
                             <td
-                              id="pl-style"
+                              className={classes.profitLoss}
                               style={{
                                 color:
                                   PL === '0.00'

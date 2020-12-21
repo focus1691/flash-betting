@@ -123,7 +123,7 @@
 
 /* UNMATCHED BETS */
 
-.menu-bets {
+/* .menu-bets {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	table-layout: fixed;
@@ -158,15 +158,15 @@
 
 .menu-bets-selection > td {
 	padding: 2px;
-}
+} */
 
-#pl-style {
+/* #pl-style {
 	font-weight: bold;
-}
+} */
 
-#menu-unmatched-bet td, #menu-matched-bet td {
+/* #menu-unmatched-bet td, #menu-matched-bet td {
 	font-size: small;
-}
+} */
 
 .MuiAppBar-root {
 	border: none !important;

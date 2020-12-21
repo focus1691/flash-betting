@@ -16,6 +16,8 @@ import { removeBet, replaceOrders, updatePrice } from '../../../../http/dbHelper
 //* HTTP
 import postData from '../../../../http/postData';
 import Bet from './Bet';
+//* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/betsStyle';
 
 const UnmatchedBets = ({
   marketOpen,
@@ -46,6 +48,7 @@ const UnmatchedBets = ({
 
   rightClickTicks,
 }) => {
+  const classes = useStyles();
   const cancelOrder = useCallback(
     async (bet) => {
       removeBet({ rfs: bet.rfs });
@@ -125,19 +128,13 @@ const UnmatchedBets = ({
 
   return (
     <div>
-      <table className="menu-bets">
+      <table className={classes.menuBets}>
         <tbody>
-          <tr className="menu-bets-heading">
+          <tr className={classes.heading}>
             <td>
               <button
                 type="button"
-                style={{
-                  height: '22px',
-                  width: 'auto',
-                  backgroundColor: 'transparent',
-                  visibility: 'collapse',
-                  pointerEvents: 'none',
-                }}
+                className={classes.button}
               />
             </td>
             <td>Odds</td>
@@ -145,7 +142,7 @@ const UnmatchedBets = ({
             <td>P/L</td>
           </tr>
           <tr>
-            <td className="menu-bets-event" colSpan={4}>
+            <td className={classes.event} colSpan={4}>
               {marketName}
             </td>
           </tr>
@@ -196,7 +193,7 @@ const UnmatchedBets = ({
 
                 return (
                   <>
-                    <tr className="menu-bets-selection" colSpan={4}>
+                    <tr className={classes.selection} colSpan={4}>
                       <td>{runnerName}</td>
                     </tr>
                     {list}

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+//* Utils
 import { getStrategyAbbreviation, PLColor, getStrategySuffixForPL } from '../../../../utils/Bets/BettingCalculations';
+//* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/profitLossStyle';
 
 export default ({ bet, marketStartTime }) => {
+  const classes = useStyles();
   const [PL, setPL] = useState('');
 
   useEffect(() => {
@@ -14,7 +18,7 @@ export default ({ bet, marketStartTime }) => {
   }, [marketStartTime, bet]);
 
   return (
-    <td id="pl-style" style={PLColor(PL)}>
+    <td className={classes.profitLoss} style={PLColor(PL)}>
       {PL}
     </td>
   );
