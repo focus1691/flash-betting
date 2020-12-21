@@ -1,10 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
+//* Actions
 import { openGraph } from '../../actions/draggable';
+//* JSS
+import useStyles from '../../jss/components/graphStyle';
 
 const DraggableGraph = ({
   marketId, selection, open, openGraph,
 }) => {
+  const classes = useStyles();
   const [transparent, setTransparent] = useState(false);
 
   const changeGraphTransparency = () => (e) => {
@@ -16,15 +20,15 @@ const DraggableGraph = ({
   }, [openGraph]);
 
   return selection && open ? (
-    <div className="popup-graph" style={{ opacity: transparent ? 0.5 : 1 }}>
+    <div className={classes.graph} style={{ opacity: transparent ? 0.5 : 1 }}>
       <div>
         <span>{selection.runnerName}</span>
-        <span role="button" tabIndex="0" className="popup-graph-toggle-transparency" onClick={changeGraphTransparency()}>
+        <span role="button" tabIndex="0" className={classes.toggleButton} onClick={changeGraphTransparency()}>
           {transparent ? 'Solid' : 'Transparent'}
         </span>
         <img
           alt="Close"
-          className="close-popup-graph"
+          className={classes.closeButton}
           src={`${window.location.origin}/icons/error.png`}
           onClick={handleGraphClick}
         />

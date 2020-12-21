@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import Checkbox from '@material-ui/core/Checkbox';
 import Collapse from '@material-ui/core/Collapse';
 import Paper from '@material-ui/core/Paper';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+//* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/tools';
+import { ToolsTableCell, ToolsTableRow } from '../../../../jss/components/Sidebar/market/tools/toolsTableStyle';
 //* Actions
 import { setBackSelected } from '../../../../actions/back';
 import { setFillOrKillSelected } from '../../../../actions/fillOrKill';
@@ -23,25 +23,6 @@ import StopEntry from './StopEntry';
 import StopLoss from './StopLoss';
 import TickOffset from './TickOffset';
 
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 14,
-    border: 0,
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
-    },
-  },
-}))(TableRow);
-
 function createData(name, abbreviation, description, settings, isOpen, toggleExpand, selected, toggleSelected) {
   return {
     name,
@@ -54,13 +35,6 @@ function createData(name, abbreviation, description, settings, isOpen, toggleExp
     toggleSelected,
   };
 }
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-  },
-  table: {},
-}));
 
 const OrderTools = ({
   backText,
@@ -128,34 +102,34 @@ const OrderTools = ({
 
   return (
     <Paper className={classes.root}>
-      <Table className={`${classes.table} order-settings-tbl`}>
+      <Table className={classes.table}>
         <TableBody>
           {rows.map(({ name, description, isOpen, selected, toggleSelected, toggleExpand, settings }) => (
             <React.Fragment key={`tool-${name}`}>
-              <StyledTableRow>
-                <StyledTableCell scope="row" colSpan={4}>
-                  <button type="button" className="order-btn" onClick={() => toggleExpand(!isOpen)}>
-                    <div className="box">
+              <ToolsTableRow>
+                <ToolsTableCell scope="row" colSpan={4}>
+                  <button type="button" className={classes.betButton} onClick={() => toggleExpand(!isOpen)}>
+                    <div className={classes.box}>
                       <img alt="Add" src={`${window.location.origin}/icons/add-button-inside-black-circle.png`} />
                       <span>{name}</span>
                     </div>
                   </button>
-                </StyledTableCell>
-                <StyledTableCell align="left" colSpan={6}>
+                </ToolsTableCell>
+                <ToolsTableCell align="left" colSpan={6}>
                   {description}
-                </StyledTableCell>
-                <StyledTableCell padding="checkbox" colSpan={2}>
+                </ToolsTableCell>
+                <ToolsTableCell padding="checkbox" colSpan={2}>
                   <Checkbox color="primary" checked={selected} onChange={() => toggleSelected()} />
-                </StyledTableCell>
-              </StyledTableRow>
+                </ToolsTableCell>
+              </ToolsTableRow>
 
-              <StyledTableRow>
+              <ToolsTableRow>
                 <Collapse component="td" hidden={!isOpen} in={isOpen}>
-                  <StyledTableCell scope="row" colSpan={12}>
+                  <ToolsTableCell scope="row" colSpan={12}>
                     {settings}
-                  </StyledTableCell>
+                  </ToolsTableCell>
                 </Collapse>
-              </StyledTableRow>
+              </ToolsTableRow>
             </React.Fragment>
           ))}
         </TableBody>
