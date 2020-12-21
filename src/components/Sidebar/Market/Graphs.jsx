@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+//* Actions
 import { openGraph } from '../../../actions/draggable';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/market/graphStyle';
 
 const Graph = ({ marketOpen, marketId, selection, openGraph }) => {
+  const classes = useStyles();
   const [graph, setGraph] = useState(null);
 
   useEffect(() => {
@@ -13,7 +17,7 @@ const Graph = ({ marketOpen, marketId, selection, openGraph }) => {
   }, [selection, marketId, marketOpen]);
 
   return (
-    <div id="menu-graph">
+    <div className={classes.graph}>
       {graph ? <img alt="Chart" src={graph} onDoubleClick={openGraph} /> : null}
     </div>
   );

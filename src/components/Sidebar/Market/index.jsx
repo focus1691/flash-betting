@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-//* MUI Core
+//* @material-ui core
+import clsx from  'clsx';
 import AppBar from '@material-ui/core/AppBar';
 import MultiAccordion from '@material-ui/core/Accordion';
 import MultiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -25,6 +26,8 @@ import Rules from './Rules';
 import UnmatchedBets from './UnmatchedBets/UnmatchedBets';
 import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
 import { sortLadder } from '../../../utils/ladder/SortLadder';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/market';
 
 const Accordion = withStyles({
   root: {
@@ -49,20 +52,6 @@ const AccordionSummary = withStyles({
     minHeight: '0px',
   },
 })(MultiAccordionSummary);
-
-const useStyles = makeStyles(() => ({
-  appBar: {
-    background: '#303030',
-    color: 'orange',
-    fontWeight: '900',
-    border: '2px solid #fff',
-    zIndex: '1',
-  },
-  title: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-}));
 
 const Market = ({
   tools,
@@ -158,15 +147,7 @@ const Market = ({
           {name}
           <button
             type="button"
-            className="refresh-btn"
-            style={{
-              height: '22px',
-              width: 'auto',
-              display: 'inline-block',
-              zIndex: '999',
-              float: 'right',
-              marginTop: '0.3em',
-            }}
+            className={clsx(classes.button, classes.appBarButton)}
             onClick={reorderByLTP}
           >
             <img src={`${window.location.origin}/icons/refresh.png`} alt="R" />
@@ -183,15 +164,7 @@ const Market = ({
           {name}
           <button
             type="button"
-            className="cancel-order-btn"
-            style={{
-              height: '22px',
-              width: 'auto',
-              display: 'inline-block',
-              zIndex: '999',
-              float: 'right',
-              marginTop: '0.3em',
-            }}
+            className={clsx(classes.button, classes.appBarButton)}
             onClick={cancelAllUnmatchedOrders}
           >
             <img src={`${window.location.origin}/icons/error.png`} alt="X" />
@@ -203,48 +176,48 @@ const Market = ({
 
   return (
     <>
-      <Accordion expanded={laddersExpanded} onChange={(e) => setLaddersExpanded(!laddersExpanded)}>
+      <Accordion expanded={laddersExpanded} onChange={() => setLaddersExpanded(!laddersExpanded)}>
         {createAccordionSummaryLadders('Ladders')}
         <Ladders />
       </Accordion>
 
       {tools.visible ? (
-        <Accordion expanded={toolsExpanded} onChange={(e) => setToolsExpanded(!toolsExpanded)}>
+        <Accordion expanded={toolsExpanded} onChange={() => setToolsExpanded(!toolsExpanded)}>
           {createAccordionSummary('Tools')}
           <Tools />
         </Accordion>
       ) : null}
 
       {unmatchedBets.visible ? (
-        <Accordion expanded={unmatchedBetsExpanded} onChange={(e) => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
+        <Accordion expanded={unmatchedBetsExpanded} onChange={() => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
           {createAccordionSummaryUnmatchedBets('Unmatched Bets')}
           <UnmatchedBets />
         </Accordion>
       ) : null}
 
       {matchedBets.visible ? (
-        <Accordion expanded={matchedBetsExpanded} onChange={(e) => setMatchedBetsExpanded(!matchedBetsExpanded)}>
+        <Accordion expanded={matchedBetsExpanded} onChange={() => setMatchedBetsExpanded(!matchedBetsExpanded)}>
           {createAccordionSummary('Matched Bets')}
           <MatchedBets />
         </Accordion>
       ) : null}
 
       {graphs.visible ? (
-        <Accordion expanded={graphExpanded} onChange={(e) => setGraphExpanded(!graphExpanded)}>
+        <Accordion expanded={graphExpanded} onChange={() => setGraphExpanded(!graphExpanded)}>
           {createAccordionSummary('Graphs')}
           <Graph />
         </Accordion>
       ) : null}
 
       {marketInfo.visible ? (
-        <Accordion expanded={marketInfoExpanded} onChange={(e) => setMarketInfoExpanded(!marketInfoExpanded)}>
+        <Accordion expanded={marketInfoExpanded} onChange={() => setMarketInfoExpanded(!marketInfoExpanded)}>
           {createAccordionSummary('Market Information')}
           <MarketInfo />
         </Accordion>
       ) : null}
 
       {rules.visible ? (
-        <Accordion expanded={rulesExpanded} onChange={(e) => setRulesExpanded(!rulesExpanded)}>
+        <Accordion expanded={rulesExpanded} onChange={() => setRulesExpanded(!rulesExpanded)}>
           {createAccordionSummary('Rules')}
           <Rules />
         </Accordion>

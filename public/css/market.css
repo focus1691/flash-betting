@@ -51,7 +51,7 @@
 
 /*** MARKET TAB --LADDER-- **/
 
-#menu-ladder {
+/* #menu-ladder {
 	font-weight: bold;
 	border-collapse: collapse;
 	table-layout: fixed;
@@ -94,11 +94,11 @@
 	padding: 0;
 	vertical-align: top;
 	width: 16px;
-}
+} */
 
 /*** MARKET TAB --MARKET INFORMATION-- **/
 
-#menu-market-info {
+/* #menu-market-info {
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	border-collapse: collapse;
 	table-layout: fixed;
@@ -136,9 +136,9 @@
 #menu-market-info tr:nth-child(2n-2) {
 	font-weight: bold;
 	font-size: medium;
-}
+} */
 
-.cancel-order-btn, .refresh-btn {
+/* .cancel-order-btn, .refresh-btn {
 	background-color: Transparent;
 	background-repeat: no-repeat;
 	border: none;
@@ -149,7 +149,7 @@
 
 .cancel-order-btn img, .refresh-btn img {
 	vertical-align: bottom;
-}
+} */
 
 /* .cancel-order-btn-2 {
 	height: 75%;

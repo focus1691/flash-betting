@@ -1,10 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+//* Actions
 import { updateExcludedLadders, updateLadderOrder } from '../../../actions/market';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/market/ladderStyle';
 
 const Ladder = ({
   marketOpen, ladder, sortedLadder, runners, excludedLadders, ladderOrder, updateExcludedLadders, updateLadderOrder,
 }) => {
+  const classes = useStyles();
   const deconstructLadder = (ladder) => {
     if (ladder === undefined) return {};
 
@@ -74,7 +78,7 @@ const Ladder = ({
   return (
     <>
       {marketOpen ? (
-        <table id="menu-ladder">
+        <table className={classes.ladder}>
           <tbody>{renderRunners()}</tbody>
         </table>
       ) : null}
