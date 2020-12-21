@@ -8,10 +8,13 @@ import Clock from './Clock';
 import { formatCurrency } from '../../utils/NumberFormat';
 //* HTTP
 import fetchData from '../../http/fetchData';
+//* JSS
+import useStyles from '../../jss/components/Sidebar/accountStyle';
 
 const cookies = new Cookies();
 
 const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, setAccountDetails, setBalance }) => {
+  const classes = useStyles();
   const handleLogout = async () => {
     await fetch('/api/logout');
     cookies.remove('username');
@@ -50,10 +53,10 @@ const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, s
   }, [bets]);
 
   return (
-    <div id="sidebar-header">
-      <p id="flag-name">
+    <div className={classes.header}>
+      <p className={classes.flag}>
         {name}
-        <button type="button" id="logout" onClick={handleLogout}>
+        <button type="button" className={classes.logoutButton} onClick={handleLogout}>
           <img alt="Logout" src={`${window.location.origin}/icons/logout.png`} />
         </button>
       </p>
