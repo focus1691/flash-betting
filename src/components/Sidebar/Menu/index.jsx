@@ -1,44 +1,14 @@
 import AppBar from '@material-ui/core/AppBar';
-import MultiAccordion from '@material-ui/core/Accordion';
-import MultiAccordionSummary from '@material-ui/core/AccordionSummary';
-import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { updateCurrentSubmenu, updateSubmenuList, updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from '../../../actions/sport';
-import useStyles from '../../Styles/Styles';
 import ActiveBets from './ActiveBets';
 import AllSports from './AllSports';
 import MyMarkets from './MyMarkets';
-
-const Accordion = withStyles({
-  root: {
-    border: '1px solid #fff',
-    boxShadow: 'none',
-    '&:not(:last-child)': {
-      borderBottom: 0,
-      margin: 0,
-    },
-    backgroundColor: '#fff',
-    color: 'orange',
-    fontWeight: '900',
-    fontSize: '0.8em',
-    display: 'block',
-  },
-  expanded: {},
-})(MultiAccordion);
-
-const AccordionSummary = withStyles({
-  root: {
-    zIndex: '1',
-    '&$expanded': {
-      minHeight: '0px',
-    },
-  },
-  expanded: {
-    minHeight: '0px',
-  },
-})(MultiAccordionSummary);
+//* JSS
+import { Accordion, AccordionSummary } from '../../../jss/components/Sidebar/menu/accordion';
+import useStyles from '../../../jss/components/Sidebar/menu';
 
 const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const [expanded, setExpanded] = useState('my_markets');
@@ -57,18 +27,18 @@ const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets,
     setExpanded(newExpanded ? tab : false);
   };
 
-  const createAccordionSummary = (name) => (
-    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-      {createTitle(name)}
-    </AccordionSummary>
-  );
-
   const createTitle = (name, position) => (
     <AppBar className={classes.appBar} position={position || 'absolute'}>
       <Typography variant="h6" className={classes.title}>
         {name}
       </Typography>
     </AppBar>
+  );
+
+  const createAccordionSummary = (name) => (
+    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+      {createTitle(name)}
+    </AccordionSummary>
   );
 
   return (

@@ -1,16 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
+import headerStyle from './headerStyle';
 
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    background: '#303030',
-    color: 'orange',
-    fontWeight: '900',
-    border: '2px solid #fff',
-  },
-  title: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
+  ...headerStyle,
   group: {
     margin: theme.spacing(1, 0),
   },

@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-//* @material-ui core
-import { makeStyles } from '@material-ui/core/styles';
 //* Actions
 import {
   setDefaultView,
