@@ -21,11 +21,9 @@ const BootstrapButton = withStyles({
     textTransform: 'none',
     fontSize: 16,
     padding: '6px 12px',
-    border: '1px solid',
     lineHeight: 1.5,
     color: '#fff',
     backgroundColor: '#232323',
-    borderColor: '#fff',
     fontWeight: 'bold',
     fontFamily: [
       '-apple-system',
@@ -63,7 +61,7 @@ const theme = createMuiTheme({
 const Sidebar = ({ fullscreen }) => {
   const classes = useStyles();
   const [openTab, setOpenTab] = useState(2);
-  const activeStyle = '#389C41';
+  const activeStyle = '#404040';
 
   const changeTab = (tab) => (e) => {
     setOpenTab(tab);
@@ -73,7 +71,6 @@ const Sidebar = ({ fullscreen }) => {
     <ThemeProvider theme={theme}>
       <BootstrapButton
         variant="contained"
-        color="primary"
         style={openTab === tab ? { background: activeStyle } : {}}
         onClick={changeTab(tab)}
         className={classes.toggleButton}
@@ -105,7 +102,7 @@ const Sidebar = ({ fullscreen }) => {
         {fullscreen ? null : <Account />}
         <Toolbar />
         <Event />
-        <div id="toggle-buttons">
+        <div className={classes.menuButtons}>
           {createToggleButton('Menu', 1)}
           {createToggleButton('Market', 2)}
           {createToggleButton('Settings', 3)}

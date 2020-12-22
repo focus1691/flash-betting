@@ -18,19 +18,19 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
 
   return (
     <div className={classes.toolbar}>
-      <button type="button" onClick={openLiveStream} style={videoOpen ? { background: '#389C41' } : {}}>
+      <button type="button" onClick={openLiveStream} style={videoOpen ? { background: '#404040' } : {}}>
         <img alt="Video" src={`${window.location.origin}/icons/youtube.png`} />
       </button>
-      <button type="button" onClick={toggleFullScreen} style={fullscreen ? { background: '#389C41' } : {}}>
+      <button type="button" onClick={toggleFullScreen} style={fullscreen ? { background: '#404040' } : {}}>
         <img alt="Hide" src={`${window.location.origin}/icons/sort-up.png`} />
       </button>
-      <button type="button" onClick={handleClick('HomeView')} style={view === 'HomeView' ? { background: '#389C41' } : {}}>
+      <button type="button" onClick={handleClick('HomeView')} style={view === 'HomeView' ? { background: '#404040' } : {}}>
         <img alt="Home" src={`${window.location.origin}/icons/homepage.png`} />
       </button>
-      <button type="button" onClick={premiumMember ? handleClick('LadderView') : openPremiumDialog(true)} style={view === 'LadderView' ? { background: '#389C41' } : {}}>
+      <button type="button" onClick={premiumMember ? handleClick('LadderView') : openPremiumDialog(true)} style={view === 'LadderView' ? { background: '#404040' } : {}}>
         <img alt="Ladder" src={`${window.location.origin}/icons/menu-button-of-three-vertical-lines.png`} />
       </button>
-      <button type="button" onClick={handleClick('GridView')} style={view === 'GridView' ? { background: '#389C41' } : {}}>
+      <button type="button" onClick={handleClick('GridView')} style={view === 'GridView' ? { background: '#404040' } : {}}>
         <img alt="Grid" src={`${window.location.origin}/icons/menu-button-of-three-horizontal-lines.png`} />
       </button>
     </div>

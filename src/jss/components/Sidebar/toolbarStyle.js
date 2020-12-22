@@ -4,7 +4,7 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderRadius: theme.spacing(2),
     backgroundColor: '#242526',
-
+    margin: theme.spacing(2, 0),
     '& button': {
       width: '20%',
       border: '0',

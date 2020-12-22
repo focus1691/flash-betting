@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import clsx from  'clsx';
 import AppBar from '@material-ui/core/AppBar';
-import MultiAccordion from '@material-ui/core/Accordion';
-import MultiAccordionSummary from '@material-ui/core/AccordionSummary';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import SectionBar from '../../../jss/components/Sidebar/SectionBar';
+import SectionContent from '../../../jss/components/Sidebar/SectionContent'
 //* Actions
 import { cancelMarketBets } from '../../../actions/bet';
 import { removeAllBackBets } from '../../../actions/back';
@@ -28,30 +27,6 @@ import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
 import { sortLadder } from '../../../utils/ladder/SortLadder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market';
-
-const Accordion = withStyles({
-  root: {
-    border: '1px solid #fff',
-    boxShadow: 'none',
-    '&:not(:last-child)': {
-      borderBottom: 0,
-      margin: 0,
-    },
-  },
-  expanded: {},
-})(MultiAccordion);
-
-const AccordionSummary = withStyles({
-  root: {
-    zIndex: '1',
-    '&$expanded': {
-      minHeight: '0px',
-    },
-  },
-  expanded: {
-    minHeight: '0px',
-  },
-})(MultiAccordionSummary);
 
 const Market = ({
   tools,
@@ -135,13 +110,13 @@ const Market = ({
   );
 
   const createAccordionSummary = (name) => (
-    <AccordionSummary aria-controls={`${name}-content`} id={`${name}-header`}>
+    <SectionContent aria-controls={`${name}-content`} id={`${name}-header`}>
       {renderTitle(name)}
-    </AccordionSummary>
+    </SectionContent>
   );
 
   const createAccordionSummaryLadders = (name) => (
-    <AccordionSummary aria-controls={`${name}-content`} id={`${name}-header`}>
+    <SectionContent aria-controls={`${name}-content`} id={`${name}-header`}>
       <AppBar className={classes.appBar} position="absolute">
         <Typography variant="h6" className={classes.title}>
           {name}
@@ -154,11 +129,11 @@ const Market = ({
           </button>
         </Typography>
       </AppBar>
-    </AccordionSummary>
+    </SectionContent>
   );
 
   const createAccordionSummaryUnmatchedBets = (name) => (
-    <AccordionSummary aria-controls="unmatched-bets-content" id="unmatched-bets-header">
+    <SectionContent aria-controls="unmatched-bets-content" id="unmatched-bets-header">
       <AppBar className={classes.appBar} position="absolute">
         <Typography variant="h6" className={classes.title}>
           {name}
@@ -171,56 +146,56 @@ const Market = ({
           </button>
         </Typography>
       </AppBar>
-    </AccordionSummary>
+    </SectionContent>
   );
 
   return (
     <>
-      <Accordion expanded={laddersExpanded} onChange={() => setLaddersExpanded(!laddersExpanded)}>
+      <SectionBar expanded={laddersExpanded} onChange={() => setLaddersExpanded(!laddersExpanded)}>
         {createAccordionSummaryLadders('Ladders')}
         <Ladders />
-      </Accordion>
+      </SectionBar>
 
       {tools.visible ? (
-        <Accordion expanded={toolsExpanded} onChange={() => setToolsExpanded(!toolsExpanded)}>
+        <SectionBar expanded={toolsExpanded} onChange={() => setToolsExpanded(!toolsExpanded)}>
           {createAccordionSummary('Tools')}
           <Tools />
-        </Accordion>
+        </SectionBar>
       ) : null}
 
       {unmatchedBets.visible ? (
-        <Accordion expanded={unmatchedBetsExpanded} onChange={() => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
+        <SectionBar expanded={unmatchedBetsExpanded} onChange={() => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
           {createAccordionSummaryUnmatchedBets('Unmatched Bets')}
           <UnmatchedBets />
-        </Accordion>
+        </SectionBar>
       ) : null}
 
       {matchedBets.visible ? (
-        <Accordion expanded={matchedBetsExpanded} onChange={() => setMatchedBetsExpanded(!matchedBetsExpanded)}>
+        <SectionBar expanded={matchedBetsExpanded} onChange={() => setMatchedBetsExpanded(!matchedBetsExpanded)}>
           {createAccordionSummary('Matched Bets')}
           <MatchedBets />
-        </Accordion>
+        </SectionBar>
       ) : null}
 
       {graphs.visible ? (
-        <Accordion expanded={graphExpanded} onChange={() => setGraphExpanded(!graphExpanded)}>
+        <SectionBar expanded={graphExpanded} onChange={() => setGraphExpanded(!graphExpanded)}>
           {createAccordionSummary('Graphs')}
           <Graph />
-        </Accordion>
+        </SectionBar>
       ) : null}
 
       {marketInfo.visible ? (
-        <Accordion expanded={marketInfoExpanded} onChange={() => setMarketInfoExpanded(!marketInfoExpanded)}>
+        <SectionBar expanded={marketInfoExpanded} onChange={() => setMarketInfoExpanded(!marketInfoExpanded)}>
           {createAccordionSummary('Market Information')}
           <MarketInfo />
-        </Accordion>
+        </SectionBar>
       ) : null}
 
       {rules.visible ? (
-        <Accordion expanded={rulesExpanded} onChange={() => setRulesExpanded(!rulesExpanded)}>
+        <SectionBar expanded={rulesExpanded} onChange={() => setRulesExpanded(!rulesExpanded)}>
           {createAccordionSummary('Rules')}
           <Rules />
-        </Accordion>
+        </SectionBar>
       ) : null}
     </>
   );
