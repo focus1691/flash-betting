@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>UI / Icons / Play</title>
+    <g id="Flash-Betting" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Market" transform="translate(-95.000000, -335.000000)">
+            <g id="Sidebar" transform="translate(-1.000000, 0.000000)">
+                <g id="Sidebar_Menu" transform="translate(1.000000, 311.000000)">
+                    <g id="Play_Button" transform="translate(73.000000, 0.000000)">
+                        <g id="Icon_Play" transform="translate(22.000000, 24.000000)">
+                            <rect id="Rectangle" fill="#B6CCF9" x="0" y="0" width="32" height="32" rx="8"></rect>
+                            <path d="M17.8192319,12.1703313 L22.8985764,19.4265377 C23.2152909,19.878987 23.1052561,20.5025174 22.6528068,20.8192319 C22.4847232,20.9368904 22.2845165,21 22.0793444,21 L11.9206556,21 C11.3683708,21 10.9206556,20.5522847 10.9206556,20 C10.9206556,19.7948279 10.9837652,19.5946212 11.1014236,19.4265377 L16.1807681,12.1703313 C16.4974826,11.717882 17.121013,11.6078472 17.5734623,11.9245617 C17.6691037,11.9915107 17.752283,12.07469 17.8192319,12.1703313 Z" id="Triangle" fill="#4577D8" transform="translate(17.000000, 16.000000) rotate(-270.000000) translate(-17.000000, -16.000000) "></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

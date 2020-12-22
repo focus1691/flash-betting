@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>UI / Icons / Grid View</title>
+    <g id="Flash-Betting" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Market" transform="translate(-316.000000, -335.000000)">
+            <g id="Sidebar" transform="translate(-1.000000, 0.000000)">
+                <g id="Sidebar_Menu" transform="translate(1.000000, 311.000000)">
+                    <g id="GridView_Button" transform="translate(295.000000, 0.000000)">
+                        <g id="UI-/-Icons-/-Play" transform="translate(21.000000, 24.000000)">
+                            <rect id="Rectangle" fill="#FBC774" x="0" y="0" width="32" height="32" rx="8"></rect>
+                            <line x1="10" y1="11.5" x2="22" y2="11.5" id="Path-2" stroke="#F5A623" stroke-width="2" stroke-linecap="round"></line>
+                            <line x1="10" y1="16.5" x2="22" y2="16.5" id="Path-2-Copy" stroke="#F5A623" stroke-width="2" stroke-linecap="round"></line>
+                            <line x1="10" y1="21.5" x2="22" y2="21.5" id="Path-2-Copy-2" stroke="#F5A623" stroke-width="2" stroke-linecap="round"></line>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
