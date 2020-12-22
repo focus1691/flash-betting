@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import useStyles from '../../../jss/components/Sidebar/market/marketInfoStyle';
 
 const MarketInfo = ({ marketOpen, eventType, selection }) => {
+  const classes = useStyles();
   const createData = (name, description) => ({ name, description });
 
   const racerDetails = () => {
@@ -45,7 +47,7 @@ const MarketInfo = ({ marketOpen, eventType, selection }) => {
   );
 
   return (
-    <table id="menu-market-info">
+    <table className={classes.marketInfo}>
       <tbody>
         {marketOpen
           && eventType
