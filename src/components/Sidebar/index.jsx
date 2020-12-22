@@ -75,6 +75,7 @@ const Sidebar = ({ fullscreen }) => {
         onClick={changeTab(tab)}
         className={classes.toggleButton}
       >
+        <img alt="" src={`${window.location.origin}/icons/${name}_Icon.svg`} />
         {name}
       </BootstrapButton>
     </ThemeProvider>

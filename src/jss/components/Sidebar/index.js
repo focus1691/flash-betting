@@ -17,12 +17,24 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   menuButtons: {
-    margin: theme.spacing(1, 1, 0, 1),
+    margin: theme.spacing(2, 0, 0, 0),
     filter: 'drop-shadow(0px 6px 5px rgba(45,44,44,0.5))',
-    backgroundColor: '#242526',
+    '& button': {
+      padding: theme.spacing(2, 0),
+      '&:nth-child(1)': {
+        borderRadius: theme.spacing(3, 0, 0, 3),
+      },
+      '&:nth-child(3)': {
+        borderRadius: theme.spacing(0, 3, 3, 0),
+      },
+    },
   },
   toggleButton: {
     width: '33.33%',
+    '& img': {
+      width: '15px',
+      paddingRight: '3px',
+    },
   },
 }));
 
