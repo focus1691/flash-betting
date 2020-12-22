@@ -11,7 +11,7 @@ const LiveStream = ({ marketId, open, openLiveStream }) => {
   return marketId && open ? (
     <div className={classes.video}>
       <div>
-        <img alt="Close" className={classes.closeButton} src={`${window.location.origin}/icons/error.png`} onClick={openLiveStream} />
+        <img alt="Close" className={classes.closeButton} src={`${window.location.origin}/icons/X_Button.svg`} onClick={openLiveStream} />
       </div>
       <iframe src={`https://videoplayer.betfair.com/GetPlayer.do?tr=1&mID=${marketId}&allowPopup=false`} width="500px" height="500px" frameBorder="0" allow="autoplay; encrypted-media" title="video" />
     </div>

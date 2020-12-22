@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>X_button</title>
+    <g id="Flash-Betting" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Market" transform="translate(-308.000000, -1177.000000)">
+            <g id="Sidebar" transform="translate(-1.000000, 0.000000)">
+                <g id="Sidebar_Options" transform="translate(2.000000, 552.000000)">
+                    <g id="Unmatched-Bets" transform="translate(23.000000, 612.000000)">
+                        <g id="X_Button" transform="translate(86.000000, 10.000000)">
+                            <g id="X_button" transform="translate(198.000000, 3.000000)">
+                                <circle id="Oval" fill="#CF133B" cx="10" cy="10" r="10"></circle>
+                                <path d="M10,14.5 L10,4.54934795 M5.02467397,9.52467397 L14.975326,9.52467397" id="Combined-Shape" stroke="#F0EDED" transform="translate(10.000000, 9.524674) rotate(-45.000000) translate(-10.000000, -9.524674) "></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

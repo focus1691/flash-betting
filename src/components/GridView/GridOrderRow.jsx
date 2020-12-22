@@ -95,7 +95,7 @@ export default ({
                 onClick={() => false}
               >
                 <img
-                  src={`${window.location.origin}/icons/error.png`}
+                  src={`${window.location.origin}/icons/X_Button.svg`}
                   alt="Close"
                   onClick={toggleOrderRowVisibility({
 									  id: runnerId,

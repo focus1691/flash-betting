@@ -17,7 +17,7 @@ const renderRaceStatus = (marketOpen, status, inPlay, classes) => {
     case 'OPEN':
       return renderContent('Going in-play', '/icons/inactive.png', 'Active', classes);
     case 'SUSPENDED':
-      return renderContent('Not Going in-play', '/icons/error.png', 'Suspended', classes);
+      return renderContent('Not Going in-play', '/icons/X_Button.svg', 'Suspended', classes);
     default:
       return null;
   }

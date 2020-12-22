@@ -1,11 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
-import headerStyle from './headerStyle';
 
-const useStyles = makeStyles(() => ({
-  ...headerStyle,
+const useStyles = makeStyles((theme) => ({
   event: {
-    backgroundColor: '#b8c6db',
-    backgroundImage: 'linear-gradient(315deg, #b8c6db 0%, #f5f7fa 74%)',
     '& h6': {
       fontSize: 'medium',
     },
@@ -31,6 +27,13 @@ const useStyles = makeStyles(() => ({
         fontSize: 'large',
         fontWeight: 'bold',
       },
+    },
+  },
+  eventTitle: {
+    borderRadius: theme.spacing(0, 0, 2, 2),
+    backgroundColor: '#7542eb',
+    '& h6': {
+      textAlign: 'center',
     },
   },
 }));

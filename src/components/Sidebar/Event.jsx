@@ -39,8 +39,8 @@ const Event = ({
           </span>
         </div>
       </div>
-      <AppBar className={classes.appBar} position="static">
-        <Typography variant="h6" className={classes.title}>
+      <AppBar className={classes.eventTitle} position="static">
+        <Typography variant="h6">
           {renderTitle()}
         </Typography>
       </AppBar>

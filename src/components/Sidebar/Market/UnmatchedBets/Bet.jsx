@@ -21,7 +21,7 @@ const Bet = memo(({ bet, handleRightClick, cancelOrder, marketStartTime }) => {
       }}
     >
       <button type="button" className={classes.cancelBetButton} onClick={handleClick}>
-        <img src={`${window.location.origin}/icons/error.png`} alt="X" />
+        <img src={`${window.location.origin}/icons/X_Button.svg`} alt="X" />
       </button>
       <td>{twoDecimalPlaces(bet.price)}</td>
       <td>{bet.sizeRemaining || bet.size}</td>

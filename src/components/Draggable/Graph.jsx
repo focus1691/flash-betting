@@ -29,7 +29,7 @@ const DraggableGraph = ({
         <img
           alt="Close"
           className={classes.closeButton}
-          src={`${window.location.origin}/icons/error.png`}
+          src={`${window.location.origin}/icons/X_Button.svg`}
           onClick={handleGraphClick}
         />
       </div>

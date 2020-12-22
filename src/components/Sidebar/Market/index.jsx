@@ -142,7 +142,7 @@ const Market = ({
             className={clsx(classes.button, classes.appBarButton)}
             onClick={cancelAllUnmatchedOrders}
           >
-            <img src={`${window.location.origin}/icons/error.png`} alt="X" />
+            <img src={`${window.location.origin}/icons/X_Button.svg`} alt="X" />
           </button>
         </Typography>
       </AppBar>

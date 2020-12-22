@@ -20,7 +20,7 @@ const UnmatchedBet = memo(({ bet, cancelBet }) => {
       <td>
         <img
           className={classes.cancelButton}
-          src={`${window.location.origin}/icons/error.png`}
+          src={`${window.location.origin}/icons/X_Button.svg`}
           alt="X"
           style={{ cursor: 'pointer' }}
           onClick={handleClick}
