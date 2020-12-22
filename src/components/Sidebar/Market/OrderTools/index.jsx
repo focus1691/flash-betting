@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import Checkbox from '@material-ui/core/Checkbox';
 import Collapse from '@material-ui/core/Collapse';
-import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 //* JSS
@@ -101,7 +100,7 @@ const OrderTools = ({
   );
 
   return (
-    <Paper className={classes.root}>
+    <div className={classes.root}>
       <Table className={classes.table}>
         <TableBody>
           {rows.map(({ name, description, isOpen, selected, toggleSelected, toggleExpand, settings }) => (
@@ -110,7 +109,7 @@ const OrderTools = ({
                 <ToolsTableCell scope="row" colSpan={4}>
                   <button type="button" className={classes.betButton} onClick={() => toggleExpand(!isOpen)}>
                     <div className={classes.box}>
-                      <img alt="Add" src={`${window.location.origin}/icons/add-button-inside-black-circle.png`} />
+                      <img alt="Add" src={`${window.location.origin}/icons/rounded-remove-button.png`} />
                       <span>{name}</span>
                     </div>
                   </button>
@@ -134,7 +133,7 @@ const OrderTools = ({
           ))}
         </TableBody>
       </Table>
-    </Paper>
+    </div>
   );
 };
 

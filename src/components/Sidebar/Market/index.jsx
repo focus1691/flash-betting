@@ -125,7 +125,7 @@ const Market = ({
             className={clsx(classes.button, classes.appBarButton)}
             onClick={reorderByLTP}
           >
-            <img src={`${window.location.origin}/icons/refresh.png`} alt="R" />
+            <img src={`${window.location.origin}/icons/Refresh_Icon.svg`} alt="" />
           </button>
         </Typography>
       </AppBar>

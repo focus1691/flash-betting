@@ -9,24 +9,15 @@ const useStyles = makeStyles(() => ({
   table: {
     padding: '0',
     tableLayout: 'fixed',
-    border: '1px solid',
     margin: '0 auto',
     width: '100%',
-    '& tr': {
-      border: '1px solid',
-    },
     '& td': {
+      fontFamily: 'Roboto',
       fontSize: 'x-small',
       fontWeight: 'bold',
       margin: '0',
       padding: '5px',
       border: 'none',
-      '&:nth-child(2)': {
-        borderLeft: '1px solid',
-      },
-      '&:first-child': {
-        fontSize: 'x-small',
-      },
     },
   },
   betButton: {
@@ -39,6 +30,8 @@ const useStyles = makeStyles(() => ({
     outline: 'none',
     float: 'left',
     '& span': {
+      color: '#c7c2c2',
+      fontFamily: 'Roboto',
       fontSize: 'x-small',
       marginLeft: '2px',
     },

@@ -3,6 +3,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
 export const ToolsTableCell = withStyles((theme) => ({
+  root: {
+    color: '#c7c2c2',
+  },
   head: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
@@ -15,8 +18,6 @@ export const ToolsTableCell = withStyles((theme) => ({
 
 export const ToolsTableRow = withStyles((theme) => ({
   root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
-    },
+    // backgroundColor: '#3a3b3c',
   },
 }))(TableRow);
