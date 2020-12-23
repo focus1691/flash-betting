@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Divider, ListItem, ListItemText } from '@material-ui/core';
+import { ListItem, ListItemText } from '@material-ui/core';
 import MarketSaveButton from './MarketSaveButton';
 
 export default ({ data, setSubmenu, submenuList }) => {
@@ -14,23 +14,12 @@ export default ({ data, setSubmenu, submenuList }) => {
   };
   return dataWithoutRaces.map((sport) => (
     <React.Fragment key={`select-submenu-${sport.id}`}>
-      <ListItem
-        style={{
-          display: 'flex',
-          flexDirection: 'row-reverse',
-          color: 'blue',
-          height: '3em',
-          paddingBottom: '2px',
-          marginTop: '0.5em',
-          marginLeft: '2rem',
-        }}
-      >
+      <ListItem>
         <MarketSaveButton sport={sport} />
         <ListItem button onClick={handleMarketClick(sport)}>
           <ListItemText>{sport.name}</ListItemText>
         </ListItem>
       </ListItem>
-      <Divider />
     </React.Fragment>
   ));
 };
