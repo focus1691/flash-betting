@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="16px" viewBox="0 0 22 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Triangle</title>
+    <g id="Flash-Betting" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Market" transform="translate(-29.000000, -344.000000)" fill="#BFC6C4">
+            <g id="Sidebar" transform="translate(-1.000000, 0.000000)">
+                <g id="Collapse_Button" transform="translate(1.000000, 311.000000)">
+                    <path d="M41.6620885,34.9579587 L50.397185,47.3326788 C50.9359896,48.0959852 50.7539948,49.1515547 49.9906884,49.6903592 C49.7052654,49.8918342 49.3644652,50 49.0150965,50 L31.5449035,50 C30.6105871,50 29.8531741,49.242587 29.8531741,48.3082707 C29.8531741,47.958902 29.9613399,47.6181018 30.162815,47.3326788 L38.8979115,34.9579587 C39.436716,34.1946523 40.4922855,34.0126576 41.2555919,34.5514621 C41.4132893,34.6627779 41.5507727,34.8002613 41.6620885,34.9579587 Z" id="Triangle" transform="translate(40.280000, 41.500000) rotate(-180.000000) translate(-40.280000, -41.500000) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

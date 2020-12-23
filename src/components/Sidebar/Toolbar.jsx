@@ -18,11 +18,11 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
 
   return (
     <div className={classes.toolbar}>
+      <button type="button" onClick={toggleFullScreen} style={fullscreen ? { background: '#404040' } : {}}>
+        <img alt="Hide" src={`${window.location.origin}/icons/Triangle.svg`} />
+      </button>
       <button type="button" onClick={openLiveStream} style={videoOpen ? { background: '#404040' } : {}}>
         <img alt="Video" src={`${window.location.origin}/icons/Play.svg`} />
-      </button>
-      <button type="button" onClick={toggleFullScreen} style={fullscreen ? { background: '#404040' } : {}}>
-        <img alt="Hide" src={`${window.location.origin}/icons/sort-up.png`} />
       </button>
       <button type="button" onClick={handleClick('HomeView')} style={view === 'HomeView' ? { background: '#404040' } : {}}>
         <img alt="Home" src={`${window.location.origin}/icons/Home.svg`} />

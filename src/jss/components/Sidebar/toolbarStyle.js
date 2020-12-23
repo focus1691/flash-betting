@@ -5,11 +5,17 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.spacing(2),
     backgroundColor: '#242526',
     margin: theme.spacing(2, 0),
+    display: 'flex',
+    alignItems: 'stretch',
     '& button': {
-      width: '20%',
+      flexBasis: '20%',
+      width: '15px',
       border: '0',
       background: 'transparent',
       padding: theme.spacing(2, 0),
+      '&:focus': {
+        outline: 'none',
+      },
     },
   },
 }));
