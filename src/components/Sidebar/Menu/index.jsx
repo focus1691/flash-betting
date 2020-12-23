@@ -7,7 +7,9 @@ import ActiveBets from './ActiveBets';
 import AllSports from './AllSports';
 import MyMarkets from './MyMarkets';
 //* JSS
-import { Accordion, AccordionSummary } from '../../../jss/components/Sidebar/menu/accordion';
+// import { Accordion, AccordionSummary } from '../../../jss/components/Sidebar/menu/accordion';
+import SectionBar from '../../../jss/components/Sidebar/SectionBar';
+import SectionContent from '../../../jss/components/Sidebar/SectionContent'
 import useStyles from '../../../jss/components/Sidebar/menu';
 
 const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
@@ -36,27 +38,27 @@ const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets,
   );
 
   const createAccordionSummary = (name) => (
-    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+    <SectionContent aria-controls="panel1a-content" id="panel1a-header">
       {createTitle(name)}
-    </AccordionSummary>
+    </SectionContent>
   );
 
   return (
     <>
-      <Accordion expanded={expanded === 'my_markets'} onChange={handleChange('my_markets')}>
+      <SectionBar expanded={expanded === 'my_markets'} onChange={handleChange('my_markets')}>
         {createAccordionSummary('My Markets')}
         <MyMarkets />
-      </Accordion>
+      </SectionBar>
 
-      <Accordion expanded={expanded === 'all_sports'} onChange={handleChange('all_sports')}>
+      <SectionBar expanded={expanded === 'all_sports'} onChange={handleChange('all_sports')}>
         {createAccordionSummary('All Sports')}
         <AllSports />
-      </Accordion>
+      </SectionBar>
 
-      <Accordion expanded={expanded === 'active_bets'} onChange={handleChange('active_bets')}>
+      <SectionBar expanded={expanded === 'active_bets'} onChange={handleChange('active_bets')}>
         {createAccordionSummary('Active Bets')}
         <ActiveBets />
-      </Accordion>
+      </SectionBar>
     </>
   );
 };

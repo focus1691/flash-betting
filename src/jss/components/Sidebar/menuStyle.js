@@ -1,20 +1,29 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   allSports: {
-    fontFamily: '"Trebuchet MS", Arial, Helvetica, sans-serif',
     borderCollapse: 'collapse',
     border: 'none',
     width: '90%',
     height: '40%',
-    '& tr': {
-        color: '#0000FF',
-    },
     '& ul': {
         zIndex: '1',
     },
     '& span': {
-        fontSize: '0.8rem !important',
+      fontFamily: 'Roboto',
+      fontWeight: '700',
+    },
+    '& li': {
+      display: 'flex',
+      flexDirection: 'row-reverse',
+      color: '#c7c2c2',
+      padding: theme.spacing(0, 2),
+      marginLeft: '1rem',
+      '& div': {
+        '&:nth-child(2)': {
+          padding: '0',
+        },
+      },
     },
   },
   activeBetName: {

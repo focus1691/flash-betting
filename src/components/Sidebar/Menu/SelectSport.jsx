@@ -1,21 +1,11 @@
-import { Divider, ListItem, ListItemText } from '@material-ui/core';
+import { ListItem, ListItemText } from '@material-ui/core';
 import React from 'react';
 import MarketSaveButton from './MarketSaveButton';
 
 export default ({ sports, setSubmenu }) =>
   sports.map((sport) => (
     <React.Fragment key={`select-sport-${sport.eventType.id}`}>
-      <ListItem
-        style={{
-          display: 'flex',
-          flexDirection: 'row-reverse',
-          color: 'blue',
-          height: '3em',
-          paddingBottom: '2px',
-          marginTop: '0.5em',
-          marginLeft: '1rem',
-        }}
-      >
+      <ListItem>
         <MarketSaveButton
           sport={{
             id: sport.eventType.id,
@@ -28,6 +18,5 @@ export default ({ sports, setSubmenu }) =>
           <ListItemText>{sport.eventType.name}</ListItemText>
         </ListItem>
       </ListItem>
-      <Divider />
     </React.Fragment>
   ));

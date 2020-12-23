@@ -57,7 +57,7 @@ const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, s
       <p className={classes.flag}>
         {name}
         <button type="button" className={classes.logoutButton} onClick={handleLogout}>
-          <img alt="Logout" src={`${window.location.origin}/icons/logout.png`} />
+          <img alt="Logout" src={`${window.location.origin}/icons/SignOut.svg`} />
         </button>
       </p>
       <p>

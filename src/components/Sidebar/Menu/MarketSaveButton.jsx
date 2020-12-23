@@ -37,7 +37,7 @@ const MarketSaveButton = ({ sport, myMarkets, loadMyMarkets }) => {
   return (
     <ListItemIcon style={{ minWidth: 'auto', cursor: 'pointer' }} onClick={updateMyMarkets(marketItemSaved, sport.id, sport.name, sport.type, sport.children)}>
       <img
-        src={window.location.origin + (marketItemSaved ? '/icons/rounded-remove-button.png' : '/icons/add-button-inside-black-circle.png')}
+        src={window.location.origin + (marketItemSaved ? '/icons/rounded-remove-button.png' : '/icons/Plus_ButtonGreen.svg')}
         alt="Add"
         style={{
           height: '16px',
