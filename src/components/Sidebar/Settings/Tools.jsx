@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+//* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { setItem } from '../../../localStorage/settings';
+//* Custom @material-ui components
+import SectionBar from '../../../jss/components/Sidebar/SectionBar';
+import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 
 export default ({ tools, toggleTools, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
@@ -26,41 +30,43 @@ export default ({ tools, toggleTools, classes }) => {
   };
 
   return (
-    <>
-      <AppBar className={classes.appBar} position="static">
-        <Typography variant="h6" className={classes.title}>
-          Tools
-        </Typography>
-      </AppBar>
+    <SectionBar>
+      <SectionContent>
+        <AppBar className={classes.appBar} position="static">
+          <Typography variant="h6" className={classes.title}>
+            Tools
+          </Typography>
+        </AppBar>
+      </SectionContent>
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={tools.visible}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleTools({ visible: !tools.visible, open: tools.open });
             }}
           />
-        }
+        )}
         label="Show Panel"
       />
       {renderSaveBtn()}
       <FormControlLabel
-        control={
+        control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={tools.open}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleTools({ visible: tools.visible, open: !tools.open });
             }}
           />
-        }
+        )}
         label="Panel Open"
       />
-    </>
+    </SectionBar>
   );
 };

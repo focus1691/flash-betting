@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+//* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { setItem } from '../../../localStorage/settings';
+//* Custom @material-ui components
+import SectionBar from '../../../jss/components/Sidebar/SectionBar';
+import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 
 export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
@@ -27,12 +31,14 @@ export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
   };
 
   return (
-    <>
-      <AppBar className={classes.appBar} position="static">
-        <Typography variant="h6" className={classes.title}>
-          Ladder Unmatched Column
-        </Typography>
-      </AppBar>
+    <SectionBar>
+      <SectionContent>
+        <AppBar className={classes.appBar} position="static">
+          <Typography variant="h6" className={classes.title}>
+            Ladder Unmatched Column
+          </Typography>
+        </AppBar>
+      </SectionContent>
       {renderSaveBtn()}
       <RadioGroup
         aria-label="Unmatched Column"
@@ -48,6 +54,6 @@ export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
         <FormControlLabel value="pl" control={<Radio color="primary" />} label="Unmatched Bets + P/L" labelPlacement="end" />
         <FormControlLabel value="hedged" control={<Radio color="primary" />} label="Unmatched Bets + Hedge" labelPlacement="end" />
       </RadioGroup>
-    </>
+    </SectionBar>
   );
 };

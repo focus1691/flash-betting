@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+//* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { setItem } from '../../../localStorage/settings';
+//* Custom @material-ui components
+import SectionBar from '../../../jss/components/Sidebar/SectionBar';
+import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 
 export default ({
   marketInfo, toggleMarketInformation, classes,
@@ -28,19 +32,21 @@ export default ({
   };
 
   return (
-    <>
-      <AppBar className={classes.appBar} position="static">
-        <Typography variant="h6" className={classes.title}>
-          Market Information
-        </Typography>
-      </AppBar>
+    <SectionBar>
+      <SectionContent>
+        <AppBar className={classes.appBar} position="static">
+          <Typography variant="h6" className={classes.title}>
+            Market Information
+          </Typography>
+        </AppBar>
+      </SectionContent>
       <FormControlLabel
         control={(
           <Checkbox
             value="checkedB"
             color="primary"
             checked={marketInfo.visible}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleMarketInformation({ visible: !marketInfo.visible, open: marketInfo.open });
             }}
@@ -55,7 +61,7 @@ export default ({
             value="checkedB"
             color="primary"
             checked={marketInfo.open}
-            onChange={(e) => {
+            onChange={() => {
               setChangeMade(true);
               toggleMarketInformation({ visible: marketInfo.visible, open: !marketInfo.open });
             }}
@@ -63,6 +69,6 @@ export default ({
                   )}
         label="Panel Open"
       />
-    </>
+    </SectionBar>
   );
 };

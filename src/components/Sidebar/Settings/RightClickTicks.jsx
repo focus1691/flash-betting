@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+//* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { setItem } from '../../../localStorage/settings';
+//* Custom @material-ui components
+import SectionBar from '../../../jss/components/Sidebar/SectionBar';
+import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 
 export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
@@ -25,12 +29,14 @@ export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
   };
 
   return (
-    <>
-      <AppBar className={classes.appBar} position="static">
-        <Typography variant="h6" className={classes.title}>
-          Right-click Ticks
-        </Typography>
-      </AppBar>
+    <SectionBar>
+      <SectionContent>
+        <AppBar className={classes.appBar} position="static">
+          <Typography variant="h6" className={classes.title}>
+            Right-click Ticks
+          </Typography>
+        </AppBar>
+      </SectionContent>
       <TextField
         id="standard-number"
         className={classes.textField}
@@ -47,6 +53,6 @@ export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
         margin="normal"
       />
       {renderSaveBtn()}
-    </>
+    </SectionBar>
   );
 };

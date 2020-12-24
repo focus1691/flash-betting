@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import clsx from 'clsx';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
-import SectionBar from '../../../jss/components/Sidebar/SectionBar';
-import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 //* Actions
 import { cancelMarketBets } from '../../../actions/bet';
 import { removeAllBackBets } from '../../../actions/back';
@@ -27,6 +25,9 @@ import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
 import { sortLadder } from '../../../utils/ladder/SortLadder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market';
+//* Custom @material-ui components
+import SectionBar from '../../../jss/components/Sidebar/SectionBar';
+import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 
 const Market = ({
   marketOpen,
