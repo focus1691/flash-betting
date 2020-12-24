@@ -32,7 +32,7 @@ export default ({ defaultView, toggleDefaultView, premiumMember, classes }) => {
           setChangeMade(false);
         }}
       >
-        <img alt="Save" src={`${window.location.origin}/icons/save.png`} />
+        <img alt="Save" src={`${window.location.origin}/icons/Save_Button.svg`} />
       </button>
     );
   };
