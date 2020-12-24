@@ -6,29 +6,29 @@ const useStyles = makeStyles(() => ({
     borderCollapse: 'collapse',
     tableLayout: 'fixed',
     border: 'none',
-    margin: '0 auto',
     width: '100%',
-    height: 'auto',
+    backgroundImage: 'linear-gradient(171deg, #a5429c 0%, #6455ce 100%)',
     '& td': {
+      color: '#fff',
+      fontFamily: 'Roboto',
+      fontSize: 'x-small',
+      fontWeight: '400',
       '&:nth-child(1)': {
         width: '60%',
-        fontSize: 'x-small',
       },
       '&:nth-child(n+2)': {
         width: '20%',
-        fontSize: 'x-small',
       },
       '&:nth-child(2)': {
-        background: '#FCB3C1',
+        background: '#d4696b',
       },
       '&:nth-child(4)': {
-        background: '#90D2FB',
+        background: '#0a5271',
       },
     },
     '& tr': {
       '&:nth-child(n+1)': {
         '& td': {
-          border: '1px solid #000',
           textAlign: 'center',
         }
       },

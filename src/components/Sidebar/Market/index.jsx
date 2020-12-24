@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
-import clsx from  'clsx';
+import clsx from 'clsx';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import SectionBar from '../../../jss/components/Sidebar/SectionBar';
-import SectionContent from '../../../jss/components/Sidebar/SectionContent'
+import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 //* Actions
 import { cancelMarketBets } from '../../../actions/bet';
 import { removeAllBackBets } from '../../../actions/back';
@@ -116,15 +116,11 @@ const Market = ({
   );
 
   const createAccordionSummaryLadders = (name) => (
-    <SectionContent aria-controls={`${name}-content`} id={`${name}-header`}>
+    <SectionContent aria-controls={`${name}-content`}>
       <AppBar className={classes.appBar} position="absolute">
         <Typography variant="h6" className={classes.title}>
           {name}
-          <button
-            type="button"
-            className={clsx(classes.button, classes.appBarButton)}
-            onClick={reorderByLTP}
-          >
+          <button type="button" className={clsx(classes.button, classes.appBarButton)} onClick={reorderByLTP}>
             <img src={`${window.location.origin}/icons/Refresh_Icon.svg`} alt="" />
           </button>
         </Typography>
@@ -137,11 +133,7 @@ const Market = ({
       <AppBar className={classes.appBar} position="absolute">
         <Typography variant="h6" className={classes.title}>
           {name}
-          <button
-            type="button"
-            className={clsx(classes.button, classes.appBarButton)}
-            onClick={cancelAllUnmatchedOrders}
-          >
+          <button type="button" className={clsx(classes.button, classes.appBarButton)} onClick={cancelAllUnmatchedOrders}>
             <img src={`${window.location.origin}/icons/X_Button.svg`} alt="X" />
           </button>
         </Typography>
