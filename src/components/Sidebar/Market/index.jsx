@@ -110,12 +110,6 @@ const Market = ({
     </AppBar>
   );
 
-  const createAccordionSummary = (name) => (
-    <SectionContent aria-controls={`${name}-content`} id={`${name}-header`}>
-      {renderTitle(name)}
-    </SectionContent>
-  );
-
   const createAccordionSummaryLadders = (name) => (
     <SectionContent aria-controls={`${name}-content`}>
       <AppBar className={classes.appBar} position="absolute">
@@ -123,19 +117,6 @@ const Market = ({
           {name}
           <button type="button" className={clsx(classes.button, classes.appBarButton)} onClick={reorderByLTP}>
             <img src={`${window.location.origin}/icons/Refresh_Icon.svg`} alt="" />
-          </button>
-        </Typography>
-      </AppBar>
-    </SectionContent>
-  );
-
-  const createAccordionSummaryUnmatchedBets = (name) => (
-    <SectionContent aria-controls="unmatched-bets-content" id="unmatched-bets-header">
-      <AppBar className={classes.appBar} position="absolute">
-        <Typography variant="h6" className={classes.title}>
-          {name}
-          <button type="button" className={clsx(classes.button, classes.appBarButton)} onClick={cancelAllUnmatchedOrders}>
-            <img src={`${window.location.origin}/icons/X_Button.svg`} alt="X" />
           </button>
         </Typography>
       </AppBar>
@@ -153,42 +134,61 @@ const Market = ({
 
       {tools.visible ? (
         <SectionBar expanded={toolsExpanded} onChange={() => setToolsExpanded(!toolsExpanded)}>
-          {createAccordionSummary('Tools')}
+          <SectionContent aria-controls="Tools-content" id="Tools-header">
+            {renderTitle('Tools')}
+          </SectionContent>
           <Tools />
         </SectionBar>
       ) : null}
 
       {unmatchedBets.visible ? (
         <SectionBar expanded={unmatchedBetsExpanded} onChange={() => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
-          {createAccordionSummaryUnmatchedBets('Unmatched Bets')}
+          <SectionContent aria-controls="unmatched-bets-content" id="unmatched-bets-header">
+            <AppBar className={classes.appBar} position="absolute">
+              <Typography variant="h6" className={classes.title}>
+                Unmatched Bets
+                <button type="button" className={clsx(classes.button, classes.appBarButton)} onClick={cancelAllUnmatchedOrders}>
+                  <img src={`${window.location.origin}/icons/X_Button.svg`} alt="X" />
+                </button>
+              </Typography>
+            </AppBar>
+          </SectionContent>
           <UnmatchedBets />
         </SectionBar>
       ) : null}
 
       {matchedBets.visible ? (
         <SectionBar expanded={matchedBetsExpanded} onChange={() => setMatchedBetsExpanded(!matchedBetsExpanded)}>
-          {createAccordionSummary('Matched Bets')}
+          <SectionContent aria-controls="Matched-Bets-content" id="Matched-Bets-header">
+            {renderTitle('Matched Bets')}
+          </SectionContent>
           <MatchedBets />
         </SectionBar>
       ) : null}
 
       {graphs.visible ? (
         <SectionBar expanded={graphExpanded} onChange={() => setGraphExpanded(!graphExpanded)}>
-          {createAccordionSummary('Graphs')}
+          <SectionContent aria-controls="Graphs-content" id="Graphs-header">
+            {renderTitle('Graphs')}
+          </SectionContent>
           <Graph />
         </SectionBar>
       ) : null}
 
       {marketInfo.visible ? (
         <SectionBar expanded={marketInfoExpanded} onChange={() => setMarketInfoExpanded(!marketInfoExpanded)}>
-          {createAccordionSummary('Market Information')}
+          <SectionContent aria-controls="Market Information-content" id="Market Information-header">
+            {renderTitle('Market Information')}
+          </SectionContent>
           <MarketInfo />
         </SectionBar>
       ) : null}
 
       {rules.visible ? (
         <SectionBar expanded={rulesExpanded} onChange={() => setRulesExpanded(!rulesExpanded)}>
-          {createAccordionSummary('Rules')}
+          <SectionContent aria-controls="Rules-content" id="Rules-header">
+            {renderTitle('Rules')}
+          </SectionContent>
           <Rules />
         </SectionBar>
       ) : null}

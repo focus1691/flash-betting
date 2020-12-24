@@ -15,7 +15,7 @@ const LadderVolumeCell = memo(({
       {candleStickInfo.map((item, idx) => (
         <img
           key={`ladder-volume-${selectionId}-${price}-${idx}`}
-          src={`${window.location.origin}/icons/${item.color === 'R' ? 'red-candle.png' : 'green-candle.png'}`}
+          src={`${window.location.origin}/icons/${item.color === 'R' ? 'Red_Candlestick.svg' : 'Green_Candlestick.svg'}`}
           alt=""
           style={{ right: item.index * 2 }}
         />
