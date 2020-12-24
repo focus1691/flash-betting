@@ -30,13 +30,13 @@ const getLTPstyle = (ltp, ltpDelta) => {
   }
 
   if (ltp[0] < ltp[1]) {
-    return { background: '#FC0700', color: '#FFFF00' }; // #FC0700 (Red Lower LTP)
+    return { background: '#FC0700', color: '#d3d44f' }; // #FC0700 (Red Lower LTP)
   }
   if (ltp[0] > ltp[1]) {
     return { background: '#0AFD03', color: '#000' }; // #0AFD03 (Green Higher LTP)
   }
   if (ltp[0]) {
-    return { background: '#FFFF00', color: '#000' }; // #FFFF00 (Yellow Same LTP)
+    return { background: '#d3d44f', color: '#000' }; // #d3d44f (Yellow Same LTP)
   }
   return { background: '#FFF', color: '#000' }; // #FFF (No Value)
 };

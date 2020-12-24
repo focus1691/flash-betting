@@ -19,11 +19,11 @@ const Ladder = ({
 
     if (ladder.ltp && ladder.ltp[0]) {
       data.ltpStyle = ladder.ltp[0] < ladder.ltp[1]
-        ? { background: '#FC0700', color: '#FFFF00' } // #FC0700 (Red Lower LTP)
+        ? { background: '#FC0700', color: '#d3d44f' } // #FC0700 (Red Lower LTP)
         : ladder.ltp[0] > ladder.ltp[1]
           ? { background: '#0AFD03', color: '#000' } // #0AFD03 (Green Higher LTP)
           : ladder.ltp[0]
-            ? { background: '#FFFF00', color: '#000' } // #FFFF00 (Yellow Same LTP)
+            ? { background: '#d3d44f', color: '#000' } // #d3d44f (Yellow Same LTP)
             : { background: '#FFF', color: '#000' }; // #FFF (No Value)
       data.ltp = ladder.ltp[0];
     }
