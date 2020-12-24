@@ -29,6 +29,7 @@ import { sortLadder } from '../../../utils/ladder/SortLadder';
 import useStyles from '../../../jss/components/Sidebar/market';
 
 const Market = ({
+  marketOpen,
   tools,
   unmatchedBets,
   matchedBets,
@@ -145,7 +146,9 @@ const Market = ({
     <>
       <SectionBar expanded={laddersExpanded} onChange={() => setLaddersExpanded(!laddersExpanded)}>
         {createAccordionSummaryLadders('Ladders')}
-        <Ladders />
+        <div className={marketOpen ? classes.ladderContainer : ''}>
+          <Ladders />
+        </div>
       </SectionBar>
 
       {tools.visible ? (
@@ -194,6 +197,7 @@ const Market = ({
 };
 
 const mapStateToProps = (state) => ({
+  marketOpen: state.market.marketOpen,
   ladders: state.market.ladder,
   eventType: state.market.eventType,
   excludedLadders: state.market.excludedLadders,

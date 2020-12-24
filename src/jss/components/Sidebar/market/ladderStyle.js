@@ -1,18 +1,17 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   ladder: {
     fontWeight: 'bold',
     borderCollapse: 'collapse',
     tableLayout: 'fixed',
     border: 'none',
     width: '100%',
-    backgroundImage: 'linear-gradient(171deg, #a5429c 0%, #6455ce 100%)',
     '& td': {
       color: '#fff',
       fontFamily: 'Roboto',
       fontSize: 'x-small',
-      fontWeight: '400',
+      fontWeight: '700',
       '&:nth-child(1)': {
         width: '60%',
       },
@@ -31,6 +30,26 @@ const useStyles = makeStyles(() => ({
         '& td': {
           textAlign: 'center',
         }
+      },
+      '&:first-child': {
+        '& td': {
+          '&:nth-child(2)': {
+            borderRadius: theme.spacing(1, 0, 0, 0),
+          },
+          '&:nth-child(4)': {
+            borderRadius: theme.spacing(0, 1, 0, 0),
+          },
+        },
+      },
+      '&:last-child': {
+        '& td': {
+          '&:nth-child(2)': {
+            borderRadius: theme.spacing(0, 0, 0, 1),
+          },
+          '&:nth-child(4)': {
+            borderRadius: theme.spacing(0, 0, 1, 0),
+          },
+        },
       },
     },
     '& input[type=checkbox]': {

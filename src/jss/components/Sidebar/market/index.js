@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import headerStyle from '../headerStyle';
 import buttonStyle from '../../../buttonStyle';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   ...headerStyle,
   ...buttonStyle,
   appBarButton: {
@@ -15,6 +15,12 @@ const useStyles = makeStyles(() => ({
     '& img': {
       verticalAlign: 'bottom',
     },
+  },
+  ladderContainer: {
+    margin: theme.spacing(0, 3, 2, 2),
+    padding: theme.spacing(2, 1),
+    backgroundImage: 'linear-gradient(171deg, #a5429c 0%, #6455ce 100%)',
+    filter: 'drop-shadow(2px 4px 6px black)',
   },
 }));
 
