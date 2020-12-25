@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   ladderHeader: {
-    fontFamily: '\'Lato\\',
+    fontFamily: 'Lato',
     display: 'flex !important',
     flexDirection: 'row',
     borderRadius: theme.spacing(0, 0, 3, 3),

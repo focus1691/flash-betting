@@ -38,13 +38,13 @@ const useStyles = makeStyles((theme) => ({
       color: '#c7c2c2',
       fontWeight: '700',
       margin: '0 0 8px 21.33px',
-      fontFamily: '\'Roboto\'',
+      fontFamily: 'Roboto',
     },
     '& span': {
       paddingLeft: theme.spacing(1),
       color: '#c7c2c2',
       fontWeight: '400',
-      fontFamily: '\'Roboto\'',
+      fontFamily: 'Roboto',
     },
   },
   logoutButton: {
