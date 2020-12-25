@@ -57,7 +57,7 @@ const useStyles = makeStyles(() => ({
         textAlign: 'center',
         fontSize: 'small',
         fontFamily: 'Lato',
-        border: '1px solid #000000',
+        border: '1px solid #3b3939',
         padding: '2px',
         cursor: 'pointer',
         width: '30%',

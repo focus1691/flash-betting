@@ -17,12 +17,13 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: theme.spacing(4, 0, 0, 4),
         backgroundImage: 'linear-gradient(-39deg, #4c82c2 0%, #254b8f 100%)',
         color: 'white',
-        width: '81%',
+        width: '83%',
       },
       '&:not(:first-child)': {
         textAlign: 'center',
         fontSize: 'small',
         fontFamily: 'Lato',
+        border: '0.5px solid #3b3939',
       },
       '&:nth-child(2)': {
         backgroundColor: '#525f6c',
