@@ -2,6 +2,9 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   event: {
+    display: 'flex',
+    flexFlow: 'column',
+    alignItems: 'center',
     '& h6': {
       fontSize: 'medium',
     },
@@ -17,15 +20,16 @@ const useStyles = makeStyles((theme) => ({
         },
       },
       '& > div': {
-        color: '#fff',
         margin: '5px',
         display: 'block',
         float: 'left',
-        border: '1px solid',
-        borderRadius: '10px',
-        padding: '5px',
+        borderRadius: theme.spacing(2),
+        backgroundColor: '#5d5d5d80',
+        color: '#c7c2c2',
+        padding: theme.spacing(1, 2),
+        fontFamily: 'Roboto',
         fontSize: 'large',
-        fontWeight: 'bold',
+        fontWeight: '700',
       },
     },
   },
