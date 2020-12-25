@@ -1,41 +1,43 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   marketInfo: {
     fontFamily: 'Trebuchet MS, Arial, Helvetica, sans-serif',
     borderCollapse: 'collapse',
     tableLayout: 'fixed',
     border: 'none',
-    margin: '0 auto',
     width: '100%',
     height: 'auto',
     '& tr': {
+      borderRadius: theme.spacing(1),
       '&:first-child': {
         '& td': {
-          backgroundColor: '#ffffff',
-          backgroundImage: 'linear-gradient(315deg, #ffffff 0%, #d7e1ec 74%)',
+          textAlign: 'center',
+          borderRadius: theme.spacing(1),
+          backgroundColor: '#242526',
+          color: '#c7c2c2',
+          fontFamily: 'Roboto',
+          fontWeight: '400',
           fontSize: 'large',
-          fontWeight: 'bold',
         },
       },
       '&:nth-child(4n-1)': {
-        background: '#D6E5E6',
+        background: '#565555',
       },
       '&:nth-child(4n-2)': {
-        background: '#D6E5E6',
+        background: '#565555',
       },
 
       '&:nth-child(4n-3)': {
-        background: '#F0FFFF',
+        background: '#494848',
       },
       '&:nth-child(4n-4)': {
-        background: '#F0FFFF',
+        background: '#494848',
       },
 
       '&:nth-child(2n-1)': {
         fontWeight: 'normal',
         fontSize: 'small',
-        borderBottom: '3px solid #D3D3D3',
       },
 
       '&:nth-child(2n-2)': {
