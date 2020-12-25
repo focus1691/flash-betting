@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   ladderContainer: {
-    margin: theme.spacing(2, 3, 2, 2),
+    margin: theme.spacing(2, 0, 2, 0),
     padding: theme.spacing(2, 1),
     borderRadius: theme.spacing(2),
     backgroundImage: 'linear-gradient(171deg, #a5429c 0%, #6455ce 100%)',

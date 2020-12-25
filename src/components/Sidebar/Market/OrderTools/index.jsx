@@ -109,7 +109,7 @@ const OrderTools = ({
                 <ToolsTableCell scope="row" colSpan={4}>
                   <button type="button" className={classes.betButton} onClick={() => toggleExpand(!isOpen)}>
                     <div className={classes.box}>
-                      <img alt="Add" src={`${window.location.origin}/icons/rounded-remove-button.png`} />
+                      <img alt="Add" src={`${window.location.origin}/icons/Minus_Button.png`} />
                       <span>{name}</span>
                     </div>
                   </button>
