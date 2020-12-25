@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import useInterval from 'react-useinterval';
+//* JSS
+import useStyles from '../../jss/components/Sidebar/clockStyle';
+
+const ONE_SECOND = 1000;
 
 const Clock = () => {
-  const ONE_SECOND = 1000;
+  const classes = useStyles(); 
   const [time, setTime] = useState(new Date().toLocaleString());
 
   useInterval(() => {
@@ -10,8 +14,8 @@ const Clock = () => {
   }, ONE_SECOND);
 
   return (
-    <div className="box">
-      <img src={`${window.location.origin}/icons/calendar-with-alarm-clock.png`} alt="Time" />
+    <div className={classes.clock}>
+      <img src={`${window.location.origin}/icons/Calendar_Icon.svg`} alt="Time" />
       <span>{time}</span>
     </div>
   );

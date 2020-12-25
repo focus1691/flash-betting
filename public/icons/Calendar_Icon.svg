@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="25px" viewBox="0 0 24 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Calendar_Icon</title>
+    <g id="Flash-Betting" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Market" transform="translate(-36.000000, -191.000000)" fill-rule="nonzero">
+            <g id="Sidebar" transform="translate(-1.000000, 0.000000)">
+                <g id="Balance+Calendar" transform="translate(0.000000, 121.000000)">
+                    <g id="Calendar_Icon" transform="translate(37.000000, 70.000000)">
+                        <path d="M0,22.1052632 L0,6.94736842 L24,6.94736842 L24,22.1052632 C24,23.4947368 22.8631579,24.6315789 21.4736842,24.6315789 L2.52631579,24.6315789 C1.13684211,24.6315789 0,23.4947368 0,22.1052632 Z" id="Path" fill="#3B3939"></path>
+                        <path d="M24,4.42105263 L24,8.21052632 L0,8.21052632 L0,4.42105263 C0,3.03157895 1.13684211,1.89473684 2.52631579,1.89473684 L21.4736842,1.89473684 C22.8631579,1.89473684 24,3.03157895 24,4.42105263 Z" id="Path" fill="#E96D8B"></path>
+                        <g id="Group" transform="translate(4.421053, 2.526316)" fill="#B71C1C">
+                            <circle id="Oval" cx="13.2631579" cy="1.89473684" r="1.89473684"></circle>
+                            <circle id="Oval" cx="1.89473684" cy="1.89473684" r="1.89473684"></circle>
+                        </g>
+                        <g id="Group" transform="translate(5.052632, 0.000000)" fill="#3A3838">
+                            <path d="M12.6315789,0 C11.9368421,0 11.3684211,0.568421053 11.3684211,1.26315789 L11.3684211,4.42105263 C11.3684211,5.11578947 11.9368421,5.68421053 12.6315789,5.68421053 C13.3263158,5.68421053 13.8947368,5.11578947 13.8947368,4.42105263 L13.8947368,1.26315789 C13.8947368,0.568421053 13.3263158,0 12.6315789,0 Z" id="Path"></path>
+                            <path d="M1.26315789,0 C0.568421053,0 0,0.568421053 0,1.26315789 L0,4.42105263 C0,5.11578947 0.568421053,5.68421053 1.26315789,5.68421053 C1.95789474,5.68421053 2.52631579,5.11578947 2.52631579,4.42105263 L2.52631579,1.26315789 C2.52631579,0.568421053 1.95789474,0 1.26315789,0 Z" id="Path"></path>
+                        </g>
+                        <g id="Group" transform="translate(5.052632, 10.736842)" fill="#90A4AE">
+                            <rect id="Rectangle" x="0" y="0" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="3.78947368" y="0" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="7.57894737" y="0" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="11.3684211" y="0" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="0" y="3.78947368" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="3.78947368" y="3.78947368" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="7.57894737" y="3.78947368" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="11.3684211" y="3.78947368" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="0" y="7.57894737" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="3.78947368" y="7.57894737" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="7.57894737" y="7.57894737" width="2.52631579" height="2.52631579"></rect>
+                            <rect id="Rectangle" x="11.3684211" y="7.57894737" width="2.52631579" height="2.52631579"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

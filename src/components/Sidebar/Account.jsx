@@ -54,16 +54,18 @@ const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, s
 
   return (
     <div className={classes.header}>
-      <p className={classes.flag}>
-        {name}
+      <div className={classes.welcome}>
+        <p>{`Hi, ${name}!`}</p>
         <button type="button" className={classes.logoutButton} onClick={handleLogout}>
           <img alt="Logout" src={`${window.location.origin}/icons/SignOut.svg`} />
         </button>
-      </p>
-      <p>
-        <FlagIcon code={countryCode || 'gb'} /> {formatCurrency(localeCode, currencyCode, balance)}
-      </p>
-      <Clock />
+      </div>
+      <div className={classes.account}>
+        <FlagIcon code={countryCode || 'gb'} />
+        <span>Available balance:</span>
+        <p>{formatCurrency(localeCode, currencyCode, balance)}</p>
+        <Clock />
+      </div>
     </div>
   );
 };
