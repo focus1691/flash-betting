@@ -64,7 +64,7 @@ const LadderHeader = memo(({
             className={classes.runnerodds}
             style={{
               display: ordersOnMarket ? 'block' : 'none',
-              color: PL >= 0 ? 'rgb(106, 177, 79)' : 'red',
+              color: PL >= 0 ? '#1ae17d' : '#c13232',
             }}
           >
             {(PL && PL.toFixed(2)) || null}
@@ -76,7 +76,7 @@ const LadderHeader = memo(({
             className={classes.runnerodds}
             style={{
               display: oddsHovered.odds > 0 && ordersOnMarket ? 'block' : 'none',
-              color: oddsHoveredCalc >= 0 ? 'rgb(106, 177, 79)' : 'red',
+              color: oddsHoveredCalc >= 0 ? '#1ae17d' : '#c13232',
             }}
           >
             {(oddsHoveredCalc && oddsHoveredCalc.toFixed(2)) || null}
@@ -87,7 +87,7 @@ const LadderHeader = memo(({
         <span
           style={{
             display: parseFloat(hedge.profit) === 0 ? 'none' : 'block',
-            color: parseFloat(hedge.profit) >= 0 ? 'rgb(106, 177, 79)' : 'red',
+            color: parseFloat(hedge.profit) >= 0 ? '#1ae17d' : '#c13232',
           }}
         >
           {twoDecimalPlaces(hedge.profit)}
@@ -95,7 +95,7 @@ const LadderHeader = memo(({
         <span
           style={{
             display: twoDecimalPlaces(hedge.size) <= 0 ? 'none' : 'block',
-            color: hedge.side === 'BACK' ? '#DBEFFF' : '#d4696b',
+            color: hedge.side === 'BACK' ? '#05caf0' : '#d4696b',
           }}
           id="ltphedgesize"
         >

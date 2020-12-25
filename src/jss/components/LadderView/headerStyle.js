@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   ladderHeader: {
+    fontFamily: '\'Lato\\',
     display: 'flex !important',
     flexDirection: 'row',
     borderRadius: theme.spacing(0, 0, 3, 3),
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'rgb(106, 177, 79)',
+        color: '#1ae17d',
         fontWeight: 'bold',
         textAlign: 'left',
       }
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
   runnerContainer: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
   },
   runnerName: {
     fontSize: '0.9em',
@@ -34,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
     color: '#efecec',
     fontFamily: 'Lato',
     userSelect: 'none',
-    // -moz-user-select: none;
-    // -webkit-user-select: none;
     cursor: 'move',
   },
   runnerDetails: {
@@ -49,12 +49,10 @@ const useStyles = makeStyles((theme) => ({
     cursor: `url(${window.location.origin}/icons/faq.png), auto`,
   },
   runnerodds: {
-    color: 'rgb(106, 177, 79)',
-    fontWeight: 'bold',
+    color: '#1ae17d',
+    fontWeight: '700',
     display: 'block',
     userSelect: 'none',
-    // -moz-user-select: none;
-    // -webkit-user-select: none;
     width: '50%',
   },
 }));
