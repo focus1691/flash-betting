@@ -3,8 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 const SectionContent = withStyles({
   root: {
-    margin: '0 5px',
-    padding: '5px 0',
+    margin: '0 7px',
+    padding: '0',
     zIndex: '1',
     '&$expanded': {
       minHeight: '0px',

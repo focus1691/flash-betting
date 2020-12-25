@@ -39,6 +39,7 @@ export default ({ graphs, toggleGraph, classes }) => {
         </AppBar>
       </SectionContent>
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -46,27 +47,13 @@ export default ({ graphs, toggleGraph, classes }) => {
             checked={graphs.visible}
             onChange={() => {
               setChangeMade(true);
-              toggleGraph({ visible: !graphs.visible, open: graphs.open });
+              toggleGraph({ visible: !graphs.visible });
             }}
           />
         )}
-        label="Show Panel"
+        label="Visible"
       />
       {renderSaveBtn()}
-      <FormControlLabel
-        control={(
-          <Checkbox
-            value="checkedB"
-            color="primary"
-            checked={graphs.open}
-            onChange={() => {
-              setChangeMade(true);
-              toggleGraph({ visible: graphs.visible, open: !graphs.open });
-            }}
-          />
-        )}
-        label="Panel Open"
-      />
     </SectionBar>
   );
 };

@@ -39,6 +39,7 @@ export default ({ sounds, toggleSounds, classes }) => {
         </AppBar>
       </SectionContent>
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"

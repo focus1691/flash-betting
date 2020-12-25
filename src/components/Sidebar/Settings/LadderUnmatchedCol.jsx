@@ -43,7 +43,7 @@ export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
       <RadioGroup
         aria-label="Unmatched Column"
         name="unmatched "
-        className={classes.group}
+        className={classes.radioButtons}
         value={ladderUnmatched}
         onChange={(e) => {
           setChangeMade(true);

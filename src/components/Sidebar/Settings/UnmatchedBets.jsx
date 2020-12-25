@@ -39,6 +39,7 @@ export default ({ unmatchedBets, toggleUnmatchedBets, classes }) => {
         </AppBar>
       </SectionContent>
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -46,27 +47,13 @@ export default ({ unmatchedBets, toggleUnmatchedBets, classes }) => {
             checked={unmatchedBets.visible}
             onChange={() => {
               setChangeMade(true);
-              toggleUnmatchedBets({ visible: !unmatchedBets.visible, open: unmatchedBets.open });
+              toggleUnmatchedBets({ visible: !unmatchedBets.visible });
             }}
           />
         )}
-        label="Show Panel"
+        label="Visible"
       />
       {renderSaveBtn()}
-      <FormControlLabel
-        control={(
-          <Checkbox
-            value="checkedB"
-            color="primary"
-            checked={unmatchedBets.open}
-            onChange={() => {
-              setChangeMade(true);
-              toggleUnmatchedBets({ visible: unmatchedBets.visible, open: !unmatchedBets.open });
-            }}
-          />
-        )}
-        label="Panel Open"
-      />
     </SectionBar>
   );
 };

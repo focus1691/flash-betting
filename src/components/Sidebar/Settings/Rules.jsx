@@ -39,6 +39,7 @@ export default ({ rules, toggleRules, classes }) => {
         </AppBar>
       </SectionContent>
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -46,27 +47,13 @@ export default ({ rules, toggleRules, classes }) => {
             checked={rules.visible}
             onChange={() => {
               setChangeMade(true);
-              toggleRules({ visible: !rules.visible, open: rules.open });
+              toggleRules({ visible: !rules.visible });
             }}
           />
         )}
-        label="Show Panel"
+        label="Visible"
       />
       {renderSaveBtn()}
-      <FormControlLabel
-        control={(
-          <Checkbox
-            value="checkedB"
-            color="primary"
-            checked={rules.open}
-            onChange={() => {
-              setChangeMade(true);
-              toggleRules({ visible: rules.visible, open: !rules.open });
-            }}
-          />
-        )}
-        label="Panel Open"
-      />
     </SectionBar>
   );
 };

@@ -10,5 +10,6 @@ export default {
     fontSize: '1.1rem',
     fontFamily: 'Roboto',
     fontWeight: '700',
+    padding: '5px',
   },
 };

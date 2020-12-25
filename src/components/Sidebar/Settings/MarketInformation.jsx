@@ -41,6 +41,7 @@ export default ({
         </AppBar>
       </SectionContent>
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -48,27 +49,13 @@ export default ({
             checked={marketInfo.visible}
             onChange={() => {
               setChangeMade(true);
-              toggleMarketInformation({ visible: !marketInfo.visible, open: marketInfo.open });
+              toggleMarketInformation({ visible: !marketInfo.visible });
             }}
           />
                   )}
-        label="Show Panel"
+        label="Visible"
       />
       {renderSaveBtn()}
-      <FormControlLabel
-        control={(
-          <Checkbox
-            value="checkedB"
-            color="primary"
-            checked={marketInfo.open}
-            onChange={() => {
-              setChangeMade(true);
-              toggleMarketInformation({ visible: marketInfo.visible, open: !marketInfo.open });
-            }}
-          />
-                  )}
-        label="Panel Open"
-      />
     </SectionBar>
   );
 };

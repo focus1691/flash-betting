@@ -37,22 +37,24 @@ export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
           </Typography>
         </AppBar>
       </SectionContent>
-      <TextField
-        id="standard-number"
-        className={classes.textField}
-        type="number"
-        value={rightClickTicks}
-        inputProps={{ min: '1' }}
-        onChange={(e) => {
-          setChangeMade(true);
-          const val = parseInt(e.target.value);
-          if (val && typeof val === 'number') {
-            updateRightClickTicks(val);
-          }
-        }}
-        margin="normal"
-      />
       {renderSaveBtn()}
+      <div className={classes.stakeButtons}>
+        <TextField
+          id="standard-number"
+          className={classes.textField}
+          type="number"
+          value={rightClickTicks}
+          inputProps={{ min: '1' }}
+          onChange={(e) => {
+            setChangeMade(true);
+            const val = parseInt(e.target.value);
+            if (val && typeof val === 'number') {
+              updateRightClickTicks(val);
+            }
+          }}
+          margin="normal"
+        />
+      </div>
     </SectionBar>
   );
 };

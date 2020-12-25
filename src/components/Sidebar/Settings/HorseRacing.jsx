@@ -38,7 +38,9 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
           </Typography>
         </AppBar>
       </SectionContent>
+      {renderSaveBtn()}
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -67,8 +69,8 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="UK Races"
       />
       <br />
-      {renderSaveBtn()}
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -97,6 +99,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="Irish Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -125,6 +128,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="French Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -153,6 +157,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="German Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -182,6 +187,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
       />
       <br />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -210,6 +216,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="UAE Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -238,6 +245,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="Turkish Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -266,6 +274,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="Singaporean Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -294,6 +303,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="Swedish Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -322,6 +332,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="USA Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -350,6 +361,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="Australian Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -378,6 +390,7 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         label="New Zealand Races"
       />
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"

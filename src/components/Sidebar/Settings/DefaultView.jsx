@@ -47,7 +47,7 @@ export default ({ defaultView, toggleDefaultView, premiumMember, classes }) => {
         </AppBar>        
       </SectionContent>
       {renderSaveBtn()}
-      <RadioGroup aria-label="Default View" name="View" className={classes.group} value={defaultView} onChange={handleViewChange()}>
+      <RadioGroup aria-label="Default View" name="View" className={classes.radioButtons} value={defaultView} onChange={handleViewChange()}>
         <FormControlLabel value="LadderView" control={<Radio color="primary" />} label="Ladder" labelPlacement="end" />
         <FormControlLabel value="GridView" control={<Radio color="primary" />} label="Grid" labelPlacement="end" />
         <FormControlLabel value="HomeView" control={<Radio color="primary" />} label="Home" labelPlacement="end" />

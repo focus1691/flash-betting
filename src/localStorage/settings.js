@@ -6,25 +6,25 @@ export const setupStorage = () => {
     localStorage.setItem('sounds', false);
   }
   if (localStorage.getItem('tools') === null) {
-    localStorage.setItem('tools', JSON.stringify({ visible: true, open: false }));
+    localStorage.setItem('tools', JSON.stringify({ visible: true }));
   }
   if (localStorage.getItem('unmatchedBets') === null) {
-    localStorage.setItem('unmatchedBets', JSON.stringify({ visible: true, open: false }));
+    localStorage.setItem('unmatchedBets', JSON.stringify({ visible: true }));
   }
   if (localStorage.getItem('matchedBets') === null) {
-    localStorage.setItem('matchedBets', JSON.stringify({ visible: true, open: false }));
+    localStorage.setItem('matchedBets', JSON.stringify({ visible: true }));
   }
   if (localStorage.getItem('graphs') === null) {
-    localStorage.setItem('graphs', JSON.stringify({ visible: true, open: false }));
+    localStorage.setItem('graphs', JSON.stringify({ visible: true }));
   }
   if (localStorage.getItem('marketInfo') === null) {
-    localStorage.setItem('marketInfo', JSON.stringify({ visible: true, open: false }));
+    localStorage.setItem('marketInfo', JSON.stringify({ visible: true }));
   }
   if (localStorage.getItem('winMarketsOnly') === null) {
     localStorage.setItem('winMarketsOnly', true);
   }
   if (localStorage.getItem('rules') === null) {
-    localStorage.setItem('rules', JSON.stringify({ visible: true, open: false }));
+    localStorage.setItem('rules', JSON.stringify({ visible: true }));
   }
   if (localStorage.getItem('ladderUnmatched') === null) {
     localStorage.setItem('ladderUnmatched', 'hedged');

@@ -39,6 +39,7 @@ export default ({ matchedBets, toggleMatchedBets, classes }) => {
         </AppBar>
       </SectionContent>
       <FormControlLabel
+        className={classes.checkboxes}
         control={(
           <Checkbox
             value="checkedB"
@@ -46,27 +47,13 @@ export default ({ matchedBets, toggleMatchedBets, classes }) => {
             checked={matchedBets.visible}
             onChange={() => {
               setChangeMade(true);
-              toggleMatchedBets({ visible: !matchedBets.visible, open: matchedBets.open });
+              toggleMatchedBets({ visible: !matchedBets.visible });
             }}
           />
         )}
-        label="Show Panel"
+        label="Visible"
       />
       {renderSaveBtn()}
-      <FormControlLabel
-        control={(
-          <Checkbox
-            value="checkedB"
-            color="primary"
-            checked={matchedBets.open}
-            onChange={() => {
-              setChangeMade(true);
-              toggleMatchedBets({ visible: matchedBets.visible, open: !matchedBets.open });
-            }}
-          />
-        )}
-        label="Panel Open"
-      />
     </SectionBar>
   );
 };
