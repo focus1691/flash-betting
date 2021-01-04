@@ -98,7 +98,7 @@ if (process.env.NODE_ENV === 'production') {
 app.get('/api/generate-client-token', (request, response) => {
   gateway.clientToken.generate({}, (err, res) => {
     response.json({
-      clientTokaccessTokenen: res.clientToken,
+      clientToken: res.clientToken,
     });
   });
 });

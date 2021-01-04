@@ -16,6 +16,7 @@ const cookies = new Cookies();
 const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   const [data, setData] = useState({});
   const classes = useStyles({ subscribed: premiumMember });
+  console.log(openPremiumDialog);
 
   useEffect(() => {
     premiumMember
@@ -93,14 +94,10 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   );
 };
 
-const HomeViewWithSocket = (props) => (
-  <SocketContext.Consumer>{(socket) => <HomeView {...props} socket={socket} />}</SocketContext.Consumer>
-);
-
 const mapStateToProps = (state) => ({
   premiumMember: state.settings.premiumMember,
 });
 
 const mapDispatchToProps = { openPremiumDialog, setSelectedPremium };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeViewWithSocket);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeView);

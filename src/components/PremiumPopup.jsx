@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef } from 'react';
 import { connect } from 'react-redux';
 import DropIn from 'braintree-web-drop-in-react';
 //* @material-ui core
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const PremiumPopup = ({
   open, premiumMember, selectedPremium, openPremiumDialog, setPremiumStatus,
@@ -74,7 +74,7 @@ const PremiumPopup = ({
         expiresIn: selectedPremium === 'monthly' ? getDate30DaysAhead() : selectedPremium === 'biannually' ? getDate180DaysAhead() : getDate1YearAhead(),
         amount: selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99,
       }),
-    }).then((res) => {
+    }).then(() => {
       setPremiumStatus(true);
       openPremiumDialog(false);
     });
@@ -98,7 +98,7 @@ const PremiumPopup = ({
   return (
     <Dialog
       open={open}
-      onClose={(e) => openPremiumDialog(false)}
+      onClose={() => openPremiumDialog(false)}
       TransitionComponent={Transition}
     >
       <AppBar className={classes.appBar}>
@@ -106,7 +106,7 @@ const PremiumPopup = ({
           <IconButton
             edge="start"
             color="inherit"
-            onClick={(e) => openPremiumDialog()}
+            onClick={() => openPremiumDialog()}
             aria-label="close"
           >
             <CloseIcon />
@@ -121,7 +121,7 @@ const PremiumPopup = ({
           You are required to pay the monthly subscription fee of £
           {selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99}
           {' '}
-          in order to access Flash Betting's advanced features.
+          in order to access Flash Betting&apos;s advanced features.
         </DialogContentText>
 
         {renderForm()}
