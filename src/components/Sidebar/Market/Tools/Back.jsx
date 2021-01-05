@@ -9,58 +9,21 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 //* Actions
-import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateLayList } from '../../../../actions/lay';
+import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList } from '../../../../actions/back';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
 //* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/tools/backLayStyle';
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
-import dropdownRunnerStyle from '../../../../jss/DropdownList';
 //* HTTP
 import { saveBet } from '../../../../http/dbHelper';
 
-const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(2),
-  },
-  textField: {
-    width: 40,
-    margin: theme.spacing(1),
-  },
-  textField2: {
-    width: 30,
-    margin: theme.spacing(2),
-  },
-  ...dropdownRunnerStyle(theme),
-}));
-
-const Lay = ({
-  stake,
-  price,
-  hours,
-  minutes,
-  seconds,
-  executionTime,
-  marketId,
-  runners,
-  selections,
-  list,
-  setDisplayText,
-  setStake,
-  setPrice,
-  setHours,
-  setMinutes,
-  setSeconds,
-  toggleExecutionTime,
-  setSelections,
-  updateLayList,
-}) => {
+const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, runners, selections, list, setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [step, setStep] = useState(findPriceStep(price));
-
   // Change the text when the fields change
   useEffect(() => {
     setDisplayText(`${stake} @ ${price}`);
@@ -75,7 +38,7 @@ const Lay = ({
     setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuItemClick = (index) => (e) => {
+  const handleMenuItemClick = (index) => () => {
     setSelections(index);
     setAnchorEl(null);
   };
@@ -114,13 +77,13 @@ const Lay = ({
   const placeOrder = () => async () => {
     const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
-    const newLayList = { ...list };
+    const newBackList = { ...list };
 
     await Promise.all(
       selectedRunners.map(async (selectionId) => {
         const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
         const addedOrder = {
-          strategy: 'Lay',
+          strategy: 'Back',
           marketId,
           selectionId,
           executionTime,
@@ -129,30 +92,31 @@ const Lay = ({
           price: formatPrice(price),
           rfs: customerStrategyRef,
         };
+
         saveBet(addedOrder);
 
-        if (!newLayList[selectionId]) {
-          newLayList[selectionId] = [addedOrder];
+        if (!newBackList[selectionId]) {
+          newBackList[selectionId] = [addedOrder];
         } else {
-          newLayList[selectionId] = newLayList[selectionId].concat(addedOrder);
+          newBackList[selectionId] = newBackList[selectionId].concat(addedOrder);
         }
       }),
     );
-    updateLayList(newLayList);
+    updateBackList(newBackList);
   };
 
   return (
     <>
-      <List component="nav" aria-label="Device settings">
-        <ListItem button aria-haspopup="true" aria-controls="lock-menu" aria-label="Selections" onClick={handleClickListItem()}>
-          <ListItemText primary="Lay" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Lay All / The Field') : ''} />
+      <List component="nav">
+        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
+          <ListItemText primary="Back" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Back All / The Field') : ''} />
         </ListItem>
       </List>
-      <StyledMenu id="lock-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <StyledMenu id="lock-menu" className={classes.runnerList} anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for Back All / the Field */}
         {runners ? (
-          <StyledMenuItem key="lay-order-all/field" className={classes.root} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
-            Lay All / The Field
+          <StyledMenuItem key="back-order-all/field" className={classes.runnerItem} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
+            Back All / The Field
           </StyledMenuItem>
         ) : null}
 
@@ -160,12 +124,13 @@ const Lay = ({
          * Store their selectionId to be used to place bets for event clicks
          */}
         {Object.keys(runners).map((key) => (
-          <StyledMenuItem key={`lay-order-${runners[key].runnerName}`} className={classes.root} selected={key === selections} onClick={handleMenuItemClick(key)}>
+          <StyledMenuItem key={`back-order-${runners[key].runnerName}`} className={classes.runnerItem} selected={key === selections} onClick={handleMenuItemClick(key)}>
             {runners[key].runnerName}
           </StyledMenuItem>
         ))}
       </StyledMenu>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+
+      <div className={classes.row}>
         <TextField id="standard-number" className={classes.textField} type="number" label="stake" value={stake} inputProps={{ min: '1', style: { fontSize: 10 } }} onChange={(e) => setStake(e.target.value)} margin="normal" />
         <TextField
           id="standard-number"
@@ -182,17 +147,17 @@ const Lay = ({
           onChange={updateStep}
           margin="normal"
         />
-        <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
+        <Button variant="outlined" color="primary" size="small" className={classes.button} onClick={placeOrder()}>
           Submit
         </Button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <TextField id="standard-number" className={classes.textField2} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={(e) => setHours(e.target.value)} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setMinutes(e.target.value)} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setSeconds(e.target.value)} margin="normal" />
+      <div className={classes.row}>
+        <TextField id="standard-number" className={classes.textField2} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={() => setHours()} margin="normal" />
+        <TextField id="standard-number" className={classes.textField2} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setMinutes()} margin="normal" />
+        <TextField id="standard-number" className={classes.textField2} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setSeconds()} margin="normal" />
 
-        <RadioGroup aria-label="orderexecution" name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)}>
+        <RadioGroup name="orderexecution" value={executionTime} onChange={() => toggleExecutionTime()}>
           <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>-</span>} />
 
           <FormControlLabel value="After" control={<Radio color="primary" />} label="+" />
@@ -203,15 +168,16 @@ const Lay = ({
 };
 
 const mapStateToProps = (state) => ({
-  stake: state.lay.stake,
-  price: state.lay.price,
-  hours: state.lay.offset.hours,
-  minutes: state.lay.offset.minutes,
-  seconds: state.lay.offset.seconds,
-  executionTime: state.lay.executionTime,
+  stake: state.back.stake,
+  price: state.back.price,
+  hours: state.back.offset.hours,
+  minutes: state.back.offset.minutes,
+  seconds: state.back.offset.seconds,
+  executionTime: state.back.executionTime,
+  marketId: state.market.marketId,
   runners: state.market.runners,
-  selections: state.lay.selections,
-  list: state.lay.list,
+  selections: state.back.selections,
+  list: state.back.list,
 });
 
 const mapDispatchToProps = {
@@ -223,7 +189,7 @@ const mapDispatchToProps = {
   setSeconds,
   toggleExecutionTime,
   setSelections,
-  updateLayList,
+  updateBackList,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Lay);
+export default connect(mapStateToProps, mapDispatchToProps)(Back);

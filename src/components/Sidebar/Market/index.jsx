@@ -18,7 +18,7 @@ import Graph from './Graphs';
 import Ladders from './Ladders';
 import MarketInfo from './MarketInfo';
 import MatchedBets from './MatchedBets';
-import Tools from './OrderTools';
+import Tools from './Tools';
 import Rules from './Rules';
 import UnmatchedBets from './UnmatchedBets/UnmatchedBets';
 import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';

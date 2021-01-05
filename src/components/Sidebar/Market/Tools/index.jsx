@@ -35,7 +35,7 @@ function createData(name, abbreviation, description, settings, isOpen, toggleExp
   };
 }
 
-const OrderTools = ({
+const Tools = ({
   backText,
   backSelected,
   layText,
@@ -166,4 +166,4 @@ const mapDispatchToProps = {
   setStopEntrySelected,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderTools);
+export default connect(mapStateToProps, mapDispatchToProps)(Tools);
