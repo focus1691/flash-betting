@@ -8,34 +8,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setDisplayText, setStopLossOffset, setStopLossUnit, toggleStopLossTrailing, toggleStopLossHedged, setSelections } from '../../../../actions/stopLoss';
 //* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/tools/stopLossStyle';
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    height: '50px',
-    backgroundColor: theme.palette.background.paper,
-  },
-  group: {
-    margin: theme.spacing(1, 0),
-  },
-  formControlLabel: {
-    fontSize: '0.6rem',
-    '& label': {
-      fontSize: '0.6rem',
-    },
-  },
-  textField: {
-    marginRight: theme.spacing(2),
-    width: 50,
-  },
-}));
 
 const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDisplayText, setStopLossOffset, setStopLossUnit, toggleStopLossTrailing, toggleStopLossHedged, setSelections }) => {
   const classes = useStyles();
@@ -59,7 +38,7 @@ const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDis
     setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuItemClick = (index) => (e) => {
+  const handleMenuItemClick = (index) => () => {
     setSelections(index);
     setAnchorEl(null);
   };
@@ -70,8 +49,8 @@ const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDis
 
   return (
     <>
-      <List component="nav" aria-label="Device settings">
-        <ListItem button aria-haspopup="true" aria-controls="lock-menu" aria-label="Selections" onClick={handleClickListItem()}>
+      <List component="nav">
+        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
           <ListItemText primary="Runners" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} />
         </ListItem>
       </List>
@@ -82,9 +61,6 @@ const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDis
             All / The Field
           </StyledMenuItem>
         ) : null}
-        {/* Create Menu Items for all the runners and display their names
-         * Store their selectionId to be used to place bets for event clicks
-         */}
         {Object.keys(runners).map((key) => (
           <StyledMenuItem key={`stop-loss-order-${runners[key].runnerName}`} className={classes.root} selected={key === selections} onClick={handleMenuItemClick(key)}>
             {runners[key].runnerName}
@@ -92,14 +68,14 @@ const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDis
         ))}
       </StyledMenu>
 
-      <RadioGroup aria-label="stoploss" name="stoploss" className={classes.group} value={units} onChange={(e) => setStopLossUnit(e.target.value)}>
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <RadioGroup name="stoploss" className={classes.group} value={units} onChange={(e) => setStopLossUnit(e.target.value)}>
+        <div className={classes.row}>
           <TextField id="standard-number" className={classes.textField} type="number" value={offset} inputProps={{ min: '1', max: '100' }} onChange={(e) => setStopLossOffset(e.target.value)} margin="normal" />
           <FormControlLabel value="Ticks" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Tick</span>} />
           <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
         </div>
       </RadioGroup>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <div className={classes.row}>
         <FormControlLabel control={<Checkbox color="primary" checked={trailing} onChange={(e) => toggleStopLossTrailing(e.target.checked)} />} label="Trailing" />
         <FormControlLabel control={<Checkbox color="primary" checked={hedged} onChange={(e) => toggleStopLossHedged(e.target.checked)} />} label="Hedged" />
       </div>

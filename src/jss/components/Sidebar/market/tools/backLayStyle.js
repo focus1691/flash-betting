@@ -1,11 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
 import dropdownRunnerStyle from '../../../../DropdownList';
+import row from '../../../../row';
 
 const useStyles = makeStyles((theme) => ({
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
+  ...row,
   button: {
     margin: theme.spacing(2),
   },
