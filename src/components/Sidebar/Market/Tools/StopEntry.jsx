@@ -13,45 +13,14 @@ import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 //* Actions
-import { setLTPOperator, setTicks, setStake, setPrice, setSide, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
+import { setLTPOperator, setTicks, setStake, setPrice, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
 //* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/tools/stopEntryStyle';
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
 //* HTTP
 import { saveBet } from '../../../../http/dbHelper';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 75,
-  },
-  group: {
-    margin: theme.spacing(1, 0),
-  },
-  formControlLabel: {
-    fontSize: '0.6rem',
-    '& label': {
-      fontSize: '0.6rem',
-    },
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  backPriceTextFields: {
-    width: 75,
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  select: {
-    margin: theme.spacing(1),
-  },
-}));
 
 const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks, operator, side, stake, updateStopEntryList, setSelections, setPrice, setTicks, setStake, setLTPOperator }) => {
   const classes = useStyles();
@@ -137,8 +106,8 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
 
   return (
     <div className={classes.root}>
-      <List component="nav" aria-label="Device settings">
-        <ListItem button aria-haspopup="true" aria-controls="lock-menu" aria-label="Selections" onClick={handleClickListItem}>
+      <List component="nav">
+        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem}>
           <ListItemText primary="Runners" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} />
         </ListItem>
       </List>
@@ -158,7 +127,7 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
           </StyledMenuItem>
         ))}
       </StyledMenu>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <div className={classes.row}>
         <FormControl variant="outlined" className={classes.formControl}>
           <InputLabel>LTP</InputLabel>
           <Select native className={classes.select} value={operator} onChange={(e) => setLTPOperator(e.target.value)} input={<OutlinedInput name="age" />}>
@@ -170,7 +139,7 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
         </FormControl>
         <TextField id="standard-number" className={classes.textField} type="number" label="Ticks" value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
       </div>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <div className={classes.row}>
         <TextField id="standard-number" className={classes.backPriceTextFields} type="number" label="Back" value={stake} inputProps={{ min: '1' }} onChange={(e) => setStake(e.target.value)} margin="normal" />
         <TextField id="standard-number" className={classes.backPriceTextFields} type="number" label="@" value={price} inputProps={{ min: '1.00', max: '1000', step }} onChange={updateStep} margin="normal" />
       </div>

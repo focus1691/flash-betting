@@ -5,18 +5,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+//* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/tools/tickOffsetStyle';
 //* Actions
 import { setDisplayText, setTicks, setUnit, setPercentTrigger, setHedged } from '../../../../actions/tickOffset';
-
-const useStyles = makeStyles((theme) => ({
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(5),
-    width: 75,
-  },
-}));
 
 const TickOffset = ({ ticks, unit, percentTrigger, hedged, setDisplayText, setTicks, setUnit, setPercentTrigger, setHedged }) => {
   const classes = useStyles();
@@ -30,14 +23,14 @@ const TickOffset = ({ ticks, unit, percentTrigger, hedged, setDisplayText, setTi
 
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <div className={classes.row}>
         <TextField id="standard-number" type="number" label="Ticks" className={classes.textField} value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
-        <RadioGroup aria-label="tickoffset" name="tickoffset" value={unit} onChange={(e) => setUnit(e.target.value)}>
+        <RadioGroup name="tickoffset" value={unit} onChange={(e) => setUnit(e.target.value)}>
           <FormControlLabel className={classes.formControlLabel} value="Ticks" control={<Radio color="primary" />} label="Ticks" />
           <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
         </RadioGroup>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <div className={classes.row}>
         <TextField id="standard-number" className={classes.textField} type="number" label="% Trigger" value={percentTrigger} inputProps={{ min: '1', max: '100' }} onChange={(e) => setPercentTrigger(e.target.value)} margin="normal" />
         <FormControlLabel control={<Checkbox color="primary" checked={hedged} onChange={(e) => setHedged(e.target.checked)} />} label="Hedged" />
       </div>

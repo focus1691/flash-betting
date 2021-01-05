@@ -1,21 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+//* JSS
+import useStyles from '../../../../jss/components/Sidebar/market/tools/fillOrKillStyle';
 //* Actions
 import { setDisplayText, setFillOrKill } from '../../../../actions/fillOrKill';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  number: {
-    marginLeft: theme.spacing(1),
-    width: 50,
-  },
-}));
 
 const FillOrKill = ({ seconds, setDisplayText, setFillOrKill }) => {
   const classes = useStyles();
@@ -25,11 +15,9 @@ const FillOrKill = ({ seconds, setDisplayText, setFillOrKill }) => {
   }, [seconds, setDisplayText]);
 
   return (
-    <>
-      <div className={classes.root}>
-        <TextField id="standard-number" className={classes.number} type="number" label="Seconds" value={seconds} inputProps={{ min: '1', max: '100' }} onChange={(e) => setFillOrKill(e.target.value)} margin="normal" />
-      </div>
-    </>
+    <div className={classes.row}>
+      <TextField id="standard-number" className={classes.number} type="number" label="Seconds" value={seconds} inputProps={{ min: '1', max: '100' }} onChange={(e) => setFillOrKill(e.target.value)} margin="normal" />
+    </div>
   );
 };
 
