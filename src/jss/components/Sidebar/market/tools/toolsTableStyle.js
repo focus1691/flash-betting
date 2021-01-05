@@ -5,7 +5,7 @@ import TableRow from '@material-ui/core/TableRow';
 export const ToolsTableCell = withStyles((theme) => ({
   root: {
     color: '#c7c2c2',
-    padding: theme.spacing(1, 0),
+    // padding: theme.spacing(1, 0),
   },
   head: {
     backgroundColor: theme.palette.common.black,

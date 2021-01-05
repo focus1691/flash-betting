@@ -67,10 +67,10 @@ const Tools = ({
     () => [
       createData('Back', 'B', backText, <Back />, back, toggleBack, backSelected, setBackSelected),
       createData('Lay', 'L', layText, <Lay />, lay, toggleLay, laySelected, setLaySelected),
-      createData('Stop Loss', 'SL', stopLossText, <StopLoss />, stopLoss, toggleStopLoss, stopLossSelected, setStopLossSelected),
-      createData('Tick Offset', 'TO', tickOffsetText, <TickOffset />, tickOffset, toggleTickOffset, tickOffsetSelected, setTickOffsetSelected),
-      createData('Fill or Kill', 'FOK', fillKillText, <FillOrKill />, fillOrKill, toggleFillOrKill, fillKillSelected, setFillOrKillSelected),
-      createData('Stop Entry', 'SE', '', <StopEntry />, stopEntry, toggleStopEntry, stopEntrySelected, setStopEntrySelected),
+      createData('SL', 'SL', stopLossText, <StopLoss />, stopLoss, toggleStopLoss, stopLossSelected, setStopLossSelected),
+      createData('TOS', 'TO', tickOffsetText, <TickOffset />, tickOffset, toggleTickOffset, tickOffsetSelected, setTickOffsetSelected),
+      createData('FOK', 'FOK', fillKillText, <FillOrKill />, fillOrKill, toggleFillOrKill, fillKillSelected, setFillOrKillSelected),
+      createData('SE', 'SE', '', <StopEntry />, stopEntry, toggleStopEntry, stopEntrySelected, setStopEntrySelected),
     ],
     [
       back,

@@ -132,7 +132,7 @@ const Lay = ({
           <ListItemText primary="Lay" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Lay All / The Field') : ''} />
         </ListItem>
       </List>
-      <StyledMenu id="lock-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <StyledMenu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for Back All / the Field */}
         {runners ? (
           <StyledMenuItem key="lay-order-all/field" className={classes.root} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
@@ -150,9 +150,8 @@ const Lay = ({
         ))}
       </StyledMenu>
       <div className={classes.row}>
-        <TextField id="standard-number" className={classes.textField} type="number" label="stake" value={stake} inputProps={{ min: '1', style: { fontSize: 10 } }} onChange={(e) => setStake(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="stake" value={stake} inputProps={{ min: '1', style: { fontSize: 10 } }} onChange={(e) => setStake(e.target.value)} margin="normal" />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="@"
@@ -172,14 +171,14 @@ const Lay = ({
       </div>
 
       <div className={classes.row}>
-        <TextField id="standard-number" className={classes.textField2} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={(e) => setHours(e.target.value)} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setMinutes(e.target.value)} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setSeconds(e.target.value)} margin="normal" />
-
+        <TextField className={classes.textField} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={(e) => setHours(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setMinutes(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setSeconds(e.target.value)} margin="normal" />
+      </div>
+      <div className={classes.row}>
         <RadioGroup name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)}>
-          <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>-</span>} />
-
-          <FormControlLabel value="After" control={<Radio color="primary" />} label="+" />
+          <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Before market open</span>} />
+          <FormControlLabel value="After" className={classes.formControlLabel} control={<Radio color="primary" />} label="After market open" />
         </RadioGroup>
       </div>
     </>

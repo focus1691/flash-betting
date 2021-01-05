@@ -5,15 +5,36 @@ import row from '../../../../row';
 const useStyles = makeStyles((theme) => ({
   ...row,
   button: {
-    margin: theme.spacing(2),
+    height: 'fit-content',
+    borderRadius: theme.spacing(1),
+    backgroundColor: '#242526',
+    color: '#c7c2c2',
+    fontFamily: 'Roboto',
   },
   textField: {
-    width: 40,
+    width: '100%',
     margin: theme.spacing(1),
+    '& label': {
+      color: '#c7c2c2',
+      fontWeight: '300',
+      fontFamily: 'Roboto',
+    },
+    '& > div': {
+      color: '#c7c2c2',
+      fontWeight: '700',
+      fontFamily: 'Roboto',
+    },
+    '& .MuiInputLabel-formControl': {
+      position: 'relative',
+    },
+    '& .MuiInput-underline': {
+      borderBottom: '2px solid #979797',
+    },
   },
-  textField2: {
-    width: 30,
-    margin: theme.spacing(2),
+  formControlLabel: {
+    '& span': {
+      fontSize: 'small',
+    },
   },
   ...dropdownRunnerStyle(theme),
 }));

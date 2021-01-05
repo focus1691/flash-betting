@@ -112,7 +112,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
           <ListItemText primary="Back" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Back All / The Field') : ''} />
         </ListItem>
       </List>
-      <StyledMenu id="lock-menu" className={classes.runnerList} anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <StyledMenu className={classes.runnerList} anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for Back All / the Field */}
         {runners ? (
           <StyledMenuItem key="back-order-all/field" className={classes.runnerItem} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
@@ -131,9 +131,8 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
       </StyledMenu>
 
       <div className={classes.row}>
-        <TextField id="standard-number" className={classes.textField} type="number" label="stake" value={stake} inputProps={{ min: '1', style: { fontSize: 10 } }} onChange={(e) => setStake(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="stake" value={stake} inputProps={{ min: '1', style: { fontSize: 10 } }} onChange={(e) => setStake(e.target.value)} margin="normal" />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="@"
@@ -147,20 +146,21 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
           onChange={updateStep}
           margin="normal"
         />
-        <Button variant="outlined" color="primary" size="small" className={classes.button} onClick={placeOrder()}>
+        <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
           Submit
         </Button>
       </div>
 
       <div className={classes.row}>
-        <TextField id="standard-number" className={classes.textField2} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={() => setHours()} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setMinutes()} margin="normal" />
-        <TextField id="standard-number" className={classes.textField2} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setSeconds()} margin="normal" />
+        <TextField className={classes.textField} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={() => setHours()} margin="normal" />
+        <TextField className={classes.textField} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setMinutes()} margin="normal" />
+        <TextField className={classes.textField} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setSeconds()} margin="normal" />
+      </div>
 
-        <RadioGroup name="orderexecution" value={executionTime} onChange={() => toggleExecutionTime()}>
-          <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>-</span>} />
-
-          <FormControlLabel value="After" control={<Radio color="primary" />} label="+" />
+      <div className={classes.row}>
+        <RadioGroup name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)}>
+          <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Before market open</span>} />
+          <FormControlLabel value="After" className={classes.formControlLabel} control={<Radio color="primary" />} label="After market open" />
         </RadioGroup>
       </div>
     </>
