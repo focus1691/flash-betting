@@ -112,7 +112,7 @@ const Market = ({
   );
 
   const createAccordionSummaryLadders = (name) => (
-    <SectionContent aria-controls={`${name}-content`}>
+    <SectionContent>
       <AppBar className={classes.appBar} position="absolute">
         <Typography variant="h6" className={classes.title}>
           {name}
@@ -135,16 +135,18 @@ const Market = ({
 
       {tools.visible ? (
         <SectionBar expanded={toolsExpanded} onChange={() => setToolsExpanded(!toolsExpanded)}>
-          <SectionContent aria-controls="Tools-content" id="Tools-header">
+          <SectionContent>
             {renderTitle('Tools')}
           </SectionContent>
-          <Tools />
+          <div className={classes.container}>
+            <Tools />
+          </div>
         </SectionBar>
       ) : null}
 
       {unmatchedBets.visible ? (
         <SectionBar expanded={unmatchedBetsExpanded} onChange={() => setUnmatchedBetsExpanded(!unmatchedBetsExpanded)}>
-          <SectionContent aria-controls="unmatched-bets-content" id="unmatched-bets-header">
+          <SectionContent>
             <AppBar className={classes.appBar} position="absolute">
               <Typography variant="h6" className={classes.title}>
                 Unmatched Bets
@@ -160,7 +162,7 @@ const Market = ({
 
       {matchedBets.visible ? (
         <SectionBar expanded={matchedBetsExpanded} onChange={() => setMatchedBetsExpanded(!matchedBetsExpanded)}>
-          <SectionContent aria-controls="Matched-Bets-content" id="Matched-Bets-header">
+          <SectionContent>
             {renderTitle('Matched Bets')}
           </SectionContent>
           <MatchedBets />
@@ -169,7 +171,7 @@ const Market = ({
 
       {graphs.visible ? (
         <SectionBar expanded={graphExpanded} onChange={() => setGraphExpanded(!graphExpanded)}>
-          <SectionContent aria-controls="Graphs-content" id="Graphs-header">
+          <SectionContent>
             {renderTitle('Graphs')}
           </SectionContent>
           <Graph />
@@ -178,7 +180,7 @@ const Market = ({
 
       {marketInfo.visible ? (
         <SectionBar expanded={marketInfoExpanded} onChange={() => setMarketInfoExpanded(!marketInfoExpanded)}>
-          <SectionContent aria-controls="Market Information-content" id="Market Information-header">
+          <SectionContent>
             {renderTitle('Market Information')}
           </SectionContent>
           <MarketInfo />
@@ -187,7 +189,7 @@ const Market = ({
 
       {rules.visible ? (
         <SectionBar expanded={rulesExpanded} onChange={() => setRulesExpanded(!rulesExpanded)}>
-          <SectionContent aria-controls="Rules-content" id="Rules-header">
+          <SectionContent>
             {renderTitle('Rules')}
           </SectionContent>
           <Rules />

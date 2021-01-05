@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
       verticalAlign: 'bottom',
     },
   },
+  container: {
+    padding: theme.spacing(0 , 2),
+  },
   ladderContainer: {
     margin: theme.spacing(2, 0, 2, 0),
     padding: theme.spacing(2, 1),

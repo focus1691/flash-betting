@@ -106,10 +106,10 @@ const OrderTools = ({
           {rows.map(({ name, description, isOpen, selected, toggleSelected, toggleExpand, settings }) => (
             <React.Fragment key={`tool-${name}`}>
               <ToolsTableRow>
-                <ToolsTableCell scope="row" colSpan={4}>
+                <ToolsTableCell scope="row" colSpan={5}>
                   <button type="button" className={classes.betButton} onClick={() => toggleExpand(!isOpen)}>
                     <div className={classes.box}>
-                      <img alt="Add" src={`${window.location.origin}/icons/Minus_Button.png`} />
+                      <img alt="Add" src={`${window.location.origin}/icons/Plus_Button.svg`} />
                       <span>{name}</span>
                     </div>
                   </button>
@@ -117,7 +117,7 @@ const OrderTools = ({
                 <ToolsTableCell align="left" colSpan={6}>
                   {description}
                 </ToolsTableCell>
-                <ToolsTableCell padding="checkbox" colSpan={2}>
+                <ToolsTableCell padding="checkbox" colSpan={1}>
                   <Checkbox color="primary" checked={selected} onChange={() => toggleSelected()} />
                 </ToolsTableCell>
               </ToolsTableRow>

@@ -1,9 +1,9 @@
 import MultiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
 
-const SectionContent = withStyles({
+const SectionContent = withStyles((theme) => ({
   root: {
-    margin: '0 7px',
+    margin: theme.spacing(0, 2),
     padding: '0',
     zIndex: '1',
     '&$expanded': {
@@ -13,6 +13,6 @@ const SectionContent = withStyles({
   expanded: {
     minHeight: '0px',
   },
-})(MultiAccordionSummary);
+}))(MultiAccordionSummary);
 
 export default SectionContent;

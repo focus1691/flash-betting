@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import box from '../../box';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
@@ -12,12 +12,11 @@ const useStyles = makeStyles(() => ({
     margin: '0 auto',
     width: '100%',
     '& td': {
-      fontFamily: 'Roboto',
-      fontSize: 'x-small',
-      fontWeight: 'bold',
-      margin: '0',
-      padding: '5px',
-      border: 'none',
+      margin: '0 auto',
+      '&:nth-child(2)': {
+        borderLeft: '2px solid #242526',
+        paddingLeft: theme.spacing(1),
+      },
     },
   },
   betButton: {
@@ -31,8 +30,9 @@ const useStyles = makeStyles(() => ({
     float: 'left',
     '& span': {
       color: '#c7c2c2',
+      fontSize: 'small',
       fontFamily: 'Roboto',
-      fontSize: 'x-small',
+      fontWeight: '400',
       marginLeft: '2px',
     },
   },
