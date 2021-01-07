@@ -129,7 +129,7 @@ const Lay = ({
     <>
       <List component="nav">
         <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
-          <ListItemText primary="Lay" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Lay All / The Field') : ''} />
+          <ListItemText primary="Selections to lay" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Lay All / The Field') : ''} className={classes.selectedRunner} />
         </ListItem>
       </List>
       <StyledMenu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
@@ -176,7 +176,7 @@ const Lay = ({
         <TextField className={classes.textField} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setSeconds(e.target.value)} margin="normal" />
       </div>
       <div className={classes.row}>
-        <RadioGroup name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)}>
+        <RadioGroup name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)} className={classes.marketTimeRadioButtons}>
           <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Before market open</span>} />
           <FormControlLabel value="After" className={classes.formControlLabel} control={<Radio color="primary" />} label="After market open" />
         </RadioGroup>

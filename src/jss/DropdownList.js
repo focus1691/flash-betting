@@ -15,6 +15,18 @@ const dropdownRunnerStyle = () => ({
       padding: 0,
     },
   },
+  selectedRunner: {
+    '& span': {
+      color: '#c7c2c2',
+      fontFamily: "'Roboto'",
+      fontWeight: '400',
+    },
+    '& p': {
+      color: '#c7c2c2',
+      fontFamily: "'Roboto'",
+      fontWeight: '700',
+    },
+  },
 });
 
 export default dropdownRunnerStyle;

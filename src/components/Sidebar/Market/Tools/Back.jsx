@@ -109,7 +109,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
     <>
       <List component="nav">
         <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
-          <ListItemText primary="Back" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Back All / The Field') : ''} />
+          <ListItemText primary="Selections to back" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Back All / The Field') : ''} className={classes.selectedRunner} />
         </ListItem>
       </List>
       <StyledMenu className={classes.runnerList} anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
@@ -158,7 +158,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
       </div>
 
       <div className={classes.row}>
-        <RadioGroup name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)}>
+        <RadioGroup name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)} className={classes.marketTimeRadioButtons}>
           <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Before market open</span>} />
           <FormControlLabel value="After" className={classes.formControlLabel} control={<Radio color="primary" />} label="After market open" />
         </RadioGroup>
