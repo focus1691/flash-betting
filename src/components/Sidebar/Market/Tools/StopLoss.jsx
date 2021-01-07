@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
+import clsx from 'clsx';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import List from '@material-ui/core/List';
@@ -51,33 +52,33 @@ const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDis
     <>
       <List component="nav">
         <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
-          <ListItemText primary="Runners" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} />
+          <ListItemText primary="Stop Loss on:" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} className={classes.selectedRunner} />
         </ListItem>
       </List>
-      <StyledMenu id="lock-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <StyledMenu className={classes.runnerList} anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for All / the Field */}
         {runners ? (
-          <StyledMenuItem key="stop-loss-order-all/field" className={classes.root} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
+          <StyledMenuItem key="stop-loss-order-all/field" className={classes.runnerItem} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
             All / The Field
           </StyledMenuItem>
         ) : null}
         {Object.keys(runners).map((key) => (
-          <StyledMenuItem key={`stop-loss-order-${runners[key].runnerName}`} className={classes.root} selected={key === selections} onClick={handleMenuItemClick(key)}>
+          <StyledMenuItem key={`stop-loss-order-${runners[key].runnerName}`} className={classes.runnerItem} selected={key === selections} onClick={handleMenuItemClick(key)}>
             {runners[key].runnerName}
           </StyledMenuItem>
         ))}
       </StyledMenu>
 
-      <RadioGroup name="stoploss" className={classes.group} value={units} onChange={(e) => setStopLossUnit(e.target.value)}>
+      <RadioGroup name="stoploss" className={classes.unitRadioButtons} value={units} onChange={(e) => setStopLossUnit(e.target.value)}>
         <div className={classes.row}>
-          <TextField id="standard-number" className={classes.textField} type="number" value={offset} inputProps={{ min: '1', max: '100' }} onChange={(e) => setStopLossOffset(e.target.value)} margin="normal" />
-          <FormControlLabel value="Ticks" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Tick</span>} />
+          <TextField className={classes.textField} type="number" value={offset} inputProps={{ min: '1', max: '100' }} onChange={(e) => setStopLossOffset(e.target.value)} margin="normal" />
+          <FormControlLabel value="Ticks" control={<Radio color="primary" />} label={<span>Tick</span>} />
           <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
         </div>
       </RadioGroup>
-      <div className={classes.row}>
-        <FormControlLabel control={<Checkbox color="primary" checked={trailing} onChange={(e) => toggleStopLossTrailing(e.target.checked)} />} label="Trailing" />
-        <FormControlLabel control={<Checkbox color="primary" checked={hedged} onChange={(e) => toggleStopLossHedged(e.target.checked)} />} label="Hedged" />
+      <div className={clsx(classes.row, classes.checkboxes)}>
+        <FormControlLabel control={<Checkbox color="primary" checked={trailing} onChange={(e) => toggleStopLossTrailing(e.target.checked)} />} label="Trailing" className={classes.checkbox} />
+        <FormControlLabel control={<Checkbox color="primary" checked={hedged} onChange={(e) => toggleStopLossHedged(e.target.checked)} />} label="Hedged" className={classes.checkbox} />
       </div>
     </>
   );
