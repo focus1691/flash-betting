@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   checkboxes: {
-    margin: theme.spacing(1, 3),
+    margin: theme.spacing(0, 3),
     color: '#c7c2c2',
     fontFamily: 'Roboto',
     fontWeight: '700',
