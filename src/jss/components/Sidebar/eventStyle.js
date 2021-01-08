@@ -8,28 +8,39 @@ const useStyles = makeStyles((theme) => ({
     '& h6': {
       fontSize: 'medium',
     },
-    '& > div': {
-      padding: '5px',
-      '& span': {
-        '&:nth-child(1)': {
-          float: 'left',
-        },
-        '&:nth-child(2)': {
-          float: 'left',
-          clear: 'left',
-        },
-      },
-      '& > div': {
-        margin: '5px',
+    '& div': {
+      '&:first-child': {
         display: 'block',
         float: 'left',
+        margin: theme.spacing(1),
+        padding: theme.spacing(1, 2),
         borderRadius: theme.spacing(2),
         backgroundColor: '#5d5d5d80',
         color: '#c7c2c2',
-        padding: theme.spacing(1, 2),
         fontFamily: 'Roboto',
         fontSize: 'large',
         fontWeight: '700',
+        '& span': {
+          '&:nth-child(1)': {
+            float: 'left',
+          },
+          '&:nth-child(2)': {
+            float: 'left',
+            clear: 'left',
+          },
+        },
+      },
+      '&:nth-child(2)': {
+        display: 'flex',
+        padding: theme.spacing(1, 2),
+        '& span': {
+          color: '#c7c2c2',
+          fontFamily: '"Lato"',
+          fontWeight: '400',
+        },
+        '& img': {
+          marginRight: theme.spacing(1),
+        },
       },
     },
   },

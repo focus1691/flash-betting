@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Oval</title>
+    <g id="Flash-Betting" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Market" transform="translate(-156.000000, -467.000000)" fill="#64D96A">
+            <g id="Sidebar" transform="translate(-1.000000, 0.000000)">
+                <g id="Sidebar_Menu" transform="translate(1.000000, 311.000000)">
+                    <g id="Sidebar_Extended" transform="translate(14.000000, 0.000000)">
+                        <g id="LiveLight" transform="translate(142.000000, 155.000000)">
+                            <circle id="Oval" cx="8" cy="9" r="8"></circle>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
