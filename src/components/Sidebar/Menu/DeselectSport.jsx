@@ -17,6 +17,6 @@ export default ({ type, data, index, submenuList, deselectSubmenu }) => (
     <ListItemIcon>
       <img src={`${window.location.origin}/icons/${index === 0 ? 'back-arrow.png' : 'caret-down.png'}`} alt="" />
     </ListItemIcon>
-    <ListItemText style={{ zIndex: 500, color: index === Object.keys(submenuList).length - 1 ? 'black' : '#999797' }}>{data.name}</ListItemText>
+    <ListItemText style={{ color: index === Object.keys(submenuList).length - 1 ? 'black' : '#999797' }}>{data.name}</ListItemText>
   </ListItem>
 );
