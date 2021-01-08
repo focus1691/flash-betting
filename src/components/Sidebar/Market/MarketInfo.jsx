@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import useStyles from '../../../jss/components/Sidebar/market/marketInfoStyle';
 
+const createData = (name, description) => ({ name, description });
+
 const MarketInfo = ({ marketOpen, eventType, selection }) => {
   const classes = useStyles();
-  const createData = (name, description) => ({ name, description });
 
-  const racerDetails = () => {
+  const extractRacerDetails = () => {
     const rows = [
       createData('Selection', selection.metadata.runnerId || ''),
       createData('Silk', <img src={selection.metadata.COLOURS_FILENAME ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${selection.metadata.COLOURS_FILENAME}` : ''} alt="" />),
@@ -33,13 +34,13 @@ const MarketInfo = ({ marketOpen, eventType, selection }) => {
       <tr key={`market-info-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
         <td>{`${selection.metadata.CLOTH_NUMBER ? `${selection.metadata.CLOTH_NUMBER}.` : ''}${selection.runnerName}`}</td>
       </tr>
-      {racerDetails().map(((row) => (
-        <React.Fragment key={`runner-info-${row.name}`}>
+      {extractRacerDetails().map((({ name, description }) => (
+        <React.Fragment key={`runner-info-${name}`}>
           <tr key={`market-info-name-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
-            <td>{row.name}</td>
+            <td>{name}</td>
           </tr>
           <tr key={`market-info-description-${selection.metadata.CLOTH_NUMBER}.${selection.runnerName}`}>
-            <td>{row.description}</td>
+            <td>{description}</td>
           </tr>
         </React.Fragment>
       )))}
@@ -47,15 +48,17 @@ const MarketInfo = ({ marketOpen, eventType, selection }) => {
   );
 
   return (
-    <table className={classes.marketInfo}>
-      <tbody>
-        {marketOpen
-          && eventType
-          && eventType.id === '7'
-          ? renderRacerDetails()
-          : null}
-      </tbody>
-    </table>
+    <div className={classes.marketInfo}>
+      <table className={classes.table}>
+        <tbody>
+          {marketOpen
+            && eventType
+            && eventType.id === '7'
+            ? renderRacerDetails()
+            : null}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
