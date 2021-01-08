@@ -6,18 +6,20 @@ const useStyles = makeStyles((theme) => ({
     border: 'none',
     width: '90%',
     height: '40%',
+    '& > div': {
+      background: 'none',
+      '&:first-child': {
+        width: 'fit-content',
+      },
+    },
     '& ul': {
         zIndex: '1',
     },
-    '& span': {
-      fontFamily: 'Roboto',
-      fontWeight: '700',
-    },
     '& li': {
       display: 'flex',
-      flexDirection: 'row-reverse',
+      flexDirection: 'row',
       color: '#c7c2c2',
-      padding: theme.spacing(0, 2),
+      padding: theme.spacing(0, 0),
       marginLeft: '1rem',
       '& div': {
         '&:nth-child(2)': {

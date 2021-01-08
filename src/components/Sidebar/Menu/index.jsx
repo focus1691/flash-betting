@@ -38,7 +38,7 @@ const Menu = ({ updateCurrentSubmenu, updateSubmenuList, updateSubmenuMyMarkets,
   );
 
   const createAccordionSummary = (name) => (
-    <SectionContent aria-controls="panel1a-content" id="panel1a-header">
+    <SectionContent>
       {createTitle(name)}
     </SectionContent>
   );

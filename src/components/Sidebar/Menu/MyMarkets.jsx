@@ -8,7 +8,7 @@ import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from '../../../act
 import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
-import useStyles from '../../../jss/components/Sidebar/menuStyle';
+import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 
@@ -23,6 +23,7 @@ const submenuEnum = {
 
 const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMarkets, submenuListMyMarkets, loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
+  console.log(myMarkets);
 
   const getSportInfo = useCallback(
     async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {

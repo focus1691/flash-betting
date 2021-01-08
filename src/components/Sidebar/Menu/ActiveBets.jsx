@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { ListItemText, Divider } from '@material-ui/core';
 //* JSS
-import useStyles from '../../../jss/components/Sidebar/menuStyle';
+import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 

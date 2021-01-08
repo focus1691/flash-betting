@@ -1,8 +1,11 @@
 import React, { useMemo } from 'react';
 import { ListItem, ListItemText } from '@material-ui/core';
 import MarketSaveButton from './MarketSaveButton';
+//* JSS
+import useStyles from '../../../jss/components/Sidebar/menu/submenuStyle';
 
 export default ({ data, setSubmenu, submenuList }) => {
+  const classes = useStyles();
   const dataWithoutRaces = useMemo(() => data.filter((sport) => sport.type !== 'RACE'), [data]);
 
   const handleMarketClick = ({ id, name, type, children }) => () => {
@@ -15,10 +18,10 @@ export default ({ data, setSubmenu, submenuList }) => {
   return dataWithoutRaces.map((sport) => (
     <React.Fragment key={`select-submenu-${sport.id}`}>
       <ListItem>
-        <MarketSaveButton sport={sport} />
         <ListItem button onClick={handleMarketClick(sport)}>
-          <ListItemText>{sport.name}</ListItemText>
+          <ListItemText className={classes.name}>{sport.name}</ListItemText>
         </ListItem>
+        <MarketSaveButton sport={sport} />
       </ListItem>
     </React.Fragment>
   ));

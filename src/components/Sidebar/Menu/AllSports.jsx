@@ -9,7 +9,7 @@ import DeselectSport from './DeselectSport';
 import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
-import useStyles from '../../../jss/components/Sidebar/menuStyle';
+import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 
@@ -107,7 +107,13 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   return (
     <List className={classes.allSports}>
       {Object.keys(submenuList).map((type, index) => (
-        <DeselectSport key={`all-sports-deselect-${submenuList[type].name}`} type={type} data={submenuList[type]} isLast={index === Object.keys(submenuList).length - 1} submenuList={submenuList} deselectSubmenu={deselectSubmenu} />
+        <DeselectSport
+          key={`all-sports-deselect-${submenuList[type].name}`}
+          type={type} data={submenuList[type]}
+          index={index}
+          submenuList={submenuList}
+          deselectSubmenu={deselectSubmenu}
+        />
       ))}
 
       {
