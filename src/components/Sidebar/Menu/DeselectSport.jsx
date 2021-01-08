@@ -11,20 +11,21 @@ export default ({ type, data, index, submenuList, deselectSubmenu }) => {
   return (
     <ListItem
       button
+      className={isLast ? classes.deselectLast : ''}
       onClick={() => {
         console.log(index, type, Object.keys(submenuList).length, submenuList);
         // if they are nested within a search, we don't want to bring them all the way back
-        if (type === 'EVENT_TYPE' || type === 'submenuList' && index === 0) {
+        if (type === 'EVENT_TYPE' || (type === 'submenuList' && index === 0)) {
           deselectSubmenu('ROOT');
         } else {
           deselectSubmenu(type, submenuList);
         }
       }}
     >
-      <ListItemIcon className={isLast ? classes.deselectIconLast : index === 0 ? classes.deselectIconFirst : ''}>
+      <ListItemIcon className={isLast ? classes.deselectIconLast : ''}>
         <img src={`${window.location.origin}/icons/${index === 0 ? 'back-arrow.png' : 'caret-down.png'}`} alt="" />
       </ListItemIcon>
-      <ListItemText style={{ color: isLast ? 'black' : '#999797' }}>{data.name}</ListItemText>
+      <ListItemText className={classes.deselectText}>{data.name}</ListItemText>
     </ListItem>
   );
 };

@@ -4,10 +4,11 @@ const useStyles = makeStyles(() => ({
   deselectIconFirst: {
     display: 'contents',
   },
-  deselectIconLast: {
-    '& span': {
-      filter: 'drop-shadow(2px 4px 12px #64D96A)',
-    },
+  deselectText: {
+    color: '#999797',
+  },
+  deselectLast: {
+    filter: 'drop-shadow(2px 4px 12px #64D96A)',
   },
 }));
 
