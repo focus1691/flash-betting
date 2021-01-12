@@ -23,7 +23,6 @@ const submenuEnum = {
 
 const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMarkets, submenuListMyMarkets, loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
-  // console.log(myMarkets);
 
   const getSportInfo = useCallback(
     async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {

@@ -11,7 +11,7 @@ export default ({ sports, setSubmenu }) => {
   return sports.map(({ eventType: { id, name } }) => (
     <React.Fragment key={`select-sport-${id}`}>
       <ListItem>
-        <ListItem button onClick={setSubmenu(name, 'EVENT_TYPE', {}, id.match(/\d+/)[0], id.startsWith('TC-') ? 'list-todays-card' : 'fetch-sport-data')}>
+        <ListItem button onClick={setSubmenu(id, name, 'EVENT_TYPE', {}, id.match(/\d+/)[0], id.startsWith('TC-') ? 'list-todays-card' : 'fetch-sport-data')}>
           <ListItemIcon className={classes.dropdownIcon}>
             <img
               src={window.location.origin + (true ? '/icons/caret-arrow-up.png' : '/icons/caret-arrow-up.png')}

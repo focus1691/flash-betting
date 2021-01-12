@@ -5,7 +5,7 @@ import { ListItemIcon } from '@material-ui/core';
 //* Actions
 import { loadMyMarkets } from '../../../actions/market';
 
-const MarketSaveButton = ({ sport: { id, name, type, children }, myMarkets, loadMyMarkets }) => {
+const MarketSaveButton = ({ sport: { id, name, type, children }, submenuList, myMarkets, loadMyMarkets }) => {
   const marketItemSaved = myMarkets.findIndex((item) => item.id === id && item.type == type && item.name == name) !== -1;
 
   const updateMyMarkets = (e) => {
@@ -20,7 +20,7 @@ const MarketSaveButton = ({ sport: { id, name, type, children }, myMarkets, load
       id, name, type, children,
     };
 
-    // console.log(marketSelection);
+    console.log(marketSelection, submenuList);
 
     // fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
     //   headers: {

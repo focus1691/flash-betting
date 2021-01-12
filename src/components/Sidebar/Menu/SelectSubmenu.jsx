@@ -21,7 +21,7 @@ export default ({ data, setSubmenu, submenuList }) => {
         <ListItem button onClick={handleItemClick(sport)}>
           <ListItemText className={classes.name}>{sport.name}</ListItemText>
         </ListItem>
-        <MarketSaveButton sport={sport} />
+        <MarketSaveButton sport={sport} submenuList={submenuList} />
       </ListItem>
     </React.Fragment>
   ));

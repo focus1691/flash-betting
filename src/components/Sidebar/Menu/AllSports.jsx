@@ -40,8 +40,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
     }
   }, [winMarketsOnly, horseRaces]);
 
-  const getSportInfo = (name, type, submenuList, sportId, apiEndpoint) => async () => {
-    console.log(submenuList);
+  const getSportInfo = (id, name, type, submenuList, sportId, apiEndpoint) => async () => {
     const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
     // gets the country names and makes it an array ex... [GB]
@@ -58,16 +57,16 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
     // set the old submenu as the type: children we received from the api
     if (data) {
       const newSubmenuList = {};
-      newSubmenuList[type] = { name, data };
+      newSubmenuList[type] = { id, name, data };
 
       updateCurrentSubmenu(type);
       updateSubmenuList(newSubmenuList);
     }
   };
 
-  const setSubmenu = (data, name, type, submenuList) => {
+  const setSubmenu = (data, name, type, submenuList, id) => {
     const newSubmenuList = { ...submenuList };
-    newSubmenuList[type] = { name, data };
+    newSubmenuList[type] = { id, name, data };
 
     updateCurrentSubmenu(type);
     updateSubmenuList(newSubmenuList);
@@ -92,6 +91,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 
     // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
     const newSubmenuList = {};
+    console.log(type, submenuList);
 
     const maxSubmenuLevel = submenuEnum[type];
     Object.keys(submenuList).map((key) => {
