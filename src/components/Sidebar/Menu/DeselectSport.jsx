@@ -13,7 +13,7 @@ export default ({ type, data, index, submenuList, deselectSubmenu }) => {
       button
       className={isLast ? classes.deselectLast : ''}
       onClick={() => {
-        console.log(index, type, Object.keys(submenuList).length, submenuList);
+        // console.log(index, type, Object.keys(submenuList).length, submenuList);
         // if they are nested within a search, we don't want to bring them all the way back
         if (type === 'EVENT_TYPE' || (type === 'submenuList' && index === 0)) {
           deselectSubmenu('ROOT');

@@ -8,21 +8,21 @@ import useStyles from '../../../jss/components/Sidebar/menu/selectSportStyle';
 export default ({ sports, setSubmenu }) => {
   const classes = useStyles();
 
-  return sports.map((sport) => (
-    <React.Fragment key={`select-sport-${sport.eventType.id}`}>
+  return sports.map(({ eventType: { id, name } }) => (
+    <React.Fragment key={`select-sport-${id}`}>
       <ListItem>
-        <ListItem button onClick={setSubmenu(sport.eventType.name, 'EVENT_TYPE', {}, sport.eventType.id.match(/\d+/)[0], sport.eventType.id.startsWith('TC-') ? 'list-todays-card' : 'fetch-sport-data')}>
+        <ListItem button onClick={setSubmenu(name, 'EVENT_TYPE', {}, id.match(/\d+/)[0], id.startsWith('TC-') ? 'list-todays-card' : 'fetch-sport-data')}>
           <ListItemIcon className={classes.dropdownIcon}>
             <img
               src={window.location.origin + (true ? '/icons/caret-arrow-up.png' : '/icons/caret-arrow-up.png')}
               alt=""
             />
           </ListItemIcon>
-          <ListItemText className={classes.name}>{sport.eventType.name}</ListItemText>
+          <ListItemText className={classes.name}>{name}</ListItemText>
           <MarketSaveButton
             sport={{
-              id: sport.eventType.id,
-              name: sport.eventType.name,
+              id,
+              name,
               type: 'EVENT_TYPE',
               data: {},
             }}

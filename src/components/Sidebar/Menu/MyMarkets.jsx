@@ -23,14 +23,14 @@ const submenuEnum = {
 
 const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMarkets, submenuListMyMarkets, loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
-  console.log(myMarkets);
+  // console.log(myMarkets);
 
   const getSportInfo = useCallback(
     async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {
       const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
       // gets the country names and makes it an array ex... [GB]
-      const countryNames = Object.keys(horseRaces).reduce((acc, item) => {
+      const countryCodes = Object.keys(horseRaces).reduce((acc, item) => {
         if (horseRaces[item] === true) {
           return [item, ...acc];
         }
@@ -38,7 +38,7 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
       }, []);
 
       // call the api with the id and get new selections
-      const data = await fetchData(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`);
+      const data = await fetchData(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
 
       // set the old submenu as the newSubmenuType: children we received from the api
       if (data) {

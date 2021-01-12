@@ -8,7 +8,7 @@ export default ({ data, setSubmenu, submenuList }) => {
   const classes = useStyles();
   const dataWithoutRaces = useMemo(() => data.filter((sport) => sport.type !== 'RACE'), [data]);
 
-  const handleMarketClick = ({ id, name, type, children }) => () => {
+  const handleItemClick = ({ id, name, type, children }) => () => {
     if (type === 'MARKET') {
       window.open(`/dashboard?marketId=${id}`);
     } else {
@@ -18,7 +18,7 @@ export default ({ data, setSubmenu, submenuList }) => {
   return dataWithoutRaces.map((sport) => (
     <React.Fragment key={`select-submenu-${sport.id}`}>
       <ListItem>
-        <ListItem button onClick={handleMarketClick(sport)}>
+        <ListItem button onClick={handleItemClick(sport)}>
           <ListItemText className={classes.name}>{sport.name}</ListItemText>
         </ListItem>
         <MarketSaveButton sport={sport} />

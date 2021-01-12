@@ -5,10 +5,11 @@ import { ListItemIcon } from '@material-ui/core';
 //* Actions
 import { loadMyMarkets } from '../../../actions/market';
 
-const MarketSaveButton = ({ sport, myMarkets, loadMyMarkets }) => {
-  const marketItemSaved = myMarkets.findIndex((item) => item.id === sport.id && item.type == sport.type && item.name == sport.name) !== -1;
+const MarketSaveButton = ({ sport: { id, name, type, children }, myMarkets, loadMyMarkets }) => {
+  const marketItemSaved = myMarkets.findIndex((item) => item.id === id && item.type == type && item.name == name) !== -1;
 
-  const updateMyMarkets = (marketItemSaved, id, name, type, children) => () => {
+  const updateMyMarkets = (e) => {
+    e.stopPropagation();
     /*
       marketItemSaved - whether it is saved or not
       id - id for the selection
@@ -19,23 +20,25 @@ const MarketSaveButton = ({ sport, myMarkets, loadMyMarkets }) => {
       id, name, type, children,
     };
 
-    fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify(marketSelection),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        loadMyMarkets(res);
-      })
-      .catch(() => {});
+    // console.log(marketSelection);
+
+    // fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   method: 'POST',
+    //   body: JSON.stringify(marketSelection),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     loadMyMarkets(res);
+    //   })
+    //   .catch(() => {});
   };
 
   return (
-    <ListItemIcon style={{ minWidth: 'auto', cursor: 'pointer' }} onClick={updateMyMarkets(marketItemSaved, sport.id, sport.name, sport.type, sport.children)}>
+    <ListItemIcon style={{ minWidth: 'auto', cursor: 'pointer' }} onClick={updateMyMarkets}>
       <img
         src={window.location.origin + (marketItemSaved ? '/icons/Minus_Button.png' : '/icons/Plus_ButtonGreen.svg')}
         alt="Add"

@@ -41,10 +41,11 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   }, [winMarketsOnly, horseRaces]);
 
   const getSportInfo = (name, type, submenuList, sportId, apiEndpoint) => async () => {
+    console.log(submenuList);
     const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
     // gets the country names and makes it an array ex... [GB]
-    const countryNames = Object.keys(horseRaces).reduce((acc, item) => {
+    const countryCodes = Object.keys(horseRaces).reduce((acc, item) => {
       if (horseRaces[item] === true) {
         return [item, ...acc];
       }
@@ -52,12 +53,11 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
     }, []);
 
     // call the api with the id and get new selections
-    const data = await fetchData(`/api/${apiEndpoint}/?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryNames) : undefined}`);
+    const data = await fetchData(`/api/${apiEndpoint}/?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
 
     // set the old submenu as the type: children we received from the api
     if (data) {
-      const newSubmenuList = { submenuList };
-
+      const newSubmenuList = {};
       newSubmenuList[type] = { name, data };
 
       updateCurrentSubmenu(type);
@@ -109,17 +109,26 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
       {Object.keys(submenuList).map((type, index) => (
         <DeselectSport
           key={`all-sports-deselect-${submenuList[type].name}`}
-          type={type} data={submenuList[type]}
+          type={type}
+          data={submenuList[type]}
           index={index}
           submenuList={submenuList}
           deselectSubmenu={deselectSubmenu}
         />
       ))}
 
-      {
-        // Selecting Item
-        !submenuList.EVENT_TYPE || !currentSubmenu ? <SelectSport sports={sports} setSubmenu={getSportInfo} /> : <SelectSubmenu data={submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={submenuList} />
-      }
+      {!submenuList.EVENT_TYPE || !currentSubmenu ? (
+        <SelectSport
+          sports={sports}
+          setSubmenu={getSportInfo}
+        />
+      ) : (
+        <SelectSubmenu
+          data={submenuList[currentSubmenu].data}
+          setSubmenu={setSubmenu}
+          submenuList={submenuList}
+        />
+      )}
     </List>
   );
 };
