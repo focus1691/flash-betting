@@ -21,7 +21,6 @@ const initialState = {
   layFirstCol: true,
   oneClickOn: false,
   priceType: 'STAKE',
-  myMarkets: [],
   marketPL: {},
   oddsHovered: { selectionId: 0, odds: 0, side: 'BACK' },
   draggingLadder: false, // selection id of the ladder dragged
@@ -69,8 +68,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, runnerSelection: action.payload };
     case 'TOGGLE_ONE_CLICK':
       return { ...state, oneClickOn: action.payload };
-    case 'LOAD_MY_MARKETS':
-      return { ...state, myMarkets: action.payload };
     case 'UPDATE_ORDER':
       return {
         ...state,

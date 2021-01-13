@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import { setAllSports, updateSubmenuList, updateCurrentSubmenu } from '../../../actions/sport';
+import { setAllSports, updateSubmenuList, clearSubmenuList, updateCurrentSubmenu } from '../../../actions/sport';
 import { sortSports } from '../../../utils/Algorithms/SortSports';
 import DeselectSport from './DeselectSport';
 import SelectSport from './SelectSport';
@@ -12,6 +12,16 @@ import SelectSubmenu from './SelectSubmenu';
 import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
+
+const submenuEnum = {
+  ROOT: 0,
+  EVENT_TYPE: 1,
+  GROUP: 2,
+  GROUP_1: 3,
+  EVENT: 4,
+  RACE: 5,
+  MARKET: 6,
+};
 
 const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
   const classes = useStyles();
@@ -35,8 +45,9 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 
   useEffect(() => {
     if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
-      updateCurrentSubmenu('');
-      updateSubmenuList({});
+      clearSubmenuList();
+      // updateCurrentSubmenu('');
+      // updateSubmenuList({});
     }
   }, [winMarketsOnly, horseRaces]);
 
@@ -74,20 +85,11 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 
   const deselectSubmenu = (type, submenuList) => {
     if (type === 'ROOT') {
-      updateCurrentSubmenu('');
-      updateSubmenuList({});
+      // updateCurrentSubmenu('');
+      // updateSubmenuList({});
+      clearSubmenuList();
       return;
     }
-
-    const submenuEnum = {
-      ROOT: 0,
-      EVENT_TYPE: 1,
-      GROUP: 2,
-      GROUP_1: 3,
-      EVENT: 4,
-      RACE: 5,
-      MARKET: 6,
-    };
 
     // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
     const newSubmenuList = {};
@@ -137,7 +139,7 @@ const mapStateToProps = (state) => ({
   sports: state.sports.sports,
   submenuList: state.sports.submenuList,
   currentSubmenu: state.sports.currentSubmenu,
-  myMarkets: state.market.myMarkets,
+  myMarkets: state.sports.myMarkets,
   winMarketsOnly: state.settings.winMarketsOnly,
   horseRaces: state.settings.horseRaces,
 });
@@ -145,6 +147,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   setAllSports,
   updateSubmenuList,
+  clearSubmenuList,
   updateCurrentSubmenu,
 };
 

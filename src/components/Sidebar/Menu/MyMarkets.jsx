@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import { loadMyMarkets } from '../../../actions/market';
-import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets } from '../../../actions/sport';
+import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets, loadMyMarkets } from '../../../actions/sport';
 import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
@@ -126,7 +125,7 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
 };
 
 const mapStateToProps = (state) => ({
-  myMarkets: state.market.myMarkets,
+  myMarkets: state.sports.myMarkets,
   winMarketsOnly: state.settings.winMarketsOnly,
   horseRaces: state.settings.horseRaces,
   currentSubmenuMyMarkets: state.sports.currentSubmenuMyMarkets,

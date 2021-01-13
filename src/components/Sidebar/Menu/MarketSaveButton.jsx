@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import { ListItemIcon } from '@material-ui/core';
 //* Actions
-import { loadMyMarkets } from '../../../actions/market';
+import { loadMyMarkets } from '../../../actions/sport';
 
 const MarketSaveButton = ({ sport: { id, name, type, children }, submenuList, myMarkets, loadMyMarkets }) => {
   const marketItemSaved = myMarkets.findIndex((item) => item.id === id && item.type == type && item.name == name) !== -1;
@@ -53,7 +53,7 @@ const MarketSaveButton = ({ sport: { id, name, type, children }, submenuList, my
 };
 
 const mapStateToProps = (state) => ({
-  myMarkets: state.market.myMarkets,
+  myMarkets: state.sports.myMarkets,
 });
 
 const mapDispatchToProps = {

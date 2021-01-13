@@ -8,6 +8,10 @@ export const updateSubmenuList = (submenu) => ({
   payload: submenu,
 });
 
+export const clearSubmenuList = () => ({
+  type: 'CLEAR_SUBMENU_LIST',
+});
+
 export const updateSubmenuListMyMarkets = (submenu) => ({
   type: 'UPDATE_SUBMENU_LIST_MYMARKETS',
   payload: submenu,
@@ -26,4 +30,9 @@ export const updateSubmenuMyMarkets = (submenu) => ({
 export const setCurrentMarket = (market) => ({
   type: 'CURRENT_MARKET',
   payload: market,
+});
+
+export const loadMyMarkets = (markets) => ({
+  type: 'LOAD_MY_MARKETS',
+  payload: markets,
 });

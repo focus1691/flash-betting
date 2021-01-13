@@ -98,11 +98,6 @@ export const toggleOneClick = (active) => ({
   payload: active,
 });
 
-export const loadMyMarkets = (markets) => ({
-  type: 'LOAD_MY_MARKETS',
-  payload: markets,
-});
-
 export const updateOrder = (order) => ({
   type: 'UPDATE_ORDER',
   payload: order,
