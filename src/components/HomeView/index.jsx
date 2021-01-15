@@ -6,7 +6,6 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { openPremiumDialog, setSelectedPremium } from '../../actions/settings';
-import SocketContext from '../../SocketContext';
 import Header from './Header';
 import SubscriptionContainer from './SubscriptionContainer';
 import useStyles from '../../jss/components/HomeView/homeViewStyle';
@@ -16,7 +15,6 @@ const cookies = new Cookies();
 const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   const [data, setData] = useState({});
   const classes = useStyles({ subscribed: premiumMember });
-  console.log(openPremiumDialog);
 
   useEffect(() => {
     premiumMember
