@@ -20,7 +20,7 @@ export default ({ data, setSubmenu, submenuList }) => {
       <ListItem button onClick={handleItemClick(sport)}>
         <ListItemText className={classes.name}>{sport.name}</ListItemText>
       </ListItem>
-      <MarketSaveButton sport={sport} submenuList={submenuList} />
+      <MarketSaveButton sport={sport} />
     </ListItem>
   ));
 };

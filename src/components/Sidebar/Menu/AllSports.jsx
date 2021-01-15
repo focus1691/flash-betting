@@ -46,8 +46,6 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   useEffect(() => {
     if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
       clearSubmenuList();
-      // updateCurrentSubmenu('');
-      // updateSubmenuList({});
     }
   }, [winMarketsOnly, horseRaces]);
 
@@ -85,15 +83,12 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 
   const deselectSubmenu = (type, submenuList) => {
     if (type === 'ROOT') {
-      // updateCurrentSubmenu('');
-      // updateSubmenuList({});
       clearSubmenuList();
       return;
     }
 
     // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
     const newSubmenuList = {};
-    console.log(type, submenuList);
 
     const maxSubmenuLevel = submenuEnum[type];
     Object.keys(submenuList).forEach((key) => {

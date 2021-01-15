@@ -92,18 +92,16 @@ class DatabaseHelper extends Database {
   }
 
   saveMarket(user, newMarket) {
-    // Create the object with our Order Schema
-    newMarket = new Market(newMarket);
     return new Promise((res, rej) => {
+      // Create the object with our Order Schema
+      newMarket = new Market(newMarket);
       User.findOne({ email: user })
         .then((user) => {
           user.markets.push(newMarket);
           user.save();
           res(user.markets);
         })
-        .catch((err) => {
-          rej(400);
-        });
+        .catch((error) => rej(error));
     });
   }
 
@@ -121,9 +119,7 @@ class DatabaseHelper extends Database {
           user.save();
           res(user.markets);
         })
-        .catch((err) => {
-          rej(400);
-        });
+        .catch((error) => rej(error));
     });
   }
 }
