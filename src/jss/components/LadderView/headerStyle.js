@@ -47,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
   runnerIcon: {
     verticalAlign: 'middle',
     cursor: `url(${window.location.origin}/icons/faq.png), auto`,
+    backgroundColor: '#fff',
+    padding: '3px',
+    borderRadius: theme.spacing(2),
   },
   runnerodds: {
     color: '#1ae17d',
