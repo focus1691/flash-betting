@@ -10,17 +10,32 @@ const MarketSaveButton = ({ sport: { id, name, type, children }, submenuList, my
 
   const updateMyMarkets = (e) => {
     e.stopPropagation();
-    /*
-      marketItemSaved - whether it is saved or not
-      id - id for the selection
-      name - name displayed on myMarkets
-      data - the data that the sport contains for the mymarkets so we don't have to go searching for it
-    */
-    const marketSelection = {
-      id, name, type, children,
-    };
 
-    console.log(marketSelection, submenuList);
+    const storedMarkets = JSON.parse(localStorage.getItem('myMarkets')) || {};
+
+    console.log(!marketItemSaved);
+
+    if (marketItemSaved) {
+      delete storedMarkets[id];
+    } else {
+      storedMarkets[id] = {};
+      storedMarkets[id][type] = { id, type };
+      console.log(storedMarkets);
+
+      if (submenuList) {
+        console.log(Object.keys(submenuList));
+        Object.keys(submenuList).forEach((type) => {
+          storedMarkets[id][type] = {
+            id: submenuList[type].id, 
+            type,
+          }
+        });
+      }
+    }
+    console.log(storedMarkets);
+    localStorage.setItem('myMarkets', JSON.stringify(storedMarkets));
+
+    // console.log({ id, name, type, children }, submenuList);
 
     // fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
     //   headers: {

@@ -16,13 +16,11 @@ export default ({ data, setSubmenu, submenuList }) => {
     }
   };
   return dataWithoutRaces.map((sport) => (
-    <React.Fragment key={`select-submenu-${sport.id}`}>
-      <ListItem>
-        <ListItem button onClick={handleItemClick(sport)}>
-          <ListItemText className={classes.name}>{sport.name}</ListItemText>
-        </ListItem>
-        <MarketSaveButton sport={sport} submenuList={submenuList} />
+    <ListItem key={`select-submenu-${sport.id}`}>
+      <ListItem button onClick={handleItemClick(sport)}>
+        <ListItemText className={classes.name}>{sport.name}</ListItemText>
       </ListItem>
-    </React.Fragment>
+      <MarketSaveButton sport={sport} submenuList={submenuList} />
+    </ListItem>
   ));
 };

@@ -51,7 +51,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
     }
   }, [winMarketsOnly, horseRaces]);
 
-  const getSportInfo = (id, name, type, submenuList, sportId, apiEndpoint) => async () => {
+  const getSportInfo = (id, name, type, sportId, apiEndpoint) => async () => {
     const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
     // gets the country names and makes it an array ex... [GB]
@@ -96,7 +96,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
     console.log(type, submenuList);
 
     const maxSubmenuLevel = submenuEnum[type];
-    Object.keys(submenuList).map((key) => {
+    Object.keys(submenuList).forEach((key) => {
       if (!submenuEnum[key] || submenuEnum[key] <= maxSubmenuLevel) {
         newSubmenuList[key] = submenuList[key];
       }

@@ -35,7 +35,8 @@ const SQLiteDatabase = require('./Database/SQLite/database');
 
 const User = require('./Database/models/users');
 
-const { isAuthURL } = require('./Utils/Validator');
+const { isAuthURL } = require('./utils/Validator');
+const { getMarketData } = require('./utils/extractData');
 
 SQLiteDatabase.setup();
 
@@ -484,17 +485,28 @@ app.get('/api/get-event', (req, res) => {
   );
 });
 
-app.get(
-  '/api/get-my-markets',
-  (request, response) =>
-    new Promise((res, rej) => {
-      User.findOne({
-        email: betfair.email,
-      })
-        .then((doc) => response.json(doc.markets))
-        .catch((err) => response.sendStatus(400));
-    }),
-);
+app.post('/api/get-my-markets', (req, res) => {
+  if (_.isEmpty(betfair.allSports)) {
+    return res.json({ result: {} });
+  }
+
+  const storedMarkets = JSON.parse(req.body.storedMarkets);
+  console.log(Object.keys(storedMarkets));
+  // const myMarkets = Object.keys(storedMarkets).map((id) => getMarketData(betfair.allSports, storedMarkets[id], 0));
+  
+  // res.json({ result: myMarkets })
+  return res.json({ result: {} });
+});
+
+// =>
+//     new Promise((res, rej) => {
+//       User.findOne({
+//         email: betfair.email,
+//       })
+//         .then((doc) => response.json(doc.markets))
+//         .catch((err) => response.sendStatus(400));
+//     }),
+// );
 
 app.post('/api/save-market', (request, response) => {
   Database.saveMarket(betfair.email, request.body).then((res) => {

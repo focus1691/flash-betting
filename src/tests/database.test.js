@@ -27,7 +27,7 @@ const fakeBet2 = {
   assignedIsOrderMatched: false,
 };
 
-describe('insert', () => {
+describe('Add new bet', () => {
   it('should insert a new bet', async () => {
     await SQLiteDatabase.setup();
     await SQLiteDatabase.addBet(fakeBet);
@@ -39,7 +39,7 @@ describe('insert', () => {
   });
 });
 
-describe('update', () => {
+describe('update bets', () => {
   let updatedFakeBet2;
   it('should update ticks', async () => {
     await SQLiteDatabase.setup();

@@ -51,10 +51,23 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
   );
 
   useEffect(() => {
-    fetch('/api/get-my-markets')
+
+    fetch('/api/get-my-markets', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({ storedMarkets: localStorage.getItem('myMarkets') || {}}),
+    })
       .then((res) => res.json())
-      .then((markets) => loadMyMarkets(markets));
-  }, []);
+      .then((myMarkets) => console.log(myMarkets));
+
+    // fetch(`/api/get-my-markets?storedMarkets=${JSON.stringify(localStorage.getItem('myMarkets') || {})}`)
+    //   .then((res) => res.json())
+    //   .then((myMarkets) => console.log(myMarkets));
+      // .then((markets) => loadMyMarkets(markets));
+  });
 
   useEffect(() => {
     if (submenuListMyMarkets.EVENT_TYPE && submenuListMyMarkets.EVENT_TYPE.name.includes("Today's Card")) {
