@@ -18,7 +18,7 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
 
   return (
     <div className={classes.toolbar}>
-      <button type="button" onClick={toggleFullScreen} style={fullscreen ? { background: '#404040' } : {}}>
+      <button type="button" onClick={toggleFullScreen} style={fullscreen ? { background: '#404040', transform: 'rotate(180deg)' } : {}}>
         <img alt="Hide" src={`${window.location.origin}/icons/Triangle.svg`} />
       </button>
       <button type="button" onClick={openLiveStream} style={videoOpen ? { background: '#404040' } : {}}>
