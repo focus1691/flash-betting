@@ -27,7 +27,7 @@ const Event = ({ marketOpen, marketName, marketStartTime, event }) => {
         </span>
       </div>
       <MarketStatus />
-      <AppBar className={classes.eventTitle} position="static">
+      <AppBar className={classes.eventTitle} position="absolute">
         <Typography variant="h6">{renderTitle()}</Typography>
       </AppBar>
     </div>

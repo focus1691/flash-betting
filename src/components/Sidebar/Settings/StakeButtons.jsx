@@ -31,7 +31,7 @@ export default ({ stakeBtns, updateStakeBtn, classes }) => {
   return (
     <SectionBar>
       <SectionContent>
-        <AppBar className={classes.appBar} position="static">
+        <AppBar className={classes.appBar} position="absolute">
           <Typography variant="h6" className={classes.title}>
             Stake Button
           </Typography>

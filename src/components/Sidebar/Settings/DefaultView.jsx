@@ -40,7 +40,7 @@ export default ({ defaultView, toggleDefaultView, premiumMember, classes }) => {
   return (
     <SectionBar>
       <SectionContent>
-        <AppBar className={classes.appBar} position="static">
+        <AppBar className={classes.appBar} position="absolute">
           <Typography variant="h6" className={classes.title}>
             Default View
           </Typography>
