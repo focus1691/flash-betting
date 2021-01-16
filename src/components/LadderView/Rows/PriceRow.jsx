@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import uuid from 'react-uuid'
 import { connect } from 'react-redux';
 //* Actions
 import { setStakeInOneClick } from '../../../actions/settings';
@@ -16,7 +17,7 @@ const PriceRow = ({
 
   const castedPrices = useMemo(() => (Array.isArray(buttons) ? buttons : Object.values(buttons)), [buttons]);
 
-  const handleStakeChanged = (price) => (e) => {
+  const handleStakeChanged = (price) => () => {
     setCustomStakeActive({ id: selectionId, customStakeActive: false });
     setStakeInOneClick({ selectionId, price: parseFloat(price) });
   };
@@ -38,7 +39,7 @@ const PriceRow = ({
           </th>
           {castedPrices.map((price) => (
             <th
-              key={`${selectionId}${price}`}
+              key={`ladder-price-${selectionId}-${uuid()}`}
               // style={{ background: customStakeActive ? getOrderBtnBG(buttonType, parseFloat(price), undefined, -20) : getOrderBtnBG(buttonType, parseFloat(price), stakeVal[selectionId], -20) }}
               // style={{ background: LightenDarkenColor }}
               onClick={handleStakeChanged(price)}
