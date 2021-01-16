@@ -131,12 +131,6 @@ const OrderRow = memo(
       for (let j = 0; j < matchedBets.length; j += 1) {
         list.push(<MatchedBet key={`ladder-matched-bet-${matchedBets[j].selectionId}-${j + list.length + 1}`} bet={matchedBets[j]} />);
       }
-      list.push(<MatchedBet key={`ladder-matched-bet-${242241114242}`} bet={{ side: 'BACK', price: '4.6', sizeMatched: 10 }} />);
-      list.push(<MatchedBet key={`ladder-matched-bet-${111111111111}`} bet={{ side: 'LAY', price: '2.02', sizeMatched: 5 }} />);
-      list.push(<MatchedBet key={`ladder-matched-bet-${3333333333}`} bet={{ side: 'LAY', price: '1.21', sizeMatched: 0.17 }} />);
-      list.push(<MatchedBet key={`ladder-matched-bet-${7777777777}`} bet={{ side: 'BACK', price: '4.6', sizeMatched: 10 }} />);
-      list.push(<MatchedBet key={`ladder-matched-bet-${5555555555}`} bet={{ side: 'BACK', price: '4.6', sizeMatched: 10 }} />);
-      list.push(<MatchedBet key={`ladder-matched-bet-${9999999999}`} bet={{ side: 'BACK', price: '4.6', sizeMatched: 10 }} />);
       return list;
     }, [matchedBets, unmatchedBets]);
 

@@ -68,9 +68,6 @@ const useStyles = makeStyles((theme) => ({
     '& tr': {
       display: 'flex',
       userSelect: 'none',
-      '&:nth-child(1)': {
-        width: '30px%',
-      },
     },
     '& td': {
       width: '100vw !important',

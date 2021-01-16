@@ -2,10 +2,9 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() => ({
   cancelButton: {
-    height: '75%',
-    verticalAlign: 'bottom',
-    float: 'left',
-    marginLeft: '10%',
+    height: '15px',
+    float: 'right',
+    marginRight: '2px',
   }
 }));
 

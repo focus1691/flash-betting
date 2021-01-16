@@ -14,10 +14,8 @@ const UnmatchedBet = memo(({ bet, cancelBet }) => {
   }, [bet, cancelBet]);
 
   return (
-    <tr
-      style={colorForOrder(bet.side, bet.strategy)}
-    >
-      <td>
+    <tr>
+      <td style={colorForOrder(bet.side, bet.strategy)}>
         <img
           className={classes.cancelButton}
           src={`${window.location.origin}/icons/X_Button.svg`}
