@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 //* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
@@ -38,7 +39,7 @@ export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
         </AppBar>
       </SectionContent>
       {renderSaveBtn()}
-      <div className={classes.stakeButtons}>
+      <div className={clsx(classes.stakeButtons, classes.rightClickTicks)}>
         <TextField
           id="standard-number"
           className={classes.textField}

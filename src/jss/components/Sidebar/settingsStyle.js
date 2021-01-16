@@ -34,26 +34,30 @@ const useStyles = makeStyles((theme) => ({
   stakeButtons: {
     margin: theme.spacing(1, 1),
     '& .Mui-focused': {
-      color: '#1074ff',
+      color: '#B7F5BA',
+      fontWeight: '700',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottom: '2px solid #B7F5BA',
+    },
+    '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+      borderBottom: '1px solid #e6f2e6',
     },
     '& label': {
       color: '#c7c2c2',
       fontFamily: 'Roboto',
       fontWeight: '400',
     },
-    '& div': {
+    '& > div': {
       '& input[type=number]': {
         color: '#c7c2c2',
         fontFamily: 'Roboto',
         fontWeight: '700',
       },
-      '&:before': {
-        borderBottom: '1px solid #979797',
-      },
-      '&:after': {
-        borderBottom: '1px solid #1074ff',
-      },
     },
+  },
+  rightClickTicks: {
+    margin: theme.spacing(0, 1),
   },
   textField: {
     width: 50,

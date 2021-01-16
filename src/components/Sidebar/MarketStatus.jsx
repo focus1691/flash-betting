@@ -20,7 +20,7 @@ const MarketStatus = ({ marketOpen, marketStartTime, marketStatus, inPlay, pastE
       setStatusCircle('LiveGreen_Icon.svg');
     } else if (new Date() > new Date(marketStartTime) && pastEventTime) {
       setStatus('Waiting');
-      setStatusCircle('LiveGreen_Icon.svg');
+      setStatusCircle('OrangeWaiting_Icon.svg');
     } else {
       setStatusCircle('ClosedBlack_Light.svg');
       if (marketStatus === 'OPEN') {
