@@ -188,7 +188,7 @@ const Grid = ({
           };
 
     orderProps.text2 = order.backLay === 0 ? 'BACK' : 'LAY';
-    orderProps.bg = order.backLay === 0 ? '#DBEFFF' : '#FEE9EE';
+    orderProps.bg = order.backLay === 0 ? '#007aaf' : '#d4696b';
 
     const profitArray = Object.values(bets.matched)
       .filter((bet) => bet.selectionId == runners[key].selectionId)

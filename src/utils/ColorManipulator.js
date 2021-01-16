@@ -26,14 +26,12 @@ const LightenDarkenColor = (col, amt) => {
   return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16);
 };
 
-const getOrderBtnBG = (buttonType, stake, activeStake, colorContrast) => {
-  const bg = buttonType === 'STAKE' ? '#DBEFFF' : '#FEE9EE';
-  return parseInt(stake) === parseInt(activeStake) ? LightenDarkenColor(bg, colorContrast) : bg;
+const getStakeButtonStyle = (buttonType, stake, activeStake, colorContrast) => {
+  return stake == activeStake ? '#121212' : buttonType === 'STAKE' ? '#007aaf' : '#d4696b';
 };
 
-const getOrderBtnBG2 = (buttonType, selected, colorContrast) => {
-  const bg = buttonType === 'STAKE' ? '#DBEFFF' : '#FEE9EE';
-  return selected ? LightenDarkenColor(bg, colorContrast) : bg;
+const getCustomStakeStyle = (buttonType, selected, colorContrast) => {
+  return selected ? '#121212' : buttonType === 'STAKE' ? '#007aaf' : '#d4696b';
 };
 
-export { getOrderBtnBG, getOrderBtnBG2, LightenDarkenColor };
+export { getStakeButtonStyle, getCustomStakeStyle, LightenDarkenColor };

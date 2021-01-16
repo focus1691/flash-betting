@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import crypto from 'crypto';
 import { sumMatchedBets } from '../../utils/Bets/BettingCalculations';
-import { getOrderBtnBG } from '../../utils/ColorManipulator';
+import { getStakeButtonStyle } from '../../utils/ColorManipulator';
 import { getHedgedBetsToMake } from '../../utils/TradingStategy/HedingCalculator';
 import { formatTotalMatched } from '../../utils/NumberFormat';
 import { renderRaceStatus } from './RaceStatus';
@@ -72,19 +72,19 @@ const GridHeader = ({
           </h1>
           {oneClickOn ? (
             <>
-              <div className={classes.oneClickStake} style={{ background: '#DBEFFF' }}>
+              <div className={classes.oneClickStake} style={{ background: '#007aaf' }}>
                 <button type="button">Stake</button>
                 {stakeBtns.map((stake) => (
-                  <button type="button" style={{ background: getOrderBtnBG('STAKE', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
+                  <button type="button" style={{ background: getStakeButtonStyle('STAKE', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
               </div>
               <br />
-              <div className={classes.oneClickStake} style={{ background: '#FEE9EE' }}>
+              <div className={classes.oneClickStake} style={{ background: '#d4696b' }}>
                 <button type="button">Liability</button>
                 {layBtns.map((stake) => (
-                  <button type="button" style={{ background: getOrderBtnBG('LAY', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
+                  <button type="button" style={{ background: getStakeButtonStyle('LAY', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
