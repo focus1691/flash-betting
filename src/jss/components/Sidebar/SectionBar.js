@@ -9,6 +9,9 @@ const SectionBar = withStyles({
       borderBottom: 0,
       margin: 0,
     },
+    '&:before': {
+      backgroundColor: 'transparent',
+    },
   },
   expanded: {},
 })(MultiAccordion);
