@@ -19,11 +19,16 @@ const useStyles = makeStyles((theme) => ({
   container: {
     padding: theme.spacing(0 , 2),
   },
+  ladderBackground: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundImage: 'linear-gradient(171deg, #a5429c 0%, #6455ce 100%)',
+    opacity: 0.2,
+  },
   ladderContainer: {
-    margin: theme.spacing(2, 0, 2, 0),
     padding: theme.spacing(2, 1),
     borderRadius: theme.spacing(2),
-    backgroundImage: 'linear-gradient(171deg, #a5429c 0%, #6455ce 100%)',
     filter: 'drop-shadow(2px 4px 6px black)',
   },
 }));
