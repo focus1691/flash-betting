@@ -66,28 +66,30 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     overflowY: 'scroll',
     '& tr': {
-      borderBottom: '1px solid #fff',
+      display: 'flex',
       userSelect: 'none',
-      // -moz-user-select: none;
-      // -webkit-user-select: none;
       '&:nth-child(1)': {
         width: '30px%',
-      },
-      '&:nth-child(odd)': {
-        width: '100%',
-        background: '#eba8a6',
       },
     },
     '& td': {
       width: '100vw !important',
-      fontSize: 'x-small',
+      color: '#fff',
+      fontFamily: "'Roboto'",
+      fontSize: 'small',
+      fontWeight: '400',
       textAlign: 'center',
       overflow: 'scroll',
+      margin: theme.spacing(`calc(${theme.spacing(1)}px / 4)`, 1),
+      borderRadius: theme.spacing(3),
+      display: 'table-cell',
     },
   },
   orderBody: {
     overflowY: 'scroll',
-    display: 'block',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     minHeight: '3.5em',
     maxHeight: '3.5em',
   },

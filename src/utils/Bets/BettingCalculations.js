@@ -53,7 +53,7 @@ const colorForBack = (side, pl = 0) => {
 const colorForLay = (side) => (side === 0 ? 'red' : '#01CC41');
 
 const colorForOrder = (side, strategy) => ({
-  backgroundColor: (side === 'BACK' || strategy === 'Back') ? '#A6D8FF' : (side === 'LAY' || strategy === 'Lay') ? '#FAC9D7' : null,
+  backgroundColor: (side === 'BACK' || strategy === 'Back') ? '#007aaf' : (side === 'LAY' || strategy === 'Lay') ? '#d4696b' : null,
 });
 
 const PLColor = (PL) => ({

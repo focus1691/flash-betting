@@ -50,7 +50,7 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
                           <tr
                             className={classes.matchedBet}
                             style={{
-                              backgroundColor: order.side === 'BACK' ? '#A6D8FF' : '#FAC9D7',
+                              backgroundColor: order.side === 'BACK' ? '#007aaf' : '#d4696b',
                             }}
                           >
                             <td>
