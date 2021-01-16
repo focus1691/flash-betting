@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
     position: 'absolute',
     height: '100%',
     backgroundColor: '#a8613680',
-    color: '#fff',
+    color: '#c7c2c2',
     maxWidth: '100%',
     fontFamily: 'Lato',
     fontSize: '0.7rem',
