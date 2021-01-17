@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import uuid from 'react-uuid'
 import { connect } from 'react-redux';
 //* Utils
 import { calcBackProfit, twoDecimalPlaces } from '../../../utils/Bets/BettingCalculations';
@@ -31,22 +32,22 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
             </td>
           </tr>
           {marketOpen
-            ? selections.map((selection, idx) => {
+            ? selections.map((selection) => {
               const selectionObject = runners[selection];
               if (!selectionObject) return null;
 
               const filteredOrders = Object.values(bets.matched).filter((order) => order.selectionId === selection);
               return (
 
-                <React.Fragment key={`sidebar-matched-bet-${selection}-${idx}`}>
+                <React.Fragment key={`sidebar-matched-bet-${selection}-${uuid()}`}>
                   <tr className={classes.selection} colSpan={4}>
                     <td>{selectionObject.runnerName}</td>
                   </tr>
                   {
-                    filteredOrders.map((order, idx) => {
+                    filteredOrders.map((order) => {
                       const PL = calcBackProfit(order.size, order.price, order.side === 'BACK' ? 0 : 1);
                       return (
-                        <React.Fragment key={`sidebar-matched-bet-filtered-${order.selectionId}-${idx}`}>
+                        <React.Fragment key={`sidebar-matched-bet-filtered-${order.selectionId}-${uuid()}`}>
                           <tr
                             className={classes.matchedBet}
                             style={{
