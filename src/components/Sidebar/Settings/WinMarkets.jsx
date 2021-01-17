@@ -43,7 +43,6 @@ export default ({ winMarketsOnly, updateWinMarketsOnly, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={winMarketsOnly}
             onChange={() => {
               setChangeMade(true);

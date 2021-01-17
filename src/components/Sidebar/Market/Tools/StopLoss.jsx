@@ -51,7 +51,7 @@ const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDis
   return (
     <>
       <List component="nav">
-        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
+        <ListItem button onClick={handleClickListItem()}>
           <ListItemText primary="Stop Loss on:" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} className={classes.selectedRunner} />
         </ListItem>
       </List>
@@ -71,14 +71,14 @@ const StopLoss = ({ offset, units, trailing, hedged, runners, selections, setDis
 
       <RadioGroup name="stoploss" className={classes.unitRadioButtons} value={units} onChange={(e) => setStopLossUnit(e.target.value)}>
         <div className={classes.row}>
-          <TextField className={classes.textField} type="number" value={offset} inputProps={{ min: '1', max: '100' }} onChange={(e) => setStopLossOffset(e.target.value)} margin="normal" />
-          <FormControlLabel value="Ticks" control={<Radio color="primary" />} label={<span>Tick</span>} />
-          <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
+          <TextField className={classes.textField} type="number" value={offset} inputProps={{ min: '1', max: '100' }} onChange={(e) => setStopLossOffset(e.target.value)} label={units} />
+          <FormControlLabel value="Ticks" control={<Radio />} label={<span>Tick</span>} />
+          <FormControlLabel value="Percent" control={<Radio />} label="%" />
         </div>
       </RadioGroup>
       <div className={clsx(classes.row, classes.checkboxes)}>
-        <FormControlLabel control={<Checkbox color="primary" checked={trailing} onChange={(e) => toggleStopLossTrailing(e.target.checked)} />} label="Trailing" className={classes.checkbox} />
-        <FormControlLabel control={<Checkbox color="primary" checked={hedged} onChange={(e) => toggleStopLossHedged(e.target.checked)} />} label="Hedged" className={classes.checkbox} />
+        <FormControlLabel control={<Checkbox checked={trailing} onChange={(e) => toggleStopLossTrailing(e.target.checked)} className={classes.checkbox} />} label="Trailing" />
+        <FormControlLabel control={<Checkbox checked={hedged} onChange={(e) => toggleStopLossHedged(e.target.checked)} className={classes.checkbox} />} label="Hedged" />
       </div>
     </>
   );

@@ -97,7 +97,6 @@ const LadderHeader = memo(({
             display: twoDecimalPlaces(hedge.size) <= 0 ? 'none' : 'block',
             color: hedge.side === 'BACK' ? '#05caf0' : '#d4696b',
           }}
-          id="ltphedgesize"
         >
           {(hedge.size && hedge.size.toFixed(2)) || null}
         </span>

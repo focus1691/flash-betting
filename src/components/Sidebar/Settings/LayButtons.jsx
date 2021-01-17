@@ -40,7 +40,6 @@ export default ({ layBtns, updateLayBtn, classes }) => {
       {renderSaveBtn()}
       <div className={classes.stakeButtons}>
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="One"
@@ -56,7 +55,6 @@ export default ({ layBtns, updateLayBtn, classes }) => {
           margin="normal"
         />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="Two"
@@ -72,7 +70,6 @@ export default ({ layBtns, updateLayBtn, classes }) => {
           margin="normal"
         />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="Three"
@@ -88,7 +85,6 @@ export default ({ layBtns, updateLayBtn, classes }) => {
           margin="normal"
         />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="Four"
@@ -104,7 +100,6 @@ export default ({ layBtns, updateLayBtn, classes }) => {
           margin="normal"
         />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="Five"
@@ -120,7 +115,6 @@ export default ({ layBtns, updateLayBtn, classes }) => {
           margin="normal"
         />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="Six"
@@ -136,7 +130,6 @@ export default ({ layBtns, updateLayBtn, classes }) => {
           margin="normal"
         />
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           label="Seven"

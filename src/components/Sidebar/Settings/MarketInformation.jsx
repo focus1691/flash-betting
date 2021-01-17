@@ -45,7 +45,6 @@ export default ({
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={marketInfo.visible}
             onChange={() => {
               setChangeMade(true);

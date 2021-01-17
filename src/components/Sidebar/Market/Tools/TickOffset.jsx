@@ -24,15 +24,15 @@ const TickOffset = ({ ticks, unit, percentTrigger, hedged, setDisplayText, setTi
   return (
     <>
       <div className={classes.row}>
-        <TextField id="standard-number" type="number" label="Ticks" className={classes.textField} value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
-        <RadioGroup name="tickoffset" value={unit} onChange={(e) => setUnit(e.target.value)}>
-          <FormControlLabel className={classes.formControlLabel} value="Ticks" control={<Radio color="primary" />} label="Ticks" />
-          <FormControlLabel value="Percent" control={<Radio color="primary" />} label="%" />
+        <TextField type="number" label="Ticks" className={classes.textField} value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
+        <RadioGroup name="tickoffset" className={classes.unitRadioButtons} value={unit} onChange={(e) => setUnit(e.target.value)}>
+          <FormControlLabel className={classes.formControlLabel} value="Ticks" control={<Radio />} label="Ticks" />
+          <FormControlLabel value="Percent" control={<Radio />} label="%" />
         </RadioGroup>
       </div>
       <div className={classes.row}>
-        <TextField id="standard-number" className={classes.textField} type="number" label="% Trigger" value={percentTrigger} inputProps={{ min: '1', max: '100' }} onChange={(e) => setPercentTrigger(e.target.value)} margin="normal" />
-        <FormControlLabel control={<Checkbox color="primary" checked={hedged} onChange={(e) => setHedged(e.target.checked)} />} label="Hedged" />
+        <TextField className={classes.textField} type="number" label="% Trigger" value={percentTrigger} inputProps={{ min: '1', max: '100' }} onChange={(e) => setPercentTrigger(e.target.value)} margin="normal" />
+        <FormControlLabel control={<Checkbox checked={hedged} onChange={(e) => setHedged(e.target.checked)} className={classes.checkbox} />} label="Hedged" />
       </div>
     </>
   );

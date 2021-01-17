@@ -107,11 +107,11 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
   return (
     <div className={classes.root}>
       <List component="nav">
-        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem}>
+        <ListItem button onClick={handleClickListItem}>
           <ListItemText primary="Runners" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} />
         </ListItem>
       </List>
-      <StyledMenu id="lock-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <StyledMenu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for All / the Field */}
         {runners ? (
           <StyledMenuItem key="stop-loss-order-all/field" className={classes.root} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
@@ -137,13 +137,13 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
             <option value=">">{'>'}</option>
           </Select>
         </FormControl>
-        <TextField id="standard-number" className={classes.textField} type="number" label="Ticks" value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="Ticks" value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
       </div>
       <div className={classes.row}>
-        <TextField id="standard-number" className={classes.backPriceTextFields} type="number" label="Back" value={stake} inputProps={{ min: '1' }} onChange={(e) => setStake(e.target.value)} margin="normal" />
-        <TextField id="standard-number" className={classes.backPriceTextFields} type="number" label="@" value={price} inputProps={{ min: '1.00', max: '1000', step }} onChange={updateStep} margin="normal" />
+        <TextField className={classes.backPriceTextFields} type="number" label="Back" value={stake} inputProps={{ min: '1' }} onChange={(e) => setStake(e.target.value)} margin="normal" />
+        <TextField className={classes.backPriceTextFields} type="number" label="@" value={price} inputProps={{ min: '1.00', max: '1000', step }} onChange={updateStep} margin="normal" />
       </div>
-      <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
+      <Button variant="outlined" className={classes.button} onClick={placeOrder()}>
         Submit
       </Button>
     </div>

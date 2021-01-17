@@ -43,7 +43,6 @@ export default ({ tools, toggleTools, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={tools.visible}
             onChange={() => {
               setChangeMade(true);

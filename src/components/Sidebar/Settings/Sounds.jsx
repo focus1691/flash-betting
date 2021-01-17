@@ -43,7 +43,6 @@ export default ({ sounds, toggleSounds, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={sounds}
             onChange={() => {
               setChangeMade(true);

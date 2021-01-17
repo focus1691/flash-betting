@@ -1,4 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
+import textFieldStyle from '../../../../textFieldStyle';
+import submitButtonStyle from '../../../../submitButtonStyle';
 import row from '../../../../row';
 
 const useStyles = makeStyles((theme) => ({
@@ -7,6 +9,10 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
   },
   ...row,
+  button: {
+    borderRadius: theme.spacing(1),
+    ...submitButtonStyle,
+  },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 75,
@@ -23,11 +29,13 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    ...textFieldStyle,
   },
   backPriceTextFields: {
     width: 75,
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    ...textFieldStyle,
   },
   select: {
     margin: theme.spacing(1),

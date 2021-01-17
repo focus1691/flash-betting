@@ -44,7 +44,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.GB}
             onChange={() => {
               setChangeMade(true);
@@ -74,7 +73,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.IE}
             onChange={() => {
               setChangeMade(true);
@@ -103,7 +101,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.FR}
             onChange={() => {
               setChangeMade(true);
@@ -132,7 +129,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.DE}
             onChange={() => {
               setChangeMade(true);
@@ -161,7 +157,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.IT}
             onChange={() => {
               setChangeMade(true);
@@ -191,7 +186,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.AE}
             onChange={() => {
               setChangeMade(true);
@@ -220,7 +214,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.TR}
             onChange={() => {
               setChangeMade(true);
@@ -249,7 +242,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.SG}
             onChange={() => {
               setChangeMade(true);
@@ -278,7 +270,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.SE}
             onChange={() => {
               setChangeMade(true);
@@ -307,7 +298,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.US}
             onChange={() => {
               setChangeMade(true);
@@ -336,7 +326,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.AU}
             onChange={() => {
               setChangeMade(true);
@@ -365,7 +354,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.NZ}
             onChange={() => {
               setChangeMade(true);
@@ -394,7 +382,6 @@ export default ({ horseRaces, toggleHorseRaces, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={horseRaces.ZA}
             onChange={() => {
               setChangeMade(true);

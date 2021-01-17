@@ -43,7 +43,6 @@ export default ({ unmatchedBets, toggleUnmatchedBets, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={unmatchedBets.visible}
             onChange={() => {
               setChangeMade(true);

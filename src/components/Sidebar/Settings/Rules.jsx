@@ -43,7 +43,6 @@ export default ({ rules, toggleRules, classes }) => {
         control={(
           <Checkbox
             value="checkedB"
-            color="primary"
             checked={rules.visible}
             onChange={() => {
               setChangeMade(true);

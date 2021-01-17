@@ -16,7 +16,7 @@ const FillOrKill = ({ seconds, setDisplayText, setFillOrKill }) => {
 
   return (
     <div className={classes.row}>
-      <TextField id="standard-number" className={classes.number} type="number" label="Seconds" value={seconds} inputProps={{ min: '1', max: '100' }} onChange={(e) => setFillOrKill(e.target.value)} margin="normal" />
+      <TextField className={classes.number} type="number" label="Seconds" value={seconds} inputProps={{ min: '1', max: '100' }} onChange={(e) => setFillOrKill(e.target.value)} margin="normal" />
     </div>
   );
 };

@@ -146,7 +146,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
           onChange={updateStep}
           margin="normal"
         />
-        <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
+        <Button variant="outlined" className={classes.button} onClick={placeOrder()}>
           Submit
         </Button>
       </div>
@@ -159,8 +159,8 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
 
       <div className={classes.row}>
         <RadioGroup name="orderexecution" value={executionTime} onChange={(e) => toggleExecutionTime(e.target.value)} className={classes.marketTimeRadioButtons}>
-          <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio color="primary" />} label={<span>Before market open</span>} />
-          <FormControlLabel value="After" className={classes.formControlLabel} control={<Radio color="primary" />} label="After market open" />
+          <FormControlLabel value="Before" className={classes.formControlLabel} control={<Radio />} label={<span>Before market open</span>} />
+          <FormControlLabel value="After" className={classes.formControlLabel} control={<Radio />} label="After market open" />
         </RadioGroup>
       </div>
     </>

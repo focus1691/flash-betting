@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import headerStyle from './headerStyle';
+import textFieldStyle from '../../textFieldStyle';
 
 const useStyles = makeStyles((theme) => ({
   ...headerStyle,
@@ -33,28 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   stakeButtons: {
     margin: theme.spacing(1, 1),
-    '& .Mui-focused': {
-      color: '#B7F5BA',
-      fontWeight: '700',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottom: '2px solid #B7F5BA',
-    },
-    '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
-      borderBottom: '1px solid #e6f2e6',
-    },
-    '& label': {
-      color: '#c7c2c2',
-      fontFamily: 'Roboto',
-      fontWeight: '400',
-    },
-    '& > div': {
-      '& input[type=number]': {
-        color: '#c7c2c2',
-        fontFamily: 'Roboto',
-        fontWeight: '700',
-      },
-    },
+    ...textFieldStyle,
   },
   rightClickTicks: {
     margin: theme.spacing(0, 1),

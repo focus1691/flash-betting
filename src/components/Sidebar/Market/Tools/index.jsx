@@ -118,7 +118,7 @@ const Tools = ({
                   {description}
                 </ToolsTableCell>
                 <ToolsTableCell padding="checkbox" colSpan={1}>
-                  <Checkbox color="primary" checked={selected} onChange={() => toggleSelected()} />
+                  <Checkbox checked={selected} onChange={() => toggleSelected()} />
                 </ToolsTableCell>
               </ToolsTableRow>
 

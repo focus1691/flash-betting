@@ -41,7 +41,6 @@ export default ({ rightClickTicks, updateRightClickTicks, classes }) => {
       {renderSaveBtn()}
       <div className={clsx(classes.stakeButtons, classes.rightClickTicks)}>
         <TextField
-          id="standard-number"
           className={classes.textField}
           type="number"
           value={rightClickTicks}
