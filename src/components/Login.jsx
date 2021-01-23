@@ -5,49 +5,21 @@ import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 //* Utils
 import authErrors from '../utils/Errors/AuthErrors';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
-
-const useStyles = makeStyles((theme) => ({
-  '@global': {
-    body: {
-      backgroundColor: 'theme.palette.common.white',
-    },
-  },
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#FFB80C',
-    borderRadius: '25px',
-    border: '5px solid #000',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-    margin: theme.spacing(5),
-    padding: '25px',
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+//* JSS
+import useStyles from '../jss/components/Login';
 
 const cookies = new Cookies();
 
 const Login = () => {
+  const classes = useStyles();
+
   const [error, setError] = useState(authErrors[getQueryVariable('error')] || '');
   const [sessionKey, setSessionKey] = useState(cookies.get('sessionKey'));
-
-  const classes = useStyles();
 
   useEffect(() => {
     if (error) {
