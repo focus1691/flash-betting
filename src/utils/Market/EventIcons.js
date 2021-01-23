@@ -1,5 +1,5 @@
-const iconForEvent = (sportID) => {
-  switch (parseInt(sportID)) {
+const iconForEvent = (sportId) => {
+  switch (Number(sportId)) {
     case 1:
       return `${window.location.origin}/icons/football.png`;
     case 2:
@@ -30,9 +30,8 @@ const iconForEvent = (sportID) => {
       return `${window.location.origin}/icons/trophy.png`;
     case 26420387:
       return `${window.location.origin}/icons/martial-arts-couple-fight.png`;
-
     default:
-      return `${window.location.origin}/images/baseball-player.png`;
+      return `${window.location.origin}/icons/baseball-player.png`;
   }
 };
 

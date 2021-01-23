@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router-dom';
 //* @material-ui core
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -44,12 +45,11 @@ const Login = () => {
     });
     const data = await response.json();
     const { error } = data;
-    const sessionKey = (cookies.get('sessionKey'));
+    const sessionKey = cookies.get('sessionKey');
 
     if (error) {
       setError(authErrors[error] || authErrors.GENERAL_AUTH_ERROR);
-    }
-    else if (cookies.get('sessionKey')) {
+    } else if (cookies.get('sessionKey')) {
       setError('');
       setSessionKey(sessionKey);
     }
@@ -58,10 +58,10 @@ const Login = () => {
   return (
     <>
       {sessionKey ? <Redirect to="/authentication" /> : null}
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <img src={`${window.location.origin}/images/Webp.net-resizeimage.png`} alt="Betfair" className={classes.avatar} />
+      <CssBaseline />
+      <Box className={classes.box}>
+        <img src={`${window.location.origin}/images/logo.png`} alt="" className={classes.logo} />
+        <div className={classes.login}>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -86,7 +86,7 @@ const Login = () => {
             </Button>
           </form>
         </div>
-      </Container>
+      </Box>
     </>
   );
 };
