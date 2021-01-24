@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: `url(${window.location.origin}/images/digital_world_map_hologram_blue_background.png)`,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    background: 'green',
     height: '100%',
     display: 'flex',
     alignItems: 'center',
@@ -31,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '25px',
     border: '6px solid #BD2B32',
   },
+  loginTitle: {
+    color: '#EEEEEE',
+    fontFamily: "'Segoe'",
+  },
   avatar: {
     margin: theme.spacing(1),
   },
@@ -41,7 +44,11 @@ const useStyles = makeStyles((theme) => ({
     padding: '25px',
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 2, 0),
+    borderRadius: theme.spacing(3),
+    '& span': {
+      color: '#EEEEEE',
+    },
   },
 }));
 

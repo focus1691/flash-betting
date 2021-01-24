@@ -62,7 +62,10 @@ const Login = () => {
       <Box className={classes.box}>
         <img src={`${window.location.origin}/images/logo.png`} alt="" className={classes.logo} />
         <div className={classes.login}>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" className={classes.loginTitle}>
+            Sign in
+          </Typography>
+          <Typography component="p" className={classes.loginTitle}>
             Sign in
           </Typography>
           <Typography
@@ -81,7 +84,7 @@ const Login = () => {
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField variant="outlined" margin="normal" required fullWidth label="Email Address" name="email" autoComplete="email" autoFocus />
             <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" autoComplete="current-password" />
-            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+            <Button type="submit" fullWidth variant="contained" className={classes.submit}>
               Sign In
             </Button>
           </form>
