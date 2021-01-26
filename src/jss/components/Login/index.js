@@ -1,11 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-  '@global': {
-    body: {
-      backgroundColor: 'theme.palette.common.white',
-    },
-  },
   box: {
     width: '100%',
     backgroundImage: `url(${window.location.origin}/images/digital_world_map_hologram_blue_background.png)`,
@@ -43,11 +38,16 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(5),
     padding: '25px',
   },
+  textField: {
+    color: 'red',
+  },
   submit: {
     margin: theme.spacing(3, 0, 2, 0),
+    border: `${theme.spacing(1) / 2}px solid #BD2B32`,
     borderRadius: theme.spacing(3),
     '& span': {
       color: '#EEEEEE',
+      fontFamily: "'Segoe'",
     },
   },
 }));

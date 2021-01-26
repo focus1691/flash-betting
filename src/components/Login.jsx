@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 //* @material-ui core
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -82,11 +81,12 @@ const Login = () => {
             {error}
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            <TextField variant="outlined" margin="normal" required fullWidth label="Email Address" name="email" autoComplete="email" autoFocus />
-            <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" autoComplete="current-password" />
+            <TextField variant="outlined" margin="normal" required fullWidth label="Email Address" name="email" autoComplete="email" autoFocus className={classes.textField} />
+            <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" autoComplete="current-password" className={classes.textField} />
             <Button type="submit" fullWidth variant="contained" className={classes.submit}>
               Sign In
             </Button>
+            <Typography component="p">Dont have an account?</Typography>
           </form>
         </div>
       </Box>
