@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'contents',
     textAlign: 'center',
     '& button': {
-      width: '30%',
+      width: '40%',
       margin: theme.spacing(3, 0, 2, 0),
       background: 'transparent',
       border: `${theme.spacing(1) / 2}px solid #BD2B32`,
