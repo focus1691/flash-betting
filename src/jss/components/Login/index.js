@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: '2',
   },
   loginTextField: {
-    width: '85%',
+    width: '80%',
     margin: theme.spacing(3, 0),
     '& label': {
       font: `normal normal normal large Segoe`,
@@ -102,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
   },
   helpText: {
     textAlign: 'center',
+    margin: theme.spacing(2, 0),
     width: '100%',
     color: '#F5A623',
     font: `normal normal normal large Segoe`,
