@@ -92,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
   helpText: {
     textAlign: 'center',
+    width: '100%',
     color: '#F5A623',
     font: `normal normal normal medium Segoe`,
     zIndex: '2',
