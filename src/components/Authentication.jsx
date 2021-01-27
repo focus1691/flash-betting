@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
+import Spinner from './App/Spinner';
 //* HTTP
 import fetchData from '../http/fetchData';
 
@@ -26,7 +27,7 @@ const Authentication = () => {
       }
     })();
   }, []);
-  return !sessionKey ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <section>Redirecting...</section>;
+  return !sessionKey ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
 };
 
 export default Authentication;

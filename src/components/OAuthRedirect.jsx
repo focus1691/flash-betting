@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
+import Spinner from './App/Spinner';
 //* HTTP
 import fetchData from '../http/fetchData';
 
@@ -27,7 +28,7 @@ const OAuthRedirect = () => {
     })();
   }, []);
 
-  return isAuthenticated === null ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <section>Redirecting...</section>;
+  return isAuthenticated === null ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
 };
 
 export default OAuthRedirect;
