@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 //* Utils
@@ -59,13 +60,15 @@ const Login = () => {
       {sessionKey ? <Redirect to="/authentication" /> : null}
       <CssBaseline />
       <Box className={classes.box}>
+        <Box className={classes.background} />
         <img src={`${window.location.origin}/images/logo.png`} alt="" className={classes.logo} />
         <div className={classes.login}>
-          <Typography component="h1" variant="h5" className={classes.loginTitle}>
-            Sign in
+          <Box className={classes.loginBackground} />
+          <Typography component="h1" className={classes.titleText}>
+            SIGN IN
           </Typography>
-          <Typography component="p" className={classes.loginTitle}>
-            Sign in
+          <Typography className={classes.welcomeText} component="p">
+            Welcome to Flash Betting
           </Typography>
           <Typography
             component="p"
@@ -81,12 +84,45 @@ const Login = () => {
             {error}
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            <TextField variant="outlined" margin="normal" required fullWidth label="Email Address" name="email" autoComplete="email" autoFocus className={classes.textField} />
-            <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" autoComplete="current-password" className={classes.textField} />
-            <Button type="submit" fullWidth variant="contained" className={classes.submit}>
-              Sign In
-            </Button>
-            <Typography component="p">Dont have an account?</Typography>
+            <TextField
+              className={classes.loginTextField}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              InputProps={{
+                className: classes.loginInput,
+              }}
+            />
+            <TextField
+              className={classes.loginTextField}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              InputProps={{
+                className: classes.loginInput,
+              }}
+            />
+            <div className={classes.submit}>
+              <Button type="submit" fullWidth variant="contained">
+                Sign In
+              </Button>
+            </div>
+            <Typography className={classes.helpText} component="p">
+              Dont have an account?
+              <Link href="https://register.betfair.com/account/registration" rel="noopener" target="_blank" className={classes.registerLink}>
+                SIGN UP
+              </Link>
+            </Typography>
           </form>
         </div>
       </Box>

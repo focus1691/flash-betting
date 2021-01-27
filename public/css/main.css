@@ -6,7 +6,7 @@ html, body, #root, #root > div {
 
 @font-face {
 	font-family: "Segoe";
-	src: url("../fonts/Segoe UI.ttf");
+	src: url("../fonts/SegoeUI.ttf");
   }
 
 @media only screen and (max-width: 1200px) {
@@ -14,9 +14,10 @@ html, body, #root, #root > div {
 		overflow: auto;
 	}
 }
-* {
+
+/* * {
 	font-family: 'Lato', sans-serif;
-}
+} */
 
 .root {
 	display: flex;
