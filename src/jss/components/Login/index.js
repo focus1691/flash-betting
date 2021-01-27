@@ -69,45 +69,55 @@ const useStyles = makeStyles((theme) => ({
   },
   loginTextField: {
     width: '85%',
+    margin: theme.spacing(3, 0),
+    '& label': {
+      font: `normal normal normal large Segoe`,
+      color: '#F5A623',
+      zIndex: '3',
+      '&.MuiInputLabel-shrink': {
+        transform: 'translate(14px, -20px) scale(0.75)',
+      },
+      '&.Mui-focused': {
+        color: '#64D96A',
+      },
+    },
+    '& fieldset': {
+      '&.MuiOutlinedInput-notchedOutline': {
+        borderColor: '#0BBF63 !important',
+      },
+    },
   },
   loginInput: {
+    font: 'normal normal normal x-large Segoe',
     color: '#0BBF63',
     backgroundColor: '#0D1C1E',
     borderRadius: theme.spacing(3),
-    borderColor: '#BD2B32',
-    font: `normal normal normal medium Segoe`,
     zIndex: '2',
-    '& label': {
-      color: '#0BBF63',
-    },
-    '& legend': {
-      color: '#0BBF63',
-    },
   },
   welcomeText: {
     textAlign: 'center',
     color: '#F5A623',
-    font: `normal normal normal medium Segoe`,
+    font: `normal normal normal large Segoe`,
     zIndex: '2',
   },
   helpText: {
     textAlign: 'center',
     width: '100%',
     color: '#F5A623',
-    font: `normal normal normal medium Segoe`,
+    font: `normal normal normal large Segoe`,
     zIndex: '2',
   },
   registerLink: {
     color: '#64D96A',
     textAlign: 'left',
-    font: `normal normal normal medium Segoe`,
+    font: `normal normal normal large Segoe`,
     marginLeft: theme.spacing(1),
   },
   submit: {
     display: 'contents',
     textAlign: 'center',
     '& button': {
-      width: '50%',
+      width: '30%',
       margin: theme.spacing(3, 0, 2, 0),
       background: 'transparent',
       border: `${theme.spacing(1) / 2}px solid #BD2B32`,

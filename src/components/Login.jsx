@@ -93,6 +93,7 @@ const Login = () => {
               label="Email Address"
               name="email"
               autoComplete="email"
+              placeholder="Enter your Email"
               autoFocus
               InputProps={{
                 className: classes.loginInput,
@@ -108,6 +109,7 @@ const Login = () => {
               label="Password"
               type="password"
               autoComplete="current-password"
+              placeholder="Enter your Password"
               InputProps={{
                 className: classes.loginInput,
               }}
