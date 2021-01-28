@@ -4,7 +4,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     height: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#121212',
+    
+  },
+  sectionHeader: {
+    color: '#EEEEEE',
   },
   subscriptionList: {
     display: 'flex',
