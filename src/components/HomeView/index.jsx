@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie';
 import { connect } from 'react-redux';
 //* Custom Components
 import Header from './Header';
+import TradingChart from './TradingChart';
 import SubscriptionContainer from './SubscriptionContainer';
 //* Actions
 import { openPremiumDialog, setSelectedPremium } from '../../actions/settings';
@@ -17,6 +18,7 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
   return (
     <div className={classes.root}>
       <Header username={cookies.get('username')} premiumMember={premiumMember} />
+      <TradingChart />
       <div className={classes.subscriptionList}>
         {premiumMember ? null : (
           <>
