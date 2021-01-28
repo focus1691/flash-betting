@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Cookies from 'universal-cookie';
 import { connect } from 'react-redux';
 //* Custom Components
@@ -12,26 +12,11 @@ import useStyles from '../../jss/components/HomeView/homeViewStyle';
 const cookies = new Cookies();
 
 const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
-  const [data, setData] = useState({});
-  const classes = useStyles({ subscribed: premiumMember });
-
-  useEffect(() => {
-    premiumMember
-      ? setData({
-        subscribed: 'Active',
-        information: ' and you can now have full access to the Ladder View.',
-        color: '#4CAF50',
-			  })
-      : setData({
-        subscribed: 'Inactive',
-        information: ' and you have restricted access to Flash Betting.',
-        color: '#F44336',
-			  });
-  }, [premiumMember]);
+  const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <Header username={cookies.get('username')} premiumMember={premiumMember} classes={classes} />
+      <Header username={cookies.get('username')} premiumMember={premiumMember} />
       <div className={classes.subscriptionList}>
         {premiumMember ? null : (
           <>

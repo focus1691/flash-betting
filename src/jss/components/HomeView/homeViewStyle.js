@@ -1,14 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
     height: '100%',
     backgroundColor: '#121212',
     
-  },
-  sectionHeader: {
-    color: '#EEEEEE',
   },
   subscriptionList: {
     display: 'flex',
@@ -17,19 +14,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignSelf: 'center',
   },
-  username: {
-    background: '#D3D44F',
-    color: '#121212',
-    font: 'normal normal bold medium Roboto',
-    padding: theme.spacing(1),
-  },
-  subscription: ({ subscribed }) => ({
-    background: subscribed ? '#0BBF63' : '#F44336',
-    color: '#121212',
-    font: 'normal normal bold medium Roboto',
-    marginLeft: theme.spacing(1),
-    padding: theme.spacing(2, 1),
-  }),
   subscriptionContainer: {
     width: '20rem', 
     height: '25rem',
@@ -119,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
     "100%": {
       backgroundColor: '#1e9765',
     },
-  }
+  },
 }));
 
 export default useStyles;
