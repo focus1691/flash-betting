@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     width: '80%',
     margin: theme.spacing(3, 0),
     '& label': {
-      font: `normal normal normal large Segoe`,
+      font: 'normal normal normal large Segoe',
       color: '#F5A623',
       zIndex: '3',
       '&.MuiInputLabel-shrink': {

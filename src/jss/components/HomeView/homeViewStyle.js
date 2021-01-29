@@ -5,7 +5,6 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     height: '100%',
     backgroundColor: '#121212',
-    
   },
   subscriptionList: {
     display: 'flex',
