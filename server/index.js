@@ -749,7 +749,7 @@ app.get('/api/list-order-to-duplicate', (req, res) => {
 app.get('/api/list-cleared-orders', (req, res) => {
   betfair.listClearedOrders(
     {
-      betStatus: 'SETTLED'
+      betStatus: 'SETTLED',
     },
     (err, { error, result }) => {
       if (error) {
@@ -761,6 +761,24 @@ app.get('/api/list-cleared-orders', (req, res) => {
     },
   );
 });
+
+app.get('/api/list-recent-orders', (req, res) => {
+  betfair.listClearedOrders(
+    {
+      betStatus: 'SETTLED',
+      recordCount: 8,
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
 
 // A call to get required params for O-auth (vendorId, vendorSecret)
 app.get('/api/get-developer-application-keys', async (request, response) => {

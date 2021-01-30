@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   header: {
     display: 'flex',
+    height: '5%',
     padding: theme.spacing(3, 0, 1, 2),
   },
   statusChips: {
