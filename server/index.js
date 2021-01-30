@@ -466,6 +466,7 @@ app.get('/api/get-all-sports', (req, res) => {
   );
 });
 
+//! Testing Only 
 app.get('/api/get-event', (req, res) => {
   betfair.listEventTypes(
     {
@@ -733,6 +734,22 @@ app.get('/api/list-order-to-duplicate', (req, res) => {
       marketIds: [req.query.marketId],
       OrderProjection: 'EXECUTABLE',
       SortDir: 'LATEST_TO_EARLIEST',
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.get('/api/list-cleared-orders', (req, res) => {
+  betfair.listClearedOrders(
+    {
+      betStatus: 'SETTLED'
     },
     (err, { error, result }) => {
       if (error) {
