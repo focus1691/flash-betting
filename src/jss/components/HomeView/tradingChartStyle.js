@@ -16,6 +16,11 @@ const useStyles = makeStyles((theme) => ({
     color: '#EEEEEE',
     textAlign: 'center',
   },
+  menuItemActive: {
+    backgroundColor: '#242526',
+    color: '#FBC774',
+    textAlign: 'center',
+  },
   marketName: {
     '& span': {
       font: 'normal normal normal xx-large Roboto',

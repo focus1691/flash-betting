@@ -42,7 +42,7 @@ export default () => {
     <div className={classes.container}>
       <List className={classes.menu}>
         {sportsList.map(({ eventType: { id, name } }) => trades[id] ? (
-          <ListItem button key={`portfolio-${name}-${id}`} className={classes.menuItem} onClick={() => setSelectedMarket(id)} >
+          <ListItem button key={`portfolio-${name}-${id}`} className={selectedMarket === id ? classes.menuItemActive : classes.menuItem} onClick={() => setSelectedMarket(id)}>
             <ListItemText className={classes.marketName}>{name}</ListItemText>
           </ListItem>
         ) : null)}
