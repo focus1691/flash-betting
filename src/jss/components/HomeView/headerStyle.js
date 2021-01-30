@@ -4,7 +4,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     display: 'flex',
     height: '5%',
-    padding: theme.spacing(3, 0, 1, 2),
+    padding: theme.spacing(3, 2, 1, 2),
   },
   statusChips: {
     width: '100%',
