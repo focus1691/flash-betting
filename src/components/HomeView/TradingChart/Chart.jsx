@@ -6,15 +6,15 @@ import useStyles from '../../../jss/components/HomeView/chartStyle';
 //* Utils
 import { formatCurrency } from '../../../utils/NumberFormat';
 import { twoDecimalPlaces } from '../../../utils/Bets/BettingCalculations';
+import { getProfitAndLoss } from '../../../utils/Charts/tradingActivityChart';
 
-const Chart = ({ data }) => {
+const Chart = ({ bets }) => {
   const classes = useStyles();
   const [chart, setChart] = useState(null);
   const chartRef = useRef(null);
-  console.log(_.groupBy(data, 'settledDate'));
 
   useEffect(() => {
-    if (data) {
+    if (bets) {
       if (chartRef.current) {
         if (chart) {
           chart.remove();
@@ -30,8 +30,17 @@ const Chart = ({ data }) => {
             fontFamily: 'roboto',
           },
           priceScale: {
-            mode: 1,
+            mode: 4,
+            autoScale: true,
             invertScale: false,
+          },
+          grid: {
+            vertLines: {
+              color: 'rgba(42, 46, 57, 0)',
+            },
+            horzLines: {
+              color: 'rgba(42, 46, 57, 0)',
+            },
           },
           localization: {
             priceFormatter: (price) => `${formatCurrency('en-GB', 'GBP', twoDecimalPlaces(price))}`,
@@ -42,14 +51,18 @@ const Chart = ({ data }) => {
           color: '#4D329D',
           title: 'Profit / Loss',
         });
-        lineSeries.setData(data.map(({ placedDate, profit }) => ({ time: placedDate, value: profit })));
+        lineSeries.setData(getProfitAndLoss(bets));
+        // lineSeries.setData([
+        //   { time: '2020-12-28T19:32:18.000Z', value: -7.72, },
+        //   { time: '2021-01-12T22:15:01.000Z', value: -10 },
+        // ]);
         newChart.timeScale().fitContent();
       }
     }
     return () => {
       setChart(null);
     };
-  }, [data]);
+  }, [bets]);
 
   useEffect(() => {
     const handleResize = () => {

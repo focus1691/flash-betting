@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 2),
   },
   menu: {
+    padding: '0',
     flexBasis: '30%',
     backgroundColor: '#333F4B',
     borderRadius: theme.spacing(2, 0, 0, 0),

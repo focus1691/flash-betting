@@ -17,8 +17,6 @@ export default () => {
   const [sportsList, setSportsList] = useState([]);
   const [trades, setTrades] = useState({});
 
-  console.log(trades);
-
   useEffect(() => {
     const getAllSports = async () => {
       const sportsList = await fetchData('/api/get-all-sports');
@@ -47,7 +45,7 @@ export default () => {
           </ListItem>
         ) : null)}
       </List>
-      <Chart data={trades[selectedMarket]} />
+      <Chart bets={trades[selectedMarket]} />
     </div>
   );
 };
