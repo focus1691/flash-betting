@@ -52,10 +52,6 @@ const Chart = ({ bets }) => {
           title: 'Profit / Loss',
         });
         lineSeries.setData(getProfitAndLoss(bets));
-        // lineSeries.setData([
-        //   { time: '2020-12-28T19:32:18.000Z', value: -7.72, },
-        //   { time: '2021-01-12T22:15:01.000Z', value: -10 },
-        // ]);
         newChart.timeScale().fitContent();
       }
     }

@@ -26,6 +26,7 @@
     "jquery": "^3.5.1",
     "lightweight-charts": "^3.2.0",
     "lodash": "^4.17.20",
+    "moment": "^2.29.1",
     "mongoose": "^5.10.9",
     "node-fetch": "^2.6.1",
     "react": "^16.14.0",
