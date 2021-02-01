@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     verticalAlign: 'middle',
     cursor: `url(${window.location.origin}/icons/faq.png), auto`,
     backgroundColor: '#fff',
+    marginRight: '3px',
     padding: '3px',
     borderRadius: theme.spacing(2),
   },
