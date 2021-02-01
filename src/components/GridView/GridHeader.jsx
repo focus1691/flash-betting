@@ -34,7 +34,7 @@ const GridHeader = ({
   marketCashout,
 }) => {
   const classes = useStyles();
-  const executeMarketCashout = () => () => {
+  const executeMarketCashout = () => {
     const hedgedBets = getHedgedBetsToMake(marketId, bets, ltpList);
 
     if (hedgedBets.length > 0) {
@@ -97,7 +97,7 @@ const GridHeader = ({
         */}
         <th className={classes.marketCashout}>
           <span>Market Cashout</span>
-          <span style={{ color: marketCashout < 0 ? 'red' : marketCashout > 0 ? '#01CC41' : '#D3D3D3' }} onClick={executeMarketCashout()}>
+          <span style={{ color: marketCashout < 0 ? 'red' : marketCashout > 0 ? '#01CC41' : '#D3D3D3' }} onClick={executeMarketCashout}>
             {marketCashout}
           </span>
         </th>
