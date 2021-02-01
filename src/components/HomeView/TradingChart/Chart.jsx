@@ -13,9 +13,15 @@ import { getProfitAndLoss } from '../../../utils/Charts/tradingActivityChart';
 
 const Chart = ({ bets }) => {
   const classes = useStyles();
-  const [timeFrame, setTimeframe] = useState(1);
+  const [timeFrame, setTimeframe] = useState(localStorage.getItem('chartTimeRestriction') || 'ALL');
   const [chart, setChart] = useState(null);
   const chartRef = useRef(null);
+
+  const handleTimeChange = (e) => {
+    const { value } = e.target;
+    setTimeframe(value);
+    localStorage.setItem('chartTimeRestriction', value);
+  };
 
   useEffect(() => {
     if (bets) {
@@ -55,14 +61,14 @@ const Chart = ({ bets }) => {
           color: '#4D329D',
           title: 'Profit / Loss',
         });
-        lineSeries.setData(getProfitAndLoss(bets));
+        lineSeries.setData(getProfitAndLoss(bets, timeFrame));
         newChart.timeScale().fitContent();
       }
     }
     return () => {
       setChart(null);
     };
-  }, [bets]);
+  }, [bets, timeFrame]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -82,14 +88,16 @@ const Chart = ({ bets }) => {
 
   return (
     <div className={classes.container}>
-      <RadioGroup name="timescale" className={classes.timescaleButtons} value={timeFrame} onChange={(e) => setTimeframe(e.target.value)}>
+      <RadioGroup name="timescale" className={classes.timescaleButtons} value={timeFrame} onChange={handleTimeChange}>
+        <FormControlLabel value="1D" control={<Radio />} label="1D" labelPlacement="end" />
         <FormControlLabel value="1W" control={<Radio />} label="1W" labelPlacement="end" />
-        <FormControlLabel value="2W" control={<Radio />} label="2W" labelPlacement="end" />
         <FormControlLabel value="1M" control={<Radio />} label="1M" labelPlacement="end" />
+        <FormControlLabel value="3M" control={<Radio />} label="3M" labelPlacement="end" />
+        <FormControlLabel value="ALL" control={<Radio />} label="ALL" labelPlacement="end" />
       </RadioGroup>
       <div ref={chartRef} className={classes.chart} />
     </div>
-  )
+  );
 };
 
 export default Chart;

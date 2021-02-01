@@ -47,7 +47,7 @@ export default () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {recentBets.map(({eventTypeId, betId, sizeSettled, priceMatched, side, placedDate, betOutcome}) => (
+            {recentBets.map(({ eventTypeId, betId, sizeSettled, priceMatched, side, placedDate, betOutcome }) => (
               <TableRow style={{ backgroundcolor: 'red' }} key={`recent-bets-overview-${betId}`}>
                 <TableCell>{getEventName(eventTypeId)}</TableCell>
                 <TableCell>{sizeSettled}</TableCell>

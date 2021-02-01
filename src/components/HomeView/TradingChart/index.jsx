@@ -13,9 +13,14 @@ import { sortSports } from '../../../utils/Algorithms/SortSports';
 
 export default () => {
   const classes = useStyles();
-  const [selectedMarket, setSelectedMarket] = useState(null);
+  const [selectedMarket, setSelectedMarket] = useState(localStorage.getItem('tradeChartMarket') || '');
   const [sportsList, setSportsList] = useState([]);
   const [trades, setTrades] = useState({});
+
+  const handleMarketChange = (id) => () => {
+    setSelectedMarket(id);
+    localStorage.setItem('tradeChartMarket', id);
+  };
 
   useEffect(() => {
     const getAllSports = async () => {
@@ -28,7 +33,11 @@ export default () => {
     const getTrades = async () => {
       const { clearedOrders } = await fetchData('/api/list-cleared-orders');
       if (clearedOrders) {
-        setTrades(_.groupBy(clearedOrders, 'eventTypeId')); 
+        setTrades(_.groupBy(clearedOrders, 'eventTypeId'));
+        
+        if (clearedOrders.length > 0) {
+          setSelectedMarket(clearedOrders[0].eventTypeId);
+        }
       }
     };
 
@@ -39,11 +48,13 @@ export default () => {
   return (
     <div className={classes.container}>
       <List className={classes.menu}>
-        {sportsList.map(({ eventType: { id, name } }) => trades[id] ? (
-          <ListItem button key={`portfolio-${name}-${id}`} className={selectedMarket === id ? classes.menuItemActive : classes.menuItem} onClick={() => setSelectedMarket(id)}>
-            <ListItemText className={classes.marketName}>{name}</ListItemText>
-          </ListItem>
-        ) : null)}
+        {sportsList.map(({ eventType: { id, name } }) =>
+          trades[id] ? (
+            <ListItem button key={`portfolio-${name}-${id}`} className={selectedMarket === id ? classes.menuItemActive : classes.menuItem} onClick={handleMarketChange(id)}>
+              <ListItemText className={classes.marketName}>{name}</ListItemText>
+            </ListItem>
+          ) : null,
+        )}
       </List>
       <Chart bets={trades[selectedMarket]} />
     </div>

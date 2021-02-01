@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     position: 'absolute',
     top: '0',
-    right: '0',
+    right: '5%',
     zIndex: '3',
     '& label': {
       color: '#B6CCF9',
