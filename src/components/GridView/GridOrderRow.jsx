@@ -28,9 +28,7 @@ export default ({
 
   return (
     <tr
-      style={{
-        background: orderProps.bg,
-      }}
+      className={classes.gridOrderRow}
     >
       {order.visible ? (
         <td colSpan={11}>

@@ -21,9 +21,6 @@ const useStyles = makeStyles(() => ({
       fontWeight: 'bold',
       border: '2px solid #242526',
       padding: '5px',
-      '&:nth-child(5)': {
-        borderRight: '1px solid #a6a6a6',
-      },
       '&:nth-child(6)': {
         backgroundColor: '#007AAF',
       },
@@ -52,7 +49,7 @@ const useStyles = makeStyles(() => ({
       opacity: '0.5',
     },
     '&:nth-child(11)': {
-      backgroundColor: '#333940',
+      backgroundColor: '#53606D',
       opacity: '0.5',
     },
     '& span': {

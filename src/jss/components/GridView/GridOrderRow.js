@@ -1,17 +1,23 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   gridOrderRow: {
-    margin: '0',
-    fontSize: 'small',
-    textAlign: 'center',
+    backgroundColor: '#242526',
+    padding: theme.spacing(1, 0),
+    '& ul': {
+      margin: '0',
+      fontSize: 'small',
+      textAlign: 'center',
+    },
     '& li': {
       float: 'left',
       listStyleType: 'none',
       height: '100%',
-      background: '#fff',
-      border: '1px dashed',
-      margin: '0 5px 0 0',
+      color: '#D3D44F',
+      background: 'transparent',
+      border: '2px solid #D3D44F',
+      borderRadius: theme.spacing(4),
+      margin: theme.spacing(0, 2),
       width: '5%',
       cursor: 'pointer',
       '&:first-child': {
