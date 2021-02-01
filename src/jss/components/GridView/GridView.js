@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Trebuchet MS, Arial, Helvetica, sans-serif',
     borderCollapse: 'collapse',
     border: 'none',
-    width: '75%',
+    width: '85%',
     '& td': {
       color: '#FFFFFF',
       width: '35px',
