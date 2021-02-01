@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import moment from 'moment';
 import useInterval from 'react-useinterval';
 //* JSS
 import useStyles from '../../jss/components/Sidebar/clockStyle';
@@ -10,7 +11,7 @@ const Clock = () => {
   const [time, setTime] = useState(new Date().toLocaleString());
 
   useInterval(() => {
-    setTime(new Date().toLocaleString());
+    setTime(moment().format('lll'));
   }, ONE_SECOND);
 
   return (
