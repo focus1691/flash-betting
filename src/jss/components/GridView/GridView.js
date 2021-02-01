@@ -7,6 +7,7 @@ const useStyles = makeStyles(() => ({
     overflowX: 'hidden',
     overflowY: 'scroll',
     whiteSpace: 'nowrap',
+    backgroundColor: '#121212',
   },
   gridView: {
     fontFamily: 'Trebuchet MS, Arial, Helvetica, sans-serif',
@@ -14,21 +15,20 @@ const useStyles = makeStyles(() => ({
     border: 'none',
     width: '75%',
     '& td': {
+      color: '#FFFFFF',
       width: '35px',
       textAlign: 'justify',
       fontWeight: 'bold',
-      border: '1px solid #D6D6D6',
+      border: '2px solid #242526',
       padding: '5px',
       '&:nth-child(5)': {
         borderRight: '1px solid #a6a6a6',
       },
       '&:nth-child(6)': {
-        backgroundColor: '#007aaf',
-        border: '1px solid #a6a6a6',
+        backgroundColor: '#007AAF',
       },
       '&:nth-child(7)': {
-        backgroundColor: '#eba8a6',
-        border: '1px solid #a6a6a6',
+        backgroundColor: '#D4696B',
       },
     },
     '& img': {
@@ -37,19 +37,22 @@ const useStyles = makeStyles(() => ({
   },
   gridCell: {
     cursor: 'pointer',
+    backgroundColor: '#53606D',
     '&:hover': {
-      background: '#DFDFDF',
+      backgroundColor: '#474f56',
       '&:nth-child(6)': {
-        background: '#0a5271',
+        backgroundColor: '#0a5271',
       },
       '&:nth-child(7)': {
-        background: '#d4696b',
+        backgroundColor: '#a44e50',
       },
     },
     '&:nth-child(2)': {
+      backgroundColor: '#53606D',
       opacity: '0.5',
     },
     '&:nth-child(11)': {
+      backgroundColor: '#333940',
       opacity: '0.5',
     },
     '& span': {

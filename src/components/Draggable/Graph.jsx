@@ -11,7 +11,7 @@ const DraggableGraph = ({
   const classes = useStyles();
   const [transparent, setTransparent] = useState(false);
 
-  const changeGraphTransparency = () => (e) => {
+  const changeGraphTransparency = () => () => {
     setTransparent(!transparent);
   };
 

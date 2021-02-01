@@ -21,10 +21,10 @@ const GridDetailCell = ({
 
   const handleImageError = () => (e) => {
     e.target.onerror = null;
-    e.target.src = iconForEvent(parseInt(sportId));
+    e.target.src = iconForEvent(Number(sportId));
   };
 
-  const executeHedgeBet = () => (e) => {
+  const executeHedgeBet = () => () => {
     if (isHedgingOnSelectionAvailable(selectionMatchedBets)) {
       const referenceStrategyId = crypto
         .randomBytes(15)
@@ -55,7 +55,7 @@ const GridDetailCell = ({
     <td className={classes.gridRunnerDetails} onClick={handleRunnerSelection}>
       <img src={logo} alt="" onError={handleImageError()} />
       <span>{`${number}${name}`}</span>
-      <span style={ltpStyle}>{ltp[0] || ''}</span>
+      <span style={ltpStyle} className={classes.ltp}>{ltp[0] || ''}</span>
 
       <div className={classes.gridPL}>
         <span

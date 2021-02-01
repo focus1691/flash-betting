@@ -1,7 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   gridRunnerDetails: {
+    backgroundColor: '#333F4B',
     padding: '2px',
     '& img': {
       cursor: `url(${window.location.origin}/icons/faq.png), auto`,
@@ -13,8 +14,6 @@ const useStyles = makeStyles(() => ({
       },
       '&:nth-child(3)': {
         float: 'right',
-        fontSize: 'small',
-        fontWeight: 'normal',
       },
     },
   },
@@ -30,6 +29,13 @@ const useStyles = makeStyles(() => ({
         marginLeft: '10%',
       },
     },
+  },
+  ltp: {
+    width: '20%',
+    textAlign: 'center',
+    borderRadius: theme.spacing(0.5),
+    boxShadow: '0px 3px 6px #00000040',
+    font: 'normal normal normal medium Roboto',
   },
 }));
 

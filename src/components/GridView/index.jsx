@@ -5,6 +5,7 @@ import $ from 'jquery';
 import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
 import { placeOrder } from '../../actions/bet';
 import { setStakeInOneClick } from '../../actions/settings';
+//* Utils
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
 import { getPLForRunner, marketHasBets } from '../../utils/Bets/GetProfitAndLoss';
@@ -14,6 +15,7 @@ import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import { formatCurrency } from '../../utils/NumberFormat';
 import { calculateHedgePL } from '../../utils/TradingStategy/HedingCalculator';
+// Grid Components
 import GridDetailCell from './GridDetailCell';
 import GridHeader from './GridHeader';
 import GridOrderRow from './GridOrderRow';
@@ -74,36 +76,36 @@ const Grid = ({
   const handlePriceHover = (key) => (e) => {
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
     setRowHovered(key);
-    $(e.currentTarget).one('mouseleave', (e) => {
+    $(e.currentTarget).one('mouseleave', () => {
       setRowHovered(null);
     });
   };
 
-  const changeSide = (order) => (e) => {
+  const changeSide = (order) => () => {
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
     toggleBackAndLay({ id: order.id });
     setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
   };
 
-  const handleOneClickPress = () => (e) => {
+  const handleOneClickPress = () => () => {
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
     toggleOneClick(!oneClickOn);
     const node = oneClickRef.current;
     oneClickOn ? node.blur() : node.focus();
   };
 
-  const toggleStakeAndLiabilityButtons = (data) => (e) => {
+  const toggleStakeAndLiabilityButtons = (data) => () => {
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
     toggleStakeAndLiability(data);
   };
 
-  const toggleOrderRowVisibility = (data) => (e) => {
+  const toggleOrderRowVisibility = (data) => () => {
     toggleVisibility(data);
     setActiveOrder(null);
     setOrdersVisible(ordersVisible - 1);
   };
 
-  const handlePriceClickInOneClick = (stake) => (e) => {
+  const handlePriceClickInOneClick = (stake) => () => {
     setStakeInOneClick(stake);
   };
 
@@ -118,7 +120,7 @@ const Grid = ({
   };
 
   const handlePriceChange = (data) => (e) => {
-    const val = parseInt(e.target.value);
+    const val = Number(e.target.value);
 
     if (isValidPrice(val)) {
       data.price = getNextPrice(data.price, e.target.value);
@@ -138,7 +140,7 @@ const Grid = ({
 
     const rows = [];
 
-    for (let i = 0; i < betOdds.length; i++) {
+    for (let i = 0; i < betOdds.length; i += 1) {
       rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
       if (i === 4) break;
     }
@@ -211,8 +213,8 @@ const Grid = ({
             PL={
               marketHasBets(marketId, bets)
                 ? {
-                  val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, parseInt(key), bets)),
-                  color: colorForBack(order.backLay, getPLForRunner(marketId, parseInt(key), bets)),
+                  val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, Number(key), bets)),
+                  color: colorForBack(order.backLay, getPLForRunner(marketId, Number(key), bets)),
                 }
                 : order.visible && rowHovered === key && activeOrder
                   ? renderProfitAndLossAndHedge(order, colorForBack(order.backLay))
@@ -262,6 +264,7 @@ const Grid = ({
       <table style={marketStatus === 'SUSPENDED' ? { opacity: 0.75 } : {}} className={classes.gridView}>
         <tbody>
           <GridHeader
+            marketOpen={marketOpen}
             ladder={ladder}
             country={{ localeCode, currencyCode }}
             oneClickRef={oneClickRef}

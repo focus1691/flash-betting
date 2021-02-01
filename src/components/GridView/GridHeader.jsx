@@ -1,6 +1,8 @@
 import React from 'react';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import crypto from 'crypto';
+//* Utils
 import { sumMatchedBets } from '../../utils/Bets/BettingCalculations';
 import { getStakeButtonStyle } from '../../utils/ColorManipulator';
 import { getHedgedBetsToMake } from '../../utils/TradingStategy/HedingCalculator';
@@ -62,14 +64,7 @@ const GridHeader = ({
           <button type="button" className={classes.oneClickBtn} ref={oneClickRef} onClick={toggleOneClick()}>
             {`Turn One click ${oneClickOn ? 'off' : 'on'}`}
           </button>
-          <h1>
-            {marketOpen
-              ? `${new Date(marketStartTime).toLocaleTimeString(navigator.language, {
-                hour: '2-digit',
-                minute: '2-digit',
-              })} ${marketName} ${event.venue || ''}`
-              : 'No Event Selected'}
-          </h1>
+          <h1>{marketOpen ? `${moment(marketStartTime).calendar()} ${marketName} ${event.venue || ''}` : 'No Event Selected'}</h1>
           {oneClickOn ? (
             <>
               <div className={classes.oneClickStake} style={{ background: '#007aaf' }}>
@@ -110,10 +105,10 @@ const GridHeader = ({
         <th />
         <th />
         <th>
-          <span>Back</span>
+          <span className={classes.headerText}>BACK</span>
         </th>
         <th>
-          <span>Lay</span>
+          <span className={classes.headerText}>LAY</span>
         </th>
         <th />
         <th />

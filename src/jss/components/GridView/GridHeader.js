@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   gridHeader: {
-    backgroundColor: '#000000',
-    backgroundImage: 'linear-gradient(315deg, #000000 0%, #414141 74%)',
+    backgroundColor: '#19191A',
+    backgroundImage: 'linear-gradient(90deg, #19191A 0%, #414141 74%)',
     color: '#fff',
     '& h1': {
       display: 'block',
@@ -24,55 +24,63 @@ const useStyles = makeStyles(() => ({
     float: 'right',
     backgroundColor: 'Transparent',
     backgroundRepeat: 'no-repeat',
-    border: '2px solid #fff',
-    color: '#fff',
+    border: '3px solid #64D96A',
+    borderRadius: theme.spacing(1),
+    color: '#0BBF63',
+    font: 'normal normal bold medium Roboto',
+    margin: theme.spacing(1, 1, 0, 0),
     padding: '5px',
     '&:focus': {
       borderColor: 'red',
     },
+    '&:hover': {
+      backgroundColor: '#64D96A',
+      color: '#19191A',
+      boxShadow: '0px 0px 10px #00AC06',
+    },
   },
   oneClickStake: {
-      '& button': {
-        border: '2px solid #000',
-        borderRadius: '8px',
-        padding: '5px',
-        margin: '5px',
-        font: 'inherit',
-        fontSize: '0.7em',
+    '& button': {
+      border: '2px solid #000',
+      borderRadius: '8px',
+      padding: '5px',
+      margin: '5px',
+      font: 'inherit',
+      fontSize: '0.7em',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      outline: 'inherit',
+      '&:first-child': {
+        width: '10%',
+      },
+      '&:not(:first-child)': {
+        color: '#000',
         fontWeight: 'bold',
-        cursor: 'pointer',
-        outline: 'inherit',
-        '&:first-child': {
-          width: '10%',
-        },
-        '&:not(:first-child)': {
-          color: '#000',
-          fontWeight: 'bold',
-          backgroundRepeat: 'no-repeat',
-          width: '6%',
-        },
-      }
+        backgroundRepeat: 'no-repeat',
+        width: '6%',
+      },
+    },
   },
   matchedBets: {
     float: 'right',
     paddingInlineEnd: '5px',
   },
   gridSubheader: {
-    borderCollapse: 'collapse',
-    margin: '0',
-    padding: '0',
-    border: '0',
-    borderSpacing: '0',
     '& th': {
       '&:nth-child(n+2)': {
         background: '#007aaf',
       },
       '&:nth-child(n+6)': {
-        background: '#eba8a6',
+        background: '#D4696B',
       },
     },
   },
+  headerText: {
+    color: '#EEEEEE',
+  },
   marketCashout: {
+    backgroundColor: '#3A3B3C',
+    color: '#EEEEEE',
     '& span': {
       '&:nth-child(2)': {
         cursor: 'pointer',
