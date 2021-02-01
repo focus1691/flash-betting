@@ -6,6 +6,9 @@ const useStyles = makeStyles((theme) => ({
     padding: '2px',
     '& img': {
       cursor: `url(${window.location.origin}/icons/faq.png), auto`,
+      backgroundColor: '#fff',
+      padding: '3px',
+      borderRadius: theme.spacing(2),
     },
     '& span': {
       '&:nth-child(2)': {
