@@ -750,6 +750,8 @@ app.get('/api/list-cleared-orders', (req, res) => {
   betfair.listClearedOrders(
     {
       betStatus: 'SETTLED',
+      fromRecord: 0,
+      recordCount: 0,
     },
     (err, { error, result }) => {
       if (error) {
