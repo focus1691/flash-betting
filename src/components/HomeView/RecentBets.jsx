@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 //* @material-ui core
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -53,7 +54,7 @@ export default () => {
                 <TableCell>@</TableCell>
                 <TableCell>{priceMatched}</TableCell>
                 <TableCell>{side}</TableCell>
-                <TableCell>{placedDate}</TableCell>
+                <TableCell>{moment(placedDate).calendar()}</TableCell>
                 <TableCell>{betOutcome}</TableCell>
               </TableRow>
             ))}
