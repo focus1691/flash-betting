@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     flexBasis: '100%',
     backgroundColor: '#242526',
-    borderRadius: theme.spacing(0, 2, 0, 0),
   },
 }));
 
