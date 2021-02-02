@@ -1,10 +1,11 @@
 import crypto from 'crypto';
 import React from 'react';
-import { LightenDarkenColor } from '../../utils/ColorManipulator';
 //* @material-ui core
 import Divider from '@material-ui/core/Divider';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridOrderRow';
+//* Utils
+import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
 export default ({ marketId, runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, bets, price, side, size }) => {
   const classes = useStyles();
