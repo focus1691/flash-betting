@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import React from 'react';
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
+//* @material-ui core
+import Divider from '@material-ui/core/Divider';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridOrderRow';
 
@@ -25,7 +27,7 @@ export default ({ marketId, runnerId, order, orderProps, toggleStakeAndLiability
       <td colSpan={11}>
         <ul className={classes.gridOrderRow}>
           <li onClick={toggleStakeAndLiabilityButtons({ id: runnerId })}>
-            <img src={`${window.location.origin}/icons/change.png`} alt="Toggle" />
+            {/* <img src={`${window.location.origin}/icons/change.png`} alt="Toggle" /> */}
             {orderProps.text}
           </li>
 
@@ -42,6 +44,7 @@ export default ({ marketId, runnerId, order, orderProps, toggleStakeAndLiability
               {size}
             </li>
           ))}
+          <Divider orientation="vertical" />
           <span
             className={classes.toggleBackLay}
             onClick={toggleBackAndLay({

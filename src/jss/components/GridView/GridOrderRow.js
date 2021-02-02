@@ -5,6 +5,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#242526',
     padding: theme.spacing(1, 0),
     '& ul': {
+      display: 'flex',
+      justifyContent: 'space-evenly',
       margin: '0',
       fontSize: 'small',
       textAlign: 'center',
@@ -17,21 +19,20 @@ const useStyles = makeStyles((theme) => ({
       background: 'transparent',
       border: '2px solid #D3D44F',
       borderRadius: theme.spacing(4),
-      margin: theme.spacing(0, 2),
-      width: '5%',
+      margin: theme.spacing(0, 1),
+      padding: theme.spacing(1, 1.5),
       cursor: 'pointer',
       '&:first-child': {
-        width: '10%',
       },
     },
     '& img': {
       verticalAlign: 'middle',
     },
     '& input[type=text]': {
-      width: '6%',
+
     },
     '& input[type=number]': {
-      width: '6%',
+
     },
   },
   gridImgContainer: {

@@ -135,7 +135,7 @@ const Grid = ({
   const renderRow = (betOdds, key, backLay) => {
     // Fill all empty cells if no data found
     if (!betOdds) {
-      return [<td className={classes.gridCell} />, <td className={classes.gridCell} />, <td className={classes.gridCell} />, <td className={classes.gridCell} />, <td className={classes.gridCell} />];
+      return new Array(5).fill(<td className={classes.gridCell} />);
     }
 
     const rows = [];

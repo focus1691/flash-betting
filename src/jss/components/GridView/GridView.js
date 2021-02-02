@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   gridContainer: {
     position: 'relative',
     height: '100%',
@@ -13,14 +13,16 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Trebuchet MS, Arial, Helvetica, sans-serif',
     borderCollapse: 'collapse',
     border: 'none',
-    width: '85%',
+    width: '100%',
     '& td': {
       color: '#FFFFFF',
-      width: '35px',
       textAlign: 'justify',
       fontWeight: 'bold',
       border: '2px solid #242526',
-      padding: '5px',
+      padding: theme.spacing(2, 3),
+      '&:first-child': {
+        padding: theme.spacing(0.5),
+      },
       '&:nth-child(6)': {
         backgroundColor: '#007AAF',
       },
