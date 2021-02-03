@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import crypto from 'crypto';
 //* @material-ui core
+import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 //* Actions
 import { placeOrder } from '../../actions/bet';
@@ -83,9 +84,12 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
             })}
           />
 
-          <button type="button" onClick={executeOrder}>
+          <Button className={classes.submitBtn} onClick={executeOrder}>
             Submit
-          </button>
+          </Button>
+          {/* <button type="button" onClick={executeOrder}>
+            Submit
+          </button> */}
 
           <span className={classes.gridImgContainer}>
             <a href="#" onClick={() => false}>

@@ -51,6 +51,18 @@ const useStyles = makeStyles((theme) => ({
     height: '24px',
     marginRight: theme.spacing(1),
   },
+  submitBtn: {
+    color: '#64D96A',
+    font: 'normal normal bold large Roboto',
+    border: '3px solid #64D96A',
+    borderRadius: theme.spacing(3),
+    padding: theme.spacing(0, 3),
+    '&:hover': {
+      color: '#19191A',
+      backgroundColor: '#64D96A',
+      boxShadow: '0px 0px 10px #00AC06',
+    },
+  },
 }));
 
 export default useStyles;
