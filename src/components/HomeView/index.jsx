@@ -13,7 +13,7 @@ const HomeView = ({ premiumMember }) => {
 
   return (
     <div className={classes.root}>
-      {!premiumMember ? (
+      {premiumMember ? (
         <>
           <Header premiumMember={premiumMember} />
           <TradingChart />
