@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   subscriptionContainer: {
+    position: 'relative',
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
@@ -74,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '10px 10px 50px #000000B3',
     border: '6px solid #BD2B32',
     borderRadius: theme.spacing(3),
-    height: '25rem',
+    height: '30rem',
     '& hr': {
       width: '90%',
       height: '4px',
@@ -108,7 +109,10 @@ const useStyles = makeStyles((theme) => ({
     color: '#34495e',
   },
   subscriptionButton: {
+    position: 'absolute',
+    bottom: '0',
     width: '75%',
+    marginBottom: '3rem',
     border: '3px solid #BD2B32',
     borderRadius: theme.spacing(3),
     color: '#EEEEEE',
