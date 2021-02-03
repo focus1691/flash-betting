@@ -52,11 +52,11 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
       const v = e.target.value;
 
       // Set empty String for non-numbers
-      if (isNaN(parseInt(v))) {
+      if (isNaN(Number(v))) {
         setPrice('');
         return;
       }
-      if (price === '' && parseInt(v) === 1) {
+      if (price === '' && Number(v) === 1) {
         setStep(0.01);
         setPrice(1.01);
         return;
@@ -74,7 +74,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
   );
 
   // Handle Submit click to place an order
-  const placeOrder = () => async () => {
+  const placeOrder = async () => {
     const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
     const newBackList = { ...list };
@@ -146,7 +146,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
           onChange={updateStep}
           margin="normal"
         />
-        <Button variant="outlined" className={classes.button} onClick={placeOrder()}>
+        <Button variant="outlined" className={classes.button} onClick={placeOrder}>
           Submit
         </Button>
       </div>

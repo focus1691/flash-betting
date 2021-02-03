@@ -3,17 +3,19 @@ import { connect } from 'react-redux';
 import crypto from 'crypto';
 //* @material-ui core
 import Divider from '@material-ui/core/Divider';
+//* Actions
+import { placeOrder } from '../../actions/bet';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridOrderRow';
 //* Utils
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
-const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, bets, price, side, size }) => {
+const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, backLay, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, bets, price, side, size }) => {
   const classes = useStyles();
 
-  const executeOrder = () => () => {
+  const executeOrder = () => {
     const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
-    onPlaceOrder({
+    placeOrder({
       marketId,
       side,
       size,
@@ -55,7 +57,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
               backLay: order.backLay ^ 1,
             })}
           >
-            {stakeLiability === 0 ? 'BACK' : 'LAY'}
+            {backLay === 0 ? 'BACK' : 'LAY'}
           </span>
 
           <input
@@ -68,6 +70,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
             })}
           />
           <span>@</span>
+
           <input
             type="number"
             name="price"
@@ -80,7 +83,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
             })}
           />
 
-          <button type="button" onClick={executeOrder()}>
+          <button type="button" onClick={executeOrder}>
             Submit
           </button>
 
@@ -103,10 +106,11 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
 };
 
 const mapStateToProps = (state) => ({
+  marketId: state.market.marketId,
   stakeBtns: state.settings.stakeBtns,
   layBtns: state.settings.layBtns,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { placeOrder };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GridOrderRow);

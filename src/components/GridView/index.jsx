@@ -82,6 +82,7 @@ const Grid = ({
   };
 
   const changeSide = (order) => () => {
+    console.log('change side', order);
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
     toggleBackAndLay({ id: order.id });
     setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
@@ -178,7 +179,7 @@ const Grid = ({
     sortedLadder.map((key) => {
       const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
       const { name, number, logo, order } = DeconstructRunner(runners[key], eventType.id);
-      const { stakeLiability } = order;
+      const { backLay, stakeLiability } = order;
 
       const profitArray = Object.values(bets.matched)
         .filter((bet) => bet.selectionId == runners[key].selectionId)
@@ -223,11 +224,10 @@ const Grid = ({
             toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
             toggleBackAndLay={changeSide}
             stakeLiability={stakeLiability}
+            backLay={backLay}
             updateOrderSize={updateOrderSize}
             updateOrderPrice={handlePriceChange}
             toggleOrderRowVisibility={toggleOrderRowVisibility}
-            placeOrder={placeOrder}
-            marketId={marketId}
             bets={bets}
             price={runners[key] ? runners[key].order.price : 0}
             side={activeOrder && activeOrder.side == 0 ? 'BACK' : 'LAY'}
