@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 import crypto from 'crypto';
 //* @material-ui core
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 //* Actions
 import { placeOrder } from '../../actions/bet';
@@ -34,13 +34,26 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
       <td colSpan={11}>
         <ul className={classes.gridOrderRow}>
           <li onClick={toggleStakeAndLiabilityButtons({ id: runnerId })}>
-            <img className={classes.switch} style={{ transform: `scaleX(${stakeLiability === 0 ? 1 : -1})` }} src={`${window.location.origin}/icons/red_switch.png`} alt="Toggle" />
+            <img
+              className={clsx({
+                [classes.switch]: true,
+                [classes.switchStake]: stakeLiability === 0,
+                [classes.switchLiability]: stakeLiability === 1,
+              })}
+              style={{ transform: `scaleX(${stakeLiability === 0 ? 1 : -1})` }}
+              src={`${window.location.origin}/icons/red_switch.png`}
+              alt="Toggle"
+            />
             {stakeLiability === 0 ? 'STAKE' : 'Liability'}
           </li>
 
           {(stakeLiability === 0 ? stakeBtns : layBtns).map((size, index) => (
             <li
               key={`grid-order-${index}`}
+              className={clsx({
+                [classes.stakeButton]: stakeLiability === 0,
+                [classes.liabilityButton]: stakeLiability === 1,
+              })}
               style={{ background: size === order.stake ? LightenDarkenColor(stakeLiability === 0 ? '#007aaf' : '#d4696b', -20) : '' }}
               onClick={updateOrderSize({
                 id: runnerId,
@@ -51,7 +64,6 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
               {size}
             </li>
           ))}
-          <Divider orientation="vertical" />
           <span
             className={classes.toggleBackLay}
             onClick={toggleBackAndLay({

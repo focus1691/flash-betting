@@ -15,10 +15,8 @@ const useStyles = makeStyles((theme) => ({
       float: 'left',
       listStyleType: 'none',
       height: '100%',
-      color: '#F5A623',
       font: 'normal normal 900 small Roboto',
       background: 'transparent',
-      border: '2px solid #F5A623',
       borderRadius: '50%',
       margin: theme.spacing(0, 1),
       padding: theme.spacing(1, 1.5),
@@ -38,6 +36,14 @@ const useStyles = makeStyles((theme) => ({
 
     },
   },
+  stakeButton: {
+    color: '#F5A623',
+    border: '2px solid #F5A623',
+  },
+  liabilityButton: {
+    color: '#D3D44F',
+    border: '2px solid #D3D44F',
+  },
   gridImgContainer: {
     display: 'inline-block',
     height: '100%',
@@ -50,6 +56,12 @@ const useStyles = makeStyles((theme) => ({
     width: '24px',
     height: '24px',
     marginRight: theme.spacing(1),
+  },
+  switchStake: {
+    transform: 'scaleX(1)',
+  },
+  switchLiability: {
+    transform: 'scaleX(-1)',
   },
   submitBtn: {
     color: '#64D96A',
