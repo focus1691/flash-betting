@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
 //* @material-ui core
+import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 //* Custom Components
@@ -18,6 +19,7 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
 
   return (
     <div className={classes.container}>
+      <Box className={classes.backgroundFilter} />
       <Typography variant="h2" className={classes.title}>
         WELCOME TO FLASH BETTING
       </Typography>

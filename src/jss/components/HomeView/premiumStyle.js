@@ -4,23 +4,41 @@ import subscriptionChip from './subscriptionChip';
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    position: 'relative',
+    width: '100%',
     height: '100%',
+    backgroundImage: `url(${window.location.origin}/images/digital_world_map_hologram_blue_background.png)`,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
+  },
+  backgroundFilter: {
+    position: 'absolute',
+    top: '0',
+    right: '0',
+    bottom: '0',
+    left: '0',
+    opacity: '0.5',
+    background: '#333F4B 0% 0% no-repeat padding-box',
+    zIndex: '1',
   },
   title: {
     color: '#EEEEEE',
     textAlign: 'center',
     font: 'normal normal bold 4rem Roboto',
+    zIndex: '2',
   },
   subtitle: {
     color: '#EEEEEE',
     textAlign: 'center',
     font: 'normal normal bold 3.75rem Roboto',
+    zIndex: '2',
   },
   statusChips: {
     textAlign: 'center',
+    zIndex: '2',
   },
   user: () => userChip(theme),
   subscription: ({ subscribed }) => subscriptionChip(theme, subscribed),
@@ -28,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexBasis: '60%',
     justifyContent: 'space-evenly',
+    zIndex: '2',
     '& div:nth-child(1)': {
       '& > div': {
         color: '#0BBF63',
@@ -71,16 +90,29 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     flexDirection: 'column',
     flexBasis: '30%',
-    backgroundColor: '#333F4B',
     boxShadow: '10px 10px 50px #000000B3',
     border: '6px solid #BD2B32',
     borderRadius: theme.spacing(3),
     height: '30rem',
+    zIndex: '2',
     '& hr': {
       width: '90%',
       height: '4px',
       backgroundColor: '#EEEEEE',
     },
+  },
+  subscriptionBackground: {
+    position: 'absolute',
+    top: '0',
+    right: '0',
+    bottom: '0',
+    left: '0',
+    background: '#333F4B 0% 0% no-repeat padding-box',
+    boxShadow: '10px 10px 50px #000000B3',
+    filter: 'blur(6px) brightness(0.5)',
+    borderRadius: theme.spacing(2),
+    opacity: '0.8',
+    zIndex: '1',
   },
   subscriptionHeader: {
     width: '100%',
@@ -90,6 +122,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '500',
     font: 'normal normal bold 3.5rem Roboto',
     color: '#0BBF63',
+    zIndex: '2',
   },
   subscriptionPrice: {
     width: '100%',
@@ -99,6 +132,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     font: 'normal normal bold 3.75rem Roboto',
     color: '#EEEEEE',
+    zIndex: '2',
   },
   subscriptionPeriod: {
     width: '100%',
@@ -107,6 +141,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'Open Sans',
     font: 'normal normal normal 2rem Roboto',
     color: '#34495e',
+    zIndex: '2',
   },
   subscriptionButton: {
     position: 'absolute',
@@ -117,6 +152,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.spacing(3),
     color: '#EEEEEE',
     font: 'normal normal normal x-large Segoe',
+    zIndex: '2',
     '&:hover': {
       border: 'none',
     },
