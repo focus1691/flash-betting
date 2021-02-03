@@ -4,6 +4,7 @@ import crypto from 'crypto';
 //* @material-ui core
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
 //* Actions
 import { placeOrder } from '../../actions/bet';
 //* JSS
@@ -33,7 +34,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
       <td colSpan={11}>
         <ul className={classes.gridOrderRow}>
           <li onClick={toggleStakeAndLiabilityButtons({ id: runnerId })}>
-            <img className={classes.switch} style={{ transform: `scaleX(${stakeLiability === 0 ? 1 : -1})`}} src={`${window.location.origin}/icons/red_switch.png`} alt="Toggle" />
+            <img className={classes.switch} style={{ transform: `scaleX(${stakeLiability === 0 ? 1 : -1})` }} src={`${window.location.origin}/icons/red_switch.png`} alt="Toggle" />
             {stakeLiability === 0 ? 'STAKE' : 'Liability'}
           </li>
 
@@ -87,22 +88,17 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
           <Button className={classes.submitBtn} onClick={executeOrder}>
             Submit
           </Button>
-          {/* <button type="button" onClick={executeOrder}>
-            Submit
-          </button> */}
 
-          <span className={classes.gridImgContainer}>
-            <a href="#" onClick={() => false}>
-              <img
-                src={`${window.location.origin}/icons/X_Button.svg`}
-                alt="Close"
-                onClick={toggleOrderRowVisibility({
-                  id: runnerId,
-                  visible: false,
-                })}
-              />
-            </a>
-          </span>
+          <IconButton
+            aria-label="close"
+            className={classes.gridImgContainer}
+            onClick={toggleOrderRowVisibility({
+              id: runnerId,
+              visible: false,
+            })}
+          >
+            <img src={`${window.location.origin}/icons/X_Button.svg`} alt="" />
+          </IconButton>
         </ul>
       </td>
     </tr>
