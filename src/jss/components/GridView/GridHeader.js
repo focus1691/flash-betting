@@ -65,15 +65,21 @@ const useStyles = makeStyles((theme) => ({
   oneClickStake: {
     backgroundColor: '#007AAF',
     boxShadow: '0px 6px 15px #0000005E',
-    '& button:hover': {
-      backgroundColor: '#073C53',
+    '& button': {
+      backgroundColor: 'transparent',
+      '&:hover': {
+        backgroundColor: '#073C53',
+      },
     },
   },
   oneClickLiability: {
     backgroundColor: '#D4696B',
     boxShadow: '0px 6px 15px #0000005E',
-    '& button:hover': {
-      backgroundColor: '#BD2B32',
+    '& button': {
+      backgroundColor: 'transparent',
+      '&:hover': {
+        backgroundColor: '#BD2B32',
+      },
     },
   },
   matchedBets: {

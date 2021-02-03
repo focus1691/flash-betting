@@ -76,7 +76,7 @@ const GridHeader = ({
               <div className={clsx(classes.oneClickButtons, classes.oneClickStake)}>
                 <Button>STAKE</Button>
                 {stakeBtns.map((stake) => (
-                  <button key={`one-click-stake-button-${uuid()}`} type="button" style={{ background: getStakeButtonStyle('STAKE', stake, oneClickStake, -70) }} onClick={() => setStakeInOneClick(stake)}>
+                  <button key={`one-click-stake-button-${uuid()}`} type="button" onClick={() => setStakeInOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
@@ -84,7 +84,7 @@ const GridHeader = ({
               <div className={clsx(classes.oneClickButtons, classes.oneClickLiability)}>
                 <Button>LIABILITY</Button>
                 {layBtns.map((stake) => (
-                  <button key={`one-click-liability-button-${uuid()}`} type="button" style={{ background: getStakeButtonStyle('LAY', stake, oneClickStake, -70) }} onClick={() => setStakeInOneClick(stake)}>
+                  <button key={`one-click-liability-button-${uuid()}`} type="button" onClick={() => setStakeInOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
