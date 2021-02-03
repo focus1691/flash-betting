@@ -1,5 +1,6 @@
-import crypto from 'crypto';
 import React from 'react';
+import { connect } from 'react-redux';
+import crypto from 'crypto';
 //* @material-ui core
 import Divider from '@material-ui/core/Divider';
 //* JSS
@@ -7,8 +8,9 @@ import useStyles from '../../jss/components/GridView/GridOrderRow';
 //* Utils
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
-export default ({ marketId, runnerId, order, orderProps, toggleStakeAndLiabilityButtons, toggleBackAndLay, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, bets, price, side, size }) => {
+const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, onPlaceOrder, bets, price, side, size }) => {
   const classes = useStyles();
+
   const executeOrder = () => () => {
     const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
     onPlaceOrder({
@@ -28,14 +30,14 @@ export default ({ marketId, runnerId, order, orderProps, toggleStakeAndLiability
       <td colSpan={11}>
         <ul className={classes.gridOrderRow}>
           <li onClick={toggleStakeAndLiabilityButtons({ id: runnerId })}>
-            {/* <img src={`${window.location.origin}/icons/change.png`} alt="Toggle" /> */}
-            {orderProps.text}
+            <img className={classes.switch} style={{ transform: `scaleX(${stakeLiability === 0 ? 1 : -1})`}} src={`${window.location.origin}/icons/red_switch.png`} alt="Toggle" />
+            {stakeLiability === 0 ? 'STAKE' : 'Liability'}
           </li>
 
-          {orderProps.prices.map((size, index) => (
+          {(stakeLiability === 0 ? stakeBtns : layBtns).map((size, index) => (
             <li
               key={`grid-order-${index}`}
-              style={{ background: size === order.stake ? LightenDarkenColor(orderProps.bg, -20) : '' }}
+              style={{ background: size === order.stake ? LightenDarkenColor(stakeLiability === 0 ? '#007aaf' : '#d4696b', -20) : '' }}
               onClick={updateOrderSize({
                 id: runnerId,
                 backLay: order.backLay,
@@ -53,7 +55,7 @@ export default ({ marketId, runnerId, order, orderProps, toggleStakeAndLiability
               backLay: order.backLay ^ 1,
             })}
           >
-            {orderProps.text2}
+            {stakeLiability === 0 ? 'BACK' : 'LAY'}
           </span>
 
           <input
@@ -99,3 +101,12 @@ export default ({ marketId, runnerId, order, orderProps, toggleStakeAndLiability
     </tr>
   ) : null;
 };
+
+const mapStateToProps = (state) => ({
+  stakeBtns: state.settings.stakeBtns,
+  layBtns: state.settings.layBtns,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GridOrderRow);

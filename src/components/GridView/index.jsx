@@ -90,8 +90,10 @@ const Grid = ({
   const handleOneClickPress = () => () => {
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
     toggleOneClick(!oneClickOn);
+
     const node = oneClickRef.current;
-    oneClickOn ? node.blur() : node.focus();
+    if (oneClickOn) node.blur();
+    else node.focus();
   };
 
   const toggleStakeAndLiabilityButtons = (data) => () => {
@@ -133,7 +135,7 @@ const Grid = ({
   };
 
   const renderRow = (betOdds, key, backLay) => {
-    // Fill all empty cells if no data found
+    //* Fill all empty cells if no data found
     if (!betOdds) {
       return new Array(5).fill(<td className={classes.gridCell} />);
     }
@@ -145,7 +147,7 @@ const Grid = ({
       if (i === 4) break;
     }
 
-    // Fill the remaining columns with empty cells
+    //* Fill the remaining columns with empty cells
     while (rows.length < 5) {
       rows.push(<td key={rows.length + 1} className={classes.gridCell} />);
     }
@@ -172,86 +174,72 @@ const Grid = ({
     </>
   );
 
-  const renderRunners = () => sortedLadder.map((key) => {
-    const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
-    const { name, number, logo, order } = DeconstructRunner(runners[key], eventType.id);
+  const renderRunners = () =>
+    sortedLadder.map((key) => {
+      const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
+      const { name, number, logo, order } = DeconstructRunner(runners[key], eventType.id);
+      const { stakeLiability } = order;
 
-    const orderProps =
-        order.stakeLiability === 0
-          ? {
-            text: 'STAKE',
-            text2: 'BACK',
-            prices: stakeBtns,
-          }
-          : {
-            text: 'LIABILITY',
-            text2: 'LAY',
-            prices: layBtns,
-          };
+      const profitArray = Object.values(bets.matched)
+        .filter((bet) => bet.selectionId == runners[key].selectionId)
+        .map((bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgePL(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
+      const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
-    orderProps.text2 = order.backLay === 0 ? 'BACK' : 'LAY';
-    orderProps.bg = order.backLay === 0 ? '#007aaf' : '#d4696b';
-
-    const profitArray = Object.values(bets.matched)
-      .filter((bet) => bet.selectionId == runners[key].selectionId)
-      .map((bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgePL(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
-    const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
-
-    return (
-      <React.Fragment key={`grid-runner-${key}`}>
-        <tr>
-          <GridDetailCell
-            sportId={eventType.id}
-            marketId={marketId}
-            runner={runners[key]}
-            name={name}
-            number={number}
-            logo={logo}
-            ltp={ltp}
-            tv={tv}
-            bets={bets}
-            PL={
-              marketHasBets(marketId, bets)
-                ? {
-                  val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, Number(key), bets)),
-                  color: colorForBack(order.backLay, getPLForRunner(marketId, Number(key), bets)),
-                }
-                : order.visible && rowHovered === key && activeOrder
+      return (
+        <React.Fragment key={`grid-runner-${key}`}>
+          <tr>
+            <GridDetailCell
+              sportId={eventType.id}
+              marketId={marketId}
+              runner={runners[key]}
+              name={name}
+              number={number}
+              logo={logo}
+              ltp={ltp}
+              tv={tv}
+              bets={bets}
+              PL={
+                marketHasBets(marketId, bets)
+                  ? {
+                      val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, Number(key), bets)),
+                      color: colorForBack(order.backLay, getPLForRunner(marketId, Number(key), bets)),
+                    }
+                  : order.visible && rowHovered === key && activeOrder
                   ? renderProfitAndLossAndHedge(order, colorForBack(order.backLay))
                   : rowHovered && rowHovered !== key && activeOrder
-                    ? renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
-                    : { val: '', color: '' }
-            }
-            hedge={profit}
-            ltpStyle={ltpStyle}
-          />
-          {renderRow(atb, key, 0).reverse()}
-          {renderRow(atl, key, 1)}
-        </tr>
+                  ? renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
+                  : { val: '', color: '' }
+              }
+              hedge={profit}
+              ltpStyle={ltpStyle}
+            />
+            {renderRow(atb, key, 0).reverse()}
+            {renderRow(atl, key, 1)}
+          </tr>
 
-        <GridOrderRow
-          runnerId={key}
-          order={order}
-          orderProps={orderProps}
-          toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
-          toggleBackAndLay={changeSide}
-          updateOrderSize={updateOrderSize}
-          updateOrderPrice={handlePriceChange}
-          toggleOrderRowVisibility={toggleOrderRowVisibility}
-          placeOrder={placeOrder}
-          marketId={marketId}
-          bets={bets}
-          price={runners[key] ? runners[key].order.price : 0}
-          side={activeOrder && activeOrder.side == 0 ? 'BACK' : 'LAY'}
-          size={activeOrder ? activeOrder.stake : 0}
-        />
-      </React.Fragment>
-    );
-  });
+          <GridOrderRow
+            runnerId={key}
+            order={order}
+            toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
+            toggleBackAndLay={changeSide}
+            stakeLiability={stakeLiability}
+            updateOrderSize={updateOrderSize}
+            updateOrderPrice={handlePriceChange}
+            toggleOrderRowVisibility={toggleOrderRowVisibility}
+            placeOrder={placeOrder}
+            marketId={marketId}
+            bets={bets}
+            price={runners[key] ? runners[key].order.price : 0}
+            side={activeOrder && activeOrder.side == 0 ? 'BACK' : 'LAY'}
+            size={activeOrder ? activeOrder.stake : 0}
+          />
+        </React.Fragment>
+      );
+    });
 
   const ltpSelectionIdObject = {};
 
-  Object.keys(ladder).map((key) => {
+  Object.keys(ladder).forEach((key) => {
     const { ltp } = DeconstructLadder(ladder[key]);
     ltpSelectionIdObject[key] = ltp[0];
   });

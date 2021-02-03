@@ -46,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
   toggleBackLay: {
     cursor: 'pointer',
   },
+  switch: {
+    width: '24px',
+    height: '24px',
+    marginRight: theme.spacing(1),
+  },
 }));
 
 export default useStyles;
