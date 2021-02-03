@@ -1,4 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
+import userChip from './userChip';
+import subscriptionChip from './subscriptionChip';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -14,19 +16,8 @@ const useStyles = makeStyles((theme) => ({
     font: 'normal normal bold xx-large Roboto',
     color: '#EEEEEE',
   },
-  username: {
-    background: '#D3D44F',
-    color: '#121212',
-    font: 'normal normal bold medium Roboto',
-    padding: theme.spacing(1),
-  },
-  subscription: ({ subscribed }) => ({
-    background: subscribed ? '#0BBF63' : '#F44336',
-    color: '#121212',
-    font: 'normal normal bold medium Roboto',
-    marginLeft: theme.spacing(1),
-    padding: theme.spacing(2, 1),
-  }),
+  user: () => userChip(theme),
+  subscription: ({ subscribed }) => subscriptionChip(theme, subscribed),
 }));
 
 export default useStyles;

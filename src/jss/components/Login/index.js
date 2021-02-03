@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   welcomeText: {
     textAlign: 'center',
     color: '#F5A623',
-    font: `normal normal normal large Segoe`,
+    font: 'normal normal normal large Segoe',
     zIndex: '2',
   },
   helpText: {
@@ -105,13 +105,13 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0),
     width: '100%',
     color: '#F5A623',
-    font: `normal normal normal large Segoe`,
+    font: 'normal normal normal large Segoe',
     zIndex: '2',
   },
   registerLink: {
     color: '#64D96A',
     textAlign: 'left',
-    font: `normal normal normal large Segoe`,
+    font: 'normal normal normal large Segoe',
     marginLeft: theme.spacing(1),
   },
   submit: {
@@ -126,7 +126,7 @@ const useStyles = makeStyles((theme) => ({
       zIndex: '2',
       '& span': {
         color: '#EEEEEE',
-        font: `normal normal normal large Segoe`,
+        font: 'normal normal normal large Segoe',
       },
       '&:hover': {
         background: '#BD2B32 0% 0% no-repeat padding-box',

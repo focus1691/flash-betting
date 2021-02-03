@@ -1,5 +1,4 @@
 import React from 'react';
-import Cookies from 'universal-cookie';
 import { connect } from 'react-redux';
 //* Custom Components
 import Header from './Header';
@@ -9,16 +8,14 @@ import PremiumSubscription from './PremiumSubscription';
 //* JSS
 import useStyles from '../../jss/components/HomeView/homeViewStyle';
 
-const cookies = new Cookies();
-
 const HomeView = ({ premiumMember }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      {premiumMember ? (
+      {!premiumMember ? (
         <>
-          <Header username={cookies.get('username')} premiumMember={premiumMember} />
+          <Header premiumMember={premiumMember} />
           <TradingChart />
           <RecentBets />
         </>

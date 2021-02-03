@@ -1,33 +1,94 @@
 import { makeStyles } from '@material-ui/core/styles';
+import userChip from './userChip';
+import subscriptionChip from './subscriptionChip';
 
-const useStyles = makeStyles(() => ({
-  subscriptionList: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '70%',
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-  },
-  subscriptionContainer: {
-    width: '20rem',
-    height: '25rem',
-    background: 'rgb(235, 235, 235)',
-    borderRadius: '10px',
-    marginTop: '7.5%',
-    boxShadow: '1px 1px 20px 0px rgba(0, 0, 0, 0.3)',
+const useStyles = makeStyles((theme) => ({
+  container: {
+    height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-evenly',
+  },
+  title: {
+    color: '#EEEEEE',
+    textAlign: 'center',
+    font: 'normal normal bold 4rem Roboto',
+  },
+  subtitle: {
+    color: '#EEEEEE',
+    textAlign: 'center',
+    font: 'normal normal bold 3.75rem Roboto',
+  },
+  statusChips: {
+    textAlign: 'center',
+  },
+  user: () => userChip(theme),
+  subscription: ({ subscribed }) => subscriptionChip(theme, subscribed),
+  subscriptionList: {
+    display: 'flex',
+    flexBasis: '60%',
+    justifyContent: 'space-evenly',
+    '& div:nth-child(1)': {
+      '& > div': {
+        color: '#0BBF63',
+      },
+      '& p ~ p': {
+        color: '#0BBF63',
+      },
+      '& button:hover': {
+        backgroundColor: '#0BBF63',
+        boxShadow: '6px 6px 15px #0000004D',
+      },
+    },
+    '& div:nth-child(2)': {
+      '& > div': {
+        color: '#D3D44F',
+      },
+      '& p ~ p': {
+        color: '#D3D44F',
+      },
+      '& button:hover': {
+        backgroundColor: '#AEAF00',
+        boxShadow: '6px 6px 15px #0000004D',
+      },
+    },
+    '& div:nth-child(3)': {
+      '& > div': {
+        color: '#F5A623',
+      },
+      '& p ~ p': {
+        color: '#F5A623',
+      },
+      '& button:hover': {
+        backgroundColor: '#F5A623',
+        boxShadow: '6px 6px 15px #0000004D',
+      },
+    },
+  },
+  subscriptionContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    flexBasis: '30%',
+    backgroundColor: '#333F4B',
+    boxShadow: '10px 10px 50px #000000B3',
+    border: '6px solid #BD2B32',
+    borderRadius: theme.spacing(3),
+    height: '25rem',
+    '& hr': {
+      width: '90%',
+      height: '4px',
+      backgroundColor: '#EEEEEE',
+    },
   },
   subscriptionHeader: {
     width: '100%',
     padding: '5% 0',
-    background: 'rgb(82, 94, 100)',
     borderRadius: '10px 10px 0 0',
     textAlign: 'center',
     fontWeight: '500',
-    fontSize: '1.5rem',
-    fontFamily: 'Open Sans',
-    color: 'white',
+    font: 'normal normal bold 3.5rem Roboto',
+    color: '#0BBF63',
   },
   subscriptionPrice: {
     width: '100%',
@@ -35,67 +96,25 @@ const useStyles = makeStyles(() => ({
     marginTop: '10%',
     marginBottom: '0',
     textAlign: 'center',
-    fontSize: '4rem',
-    fontFamily: 'Open Sans',
-    color: '#34495e',
+    font: 'normal normal bold 3.75rem Roboto',
+    color: '#EEEEEE',
   },
-  subscriptionText: {
+  subscriptionPeriod: {
     width: '100%',
     marginTop: '1%',
     textAlign: 'center',
-    fontSize: '1rem',
     fontFamily: 'Open Sans',
+    font: 'normal normal normal 2rem Roboto',
     color: '#34495e',
   },
   subscriptionButton: {
-    marginTop: '10%',
-    padding: '3.5% 5%',
-    maxWidth: '31%',
-    textAlign: 'center',
-    fontSize: '1rem',
-    fontFamily: 'Open Sans',
-    alignSelf: 'center',
-    cursor: 'pointer',
-    textDecoration: 'none',
-  },
-  greyButton: {
-    border: '1px solid #525e64',
-    color: '#525e64',
+    width: '75%',
+    border: '3px solid #BD2B32',
+    borderRadius: theme.spacing(3),
+    color: '#EEEEEE',
+    font: 'normal normal normal x-large Segoe',
     '&:hover': {
-      borderColor: 'transparent',
-      color: 'white',
-      animation: '$subscriptionGreyFocus .3s ease-in-out',
-    },
-  },
-  greenButton: {
-    border: 'unset',
-    background: '#26C281',
-    color: 'white',
-    fontWeight: '600',
-    '&:hover': {
-      borderColor: 'transparent',
-      color: 'white',
-      animation: '$subscriptionGreenFocus .3s ease-in-out',
-    },
-  },
-  '@keyframes subscriptionGreyFocus': {
-    '0%': {
-      backgroundColor: 'transparent',
-      border: '1px solid #525e64',
-      color: '#525e64',
-    },
-    '100%': {
-      backgroundColor: '#525e64',
-      borderColor: 'transparent',
-      color: 'white',
-    },
-  },
-  '@keyframes subscriptionGreenFocus': {
-    '0%': {
-      backgroundColor: '#26C281',
-    },
-    '100%': {
-      backgroundColor: '#1e9765',
+      border: 'none',
     },
   },
 }));
