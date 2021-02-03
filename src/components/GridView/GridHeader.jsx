@@ -1,7 +1,13 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
+import uuid from 'react-uuid'
+import moment from 'moment';
 import crypto from 'crypto';
+import clsx from 'clsx';
+//* @material-ui core
+import Button from '@material-ui/core/Button';
+//* Actions
+import { setStakeInOneClick } from '../../actions/settings';
 //* Utils
 import { sumMatchedBets } from '../../utils/Bets/BettingCalculations';
 import { getStakeButtonStyle } from '../../utils/ColorManipulator';
@@ -25,7 +31,7 @@ const GridHeader = ({
   oneClickOn,
   toggleOneClick,
   oneClickStake,
-  setStakeOneClick,
+  setStakeInOneClick,
   stakeBtns,
   layBtns,
   bets,
@@ -67,19 +73,18 @@ const GridHeader = ({
           <h1>{marketOpen ? `${moment(marketStartTime).calendar()} ${marketName} ${event.venue || ''}` : 'No Event Selected'}</h1>
           {oneClickOn ? (
             <>
-              <div className={classes.oneClickStake} style={{ background: '#007aaf' }}>
-                <button type="button">Stake</button>
+              <div className={clsx(classes.oneClickButtons, classes.oneClickStake)}>
+                <Button>STAKE</Button>
                 {stakeBtns.map((stake) => (
-                  <button type="button" style={{ background: getStakeButtonStyle('STAKE', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
+                  <button key={`one-click-stake-button-${uuid()}`} type="button" style={{ background: getStakeButtonStyle('STAKE', stake, oneClickStake, -70) }} onClick={() => setStakeInOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
               </div>
-              <br />
-              <div className={classes.oneClickStake} style={{ background: '#d4696b' }}>
-                <button type="button">Liability</button>
+              <div className={clsx(classes.oneClickButtons, classes.oneClickLiability)}>
+                <Button>LIABILITY</Button>
                 {layBtns.map((stake) => (
-                  <button type="button" style={{ background: getStakeButtonStyle('LAY', stake, oneClickStake, -70) }} onClick={setStakeOneClick(stake)}>
+                  <button key={`one-click-liability-button-${uuid()}`} type="button" style={{ background: getStakeButtonStyle('LAY', stake, oneClickStake, -70) }} onClick={() => setStakeInOneClick(stake)}>
                     {stake}
                   </button>
                 ))}
@@ -126,6 +131,11 @@ const mapStateToProps = (state) => ({
   marketStartTime: state.market.marketStartTime,
   marketStatus: state.market.status,
   event: state.market.event,
+  oneClickStake: state.settings.stake,
 });
 
-export default connect(mapStateToProps)(GridHeader);
+const mapDispatchToProps = {
+  setStakeInOneClick,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GridHeader);

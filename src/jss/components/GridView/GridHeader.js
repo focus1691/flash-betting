@@ -39,26 +39,41 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: '0px 0px 10px #00AC06',
     },
   },
-  oneClickStake: {
+  oneClickButtons: {
+    display: 'flex',
+    justifyContent: 'center',
     '& button': {
-      border: '2px solid #000',
-      borderRadius: '8px',
+      color: '#EEEEEE',
+      border: '2px solid #EEEEEE',
+      borderRadius: theme.spacing(3),
+      boxShadow: '6px 6px 15px #00000045',
+      font: 'normal normal 900 large Roboto',
       padding: '5px',
       margin: '5px',
-      font: 'inherit',
       fontSize: '0.7em',
       fontWeight: 'bold',
       cursor: 'pointer',
       outline: 'inherit',
       '&:first-child': {
-        width: '10%',
+        flexBasis: '10%',
       },
       '&:not(:first-child)': {
-        color: '#000',
-        fontWeight: 'bold',
-        backgroundRepeat: 'no-repeat',
-        width: '6%',
+        flexBasis: '6%',
       },
+    },
+  },
+  oneClickStake: {
+    backgroundColor: '#007AAF',
+    boxShadow: '0px 6px 15px #0000005E',
+    '& button:hover': {
+      backgroundColor: '#073C53',
+    },
+  },
+  oneClickLiability: {
+    backgroundColor: '#D4696B',
+    boxShadow: '0px 6px 15px #0000005E',
+    '& button:hover': {
+      backgroundColor: '#BD2B32',
     },
   },
   matchedBets: {

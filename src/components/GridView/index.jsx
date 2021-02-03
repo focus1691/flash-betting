@@ -4,7 +4,6 @@ import $ from 'jquery';
 //* Actions
 import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
 import { placeOrder } from '../../actions/bet';
-import { setStakeInOneClick } from '../../actions/settings';
 //* Utils
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
@@ -48,7 +47,6 @@ const Grid = ({
   toggleStakeAndLiability,
   toggleBackAndLay,
   toggleOneClick,
-  setStakeInOneClick,
   placeOrder,
 }) => {
   const classes = useStyles();
@@ -106,10 +104,6 @@ const Grid = ({
     toggleVisibility(data);
     setActiveOrder(null);
     setOrdersVisible(ordersVisible - 1);
-  };
-
-  const handlePriceClickInOneClick = (stake) => () => {
-    setStakeInOneClick(stake);
   };
 
   const updateOrderSize = (data) => (e) => {
@@ -259,7 +253,6 @@ const Grid = ({
             oneClickOn={oneClickOn}
             toggleOneClick={handleOneClickPress}
             oneClickStake={oneClickStake}
-            setStakeOneClick={handlePriceClickInOneClick}
             stakeBtns={stakeBtns}
             layBtns={layBtns}
             bets={bets}
@@ -301,7 +294,6 @@ const mapDispatchToProps = {
   toggleStakeAndLiability,
   toggleBackAndLay,
   toggleOneClick,
-  setStakeInOneClick,
   placeOrder,
 };
 
