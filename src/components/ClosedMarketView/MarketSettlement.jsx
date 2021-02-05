@@ -4,7 +4,7 @@ import { IsEmpty } from 'react-lodash';
 export default ({ marketInfo }) => {
   const createdAt = new Date(Date.now()).toLocaleString('en-GB', { timeZone: 'UTC' });
 
-  const renderMarketStartTime = (isEmpty) => (e) => {
+  const renderMarketStartTime = (isEmpty) => () => {
     if (isEmpty) return '';
 
     const marketDetails = `${new Date(marketInfo.marketStartTime).toLocaleTimeString(navigator.language, {

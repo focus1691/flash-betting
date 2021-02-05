@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import getQueryVariable from '../utils/Market/GetQueryVariable';
+//* Components
 import BetsPlaced from './ClosedMarketView/BetsPlaced';
 import ClosedMarketReport from './ClosedMarketView/ClosedMarketReport';
 import MarketSettlement from './ClosedMarketView/MarketSettlement';
+//* Utils
+import getQueryVariable from '../utils/Market/GetQueryVariable';
 
 const GetClosedMarketStats = () => {
   const [completedOrders, setCompletedOrders] = useState([]);
@@ -30,7 +32,7 @@ const GetClosedMarketStats = () => {
               runnersStatusObject[item.selectionId] = item.status;
             });
 
-            const runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then((res) => res.json()).catch((err) => {
+            const runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then((res) => res.json()).catch(() => {
               window.location.href = `${window.location.origin}/dashboard`;
             });
             const marketInfoRunners = Object.keys(runnerResults).map((key) => ({ selectionId: key, runnerName: runnerResults[key] }));
