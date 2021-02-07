@@ -111,7 +111,8 @@ app.post('/api/save-runner-names', (request, response) => {
 });
 
 app.get('/api/fetch-runner-names', (request, response) => {
-  response.json(runnerNames[request.query.marketId]);
+  console.log(runnerNames, request.query.marketId, runnerNames[request.query.marketId]);
+  response.status(200).json({ result: runnerNames[request.query.marketId] });
 });
 
 app.post('/api/checkout', (request, result) => {
