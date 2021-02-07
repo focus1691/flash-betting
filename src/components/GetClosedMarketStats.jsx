@@ -34,8 +34,8 @@ const GetClosedMarketStats = () => {
 
       // const runnerResults = await fetchData(`/api/fetch-runner-names?marketId=${marketId}`);
 
-      const runnersBo = await fetchData(`api/get-market-info?marketId=${marketId}`);
-      console.log(runnersBo);
+      const marketCatalogue = await fetchData(`api/get-market-info?marketId=${marketId}`);
+      console.log(marketCatalogue);
       //   .then((res) => res.json())
       //   .catch(() => {
       //     window.location.href = `${window.location.origin}/dashboard`;
