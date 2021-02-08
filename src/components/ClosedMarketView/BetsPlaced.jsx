@@ -1,21 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+//* @material-ui core
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-  tableWrapper: {
-    maxHeight: '55vh',
-    overflowX: 'auto',
-  },
-});
+import Typography from '@material-ui/core/Typography';
+//* JSS
+import useStyles from '../../jss/components/ClosedMarketView/betsPlacedStyle';
 
 const columns = [
   { id: 'placedDate', label: 'Placed', minWidth: 75 },
@@ -25,7 +19,8 @@ const columns = [
   { id: 'win', label: 'Status', minWidth: 75 },
 ];
 
-export default ({ matchedBets, runners = [] }) => {
+const BetsPlaced = ({ matchedBets, runners = [] }) => {
+  const classes = useStyles();
   const runnersObject = {};
   runners.map((runner) => {
     runnersObject[runner.selectionId] = runner.runnerName;
@@ -36,31 +31,14 @@ export default ({ matchedBets, runners = [] }) => {
 
   const rows = matchedBetsAdjustments;
 
-  const classes = useStyles();
-
   return (
-    <div className="marketstats-table-container">
-      <div
-        style={{
-          height: '6vh',
-          backgroundColor: 'rgb(103, 128, 159)',
-          color: 'white',
-          paddingLeft: '2%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          fontSize: '1.3em',
-          fontWeight: 'bold',
-        }}
-      >
+    <div className={classes.betsPlaced}>
+      <Typography component="h1" variant="h2" className={classes.title}>
         Bets Placed
-      </div>
-      <Paper className={classes.root} style={{ height: '90%' }}>
-        <div
-          style={{ height: '100%', border: 'solid 2px rgb(146, 164, 186)', borderTop: 'none' }}
-          className={classes.tableWrapper}
-        >
-          <Table stickyHeader aria-label="sticky table">
+      </Typography>
+      <Paper className={classes.container}>
+        <div className={classes.tableContainer}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -80,16 +58,20 @@ export default ({ matchedBets, runners = [] }) => {
                       <TableCell key={column.id} align={column.align}>
                         {column.id === 'sizeMatched' ? (
                           <span
-                            className="marketstats-table-backlay-bet"
-                            style={{ backgroundColor: isSideBack ? 'rgb(114, 187, 239)' : 'rgb(250, 169, 186)' }}
+                            className={clsx(classes.betSide, {
+                              [isSideBack]: classes.backText,
+                              [!isSideBack]: classes.layText,
+                            })}
                           >
                             {isSideBack ? 'BACK' : 'LAY'}
                           </span>
                         ) : null}
                         {column.id === 'win' ? (
                           <span
-                            className="marketstats-table-win-result"
-                            style={{ backgroundColor: column.win ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)' }}
+                            className={clsx(classes.betOutcome, {
+                              [column.win]: classes.betWin,
+                              [!column.win]: classes.betLose,
+                            })}
                           >
                             {column.win ? 'Won' : 'Lost'}
                           </span>
@@ -118,9 +100,7 @@ const calculateNewPlacedDate = (bet) => {
 
   const betPlacedOnDiffDay = currentMonth !== placedMonth || placedDate > currentDate || placedDate < currentDate;
 
-  const newPlacedDate = betPlacedOnDiffDay
-    ? betPlacedDate.toLocaleString('en-GB', { hour12: false })
-    : betPlacedDate.toLocaleTimeString(betPlacedDate, { hour12: false });
+  const newPlacedDate = betPlacedOnDiffDay ? betPlacedDate.toLocaleString('en-GB', { hour12: false }) : betPlacedDate.toLocaleTimeString(betPlacedDate, { hour12: false });
 
   return { ...bet, placedDate: newPlacedDate };
 };
@@ -133,3 +113,5 @@ const getStatus = (bet, runners) => {
   }
   return bet;
 };
+
+export default BetsPlaced;

@@ -29,6 +29,10 @@ const useStyles = makeStyles(() => ({
       flexDirection: 'column',
     },
   },
+  createdAt: {
+    color: 'gray',
+    fontWeight: '200',
+  },
   marketName: {
     fontSize: '1.5em',
     marginBottom: '0.5rem',

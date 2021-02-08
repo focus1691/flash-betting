@@ -23,7 +23,7 @@ export default ({ marketInfo }) => {
       <div className={classes.marketReportContainer}>
         <div>
           <IsEmpty value={marketInfo} yes={renderMarketStartTime(true)} no={renderMarketStartTime(false)} />
-          <em className="marketstats-info-created-at">
+          <em className={classes.createdAt}>
             Created
             {createdAt}
             {' '}

@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-  marketReport: {
+  betsPlaced: {
     width: '49%',
     height: '100%',
     display: 'flex',
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '55vh',
     overflowX: 'auto',
     height: '100%',
-    border: 'solid 2px #92a4ba',
+    border: 'solid 2px rgb(146, 164, 186)',
     borderTop: 'none',
   },
   title: {
@@ -33,7 +33,22 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.3em',
     fontWeight: 'bold',
   },
-  marketOutcome: {
+  betSide: {
+    padding: '2px',
+    paddingLeft: '4px',
+    width: '20%',
+    borderRadius: '2px',
+    marginRight: '2%',
+    display: 'inline-block',
+    color: 'white',
+  },
+  backText: {
+    backgroundColor: 'rgb(114, 187, 239)',
+  },
+  layText: {
+    backgroundColor: 'rgb(250, 169, 186)',
+  },
+  betOutcome: {
     display: 'inline-block',
     minWidth: '40%',
     padding: '3px',
@@ -41,10 +56,10 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: 'white',
   },
-  selectionWin: {
+  betWin: {
     backgroundColor: 'rgb(37, 194, 129)',
   },
-  selectionLose: {
+  betLose: {
     backgroundColor: 'rgb(237, 107, 117)',
   },
 }));
