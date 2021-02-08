@@ -1,7 +1,10 @@
 import React from 'react';
 import { IsEmpty } from 'react-lodash';
+//* JSS
+import useStyles from '../../jss/components/ClosedMarketView/marketSettlementStyle';
 
 export default ({ marketInfo }) => {
+  const classes = useStyles();
   const createdAt = new Date(Date.now()).toLocaleString('en-GB', { timeZone: 'UTC' });
 
   const renderMarketStartTime = (isEmpty) => () => {
@@ -11,14 +14,14 @@ export default ({ marketInfo }) => {
       hour: '2-digit',
       minute: '2-digit',
     })} ${marketInfo.marketName} ${marketInfo.event.venue}`;
-    return <p className="marketstats-info-marketName">{marketDetails}</p>;
+    return <p className={classes.marketName}>{marketDetails}</p>;
   };
 
   return (
-    <div style={{ width: '100%', height: '30%' }}>
-      <div className="marketstats-title">Sports Trading App Market Settlement</div>
-      <div className="marketstats-info-container">
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className={classes.container}>
+      <div className={classes.title}>Flash Betting Market Settlement</div>
+      <div className={classes.marketReportContainer}>
+        <div>
           <IsEmpty value={marketInfo} yes={renderMarketStartTime(true)} no={renderMarketStartTime(false)} />
           <em className="marketstats-info-created-at">
             Created
@@ -28,7 +31,7 @@ export default ({ marketInfo }) => {
           </em>
         </div>
 
-        <a href={`${window.location.origin}/dashboard`} className="marketstats-info-back-button">
+        <a href={`${window.location.origin}/dashboard`} className={classes.backButton}>
           Back To Dashboard →
         </a>
       </div>

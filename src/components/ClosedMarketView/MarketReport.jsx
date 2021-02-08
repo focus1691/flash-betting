@@ -1,4 +1,6 @@
 import React from 'react';
+import clsx from 'clsx';
+//* @material-ui core
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -6,17 +8,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+//* Utils
 import { getPLForRunner, getLossForRunner } from '../../utils/Bets/GetProfitAndLoss';
-
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-  tableWrapper: {
-    maxHeight: '55vh',
-    overflowX: 'auto',
-  },
-});
+//* JSS
+import useStyles from '../../jss/components/ClosedMarketView/marketReportStyle';
 
 const columns = [
   { id: 'selection', label: 'Selection', minWidth: 170 },
@@ -26,12 +22,8 @@ const columns = [
   { id: 'result', label: 'Result', minWidth: 50 },
 ];
 
-export default ({ matchedBets, runners }) => {
-  function createData(selection, win, lose, settled, result) {
-    return {
-      selection, win, lose, settled, result,
-    };
-  }
+const MarketReport = ({ matchedBets, runners }) => {
+  const classes = useStyles();
 
   const selectionWithBets = {};
 
@@ -59,28 +51,12 @@ export default ({ matchedBets, runners }) => {
     };
   });
 
-  const classes = useStyles();
-
   return (
-    <div className="marketstats-table-container">
-      <div
-        style={{
-          height: '6vh',
-          backgroundColor: 'rgb(103, 128, 159)',
-          color: 'white',
-          paddingLeft: '2%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          fontSize: '1.3em',
-          fontWeight: 'bold',
-        }}
-      >
-        Closed Market Report
-      </div>
-      <Paper className={classes.root} style={{ height: '90%' }}>
-        <div className={`${classes.tableWrapper} marketstats-table-wrapper`}>
-          <Table stickyHeader aria-label="sticky table">
+    <div className={classes.marketReport}>
+      <Typography component="h1" variant="h2" className={classes.title}>Closed Market Report</Typography>
+      <Paper className={classes.container}>
+        <div className={classes.tableContainer}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -101,7 +77,7 @@ export default ({ matchedBets, runners }) => {
                       <TableCell key={column.id} align={column.align}>
                         {column.id === 'result' ? (
                           <span
-                            className="marketstats-table-win-result"
+                            className={classes.marketOutcome}
                             style={{ backgroundColor: row.result ? 'rgb(37, 194, 129)' : 'rgb(237, 107, 117)' }}
                           >
                             {row.result ? 'Won' : 'Lost'}
@@ -122,3 +98,5 @@ export default ({ matchedBets, runners }) => {
     </div>
   );
 };
+
+export default MarketReport;

@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 //* Components
-import BetsPlaced from './ClosedMarketView/BetsPlaced';
-import ClosedMarketReport from './ClosedMarketView/ClosedMarketReport';
-import MarketSettlement from './ClosedMarketView/MarketSettlement';
+import BetsPlaced from './BetsPlaced';
+import MarketReport from './MarketReport';
+import MarketSettlement from './MarketSettlement';
 //* HTTP
-import fetchData from '../http/fetchData';
+import fetchData from '../../http/fetchData';
 //* Utils
-import getQueryVariable from '../utils/Market/GetQueryVariable';
+import getQueryVariable from '../../utils/Market/GetQueryVariable';
+//* JSS
+import useStyles from '../../jss/components/ClosedMarketView';
 
-const GetClosedMarketStats = () => {
+const ClosedMarketView = () => {
+  const classes = useStyles();
   const [completedOrders, setCompletedOrders] = useState([]);
   const [runners, setRunners] = useState([]);
   const [marketInfo, setMarketInfo] = useState({});
@@ -22,8 +25,8 @@ const GetClosedMarketStats = () => {
       const { currentOrders } = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
       const completedOrders = currentOrders.filter((order) => order.status === 'EXECUTION_COMPLETE');
       console.log(currentOrders, completedOrders);
-        // .then((res) => res.json())
-        // .then((res) => res.currentOrders);
+      // .then((res) => res.json())
+      // .then((res) => res.currentOrders);
       // const completedOrders = currentOrders.filter((order) => order.status === 'EXECUTION_COMPLETE');
       // setCompletedOrders(completedOrders);
 
@@ -90,14 +93,14 @@ const GetClosedMarketStats = () => {
   }, []);
 
   return (
-    <div className="marketstats-container">
+    <div className={classes.container}>
       <MarketSettlement marketInfo={marketInfo} />
-      <div className="marketstats-tables">
-        <ClosedMarketReport matchedBets={completedOrders} runners={runners || []} />
+      <div className={classes.tables}>
+        <MarketReport matchedBets={completedOrders} runners={runners || []} />
         <BetsPlaced matchedBets={completedOrders} runners={runners || []} />
       </div>
     </div>
   );
 };
 
-export default GetClosedMarketStats;
+export default ClosedMarketView;
