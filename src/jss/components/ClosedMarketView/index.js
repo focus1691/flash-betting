@@ -2,11 +2,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: '2%',
+    backgroundColor: '#121212',
+    padding: theme.spacing(2),
   },
   tables: {
     width: '100%',
-    height: '60%',
+    height: '62%',
     marginTop: '1.5%',
     display: 'flex',
     justifyContent: 'space-between',
