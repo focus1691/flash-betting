@@ -14,11 +14,11 @@ import { getPLForRunner, getLossForRunner } from '../../utils/Bets/GetProfitAndL
 import useStyles from '../../jss/components/ClosedMarketView/marketReportStyle';
 
 const columns = [
-  { id: 'selection', label: 'Selection', minWidth: 170 },
-  { id: 'win', label: 'If Win', minWidth: 75 },
-  { id: 'lose', label: 'If Lose', minWidth: 75 },
-  { id: 'settled', label: 'Settled', minWidth: 75 },
-  { id: 'result', label: 'Result', minWidth: 50 },
+  { id: 'selection', label: 'Selection' },
+  { id: 'win', label: 'If Win' },
+  { id: 'lose', label: 'If Lose' },
+  { id: 'settled', label: 'Settled' },
+  { id: 'result', label: 'Result' },
 ];
 
 const MarketReport = ({ matchedBets, runners }) => {
@@ -57,7 +57,7 @@ const MarketReport = ({ matchedBets, runners }) => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                  <TableCell key={column.id} align={column.align}>
                     {column.label}
                   </TableCell>
                 ))}

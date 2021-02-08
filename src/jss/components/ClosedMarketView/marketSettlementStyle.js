@@ -6,7 +6,6 @@ const useStyles = makeStyles((theme) => ({
     height: '30%',
   },
   title: {
-    height: '20%',
     backgroundColor: '#333F4B',
     boxShadow: '0px 6px 7px #00000029',
     color: '#EEEEEE',
@@ -51,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
     font: 'normal normal bold 1.25rem Roboto',
     color: '#EBA8A6',
     cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#D4696B',
+      color: '#EEEEEE',
+    },
   },
 }));
 

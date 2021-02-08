@@ -12,11 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import useStyles from '../../jss/components/ClosedMarketView/betsPlacedStyle';
 
 const columns = [
-  { id: 'placedDate', label: 'Placed', minWidth: 75 },
-  { id: 'selection', label: 'Selection', minWidth: 75 },
-  { id: 'averagePriceMatched', label: 'Odds', minWidth: 75 },
-  { id: 'sizeMatched', label: 'Stake / (Liability)', minWidth: 200 },
-  { id: 'win', label: 'Status', minWidth: 75 },
+  { id: 'placedDate', label: 'Placed' },
+  { id: 'selection', label: 'Selection' },
+  { id: 'averagePriceMatched', label: 'Odds' },
+  { id: 'sizeMatched', label: 'Stake / (Liability)' },
+  { id: 'win', label: 'Status' },
 ];
 
 const BetsPlaced = ({ matchedBets, runners = [] }) => {
@@ -42,7 +42,7 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                  <TableCell key={column.id} align={column.align}>
                     {column.label}
                   </TableCell>
                 ))}
