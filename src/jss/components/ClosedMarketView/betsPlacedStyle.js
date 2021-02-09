@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
     height: '90%',
   },
   tableContainer: {
-    maxHeight: '55vh',
     overflowX: 'auto',
     height: '100%',
     background: '#242526',
