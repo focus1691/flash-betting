@@ -1,4 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
+import userChip from '../HomeView/userChip';
+import subscriptionChip from '../HomeView/subscriptionChip';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -12,10 +14,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     font: 'normal normal bold 1.75rem Roboto',
     borderRadius: theme.spacing(1, 1, 0, 0),
   },
+  user: () => userChip(theme),
+  subscription: ({ subscribed }) => subscriptionChip(theme, subscribed),
   marketReportContainer: {
     backgroundColor: '#242526',
     boxShadow: '6px 6px 15px #00000057',

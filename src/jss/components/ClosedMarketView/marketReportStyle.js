@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     borderRadius: theme.spacing(3),
     textAlign: 'center',
-    font: 'normal normal bold 1rem Roboto',
+    font: 'normal normal bold 0.8rem Roboto',
     color: '#EEEEEE',
     boxShadow: '6px 6px 25px #0000003D',
   },

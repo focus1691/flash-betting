@@ -1,18 +1,27 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import Cookies from 'universal-cookie';
 import _ from 'lodash';
 import moment from 'moment';
 //* @material-ui core
+import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 //* JSS
 import useStyles from '../../jss/components/ClosedMarketView/marketSettlementStyle';
 
-export default ({ marketInfo }) => {
-  const classes = useStyles();
+const cookies = new Cookies();
+
+const MarketSettlement = ({ marketInfo, premiumMember }) => {
+  const classes = useStyles({ subscribed: premiumMember });
 
   return (
     <div className={classes.container}>
       <Typography component="h1" variant="h2" className={classes.title}>
         Flash Betting Market Settlement
+        <div>
+          <Chip className={classes.user} color="primary" label={`${cookies.get('username')} | Support ID 24442`} />
+          <Chip className={classes.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
+        </div>
       </Typography>
       <div className={classes.marketReportContainer}>
         <div>
@@ -27,3 +36,9 @@ export default ({ marketInfo }) => {
     </div>
   );
 };
+
+const mapStateToProps = (state) => ({
+  premiumMember: state.settings.premiumMember,
+});
+
+export default connect(mapStateToProps)(MarketSettlement);
