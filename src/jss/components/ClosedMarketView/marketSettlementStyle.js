@@ -23,11 +23,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     height: '80%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     borderRadius: theme.spacing(0, 0, 1, 1),
     '& > div': {
       display: 'flex',
       flexDirection: 'column',
+      '& > p': {
+        marginBlockEnd: '0.3em',
+      },
     },
   },
   createdAt: {
@@ -35,9 +38,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#64D96A',
   },
   marketName: {
-    fontSize: '1.5em',
-    marginBottom: '0.5rem',
-    fontFamily: '"Open Sans"',
+    font: 'normal normal normal 1.45rem Roboto',
+    color: '#D3D44F',
   },
   backButton: {
     marginTop: '2%',
