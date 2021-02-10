@@ -103,18 +103,6 @@ app.get('/api/generate-client-token', (request, response) => {
   });
 });
 
-const runnerNames = {};
-
-app.post('/api/save-runner-names', (request, response) => {
-  runnerNames[request.body.marketId] = request.body.selectionNames;
-  response.sendStatus(200);
-});
-
-app.get('/api/fetch-runner-names', (request, response) => {
-  console.log(runnerNames, request.query.marketId, runnerNames[request.query.marketId]);
-  response.status(200).json({ result: runnerNames[request.query.marketId] });
-});
-
 app.post('/api/checkout', (request, result) => {
   const nonceFromTheClient = request.body.payment_method_nonce;
   const { amount } = request.body;

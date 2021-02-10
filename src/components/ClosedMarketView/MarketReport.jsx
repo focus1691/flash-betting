@@ -26,7 +26,7 @@ const MarketReport = ({ matchedBets, runners }) => {
 
   const selectionWithBets = {};
 
-  matchedBets.map((bet) => {
+  matchedBets.forEach((bet) => {
     bet.price = bet.averagePriceMatched;
     bet.size = bet.sizeMatched;
     bet.marketId = runners.marketId;
@@ -34,15 +34,15 @@ const MarketReport = ({ matchedBets, runners }) => {
     else selectionWithBets[bet.selectionId] = [bet];
   });
 
-  const rows = runners.map((runner) => {
-    const win = matchedBets !== undefined ? getPLForRunner(runners.marketId, runner.selectionId, { matched: matchedBets }).toFixed(2) : 0;
-    const lose = matchedBets !== undefined ? getLossForRunner(runners.marketId, runner.selectionId, { matched: matchedBets }).toFixed(2) : 0; // placeholder
+  const rows = runners.map(({ selectionId, runnerName, status }) => {
+    const win = matchedBets ? getPLForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
+    const lose = matchedBets ? getLossForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
     return {
-      selection: runner.runnerName,
+      selection: runnerName,
       win,
       lose,
-      settled: runner.status === 'WINNER' ? win : lose,
-      result: runner.status === 'WINNER',
+      settled: status === 'WINNER' ? win : lose,
+      isWinner: status === 'WINNER',
     };
   });
 
@@ -75,11 +75,11 @@ const MarketReport = ({ matchedBets, runners }) => {
                         {column.id === 'result' ? (
                           <span
                             className={clsx(classes.marketOutcome, {
-                              [row.result]: classes.selectionWin,
-                              [!row.result]: classes.selectionLose,
+                              [row.isWinner]: classes.selectionWin,
+                              [!row.isWinner]: classes.selectionLose,
                             })}
                           >
-                            {row.result ? 'Won' : 'Lost'}
+                            {row.isWinner ? 'Won' : 'Lost'}
                           </span>
                         ) : null}
                         <span style={{ color, fontWeight: isBetOnSelection ? 'bold' : 'normal' }}>{column.format && typeof value === 'number' ? column.format(value) : value}</span>

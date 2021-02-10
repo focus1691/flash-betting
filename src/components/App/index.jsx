@@ -40,7 +40,6 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import postData from '../../http/postData';
 import { removeBet, updateTicks, updateOrderMatched, getAllBets } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
@@ -428,8 +427,6 @@ const App = ({
         for (let i = 0; i < runnerIds.length; i += 1) {
           selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
         }
-
-        postData('/api/save-runner-names', { marketId, selectionNames });
 
         //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });

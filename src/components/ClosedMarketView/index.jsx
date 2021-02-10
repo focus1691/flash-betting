@@ -19,85 +19,37 @@ const ClosedMarketView = () => {
 
   useEffect(() => {
     (async function getMarketResult() {
+      //* Runners[] (selectionId, runnerName, status)
       const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
-      console.log(marketBook);
+      const marketCatalogue = await fetchData(`api/get-market-info?marketId=${marketId}`);
 
+      if (marketBook.length > 0 && marketCatalogue.length > 0) {
+        // Store the race status of each runner
+        const runnerStatus = {};
+        marketBook[0].runners.forEach(({ selectionId, status }) => {
+          runnerStatus[selectionId] = status;
+        });
+
+        // Conflate the id/name with the status
+        const runners = marketCatalogue[0].runners.map(({ selectionId, runnerName }) => ({ selectionId, runnerName, status: runnerStatus[selectionId] }));
+        setRunners(runners);
+
+        setMarketInfo(marketCatalogue[0]);
+      }
+
+      //* Orders
       const { currentOrders } = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
       const completedOrders = currentOrders.filter((order) => order.status === 'EXECUTION_COMPLETE');
-      console.log(currentOrders, completedOrders);
-      // .then((res) => res.json())
-      // .then((res) => res.currentOrders);
-      // const completedOrders = currentOrders.filter((order) => order.status === 'EXECUTION_COMPLETE');
-      // setCompletedOrders(completedOrders);
-
-      // const runnersStatusObject = {};
-      // marketBook.runners.forEach((item) => {
-      //   runnersStatusObject[item.selectionId] = item.status;
-      // });
-
-      // const runnerResults = await fetchData(`/api/fetch-runner-names?marketId=${marketId}`);
-
-      const marketCatalogue = await fetchData(`api/get-market-info?marketId=${marketId}`);
-      console.log(marketCatalogue);
-      //   .then((res) => res.json())
-      //   .catch(() => {
-      //     window.location.href = `${window.location.origin}/dashboard`;
-      //   });
-      // const marketInfoRunners = Object.keys(runnerResults).map((key) => ({ selectionId: key, runnerName: runnerResults[key] }));
-
-      // const runnersWithStatusArray = marketInfoRunners.map((item) => ({ ...item, status: runnersStatusObject[item.selectionId] }));
-
-      // setRunners(runnersWithStatusArray);
+      setCompletedOrders(completedOrders);
     })();
-
-    // const getMarketInfo = async () => {
-    // .then((res) => res.json())
-    // .then(async (data) => {
-    //   if (!data || !data.response.result || (data.response.result[0] && data.response.result[0].status !== 'CLOSED')) {
-    //     window.location.href = `${window.location.origin}/dashboard`;
-    //   } else {
-    // const currentOrders = await fetch(`/api/listCurrentOrders?marketId=${marketId}`).then((res) => res.json()).then((res) => res.currentOrders);
-    // const completedOrders = currentOrders.filter((order) => order.status === 'EXECUTION_COMPLETE');
-    // setCompletedOrders(completedOrders);
-
-    // const marketBook = data.response.result[0];
-
-    // // take the runner status from the marketBook and add it to the runnerResults
-    // const runnersStatusObject = {}; // selectionId: status
-    // marketBook.runners.forEach((item) => {
-    //   runnersStatusObject[item.selectionId] = item.status;
-    // });
-
-    // const runnerResults = await fetch(`/api/fetch-runner-names?marketId=${marketId}`).then((res) => res.json()).catch(() => {
-    //   window.location.href = `${window.location.origin}/dashboard`;
-    // });
-    // const marketInfoRunners = Object.keys(runnerResults).map((key) => ({ selectionId: key, runnerName: runnerResults[key] }));
-
-    // const runnersWithStatusArray = marketInfoRunners.map((item) => ({ ...item, status: runnersStatusObject[item.selectionId] }));
-
-    // setRunners(runnersWithStatusArray);
-    // }
-    // });
-
-    // await fetch(`/api/get-market-info?marketId=${marketId}`)
-    //   .then((res) => res.json())
-    //   .then(async (data) => {
-    //     if (!data || data.error || !data.response.result || !data.response.result[0]) {
-    //       window.location.href = `${window.location.origin}/dashboard`;
-    //     } else {
-    //       setMarketInfo(data.result[0]);
-    //     }
-    //   });
-    // };
-    // getMarketInfo();
   }, []);
 
   return (
     <div className={classes.container}>
       <MarketSettlement marketInfo={marketInfo} />
       <div className={classes.tables}>
-        <MarketReport matchedBets={completedOrders} runners={runners || []} />
-        <BetsPlaced matchedBets={completedOrders} runners={runners || []} />
+        <MarketReport matchedBets={completedOrders} runners={runners} />
+        <BetsPlaced matchedBets={completedOrders} runners={runners} />
       </div>
     </div>
   );
