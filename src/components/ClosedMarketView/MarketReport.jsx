@@ -1,4 +1,5 @@
 import React from 'react';
+import uuid from 'react-uuid';
 import clsx from 'clsx';
 //* @material-ui core
 import Paper from '@material-ui/core/Paper';
@@ -12,14 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import { getPLForRunner, getLossForRunner } from '../../utils/Bets/GetProfitAndLoss';
 //* JSS
 import useStyles from '../../jss/components/ClosedMarketView/marketReportStyle';
-
-const columns = [
-  { id: 'selection', label: 'Selection' },
-  { id: 'win', label: 'If Win' },
-  { id: 'lose', label: 'If Lose' },
-  { id: 'settled', label: 'Settled' },
-  { id: 'result', label: 'Result' },
-];
+//* Data
+import { columns } from '../../data/marketReport';
 
 const MarketReport = ({ matchedBets, runners }) => {
   const classes = useStyles();
@@ -37,12 +32,12 @@ const MarketReport = ({ matchedBets, runners }) => {
   const rows = runners.map(({ selectionId, runnerName, status }) => {
     const win = matchedBets ? getPLForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
     const lose = matchedBets ? getLossForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
-    console.log(status);
     return {
       selection: runnerName,
       win,
       lose,
       settled: status === 'WINNER' ? win : lose,
+      isComplete: status !== 'ACTIVE',
       isWinner: status === 'WINNER',
     };
   });
@@ -58,7 +53,7 @@ const MarketReport = ({ matchedBets, runners }) => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align}>
+                  <TableCell key={column.title} align={column.align}>
                     {column.label}
                   </TableCell>
                 ))}
@@ -66,24 +61,25 @@ const MarketReport = ({ matchedBets, runners }) => {
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    const isBetOnSelection = column.id === 'win' || column.id === 'lose' || column.id === 'settled';
+                <TableRow hover key={`market-report-${uuid()}`}>
+                  {columns.map(({ title, align, format }) => {
+                    const value = row[title];
+                    const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
                     const color = isBetOnSelection ? (parseFloat(value) < 0 ? 'red' : 'green') : 'black';
                     return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.id === 'result' ? (
+                      <TableCell key={title} align={align}>
+                        {title === 'result' ? (
                           <span
                             className={clsx(classes.marketOutcome, {
-                              [row.isWinner]: classes.selectionWin,
-                              [!row.isWinner]: classes.selectionLose,
+                              [classes.selectionPending]: !row.isComplete,
+                              [classes.selectionWin]: row.isComplete && row.isWinner,
+                              [classes.selectionLose]: row.isComplete && !row.isWinner,
                             })}
                           >
-                            {row.isWinner ? 'Won' : 'Lost'}
+                            {row.isComplete ? (row.isWinner ? 'Won' : 'Lost') : 'N/A'}
                           </span>
                         ) : null}
-                        <span style={{ color, fontWeight: isBetOnSelection ? 'bold' : 'normal' }}>{column.format && typeof value === 'number' ? column.format(value) : value}</span>
+                        <span style={{ color, fontWeight: isBetOnSelection ? 'bold' : 'normal' }}>{format && typeof value === 'number' ? format(value) : value}</span>
                       </TableCell>
                     );
                   })}

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import uuid from 'react-uuid'
+import uuid from 'react-uuid';
 import { connect } from 'react-redux';
 //* Actions
 import { setStakeInOneClick } from '../../../actions/settings';

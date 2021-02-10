@@ -35,16 +35,21 @@ const useStyles = makeStyles((theme) => ({
   marketOutcome: {
     display: 'inline-block',
     minWidth: '40%',
-    padding: '3px',
-    borderRadius: '3px',
+    padding: theme.spacing(1),
+    borderRadius: theme.spacing(3),
     textAlign: 'center',
-    color: 'white',
+    font: 'normal normal bold 1rem Roboto',
+    color: '#EEEEEE',
+    boxShadow: '6px 6px 25px #0000003D',
   },
   selectionWin: {
-    backgroundColor: 'rgb(37, 194, 129)',
+    backgroundColor: '#0BBF63',
   },
   selectionLose: {
-    backgroundColor: 'rgb(237, 107, 117)',
+    backgroundColor: '#BD2B32',
+  },
+  selectionPending: {
+    backgroundColor: '#97979E',
   },
 }));
 
