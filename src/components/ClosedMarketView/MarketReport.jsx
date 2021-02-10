@@ -37,6 +37,7 @@ const MarketReport = ({ matchedBets, runners }) => {
   const rows = runners.map(({ selectionId, runnerName, status }) => {
     const win = matchedBets ? getPLForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
     const lose = matchedBets ? getLossForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
+    console.log(status);
     return {
       selection: runnerName,
       win,

@@ -31,7 +31,7 @@ const ClosedMarketView = () => {
         });
 
         // Conflate the id/name with the status
-        const runners = marketCatalogue[0].runners.map(({ selectionId, runnerName }) => ({ selectionId, runnerName, status: runnerStatus[selectionId] }));
+        const runners = marketCatalogue[0].runners.map(({ selectionId, runnerName }) => ({ selectionId, runnerName, status: runnerStatus[selectionId] })).filter(({ status }) => status !== 'REMOVED');
         setRunners(runners);
 
         setMarketInfo(marketCatalogue[0]);
