@@ -80,7 +80,6 @@ const Grid = ({
   };
 
   const changeSide = (order) => () => {
-    console.log('change side', order);
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
     toggleBackAndLay({ id: order.id });
     setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));

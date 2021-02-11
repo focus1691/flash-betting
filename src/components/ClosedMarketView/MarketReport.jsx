@@ -32,7 +32,6 @@ const MarketReport = ({ matchedBets, runners }) => {
   const rows = runners.map(({ selectionId, runnerName, status }) => {
     const win = matchedBets ? getPLForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
     const lose = matchedBets ? getLossForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
-    console.log(status);
     return {
       selection: runnerName,
       win,
@@ -64,7 +63,6 @@ const MarketReport = ({ matchedBets, runners }) => {
               {rows.map((row) => (
                 <TableRow hover key={`market-report-${uuid()}`}>
                   {columns.map(({ title, align, format }) => {
-                    console.log(row.isComplete);
                     const value = row[title];
                     const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
                     const color = isBetOnSelection ? (parseFloat(value) < 0 ? 'red' : 'green') : 'black';
