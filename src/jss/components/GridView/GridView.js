@@ -71,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  suspendedMarket: {
+    zIndex: '-1',
+  },
 }));
 
 export default useStyles;

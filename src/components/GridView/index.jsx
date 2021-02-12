@@ -1,6 +1,7 @@
 import React, { createRef, useState } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
+import clsx from 'clsx';
 //* Actions
 import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
 import { placeOrder } from '../../actions/bet';
@@ -240,9 +241,13 @@ const Grid = ({
   const marketCashout = getMarketCashout(marketId, bets, ladder);
 
   return (
-    <div className={classes.gridContainer}>
+    <div
+      className={clsx(classes.gridContainer, {
+        [classes.suspendedMarket]: marketStatus === 'SUSPENDED',
+      })}
+    >
       <SuspendedWarning marketStatus={marketStatus} />
-      <table style={marketStatus === 'SUSPENDED' ? { opacity: 0.75 } : {}} className={classes.gridView}>
+      <table style={marketStatus === 'SUSPENDED' ? { opacity: 0.3 } : {}} className={classes.gridView}>
         <tbody>
           <GridHeader
             marketOpen={marketOpen}
