@@ -1,4 +1,3 @@
-const { access } = require('fs');
 const { StringDecoder } = require('string_decoder');
 
 const decoder = new StringDecoder('utf8');
