@@ -408,9 +408,9 @@ const App = ({
     // Check if the page has query parameter 'marketId'
     // Load the market if found
     if (marketId) {
-      const result = await fetchData(`/api/get-market-info?marketId=${marketId}`);
-      if (result && result.length >= 1) {
-        const { marketId, marketName, marketStartTime, description, event, eventType, runners } = result[0];
+      const marketCatalogue = await fetchData(`/api/get-market-info?marketId=${marketId}`);
+      if (marketCatalogue && marketCatalogue.length >= 1) {
+        const { marketId, marketName, marketStartTime, description, event, eventType, runners } = marketCatalogue[0];
         setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
         setMarketId(marketId);
         setMarketName(marketName);
