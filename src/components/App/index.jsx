@@ -213,6 +213,7 @@ const App = ({
 
   const onReceiveMarketDefinition = useCallback(
     async (marketDefinition) => {
+      console.log(`market definition: ${marketDefinition.status} ${marketDefinition.inPlay} ${marketOpen}`);
       setMarketStatus(marketDefinition.status);
       setInPlay(marketDefinition.inPlay);
 
@@ -221,7 +222,9 @@ const App = ({
         setInPlayTime(new Date());
       }
 
-      if (marketDefinition.status === 'CLOSED' && marketOpen) {
+      console.log(`market definition 2: ${marketOpen}`);
+
+      if (marketDefinition.status === 'CLOSED') {
         closeMarket();
         window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
       }
