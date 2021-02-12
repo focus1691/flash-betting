@@ -213,20 +213,19 @@ const App = ({
 
   const onReceiveMarketDefinition = useCallback(
     async (marketDefinition) => {
-      console.log(`market definition: ${marketDefinition.status} ${marketDefinition.inPlay} ${marketOpen}`);
       setMarketStatus(marketDefinition.status);
       setInPlay(marketDefinition.inPlay);
 
       if (!inPlayTime && marketDefinition.inPlay) {
-        // Start the in-play clock
+        // Start the in-play clock once we get the 'in play' signal
         setInPlayTime(new Date());
       }
 
-      console.log(`market definition 2: ${marketOpen}`);
-
       if (marketDefinition.status === 'CLOSED') {
-        closeMarket();
         window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
+        if (marketOpen) {
+          closeMarket();
+        }
       }
     },
     [setMarketStatus, setInPlay, inPlayTime, marketOpen, setInPlayTime, closeMarket, marketId],
