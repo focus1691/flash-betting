@@ -278,28 +278,28 @@ const App = ({
                 const SL = { ...stopLossList[mc.rc[i].id] };
                 const prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
 
-                const stopLossMatched = stopLossCheck(SL, currentLTP);
+                const { targetMet, stopPrice } = stopLossCheck(SL, currentLTP);
 
-                if (stopLossMatched.targetMet) {
-                  const newMatchedBets = Object.values(matchedBets).filter((bet) => parseFloat(bet.selectionId) === parseFloat(SL.selectionId));
+                if (targetMet) {
+                  const newMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == SL.selectionId);
                   placeOrder({
                     marketId: SL.marketId,
                     selectionId: SL.selectionId,
                     side: SL.side,
                     size: CalculateLadderHedge(parseFloat(SL.price), newMatchedBets, 'hedged').size,
-                    price: stopLossMatched.stopPrice,
+                    price: stopPrice,
                     customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                   });
                   removeStopLoss({ selectionId: SL.selectionId }); // Remove the SL
                   removeBet({ rfs: SL.rfs }); // Remove the SL from DB
                 }
-                // else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
-                //   SL.ticks += 1;
-                //   updateTicks(SL); //! Update SQLite with new ticks
-                //   const newStopLossList = { ...stopLossList };
-                //   newStopLossList[SL.selectionId] = SL;
-                //   updateStopLossList(newStopLossList);
-                // }
+                else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
+                  SL.ticks += 1;
+                  updateTicks(SL); //! Update SQLite with new ticks
+                  const newStopLossList = { ...stopLossList };
+                  newStopLossList[SL.selectionId] = SL;
+                  updateStopLossList(newStopLossList);
+                }
               }
             } else if (!(mc.rc[i].id in nonRunners) && !(mc.rc[i].id in updatedNonRunners)) {
               // Runner found so we create the new object with the raw data

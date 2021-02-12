@@ -53,7 +53,7 @@ export const stopLossTrailingChange = (stopLossList, selectionId, currentLTP, ol
  * @param {object} matchedBets - The matchedBets that has to be passed into onPlaceOrder.
  * @return {object} The new {adjustedStopLossList, stopLossOrdersToRemove}.
 */
-export const stopLossCheck = (SL, LTP) => {
-  const units = SL.units ? SL.units : 'ticks';
-  return checkStopLossHit(SL.size, SL.price, LTP, SL.side, SL.ticks, units);
+export const stopLossCheck = ({ units, size, price, side, ticks }, LTP) => {
+  units = units || 'ticks';
+  return checkStopLossHit(size, price, LTP, side, ticks, units);
 };

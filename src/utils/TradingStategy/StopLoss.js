@@ -8,14 +8,13 @@ import { ALL_PRICES } from '../ladder/CreateFullLadder';
  * @param {number} LTP - The current price the bet is trading at e.g. 3.15
  * @param {string} side - Back or Lay *REQUIRED*
  * @param {number} ticks - Number of ticks for the stop, or percentage of price
- * @param {string} tickOffsetStrategy - ticks field represents percent if percent is passed
- * @param {boolean} betAssociated - Whether there is a bet associated with the stoploss or not
+ * @param {string} strategy - ticks field represents percent if percent is passed
  * @return {Object} {targetMet, stopPrice or stopPrice}
  */
 const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
   //* We turn the prices into floating point numbers in case strings are passed
-  matchedPrice = parseFloat(matchedPrice);
-  LTP = parseFloat(LTP);
+  matchedPrice = Number(matchedPrice);
+  LTP = Number(LTP);
 
   if (((side === 'BACK' && LTP <= matchedPrice) || (side === 'LAY' && LTP >= matchedPrice))) return { targetMet: false };
   if (strategy == 'ticks') return findStopPosition(matchedPrice, LTP, ticks, side);
