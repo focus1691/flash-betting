@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { updateLadderOrder, setSortedLadder } from '../../actions/market';
 import { sortLadder } from '../../utils/ladder/SortLadder';
 import SuspendedWarning from '../GridView/SuspendedWarning';
 import Ladder from './Ladder';
 //* JSS
-import useStyles from "../../jss/components/LadderView";
+import useStyles from '../../jss/components/LadderView';
 
-const Ladders = ({
-  eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, marketOpen, marketStatus, setSortedLadder, excludedLadders,
-}) => {
+const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, marketOpen, marketStatus, setSortedLadder, excludedLadders }) => {
   const classes = useStyles();
   //* Sort ladder on market open, excluding ladders are first 6
   useEffect(() => {
@@ -31,9 +30,15 @@ const Ladders = ({
   }, [Object.keys(ladders).length > 0]);
 
   return marketOpen && (marketStatus === 'SUSPENDED' || marketStatus === 'OPEN' || marketStatus === 'RUNNING') ? (
-    <div className={classes.ladderContainer} onContextMenu={(e) => e.preventDefault()}>
+    <div
+      className={clsx(classes.ladderContainer, {
+        [classes.suspendedMarket]: marketStatus === 'SUSPENDED',
+      })}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       {Object.values(ladderOrder)
-        .filter((value) => excludedLadders.indexOf(value) === -1).map((selectionId, index) => (
+        .filter((value) => excludedLadders.indexOf(value) === -1)
+        .map((selectionId, index) => (
           <Ladder selectionId={selectionId} key={selectionId} order={index} />
         ))}
       <SuspendedWarning marketStatus={marketStatus} />

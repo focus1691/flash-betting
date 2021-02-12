@@ -1,17 +1,16 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   suspendedMessage: {
     margin: 'auto',
     width: '10%',
-    position: 'absolute',
-    top: '25%',
-    left: '33.3%',
+    position: 'fixed',
+    top: '35%',
+    left: '50%',
     border: '3px solid #B30011',
-    padding: '10px',
+    padding: theme.spacing(2),
     textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 'small',
+    font: 'normal normal bold 1.25rem Roboto',
     color: '#B30011',
     cursor: 'pointer',
   },
