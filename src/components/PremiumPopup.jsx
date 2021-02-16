@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef } from 'react';
 import { connect } from 'react-redux';
+import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import DropIn from 'braintree-web-drop-in-react';
 //* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
@@ -36,10 +37,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const PremiumPopup = ({
-  open, premiumMember, selectedPremium, openPremiumDialog, setPremiumStatus,
-}) => {
+const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog, setPremiumStatus }) => {
   const classes = useStyles();
+  const stripe = useStripe();
+  const elements = useElements();
   const [clientToken, setClientToken] = useState(null);
   const [instance, setInstance] = useState(null);
 
@@ -59,6 +60,15 @@ const PremiumPopup = ({
       openPremiumDialog(false);
     }
   }, [premiumMember]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: elements.getElement(CardElement),
+    });
+    console.log(error, paymentMethod);
+  };
 
   const buy = async () => {
     // Send the nonce to your server
@@ -86,9 +96,13 @@ const PremiumPopup = ({
         <>
           <DropIn
             options={{ authorization: clientToken }}
-            onInstance={(instance) => { setInstance(instance); }}
+            onInstance={(instance) => {
+              setInstance(instance);
+            }}
           />
-          <button type="button" onClick={buy}>Buy</button>
+          <button type="button" onClick={buy}>
+            Buy
+          </button>
         </>
       );
     }
@@ -96,19 +110,10 @@ const PremiumPopup = ({
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={() => openPremiumDialog(false)}
-      TransitionComponent={Transition}
-    >
+    <Dialog open={open} onClose={() => openPremiumDialog(false)} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={() => openPremiumDialog()}
-            aria-label="close"
-          >
+          <IconButton edge="start" color="inherit" onClick={() => openPremiumDialog()} aria-label="close">
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
@@ -118,13 +123,15 @@ const PremiumPopup = ({
       </AppBar>
       <DialogContent>
         <DialogContentText>
-          You are required to pay the monthly subscription fee of £
-          {selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99}
-          {' '}
-          in order to access Flash Betting&apos;s advanced features.
+          You are required to pay the monthly subscription fee of £{selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99} in order to access Flash Betting&apos;s advanced features.
         </DialogContentText>
-
-        {renderForm()}
+        {/* {renderForm()} */}
+        <CardElement />
+        <form onSubmit={handleSubmit}>
+          <button type="submit" disabled={!stripe}>
+            Pay
+          </button>
+        </form>
       </DialogContent>
     </Dialog>
   );
