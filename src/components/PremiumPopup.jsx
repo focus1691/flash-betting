@@ -15,8 +15,6 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 //* Actions
 import { openPremiumDialog, setPremiumStatus } from '../actions/settings';
-//* Utils
-import { getDate180DaysAhead, getDate1YearAhead, getDate30DaysAhead } from '../utils/DateCalculator';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
