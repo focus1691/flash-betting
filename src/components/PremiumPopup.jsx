@@ -1,6 +1,6 @@
-import React, { useEffect, useState, forwardRef } from 'react';
+import React, { useEffect, forwardRef } from 'react';
 import { connect } from 'react-redux';
-import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import DropIn from 'braintree-web-drop-in-react';
 //* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
@@ -41,19 +41,6 @@ const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog,
   const classes = useStyles();
   const stripe = useStripe();
   const elements = useElements();
-  const [clientToken, setClientToken] = useState(null);
-  const [instance, setInstance] = useState(null);
-
-  const getToken = async () => {
-    // Get a client token for authorization from your server
-    await fetch('/api/generate-client-token')
-      .then((res) => res.json())
-      .then((data) => setClientToken(data.clientToken));
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
 
   useEffect(() => {
     if (premiumMember) {
@@ -70,45 +57,6 @@ const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog,
     console.log(error, paymentMethod);
   };
 
-  const buy = async () => {
-    // Send the nonce to your server
-    const { nonce } = await instance.requestPaymentMethod();
-    await fetch('/api/checkout/', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        payment_method_nonce: nonce,
-        expiresIn: selectedPremium === 'monthly' ? getDate30DaysAhead() : selectedPremium === 'biannually' ? getDate180DaysAhead() : getDate1YearAhead(),
-        amount: selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99,
-      }),
-    }).then(() => {
-      setPremiumStatus(true);
-      openPremiumDialog(false);
-    });
-  };
-
-  const renderForm = () => {
-    if (clientToken) {
-      return (
-        <>
-          <DropIn
-            options={{ authorization: clientToken }}
-            onInstance={(instance) => {
-              setInstance(instance);
-            }}
-          />
-          <button type="button" onClick={buy}>
-            Buy
-          </button>
-        </>
-      );
-    }
-    return null;
-  };
-
   return (
     <Dialog open={open} onClose={() => openPremiumDialog(false)} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -122,10 +70,7 @@ const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog,
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <DialogContentText>
-          You are required to pay the monthly subscription fee of £{selectedPremium === 'monthly' ? 9.99 : selectedPremium === 'biannually' ? 49.99 : 99.99} in order to access Flash Betting&apos;s advanced features.
-        </DialogContentText>
-        {/* {renderForm()} */}
+        <DialogContentText>{`You are required to pay the monthly subscription fee of £${selectedPremium === 'monthly' ? 10 : selectedPremium === 'biannually' ? 50 : 100} in order to access Flash Betting&apos;s advanced features.`}</DialogContentText>
         <CardElement />
         <form onSubmit={handleSubmit}>
           <button type="submit" disabled={!stripe}>

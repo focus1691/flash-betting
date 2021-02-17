@@ -95,14 +95,6 @@ if (process.env.NODE_ENV === 'production') {
   app.get('/logout', (req, res) => res.sendFile(bundlePath));
 }
 
-app.get('/api/generate-client-token', (request, response) => {
-  gateway.clientToken.generate({}, (err, res) => {
-    response.json({
-      clientToken: res.clientToken,
-    });
-  });
-});
-
 app.post('/api/checkout', (request, result) => {
   const nonceFromTheClient = request.body.payment_method_nonce;
   const { amount } = request.body;
