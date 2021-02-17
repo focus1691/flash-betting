@@ -404,25 +404,6 @@ app.get('/api/get-all-sports', (req, res) => {
   );
 });
 
-//! Testing Only 
-app.get('/api/get-event', (req, res) => {
-  betfair.listEventTypes(
-    {
-      filter: {
-        competitionIds: ['1575693754'],
-      },
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.sendStatus(400).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
-});
-
 app.get('/api/get-my-markets', (req, res) =>
   User.findOne({
     email: betfair.email,
