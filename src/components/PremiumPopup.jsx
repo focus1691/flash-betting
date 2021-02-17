@@ -1,7 +1,6 @@
 import React, { useEffect, forwardRef } from 'react';
 import { connect } from 'react-redux';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import DropIn from 'braintree-web-drop-in-react';
 //* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
 import Dialog from '@material-ui/core/Dialog';

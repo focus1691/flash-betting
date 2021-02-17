@@ -26,15 +26,6 @@ const ExchangeStream = require('../server/BetFair/stream-api.js');
 const vendor = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
 const betfair = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
 
-const braintree = require('braintree');
-
-const gateway = braintree.connect({
-  environment: braintree.Environment.Sandbox,
-  merchantId: process.env.MERCHANT_ID || 'dp55wnmzp8bn9w4k',
-  publicKey: process.env.PUBLIC_KEY || '9xhp89m3jjxbt7b6',
-  privateKey: process.env.PRIVATE_KEY || 'f168b4ef387400987a86423ac6beb1a1',
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -62,26 +53,6 @@ app.get('/validation', (req, res) => {
 });
 app.get('/logout', (req, res) => {
   res.sendFile(`${publicPath}build/index.html`);
-});
-
-app.post('/api/checkout', (request, result) => {
-  const nonceFromTheClient = request.body.payment_method_nonce;
-  const { amount } = request.body;
-
-  gateway.transaction.sale({
-    amount,
-    paymentMethodNonce: nonceFromTheClient,
-    options: {
-      submitForSettlement: true,
-    },
-  }, (err, res) => {
-    database.saveTransaction(betfair.email, { ...res.transaction, expiresIn: request.body.expiresIn });
-    if (!err && res && res.status === 'submitted_for_settlement') {
-      result.sendStatus(200);
-    } else {
-      result.sendStatus(400);
-    }
-  });
 });
 
 app.get('/api/get-subscription-status', (request, response) => {

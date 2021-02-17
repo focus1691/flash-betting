@@ -1,15 +1,6 @@
 require('dotenv').config();
 
-const braintree = require('braintree');
 const _ = require('lodash');
-
-const gateway = new braintree.BraintreeGateway({
-  environment: braintree.Environment.Sandbox,
-  merchantId: process.env.MERCHANT_ID,
-  publicKey: process.env.PUBLIC_KEY,
-  privateKey: process.env.PRIVATE_KEY,
-});
-
 const express = require('express');
 
 const app = express();
@@ -94,32 +85,6 @@ if (process.env.NODE_ENV === 'production') {
   app.get('/validation', (req, res) => res.sendFile(bundlePath));
   app.get('/logout', (req, res) => res.sendFile(bundlePath));
 }
-
-app.post('/api/checkout', (request, result) => {
-  const nonceFromTheClient = request.body.payment_method_nonce;
-  const { amount } = request.body;
-
-  gateway.transaction.sale(
-    {
-      amount,
-      paymentMethodNonce: nonceFromTheClient,
-      options: {
-        submitForSettlement: true,
-      },
-    },
-    (err, res) => {
-      Database.saveTransaction(betfair.email, {
-        ...res.transaction,
-        expiresIn: request.body.expiresIn,
-      });
-      if (!err && res && res.status === 'submitted_for_settlement') {
-        result.sendStatus(200);
-      } else {
-        result.sendStatus(400);
-      }
-    },
-  );
-});
 
 app.get('/api/get-subscription-status', (req, res) => {
   betfair.getDeveloperAppKeys({
