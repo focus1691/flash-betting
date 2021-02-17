@@ -21,10 +21,6 @@ const userSchema = mongoose.Schema({
   },
   refreshToken: String,
   markets: [{ type: Markets.schema }],
-  premiumSubscription: {
-    type: Date,
-    default: new Date(),
-  },
 });
 
 module.exports = mongoose.model('User', userSchema);

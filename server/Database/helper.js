@@ -29,36 +29,6 @@ class DatabaseHelper extends Database {
     });
   }
 
-  getPremiumStatus(user) {
-    return new Promise((res, rej) => {
-      User.findOne({
-        email: user,
-      })
-        .then((doc) => {
-          res(doc.premiumSubscription);
-        })
-        .catch((err) => {
-          rej(err);
-        })
-    });
-  }
-
-  setPremium(user, expiresIn) {
-    return new Promise((res, rej) => {
-      User.findOneAndUpdate(
-        { email: user },
-        { premiumSubscription: expiresIn },
-        { new: true, useFindAndModify: false },
-        (err, doc) => {
-          if (err) {
-            rej(404);
-          }
-          res(200);
-        },
-      );
-    });
-  }
-
   setToken(user, tokenInfo) {
     return new Promise((res, rej) => {
       User.findOneAndUpdate({ email: user }, tokenInfo, {
