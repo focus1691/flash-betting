@@ -4,8 +4,6 @@ const electronApp = electron.app;
 const { BrowserWindow } = electron;
 
 const path = require('path');
-const url = require('url');
-const isDev = require('electron-is-dev');
 
 let mainWindow;
 
@@ -193,12 +191,6 @@ app.get('/api/get-events-with-active-bets', (request, response) => {
       }
     },
   );
-});
-
-app.get('/api/premium-status', (request, response) => {
-  database.getPremiumStatus(betfair.email).then((expiryDate) => {
-    response.json(expiryDate);
-  });
 });
 
 app.get('/api/get-all-bets', (request, response) => {
