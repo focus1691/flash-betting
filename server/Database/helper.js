@@ -2,7 +2,6 @@
 const Database = require('./database');
 const User = require('./models/users');
 const Market = require('./models/markets');
-const Transaction = require('./models/transaction');
 
 class DatabaseHelper extends Database {
   setUser(username) {
