@@ -11,7 +11,6 @@ import MarketSettlement from './MarketSettlement';
 import fetchData from '../../http/fetchData';
 //* Utils
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
-import { isPremiumActive } from '../../utils/DateCalculator';
 //* JSS
 import useStyles from '../../jss/components/ClosedMarketView';
 
@@ -25,8 +24,12 @@ const ClosedMarketView = ({ runners, setPremiumStatus }) => {
   useEffect(() => {
     (async function getMarketResult() {
       //* Load premium in case this route is accessed directly
-      const expiryDate = await fetchData('/api/premium-status');
-      setPremiumStatus(isPremiumActive(new Date(), expiryDate));
+      const premiumMember = await fetchData('http://localhost:3000/premium?user=traderjosh');
+      if (premiumMember.error) {
+        setPremiumStatus(false);
+      } else {
+        setPremiumStatus(premiumMember);
+      }
 
       //* Runners[] (selectionId, runnerName, status)
       const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);

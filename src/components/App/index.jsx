@@ -47,7 +47,6 @@ import { authErrors } from '../../utils/Errors/ErrorTypes';
 import handleAuthError from '../../utils/Errors/handleAuthError';
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
-import { isPremiumActive } from '../../utils/DateCalculator';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { stopEntryListChange, stopLossCheck } from '../../utils/ExchangeStreaming/MCMHelper';
@@ -56,7 +55,7 @@ import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/Exchan
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 //* Constants
-import { ONE_SECOND, TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../../constants'
+import { ONE_SECOND, TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../../constants';
 
 const App = ({
   view,
@@ -116,8 +115,12 @@ const App = ({
   const [connectionError, setConnectionError] = useState('');
 
   const getPremiumStatus = async () => {
-    const expiryDate = await fetchData('/api/premium-status');
-    setPremiumStatus(isPremiumActive(new Date(), expiryDate));
+    const result = await fetchData('http://localhost:3000/premium?user=traderjosh');
+    if (result.error) {
+      setPremiumStatus(false);
+    } else {
+      setPremiumStatus(result);
+    }
   };
 
   const retrieveBets = async () => {
@@ -292,8 +295,7 @@ const App = ({
                   });
                   removeStopLoss({ selectionId: SL.selectionId }); // Remove the SL
                   removeBet({ rfs: SL.rfs }); // Remove the SL from DB
-                }
-                else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
+                } else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
                   SL.ticks += 1;
                   updateTicks(SL); //! Update SQLite with new ticks
                   const newStopLossList = { ...stopLossList };

@@ -299,13 +299,14 @@ app.get('/api/get-events-with-active-bets', (req, res) => {
 });
 
 //* Premium Status
-app.get('/api/premium-status', async (req, res) =>
-  Database.getPremiumStatus(betfair.email).then((expiryDate) =>
-    res.json({
-      result: expiryDate,
-    }),
-  ),
-);
+app.get('/api/premium-status', async (req, res) => {
+  
+  // Database.getPremiumStatus(betfair.email).then((expiryDate) =>
+  //   res.json({
+  //     result: expiryDate,
+  //   }),
+  // );
+});
 
 //* SQLite
 app.get('/api/get-all-bets', (req, res) => SQLiteDatabase.getBets(req.query.marketId).then((bets) => res.json(bets)));
