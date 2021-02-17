@@ -1,13 +1,13 @@
-import { secToMin } from '../DateCalculator';
+import moment from 'moment';
 import { removeBet } from '../../http/dbHelper';
 
 const isBetBeforeMarketReady = (marketStartTime, order) => {
-  const remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);
+  const remainingTime = new Date(marketStartTime).valueOf() / 1000 - new Date().valueOf() / 1000;
   return order.executionTime === 'Before' && remainingTime - order.timeOffset <= 0;
 };
 
 const isBetAfterMarketReady = (marketStartTime, order) => {
-  const timePassed = Math.abs((new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000));
+  const timePassed = Math.abs(new Date(marketStartTime).valueOf() / 1000 - new Date().valueOf() / 1000);
   return order.executionTime === 'After' && timePassed >= order.timeOffset;
 };
 
@@ -60,13 +60,18 @@ const checkLayBets = async (list, marketStartTime, placeOrder, inPlay, removeLay
 };
 
 const getTimeToDisplay = (order, marketStartTime) => {
-  let remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);
+  const remainingTime = new Date(marketStartTime).valueOf() / 1000 - new Date().valueOf() / 1000;
 
   if (order.executionTime === 'After') {
-    return secToMin(remainingTime + order.timeOffset);
+    const duration = moment.duration(remainingTime + order.timeOffset, 'seconds');
+    const m = duration.minutes();
+    const s = duration.seconds();
+    return `${m}:${s}`;
   }
-  remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);
-  return secToMin(remainingTime - order.timeOffset);
+  const duration = moment.duration(remainingTime - order.timeOffset, 'seconds');
+  const m = duration.minutes();
+  const s = duration.seconds();
+  return `${m}:${s}`;
 };
 
 export { checkBackBets, checkLayBets, getTimeToDisplay };

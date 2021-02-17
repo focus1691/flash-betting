@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import useInterval from 'react-useinterval';
 //* Actions
@@ -13,7 +14,6 @@ import { removeBet } from '../../http/dbHelper';
 //* Utils
 import { checkBackBets, checkLayBets } from '../../utils/TradingStategy/BackLay';
 import { countDownTime } from '../../utils/Market/CountDown';
-import { msToHMS } from '../../utils/DateCalculator';
 
 const ONE_SECOND = 1000;
 
@@ -24,7 +24,7 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
   const setTime = () => {
     if (marketOpen) {
       if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') {
-        setCurrTime(msToHMS(timeRemaining));
+        setCurrTime((moment.utc(timeRemaining).format('HH:mm'));
       } else if (marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') {
         setCurrTime(marketStatus);
       }
