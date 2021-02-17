@@ -68,7 +68,7 @@ app.use('/', async (req, res, next) => {
       });
     }
   }
-  next();
+  return next();
 });
 
 if (process.env.NODE_ENV === 'production') {
