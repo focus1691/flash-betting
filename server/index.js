@@ -1,40 +1,39 @@
+//* Dependencies
 require('dotenv').config();
-
 const _ = require('lodash');
 const express = require('express');
-
-const app = express();
-
+const http = require('http');
 const cookieParser = require('cookie-parser');
-
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
 const path = require('path');
-
 const fetch = require('node-fetch');
 
-// The BetFair session class below contains all the methods
-// to call the BetFair API. Some samples are commented below to demonstrate their utility.
+//* Server setup
+const app = express();
+const server = http.createServer(app);
+const port = process.env.PORT || 3001;
+server.listen(port, () => console.log(`Server started on port: ${port}`));
+const io = require('socket.io')(server);
+
+//* BetFair setup
 const BetFairSession = require('./BetFair/session.js');
 
 const vendor = new BetFairSession(process.env.APP_KEY);
 const betfair = new BetFairSession(process.env.APP_KEY);
 
+//* Database setup
 const Database = require('./Database/helper');
 const SQLiteDatabase = require('./Database/SQLite/database');
-
 const User = require('./Database/models/users');
 
+//* Utility
 const { isAuthURL } = require('./utils/Validator');
 
 SQLiteDatabase.setup();
 
+//* Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-
 app.use('/', async (req, res, next) => {
   if (!betfair.email && req.cookies.username) {
     betfair.setEmailAddress(req.cookies.username);
@@ -85,6 +84,25 @@ if (process.env.NODE_ENV === 'production') {
   app.get('/validation', (req, res) => res.sendFile(bundlePath));
   app.get('/logout', (req, res) => res.sendFile(bundlePath));
 }
+
+// A call to get required params for O-auth (vendorId, vendorSecret)
+app.get('/api/get-developer-application-keys', async (request, response) => {
+  const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
+    betfair.getDeveloperAppKeys(
+      {
+        filter: {},
+      },
+      (err, res) => {
+        const app = res.result.find((apps) => apps.appName === 'Flash Betting');
+        if (res) resolve(app.appVersions[0]);
+      },
+    );
+  });
+  return response.json({
+    vendorId,
+    vendorSecret,
+  });
+});
 
 app.get('/api/get-subscription-status', (req, res) => {
   betfair.getDeveloperAppKeys({
@@ -691,26 +709,6 @@ app.get('/api/list-recent-orders', (req, res) => {
   );
 });
 
-
-// A call to get required params for O-auth (vendorId, vendorSecret)
-app.get('/api/get-developer-application-keys', async (request, response) => {
-  const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
-    betfair.getDeveloperAppKeys(
-      {
-        filter: {},
-      },
-      (err, res) => {
-        const app = res.result.find((apps) => apps.appName === 'Flash Betting');
-        if (res) resolve(app.appVersions[0]);
-      },
-    );
-  });
-  return response.json({
-    vendorId,
-    vendorSecret,
-  });
-});
-
 process.stdin.resume(); // so the program will not close instantly
 
 const exitHandler = (options, exitCode) => {
@@ -755,10 +753,6 @@ process.on(
     exit: true,
   }),
 );
-
-const port = process.env.PORT || 3001;
-
-server.listen(port, () => console.log(`Server started on port: ${port}`));
 
 io.on('connection', async (client) => {
   const accessToken = await Database.getToken(betfair.email);
