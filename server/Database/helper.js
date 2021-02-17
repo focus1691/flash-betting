@@ -19,16 +19,6 @@ class DatabaseHelper extends Database {
     });
   }
 
-  // Save a PayPal payment
-  saveTransaction(user, json) {
-    return new Promise((res, rej) => {
-      const transaction = new Transaction(json);
-      if (transaction.status) {
-        transaction.save().then((result) => this.setPremium(user, json.expiresIn));
-      }
-    });
-  }
-
   setToken(user, tokenInfo) {
     return new Promise((res, rej) => {
       User.findOneAndUpdate({ email: user }, tokenInfo, {
