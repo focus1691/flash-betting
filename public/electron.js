@@ -514,12 +514,6 @@ app.post('/api/cancel-order', (request, response) => {
   );
 });
 
-app.post('/paypal-transaction-complete', (request, response) => {
-  database.saveTransaction(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
-  });
-});
-
 // A call to get required params for O-auth (vendorId, vendorSecret)
 app.get('/api/get-developer-application-keys', (request, response) => {
   betfair.getDeveloperAppKeys(

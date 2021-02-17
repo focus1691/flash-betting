@@ -129,14 +129,6 @@ app.post('/api/checkout', (request, result) => {
   );
 });
 
-app.post('/paypal-transaction-complete', (request, response) =>
-  Database.saveTransaction(betfair.email, request.body).then(() =>
-    response.json({
-      message: 'Payment accepted',
-    }),
-  ),
-);
-
 app.get('/api/get-subscription-status', (req, res) => {
   betfair.getDeveloperAppKeys({
     filter: {},
