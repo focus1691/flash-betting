@@ -469,23 +469,6 @@ app.post('/api/cancel-order', (request, response) => {
   );
 });
 
-// A call to get required params for O-auth (vendorId, vendorSecret)
-app.get('/api/get-developer-application-keys', (request, response) => {
-  betfair.getDeveloperAppKeys(
-    {
-      filter: {},
-    },
-    (err, res) => {
-      const { vendorId } = res.result[1].appVersions[0];
-      const { vendorSecret } = res.result[1].appVersions[0];
-      response.json({
-        vendorId,
-        vendorSecret,
-      });
-    },
-  );
-});
-
 process.stdin.resume(); // so the program will not close instantly
 
 const exitHandler = (options, exitCode) => {
@@ -494,42 +477,17 @@ const exitHandler = (options, exitCode) => {
 };
 
 // App is closing
-process.on(
-  'exit',
-  exitHandler.bind(null, {
-    cleanup: true,
-  }),
-);
+process.on('exit', exitHandler.bind(null, { cleanup: true }));
 
 // Catches ctrl+c event
-process.on(
-  'SIGINT',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
+process.on('SIGINT', exitHandler.bind(null, { exit: true }));
 
 // Catches "kill pid" (for example: nodemon restart)
-process.on(
-  'SIGUSR1',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
-process.on(
-  'SIGUSR2',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
+process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
+process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 
 // Catches uncaught exceptions
-process.on(
-  'uncaughtException',
-  exitHandler.bind(null, {
-    exit: true,
-  }),
-);
+process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
 const port = process.env.PORT || 3001;
 

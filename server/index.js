@@ -85,25 +85,6 @@ if (process.env.NODE_ENV === 'production') {
   app.get('/logout', (req, res) => res.sendFile(bundlePath));
 }
 
-// A call to get required params for O-auth (vendorId, vendorSecret)
-app.get('/api/get-developer-application-keys', async (request, response) => {
-  const { vendorId, vendorSecret } = await new Promise((resolve, reject) => {
-    betfair.getDeveloperAppKeys(
-      {
-        filter: {},
-      },
-      (err, res) => {
-        const app = res.result.find((apps) => apps.appName === 'Flash Betting');
-        if (res) resolve(app.appVersions[0]);
-      },
-    );
-  });
-  return response.json({
-    vendorId,
-    vendorSecret,
-  });
-});
-
 app.get('/api/get-subscription-status', (req, res) => {
   betfair.getDeveloperAppKeys({
     filter: {},
