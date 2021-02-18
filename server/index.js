@@ -86,35 +86,20 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.get('/api/get-subscription-status', (req, res) => {
-  betfair.getDeveloperAppKeys({
-    filter: {},
-  },
-    async (err, { error, result }) => {
+  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID },
+    async (error, { result }) => {
       if (error) {
         return res.status(401).json({ error });
       }
-      const app = result.find(({ appName }) => appName === 'Flash Betting');
-      if (app) {
-        const { vendorId } = app.appVersions[0];
-
-        vendor.isAccountSubscribedToWebApp({ vendorId },
-          async (err, { result }) => {
-            if (error) {
-              return res.status(401).json({ error });
-            }
-            const accessToken = await Database.getToken(betfair.email);
-            return res.json({
-              result: {
-                isSubscribed: result,
-                accessToken,
-                vendorId,
-              }
-            });
-          },
-        );
-      }
-    },
-  );
+      const accessToken = await Database.getToken(betfair.email);
+      return res.status(200).json({
+        result: {
+          isSubscribed: result,
+          accessToken,
+          vendorId: process.env.VENDOR_ID,
+        }
+      });
+    });
 });
 
 app.get('/api/request-access-token', async (req, res) => {
