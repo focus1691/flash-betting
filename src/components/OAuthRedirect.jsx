@@ -9,6 +9,7 @@ import fetchData from '../http/fetchData';
 const cookies = new Cookies();
 
 const OAuthRedirect = () => {
+  const [isError, setIsError] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   useEffect(() => {
     (async () => {
@@ -18,17 +19,17 @@ const OAuthRedirect = () => {
       const { error } = await fetchData(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`);
 
       if (error) {
-        setIsAuthenticated(null);
         cookies.remove('username');
         cookies.remove('sessionKey');
         cookies.remove('accessToken');
+        setIsError(true);
       } else {
         setIsAuthenticated(true);
       }
     })();
   }, []);
 
-  return isAuthenticated === null ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
+  return isError ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
 };
 
 export default OAuthRedirect;
