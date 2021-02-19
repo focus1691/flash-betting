@@ -119,14 +119,9 @@ app.post('/api/login', (req, res) => {
     .then(async (result) => {
       res.cookie('sessionKey', result.sessionKey);
       res.cookie('username', user);
-      Database.setUser(user); // If user not found, create a new user
       res.json(result);
     })
-    .catch((error) =>
-      res.json({
-        error,
-      }),
-    );
+    .catch((error) => res.json({ error }));
 });
 
 app.get('/api/keep-alive', (req, res) => {

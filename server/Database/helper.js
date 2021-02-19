@@ -4,49 +4,9 @@ const User = require('./models/users');
 const Market = require('./models/markets');
 
 class DatabaseHelper extends Database {
-  setUser(username) {
-    User.findOne({
-      email: username,
-    }).then((doc) => {
-      if (!doc || doc.length === 0) {
-        // Create a new user
-        const user = new User({
-          email: username,
-        });
-        user.save();
-      }
-    });
-  }
-
-  setToken(user, tokenInfo) {
-    return new Promise((res, rej) => {
-      User.findOneAndUpdate({ email: user }, tokenInfo, {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      })
-        .then((user) => {
-          res(true);
-        })
-        .catch((err) => {
-          rej(false);
-        });
-    });
-  }
-
   async getToken(user) {
     return User.findOne({ email: user })
       .then((doc) => doc.accessToken)
-      .catch((err) => err);
-  }
-
-  async getTokenData(user) {
-    return User.findOne({ email: user })
-      .then((doc) => ({
-        accessToken: doc.accessToken,
-        refreshToken: doc.refreshToken,
-        expiresIn: doc.expiresIn,
-      }))
       .catch((err) => err);
   }
 
