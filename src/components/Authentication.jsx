@@ -9,6 +9,7 @@ const cookies = new Cookies();
 
 const Authentication = () => {
   const [sessionKey] = useState(cookies.get('sessionKey'));
+  const [isError, setIsError] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -18,12 +19,16 @@ const Authentication = () => {
         if (isSubscribed === false || !accessToken) {
           window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
         } else {
-          const { vendorClientId } = await fetchData('/api/get-vendor-client-id');
+          const vendorClientId = await fetchData('/api/get-vendor-client-id');
 
           if (vendorClientId) {
             const { error } = await fetchData(`http://localhost:3000/refresh-access-token?vendorClientId=${vendorClientId}`);
-
-            if (!error) {
+            if (error) {
+              cookies.remove('username');
+              cookies.remove('sessionKey');
+              cookies.remove('accessToken');
+              setIsError(true);
+            } else {
               setIsAuthenticated(true);
             }
           }
@@ -31,7 +36,7 @@ const Authentication = () => {
       }
     })();
   }, []);
-  return !sessionKey ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
+  return !sessionKey || isError ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
 };
 
 export default Authentication;
