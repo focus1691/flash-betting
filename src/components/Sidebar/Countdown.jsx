@@ -24,7 +24,7 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
   const setTime = () => {
     if (marketOpen) {
       if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') {
-        setCurrTime((moment.utc(timeRemaining).format('HH:mm')));
+        setCurrTime((moment.utc(timeRemaining).format('HH:mm:ss')));
       } else if (marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') {
         setCurrTime(marketStatus);
       }
