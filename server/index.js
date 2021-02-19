@@ -15,9 +15,11 @@ server.listen(port, () => console.log(`Server started on port: ${port}`));
 const io = require('socket.io')(server);
 
 //* BetFair setup
-const BetFairSession = require('./BetFair/session.js');
+const BetFairSession = require('./betfair/session.js');
+const APIHelper = require('./api/helper');
 
 const betfair = new BetFairSession(process.env.APP_KEY);
+const apiHelper = new APIHelper(betfair);
 
 //* Database setup
 const Database = require('./Database/helper');
@@ -59,9 +61,11 @@ app.use('/', async (req, res, next) => {
   }
 
   if (!req.cookies.accessToken && !isAuthURL(req.url)) {
-    const accessToken = await Database.getToken(betfair.email);
-    betfair.setAccessToken(accessToken);
-    if (!accessToken) {
+    const accessToken = await apiHelper.getAccessToken();
+    if (accessToken) {
+      res.cookie('accessToken', accessToken);
+      betfair.setAccessToken(accessToken);
+    } else {
       return res.status(401).json({
         error: 'NO_SESSION',
       });
@@ -85,24 +89,23 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.get('/api/get-subscription-status', (req, res) => {
-  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID },
-    async (error, { result }) => {
-      if (error) {
-        return res.status(401).json({ error });
-      }
-      const accessToken = await Database.getToken(betfair.email);
-      return res.status(200).json({
-        result: {
-          isSubscribed: result,
-          accessToken,
-          vendorId: process.env.VENDOR_ID,
-        }
-      });
+  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID }, async (error, { result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    const accessToken = await apiHelper.getAccessToken();
+    return res.status(200).json({
+      result: {
+        isSubscribed: result,
+        accessToken,
+        vendorId: process.env.VENDOR_ID,
+      },
     });
+  });
 });
 
 app.get('/api/get-vendor-client-id', async (req, res) => {
-  betfair.getVendorClientId({}, async(err, { error, result }) => {
+  betfair.getVendorClientId({}, async (err, { error, result }) => {
     if (error) {
       return res.status(401).json({
         error,
@@ -323,7 +326,7 @@ app.get('/api/get-my-markets', (req, res) =>
     email: betfair.email,
   })
     .then((doc) => res.json(doc.markets))
-    .catch(() => res.status.json({ error: 'cannot get markets' }))
+    .catch(() => res.status.json({ error: 'cannot get markets' })),
 );
 
 app.post('/api/save-market', (request, response) => {
@@ -635,15 +638,16 @@ process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
 io.on('connection', async (client) => {
-  const accessToken = await Database.getToken(betfair.email);
+  const accessToken = betfair.accessToken || await apiHelper.getAccessToken();
+  
   betfair.createExchangeStream(client, accessToken);
-  client.on('market-subscription', ({ marketId }) => {
+  client.on('market-subscription', async ({ marketId }) => {
     betfair.exchangeStream.makeMarketSubscription(marketId);
   });
-  client.on('market-resubscription', ({ initialClk, clk, marketId }) => {
+  client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
     betfair.exchangeStream.makeMarketResubscription(initialClk, clk, marketId);
   });
-  client.on('order-subscription', ({ customerStrategyRefs }) => {
+  client.on('order-subscription', async ({ customerStrategyRefs }) => {
     betfair.exchangeStream.makeOrderSubscription(customerStrategyRefs);
   });
   client.on('disconnect', () => {

@@ -130,7 +130,7 @@ class BetfairSession {
     });
   }
 
-  createExchangeStream(client, accessToken) {
+  createExchangeStream(client, accessToken=this.accessToken) {
     this.exchangeStream = new ExchangeStream(client, accessToken);
   }
 
@@ -147,7 +147,7 @@ class BetfairSession {
       if (!_.isObject(params)) {
         throw ('params should be object');
       }
-      const invocation = new BetfairInvocation(api, methodName, methodName === 'token' || methodName === 'getDeveloperAppKeys' || methodName === 'isAccountSubscribedToWebApp', params);
+      const invocation = new BetfairInvocation(api, methodName, params);
 
       invocation.execute((err, result) => {
         if (err) {

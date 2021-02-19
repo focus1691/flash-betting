@@ -30,6 +30,7 @@ class BetFairStreamAPI {
         appKey: process.env.APP_KEY,
         session: `BEARER ${this.accessToken}`
       }
+      console.log(authParams);
 
       this.client.write(`${JSON.stringify(authParams)}\r\n`);
 

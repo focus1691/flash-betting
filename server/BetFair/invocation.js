@@ -52,12 +52,10 @@ class BetfairInvocation {
     BetfairInvocation.emulator = emulator;
   }
 
-  constructor(api, method, isVendor, params = {}, isEmulated = false) {
+  constructor(api, method, params = {}, isEmulated = false) {
     if (api !== 'accounts' && api !== 'betting' && api !== 'heartbeat' && api !== 'scores') {
       throw new Error(`Bad api parameter:${api}`);
     }
-
-    this.isVendor = isVendor;
 
     // input params
     this.api = api;
@@ -91,12 +89,7 @@ class BetfairInvocation {
         Connection: 'keep-alive',
       },
     };
-
-    if (this.isVendor) {
-      httpOptions.headers['X-Authentication'] = BetfairInvocation.sessionKey;
-    } else {
-      httpOptions.headers.Authorization = `BEARER ${BetfairInvocation.accessToken}`;
-    }
+    httpOptions.headers.Authorization = `BEARER ${BetfairInvocation.accessToken}`;
 
     HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
       if (err) {

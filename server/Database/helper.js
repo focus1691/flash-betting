@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-const Database = require('./database');
+const Database = require('.');
 const User = require('./models/users');
 const Market = require('./models/markets');
 
