@@ -12,13 +12,13 @@ import { stopEntryCheck } from '../TradingStategy/StopEntry';
  * @param {object} matchedBets - The matchedBets that has to be passed into onPlaceOrder.
  * @return {object} The new stopEntry with the ones that passed the test removed.
 */
-export const stopEntryListChange = async (stopEntryList, selectionId, currentLTP, onPlaceOrder, previousNewStopEntryList, unmatchedBets, matchedBets, testing = false) => {
+export const stopEntryListChange = async (stopEntryList, selectionId, currentLTP, onPlaceOrder, previousNewStopEntryList, unmatchedBets, matchedBets) => {
   const stopEntryArray = stopEntryList[selectionId];
   const newStopEntryList = { ...previousNewStopEntryList };
 
   if (stopEntryArray !== undefined) {
     try {
-      const indexesToRemove = await stopEntryCheck(currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets, testing);
+      const indexesToRemove = await stopEntryCheck(currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets);
       // if the array length has some items left, then keep it
       if (stopEntryArray.length > indexesToRemove.length) {
         newStopEntryList[selectionId] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1);

@@ -1,12 +1,10 @@
-const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets, testing = false) => {
+const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets) => {
   let indexesToRemove = [];
   let ordersToRemove = [];
 
   // eslint-disable-next-line no-loop-func
   stopEntryArray.map((item, index) => {
-    if ((currentLTP < item.targetLTP && item.stopEntryCondition === '<')
-    || (currentLTP == item.targetLTP && item.stopEntryCondition === '=')
-    || (currentLTP > item.targetLTP && item.stopEntryCondition === '>')) {
+    if ((currentLTP < item.targetLTP && item.stopEntryCondition === '<') || (currentLTP == item.targetLTP && item.stopEntryCondition === '=') || (currentLTP > item.targetLTP && item.stopEntryCondition === '>')) {
       onPlaceOrder({ ...item, unmatchedBets, matchedBets });
 
       indexesToRemove = indexesToRemove.concat(index);
@@ -14,16 +12,14 @@ const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatche
     }
   });
   if (ordersToRemove.length > 0) {
-    if (!testing) {
-      await fetch('/api/remove-bet', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(ordersToRemove),
-      });
-    }
+    await fetch('/api/remove-bet', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(ordersToRemove),
+    });
   }
 
   return indexesToRemove;
