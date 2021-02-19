@@ -4,12 +4,6 @@ const User = require('./models/users');
 const Market = require('./models/markets');
 
 class DatabaseHelper extends Database {
-  async getToken(user) {
-    return User.findOne({ email: user })
-      .then((doc) => doc.accessToken)
-      .catch((err) => err);
-  }
-
   saveMarket(user, newMarket) {
     return new Promise((res, rej) => {
       // Create the object with our Order Schema
