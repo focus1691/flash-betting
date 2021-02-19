@@ -15,8 +15,7 @@ const OAuthRedirect = () => {
     (async () => {
       const code = getQueryVariable('code');
       if (!code) return;
-
-      const { error } = await fetchData(`/api/request-access-token?tokenType=AUTHORIZATION_CODE&code=${encodeURIComponent(code)}`);
+      const { error } = await fetchData(`http://localhost:3000/generate-access-token?code=${encodeURIComponent(code)}`);
 
       if (error) {
         cookies.remove('username');
