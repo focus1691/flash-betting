@@ -25,13 +25,12 @@ const submenuEnum = {
 
 const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
   const classes = useStyles();
-  useEffect(() => {
-    // gets all the sports and saves them on the server
-    fetch('/api/fetch-all-sports');
-  }, []);
 
   useEffect(() => {
     (async () => {
+      // gets all the sports and saves them on the server
+      fetch('/api/fetch-all-sports');
+
       let sportsList = await fetchData('/api/get-all-sports');
       if (sportsList) {
         sportsList.push({ eventType: { id: 'TC-7', name: "Horse Racing - Today's Card" } });
