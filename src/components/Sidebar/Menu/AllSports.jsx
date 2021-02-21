@@ -31,7 +31,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   }, []);
 
   useEffect(() => {
-    const getAllSports = async () => {
+    (async () => {
       let sportsList = await fetchData('/api/get-all-sports');
       if (sportsList) {
         sportsList.push({ eventType: { id: 'TC-7', name: "Horse Racing - Today's Card" } });
@@ -39,8 +39,7 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
         sportsList = sortSports(sportsList);
         setAllSports(sportsList);
       }
-    };
-    getAllSports();
+    })();
   }, []);
 
   useEffect(() => {
@@ -104,28 +103,10 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   return (
     <List className={classes.allSports}>
       {Object.keys(submenuList).map((type, index) => (
-        <DeselectSport
-          key={`all-sports-deselect-${submenuList[type].name}`}
-          type={type}
-          data={submenuList[type]}
-          index={index}
-          submenuList={submenuList}
-          deselectSubmenu={deselectSubmenu}
-        />
+        <DeselectSport key={`all-sports-deselect-${submenuList[type].name}`} type={type} data={submenuList[type]} index={index} submenuList={submenuList} deselectSubmenu={deselectSubmenu} />
       ))}
 
-      {!submenuList.EVENT_TYPE || !currentSubmenu ? (
-        <SelectSport
-          sports={sports}
-          setSubmenu={getSportInfo}
-        />
-      ) : (
-        <SelectSubmenu
-          data={submenuList[currentSubmenu].data}
-          setSubmenu={setSubmenu}
-          submenuList={submenuList}
-        />
-      )}
+      {!submenuList.EVENT_TYPE || !currentSubmenu ? <SelectSport sports={sports} setSubmenu={getSportInfo} /> : <SelectSubmenu data={submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={submenuList} />}
     </List>
   );
 };
