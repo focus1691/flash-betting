@@ -27,11 +27,6 @@ export const updateSubmenuMyMarkets = (submenu) => ({
   payload: submenu,
 });
 
-export const setCurrentMarket = (market) => ({
-  type: 'CURRENT_MARKET',
-  payload: market,
-});
-
 export const loadMyMarkets = (markets) => ({
   type: 'LOAD_MY_MARKETS',
   payload: markets,

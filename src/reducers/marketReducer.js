@@ -10,7 +10,6 @@ const initialState = {
   status: 'OPEN',
   event: { id: null, name: null },
   eventType: {},
-  currentMarket: {},
   runnerSelection: 0,
   nonRunners: {},
   runners: {},
