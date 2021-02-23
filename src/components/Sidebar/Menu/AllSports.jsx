@@ -38,24 +38,30 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
     }
   }, [winMarketsOnly, horseRaces]);
 
-  const getSportInfo = (id, name, type, sportId, apiEndpoint) => async () => {
-    const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
+  const getSportInfo = (id, name, sportId) => async () => {
+    if (id.startsWith('TC-')) {
+      const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
-    // gets the country names and makes it an array ex... [GB]
-    const countryCodes = Object.keys(horseRaces).reduce((acc, item) => {
-      if (horseRaces[item] === true) {
-        return [item, ...acc];
+      // gets the country names and makes it an array ex... [GB]
+      const countryCodes = Object.keys(horseRaces).reduce((acc, item) => {
+        if (horseRaces[item] === true) {
+          return [item, ...acc];
+        }
+        return acc;
+      }, []);
+  
+      // call the api with the id and get new selections
+      const data = await fetchData(`/api/list-todays-card?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
+  
+      // set the old submenu as the type: children we received from the api
+      if (data) {
+        updateSubmenuList({ sportId, name, data, nodes: [] });
       }
-      return acc;
-    }, []);
-
-    // call the api with the id and get new selections
-    const data = await fetchData(`/api/${apiEndpoint}/?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
-
-    // set the old submenu as the type: children we received from the api
-    if (data) {
-      const newSubmenuList = { sportId, name, data, nodes: [] };
-      updateSubmenuList(newSubmenuList);
+    } else {
+      const data = await fetchData(`/api/fetch-sport-data?id=${sportId}`);
+      if (data) {
+        updateSubmenuList({ sportId, name, data, nodes: [] });
+      }
     }
   };
 
