@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import { updateSubmenuListMyMarkets, updateSubmenuMyMarkets, loadMyMarkets } from '../../../actions/sport';
+import { updateSubmenuListMyMarkets, loadMyMarkets } from '../../../actions/sport';
 import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
@@ -11,7 +11,7 @@ import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 
-const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMarkets, submenuListMyMarkets, loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
+const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets, loadMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
 
   const getSportInfo = useCallback(
@@ -35,10 +35,9 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
         newSubmenuList[newSubmenuType] = { name, data };
 
         updateSubmenuListMyMarkets(newSubmenuList, {});
-        updateSubmenuMyMarkets(newSubmenuType);
       }
     },
-    [horseRaces, updateSubmenuListMyMarkets, updateSubmenuMyMarkets, winMarketsOnly],
+    [horseRaces, updateSubmenuListMyMarkets, winMarketsOnly],
   );
 
   useEffect(() => {
@@ -66,28 +65,17 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
       newSubmenuList[type] = { name, data };
 
       updateSubmenuListMyMarkets(newSubmenuList);
-      updateSubmenuMyMarkets(type);
     }
   };
 
   const deselectSubmenu = (newSubmenuType, submenuList) => {
     if (newSubmenuType === 'ROOT') {
-      updateSubmenuMyMarkets('');
       updateSubmenuListMyMarkets({});
       return;
     }
 
     // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
     const newSubmenuList = {};
-
-    const maxSubmenuLevel = submenuEnum[newSubmenuType];
-    Object.keys(submenuList).map((key) => {
-      if (!submenuEnum[key] || submenuEnum[key] <= maxSubmenuLevel) {
-        newSubmenuList[key] = submenuList[key];
-      }
-    });
-
-    updateSubmenuMyMarkets(newSubmenuType);
     updateSubmenuListMyMarkets(newSubmenuList);
   };
 
@@ -108,7 +96,7 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMark
       {
         // Selecting Item
         <SelectSubmenu
-          data={currentSubmenuMyMarkets ? submenuListMyMarkets[currentSubmenuMyMarkets].data : myMarkets}
+          data={submenuListMyMarkets ? submenuListMyMarkets[currentSubmenuMyMarkets].data : myMarkets}
           setSubmenu={setSubmenu}
           submenuList={submenuListMyMarkets}
         />
@@ -121,13 +109,12 @@ const mapStateToProps = (state) => ({
   myMarkets: state.sports.myMarkets,
   winMarketsOnly: state.settings.winMarketsOnly,
   horseRaces: state.settings.horseRaces,
-  currentSubmenuMyMarkets: state.sports.currentSubmenuMyMarkets,
   submenuListMyMarkets: state.sports.submenuListMyMarkets,
 });
 
 const mapDispatchToProps = {
   loadMyMarkets,
-  updateSubmenuMyMarkets,
+
   updateSubmenuListMyMarkets,
 };
 

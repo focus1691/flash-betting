@@ -6,25 +6,26 @@ import { ListItemIcon } from '@material-ui/core';
 import { loadMyMarkets } from '../../../actions/sport';
 
 const MarketSaveButton = ({ sport: { id, name, type, children }, myMarkets, loadMyMarkets }) => {
+  console.log(myMarkets);
   const marketItemSaved = myMarkets.findIndex((item) => item.id === id && item.type == type && item.name == name) !== -1;
 
   const updateMyMarkets = (e) => {
-    e.stopPropagation();
-    const marketSelection = { id, name, type, children };
+    // e.stopPropagation();
+    // const marketSelection = { id, name, type, children };
 
-    fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify(marketSelection),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        loadMyMarkets(res);
-      })
-      .catch(() => {});
+    // fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   method: 'POST',
+    //   body: JSON.stringify(marketSelection),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     loadMyMarkets(res);
+    //   })
+    //   .catch(() => {});
   };
 
   return (
