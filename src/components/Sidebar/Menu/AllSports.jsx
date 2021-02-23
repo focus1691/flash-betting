@@ -49,10 +49,10 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
         }
         return acc;
       }, []);
-  
+
       // call the api with the id and get new selections
       const data = await fetchData(`/api/list-todays-card?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
-  
+
       // set the old submenu as the type: children we received from the api
       if (data) {
         updateSubmenuList({ sportId, name, data, nodes: [] });

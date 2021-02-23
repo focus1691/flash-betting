@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
@@ -14,26 +14,30 @@ import fetchData from '../../../http/fetchData';
 const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets, loadMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
 
-  const getSportInfo = async (name, newSubmenuType, submenuList, selectedId, apiToCall) => {
-    const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
+  const getSportInfo = (id, name, sportId) => async () => {
+    if (id.startsWith('TC-')) {
+      const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
-    // gets the country names and makes it an array ex... [GB]
-    const countryCodes = Object.keys(horseRaces).reduce((acc, item) => {
-      if (horseRaces[item] === true) {
-        return [item, ...acc];
+      // gets the country names and makes it an array ex... [GB]
+      const countryCodes = Object.keys(horseRaces).reduce((acc, item) => {
+        if (horseRaces[item] === true) {
+          return [item, ...acc];
+        }
+        return acc;
+      }, []);
+
+      // call the api with the id and get new selections
+      const data = await fetchData(`/api/list-todays-card?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
+
+      // set the old submenu as the type: children we received from the api
+      if (data) {
+        updateSubmenuListMyMarkets({ sportId, name, data, nodes: [] });
       }
-      return acc;
-    }, []);
-
-    // call the api with the id and get new selections
-    const data = await fetchData(`/api/${apiToCall}/?id=${selectedId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
-
-    // set the old submenu as the newSubmenuType: children we received from the api
-    if (data) {
-      const newSubmenuList = { ...submenuList };
-      newSubmenuList[newSubmenuType] = { name, data };
-
-      updateSubmenuListMyMarkets(newSubmenuList, {});
+    } else {
+      const data = await fetchData(`/api/fetch-sport-data?id=${sportId}`);
+      if (data) {
+        updateSubmenuListMyMarkets({ sportId, name, data, nodes: [] });
+      }
     }
   };
 
