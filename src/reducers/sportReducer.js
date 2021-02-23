@@ -1,3 +1,7 @@
+import { setupStorage } from '../localStorage/sportsMenu';
+
+setupStorage();
+
 const initialState = {
   sports: [],
   submenuList: {},

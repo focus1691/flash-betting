@@ -11,15 +11,6 @@ import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 
-const submenuEnum = {
-  ROOT: 0,
-  EVENT_TYPE: 1,
-  GROUP: 2,
-  EVENT: 3,
-  RACE: 4,
-  MARKET: 5,
-};
-
 const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, currentSubmenuMyMarkets, submenuListMyMarkets, loadMyMarkets, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
 
