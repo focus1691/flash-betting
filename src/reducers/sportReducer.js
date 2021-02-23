@@ -13,12 +13,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, sports: action.payload };
     case 'UPDATE_SUBMENU_LIST':
       return { ...state, submenuList: action.payload };
-    case 'CLEAR_SUBMENU_LIST':
-      return {
-        ...state,
-        submenuList: {},
-        currentSubmenu: '',
-      };
     case 'UPDATE_SUBMENU_LIST_MYMARKETS':
       return { ...state, submenuListMyMarkets: action.payload };
     case 'UPDATE_SUBMENU_CURRENT':

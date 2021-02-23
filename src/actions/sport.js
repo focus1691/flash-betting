@@ -8,10 +8,6 @@ export const updateSubmenuList = (submenu) => ({
   payload: submenu,
 });
 
-export const clearSubmenuList = () => ({
-  type: 'CLEAR_SUBMENU_LIST',
-});
-
 export const updateSubmenuListMyMarkets = (submenu) => ({
   type: 'UPDATE_SUBMENU_LIST_MYMARKETS',
   payload: submenu,

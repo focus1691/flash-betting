@@ -12,10 +12,7 @@ export default ({ sports, setSubmenu }) => {
     <ListItem key={`select-sport-${id}`}>
       <ListItem button onClick={setSubmenu(id, name, 'EVENT_TYPE', id.match(/\d+/)[0], id.startsWith('TC-') ? 'list-todays-card' : 'fetch-sport-data')}>
         <ListItemIcon className={classes.dropdownIcon}>
-          <img
-            src={window.location.origin + (true ? '/icons/caret-arrow-up.png' : '/icons/caret-arrow-up.png')}
-            alt=""
-          />
+          <img src={`${window.location.origin}/icons/caret-arrow-up.png`} alt="" />
         </ListItemIcon>
         <ListItemText className={classes.name}>{name}</ListItemText>
         <MarketSaveButton

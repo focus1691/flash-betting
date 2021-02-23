@@ -4,27 +4,15 @@ import { ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/menu/deselectSportStyle';
 
-export default ({ type, data, index, submenuList, deselectSubmenu }) => {
+export default ({ index, name, isFirst, isLast, deselectSubmenu }) => {
   const classes = useStyles();
-  const isLast = index === Object.keys(submenuList).length - 1;
 
   return (
-    <ListItem
-      button
-      className={isLast ? classes.deselectLast : ''}
-      onClick={() => {
-        // if they are nested within a search, we don't want to bring them all the way back
-        if (type === 'EVENT_TYPE' || (type === 'submenuList' && index === 0)) {
-          deselectSubmenu('ROOT');
-        } else {
-          deselectSubmenu(type, submenuList);
-        }
-      }}
-    >
+    <ListItem button className={isLast ? classes.deselectLast : ''} onClick={() => deselectSubmenu(index, Boolean(isFirst))}>
       <ListItemIcon className={isLast ? classes.deselectIconLast : ''}>
-        <img src={`${window.location.origin}/icons/${index === 0 ? 'back-arrow.png' : 'caret-down.png'}`} alt="" />
+        <img src={`${window.location.origin}/icons/${isFirst ? 'back-arrow.png' : 'caret-down.png'}`} alt="" />
       </ListItemIcon>
-      <ListItemText className={classes.deselectText}>{data.name}</ListItemText>
+      <ListItemText className={classes.deselectText}>{name}</ListItemText>
     </ListItem>
   );
 };

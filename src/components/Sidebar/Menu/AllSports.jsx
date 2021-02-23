@@ -1,9 +1,10 @@
+import _ from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import { setAllSports, updateSubmenuList, clearSubmenuList, updateCurrentSubmenu } from '../../../actions/sport';
+import { setAllSports, updateSubmenuList } from '../../../actions/sport';
 import { sortSports } from '../../../utils/Algorithms/SortSports';
 import DeselectSport from './DeselectSport';
 import SelectSport from './SelectSport';
@@ -13,17 +14,7 @@ import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 
-const submenuEnum = {
-  ROOT: 0,
-  EVENT_TYPE: 1,
-  GROUP: 2,
-  GROUP_1: 3,
-  EVENT: 4,
-  RACE: 5,
-  MARKET: 6,
-};
-
-const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseRaces, setAllSports, updateCurrentSubmenu, updateSubmenuList }) => {
+const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSports, updateSubmenuList }) => {
   const classes = useStyles();
 
   useEffect(() => {
@@ -42,8 +33,8 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
   }, []);
 
   useEffect(() => {
-    if (submenuList.EVENT_TYPE && submenuList.EVENT_TYPE.name.includes("Today's Card")) {
-      clearSubmenuList();
+    if (!_.isEmpty(submenuList) && submenuList.name.includes("Today's Card")) {
+      updateSubmenuList({});
     }
   }, [winMarketsOnly, horseRaces]);
 
@@ -63,49 +54,41 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 
     // set the old submenu as the type: children we received from the api
     if (data) {
-      const newSubmenuList = {};
-      newSubmenuList[type] = { id, name, data };
-
-      updateCurrentSubmenu(type);
+      const newSubmenuList = { sportId, name, data, nodes: [] };
       updateSubmenuList(newSubmenuList);
     }
   };
 
-  const setSubmenu = (data, name, type, submenuList, id) => {
+  const setSubmenu = (id, name) => {
     const newSubmenuList = { ...submenuList };
-    newSubmenuList[type] = { id, name, data };
-
-    updateCurrentSubmenu(type);
+    newSubmenuList.nodes.push({ id, name });
     updateSubmenuList(newSubmenuList);
   };
 
-  const deselectSubmenu = (type, submenuList) => {
-    if (type === 'ROOT') {
-      clearSubmenuList();
+  const deselectSubmenu = (index, isFirst) => {
+    //* Remove the current data selection if the first node is deselected
+    if (isFirst) {
+      updateSubmenuList({});
       return;
     }
 
-    // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
-    const newSubmenuList = {};
-
-    const maxSubmenuLevel = submenuEnum[type];
-    Object.keys(submenuList).forEach((key) => {
-      if (!submenuEnum[key] || submenuEnum[key] <= maxSubmenuLevel) {
-        newSubmenuList[key] = submenuList[key];
-      }
-    });
-
-    updateCurrentSubmenu(type);
+    const newSubmenuList = { ...submenuList };
+    newSubmenuList.nodes.splice(index, newSubmenuList.nodes.length);
     updateSubmenuList(newSubmenuList);
   };
 
   return (
     <List className={classes.allSports}>
-      {Object.keys(submenuList).map((type, index) => (
-        <DeselectSport key={`all-sports-deselect-${submenuList[type].name}`} type={type} data={submenuList[type]} index={index} submenuList={submenuList} deselectSubmenu={deselectSubmenu} />
-      ))}
+      {_.isEmpty(submenuList.data) ? null : (
+        <>
+          <DeselectSport key={`all-sports-deselect-${submenuList.sportId}`} name={submenuList.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} />
+          {submenuList.nodes.map(({ id, name }, index) => (
+            <DeselectSport key={`all-sports-deselect-${id}`} name={name} index={index} isLast={index === submenuList.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
+          ))}
+        </>
+      )}
 
-      {!submenuList.EVENT_TYPE || !currentSubmenu ? <SelectSport sports={sports} setSubmenu={getSportInfo} /> : <SelectSubmenu data={submenuList[currentSubmenu].data} setSubmenu={setSubmenu} submenuList={submenuList} />}
+      {_.isEmpty(submenuList.data) ? <SelectSport sports={sports} setSubmenu={getSportInfo} /> : <SelectSubmenu setSubmenu={setSubmenu} submenuList={submenuList} />}
     </List>
   );
 };
@@ -113,7 +96,6 @@ const AllSports = ({ sports, submenuList, currentSubmenu, winMarketsOnly, horseR
 const mapStateToProps = (state) => ({
   sports: state.sports.sports,
   submenuList: state.sports.submenuList,
-  currentSubmenu: state.sports.currentSubmenu,
   myMarkets: state.sports.myMarkets,
   winMarketsOnly: state.settings.winMarketsOnly,
   horseRaces: state.settings.horseRaces,
@@ -122,8 +104,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   setAllSports,
   updateSubmenuList,
-  clearSubmenuList,
-  updateCurrentSubmenu,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllSports);
