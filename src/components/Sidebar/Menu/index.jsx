@@ -7,9 +7,8 @@ import ActiveBets from './ActiveBets';
 import AllSports from './AllSports';
 import MyMarkets from './MyMarkets';
 //* JSS
-// import { Accordion, AccordionSummary } from '../../../jss/components/Sidebar/menu/accordion';
 import SectionBar from '../../../jss/components/Sidebar/SectionBar';
-import SectionContent from '../../../jss/components/Sidebar/SectionContent'
+import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 import useStyles from '../../../jss/components/Sidebar/menu';
 
 const Menu = ({ updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMarkets }) => {
@@ -36,11 +35,7 @@ const Menu = ({ updateSubmenuList, updateSubmenuMyMarkets, updateSubmenuListMyMa
     </AppBar>
   );
 
-  const createAccordionSummary = (name) => (
-    <SectionContent>
-      {createTitle(name)}
-    </SectionContent>
-  );
+  const createAccordionSummary = (name) => <SectionContent>{createTitle(name)}</SectionContent>;
 
   return (
     <>
