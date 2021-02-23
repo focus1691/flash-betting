@@ -2,7 +2,6 @@ const initialState = {
   sports: [],
   submenuList: {},
   submenuListMyMarkets: {},
-  currentSubmenu: '',
   currentSubmenuMyMarkets: '',
   myMarkets: [],
 };
@@ -15,8 +14,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, submenuList: action.payload };
     case 'UPDATE_SUBMENU_LIST_MYMARKETS':
       return { ...state, submenuListMyMarkets: action.payload };
-    case 'UPDATE_SUBMENU_CURRENT':
-      return { ...state, currentSubmenu: action.payload };
     case 'UPDATE_SUBMENU_CURRENT_MYMARKETS':
       return { ...state, currentSubmenuMyMarkets: action.payload };
     case 'LOAD_MY_MARKETS':

@@ -13,10 +13,6 @@ export const updateSubmenuListMyMarkets = (submenu) => ({
   payload: submenu,
 });
 
-export const updateCurrentSubmenu = (submenu) => ({
-  type: 'UPDATE_SUBMENU_CURRENT',
-  payload: submenu,
-});
 
 export const updateSubmenuMyMarkets = (submenu) => ({
   type: 'UPDATE_SUBMENU_CURRENT_MYMARKETS',
