@@ -52,7 +52,7 @@
   },
   "homepage": "./",
   "build": {
-    "appId": "com.traderpro.app",
+    "appId": "com.flashbetting.app",
     "files": [
       "./build/**/*",
       "./server/**/*",
