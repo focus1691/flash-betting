@@ -1,31 +1,19 @@
+import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
 import { ListItemIcon } from '@material-ui/core';
 //* Actions
-import { loadMyMarkets } from '../../../actions/sport';
+import { addNewMarket, removeMarket } from '../../../actions/sport';
 
-const MarketSaveButton = ({ sport: { id, name, type, children }, myMarkets, loadMyMarkets }) => {
-  console.log(myMarkets);
-  const marketItemSaved = myMarkets.findIndex((item) => item.id === id && item.type == type && item.name == name) !== -1;
+const MarketSaveButton = ({ id, sportId, name, nodes, myMarkets, addNewMarket, removeMarket }) => {
+  const marketItemSaved = !_.isEmpty(myMarkets[id]);
 
   const updateMyMarkets = (e) => {
-    // e.stopPropagation();
-    // const marketSelection = { id, name, type, children };
+    e.stopPropagation();
 
-    // fetch(`/api/${!marketItemSaved ? 'save-market' : 'remove-market'}`, {
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   method: 'POST',
-    //   body: JSON.stringify(marketSelection),
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     loadMyMarkets(res);
-    //   })
-    //   .catch(() => {});
+    if (marketItemSaved) removeMarket(id);
+    else addNewMarket({ id, sportId, name, nodes });
   };
 
   return (
@@ -48,7 +36,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  loadMyMarkets,
+  addNewMarket,
+  removeMarket,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MarketSaveButton);

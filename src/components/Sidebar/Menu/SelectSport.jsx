@@ -16,12 +16,10 @@ export default ({ sports, setSubmenu }) => {
         </ListItemIcon>
         <ListItemText className={classes.name}>{name}</ListItemText>
         <MarketSaveButton
-          sport={{
-            id,
-            name,
-            type: 'EVENT_TYPE',
-            data: {},
-          }}
+          id={id}
+          sportId={id}
+          name={name}
+          nodes={[]}
         />
       </ListItem>
     </ListItem>

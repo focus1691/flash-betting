@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { ListItem, ListItemText } from '@material-ui/core';
 import MarketSaveButton from './MarketSaveButton';
 //* JSS
@@ -15,22 +15,22 @@ function getNextSubmenu(data, index, tree) {
   return data;
 }
 
-export default ({ setSubmenu, submenuList: { data, nodes } }) => {
+export default ({ setSubmenu, submenuList: { sportId, data, nodes } }) => {
   const classes = useStyles();
   const dataWithoutRaces = _.isEmpty(data) ? [] : getNextSubmenu(data, 0, nodes);
 
-  const handleItemClick = ({ id, type, name }) => () => {
+  const handleItemClick = ({ id, name, type }) => () => {
     if (type === 'MARKET') {
       window.open(`/dashboard?marketId=${id}`);
     } else {
       setSubmenu(id, name);
     }
   };
-  return dataWithoutRaces.map((sport) => (
-    <ListItem key={`select-submenu-${sport.id}`}>
-      <ListItem button onClick={handleItemClick(sport)}>
-        <ListItemText className={classes.name}>{sport.name}</ListItemText>
-        <MarketSaveButton sport={sport} />
+  return dataWithoutRaces.map(({ id, name, type }) => (
+    <ListItem key={`select-submenu-${id}`}>
+      <ListItem button onClick={handleItemClick(id, name, type)}>
+        <ListItemText className={classes.name}>{name}</ListItemText>
+        <MarketSaveButton id={id} sportId={sportId} name={name} nodes={nodes.concat({ id, name })} />
       </ListItem>
     </ListItem>
   ));
