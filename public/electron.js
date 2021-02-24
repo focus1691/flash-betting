@@ -250,23 +250,6 @@ app.get('/api/get-all-sports', (request, response) => {
   );
 });
 
-app.get('/api/get-my-markets', (request, response) => new Promise((res, rej) => {
-  User.findOne({ email: betfair.email }).then((doc) => response.json(doc.markets))
-    .catch((err) => response.sendStatus(400));
-}));
-
-app.post('/api/save-market', (request, response) => {
-  database.saveMarket(betfair.email, request.body).then((res) => {
-    response.json(res);
-  });
-});
-
-app.post('/api/remove-market', (request, response) => {
-  database.removeMarket(betfair.email, request.body).then((res) => {
-    response.json(res);
-  });
-});
-
 app.get('/api/list-todays-card', (request, response) => {
   betfair.listMarketCatalogue({
     filter: {

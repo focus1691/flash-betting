@@ -42,14 +42,6 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets
   };
 
   useEffect(() => {
-    fetch('/api/get-my-markets')
-      .then((res) => res.json())
-      .then((markets) => {
-        loadMyMarkets(markets);
-      });
-  }, []);
-
-  useEffect(() => {
     if (submenuListMyMarkets.EVENT_TYPE && submenuListMyMarkets.EVENT_TYPE.name.includes("Today's Card")) {
       const id = submenuListMyMarkets.EVENT_TYPE.name.includes('Horse') ? 7 : 4339;
       getSportInfo(submenuListMyMarkets.EVENT_TYPE.name, 'EVENT_TYPE', submenuListMyMarkets, id, 'list-todays-card');
