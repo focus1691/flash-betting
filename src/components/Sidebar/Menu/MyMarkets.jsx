@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
@@ -13,6 +14,12 @@ import fetchData from '../../../http/fetchData';
 
 const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    (async () => {
+
+    })();
+  }, []);
 
   const getSportInfo = (id, name, sportId) => async () => {
     if (id.startsWith('TC-')) {
@@ -74,7 +81,6 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets
 
   return (
     <List className={classes.allSports}>
-      {/* { Deselecting Items } */}
       {Object.keys(submenuListMyMarkets).map((type, index) => (
         <DeselectSport
           key={`my-markets-deselect-${submenuListMyMarkets[type].name}`}
@@ -86,10 +92,8 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets
         />
       ))}
 
-      {
-        // Selecting Item
-        <SelectSubmenu data={[]} setSubmenu={setSubmenu} submenuList={submenuListMyMarkets} />
-      }
+ 
+      {_.isEmpty(submenuListMyMarkets.data) ? null : <SelectSubmenu setSubmenu={setSubmenu} submenuList={submenuListMyMarkets} />}
     </List>
   );
 };
