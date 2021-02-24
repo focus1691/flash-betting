@@ -17,3 +17,13 @@ export const loadMyMarkets = (markets) => ({
   type: 'LOAD_MY_MARKETS',
   payload: markets,
 });
+
+export const addNewMarket = (market) => ({
+  type: 'ADD_NEW_MARKET',
+  payload: market,
+});
+
+export const removeMarket = (id) => ({
+  type: 'REMOVE_MARKET',
+  payload: id,
+});

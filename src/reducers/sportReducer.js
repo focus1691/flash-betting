@@ -1,4 +1,5 @@
-import { setupStorage } from '../localStorage/sportsMenu';
+import { omit } from 'lodash';
+import { setupStorage, addNewMarket, removeMarket } from '../localStorage/sportsMenu';
 
 setupStorage();
 
@@ -6,7 +7,7 @@ const initialState = {
   sports: [],
   submenuList: {},
   submenuListMyMarkets: {},
-  myMarkets: [],
+  myMarkets: JSON.parse(localStorage.getItem('myMarkets')),
 };
 
 const reducer = (state = initialState, action) => {
@@ -19,6 +20,23 @@ const reducer = (state = initialState, action) => {
       return { ...state, submenuListMyMarkets: action.payload };
     case 'LOAD_MY_MARKETS':
       return { ...state, myMarkets: action.payload };
+    case 'ADD_NEW_MARKET':
+      addNewMarket(action.payload);
+      return {
+        ...state,
+        myMarkets: {
+          ...state.myMarkets,
+          [action.payload.market.id]: {
+            ...action.payload,
+          },
+        },
+      };
+    case 'REMOVE_MARKET':
+      removeMarket(action.payload);
+      return {
+        ...state,
+        myMarkets: omit(state.myMarkets, action.payload),
+      };
     default:
       return state;
   }
