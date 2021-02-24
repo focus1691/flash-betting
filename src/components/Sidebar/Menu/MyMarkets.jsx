@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import List from '@material-ui/core/List';
 //* Actions
 import { updateSubmenuListMyMarkets } from '../../../actions/sport';
-import DeselectSport from './DeselectSport';
+import DeselectSubmenu from './DeselectSubmenu';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
@@ -86,7 +86,7 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets
   return (
     <List className={classes.allSports}>
       {Object.keys(submenuListMyMarkets).map((type, index) => (
-        <DeselectSport
+        <DeselectSubmenu
           key={`my-markets-deselect-${submenuListMyMarkets[type].name}`}
           type={type}
           data={submenuListMyMarkets[type]}

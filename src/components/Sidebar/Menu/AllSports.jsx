@@ -6,7 +6,7 @@ import List from '@material-ui/core/List';
 //* Actions
 import { setAllSports, updateSubmenuList } from '../../../actions/sport';
 import { sortSports } from '../../../utils/Algorithms/SortSports';
-import DeselectSport from './DeselectSport';
+import DeselectSubmenu from './DeselectSubmenu';
 import SelectSport from './SelectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
@@ -87,7 +87,7 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
     <List className={classes.allSports}>
       {_.isEmpty(submenuList.data) ? null : (
         <>
-          <DeselectSport
+          <DeselectSubmenu
             key={`all-sports-deselect-${submenuList.sportId}`}
             name={submenuList.name}
             isFirst
@@ -96,7 +96,7 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
             deselectSubmenu={deselectSubmenu}
           />
           {submenuList.nodes.map(({ id, name }, index) => (
-            <DeselectSport
+            <DeselectSubmenu
               key={`all-sports-deselect-${id}`}
               name={name}
               index={index}
