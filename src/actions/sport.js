@@ -13,11 +13,6 @@ export const updateSubmenuListMyMarkets = (submenu) => ({
   payload: submenu,
 });
 
-export const loadMyMarkets = (markets) => ({
-  type: 'LOAD_MY_MARKETS',
-  payload: markets,
-});
-
 export const addNewMarket = (market) => ({
   type: 'ADD_NEW_MARKET',
   payload: market,

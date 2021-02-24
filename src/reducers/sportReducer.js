@@ -18,8 +18,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, submenuList: action.payload };
     case 'UPDATE_SUBMENU_LIST_MYMARKETS':
       return { ...state, submenuListMyMarkets: action.payload };
-    case 'LOAD_MY_MARKETS':
-      return { ...state, myMarkets: action.payload };
     case 'ADD_NEW_MARKET':
       addNewMarket(action.payload);
       return {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import { updateSubmenuListMyMarkets, loadMyMarkets } from '../../../actions/sport';
+import { updateSubmenuListMyMarkets } from '../../../actions/sport';
 import DeselectSport from './DeselectSport';
 import SelectSubmenu from './SelectSubmenu';
 //* JSS
@@ -11,7 +11,7 @@ import useStyles from '../../../jss/components/Sidebar/menu/menuStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 
-const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets, loadMyMarkets, updateSubmenuListMyMarkets }) => {
+const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets, updateSubmenuListMyMarkets }) => {
   const classes = useStyles();
 
   const getSportInfo = (id, name, sportId) => async () => {
@@ -101,9 +101,6 @@ const mapStateToProps = (state) => ({
   submenuListMyMarkets: state.sports.submenuListMyMarkets,
 });
 
-const mapDispatchToProps = {
-  loadMyMarkets,
-  updateSubmenuListMyMarkets,
-};
+const mapDispatchToProps = { updateSubmenuListMyMarkets };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyMarkets);
