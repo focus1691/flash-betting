@@ -17,7 +17,11 @@ const MyMarkets = ({ myMarkets, winMarketsOnly, horseRaces, submenuListMyMarkets
 
   useEffect(() => {
     (async () => {
+      const savedMenuKeys = Object.keys(myMarkets);
 
+      for (let i = 0; i < savedMenuKeys.length; i += 1) {
+        
+      }
     })();
   }, []);
 
