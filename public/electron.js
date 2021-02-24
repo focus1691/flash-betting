@@ -1,34 +1,83 @@
+//* Dependencies
+require('dotenv').config();
+
+//* Electron
 const electron = require('electron');
 
 const electronApp = electron.app;
 const { BrowserWindow } = electron;
-
-const path = require('path');
-
 let mainWindow;
 
+const _ = require('lodash');
 const express = require('express');
-
+const http = require('http');
+const cookieParser = require('cookie-parser');
+const path = require('path');
 const fetch = require('node-fetch');
 
+//* Server setup
 const app = express();
-// This adds environment-specific variables on new lines in the form of NAME=VALUE
-// Access with process.env
-require('dotenv').config();
+const server = http.createServer(app);
+const port = process.env.PORT || 3001;
+server.listen(port, () => console.log(`Server started on port: ${port}`));
+const io = require('socket.io')(server);
 
-// The BetFair session class below contains all the methods
-// to call the BetFair API. Some samples are commented below to demonstrate their utility.
-const BetFairSession = require('../server/BetFair/session.js');
-const ExchangeStream = require('../server/BetFair/stream-api.js');
+//* BetFair setup
+const BetFairSession = require('../server/betfair/session');
+const APIHelper = require('../server/api/helper');
 
-const vendor = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
-const betfair = new BetFairSession(process.env.APP_KEY || 'qI6kop1fEslEArVO');
+const betfair = new BetFairSession(process.env.APP_KEY);
+const apiHelper = new APIHelper(betfair);
 
+//* Database setup
+const db = require('../server/sqlite/database');
+//* Utility
+const { isAuthURL } = require('../server/utils/Validator');
+
+db.setup();
+
+//* Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use('/', async (req, res, next) => {
+  if (!betfair.email && req.cookies.username) {
+    betfair.setEmailAddress(req.cookies.username);
+  }
 
-const database = require('../server/Database/helper');
-const User = require('../server/Database/models/users');
+  if (!req.cookies.username && !isAuthURL(req.url)) {
+    return res.status(401).json({
+      error: 'NO_SESSION',
+    });
+  }
+
+  if (!betfair.sessionKey && req.cookies.sessionKey) {
+    betfair.setSession(req.cookies.sessionKey);
+  }
+
+  if (!req.cookies.sessionKey && !isAuthURL(req.url)) {
+    return res.status(401).json({
+      error: 'NO_SESSION',
+    });
+  }
+
+  if (!betfair.accessToken && req.cookies.accessToken) {
+    betfair.setAccessToken(req.cookies.accessToken);
+  }
+
+  if (!req.cookies.accessToken && !isAuthURL(req.url)) {
+    const accessToken = await apiHelper.getAccessToken();
+    if (accessToken) {
+      res.cookie('accessToken', accessToken);
+      betfair.setAccessToken(accessToken);
+    } else {
+      return res.status(401).json({
+        error: 'NO_SESSION',
+      });
+    }
+  }
+  return next();
+});
 
 const publicPath = path.join(__dirname, '../');
 app.use(express.static(path.join(publicPath, 'build')));
@@ -53,401 +102,511 @@ app.get('/logout', (req, res) => {
   res.sendFile(`${publicPath}build/index.html`);
 });
 
-app.get('/api/get-subscription-status', (request, response) => {
-  betfair.isAccountSubscribedToWebApp(
-    {
-      vendorId: 'qI6kop1fEslEArVO',
-    },
-    async (err, res) => {
-      response.json({
-        isSubscribed: res.result,
-        accessToken: await database.getToken(betfair.email),
-      });
-    },
-  );
-});
-
-app.get('/api/request-access-token', async (request, response) => {
-  const params = {
-    client_id: '74333',
-    grant_type: request.query.tokenType,
-    client_secret: '6d912070-7cda-47c9-819f-20ea616fd35c',
-  };
-
-  const token = async () => {
-    vendor.login(process.env.BETFAIR_USER || 'traderjosh', process.env.BETFAIR_PASS || 'r5gYGPjpLgaP!rj').then((res) => {
-      if (res.error) {
-        response.status(400).json(res);
-      } else {
-        vendor.token(params, (err, res) => {
-          if (res.error) {
-            response.status(400).json(res);
-          } else {
-            const tokenInfo = {
-              accessToken: res.result.access_token,
-              expiresIn: new Date(new Date().setSeconds(new Date().getSeconds() + res.result.expires_in)),
-              refreshToken: res.result.refresh_token,
-            };
-            // Update the user details with the token information
-            database.setToken(betfair.email, tokenInfo).then(() => { response.json(tokenInfo); });
-          }
-        });
-      }
+app.get('/api/get-subscription-status', (req, res) => {
+  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID }, async (error, { result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    const accessToken = await apiHelper.getAccessToken();
+    return res.status(200).json({
+      result: {
+        isSubscribed: result,
+        accessToken,
+        vendorId: process.env.VENDOR_ID,
+      },
     });
-  };
-
-  switch (request.query.tokenType) {
-    case 'REFRESH_TOKEN':
-      var storedTokenData = await database.getTokenData(betfair.email);
-      if (storedTokenData.expiresIn < new Date()) {
-        params.refresh_token = storedTokenData.refreshToken;
-        token();
-      } else {
-        response.json(storedTokenData);
-      }
-      break;
-    case 'AUTHORIZATION_CODE':
-      params.code = request.query.code;
-      token();
-      break;
-    default:
-  }
+  });
 });
 
-app.get('/api/login', (request, response) => {
-  betfair.login(request.query.user, request.query.pass)
+app.get('/api/get-vendor-client-id', async (req, res) => {
+  betfair.getVendorClientId({}, async (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({
+        error,
+      });
+    }
+    return res.status(200).json({ result });
+  });
+});
+
+app.post('/api/login', (req, res) => {
+  const { user, password } = req.body;
+  betfair
+    .login(user, password)
+    .then(async (result) => {
+      res.cookie('sessionKey', result.sessionKey);
+      res.cookie('username', user);
+      res.json(result);
+    })
+    .catch((error) => res.json({ error }));
+});
+
+app.get('/api/keep-alive', (req, res) => {
+  betfair
+    .keepAlive()
+    .then(async (result) => {
+      res.json(result);
+    })
+    .catch((error) =>
+      res.json({
+        error,
+      }),
+    );
+});
+
+app.get('/api/logout', (req, res) => {
+  betfair
+    .logout()
     .then((res) => {
-      response.json({ sessionKey: res.sessionKey });
-      // Check if user exists, if doesn't exist, then create a new user
-      database.setUser(request.query.user, res.sessionKey);
-    }).bind(this).catch((err) => response.json({ error: err }));
+      res.clearCookie('sessionKey');
+      res.clearCookie('accessToken');
+      res.clearCookie('username');
+      res.json(res);
+    })
+    .catch((err) =>
+      res.json({
+        error: err,
+      }),
+    );
 });
 
-app.get('/api/logout', (request, response) => {
-  betfair.logout().then((res) => response.json(res)).bind(this)
-    .catch((err) => response.json({ error: err }));
-});
-
-app.get('/api/get-account-balance', (request, response) => {
+app.get('/api/get-account-balance', (req, res) => {
   betfair.getAccountFunds(
     {
       filter: {},
     },
-    (err, res) => {
-      if (res.error) response.status(400).json(res);
-      else {
-        response.json({
-          balance: res.result.availableToBetBalance,
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
         });
       }
+      return res.json({ result });
     },
   );
 });
 
-app.get('/api/get-account-details', (request, response) => {
+app.get('/api/get-account-details', (req, res) => {
   betfair.getAccountDetails(
     {
       filter: {},
     },
-    (err, res) => {
-      if (res.error) response.status(400).json(res);
-      else {
-        response.json({
-          name: res.result.firstName,
-          countryCode: res.result.countryCode,
-          currencyCode: res.result.currencyCode,
-          localeCode: res.result.localeCode,
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
         });
       }
+      return res.json({ result });
     },
   );
 });
 
-app.get('/api/get-events-with-active-bets', (request, response) => {
+app.get('/api/get-events-with-active-bets', (req, res) => {
   betfair.listCurrentOrders(
     {
       filter: {},
     },
-    async (err, res) => {
-      if (!res.result) {
-        response.json({});
-      } else {
-        const filteredOrders = res.result.currentOrders = await res.result.currentOrders.filter((data, index, order) => index === order.findIndex((t) => (
-
-          t.marketId === data.marketId
-        ))).map((order) => order.marketId);
-
-        betfair.listMarketCatalogue(
-          {
-            filter: {
-              marketIds: filteredOrders,
-            },
-            maxResults: 100,
-          },
-          (err, res) => {
-            response.json(res.result);
-          },
-        );
+    async (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
       }
+
+      const filteredOrders = _.uniq(result.currentOrders.map((order) => order));
+
+      if (filteredOrders.length <= 0) return res.json([]);
+
+      return betfair.listMarketCatalogue(
+        {
+          filter: {
+            marketIds: filteredOrders,
+          },
+          maxResults: 100,
+        },
+        (err, { error, result }) => {
+          if (error) {
+            return res.status(401).json({
+              error,
+            });
+          }
+          return res.json({ result });
+        },
+      );
     },
   );
 });
 
-app.get('/api/get-all-bets', (request, response) => {
-  database.getAllOrders(betfair.email).then((res) => {
-    response.json(res);
-  });
-});
+//* SQLite
+app.get('/api/get-all-bets', (req, res) => db.getBets(req.query.marketId).then((bets) => res.json(bets)));
+app.post('/api/save-bet', (req, res) =>
+  db.addBet(req.body).then(() =>
+    res.json({
+      message: 'Bet saved',
+    }),
+  ),
+);
+app.post('/api/update-price', (req, res) =>
+  db.updatePrice(req.body).then(() =>
+    res.json({
+      message: 'Price updated',
+    }),
+  ),
+);
+app.post('/api/update-stop-loss', (req, res) =>
+  db.updateStopLoss(req.body).then(() =>
+    res.json({
+      message: 'Stop Loss updated',
+    }),
+  ),
+);
+app.post('/api/update-ticks', (req, res) =>
+  db.updateTicks(req.body).then(() =>
+    res.json({
+      message: 'Ticks updated',
+    }),
+  ),
+);
+app.post('/api/update-bet-matched', (req, res) =>
+  db.updateOrderMatched(req.body).then(() =>
+    res.json({
+      message: 'Updated the bet to matched',
+    }),
+  ),
+);
+app.post('/api/remove-bet', (req, res) =>
+  db.removeBet(req.body).then(() =>
+    res.json({
+      message: 'Removed bet',
+    }),
+  ),
+);
+app.post('/api/remove-all-bets', (req, res) =>
+  db.removeAllBets(req.body).then(() =>
+    res.json({
+      message: 'Removed all bets',
+    }),
+  ),
+);
 
-app.post('/api/save-bet', (request, response) => {
-  database.saveOrder(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
-  });
-});
-
-app.post('/api/remove-bet', (request, response) => {
-  database.removeOrders(betfair.email, request.body).then((res) => {
-    response.sendStatus(res);
-  });
-});
-
-app.post('/api/fetch-all-sports', async (request, response) => {
-  const data = await vendor.login(process.env.BETFAIR_USER || 'traderjosh', process.env.BETFAIR_PASS || 'r5gYGPjpLgaP!rj');
-
-  if (!data) {
-    response.sendStatus(400);
-  } else {
-    const headers = {
-      'X-Application': process.env.APP_KEY || 'qI6kop1fEslEArVO',
-      'X-Authentication': data.sessionKey,
-    };
-    fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', { headers })
-      .then((res) => res.json())
-      .then((res) => {
-        res.children.forEach((item) => {
-          betfair.allSports[item.id] = item.children;
-        });
-        response.sendStatus(200);
-      }).catch((err) => {
-        response.sendStatus(400);
+app.get('/api/fetch-all-sports', async (request, response) => {
+  betfair.allSports = {};
+  const headers = {
+    'X-Application': process.env.APP_KEY,
+    'X-Authentication': betfair.sessionKey,
+    'Accept-Encoding': 'gzip, deflate',
+  };
+  fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
+    headers,
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      res.children.forEach((item) => {
+        betfair.allSports[item.id] = item.children;
       });
-  }
+      response.status(200).json({ sports: betfair.allSports });
+    })
+    .catch(() => {
+      response.sendStatus(400);
+    });
 });
 
-app.get('/api/fetch-sport-data', (request, response) => (betfair.allSports[request.query.id]
-  ? response.json(betfair.allSports[request.query.id])
-  : response.sendStatus(400).send('All Sports contains no data')));
+app.get('/api/fetch-sport-data', (req, res) => {
+  if (betfair.allSports[req.query.id]) {
+    return res.json({ result: betfair.allSports[req.query.id] });
+  }
+  return res.status(400).json({ error: 'All Sports contains no data' });
+});
 
-app.get('/api/get-all-sports', (request, response) => {
+app.get('/api/get-all-sports', (req, res) => {
   betfair.listEventTypes(
     {
       filter: {},
     },
-    (err, res) => {
-      if (res.error) response.sendStatus(400).json();
-      else response.json(res.result);
+    (err, { error, result }) => {
+      if (error) {
+        return res.sendStatus(400).json({
+          error,
+        });
+      }
+      return res.json({ result });
     },
   );
 });
 
-app.get('/api/list-todays-card', (request, response) => {
-  betfair.listMarketCatalogue({
-    filter: {
-      eventTypeIds: [
-        request.query.id,
-      ],
-      marketTypeCodes: request.query.marketTypes !== 'undefined' ? [
-        request.query.marketTypes,
-      ] : undefined,
-      marketCountries: request.query.country !== 'undefined' ? JSON.parse(request.query.country) : undefined,
-      marketStartTime: {
-        from: new Date(new Date().setSeconds(new Date().getSeconds() - 3600)).toJSON(),
-        to: new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON(),
-      },
-    },
-    sort: 'FIRST_TO_START',
-    maxResults: '1000',
-    marketProjection: [
-      'COMPETITION',
-      'EVENT',
-      'EVENT_TYPE',
-      'MARKET_START_TIME',
-    ],
-  }, (err, res) => {
-    if (res.response.error) {
-      response.sendStatus(400);
-      return;
-    }
-
-    // if its the next day, we have to put the date
-    const mappedResponseNames = res.result.map((item) => {
-      const marketStartTime = new Date(item.marketStartTime);
-      const currentDay = new Date(Date.now()).getDay();
-      const marketStartDay = marketStartTime.getDay();
-      const marketStartOnDiffDay = marketStartDay > currentDay || marketStartDay < currentDay;
-
-      const dateSettings = { hour12: false };
-      if (marketStartOnDiffDay) {
-        dateSettings.weekday = 'short';
-      }
-      const marketStartDate = marketStartTime.toLocaleTimeString('en-us', dateSettings);
-      return Object.assign(item, { marketName: `${marketStartDate} ${item.event.venue} ${item.marketName}` });
-    });
-
-    const sortByTime = (a, b) => Date.parse(a.marketStartTime) - Date.parse(b.marketStartTime);
-
-    const sortedResponse = mappedResponseNames.sort(sortByTime);
-
-    const mappedResponse = sortedResponse.map((item) => ({
-      id: item.marketId,
-      name: item.marketName,
-      type: 'MARKET',
-    }));
-
-    response.json(mappedResponse);
-  });
-});
-
-app.get('/api/list-market-pl', (request, response) => {
-  betfair.listMarketProfitAndLoss({
-    marketIds: [request.query.marketId],
-  },
-  (err, res) => {
-    response.json(res);
-  });
-});
-
-app.get('/api/get-market-info', (request, response) => {
+app.get('/api/list-todays-card', (req, res) => {
   betfair.listMarketCatalogue(
     {
       filter: {
-        marketIds: [request.query.marketId],
+        eventTypeIds: [req.query.id],
+        marketTypeCodes: req.query.marketTypes !== 'undefined' ? [req.query.marketTypes] : undefined,
+        marketCountries: req.query.country !== 'undefined' ? JSON.parse(req.query.country) : undefined,
+        marketStartTime: {
+          from: new Date(new Date().setSeconds(new Date().getSeconds() - 3600)).toJSON(),
+          to: new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON(),
+        },
       },
-      marketProjection: [
-        'COMPETITION',
-        'EVENT',
-        'EVENT_TYPE',
-        'MARKET_START_TIME',
-        'MARKET_DESCRIPTION',
-        'RUNNER_DESCRIPTION',
-        'RUNNER_METADATA',
-      ],
+      sort: 'FIRST_TO_START',
+      maxResults: '1000',
+      marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME'],
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+
+      // if its the next day, we have to put the date
+      const mappedResponseNames = result.map((item) => {
+        const marketStartTime = new Date(item.marketStartTime);
+        const currentDay = new Date(Date.now()).getDay();
+        const marketStartDay = marketStartTime.getDay();
+        const marketStartOnDiffDay = marketStartDay > currentDay || marketStartDay < currentDay;
+
+        const dateSettings = {
+          hour12: false,
+        };
+        if (marketStartOnDiffDay) {
+          dateSettings.weekday = 'short';
+        }
+        const marketStartDate = marketStartTime.toLocaleTimeString('en-us', dateSettings);
+        return Object.assign(item, {
+          marketName: `${marketStartDate} ${item.event.venue} ${item.marketName}`,
+        });
+      });
+
+      const sortByTime = (a, b) => Date.parse(a.marketStartTime) - Date.parse(b.marketStartTime);
+
+      const sortedResponse = mappedResponseNames.sort(sortByTime);
+
+      const mappedResponse = sortedResponse.map((item) => ({
+        id: item.marketId,
+        name: item.marketName,
+        type: 'MARKET',
+      }));
+
+      res.json({ result: mappedResponse });
+    },
+  );
+});
+
+app.get('/api/list-market-pl', (req, res) => {
+  betfair.listMarketProfitAndLoss(
+    {
+      marketIds: [req.query.marketId],
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.get('/api/get-market-info', (req, res) => {
+  betfair.listMarketCatalogue(
+    {
+      filter: {
+        marketIds: [req.query.marketId],
+      },
+      marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME', 'MARKET_DESCRIPTION', 'RUNNER_DESCRIPTION', 'RUNNER_METADATA'],
       maxResults: 1,
     },
-    (err, res) => {
-      response.json(res);
+    (err, { result, error }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
     },
   );
 });
 
-app.get('/api/list-market-book', (request, response) => {
+app.get('/api/list-market-book', (req, res) => {
   betfair.listMarketBook(
     {
-      marketIds: [request.query.marketId],
-      priceProjection: { priceData: ['EX_TRADED', 'EX_ALL_OFFERS'] },
+      marketIds: [req.query.marketId],
+      priceProjection: {
+        priceData: ['EX_TRADED', 'EX_ALL_OFFERS'],
+      },
     },
-    (err, res) => {
-      response.json(res);
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
     },
   );
 });
 
-app.post('/api/place-order', (request, response) => {
+app.post('/api/place-order', (req, res) => {
   betfair.placeOrders(
     {
-      marketId: request.body.marketId,
+      marketId: req.body.marketId,
       instructions: [
         {
-          selectionId: request.body.selectionId,
-          side: request.body.side,
+          selectionId: req.body.selectionId,
+          side: req.body.side,
           orderType: 'LIMIT',
           limitOrder: {
-            size: request.body.size,
-            price: request.body.price,
+            size: req.body.size,
+            price: req.body.price,
           },
         },
       ],
-      customerStrategyRef: request.body.customerStrategyRef,
+      customerStrategyRef: req.body.customerStrategyRef,
     },
-    (err, res) => {
-      if (res.error) {
-        response.sendStatus(400);
-      } else {
-        response.json(res.result);
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
       }
+      return res.json({ result });
     },
   );
 });
 
-app.post('/api/update-orders', (request, response) => {
-  betfair.placeOrders({
-    marketId: request.body.marketId,
-    instructions: [{
-      betId: request.body.betId,
-      newPersistenceType: 'PERSIST',
-    }],
-    customerStrategyRef: request.body.customerStrategyRef,
-  }, (err, res) => {
-    if (res.error) {
-      response.sendStatus(400);
-    } else {
-      response.json(res.result);
-    }
-  });
-});
-
-app.post('/api/replace-orders', (request, response) => {
-  betfair.replaceOrders({
-    marketId: request.body.marketId,
-    instructions: [{
-      betId: request.body.betId,
-      newPrice: request.body.newPrice,
-    }],
-    customerRef: request.body.customerStrategyRef,
-  }, (err, res) => {
-    if (res.error) {
-      response.sendStatus(400);
-    } else {
-      response.json(res.result);
-    }
-  });
-});
-
-app.get('/api/listCurrentOrders', (request, response) => {
-  betfair.listCurrentOrders({
-    marketIds: [request.query.marketId],
-  },
-  (err, res) => {
-    response.json(res.result);
-  });
-});
-
-app.get('/api/list-order-to-duplicate', (request, response) => {
-  betfair.listCurrentOrders({
-    marketIds: [request.query.marketId],
-    OrderProjection: 'EXECUTABLE',
-    SortDir: 'LATEST_TO_EARLIEST',
-
-  },
-  (err, res) => {
-    response.json(res.result);
-  });
-});
-
-app.post('/api/cancel-order', (request, response) => {
+app.post('/api/cancel-order', (req, res) => {
   betfair.cancelOrders(
     {
-      marketId: request.body.marketId,
+      marketId: req.body.marketId,
       instructions: [
         {
-          betId: request.body.betId,
-          sizeReduction: request.body.sizeReduction,
+          betId: req.body.betId,
+          sizeReduction: req.body.sizeReduction,
         },
       ],
-      customerRef: request.body.customerRef,
     },
-    (err, res) => {
-      response.json(res.result);
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.post('/api/update-orders', (req, res) => {
+  betfair.placeOrders(
+    {
+      marketId: req.body.marketId,
+      instructions: [
+        {
+          betId: req.body.betId,
+          newPersistenceType: 'PERSIST',
+        },
+      ],
+      customerStrategyRef: req.body.customerStrategyRef,
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.post('/api/replace-orders', (req, res) => {
+  betfair.replaceOrders(
+    {
+      marketId: req.body.marketId,
+      instructions: [
+        {
+          betId: req.body.betId,
+          newPrice: req.body.newPrice,
+        },
+      ],
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.get('/api/listCurrentOrders', (req, res) => {
+  betfair.listCurrentOrders(
+    {
+      marketIds: [req.query.marketId],
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.get('/api/list-order-to-duplicate', (req, res) => {
+  betfair.listCurrentOrders(
+    {
+      marketIds: [req.query.marketId],
+      OrderProjection: 'EXECUTABLE',
+      SortDir: 'LATEST_TO_EARLIEST',
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.get('/api/list-cleared-orders', (req, res) => {
+  betfair.listClearedOrders(
+    {
+      betStatus: 'SETTLED',
+      fromRecord: 0,
+      recordCount: 0,
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
+    },
+  );
+});
+
+app.get('/api/list-recent-orders', (req, res) => {
+  betfair.listClearedOrders(
+    {
+      betStatus: 'SETTLED',
+      recordCount: 8,
+    },
+    (err, { error, result }) => {
+      if (error) {
+        return res.status(401).json({
+          error,
+        });
+      }
+      return res.json({ result });
     },
   );
 });
@@ -472,42 +631,21 @@ process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 // Catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
-const port = process.env.PORT || 3001;
-
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
-server.listen(port, () => console.log(`Server started on port: ${port}`));
-
-let id = 1;
 io.on('connection', async (client) => {
-  let exchangeStream = new ExchangeStream(client);
+  const accessToken = betfair.accessToken || (await apiHelper.getAccessToken());
 
-  // Subscribe to market
-  client.on('market-subscription', async (data) => {
-    const accessToken = await database.getToken(betfair.email);
-
-    const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
-    exchangeStream.makeSubscription(marketSubscription, accessToken);
+  betfair.createExchangeStream(client, accessToken);
+  client.on('market-subscription', async ({ marketId }) => {
+    betfair.exchangeStream.makeMarketSubscription(marketId);
   });
-  client.on('market-resubscription', async (data) => {
-    const accessToken = await database.getToken(betfair.email);
-    const marketSubscription = `{"op":"marketSubscription","id":${id++},"initialClk":${data.initialClk},"clk":${data.clk},marketFilter":{"marketIds":["${data.marketId}"]},"marketDataFilter":{"ladderLevels": 2, "fields": [ "EX_ALL_OFFERS", "EX_TRADED", "EX_TRADED_VOL", "EX_LTP", "EX_MARKET_DEF" ]}}\r\n`;
-    exchangeStream.makeSubscription(marketSubscription, accessToken);
+  client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
+    betfair.exchangeStream.makeMarketResubscription(initialClk, clk, marketId);
   });
-  // Subscribe to orders
-  client.on('order-subscription', async (data) => {
-    const accessToken = await database.getToken(betfair.email);
-    const orderSubscription = `{"op":"orderSubscription","orderFilter":{"includeOverallPosition":false, "customerStrategyRefs":${data.customerStrategyRefs}},"segmentationEnabled":true}\r\n`;
-    exchangeStream.makeSubscription(orderSubscription, accessToken);
+  client.on('order-subscription', async ({ customerStrategyRefs }) => {
+    betfair.exchangeStream.makeOrderSubscription(customerStrategyRefs);
   });
-  client.on('disconnect', async () => {
-    const accessToken = await database.getToken(betfair.email);
-    const marketSubscription = `{"op":"marketSubscription","id":${id++},"marketFilter":{"marketIds":[""]},"marketDataFilter":{"ladderLevels": 2}}\r\n`;
-    exchangeStream.makeSubscription(marketSubscription, accessToken);
-    exchangeStream.client.destroy();
-
-    exchangeStream = null;
+  client.on('disconnect', () => {
+    betfair.exchangeStream.unsubscribe();
   });
 });
 
