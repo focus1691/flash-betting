@@ -146,111 +146,52 @@ app.get('/api/logout', (req, res) => {
       res.clearCookie('username');
       res.json(res);
     })
-    .catch((err) =>
-      res.json({
-        error: err,
-      }),
-    );
+    .catch((error) => res.json({ error }));
 });
 
 app.get('/api/get-account-balance', (req, res) => {
-  betfair.getAccountFunds(
-    {
-      filter: {},
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  betfair.getAccountFunds({ filter: {} }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 app.get('/api/get-account-details', (req, res) => {
-  betfair.getAccountDetails(
-    {
-      filter: {},
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  betfair.getAccountDetails({ filter: {} }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 app.get('/api/get-events-with-active-bets', (req, res) => {
-  betfair.listCurrentOrders(
-    {
-      filter: {},
-    },
-    async (err, { error, result }) => {
+  betfair.listCurrentOrders({ filter: {} }, async (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+
+    const filteredOrders = _.uniq(result.currentOrders.map((order) => order));
+
+    if (filteredOrders.length <= 0) return res.json([]);
+
+    return betfair.listMarketCatalogue({ filter: { marketIds: filteredOrders }, maxResults: 100 }, (err, { error, result }) => {
       if (error) {
-        return res.status(401).json({
-          error,
-        });
+        return res.status(401).json({ error });
       }
-
-      const filteredOrders = _.uniq(result.currentOrders.map((order) => order));
-
-      if (filteredOrders.length <= 0) return res.json([]);
-
-      return betfair.listMarketCatalogue(
-        {
-          filter: {
-            marketIds: filteredOrders,
-          },
-          maxResults: 100,
-        },
-        (err, { error, result }) => {
-          if (error) {
-            return res.status(401).json({
-              error,
-            });
-          }
-          return res.json({ result });
-        },
-      );
-    },
-  );
+      return res.json({ result });
+    });
+  });
 });
 
 //* SQLite
 app.get('/api/get-all-bets', (req, res) => db.getBets(req.query.marketId).then((bets) => res.json(bets)));
-app.post('/api/save-bet', (req, res) =>
-  db.addBet(req.body).then(() =>
-    res.json({
-      message: 'Bet saved',
-    }),
-  ),
-);
-app.post('/api/update-price', (req, res) =>
-  db.updatePrice(req.body).then(() =>
-    res.json({
-      message: 'Price updated',
-    }),
-  ),
-);
-app.post('/api/update-stop-loss', (req, res) =>
-  db.updateStopLoss(req.body).then(() =>
-    res.json({
-      message: 'Stop Loss updated',
-    }),
-  ),
-);
-app.post('/api/update-ticks', (req, res) =>
-  db.updateTicks(req.body).then(() =>
-    res.json({
-      message: 'Ticks updated',
-    }),
-  ),
-);
+app.post('/api/save-bet', (req, res) => db.addBet(req.body).then(() => res.json({ message: 'Bet saved' })));
+app.post('/api/update-price', (req, res) => db.updatePrice(req.body).then(() => res.json({ message: 'Price updated' })));
+app.post('/api/update-stop-loss', (req, res) => db.updateStopLoss(req.body).then(() => res.json({ message: 'Stop Loss updated' })));
+app.post('/api/update-ticks', (req, res) => db.updateTicks(req.body).then(() => res.json({ message: 'Ticks updated' })));
 app.post('/api/update-bet-matched', (req, res) =>
   db.updateOrderMatched(req.body).then(() =>
     res.json({
@@ -481,117 +422,59 @@ app.post('/api/cancel-order', (req, res) => {
 });
 
 app.post('/api/update-orders', (req, res) => {
-  betfair.placeOrders(
-    {
-      marketId: req.body.marketId,
-      instructions: [
-        {
-          betId: req.body.betId,
-          newPersistenceType: 'PERSIST',
-        },
-      ],
-      customerStrategyRef: req.body.customerStrategyRef,
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  const { marketId, betId, customerStrategyRef } = req.body;
+  betfair.placeOrders({ marketId, instructions: [{ betId, newPersistenceType: 'PERSIST' }], customerStrategyRef }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 app.post('/api/replace-orders', (req, res) => {
-  betfair.replaceOrders(
-    {
-      marketId: req.body.marketId,
-      instructions: [
-        {
-          betId: req.body.betId,
-          newPrice: req.body.newPrice,
-        },
-      ],
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  const { marketId, betId, newPrice } = req.body;
+  betfair.replaceOrders({ marketId, instructions: [{ betId, newPrice }] }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 app.get('/api/listCurrentOrders', (req, res) => {
-  betfair.listCurrentOrders(
-    {
-      marketIds: [req.query.marketId],
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  betfair.listCurrentOrders({ marketIds: [req.query.marketId] }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 app.get('/api/list-order-to-duplicate', (req, res) => {
-  betfair.listCurrentOrders(
-    {
-      marketIds: [req.query.marketId],
-      OrderProjection: 'EXECUTABLE',
-      SortDir: 'LATEST_TO_EARLIEST',
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  betfair.listCurrentOrders({ marketIds: [req.query.marketId], OrderProjection: 'EXECUTABLE', SortDir: 'LATEST_TO_EARLIEST' }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 app.get('/api/list-cleared-orders', (req, res) => {
-  betfair.listClearedOrders(
-    {
-      betStatus: 'SETTLED',
-      fromRecord: 0,
-      recordCount: 0,
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  betfair.listClearedOrders({ betStatus: 'SETTLED', fromRecord: 0, recordCount: 0 }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 app.get('/api/list-recent-orders', (req, res) => {
-  betfair.listClearedOrders(
-    {
-      betStatus: 'SETTLED',
-      recordCount: 8,
-    },
-    (err, { error, result }) => {
-      if (error) {
-        return res.status(401).json({
-          error,
-        });
-      }
-      return res.json({ result });
-    },
-  );
+  betfair.listClearedOrders({ betStatus: 'SETTLED', recordCount: 8 }, (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.json({ result });
+  });
 });
 
 process.stdin.resume(); // so the program will not close instantly
@@ -615,8 +498,8 @@ process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
 io.on('connection', async (client) => {
-  const accessToken = betfair.accessToken || await apiHelper.getAccessToken();
-  
+  const accessToken = betfair.accessToken || (await apiHelper.getAccessToken());
+
   betfair.createExchangeStream(client, accessToken);
   client.on('market-subscription', async ({ marketId }) => {
     betfair.exchangeStream.makeMarketSubscription(marketId);
