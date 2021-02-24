@@ -22,14 +22,11 @@ const betfair = new BetFairSession(process.env.APP_KEY);
 const apiHelper = new APIHelper(betfair);
 
 //* Database setup
-const Database = require('./Database/helper');
-const SQLiteDatabase = require('./Database/SQLite/database');
-const User = require('./Database/models/users');
-
+const db = require('./sqlite/database');
 //* Utility
 const { isAuthURL } = require('./utils/Validator');
 
-SQLiteDatabase.setup();
+db.setup();
 
 //* Middlewares
 app.use(express.json());
@@ -225,51 +222,51 @@ app.get('/api/get-events-with-active-bets', (req, res) => {
 });
 
 //* SQLite
-app.get('/api/get-all-bets', (req, res) => SQLiteDatabase.getBets(req.query.marketId).then((bets) => res.json(bets)));
+app.get('/api/get-all-bets', (req, res) => db.getBets(req.query.marketId).then((bets) => res.json(bets)));
 app.post('/api/save-bet', (req, res) =>
-  SQLiteDatabase.addBet(req.body).then(() =>
+  db.addBet(req.body).then(() =>
     res.json({
       message: 'Bet saved',
     }),
   ),
 );
 app.post('/api/update-price', (req, res) =>
-  SQLiteDatabase.updatePrice(req.body).then(() =>
+  db.updatePrice(req.body).then(() =>
     res.json({
       message: 'Price updated',
     }),
   ),
 );
 app.post('/api/update-stop-loss', (req, res) =>
-  SQLiteDatabase.updateStopLoss(req.body).then(() =>
+  db.updateStopLoss(req.body).then(() =>
     res.json({
       message: 'Stop Loss updated',
     }),
   ),
 );
 app.post('/api/update-ticks', (req, res) =>
-  SQLiteDatabase.updateTicks(req.body).then(() =>
+  db.updateTicks(req.body).then(() =>
     res.json({
       message: 'Ticks updated',
     }),
   ),
 );
 app.post('/api/update-bet-matched', (req, res) =>
-  SQLiteDatabase.updateOrderMatched(req.body).then(() =>
+  db.updateOrderMatched(req.body).then(() =>
     res.json({
       message: 'Updated the bet to matched',
     }),
   ),
 );
 app.post('/api/remove-bet', (req, res) =>
-  SQLiteDatabase.removeBet(req.body).then(() =>
+  db.removeBet(req.body).then(() =>
     res.json({
       message: 'Removed bet',
     }),
   ),
 );
 app.post('/api/remove-all-bets', (req, res) =>
-  SQLiteDatabase.removeAllBets(req.body).then(() =>
+  db.removeAllBets(req.body).then(() =>
     res.json({
       message: 'Removed all bets',
     }),
