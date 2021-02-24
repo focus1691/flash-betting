@@ -24,7 +24,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         myMarkets: {
           ...state.myMarkets,
-          [action.payload.market.id]: {
+          [action.payload.id]: {
             ...action.payload,
           },
         },
