@@ -12,8 +12,10 @@ const useStyles = makeStyles((theme) => ({
   betTableContainer: {
     height: 'inherit',
     borderRadius: theme.spacing(2),
+    overflowX: 'scroll',
   },
   betTable: {
+    height: '100%',
     '& thead': {
       backgroundColor: '#333F4B',
       boxShadow: '0px 6px 7px #00000029',
