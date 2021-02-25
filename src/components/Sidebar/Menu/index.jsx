@@ -2,7 +2,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { updateSubmenuList, updateSubmenuListMyMarkets } from '../../../actions/sport';
+import { updateSubmenuList, updateMyMarketsSubmenu } from '../../../actions/sport';
 import ActiveBets from './ActiveBets';
 import AllSports from './AllSports';
 import MyMarkets from './MyMarkets';
@@ -11,7 +11,7 @@ import SectionBar from '../../../jss/components/Sidebar/SectionBar';
 import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 import useStyles from '../../../jss/components/Sidebar/menu';
 
-const Menu = ({ updateSubmenuList, updateSubmenuListMyMarkets }) => {
+const Menu = ({ updateSubmenuList, updateMyMarketsSubmenu }) => {
   const [expanded, setExpanded] = useState('my_markets');
 
   const classes = useStyles();
@@ -20,7 +20,7 @@ const Menu = ({ updateSubmenuList, updateSubmenuListMyMarkets }) => {
     if (expanded === tab && tab === 'all_sports') {
       updateSubmenuList({});
     } else if (expanded === tab && tab === 'my_markets') {
-      updateSubmenuListMyMarkets({});
+      updateMyMarketsSubmenu({});
       return;
     }
     setExpanded(newExpanded ? tab : false);
@@ -58,7 +58,7 @@ const Menu = ({ updateSubmenuList, updateSubmenuListMyMarkets }) => {
 
 const mapDispatchToProps = {
   updateSubmenuList,
-  updateSubmenuListMyMarkets,
+  updateMyMarketsSubmenu,
 };
 
 export default connect(null, mapDispatchToProps)(Menu);

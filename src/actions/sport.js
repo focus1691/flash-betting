@@ -8,7 +8,7 @@ export const updateSubmenuList = (submenu) => ({
   payload: submenu,
 });
 
-export const updateSubmenuListMyMarkets = (submenu) => ({
+export const updateMyMarketsSubmenu = (submenu) => ({
   type: 'UPDATE_SUBMENU_LIST_MYMARKETS',
   payload: submenu,
 });

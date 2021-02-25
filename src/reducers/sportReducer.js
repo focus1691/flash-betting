@@ -6,7 +6,7 @@ setupStorage();
 const initialState = {
   sports: [],
   submenuList: {},
-  submenuListMyMarkets: {},
+  myMarketsSubmenu: {},
   myMarkets: JSON.parse(localStorage.getItem('myMarkets')),
 };
 
@@ -17,7 +17,7 @@ const reducer = (state = initialState, action) => {
     case 'UPDATE_SUBMENU_LIST':
       return { ...state, submenuList: action.payload };
     case 'UPDATE_SUBMENU_LIST_MYMARKETS':
-      return { ...state, submenuListMyMarkets: action.payload };
+      return { ...state, myMarketsSubmenu: action.payload };
     case 'ADD_NEW_MARKET':
       addNewMarket(action.payload);
       return {
