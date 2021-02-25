@@ -62,6 +62,7 @@
       "buildResources": "assets"
     },
     "win": {
+      "publisherName": "Flash Betting",
       "target": [
         {
           "target": "nsis",
