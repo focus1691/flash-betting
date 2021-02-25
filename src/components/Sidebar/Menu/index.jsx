@@ -21,7 +21,6 @@ const Menu = ({ updateSubmenuList, updateMyMarketsSubmenu }) => {
       updateSubmenuList({});
     } else if (expanded === tab && tab === 'my_markets') {
       updateMyMarketsSubmenu({});
-      return;
     }
     setExpanded(newExpanded ? tab : false);
   };
