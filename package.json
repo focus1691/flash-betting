@@ -44,7 +44,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "socket.io": "^2.3.0",
-    "sqlite-async": "^1.1.0",
+    "sqlite-async": "^1.1.1",
     "universal-cookie": "^4.0.4",
     "url-regex": "^5.0.0",
     "validator": "^13.1.17"
@@ -80,6 +80,7 @@
   "scripts": {
     "start": "cross-env PORT=9090 react-scripts start",
     "build": "react-scripts build",
+    "rebuild": "electron-rebuild -f -w node_modules/sqlite3",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "cross-env nodemon server/index.js",
@@ -110,6 +111,7 @@
     "cross-env": "^5.2.1",
     "electron": "^11.3.0",
     "electron-builder": "^22.9.1",
+    "electron-rebuild": "^2.3.5",
     "eslint": "^7.11.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.15.0",
