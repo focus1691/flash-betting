@@ -62,11 +62,11 @@ const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, h
   };
 
   useEffect(() => {
-    if (myMarketsSubmenu.EVENT_TYPE && myMarketsSubmenu.EVENT_TYPE.name.includes("Today's Card")) {
-      const id = myMarketsSubmenu.EVENT_TYPE.name.includes('Horse') ? 7 : 4339;
-      setSubmenu(myMarketsSubmenu.EVENT_TYPE.name, 'EVENT_TYPE', myMarketsSubmenu, id, 'list-todays-card');
+    if (!_.isEmpty(myMarketsSubmenu) && myMarketsSubmenu.name.includes("Today's Card")) {
+      //* Reset the market submenu if the 'WIN' or 'Horse Racing' settings are changed
+      updateMyMarketsSubmenu({});
     }
-  }, [winMarketsOnly]);
+  }, [winMarketsOnly, horseRaces]);
 
   return (
     <List className={classes.allSports}>

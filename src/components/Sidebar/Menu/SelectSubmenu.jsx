@@ -18,12 +18,13 @@ function getNextSubmenu(data, index, tree) {
 export default ({ setSubmenu, submenuList: { sportId, data, nodes } }) => {
   const classes = useStyles();
   const dataWithoutRaces = _.isEmpty(data) ? [] : getNextSubmenu(data, 0, nodes);
+  console.log(sportId, data, nodes);
 
-  const handleItemClick = ({ id, name, type }) => () => {
+  const handleItemClick = (id, name, type) => () => {
     if (type === 'MARKET') {
       window.open(`/dashboard?marketId=${id}`);
     } else {
-      setSubmenu(id, name);
+      setSubmenu(id, name, sportId, nodes);
     }
   };
   return dataWithoutRaces.map(({ id, name, type }) => (

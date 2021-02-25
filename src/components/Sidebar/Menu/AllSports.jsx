@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import uuid from 'react-uuid';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
@@ -34,6 +35,7 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
 
   useEffect(() => {
     if (!_.isEmpty(submenuList) && submenuList.name.includes("Today's Card")) {
+      //* Reset the market submenu if the 'WIN' or 'Horse Racing' settings are changed
       updateSubmenuList({});
     }
   }, [winMarketsOnly, horseRaces]);
@@ -89,9 +91,9 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
         <SelectSport sports={sports} setSubmenu={getSportInfo} />
       ) : (
         <>
-          <DeselectSubmenu key={`all-sports-deselect-${submenuList.sportId}`} name={submenuList.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} />
-          {submenuList.nodes.map(({ id, name }, index) => (
-            <DeselectSubmenu key={`all-sports-deselect-${id}`} name={name} index={index} isLast={index === submenuList.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
+          <DeselectSubmenu key={`all-sports-deselect-${uuid()}`} name={submenuList.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} />
+          {submenuList.nodes.map(({ name }, index) => (
+            <DeselectSubmenu key={`all-sports-deselect-${uuid()}`} name={name} index={index} isLast={index === submenuList.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
           ))}
           <SelectSubmenu setSubmenu={setSubmenu} submenuList={submenuList} />
         </>
