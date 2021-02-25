@@ -83,7 +83,7 @@
     "eject": "react-scripts eject",
     "server": "cross-env nodemon server/index.js",
     "dev": "cross-env concurrently \"npm run start\" \"npm run server\"",
-    "app": "cross-env BROWSER=none npm run build && electron .",
+    "app": "cross-env BROWSER=none npm run build && electron . install-app-deps",
     "electron-build": "cross-env npm run build && electron-builder"
   },
   "main": "public/electron.js",
@@ -107,7 +107,7 @@
     "babel-eslint": "^10.1.0",
     "concurrently": "^4.1.2",
     "cross-env": "^5.2.1",
-    "electron": "2.0.2",
+    "electron": "^11.3.0",
     "electron-builder": "^21.2.0",
     "eslint": "^7.11.0",
     "eslint-config-airbnb": "^18.2.0",
