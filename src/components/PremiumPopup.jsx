@@ -51,7 +51,6 @@ const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog,
       type: 'card',
       card: elements.getElement(CardElement),
     });
-    console.log(error, paymentMethod);
   };
 
   return (

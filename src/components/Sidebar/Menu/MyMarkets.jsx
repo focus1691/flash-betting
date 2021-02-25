@@ -74,9 +74,9 @@ const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, h
         <SelectMyMarkets setSubmenu={setSubmenu} />
       ) : (
         <>
-          <DeselectSubmenu key={`all-sports-deselect-${myMarketsSubmenu.sportId}`} name={myMarketsSubmenu.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} />
-          {myMarketsSubmenu.nodes.map(({ id, name }, index) => (
-            <DeselectSubmenu key={`all-sports-deselect-${id}`} name={name} index={index} isLast={index === myMarketsSubmenu.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
+          {_.isEmpty(myMarketsSubmenu.nodes) ? <DeselectSubmenu key={`all-sports-deselect-${myMarketsSubmenu.sportId}`} name={myMarketsSubmenu.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} /> :
+          myMarketsSubmenu.nodes.map(({ id, name }, index) => (
+            <DeselectSubmenu key={`my-markets-deselect-${id}`} name={name} index={index} isFirst={index === 0} isLast={index === myMarketsSubmenu.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
           ))}
           <SelectSubmenu setSubmenu={setSubmenu} submenuList={myMarketsSubmenu} />
         </>

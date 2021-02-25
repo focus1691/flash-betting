@@ -18,7 +18,6 @@ function getNextSubmenu(data, index, tree) {
 export default ({ setSubmenu, submenuList: { sportId, data, nodes } }) => {
   const classes = useStyles();
   const dataWithoutRaces = _.isEmpty(data) ? [] : getNextSubmenu(data, 0, nodes);
-  console.log(sportId, data, nodes);
 
   const handleItemClick = (id, name, type) => () => {
     if (type === 'MARKET') {
