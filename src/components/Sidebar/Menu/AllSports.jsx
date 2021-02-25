@@ -85,29 +85,17 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
 
   return (
     <List className={classes.allSports}>
-      {_.isEmpty(submenuList.data) ? null : (
+      {_.isEmpty(submenuList.data) ? (
+        <SelectSport sports={sports} setSubmenu={getSportInfo} />
+      ) : (
         <>
-          <DeselectSubmenu
-            key={`all-sports-deselect-${submenuList.sportId}`}
-            name={submenuList.name}
-            isFirst
-            index={0}
-            isLast={false}
-            deselectSubmenu={deselectSubmenu}
-          />
+          <DeselectSubmenu key={`all-sports-deselect-${submenuList.sportId}`} name={submenuList.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} />
           {submenuList.nodes.map(({ id, name }, index) => (
-            <DeselectSubmenu
-              key={`all-sports-deselect-${id}`}
-              name={name}
-              index={index}
-              isLast={index === submenuList.nodes.length - 1}
-              deselectSubmenu={deselectSubmenu}
-            />
+            <DeselectSubmenu key={`all-sports-deselect-${id}`} name={name} index={index} isLast={index === submenuList.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
           ))}
+          <SelectSubmenu setSubmenu={setSubmenu} submenuList={submenuList} />
         </>
       )}
-
-      {_.isEmpty(submenuList.data) ? <SelectSport sports={sports} setSubmenu={getSportInfo} /> : <SelectSubmenu setSubmenu={setSubmenu} submenuList={submenuList} />}
     </List>
   );
 };

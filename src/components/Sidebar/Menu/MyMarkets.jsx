@@ -16,7 +16,7 @@ import fetchData from '../../../http/fetchData';
 const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, horseRaces }) => {
   const classes = useStyles();
 
-  const getSportInfo = async (id, name, sportId, nodes) => {
+  const setSubmenu = async (id, name, sportId, nodes) => {
     if (id.startsWith('TC-')) {
       const isHorseRace = (name.startsWith('TC') && name.endsWith('7')) || (name.includes('Horse') && name.includes("Today's Card"));
 
@@ -37,70 +37,50 @@ const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, h
       }
     }
     // fetch the sport data
-    else if (_.isEmpty(nodes)) {
+    else if (_.isEmpty(myMarketsSubmenu.data)) {
       const data = await fetchData(`/api/fetch-sport-data?id=${sportId}`);
       if (data) {
         updateMyMarketsSubmenu({ sportId, name, data, nodes: _.isEmpty(nodes) ? [] : nodes });
       }
     } else {
-      const data = await fetchData(`/api/fetch-sport-data?id=${sportId}`);
-      if (data) {
-        updateMyMarketsSubmenu({ sportId, name, data, nodes });
-      }
+      const newSubmenuList = { ...myMarketsSubmenu };
+      newSubmenuList.nodes.push({ id, name });
+      updateMyMarketsSubmenu(newSubmenuList);
     }
+  };
+
+  const deselectSubmenu = (index, isFirst) => {
+    //* Remove the current data selection if the first node is deselected
+    if (isFirst) {
+      updateMyMarketsSubmenu({});
+      return;
+    }
+
+    const newSubmenuList = { ...myMarketsSubmenu };
+    newSubmenuList.nodes.splice(index, newSubmenuList.nodes.length);
+    updateMyMarketsSubmenu(newSubmenuList);
   };
 
   useEffect(() => {
     if (myMarketsSubmenu.EVENT_TYPE && myMarketsSubmenu.EVENT_TYPE.name.includes("Today's Card")) {
       const id = myMarketsSubmenu.EVENT_TYPE.name.includes('Horse') ? 7 : 4339;
-      getSportInfo(myMarketsSubmenu.EVENT_TYPE.name, 'EVENT_TYPE', myMarketsSubmenu, id, 'list-todays-card');
+      setSubmenu(myMarketsSubmenu.EVENT_TYPE.name, 'EVENT_TYPE', myMarketsSubmenu, id, 'list-todays-card');
     }
   }, [winMarketsOnly]);
 
-  const setSubmenu = (id, name, sportId, nodes) => async () => {
-    if (_.isEmpty(myMarketsSubmenu)) {
-      //
-    } else {
-      //
-    }
-
-    if (id.startsWith('TC-')) {
-      getSportInfo(name, type, submenuList, id.match(/\d+/)[0], 'list-todays-card');
-    } else if (type === 'EVENT_TYPE') {
-      getSportInfo(name, type, submenuList, id, 'fetch-sport-data');
-    } else {
-      const newSubmenuList = { ...submenuList };
-      newSubmenuList[type] = { name, data };
-
-      updateMyMarketsSubmenu(newSubmenuList);
-    }
-  };
-
-  const deselectSubmenu = (newSubmenuType, submenuList) => {
-    if (newSubmenuType === 'ROOT') {
-      updateMyMarketsSubmenu({});
-      return;
-    }
-
-    // filter out items that are above the submenu level, we are going upward in the list, so we remove items under that aren't needed
-    const newSubmenuList = {};
-    updateMyMarketsSubmenu(newSubmenuList);
-  };
-
   return (
     <List className={classes.allSports}>
-      {Object.keys(myMarketsSubmenu).map((type, index) => (
-        <DeselectSubmenu
-          key={`my-markets-deselect-${myMarketsSubmenu[type].name}`}
-          type={type}
-          data={myMarketsSubmenu[type]}
-          isLast={index === Object.keys(myMarketsSubmenu).length - 1}
-          submenuList={myMarketsSubmenu}
-          deselectSubmenu={deselectSubmenu}
-        />
-      ))}
-
-      {_.isEmpty(myMarketsSubmenu.data) ? <SelectMyMarkets setSubmenu={setSubmenu} /> : <SelectSubmenu setSubmenu={setSubmenu} submenuList={myMarketsSubmenu} />}
+      {_.isEmpty(myMarketsSubmenu.data) ? (
+        <SelectMyMarkets setSubmenu={setSubmenu} />
+      ) : (
+        <>
+          <DeselectSubmenu key={`all-sports-deselect-${myMarketsSubmenu.sportId}`} name={myMarketsSubmenu.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} />
+          {myMarketsSubmenu.nodes.map(({ id, name }, index) => (
+            <DeselectSubmenu key={`all-sports-deselect-${id}`} name={name} index={index} isLast={index === myMarketsSubmenu.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
+          ))}
+          <SelectSubmenu setSubmenu={setSubmenu} submenuList={myMarketsSubmenu} />
+        </>
+      )}
     </List>
   );
 };
