@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>electron-tabs-demo</title>
+  <link rel="stylesheet" href="css/electron-tabs.css">
+</head>
+<body style="margin:0">
+
+<div class="etabs-tabgroup">
+  <div class="etabs-tabs"></div>
+  <div class="etabs-buttons"></div>
+</div>
+<div class="etabs-views"></div>
+
+
+<script>
+  const TabGroup = require('electron-tabs');
+
+  var tabGroup = new TabGroup({
+    newTab: {
+      title: 'New Tab'
+    }
+  });
+
+  tabGroup.addTab({
+    title: 'Flash Betting',
+    src: 'http://localhost:3001/',
+  });
+
+  tabGroup.on("tab-added", (tab, tabGroup) => { 
+      console.log(tab);
+  });
+
+</script>
+</body>
+</html>
