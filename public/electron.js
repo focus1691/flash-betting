@@ -5,6 +5,9 @@ require('dotenv').config();
 const electron = require('electron');
 
 const electronApp = electron.app;
+electronApp.commandLine.appendSwitch('high-dpi-support', 1)
+electronApp.commandLine.appendSwitch('force-device-scale-factor', 1)
+
 const { BrowserWindow } = electron;
 let mainWindow;
 
@@ -535,6 +538,7 @@ function createWindow() {
   });
 
   mainWindow.loadURL('http://localhost:3001/');
+  mainWindow.removeMenu();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
