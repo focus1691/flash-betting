@@ -539,6 +539,7 @@ function createWindow() {
 
   mainWindow.loadURL('http://localhost:3001/');
   mainWindow.removeMenu();
+  mainWindow.setMenu(null);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
