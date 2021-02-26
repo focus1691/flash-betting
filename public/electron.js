@@ -40,6 +40,16 @@ db.setup();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '../build')));
+
+const bundlePath = path.join(__dirname, '../build/index.html');
+app.get('/', (req, res) => res.sendFile(bundlePath));
+app.get('/dashboard', (req, res) => res.sendFile(bundlePath));
+app.get('/getClosedMarketStats', (req, res) => res.sendFile(bundlePath));
+app.get('/authentication', (req, res) => res.sendFile(bundlePath));
+app.get('/validation', (req, res) => res.sendFile(bundlePath));
+app.get('/logout', (req, res) => res.sendFile(bundlePath));
+
 app.use('/', async (req, res, next) => {
   if (!betfair.email && req.cookies.username) {
     betfair.setEmailAddress(req.cookies.username);
@@ -77,29 +87,6 @@ app.use('/', async (req, res, next) => {
     }
   }
   return next();
-});
-
-const publicPath = path.join(__dirname, '../');
-app.use(express.static(path.join(publicPath, 'build')));
-
-app.get('/', (req, res) => {
-  res.sendFile(`${publicPath}build/index.html`);
-});
-
-app.get('/dashboard', (req, res) => {
-  res.sendFile(`${publicPath}build/index.html`);
-});
-app.get('/getClosedMarketStats', (req, res) => {
-  res.sendFile(`${publicPath}build/index.html`);
-});
-app.get('/authentication', (req, res) => {
-  res.sendFile(`${publicPath}build/index.html`);
-});
-app.get('/validation', (req, res) => {
-  res.sendFile(`${publicPath}build/index.html`);
-});
-app.get('/logout', (req, res) => {
-  res.sendFile(`${publicPath}build/index.html`);
 });
 
 app.get('/api/get-subscription-status', (req, res) => {
@@ -547,7 +534,7 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL(`file:///${__dirname}/navigation-index.html`);
+  mainWindow.loadURL('http://localhost:3001/');
 
   mainWindow.on('closed', () => {
     mainWindow = null;
