@@ -531,12 +531,10 @@ function createWindow() {
     height: screenSize.height,
     webPreferences: {
       nodeIntegration: true,
-      webviewTag: true,
     },
   });
 
-  // mainWindow.loadURL('http://localhost:3001/');
-  mainWindow.loadURL(`file://${__dirname}/electron-tabs.html`);
+  mainWindow.loadURL('http://localhost:3001/');
 
   mainWindow.on('closed', () => {
     mainWindow = null;
