@@ -32,6 +32,18 @@ db.setup();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'build')));
+
+  const bundlePath = path.join(__dirname, 'build/index.html');
+  app.get('/', (req, res) => res.sendFile(bundlePath));
+  app.get('/dashboard', (req, res) => res.sendFile(bundlePath));
+  app.get('/getClosedMarketStats', (req, res) => res.sendFile(bundlePath));
+  app.get('/authentication', (req, res) => res.sendFile(bundlePath));
+  app.get('/validation', (req, res) => res.sendFile(bundlePath));
+  app.get('/logout', (req, res) => res.sendFile(bundlePath));
+}
+
 app.use('/', async (req, res, next) => {
   if (!betfair.email && req.cookies.username) {
     betfair.setEmailAddress(req.cookies.username);
@@ -70,20 +82,6 @@ app.use('/', async (req, res, next) => {
   }
   return next();
 });
-
-if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, '../');
-  const bundlePath = `${publicPath}build/index.html`;
-
-  app.use(express.static(path.join(publicPath, 'build')));
-
-  app.get('/', (req, res) => res.sendFile(bundlePath));
-  app.get('/dashboard', (req, res) => res.sendFile(bundlePath));
-  app.get('/getClosedMarketStats', (req, res) => res.sendFile(bundlePath));
-  app.get('/authentication', (req, res) => res.sendFile(bundlePath));
-  app.get('/validation', (req, res) => res.sendFile(bundlePath));
-  app.get('/logout', (req, res) => res.sendFile(bundlePath));
-}
 
 app.get('/api/get-subscription-status', (req, res) => {
   betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID }, async (error, { result }) => {
