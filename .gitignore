@@ -30,3 +30,4 @@ yarn-error.log*
 # Electron experimental
 public/navigation-index.html
 public/navigation-index.js
+public/chrome-like.css
