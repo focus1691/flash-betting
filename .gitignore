@@ -31,3 +31,5 @@ yarn-error.log*
 public/navigation-index.html
 public/navigation-index.js
 public/chrome-like.css
+public/resources/*
+public/material-dark.css

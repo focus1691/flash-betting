@@ -8,7 +8,8 @@ const electronApp = electron.app;
 electronApp.commandLine.appendSwitch('high-dpi-support', 1)
 electronApp.commandLine.appendSwitch('force-device-scale-factor', 1)
 
-const { BrowserWindow } = electron;
+const { remote } = electron;
+const { BrowserWindow } = remote;
 let mainWindow;
 
 const _ = require('lodash');
@@ -532,14 +533,18 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: screenSize.width,
     height: screenSize.height,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
+      webviewTag: true,
     },
   });
 
-  mainWindow.loadURL('http://localhost:3001/');
-  mainWindow.removeMenu();
-  mainWindow.setMenu(null);
+  mainWindow.loadURL(`file:///${__dirname}/navigation-index.html`);
+  // mainWindow.removeMenu();
+  // mainWindow.setMenu(null);
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
