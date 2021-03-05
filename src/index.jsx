@@ -9,7 +9,7 @@ import openSocket from 'socket.io-client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 //* Reducers
-import reducers from './utils/Reducers';
+import reducers from './reducers';
 //* Components
 import Login from './components/Login';
 import Logout from './components/Logout';
