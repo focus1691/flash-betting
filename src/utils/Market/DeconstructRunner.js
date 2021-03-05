@@ -5,7 +5,7 @@ import { iconForEvent } from './EventIcons';
  * @param {object} runner - Ladder information for a runner
  * @return {data} The deconstructed runner
  */
-const DeconstructRunner = (runner, sportId) => {
+export const DeconstructRunner = (runner, sportId) => {
   if (!runner) {
     return {
       name: '',
@@ -21,12 +21,18 @@ const DeconstructRunner = (runner, sportId) => {
       ? `${runner.metadata.CLOTH_NUMBER}. `
       : '',
     logo:
-     runner.metadata.COLOURS_FILENAME && sportId == 7
-       ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${runner.metadata.COLOURS_FILENAME}`
-       : iconForEvent(sportId),
+      runner.metadata.COLOURS_FILENAME && sportId == 7
+        ? `https://content-cache.cdnbf.net/feeds_images/Horses/SilkColours/${runner.metadata.COLOURS_FILENAME}`
+        : iconForEvent(sportId),
     order: runner.order,
   };
   return data;
 };
 
-export { DeconstructRunner };
+export const getTrainerAndJockey = (runner) => {
+  if (runner && runner.metadata && runner.metadata.TRAINER_NAME && runner.metadata.JOCKEY_NAME) {
+    const { TRAINER_NAME, JOCKEY_NAME } = runner.metadata;
+    return `${TRAINER_NAME}, ${JOCKEY_NAME}`;
+  }
+  return null;
+};

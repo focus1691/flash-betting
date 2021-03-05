@@ -7,7 +7,7 @@ import { getRunner, getSportId, getPL } from '../../selectors/marketSelector';
 //* Utils
 import { twoDecimalPlaces } from '../../utils/Bets/BettingCalculations';
 import { iconForEvent } from '../../utils/Market/EventIcons';
-import { getTrainerAndJockey } from '../../utils/Market/GetTrainerAndJockey';
+import { getTrainerAndJockey } from '../../utils/Market/DeconstructRunner';
 import { calcOddsOnPriceHover } from '../../utils/Bets/HedgeProfit';
 import { marketHasBets } from '../../utils/Bets/GetProfitAndLoss';
 //* JSS
@@ -70,7 +70,7 @@ const LadderHeader = memo(({
             {(PL && PL.toFixed(2)) || null}
           </span>
           <div className={classes.runnerDetails}>
-            <span>{getTrainerAndJockey(runner.metadata)}</span>
+            <span>{getTrainerAndJockey(runner)}</span>
           </div>
           <span
             className={classes.runnerodds}
