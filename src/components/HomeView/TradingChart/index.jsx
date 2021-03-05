@@ -9,7 +9,7 @@ import useStyles from '../../../jss/components/HomeView/tradingChartStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
 //* Utils
-import { sortSports } from '../../../utils/Algorithms/SortSports';
+import { sortSports } from '../../../utils/Sort';
 
 export default () => {
   const classes = useStyles();

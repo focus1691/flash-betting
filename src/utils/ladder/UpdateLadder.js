@@ -1,5 +1,5 @@
 import { formatPriceKey, calcBackLayPercentages } from './CreateFullLadder';
-import { sortAsc, sortDes } from '../Algorithms/Sort';
+import { sortAsc, sortDes } from '../Sort';
 
 const UpdateLadder = (ladder, rawData) => {
   if (rawData.ltp) {

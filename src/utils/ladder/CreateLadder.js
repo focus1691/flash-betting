@@ -1,4 +1,4 @@
-import { sortAsc, sortDes } from '../Algorithms/Sort';
+import { sortAsc, sortDes } from '../Sort';
 import { calcBackLayPercentages, formatPriceKey } from './CreateFullLadder';
 
 const CreateLadder = (data) => {
