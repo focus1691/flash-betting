@@ -35,7 +35,7 @@ import Spinner from './Spinner';
 import Siderbar from '../Sidebar';
 import HomeView from '../HomeView';
 import Views from '../Views';
-import SocketContext from '../../SocketContext';
+import SocketContext from '../../contexts/SocketContext';
 import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP

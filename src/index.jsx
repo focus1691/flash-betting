@@ -18,7 +18,7 @@ import ClosedMarketView from './components/ClosedMarketView';
 import Authentication from './components/Authentication';
 import OAuthRedirect from './components/OAuthRedirect';
 //* Contexts
-import SocketContext from './SocketContext';
+import SocketContext from './contexts/SocketContext';
 
 //* Stripe
 const PUBLIC_KEY = 'pk_test_KEJkEziIEKCuTZ1b3Uc5sFrL';
