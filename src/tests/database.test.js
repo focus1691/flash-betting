@@ -1,4 +1,4 @@
-const SQLiteDatabase = require('../../server/Database/SQLite/database');
+const SQLiteDatabase = require('../../server/sqlite/database');
 
 const fakeBet = {
   strategy: 'BACK',
