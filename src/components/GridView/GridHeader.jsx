@@ -10,7 +10,6 @@ import Button from '@material-ui/core/Button';
 import { setStakeInOneClick } from '../../actions/settings';
 //* Utils
 import { sumMatchedBets } from '../../utils/Bets/BettingCalculations';
-import { getStakeButtonStyle } from '../../utils/ColorManipulator';
 import { getHedgedBetsToMake } from '../../utils/TradingStategy/HedingCalculator';
 import { formatTotalMatched } from '../../utils/NumberFormat';
 import { renderRaceStatus } from './RaceStatus';
