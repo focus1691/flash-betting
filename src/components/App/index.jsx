@@ -43,16 +43,15 @@ import fetchData from '../../http/fetchData';
 import { removeBet, updateTicks, updateOrderMatched, getAllBets } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
-import { authErrors } from '../../utils/Errors/ErrorTypes';
 import handleAuthError from '../../utils/Errors/handleAuthError';
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
-import { stopEntryListChange, stopLossCheck } from '../../utils/ExchangeStreaming/MCMHelper';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
-import { checkStopLossTrigger } from '../../utils/TradingStategy/StopLoss';
+import { checkStopLossTrigger, stopLossCheck } from '../../utils/TradingStategy/StopLoss';
+import { stopEntryListChange } from '../../utils/TradingStategy/StopEntry';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 //* Constants

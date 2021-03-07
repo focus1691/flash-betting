@@ -1,4 +1,4 @@
-const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets) => {
+export const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets) => {
   let indexesToRemove = [];
   let ordersToRemove = [];
 
@@ -25,4 +25,21 @@ const stopEntryCheck = async (currentLTP, stopEntryArray, onPlaceOrder, unmatche
   return indexesToRemove;
 };
 
-export { stopEntryCheck };
+export const stopEntryListChange = async (stopEntryList, selectionId, currentLTP, onPlaceOrder, previousNewStopEntryList, unmatchedBets, matchedBets) => {
+  const stopEntryArray = stopEntryList[selectionId];
+  const newStopEntryList = { ...previousNewStopEntryList };
+
+  if (stopEntryArray !== undefined) {
+    try {
+      const indexesToRemove = await stopEntryCheck(currentLTP, stopEntryArray, onPlaceOrder, unmatchedBets, matchedBets);
+      // if the array length has some items left, then keep it
+      if (stopEntryArray.length > indexesToRemove.length) {
+        newStopEntryList[selectionId] = stopEntryArray.filter((item, index) => indexesToRemove.indexOf(index) === -1);
+      } else {
+        delete newStopEntryList[selectionId];
+      }
+    } catch (e) {}
+  }
+
+  return newStopEntryList;
+};

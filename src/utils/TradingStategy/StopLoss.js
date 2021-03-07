@@ -54,3 +54,8 @@ export const findStopPositionForPercent = (size, matchedPrice, LTP, percent, sid
 };
 
 export const checkStopLossTrigger = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;
+
+export const stopLossCheck = ({ units, size, price, side, ticks }, LTP) => {
+  units = units || 'ticks';
+  return checkStopLossHit(size, price, LTP, side, ticks, units);
+};
