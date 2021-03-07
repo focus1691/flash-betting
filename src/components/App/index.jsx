@@ -52,7 +52,7 @@ import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { stopEntryListChange, stopLossCheck } from '../../utils/ExchangeStreaming/MCMHelper';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
-import { checkStopLossTrigger } from '../../utils/ExchangeStreaming/OCMHelper';
+import { checkStopLossTrigger } from '../../utils/TradingStategy/StopLoss';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 //* Constants

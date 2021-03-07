@@ -31,7 +31,7 @@ export const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy)
  * @param {string} side - Back or Lay *REQUIRED*
  * @return {Object} {targetMet, stopPrice}
  */
-export const findStop = (matchedPrice, ticks, side) => {
+export const calcStopLossPrice = (matchedPrice, ticks, side) => {
   matchedPrice = parseFloat(matchedPrice);
   ticks = side == 'BACK' ? +ticks : -ticks;
   const stopAt = Math.floor(ALL_PRICES.indexOf(matchedPrice) + ticks);
@@ -80,4 +80,14 @@ export const findStopPositionForPercent = (size, matchedPrice, LTP, percent, sid
     };
   }
 };
+
+/**
+ * This function checks if the stoploss's corresponding order is matched.
+ * @param {object} stopLossList - The object containing all the stoploss information.
+ * @param {object} selectionId - The id that contains the stoploss that will be focused on.
+ * @param {function} order - The current order state with sizeMatched and rfs.
+ * @return {Boolean} Whether the stop loss has been matched
+ */
+
+export const checkStopLossTrigger = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;
 
