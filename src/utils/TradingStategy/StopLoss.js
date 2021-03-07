@@ -11,7 +11,7 @@ import { ALL_PRICES } from '../ladder/CreateFullLadder';
  * @param {string} strategy - ticks field represents percent if percent is passed
  * @return {Object} {targetMet, stopPrice or stopPrice}
  */
-const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
+export const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
   //* We turn the prices into floating point numbers in case strings are passed
   matchedPrice = Number(matchedPrice);
   LTP = Number(LTP);
@@ -31,15 +31,14 @@ const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
  * @param {string} side - Back or Lay *REQUIRED*
  * @return {Object} {targetMet, stopPrice}
  */
-
-const findStop = (matchedPrice, ticks, side) => {
+export const findStop = (matchedPrice, ticks, side) => {
   matchedPrice = parseFloat(matchedPrice);
   ticks = side == 'BACK' ? +ticks : -ticks;
   const stopAt = Math.floor(ALL_PRICES.indexOf(matchedPrice) + ticks);
   return parseFloat(ALL_PRICES[stopAt]).toFixed(2);
 };
 
-const findStopPosition = (matchedPrice, LTP, ticks, side) => {
+export const findStopPosition = (matchedPrice, LTP, ticks, side) => {
   matchedPrice = parseFloat(matchedPrice);
   LTP = parseFloat(LTP);
   ticks = side == 'BACK' ? +ticks : -ticks;
@@ -61,7 +60,7 @@ const findStopPosition = (matchedPrice, LTP, ticks, side) => {
  * @param {string} side - Back or Lay *REQUIRED*
  * @return {string} The price at which the trade will stop
  */
-const findStopPositionForPercent = (size, matchedPrice, LTP, percent, side) => {
+export const findStopPositionForPercent = (size, matchedPrice, LTP, percent, side) => {
   matchedPrice = parseFloat(matchedPrice);
 
   if (side == 'BACK') {
@@ -82,6 +81,3 @@ const findStopPositionForPercent = (size, matchedPrice, LTP, percent, side) => {
   }
 };
 
-export {
-  checkStopLossHit, findStop, findStopPosition, findStopPositionForPercent,
-};
