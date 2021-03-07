@@ -46,11 +46,13 @@ import Draggable from '../Draggable';
 import handleAuthError from '../../utils/Errors/handleAuthError';
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
+//* Utils > Ladder
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
+//* Utils > Trading Tools
 import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
-import { checkStopLossTrigger, stopLossCheck } from '../../utils/TradingStategy/StopLoss';
+import { checkStopLossTrigger, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
 import { stopEntryListChange } from '../../utils/TradingStategy/StopEntry';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
@@ -281,7 +283,7 @@ const App = ({
                 const SL = { ...stopLossList[mc.rc[i].id] };
                 const prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
 
-                const { targetMet, stopPrice } = stopLossCheck(SL, currentLTP);
+                const { targetMet, stopPrice } = checkStopLossHit(SL, currentLTP);
 
                 if (targetMet) {
                   const newMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == SL.selectionId);

@@ -1,14 +1,16 @@
+/* eslint-disable no-use-before-define */
 import { calcPercentDifference } from '../Bets/BettingCalculations';
 import { ALL_PRICES } from '../ladder/CreateFullLadder';
 
-export const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
-  matchedPrice = Number(matchedPrice);
+export const checkStopLossHit = ({ units, size, price, side, ticks }, LTP) => {
+  price = Number(price);
   LTP = Number(LTP);
+  units = units || 'ticks';
 
-  if (((side === 'BACK' && LTP <= matchedPrice) || (side === 'LAY' && LTP >= matchedPrice))) return { targetMet: false };
-  if (strategy == 'ticks') return findStopPosition(matchedPrice, LTP, ticks, side);
-  if (strategy == 'percent') return findStopPositionForPercent(size, matchedPrice, LTP, ticks, side);
-  return findStopPosition(matchedPrice, LTP, ticks, side);
+  if (((side === 'BACK' && LTP <= price) || (side === 'LAY' && LTP >= price))) return { targetMet: false };
+  if (units == 'ticks') return findStopPosition(price, LTP, ticks, side);
+  if (units == 'percent') return findStopPositionForPercent(size, price, LTP, ticks, side);
+  return findStopPosition(price, LTP, ticks, side);
 };
 
 export const calcStopLossPrice = (matchedPrice, ticks, side) => {
@@ -54,8 +56,3 @@ export const findStopPositionForPercent = (size, matchedPrice, LTP, percent, sid
 };
 
 export const checkStopLossTrigger = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;
-
-export const stopLossCheck = ({ units, size, price, side, ticks }, LTP) => {
-  units = units || 'ticks';
-  return checkStopLossHit(size, price, LTP, side, ticks, units);
-};
