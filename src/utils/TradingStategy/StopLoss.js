@@ -1,18 +1,7 @@
 import { calcPercentDifference } from '../Bets/BettingCalculations';
 import { ALL_PRICES } from '../ladder/CreateFullLadder';
 
-/**
- * This function is used to calculate whether the stop loss has been triggered.
- * @param {number} size - The position of the bet e.g. £10
- * @param {number} matchedPrice - The price the bet was matched at e.g. 2.56
- * @param {number} LTP - The current price the bet is trading at e.g. 3.15
- * @param {string} side - Back or Lay *REQUIRED*
- * @param {number} ticks - Number of ticks for the stop, or percentage of price
- * @param {string} strategy - ticks field represents percent if percent is passed
- * @return {Object} {targetMet, stopPrice or stopPrice}
- */
 export const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy) => {
-  //* We turn the prices into floating point numbers in case strings are passed
   matchedPrice = Number(matchedPrice);
   LTP = Number(LTP);
 
@@ -22,15 +11,6 @@ export const checkStopLossHit = (size, matchedPrice, LTP, side, ticks, strategy)
   return findStopPosition(matchedPrice, LTP, ticks, side);
 };
 
-/**
- * This function is used to calculate the position of the stop loss.
- * For example a matched price of 2.02 for the lay side with a stop loss
- * with 5 ticks would return 1.96 = 2.02 > 2.00 > 1.99 > 1.98 > 1.97 > 1.96
- * @param {number} matchedPrice - The price the bet was matched at e.g. 2.56
- * @param {number} ticks - Number of ticks for the stop, or percentage of price
- * @param {string} side - Back or Lay *REQUIRED*
- * @return {Object} {targetMet, stopPrice}
- */
 export const calcStopLossPrice = (matchedPrice, ticks, side) => {
   matchedPrice = parseFloat(matchedPrice);
   ticks = side == 'BACK' ? +ticks : -ticks;
@@ -52,14 +32,6 @@ export const findStopPosition = (matchedPrice, LTP, ticks, side) => {
   };
 };
 
-/**
- * This function is used to calculate the position of the stop loss for percentages.
- * @param {number} size - The position of the bet e.g. £10
- * @param {number} matchedPrice - The price the bet was matched at e.g. 2.56
- * @param {number} percent - The current percent loss to stop the trade at
- * @param {string} side - Back or Lay *REQUIRED*
- * @return {string} The price at which the trade will stop
- */
 export const findStopPositionForPercent = (size, matchedPrice, LTP, percent, side) => {
   matchedPrice = parseFloat(matchedPrice);
 
@@ -81,13 +53,4 @@ export const findStopPositionForPercent = (size, matchedPrice, LTP, percent, sid
   }
 };
 
-/**
- * This function checks if the stoploss's corresponding order is matched.
- * @param {object} stopLossList - The object containing all the stoploss information.
- * @param {object} selectionId - The id that contains the stoploss that will be focused on.
- * @param {function} order - The current order state with sizeMatched and rfs.
- * @return {Boolean} Whether the stop loss has been matched
- */
-
 export const checkStopLossTrigger = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;
-
