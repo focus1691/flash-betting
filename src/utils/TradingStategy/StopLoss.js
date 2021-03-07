@@ -16,12 +16,12 @@ export const checkStopLossHit = ({ units, size, price, side, ticks }, LTP) => {
   units = units || 'ticks';
 
   if (((side === 'BACK' && LTP <= price) || (side === 'LAY' && LTP >= price))) return { targetMet: false };
-  if (units == 'ticks') return findStopPosition(price, LTP, ticks, side);
-  if (units == 'percent') return findStopPositionForPercent(size, price, LTP, ticks, side);
-  return findStopPosition(price, LTP, ticks, side);
+  if (units == 'ticks') return findStopPositionTicks(price, LTP, ticks, side);
+  if (units == 'percent') return findStopPositionPercent(size, price, LTP, ticks, side);
+  return findStopPositionTicks(price, LTP, ticks, side);
 };
 
-export const findStopPosition = (matchedPrice, LTP, ticks, side) => {
+export const findStopPositionTicks = (matchedPrice, LTP, ticks, side) => {
   matchedPrice = parseFloat(matchedPrice);
   LTP = parseFloat(LTP);
   ticks = side == 'BACK' ? +ticks : -ticks;
@@ -35,7 +35,7 @@ export const findStopPosition = (matchedPrice, LTP, ticks, side) => {
   };
 };
 
-export const findStopPositionForPercent = (size, matchedPrice, LTP, percent, side) => {
+export const findStopPositionPercent = (size, matchedPrice, LTP, percent, side) => {
   matchedPrice = parseFloat(matchedPrice);
 
   if (side == 'BACK') {

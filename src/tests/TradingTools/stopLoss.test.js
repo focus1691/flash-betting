@@ -26,7 +26,7 @@ describe('Calculate the stop price based on the bet price / ticks selected', () 
   });
 });
 
-describe('Calculate the stop loss positions with bad input', () => {
+describe('Calculate the stop loss prices with unexpected input', () => {
   it('String as price / ticks, 2 ticks BACK @ 2.02', () => {
     expect(calcStopLossPrice('2.02', '2', 'BACK')).toEqual(2.06);
   });
