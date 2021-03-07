@@ -1,7 +1,7 @@
 /** An array of all BetFair values between 1.01 to 1000
  * Used in the stop loss check function below
  */
-const ALL_PRICES = Array(100).fill()
+export const ALL_PRICES = Array(100).fill()
   .map((a, l) => parseFloat((l / 100 + 1.01).toFixed(2)))
   .concat(Array(50).fill().map((a, l) => parseFloat((l / 50 + 2.02).toFixed(2))))
   .concat(Array(20).fill().map((a, l) => parseFloat((l / 20 + 3.05).toFixed(2))))
@@ -18,24 +18,18 @@ const ALL_PRICES = Array(100).fill()
  * @param {number} key - The price (1.01 - 1000)
  * @return {string} The formatted price
  */
-const formatPriceKey = (key) => (Math.round(key * 100) / 100).toFixed(2);
+export const formatPriceKey = (key) => (Math.round(key * 100) / 100).toFixed(2);
 
-const formatPrice = (odds) => {
+export const formatPrice = (odds) => {
   odds = parseFloat(odds);
 
-  switch (true) {
-    case odds < 4:
-      return odds.toFixed(2);
-    case odds < 20:
-      return odds.toFixed(1);
-    case odds >= 20:
-      return odds.toFixed(0);
-    default:
-      return odds.toFixed(2);
-  }
+  if (odds < 4) return odds.toFixed(2);
+  if (odds < 20) return odds.toFixed(1);
+  if (odds >= 20) return odds.toFixed(0);
+  return odds.toFixed(2);
 };
 
-const getNextPrice = (prevPrice, nextPrice) => {
+export const getNextPrice = (prevPrice, nextPrice) => {
   if (prevPrice === nextPrice) return prevPrice;
 
   const priceIncreased = prevPrice < nextPrice;
@@ -43,7 +37,7 @@ const getNextPrice = (prevPrice, nextPrice) => {
   return ALL_PRICES[index];
 };
 
-const findPriceStep = (v) => {
+export const findPriceStep = (v) => {
   if (v >= 1.01 && v < 2) {
     return 0.01;
   } if (v >= 2 && v < 3) {
@@ -67,7 +61,7 @@ const findPriceStep = (v) => {
   }
 };
 
-const getPriceNTicksAway = (price, N) => {
+export const getPriceNTicksAway = (price, N) => {
   if (N === undefined || N === null || typeof N !== 'number') return null;
   if (N <= 0) return price;
 
@@ -84,7 +78,7 @@ const getPriceNTicksAway = (price, N) => {
  * @param {number} ltp - The Last Traded Price
  * @return {object} The keys of back/lay price objects 5 places either side of the LTP
  */
-const fivePricesAway = (ltp) => {
+export const fivePricesAway = (ltp) => {
   const index = ALL_PRICES.indexOf(ltp);
 
   return {
@@ -99,7 +93,7 @@ const fivePricesAway = (ltp) => {
  * @param {object} ltp - The Last Traded Price
  * @return {object} The back/lay percentages
  */
-const calcBackLayPercentages = (atbo, atlo, ltp) => {
+export const calcBackLayPercentages = (atbo, atlo, ltp) => {
   if (!ltp) {
     return { back: 0, lay: 0 };
   }
@@ -136,14 +130,4 @@ const calcBackLayPercentages = (atbo, atlo, ltp) => {
   const layPercent = Math.round((layMatched / total) * 100);
 
   return { back: backPercent || 0, lay: layPercent || 0 };
-};
-
-export {
-  formatPriceKey,
-  formatPrice,
-  ALL_PRICES,
-  calcBackLayPercentages,
-  getNextPrice,
-  findPriceStep,
-  getPriceNTicksAway,
 };

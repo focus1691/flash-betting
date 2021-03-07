@@ -1,45 +1,37 @@
-const findTickOffset = (matchedPrice, side, offset, percent = false) => {
-  let i;
+import { ALL_PRICES } from '../ladder/CreateFullLadder';
 
-  const arr = Array(100).fill().map((v, i) => (i / 100 + 1.01).toFixed(2))
-    .concat(Array(50).fill().map((v, i) => (i / 50 + 2.02).toFixed(2)))
-    .concat(Array(20).fill().map((v, i) => (i / 20 + 3.05).toFixed(2)))
-    .concat(Array(20).fill().map((v, i) => (i / 10 + 4.1).toFixed(1)))
-    .concat(Array(20).fill().map((v, i) => (i / 5 + 6.2).toFixed(1)))
-    .concat(Array(19).fill().map((v, i) => (i / 2 + 10.5).toFixed(1)))
-    .concat(Array(11).fill().map((v, i) => (i + 20).toFixed(0)))
-    .concat(Array(10).fill().map((v, i) => (i * 2 + 32).toFixed(0)))
-    .concat(Array(10).fill().map((v, i) => (i * 5 + 55).toFixed(0)))
-    .concat(Array(90).fill().map((v, i) => (i * 10 + 110).toFixed(0)));
-
-  let target = matchedPrice;
+export const calcTickOffsetPrice = (price, side, ticks, percent = false) => {
+  price = Number(price);
 
   if (percent) {
-    const computedPrice = parseFloat(matchedPrice) * (1 - offset / 100);
-    const closestToComputed = arr.sort((a, b) => Math.abs(computedPrice - a) - Math.abs(computedPrice - b));
+    percent = Math.min(Math.max(0, ticks), 1000);
+    const priceFromPercent = ((price * percent) / 100);
+    const target = (side == 'BACK') ? price - priceFromPercent : price + priceFromPercent;
 
-    // takes the lowest value
-    target = closestToComputed[0] < closestToComputed[1] ? closestToComputed[0] : closestToComputed[2];
+    return ALL_PRICES.reduce((a, b) => {
+      const aDiff = Math.abs(a - target);
+      const bDiff = Math.abs(b - target);
 
-    return { priceReached: target };
+      if (aDiff == bDiff) {
+        return a > b ? a : b;
+      }
+      return bDiff < aDiff ? b : a;
+    });
   }
 
-  if (side === 'back') {
-    for (i = arr.indexOf(matchedPrice); i <= 1000; i += 1) {
-      target = arr[i];
-      if (offset - 1 <= 0 || i === 1000) {
-        break;
-      }
-    }
-  } else if (side === 'lay') {
-    for (i = arr.indexOf(matchedPrice); i >= 0; i -= 1) {
-      target = arr[i];
-      if (offset - 1 <= 0 || i === 0) {
-        break;
-      }
-    }
-  }
-  return { priceReached: target };
+  const priceIndex = ALL_PRICES.indexOf(price);
+  if (priceIndex === -1) return null;
+
+  if (side == 'BACK') return ALL_PRICES[Math.max(0, priceIndex - ticks)];
+  if (side == 'LAY') return ALL_PRICES[Math.min(1000, priceIndex + ticks)];
+
+  return null;
 };
 
-export { findTickOffset };
+/**
+ * This function checks if the tick offset matches the percentage needed.
+ * @param {object} tickOffsetList - The object containing all the tickOffset information.
+ * @param {object} order - The current order state with sizeMatched and rfs.
+ * @return {Boolean} Whether or not the tick offset has been matched.
+ */
+export const checkTickOffsetTrigger = (tos, sizeMatched) => tos && sizeMatched / tos.size >= tos.percentageTrigger / 100;

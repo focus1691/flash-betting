@@ -17,7 +17,7 @@ import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from '../..
 import { getStakeVal } from '../../selectors/settingsSelector';
 import { ALL_PRICES, formatPrice } from '../../utils/ladder/CreateFullLadder';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
-import { findTickOffset } from '../../utils/TradingStategy/TickOffset';
+import { calcTickOffsetPrice } from '../../utils/TradingStategy/TickOffset';
 import { findStop } from '../../utils/TradingStategy/StopLoss';
 //* Components
 import Container from './Container';
@@ -210,7 +210,7 @@ const Ladder = memo(
             strategy: 'Tick Offset',
             marketId,
             selectionId,
-            price: findTickOffset(formatPrice(price), side.toLowerCase() === 'lay' ? 'back' : 'lay', tickOffsetTicks, tickOffsetUnits === 'Percent').priceReached,
+            price: calcTickOffsetPrice(price, side, tickOffsetTicks, tickOffsetUnits === 'Percent'),
             size: tickOffsetHedged ? hedgeSize : size,
             side: side === 'BACK' ? 'LAY' : 'BACK',
             percentageTrigger: tickOffsetTrigger,

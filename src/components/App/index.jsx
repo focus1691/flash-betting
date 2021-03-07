@@ -51,7 +51,8 @@ import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { stopEntryListChange, stopLossCheck } from '../../utils/ExchangeStreaming/MCMHelper';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
-import { checkStopLossTrigger, checkTickOffsetTrigger } from '../../utils/ExchangeStreaming/OCMHelper';
+import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
+import { checkStopLossTrigger } from '../../utils/ExchangeStreaming/OCMHelper';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 //* Constants
