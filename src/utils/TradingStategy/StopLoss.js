@@ -2,6 +2,14 @@
 import { calcPercentDifference } from '../Bets/BettingCalculations';
 import { ALL_PRICES } from '../ladder/CreateFullLadder';
 
+export const calcStopLossPrice = (price, ticks, side) => {
+  price = Number(price);
+  ticks = side == 'BACK' ? +ticks : -ticks; // Add for back, subtract for lay
+  let indexToStop = ALL_PRICES.indexOf(price) + ticks; // Price index
+  indexToStop = Math.min(Math.max(0, indexToStop), ALL_PRICES.length - 1); // Must be between 1.01 - 1000
+  return ALL_PRICES[indexToStop];
+};
+
 export const checkStopLossHit = ({ units, size, price, side, ticks }, LTP) => {
   price = Number(price);
   LTP = Number(LTP);
@@ -11,13 +19,6 @@ export const checkStopLossHit = ({ units, size, price, side, ticks }, LTP) => {
   if (units == 'ticks') return findStopPosition(price, LTP, ticks, side);
   if (units == 'percent') return findStopPositionForPercent(size, price, LTP, ticks, side);
   return findStopPosition(price, LTP, ticks, side);
-};
-
-export const calcStopLossPrice = (matchedPrice, ticks, side) => {
-  matchedPrice = parseFloat(matchedPrice);
-  ticks = side == 'BACK' ? +ticks : -ticks;
-  const stopAt = Math.floor(ALL_PRICES.indexOf(matchedPrice) + ticks);
-  return parseFloat(ALL_PRICES[stopAt]).toFixed(2);
 };
 
 export const findStopPosition = (matchedPrice, LTP, ticks, side) => {
