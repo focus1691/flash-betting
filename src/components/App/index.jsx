@@ -283,7 +283,7 @@ const App = ({
                 const SL = { ...stopLossList[mc.rc[i].id] };
                 const prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
 
-                const { targetMet, stopPrice } = checkStopLossHit(SL, currentLTP);
+                const targetMet = checkStopLossHit(SL, currentLTP);
 
                 if (targetMet) {
                   const newMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == SL.selectionId);
@@ -292,7 +292,7 @@ const App = ({
                     selectionId: SL.selectionId,
                     side: SL.side,
                     size: CalculateLadderHedge(parseFloat(SL.price), newMatchedBets, 'hedged').size,
-                    price: stopPrice,
+                    price: SL.price,
                     customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
                   });
                   removeStopLoss({ selectionId: SL.selectionId }); // Remove the SL
