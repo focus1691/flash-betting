@@ -14,24 +14,6 @@ const sumMatchedBets = (ladder) => {
   return sum ? Math.floor(sum) : '';
 };
 
-/**
- * This function calculates the percent difference between matched and current prices.
- * @param {number} size - The ladder containing the price data for a runner.
- * @param {number} matchedPrice - The price the bet was placed at for runner.
- * @param {number} currentPrice - The current trading price of the runner
- * @return {percentDifference} The percent increase or decrease.
- */
-const calcPercentDifference = (size, matchedPrice, currentPrice) => {
-  const initialPL = Math.round((size * matchedPrice - size) * 100) / 100;
-  const currPL = Math.round((size * currentPrice - size) * 100) / 100;
-
-  // Round to remove the decimals and absolute to remove negatives
-  let percentDifference = Math.abs(Math.round((currPL - initialPL) * 100) / 100) / currPL * 100;
-  percentDifference = Math.floor(percentDifference);
-
-  return percentDifference;
-};
-
 const twoDecimalPlaces = (num) => parseFloat((Math.round(num * 100) / 100).toFixed(2));
 
 const calcBackProfit = (stake, price, side) => {
@@ -111,7 +93,6 @@ const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartTime) =>
 
 export {
   sumMatchedBets,
-  calcPercentDifference,
   calcBackProfit,
   calcLiability,
   colorForBack,

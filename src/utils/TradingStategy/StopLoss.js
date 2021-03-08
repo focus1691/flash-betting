@@ -1,5 +1,3 @@
-/* eslint-disable no-use-before-define */
-import { calcPercentDifference } from '../Bets/BettingCalculations';
 import { ALL_PRICES } from '../ladder/CreateFullLadder';
 
 export const calcStopLossPrice = (price, ticks, side, percent = false) => {
