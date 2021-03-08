@@ -32,16 +32,15 @@ const LadderOrderCell = memo(({
   const handleRightClick = useCallback(() => (e) => {
     e.preventDefault();
 
-    if (!_.isEmpty(stopLoss)) {
-      replaceStopLoss(stopLoss, {
-        selectionId,
-        stakeVal,
-        price: formatPrice(price),
-        units: stopLossUnits,
-        stopLossHedged,
-      });
-    }
-  }, [price, replaceStopLoss, selectionId, stakeVal, stopLoss, stopLossHedged, stopLossUnits]);
+    replaceStopLoss(stopLoss, {
+      selectionId,
+      stakeVal,
+      side,
+      price: formatPrice(price),
+      units: stopLossUnits,
+      stopLossHedged,
+    });
+  }, [price, replaceStopLoss, selectionId, side, stakeVal, stopLoss, stopLossHedged, stopLossUnits]);
 
   const handleMouseEnter = useCallback(() => {
     setOddsHovered({ selectionId, odds: price, side });

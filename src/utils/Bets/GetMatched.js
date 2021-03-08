@@ -21,9 +21,10 @@ const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, pendi
 };
 
 const textForOrderCell = (stopLoss, totalMatched) => {
-  if (stopLoss && stopLoss.stopLoss) { // stop loss on cell
-    if (stopLoss.stopLoss.hedged) return 'H';
-    return stopLoss.stopLoss.size;
+  if (stopLoss) {
+    const { hedged, size } = stopLoss;
+    if (hedged) return 'H';
+    return size;
   }
   if (totalMatched > 0) {
     return totalMatched;

@@ -63,30 +63,32 @@ export const setStopLossBetMatched = (data) => ({
   payload: data,
 });
 
-export const replaceStopLoss = async (SL, data) => {
+export const replaceStopLoss = async (SL, { selectionId, stakeVal, price, side, stopLossUnits, stopLossHedged }) => {
   return async (dispatch) => {
-    //* Just remove it if the stop loss position is clicked
-    if (SL && SL.stopLoss) {
-      removeBet({ rfs: SL.rfs });
-      dispatch(removeStopLoss({ selectionId: data.selectionId }));
+    if (SL) {
+      side = side.toUpperCase();
+      //* Just remove it if the stop loss position is clicked
+      if (SL.price == price && SL.side == side) {
+        removeBet({ rfs: SL.rfs });
+        dispatch(removeStopLoss({ selectionId }));
+      } else {
+        //* Change the stop position otherwise
+        removeBet({ rfs: SL.rfs });
+        const newStopLoss = {
+          rfs: SL.rfs,
+          size: stakeVal,
+          price,
+          units: stopLossUnits,
+          custom: true,
+          assignedIsOrderMatched: false,
+          tickOffset: 0,
+          hedged: stopLossHedged,
+        };
+        updateStoredStopLoss(newStopLoss);
+        dispatch(updateStopLoss(newStopLoss));
+      }
     }
-    //* Change the stop position otherwise
-    else if (stopLossList[data.selectionId]) {
-      removeBet({ rfs: stopLossList[data.selectionId].rfs });
-      const SL = {
-        rfs: stopLossList[data.selectionId].rfs,
-        size: data.stakeVal,
-        price: data.price,
-        units: data.stopLossUnits,
-        custom: true,
-        assignedIsOrderMatched: false,
-        tickOffset: 0,
-        hedged: data.stopLossHedged,
-      };
-      updateStoredStopLoss(SL);
-      dispatch(updateStopLoss(SL));
-    }
-  };
+  }
 };
 
 export const removeAllStopLoss = () => ({
