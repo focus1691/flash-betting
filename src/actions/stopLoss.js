@@ -63,11 +63,11 @@ export const setStopLossBetMatched = (data) => ({
   payload: data,
 });
 
-export const replaceStopLoss = async (SL, stopLossList, data) => {
+export const replaceStopLoss = async (SL, data) => {
   return async (dispatch) => {
     //* Just remove it if the stop loss position is clicked
     if (SL && SL.stopLoss) {
-      removeBet({ rfs: stopLossList[data.selectionId].rfs });
+      removeBet({ rfs: SL.rfs });
       dispatch(removeStopLoss({ selectionId: data.selectionId }));
     }
     //* Change the stop position otherwise

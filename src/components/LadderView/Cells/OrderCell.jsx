@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, {
   useState, memo, useMemo, useCallback,
 } from 'react';
@@ -13,7 +14,7 @@ import { getTotalMatched, orderStyle, textForOrderCell } from '../../../utils/Be
 import { formatPrice } from '../../../utils/ladder/CreateFullLadder';
 
 const LadderOrderCell = memo(({
-  selectionId, side, price, marketId, handlePlaceOrder, stopLossList, stopLoss, stopLossUnits, stopLossHedged,
+  selectionId, side, price, marketId, handlePlaceOrder, stopLoss, stopLossUnits, stopLossHedged,
   stopLossSelected, tickOffset, hedgeSize, stakeVal, cellMatched, replaceStopLoss,
 }) => {
   const [betPending, setBetPending] = useState(false);
@@ -24,21 +25,23 @@ const LadderOrderCell = memo(({
   const handleClick = useCallback(async () => {
     if (betPending) return;
     setBetPending(true);
-    await handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, !!stopLoss, stopLossUnits, hedgeSize);
+    await handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, _.isEmpty(stopLoss), stopLossUnits, hedgeSize);
     setBetPending(false);
   }, [betPending, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossSelected, stopLossUnits]);
 
   const handleRightClick = useCallback(() => (e) => {
     e.preventDefault();
 
-    replaceStopLoss(stopLoss, stopLossList, {
-      selectionId,
-      stakeVal,
-      price: formatPrice(price),
-      units: stopLossUnits,
-      stopLossHedged,
-    });
-  }, [price, replaceStopLoss, selectionId, stakeVal, stopLoss, stopLossHedged, stopLossList, stopLossUnits]);
+    if (!_.isEmpty(stopLoss)) {
+      replaceStopLoss(stopLoss, {
+        selectionId,
+        stakeVal,
+        price: formatPrice(price),
+        units: stopLossUnits,
+        stopLossHedged,
+      });
+    }
+  }, [price, replaceStopLoss, selectionId, stakeVal, stopLoss, stopLossHedged, stopLossUnits]);
 
   const handleMouseEnter = useCallback(() => {
     setOddsHovered({ selectionId, odds: price, side });
@@ -68,7 +71,6 @@ const mapStateToProps = (state, props) => ({
   marketId: state.market.marketId,
 
   //* SL
-  stopLossList: state.stopLoss.list,
   stopLoss: getStopLoss(state.stopLoss.list, props),
   stopLossSelected: state.stopLoss.selected,
   stopLossUnits: state.stopLoss.units,
