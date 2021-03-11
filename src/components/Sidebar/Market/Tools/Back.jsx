@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import crypto from 'crypto';
@@ -12,6 +13,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList } from '../../../../actions/back';
+//* Utils
 import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/backLayStyle';
@@ -75,7 +77,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
 
   // Handle Submit click to place an order
   const placeOrder = async () => {
-    if (selections) {
+    if (!_.isEmpty(selections)) {
       const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
       const newBackList = { ...list };
