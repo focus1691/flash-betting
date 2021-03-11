@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import crypto from 'crypto';
@@ -10,7 +11,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setLTPOperator, setTicks, setStake, setPrice, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
@@ -72,36 +72,38 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
   );
 
   // Handle Submit click to place an order
-  const placeOrder = () => async () => {
-    const selectedRunners = typeof selections === 'string' ? [selections] : selections;
+  const placeOrder = async () => {
+    if (!_.isEmpty(selections)) {
+      const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
-    const newStopEntryList = { ...stopEntryList };
+      const newStopEntryList = { ...stopEntryList };
 
-    await Promise.all(
-      selectedRunners.map(async (selectionId) => {
-        const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
-        const addedOrder = {
-          strategy: 'Stop Entry',
-          marketId,
-          selectionId,
-          targetLTP: ticks,
-          stopEntryCondition: operator,
-          side,
-          size: stake,
-          price: formatPrice(price),
-          rfs: referenceStrategyId,
-        };
-        saveBet(addedOrder);
+      await Promise.all(
+        selectedRunners.map(async (selectionId) => {
+          const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+          const addedOrder = {
+            strategy: 'Stop Entry',
+            marketId,
+            selectionId,
+            targetLTP: ticks,
+            stopEntryCondition: operator,
+            side,
+            size: stake,
+            price: formatPrice(price),
+            rfs: referenceStrategyId,
+          };
+          saveBet(addedOrder);
 
-        if (!newStopEntryList[selectionId]) {
-          newStopEntryList[selectionId] = [addedOrder];
-        } else {
-          newStopEntryList[selectionId] = newStopEntryList[selectionId].concat(addedOrder);
-        }
-      }),
-    );
+          if (!newStopEntryList[selectionId]) {
+            newStopEntryList[selectionId] = [addedOrder];
+          } else {
+            newStopEntryList[selectionId] = newStopEntryList[selectionId].concat(addedOrder);
+          }
+        }),
+      );
 
-    updateStopEntryList(newStopEntryList);
+      updateStopEntryList(newStopEntryList);
+    }
   };
 
   return (
@@ -143,7 +145,7 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
         <TextField className={classes.backPriceTextFields} type="number" label="Back" value={stake} inputProps={{ min: '1' }} onChange={(e) => setStake(e.target.value)} margin="normal" />
         <TextField className={classes.backPriceTextFields} type="number" label="@" value={price} inputProps={{ min: '1.00', max: '1000', step }} onChange={updateStep} margin="normal" />
       </div>
-      <Button variant="outlined" className={classes.button} onClick={placeOrder()}>
+      <Button variant="outlined" className={classes.button} onClick={placeOrder}>
         Submit
       </Button>
     </div>
