@@ -95,34 +95,36 @@ const Lay = ({
   );
 
   // Handle Submit click to place an order
-  const placeOrder = () => async () => {
-    const selectedRunners = typeof selections === 'string' ? [selections] : selections;
+  const placeOrder = async () => {
+    if (selections) {
+      const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
-    const newLayList = { ...list };
-
-    await Promise.all(
-      selectedRunners.map(async (selectionId) => {
-        const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-        const addedOrder = {
-          strategy: 'Lay',
-          marketId,
-          selectionId,
-          executionTime,
-          timeOffset: hours * 3600 + minutes * 60 + seconds,
-          size: stake,
-          price: formatPrice(price),
-          rfs: customerStrategyRef,
-        };
-        saveBet(addedOrder);
-
-        if (!newLayList[selectionId]) {
-          newLayList[selectionId] = [addedOrder];
-        } else {
-          newLayList[selectionId] = newLayList[selectionId].concat(addedOrder);
-        }
-      }),
-    );
-    updateLayList(newLayList);
+      const newLayList = { ...list };
+  
+      await Promise.all(
+        selectedRunners.map(async (selectionId) => {
+          const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+          const addedOrder = {
+            strategy: 'Lay',
+            marketId,
+            selectionId,
+            executionTime,
+            timeOffset: hours * 3600 + minutes * 60 + seconds,
+            size: stake,
+            price: formatPrice(price),
+            rfs: customerStrategyRef,
+          };
+          saveBet(addedOrder);
+  
+          if (!newLayList[selectionId]) {
+            newLayList[selectionId] = [addedOrder];
+          } else {
+            newLayList[selectionId] = newLayList[selectionId].concat(addedOrder);
+          }
+        }),
+      );
+      updateLayList(newLayList);
+    }
   };
 
   return (
@@ -165,7 +167,7 @@ const Lay = ({
           onChange={updateStep}
           margin="normal"
         />
-        <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder()}>
+        <Button variant="outlined" color="primary" className={classes.button} onClick={placeOrder}>
           Submit
         </Button>
       </div>

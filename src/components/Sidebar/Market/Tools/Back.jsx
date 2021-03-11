@@ -75,34 +75,36 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
 
   // Handle Submit click to place an order
   const placeOrder = async () => {
-    const selectedRunners = typeof selections === 'string' ? [selections] : selections;
+    if (selections) {
+      const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
-    const newBackList = { ...list };
-
-    await Promise.all(
-      selectedRunners.map(async (selectionId) => {
-        const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-        const addedOrder = {
-          strategy: 'Back',
-          marketId,
-          selectionId,
-          executionTime,
-          timeOffset: hours * 3600 + minutes * 60 + seconds,
-          size: stake,
-          price: formatPrice(price),
-          rfs: customerStrategyRef,
-        };
-
-        saveBet(addedOrder);
-
-        if (!newBackList[selectionId]) {
-          newBackList[selectionId] = [addedOrder];
-        } else {
-          newBackList[selectionId] = newBackList[selectionId].concat(addedOrder);
-        }
-      }),
-    );
-    updateBackList(newBackList);
+      const newBackList = { ...list };
+  
+      await Promise.all(
+        selectedRunners.map(async (selectionId) => {
+          const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+          const addedOrder = {
+            strategy: 'Back',
+            marketId,
+            selectionId,
+            executionTime,
+            timeOffset: hours * 3600 + minutes * 60 + seconds,
+            size: stake,
+            price: formatPrice(price),
+            rfs: customerStrategyRef,
+          };
+  
+          saveBet(addedOrder);
+  
+          if (!newBackList[selectionId]) {
+            newBackList[selectionId] = [addedOrder];
+          } else {
+            newBackList[selectionId] = newBackList[selectionId].concat(addedOrder);
+          }
+        }),
+      );
+      updateBackList(newBackList);
+    }
   };
 
   return (
