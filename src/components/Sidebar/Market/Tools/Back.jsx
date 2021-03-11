@@ -36,7 +36,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
     setSelections(Object.keys(runners).map((key) => [runners[key].selectionId]));
   }, [setSelections, runners]);
 
-  const handleClickListItem = () => (e) => {
+  const handleClickListItem = (e) => {
     setAnchorEl(e.currentTarget);
   };
 
@@ -81,7 +81,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
       const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
       const newBackList = { ...list };
-  
+
       await Promise.all(
         selectedRunners.map(async (selectionId) => {
           const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
@@ -95,9 +95,9 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
             price: formatPrice(price),
             rfs: customerStrategyRef,
           };
-  
+
           saveBet(addedOrder);
-  
+
           if (!newBackList[selectionId]) {
             newBackList[selectionId] = [addedOrder];
           } else {
@@ -112,7 +112,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
   return (
     <>
       <List component="nav">
-        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
+        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem}>
           <ListItemText primary="Selections to back" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Back All / The Field') : ''} className={classes.selectedRunner} />
         </ListItem>
       </List>

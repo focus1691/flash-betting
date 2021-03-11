@@ -22,27 +22,7 @@ import StyledMenuItem from '../../../../jss/StyledMenuItem';
 //* HTTP
 import { saveBet } from '../../../../http/dbHelper';
 
-const Lay = ({
-  stake,
-  price,
-  hours,
-  minutes,
-  seconds,
-  executionTime,
-  marketId,
-  runners,
-  selections,
-  list,
-  setDisplayText,
-  setStake,
-  setPrice,
-  setHours,
-  setMinutes,
-  setSeconds,
-  toggleExecutionTime,
-  setSelections,
-  updateLayList,
-}) => {
+const Lay = ({ stake, price, hours, minutes, seconds, executionTime, marketId, runners, selections, list, setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateLayList }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [step, setStep] = useState(findPriceStep(price));
@@ -57,7 +37,7 @@ const Lay = ({
     setSelections(Object.keys(runners).map((key) => [runners[key].selectionId]));
   }, [setSelections, runners]);
 
-  const handleClickListItem = () => (e) => {
+  const handleClickListItem = (e) => {
     setAnchorEl(e.currentTarget);
   };
 
@@ -102,7 +82,7 @@ const Lay = ({
       const selectedRunners = typeof selections === 'string' ? [selections] : selections;
 
       const newLayList = { ...list };
-  
+
       await Promise.all(
         selectedRunners.map(async (selectionId) => {
           const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
@@ -117,7 +97,7 @@ const Lay = ({
             rfs: customerStrategyRef,
           };
           saveBet(addedOrder);
-  
+
           if (!newLayList[selectionId]) {
             newLayList[selectionId] = [addedOrder];
           } else {
@@ -132,7 +112,7 @@ const Lay = ({
   return (
     <>
       <List component="nav">
-        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem()}>
+        <ListItem button aria-haspopup="true" aria-controls="lock-menu" onClick={handleClickListItem}>
           <ListItemText primary="Selections to lay" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'Lay All / The Field') : ''} className={classes.selectedRunner} />
         </ListItem>
       </List>
