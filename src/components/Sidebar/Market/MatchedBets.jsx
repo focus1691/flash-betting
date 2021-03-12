@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import uuid from 'react-uuid'
+import clsx from 'clsx';
+import uuid from 'react-uuid';
 import { connect } from 'react-redux';
 //* Utils
 import { calcBackProfit, twoDecimalPlaces } from '../../../utils/Bets/BettingCalculations';
@@ -10,18 +11,13 @@ import useStyles from '../../../jss/components/Sidebar/market/betsStyle';
 const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
   const classes = useStyles();
   const selections = useMemo(() => combinePartiallyMatchedBets(bets), [bets]);
-  console.log(bets);
-
   return (
     <div>
       <table className={classes.menuBets}>
         <tbody>
           <tr className={classes.heading}>
             <td>
-              <button
-                type="button"
-                className={classes.button}
-              />
+              <button type="button" className={classes.button} />
             </td>
             <td>Odds</td>
             <td>Stake</td>
@@ -34,18 +30,16 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
           </tr>
           {marketOpen
             ? selections.map((selection) => {
-              const selectionObject = runners[selection];
-              if (!selectionObject) return null;
+                const selectionObject = runners[selection];
+                if (!selectionObject) return null;
 
-              const filteredOrders = Object.values(bets.matched).filter((order) => order.selectionId === selection);
-              return (
-
-                <React.Fragment key={`sidebar-matched-bet-${selection}-${uuid()}`}>
-                  <tr className={classes.selection} colSpan={4}>
-                    <td>{selectionObject.runnerName}</td>
-                  </tr>
-                  {
-                    filteredOrders.map((order) => {
+                const filteredOrders = Object.values(bets.matched).filter((order) => order.selectionId === selection);
+                return (
+                  <React.Fragment key={`sidebar-matched-bet-${selection}-${uuid()}`}>
+                    <tr className={classes.selection} colSpan={4}>
+                      <td>{selectionObject.runnerName}</td>
+                    </tr>
+                    {filteredOrders.map((order) => {
                       const PL = calcBackProfit(order.size, order.price, order.side === 'BACK' ? 0 : 1);
                       return (
                         <React.Fragment key={`sidebar-matched-bet-filtered-${order.selectionId}-${uuid()}`}>
@@ -62,28 +56,21 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
                             <td>{twoDecimalPlaces(order.price)}</td>
                             <td>{order.sizeMatched}</td>
                             <td
-                              className={classes.profitLoss}
-                              style={{
-                                color:
-                                  PL === '0.00'
-                                    ? 'black'
-                                    : PL > 0
-                                      ? 'green'
-                                      : 'red',
-                              }}
+                              className={clsx(classes.profitLoss, {
+                                [classes.neutral]: PL == 0,
+                                [classes.profit]: PL > 0,
+                                [classes.loss]: PL < 0,
+                              })}
                             >
                               {PL}
                             </td>
                           </tr>
-
                         </React.Fragment>
                       );
-                    })
-                  }
-                </React.Fragment>
-
-              );
-            })
+                    })}
+                  </React.Fragment>
+                );
+              })
             : null}
         </tbody>
       </table>

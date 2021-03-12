@@ -19,6 +19,30 @@ const columns = [
   { id: 'win', label: 'Status' },
 ];
 
+const calculateNewPlacedDate = (bet) => {
+  const betPlacedDate = new Date(bet.placedDate);
+  const currentDate = new Date(Date.now()).getDate();
+  const placedDate = betPlacedDate.getDate();
+
+  const currentMonth = new Date(Date.now()).getMonth();
+  const placedMonth = betPlacedDate.getMonth();
+
+  const betPlacedOnDiffDay = currentMonth !== placedMonth || placedDate > currentDate || placedDate < currentDate;
+
+  const newPlacedDate = betPlacedOnDiffDay ? betPlacedDate.toLocaleString('en-GB', { hour12: false }) : betPlacedDate.toLocaleTimeString(betPlacedDate, { hour12: false });
+
+  return { ...bet, placedDate: newPlacedDate };
+};
+
+const getRunner = (bet, runners) => ({ ...bet, selection: runners[bet.selectionId] });
+
+const getStatus = (bet, runners) => {
+  if (runners) {
+    return { ...bet, win: runners[bet.selectionId].status === 'WINNER' };
+  }
+  return bet;
+};
+
 const BetsPlaced = ({ matchedBets, runners = [] }) => {
   const classes = useStyles();
   const runnersObject = {};
@@ -59,8 +83,8 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
                         {column.id === 'sizeMatched' ? (
                           <span
                             className={clsx(classes.betSide, {
-                              [isSideBack]: classes.backText,
-                              [!isSideBack]: classes.layText,
+                              [classes.backText]: isSideBack,
+                              [classes.layText]: !isSideBack,
                             })}
                           >
                             {isSideBack ? 'BACK' : 'LAY'}
@@ -69,8 +93,8 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
                         {column.id === 'win' ? (
                           <span
                             className={clsx(classes.betOutcome, {
-                              [column.win]: classes.betWin,
-                              [!column.win]: classes.betLose,
+                              [classes.betWin]: column.win,
+                              [classes.betLose]: !column.win,
                             })}
                           >
                             {column.win ? 'Won' : 'Lost'}
@@ -88,30 +112,6 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
       </Paper>
     </div>
   );
-};
-
-const calculateNewPlacedDate = (bet) => {
-  const betPlacedDate = new Date(bet.placedDate);
-  const currentDate = new Date(Date.now()).getDate();
-  const placedDate = betPlacedDate.getDate();
-
-  const currentMonth = new Date(Date.now()).getMonth();
-  const placedMonth = betPlacedDate.getMonth();
-
-  const betPlacedOnDiffDay = currentMonth !== placedMonth || placedDate > currentDate || placedDate < currentDate;
-
-  const newPlacedDate = betPlacedOnDiffDay ? betPlacedDate.toLocaleString('en-GB', { hour12: false }) : betPlacedDate.toLocaleTimeString(betPlacedDate, { hour12: false });
-
-  return { ...bet, placedDate: newPlacedDate };
-};
-
-const getRunner = (bet, runners) => ({ ...bet, selection: runners[bet.selectionId] });
-
-const getStatus = (bet, runners) => {
-  if (runners) {
-    return { ...bet, win: runners[bet.selectionId].status === 'WINNER' };
-  }
-  return bet;
 };
 
 export default BetsPlaced;

@@ -44,6 +44,15 @@ const useStyles = makeStyles(() => ({
   profitLoss: {
     fontWeight: 'bold',
   },
+  profit: {
+    color: '#85ff85',
+  },
+  loss: {
+    color: '#ea5b5b',
+  },
+  neutral: {
+    color: 'black',
+  },
 }));
 
 export default useStyles;
