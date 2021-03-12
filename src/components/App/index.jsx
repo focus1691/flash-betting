@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
@@ -29,7 +30,7 @@ import { updateBackList } from '../../actions/back';
 import { updateLayList } from '../../actions/lay';
 import { updateStopLossList, setStopLossBetMatched, removeStopLoss } from '../../actions/stopLoss';
 import { updateTickOffsetList, removeTickOffset } from '../../actions/tickOffset';
-import { updateStopEntryList } from '../../actions/stopEntry';
+import { updateStopEntryList, removeMultiSelectionStopEntryBets } from '../../actions/stopEntry';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
 import Spinner from './Spinner';
 import Siderbar from '../Sidebar';
@@ -53,7 +54,7 @@ import { CreateLadder } from '../../utils/ladder/CreateLadder';
 //* Utils > Trading Tools
 import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
 import { checkStopLossTrigger, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
-import { stopEntryListChange } from '../../utils/TradingStategy/StopEntry';
+import { checkStopEntryTargetMet } from '../../utils/TradingStategy/StopEntry';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 //* Constants
@@ -99,6 +100,7 @@ const App = ({
   removeTickOffset,
   updateTickOffsetList,
   updateStopEntryList,
+  removeMultiSelectionStopEntryBets,
   updateLayList,
   updateBackList,
   placeOrder,
@@ -242,7 +244,6 @@ const App = ({
    */
   const onReceiveMarketMessage = useCallback(
     (data) => {
-      let i;
 
       if (data.clk) setClk(data.clk);
       if (data.initialClk) setInitialClk(data.initialClk);
@@ -253,7 +254,7 @@ const App = ({
 
         // Update the market status
         if (mc.marketDefinition) {
-          for (i = 0; i < mc.marketDefinition.runners.length; i += 1) {
+          for (let i = 0; i < mc.marketDefinition.runners.length; i += 1) {
             if (mc.marketDefinition.runners[i].status === 'REMOVED') {
               if (mc.marketDefinition.runners[i].id in ladders) {
                 delete ladders[mc.marketDefinition.runners[i].id];
@@ -267,8 +268,7 @@ const App = ({
         }
 
         if (mc.rc) {
-          let newStopEntryList = { ...stopEntryList };
-          for (i = 0; i < mc.rc.length; i += 1) {
+          for (let i = 0; i < mc.rc.length; i += 1) {
             if (ladders[mc.rc[i].id]) {
               //* Runner found so we update our object with the mc runner data
               ladders[mc.rc[i].id] = UpdateLadder(ladders[mc.rc[i].id], mc.rc[i]);
@@ -276,7 +276,18 @@ const App = ({
               const currentLTP = mc.rc[i].ltp || ladders[mc.rc[i].id].ltp[0];
 
               // stop Entry
-              newStopEntryList = await stopEntryListChange(stopEntryList, mc.rc[i].id, currentLTP, placeOrder, newStopEntryList, unmatchedBets, matchedBets);
+              const stopEntryBetsToRemove = checkStopEntryTargetMet(stopEntryList, mc.rc[i].id, currentLTP);
+              if (!_.isEmpty(stopEntryBetsToRemove)) {
+                for (let i = 0; i < stopEntryBetsToRemove.length; i += 1) {
+                  const { marketId, selectionId, side, size, price } = stopEntryBetsToRemove; 
+                  placeOrder({
+                    marketId, selectionId, side, size, price,
+                    customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
+                  });
+                  removeBet({ rfs: stopEntryBetsToRemove[i].rfs });
+                }
+                removeMultiSelectionStopEntryBets(stopEntryBetsToRemove.map(({ rfs }) => rfs));
+              }
 
               // Increment and check the stoplosses
               if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
@@ -332,8 +343,6 @@ const App = ({
               }
             }
           }
-          if (Object.keys(stopEntryList).length > 0) updateStopEntryList(newStopEntryList);
-
           setUpdates(ladders);
           setIsUpdated(false);
         }
@@ -605,6 +614,7 @@ const mapDispatchToProps = {
   removeTickOffset,
   updateTickOffsetList,
   updateStopEntryList,
+  removeMultiSelectionStopEntryBets,
   updateLayList,
   updateBackList,
   placeOrder,

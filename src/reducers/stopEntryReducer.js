@@ -54,6 +54,14 @@ const reducer = (state = initialState, action) => {
           [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => v.side !== action.payload.side)],
         },
       };
+    case 'REMOVE_MULTI_SELECTION_STOP_ENTRY_BETS':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: [...state.list[action.payload.selectionId].filter((v) => !action.payload.betsToRemove.includes(v.rfs))],
+        },
+      };
     case 'REMOVE_ALL_SELECTION_STOP_ENTRY_BETS':
       return {
         ...state,
