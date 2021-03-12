@@ -26,11 +26,13 @@ const ActiveBets = () => {
   }, []);
 
   return (
-    <List>
+    <List className={classes.allSports}>
       {bets.map((bet) => (
         <>
-          <ListItem key={`active-bets-${bet.marketId}`} button onClick={openMarket(bet.marketId)}>
-            <ListItemText className={classes.activeBetName}>{bet.event.name}</ListItemText>
+          <ListItem key={`active-bets-${bet.event.name}`}>
+            <ListItem button onClick={openMarket(bet.marketId)}>
+              <ListItemText className={classes.activeBetName}>{bet.event.name}</ListItemText>
+            </ListItem>
           </ListItem>
           <Divider />
         </>

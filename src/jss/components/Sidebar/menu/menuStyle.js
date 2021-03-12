@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& ul': {
-        zIndex: '1',
+      zIndex: '1',
     },
     '& li': {
       display: 'flex',
@@ -29,7 +29,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   activeBetName: {
-    color: '#0000FF',
+    '& span': {
+      color: '#c7c2c2',
+      fontWeight: '700',
+      fontFamily: '"Roboto"',
+    },
   },
 }));
 
