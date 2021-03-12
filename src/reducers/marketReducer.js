@@ -1,3 +1,5 @@
+import { getOppositeSide } from '../utils/Bets/GetOppositeSide';
+
 const initialState = {
   marketOpen: false,
   marketId: null,
@@ -76,7 +78,7 @@ const reducer = (state = initialState, action) => {
             ...state.runners[action.payload.id],
             order: {
               ...state.runners[action.payload.id].order,
-              backLay: action.payload.backLay,
+              side: action.payload.side,
               stake: action.payload.stake,
               price: action.payload.price,
               visible: action.payload.visible,
@@ -163,7 +165,7 @@ const reducer = (state = initialState, action) => {
             ...state.runners[action.payload.id],
             order: {
               ...state.runners[action.payload.id].order,
-              backLay: state.runners[action.payload.id].order.backLay ^ 1,
+              side: getOppositeSide(state.runners[action.payload.id].order.side),
             },
           },
         },

@@ -29,7 +29,7 @@ const calcLiability = (stake, side) => {
 };
 
 const colorForBack = (side, pl = 0) => {
-  if (side === 0 && pl > 0) return '#01CC41';
+  if (side === 'BACK' && pl > 0) return '#01CC41';
   return 'red';
 };
 

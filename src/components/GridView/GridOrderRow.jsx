@@ -12,7 +12,7 @@ import useStyles from '../../jss/components/GridView/GridOrderRow';
 //* Utils
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
-const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, backLay, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, bets, price, side, size }) => {
+const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, side, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, bets, price, side, size }) => {
   const classes = useStyles();
 
   const executeOrder = () => {
@@ -57,7 +57,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
               style={{ background: size === order.stake ? LightenDarkenColor(stakeLiability === 0 ? '#007aaf' : '#d4696b', -20) : '' }}
               onClick={updateOrderSize({
                 id: runnerId,
-                backLay: order.backLay,
+                side: order.side,
                 stake: size,
               })}
             >
@@ -66,12 +66,9 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
           ))}
           <span
             className={classes.toggleBackLay}
-            onClick={toggleBackAndLay({
-              id: runnerId,
-              backLay: order.backLay ^ 1,
-            })}
+            onClick={toggleBackAndLay(runnerId, order.side)}
           >
-            {backLay === 0 ? 'BACK' : 'LAY'}
+            {side}
           </span>
 
           <input
@@ -80,7 +77,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
             value={order.stake}
             onChange={updateOrderSize({
               id: runnerId,
-              backLay: order.backLay,
+              side: order.side,
             })}
           />
           <span>@</span>

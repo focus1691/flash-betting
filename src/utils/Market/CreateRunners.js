@@ -11,7 +11,7 @@ const CreateRunners = (data) => {
     // The Stake/Liability buttons for the GridView
     runners[selectionId].order = {
       visible: false,
-      backLay: 0,
+      side: 'BACK',
       stakeLiability: 0,
       stake: 2,
       customStake: '',

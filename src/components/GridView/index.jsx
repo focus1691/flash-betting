@@ -15,6 +15,7 @@ import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import { formatCurrency } from '../../utils/NumberFormat';
 import { calculateHedgePL } from '../../utils/TradingStategy/HedingCalculator';
+import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 // Grid Components
 import GridDetailCell from './GridDetailCell';
 import GridHeader from './GridHeader';
@@ -56,7 +57,7 @@ const Grid = ({
   const [ordersVisible, setOrdersVisible] = useState(0);
   const oneClickRef = createRef();
 
-  const handlePriceClick = (key, backLay, odds) => (e) => {
+  const handlePriceClick = (key, side, odds) => (e) => {
     e.preventDefault();
 
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
@@ -65,7 +66,7 @@ const Grid = ({
       updateOrder({
         id: key,
         visible: true,
-        backLay,
+        side,
         price: odds,
       });
       setOrdersVisible(ordersVisible + 1);
@@ -80,10 +81,10 @@ const Grid = ({
     });
   };
 
-  const changeSide = (order) => () => {
+  const changeSide = (id, side) => () => {
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
-    toggleBackAndLay({ id: order.id });
-    setActiveOrder(Object.assign(activeOrder || {}, { backLay: order.backLay }));
+    toggleBackAndLay(id);
+    setActiveOrder(Object.assign(activeOrder || {}, { side: getOppositeSide(side) }));
   };
 
   const handleOneClickPress = () => () => {
@@ -129,7 +130,7 @@ const Grid = ({
     setRunner(runner);
   };
 
-  const renderRow = (betOdds, key, backLay) => {
+  const renderRow = (betOdds, key, side) => {
     //* Fill all empty cells if no data found
     if (!betOdds) {
       return new Array(5).fill(<td className={classes.gridCell} />);
@@ -138,7 +139,7 @@ const Grid = ({
     const rows = [];
 
     for (let i = 0; i < betOdds.length; i += 1) {
-      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, backLay));
+      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, side));
       if (i === 4) break;
     }
 
@@ -150,15 +151,15 @@ const Grid = ({
     return rows;
   };
 
-  const createCell = (odds, matched, key, backLay) => (
-    <td key={`grid-${odds}`} className={classes.gridCell} onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, backLay, odds)} onContextMenu={handlePriceClick(key, (backLay ^= 1), odds)}>
+  const createCell = (odds, matched, key, side) => (
+    <td key={`grid-${odds}`} className={classes.gridCell} onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, side, odds)} onContextMenu={handlePriceClick(key, (getOppositeSide(side)), odds)}>
       <span>{odds}</span>
       <span>{matched}</span>
     </td>
   );
 
   const renderProfitAndLossAndHedge = (order, color) => ({
-    val: formatCurrency(localeCode, currencyCode, calcBackProfit(order.stake, order.price, order.backLay)),
+    val: formatCurrency(localeCode, currencyCode, calcBackProfit(order.stake, order.price, order.side)),
     color,
   });
 
@@ -173,7 +174,7 @@ const Grid = ({
     sortedLadder.map((key) => {
       const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
       const { name, number, logo, order } = DeconstructRunner(runners[key], eventType.id);
-      const { backLay, stakeLiability } = order;
+      const { side, stakeLiability } = order;
 
       const profitArray = Object.values(bets.matched)
         .filter((bet) => bet.selectionId == runners[key].selectionId)
@@ -197,12 +198,12 @@ const Grid = ({
                 marketHasBets(marketId, bets)
                   ? {
                       val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, Number(key), bets)),
-                      color: colorForBack(order.backLay, getPLForRunner(marketId, Number(key), bets)),
+                      color: colorForBack(order.side, getPLForRunner(marketId, Number(key), bets)),
                     }
                   : order.visible && rowHovered === key && activeOrder
-                  ? renderProfitAndLossAndHedge(order, colorForBack(order.backLay))
+                  ? renderProfitAndLossAndHedge(order, colorForBack(order.side))
                   : rowHovered && rowHovered !== key && activeOrder
-                  ? renderProfitAndLossAndHedge(order, colorForBack(activeOrder.backLay ^ 1))
+                  ? renderProfitAndLossAndHedge(order, colorForBack(activeOrder.side))
                   : { val: '', color: '' }
               }
               hedge={profit}
@@ -218,7 +219,7 @@ const Grid = ({
             toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
             toggleBackAndLay={changeSide}
             stakeLiability={stakeLiability}
-            backLay={backLay}
+            side={side}
             updateOrderSize={updateOrderSize}
             updateOrderPrice={handlePriceChange}
             toggleOrderRowVisibility={toggleOrderRowVisibility}

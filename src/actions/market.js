@@ -118,9 +118,9 @@ export const toggleStakeAndLiability = ({ val, id }) => ({
   payload: { stakeLiability: val, id },
 });
 
-export const toggleBackAndLay = ({ val, id }) => ({
+export const toggleBackAndLay = (id) => ({
   type: 'TOGGLE_BACK_AND_LAY',
-  payload: { backLay: val, id },
+  payload: { id },
 });
 
 export const toggleVisibility = (settings) => ({

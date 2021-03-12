@@ -15,7 +15,7 @@ const CreateLadder = (data) => {
   runner.trdo = {};
   runner.order = {
     visible: false,
-    backLay: 0,
+    side: 'BACK',
     stakeLiability: 0,
     stake: 2,
     price: 0,
