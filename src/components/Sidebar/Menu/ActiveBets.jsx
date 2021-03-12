@@ -10,7 +10,7 @@ import fetchData from '../../../http/fetchData';
 
 const ActiveBets = () => {
   const classes = useStyles();
-  const [events, setEvents] = useState([]);
+  const [bets, setBets] = useState([]);
 
   const openMarket = (marketId) => () => {
     window.open(`/dashboard?marketId=${marketId}`);
@@ -18,26 +18,23 @@ const ActiveBets = () => {
 
   useEffect(() => {
     const getActiveBets = async () => {
-      const { result } = fetchData('/api/get-events-with-active-bets');
+      const bets = await fetchData('/api/get-events-with-active-bets');
 
-      if (result) {
-        setEvents(result);
-      }
+      if (bets) setBets(bets);
     };
     getActiveBets();
   }, []);
 
   return (
     <List>
-      {Array.isArray(events) &&
-        events.map((event) => (
-          <>
-            <ListItem key={`active-bets-${event.marketId}`} button onClick={openMarket(event.marketId)}>
-              <ListItemText className={classes.activeBetName}>{event.marketName}</ListItemText>
-            </ListItem>
-            <Divider />
-          </>
-        ))}
+      {bets.map((bet) => (
+        <>
+          <ListItem key={`active-bets-${bet.marketId}`} button onClick={openMarket(bet.marketId)}>
+            <ListItemText className={classes.activeBetName}>{bet.event.name}</ListItemText>
+          </ListItem>
+          <Divider />
+        </>
+      ))}
     </List>
   );
 };

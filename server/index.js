@@ -175,7 +175,13 @@ app.get('/api/get-events-with-active-bets', (req, res) => {
 
     if (filteredOrders.length <= 0) return res.json([]);
 
-    return betfair.listMarketCatalogue({ filter: { marketIds: filteredOrders }, maxResults: 100 }, (err, { error, result }) => {
+    return betfair.listMarketCatalogue({
+      filter: {
+        marketIds: filteredOrders
+      },
+      maxResults: 100,
+      marketProjection: ['EVENT'],
+    }, (err, { error, result }) => {
       if (error) {
         return res.status(401).json({ error });
       }
