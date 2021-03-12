@@ -1,4 +1,4 @@
-const CreateRunners = (data) => {
+export const CreateRunners = (data) => {
   const runners = {};
   for (let i = 0; i < data.length; i += 1) {
     const { selectionId } = data[i];
@@ -21,5 +21,3 @@ const CreateRunners = (data) => {
   }
   return runners;
 };
-
-export { CreateRunners };

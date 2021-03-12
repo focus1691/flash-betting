@@ -163,13 +163,6 @@ const Grid = ({
     color,
   });
 
-  const renderTableData = () => (
-    <>
-      {renderRunners()}
-      <NonRunners sportId={eventType.id} nonRunners={nonRunners} runners={runners} selectRunner={selectRunner} />
-    </>
-  );
-
   const renderRunners = () =>
     sortedLadder.map((key) => {
       const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
@@ -209,8 +202,8 @@ const Grid = ({
               hedge={profit}
               ltpStyle={ltpStyle}
             />
-            {renderRow(atb, key, 0).reverse()}
-            {renderRow(atl, key, 1)}
+            {renderRow(atb, key, 'BACK').reverse()}
+            {renderRow(atl, key, 'BACK')}
           </tr>
 
           <GridOrderRow
@@ -219,13 +212,12 @@ const Grid = ({
             toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
             toggleBackAndLay={changeSide}
             stakeLiability={stakeLiability}
-            side={side}
             updateOrderSize={updateOrderSize}
             updateOrderPrice={handlePriceChange}
             toggleOrderRowVisibility={toggleOrderRowVisibility}
             bets={bets}
             price={runners[key] ? runners[key].order.price : 0}
-            side={activeOrder && activeOrder.side == 0 ? 'BACK' : 'LAY'}
+            side={side}
             size={activeOrder ? activeOrder.stake : 0}
           />
         </React.Fragment>
@@ -265,7 +257,12 @@ const Grid = ({
             placeOrder={placeOrder}
             marketCashout={marketCashout}
           />
-          {marketOpen && (marketStatus === 'OPEN' || marketStatus === 'RUNNING' || marketStatus === 'SUSPENDED') ? renderTableData() : null}
+          {marketOpen && (marketStatus === 'OPEN' || marketStatus === 'RUNNING' || marketStatus === 'SUSPENDED') ? (
+            <>
+              {renderRunners()}
+              <NonRunners sportId={eventType.id} nonRunners={nonRunners} runners={runners} selectRunner={selectRunner} />
+            </>
+          ) : null}
         </tbody>
       </table>
     </div>
