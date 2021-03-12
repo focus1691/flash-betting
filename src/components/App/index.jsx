@@ -130,9 +130,9 @@ const App = ({
   const retrieveBets = async () => {
     if (!marketId) return;
     try {
-      const betfairBets = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
-      for (let i = 0; i < betfairBets.length; i += 1) {
-        const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef: rfs } = betfairBets[i];
+      const { currentOrders } = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
+      for (let i = 0; i < currentOrders.length; i += 1) {
+        const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef: rfs } = currentOrders[i];
 
         // Check if the bet isn't in matched/unmatched already and add it if not
         if (!unmatchedBets[betId] && !matchedBets[betId]) {

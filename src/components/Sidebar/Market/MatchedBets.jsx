@@ -10,6 +10,7 @@ import useStyles from '../../../jss/components/Sidebar/market/betsStyle';
 const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
   const classes = useStyles();
   const selections = useMemo(() => combinePartiallyMatchedBets(bets), [bets]);
+  console.log(bets);
 
   return (
     <div>
