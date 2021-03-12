@@ -54,7 +54,7 @@ import { CreateLadder } from '../../utils/ladder/CreateLadder';
 //* Utils > Trading Tools
 import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
 import { checkStopLossTrigger, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
-import { checkStopEntryTargetMet } from '../../utils/TradingStategy/StopEntry';
+import { checkStopEntryTargetMet, extractStopEntryRfs } from '../../utils/TradingStategy/StopEntry';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
 //* Constants
@@ -286,7 +286,7 @@ const App = ({
                   });
                   removeBet({ rfs: stopEntryBetsToRemove[i].rfs });
                 }
-                removeMultiSelectionStopEntryBets(stopEntryBetsToRemove.map(({ rfs }) => rfs));
+                removeMultiSelectionStopEntryBets(extractStopEntryRfs(stopEntryBetsToRemove));
               }
 
               // Increment and check the stoplosses

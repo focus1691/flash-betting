@@ -13,3 +13,7 @@ export const checkStopEntryTargetMet = (stopEntryList, selectionId, currentLTP) 
   }
   return betsToRemove;
 };
+
+export const extractStopEntryRfs = (bets) => {
+  return bets.map(({ rfs }) => rfs);
+};
