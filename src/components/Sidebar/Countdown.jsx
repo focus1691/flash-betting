@@ -31,7 +31,7 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
     }
   };
 
-  useInterval(async () => {
+  useInterval(() => {
     setTimeRemaining(countDownTime(marketOpen, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime));
     setTime();
 

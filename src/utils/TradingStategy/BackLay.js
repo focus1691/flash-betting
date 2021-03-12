@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { removeBet } from '../../http/dbHelper';
+import { secondsToHms } from '../DateHelper';
 
 const isBetBeforeMarketReady = (marketStartTime, order) => {
   const remainingTime = new Date(marketStartTime).valueOf() / 1000 - new Date().valueOf() / 1000;
@@ -60,18 +61,12 @@ const checkLayBets = async (list, marketStartTime, placeOrder, inPlay, removeLay
 };
 
 const getTimeToDisplay = (order, marketStartTime) => {
-  const remainingTime = new Date(marketStartTime).valueOf() / 1000 - new Date().valueOf() / 1000;
+  const remainingTime = (new Date(marketStartTime).valueOf() / 1000) - (new Date().valueOf() / 1000);
 
   if (order.executionTime === 'After') {
-    const duration = moment.duration(remainingTime + order.timeOffset, 'seconds');
-    const m = duration.minutes();
-    const s = duration.seconds();
-    return `${m}:${s}`;
+    return secondsToHms(remainingTime + order.timeOffset);
   }
-  const duration = moment.duration(remainingTime - order.timeOffset, 'seconds');
-  const m = duration.minutes();
-  const s = duration.seconds();
-  return `${m}:${s}`;
+  return secondsToHms(remainingTime - order.timeOffset);
 };
 
 export { checkBackBets, checkLayBets, getTimeToDisplay };
