@@ -17,7 +17,7 @@ const GridDetailCell = ({
   selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, bets, PL, hedge, ltpStyle,
 }) => {
   const classes = useStyles();
-  const side = useMemo(() => (selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === 'BACK' ? 0 : 1), 0) <= 0 ? 'BACK' : 'LAY'), [selectionMatchedBets]);
+  const side = useMemo(() => (selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side), 0) <= 0 ? 'BACK' : 'LAY'), [selectionMatchedBets]);
 
   const handleImageError = () => (e) => {
     e.target.onerror = null;

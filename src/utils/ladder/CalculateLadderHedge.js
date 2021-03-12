@@ -18,7 +18,7 @@ export default (odds, selectionMatchedBets, ladderUnmatched, stake, pl) => {
     const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
 
     // find which side the column is supposed to be on
-    const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side === 'BACK' ? 0 : 1), 0) <= 0 ? 'BACK' : 'LAY';
+    const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side), 0) <= 0 ? 'BACK' : 'LAY';
 
     // get the offset to the size ex. 2 BACK = 2 LAY
     const offset = selectionMatchedBets.reduce((a, b) => {

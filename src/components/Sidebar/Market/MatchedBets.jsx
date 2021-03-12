@@ -40,7 +40,7 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
                       <td>{selectionObject.runnerName}</td>
                     </tr>
                     {filteredOrders.map((order) => {
-                      const PL = calcBackProfit(order.size, order.price, order.side === 'BACK' ? 0 : 1);
+                      const PL = calcBackProfit(order.size, order.price, order.side);
                       return (
                         <React.Fragment key={`sidebar-matched-bet-filtered-${order.selectionId}-${uuid()}`}>
                           <tr

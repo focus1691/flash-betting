@@ -18,8 +18,9 @@ const twoDecimalPlaces = (num) => parseFloat((Math.round(num * 100) / 100).toFix
 
 const calcBackProfit = (stake, price, side) => {
   const profit = parseFloat((stake * price - stake).toFixed(2));
-  if (side === 0) return profit || 0;
-  if (side === 1) return -profit || 0;
+  if (side === 'BACK') return profit || 0;
+  if (side === 'LAY') return -profit || 0;
+  return 0;
 };
 
 const calcLiability = (stake, side) => {
@@ -87,7 +88,7 @@ const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartTime) =>
     case 'Stop Entry':
       return `${order.stopEntryCondition + formatPrice(order.targetLTP)}SE`;
     default:
-      return calcBackProfit(order.size, order.price, order.side === 'BACK' ? 0 : 1) + strategyAbbreviation;
+      return calcBackProfit(order.size, order.price, order.side) + strategyAbbreviation;
   }
 };
 
