@@ -11,7 +11,8 @@ import { setPastEventTime } from '../../actions/market';
 //* HTTP
 import { removeBet } from '../../http/dbHelper';
 //* Utils
-import { checkBackBets, checkLayBets } from '../../utils/TradingStategy/BackLay';
+import { checkBackLayBetsAndExecute } from '../../utils/TradingStategy/BackLay';
+import { checkFOKBetsAndExecute } from '../../utils/TradingStategy/fillOrKill';
 import { secondsToHms } from '../../utils/DateHelper';
 import { countDownTime } from '../../utils/Market/CountDown';
 
@@ -24,22 +25,13 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
     setTimeRemaining(secondsToHms(countDownTime(marketOpen, marketStatus, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime)));
 
     //* BACK Before/After Market
-    checkBackBets(backList, marketStartTime, placeOrder, inPlay, removeBackBet);
+    checkBackLayBetsAndExecute(backList, marketStartTime, placeOrder, inPlay, removeBackBet);
 
     //* LAY Before/After Market
-    checkLayBets(layList, marketStartTime, placeOrder, inPlay, removeLayBet);
+    checkBackLayBetsAndExecute(layList, marketStartTime, placeOrder, inPlay, removeLayBet);
 
     //* FOK
-    const betIds = Object.values(fillOrKillList);
-
-    for (let i = 0; i < betIds.length; i += 1) {
-      const FOK = fillOrKillList[betIds[i]];
-      if (FOK && Date.now() / 1000 - FOK.startTime / 1000 >= FOK.seconds) {
-        removeFillOrKill({ betId: FOK.betId }); // FOK Action
-        cancelBet(FOK.marketId, FOK.betId); // BetFair
-        removeBet({ rfs: FOK.rfs }); // DB
-      }
-    }
+    checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, removeBet);
   }, ONE_SECOND);
 
   return <>{timeRemaining}</>;
