@@ -21,10 +21,7 @@ export const ALL_PRICES = Array(100).fill()
 export const formatPriceKey = (key) => (Math.round(key * 100) / 100).toFixed(2);
 
 export const isValidPrice = (price) => {
-  if (typeof price === 'number' && price >= 1.01 && price <= 1000) {
-    return true;
-  }
-  return false;
+  return ALL_PRICES.indexOf(Number(price)) > -1;
 };
 
 export const formatPrice = (odds) => {
@@ -37,11 +34,17 @@ export const formatPrice = (odds) => {
 };
 
 export const getNextPrice = (prevPrice, nextPrice) => {
-  if (prevPrice === nextPrice) return prevPrice;
+  prevPrice = Number(prevPrice);
+  nextPrice = Number(nextPrice);
 
-  const priceIncreased = prevPrice < nextPrice;
-  const index = ALL_PRICES.indexOf(prevPrice) + (priceIncreased ? 1 : -1);
-  return ALL_PRICES[index];
+  if (prevPrice === nextPrice) return prevPrice; // Keep the previous price if nothing changed
+
+  const isPriceIncreased = prevPrice < nextPrice;
+
+  const index = ALL_PRICES.indexOf(prevPrice) + (isPriceIncreased ? 1 : -1); // Find index of the next price
+  const roundedIndex = Math.min(Math.max(0, index), ALL_PRICES.length - 1); // Next price must be in the price array bounds
+
+  return ALL_PRICES[roundedIndex];
 };
 
 export const findPriceStep = (v) => {
