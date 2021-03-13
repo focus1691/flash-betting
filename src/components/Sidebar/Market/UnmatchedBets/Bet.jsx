@@ -13,19 +13,21 @@ const Bet = memo(({ bet, handleRightClick, cancelOrder, marketStartTime }) => {
 
   return (
     <tr
-      id={classes.betRow}
+      className={classes.betRow}
       style={colorForOrder(bet.side, bet.strategy)}
       onContextMenu={(e) => {
         e.preventDefault();
         handleRightClick(bet);
       }}
     >
-      <button type="button" className={classes.cancelBetButton} onClick={handleClick}>
-        <img src={`${window.location.origin}/icons/X_Button.svg`} alt="X" />
-      </button>
-      <td>{twoDecimalPlaces(bet.price)}</td>
-      <td>{bet.sizeRemaining || bet.size}</td>
+      <td colSpan={2}>{twoDecimalPlaces(bet.price)}</td>
+      <td colSpan={2}>{bet.sizeRemaining || bet.size}</td>
       <BetPL marketStartTime={marketStartTime} bet={bet} />
+      <td colSpan={1} className={classes.cancelBetButton}>
+        <button type="button" onClick={handleClick}>
+          <img src={`${window.location.origin}/icons/X_Button.svg`} alt="X" />
+        </button>
+      </td>
     </tr>
   );
 });

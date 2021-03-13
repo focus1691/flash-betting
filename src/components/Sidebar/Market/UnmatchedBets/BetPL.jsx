@@ -18,7 +18,7 @@ export default ({ bet, marketStartTime }) => {
   }, [marketStartTime, bet]);
 
   return (
-    <td className={classes.profitLoss} style={PLColor(PL)}>
+    <td colSpan={4} className={classes.profitLoss} style={PLColor(PL)}>
       {PL}
     </td>
   );

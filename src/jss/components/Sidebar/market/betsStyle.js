@@ -20,17 +20,18 @@ const useStyles = makeStyles(() => ({
   heading: {
     background: '#ff6600',
     '& > td': {
-      padding: '2px',
+      fontFamily: "'Roboto'",
+      fontSize: 'small',
+      fontWeight: '700',
+      textAlign: 'center',
     },
   },
   event: {
     width: '400%',
     background: '#6f6f1f',
-    display: 'inline-block',
     color: 'white',
   },
   selection: {
-    display: 'inline-block',
     width: '400%',
     background: 'rgb(0, 111, 223)',
     color: 'rgb(223, 223, 0)',

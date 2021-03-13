@@ -131,18 +131,13 @@ const UnmatchedBets = ({
       <table className={classes.menuBets}>
         <tbody>
           <tr className={classes.heading}>
-            <td>
-              <button
-                type="button"
-                className={classes.button}
-              />
-            </td>
-            <td>Odds</td>
-            <td>Stake</td>
-            <td>P/L</td>
+            <td colSpan={2}>Odds</td>
+            <td colSpan={2}>Stake</td>
+            <td colSpan={4}>P/L</td>
+            <td colSpan={1} />
           </tr>
           <tr>
-            <td className={classes.event} colSpan={4}>
+            <td className={classes.event} colSpan={9}>
               {marketName}
             </td>
           </tr>
@@ -193,8 +188,8 @@ const UnmatchedBets = ({
 
                 return (
                   <>
-                    <tr className={classes.selection} colSpan={4}>
-                      <td>{runnerName}</td>
+                    <tr className={classes.selection} colSpan={9}>
+                      <td colSpan={9}>{runnerName}</td>
                     </tr>
                     {list}
                   </>
