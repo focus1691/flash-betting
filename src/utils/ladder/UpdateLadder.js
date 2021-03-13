@@ -1,4 +1,5 @@
-import { formatPriceKey, calcBackLayPercentages } from '../Bets/PriceCalculations';
+import { calcBackLayPercentages } from './CreateLadder';
+import { formatPriceKey } from '../Bets/PriceCalculations';
 import { sortAsc, sortDes } from '../Sort';
 
 const UpdateLadder = (ladder, rawData) => {
