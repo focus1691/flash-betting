@@ -136,9 +136,9 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
       </div>
 
       <div className={classes.row}>
-        <TextField className={classes.textField} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={() => setHours()} margin="normal" />
-        <TextField className={classes.textField} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setMinutes()} margin="normal" />
-        <TextField className={classes.textField} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={() => setSeconds()} margin="normal" />
+        <TextField className={classes.textField} type="number" label="hh" value={hours} inputProps={{ min: '0', style: { fontSize: 10 } }} onChange={(e) => setHours(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="mm" value={minutes} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setMinutes(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="ss" value={seconds} inputProps={{ min: '0', max: '59', style: { fontSize: 10 } }} onChange={(e) => setSeconds(e.target.value)} margin="normal" />
       </div>
 
       <div className={classes.row}>

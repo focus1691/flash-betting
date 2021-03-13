@@ -1,5 +1,6 @@
 import update from 'immutability-helper';
 import { findIndex, omit } from 'lodash';
+import { isNumeric } from 'validator';
 
 const initialState = {
   selected: false,
@@ -30,7 +31,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         offset: {
-          hours: action.payload,
+          hours: isNumeric(action.payload) ? Number(action.payload) : 0,
           minutes: state.offset.minutes,
           seconds: state.offset.seconds,
         },
@@ -40,7 +41,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         offset: {
           hours: state.offset.hours,
-          minutes: action.payload,
+          minutes: isNumeric(action.payload) ? Number(action.payload) : 0,
           seconds: state.offset.seconds,
         },
       };
@@ -50,7 +51,7 @@ const reducer = (state = initialState, action) => {
         offset: {
           hours: state.offset.hours,
           minutes: state.offset.minutes,
-          seconds: action.payload,
+          seconds: isNumeric(action.payload) ? Number(action.payload) : 0,
         },
       };
     case 'TOGGLE_BACK_EXECUTION_BEFORE_OR_AFTER':
