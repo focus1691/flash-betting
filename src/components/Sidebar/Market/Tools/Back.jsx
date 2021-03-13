@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import crypto from 'crypto';
 //* @material-ui core
@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList } from '../../../../actions/back';
 //* Utils
-import { formatPrice, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
+import { formatPrice, getPriceFromForm, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/backLayStyle';
 import StyledMenu from '../../../../jss/StyledMenu';
@@ -25,7 +25,7 @@ import { saveBet } from '../../../../http/dbHelper';
 const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, runners, selections, list, setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [step, setStep] = useState(findPriceStep(price));
+  const [priceStep, setPriceStep] = useState(findPriceStep(price));
   // Change the text when the fields change
   useEffect(() => {
     setDisplayText(`${stake} @ ${price}`);
@@ -49,31 +49,11 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
     setAnchorEl(null);
   };
 
-  const updateStep = useCallback(
-    (e) => {
-      const v = e.target.value;
-
-      // Set empty String for non-numbers
-      if (isNaN(Number(v))) {
-        setPrice('');
-        return;
-      }
-      if (price === '' && Number(v) === 1) {
-        setStep(0.01);
-        setPrice(1.01);
-        return;
-      }
-
-      const newStep = findPriceStep(v);
-
-      if (newStep !== step) {
-        setStep(newStep);
-      }
-
-      setPrice(v);
-    },
-    [price, step, setPrice],
-  );
+  const updateStep = (e) => {
+    const { newPrice, newStep } = getPriceFromForm(e, price, priceStep);
+    if (newPrice) setPrice(newPrice);
+    if (newStep) setPriceStep(newStep);
+  };
 
   // Handle Submit click to place an order
   const placeOrder = async () => {
@@ -144,7 +124,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
           inputProps={{
             min: '1.00',
             max: '1000',
-            step,
+            step: priceStep,
             style: { fontSize: 10 },
           }}
           onChange={updateStep}
