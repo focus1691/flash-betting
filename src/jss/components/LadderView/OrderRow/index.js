@@ -86,7 +86,6 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'scroll',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
     minHeight: '3.5em',
     maxHeight: '3.5em',
   },
