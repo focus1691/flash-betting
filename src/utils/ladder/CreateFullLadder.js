@@ -20,6 +20,13 @@ export const ALL_PRICES = Array(100).fill()
  */
 export const formatPriceKey = (key) => (Math.round(key * 100) / 100).toFixed(2);
 
+export const isValidPrice = (price) => {
+  if (typeof price === 'number' && price >= 1.01 && price <= 1000) {
+    return true;
+  }
+  return false;
+};
+
 export const formatPrice = (odds) => {
   odds = parseFloat(odds);
 
@@ -85,49 +92,4 @@ export const fivePricesAway = (ltp) => {
     back: ALL_PRICES.slice(index + 1, index + 6).map((s, v) => formatPrice(s)),
     lay: ALL_PRICES.slice(index - 5, index).map((s, v) => formatPrice(s)),
   };
-};
-
-/**
- * This function calculates the back/lay percentage of matched bets 5 prices away from the LTP
- * @param {object} ladder - The ladder for the runner
- * @param {object} ltp - The Last Traded Price
- * @return {object} The back/lay percentages
- */
-export const calcBackLayPercentages = (atbo, atlo, ltp) => {
-  if (!ltp) {
-    return { back: 0, lay: 0 };
-  }
-
-  // Get the prices for both back/lay trading 5 places either side of the LTP
-  const indices = fivePricesAway(ltp);
-
-  let layMatched = 0; let
-    backMatched = 0;
-  let i;
-
-  // Add the back total
-  for (i = 0; i < indices.back.length; i++) {
-    const price = indices.back[i];
-    const matched = atbo[formatPriceKey(price)];
-    if (matched) {
-      backMatched += matched;
-    }
-  }
-
-  // Add the lay total
-  for (i = 0; i < indices.lay.length; i += 1) {
-    const price = indices.lay[i];
-    const matched = atlo[formatPriceKey(price)];
-
-    if (matched) {
-      layMatched += matched;
-    }
-  }
-
-  const total = backMatched + layMatched;
-
-  const backPercent = Math.round((backMatched / total) * 100);
-  const layPercent = Math.round((layMatched / total) * 100);
-
-  return { back: backPercent || 0, lay: layPercent || 0 };
 };

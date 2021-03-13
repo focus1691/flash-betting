@@ -1,7 +1,7 @@
 import { sortAsc, sortDes } from '../Sort';
-import { calcBackLayPercentages, formatPriceKey } from './CreateFullLadder';
+import { formatPriceKey, fivePricesAway } from './CreateFullLadder';
 
-const CreateLadder = (data) => {
+export const CreateLadder = (data) => {
   const runner = data;
   runner.id = data.id;
   runner.ltp = runner.ltp ? [runner.ltp] : [null];
@@ -60,13 +60,52 @@ const CreateLadder = (data) => {
   sortDes(runner.atb);
   sortAsc(runner.atl);
 
-  runner.percent = calcBackLayPercentages(
-    runner.atbo,
-    runner.atlo,
-    runner.ltp[0],
-  );
+  runner.percent = calcBackLayPercentages(runner.atbo, runner.atlo, runner.ltp[0]);
 
   return runner;
 };
 
-export { CreateLadder };
+/**
+ * This function calculates the back/lay percentage of matched bets 5 prices away from the LTP
+ * @param {object} ladder - The ladder for the runner
+ * @param {object} ltp - The Last Traded Price
+ * @return {object} The back/lay percentages
+ */
+ export const calcBackLayPercentages = (atbo, atlo, ltp) => {
+  if (!ltp) {
+    return { back: 0, lay: 0 };
+  }
+
+  // Get the prices for both back/lay trading 5 places either side of the LTP
+  const indices = fivePricesAway(ltp);
+
+  let layMatched = 0; let
+    backMatched = 0;
+  let i;
+
+  // Add the back total
+  for (i = 0; i < indices.back.length; i += 1) {
+    const price = indices.back[i];
+    const matched = atbo[formatPriceKey(price)];
+    if (matched) {
+      backMatched += matched;
+    }
+  }
+
+  // Add the lay total
+  for (i = 0; i < indices.lay.length; i += 1) {
+    const price = indices.lay[i];
+    const matched = atlo[formatPriceKey(price)];
+
+    if (matched) {
+      layMatched += matched;
+    }
+  }
+
+  const total = backMatched + layMatched;
+
+  const backPercent = Math.round((backMatched / total) * 100);
+  const layPercent = Math.round((layMatched / total) * 100);
+
+  return { back: backPercent || 0, lay: layPercent || 0 };
+};

@@ -9,8 +9,7 @@ import { placeOrder } from '../../actions/bet';
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
 import { getPLForRunner, marketHasBets } from '../../utils/Bets/GetProfitAndLoss';
-import { isValidPrice } from '../../utils/Bets/Validator';
-import { getNextPrice } from '../../utils/ladder/CreateFullLadder';
+import { isValidPrice, getNextPrice } from '../../utils/ladder/CreateFullLadder';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import { formatCurrency } from '../../utils/NumberFormat';
@@ -118,7 +117,7 @@ const Grid = ({
   };
 
   const handlePriceChange = (data) => (e) => {
-    const val = Number(e.target.value);
+    const val = e.target.value;
 
     if (isValidPrice(val)) {
       data.price = getNextPrice(data.price, e.target.value);
