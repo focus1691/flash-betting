@@ -6,7 +6,6 @@ import { colorForOrder, twoDecimalPlaces } from '../../../../utils/Bets/BettingC
 import useStyles from '../../../../jss/components/Sidebar/market/betRowStyle';
 
 const Bet = memo(({ bet, handleRightClick, cancelOrder, marketStartTime }) => {
-  console.log(bet, marketStartTime);
   const classes = useStyles();
   const handleClick = useCallback(() => {
     cancelOrder(bet);
