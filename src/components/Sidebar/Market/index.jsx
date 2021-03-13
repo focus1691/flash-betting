@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
@@ -31,6 +32,7 @@ import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 
 const Market = ({
   marketOpen,
+  marketId,
   tools,
   unmatchedBets,
   matchedBets,
@@ -71,8 +73,8 @@ const Market = ({
     async (e) => {
       e.stopPropagation();
       setUnmatchedBetsExpanded(true);
-      if (unmatchedMarketBets) {
-        cancelMarketBets(unmatchedMarketBets);
+      if (!_.isEmpty(unmatchedMarketBets) && !_.isEmpty(marketId)) {
+        cancelMarketBets(marketId, unmatchedMarketBets);
       }
 
       removeAllBackBets();
@@ -82,7 +84,7 @@ const Market = ({
       removeAllTickOffset();
       removeAllFillOrKill();
     },
-    [cancelMarketBets, removeAllBackBets, removeAllFillOrKill, removeAllLayBets, removeAllStopEntryBets, removeAllStopLoss, removeAllTickOffset, setUnmatchedBetsExpanded, unmatchedMarketBets],
+    [cancelMarketBets, marketId, removeAllBackBets, removeAllFillOrKill, removeAllLayBets, removeAllStopEntryBets, removeAllStopLoss, removeAllTickOffset, setUnmatchedBetsExpanded, unmatchedMarketBets],
   );
 
   const reorderByLTP = useCallback(
@@ -136,9 +138,7 @@ const Market = ({
 
       {tools.visible ? (
         <SectionBar expanded={toolsExpanded} onChange={() => setToolsExpanded(!toolsExpanded)}>
-          <SectionContent>
-            {renderTitle('Tools')}
-          </SectionContent>
+          <SectionContent>{renderTitle('Tools')}</SectionContent>
           <div className={classes.container}>
             <Tools />
           </div>
@@ -163,36 +163,28 @@ const Market = ({
 
       {matchedBets.visible ? (
         <SectionBar expanded={matchedBetsExpanded} onChange={() => setMatchedBetsExpanded(!matchedBetsExpanded)}>
-          <SectionContent>
-            {renderTitle('Matched Bets')}
-          </SectionContent>
+          <SectionContent>{renderTitle('Matched Bets')}</SectionContent>
           <MatchedBets />
         </SectionBar>
       ) : null}
 
       {graphs.visible ? (
         <SectionBar expanded={graphExpanded} onChange={() => setGraphExpanded(!graphExpanded)}>
-          <SectionContent>
-            {renderTitle('Graphs')}
-          </SectionContent>
+          <SectionContent>{renderTitle('Graphs')}</SectionContent>
           <Graph />
         </SectionBar>
       ) : null}
 
       {marketInfo.visible ? (
         <SectionBar expanded={marketInfoExpanded} onChange={() => setMarketInfoExpanded(!marketInfoExpanded)}>
-          <SectionContent>
-            {renderTitle('Market Information')}
-          </SectionContent>
+          <SectionContent>{renderTitle('Market Information')}</SectionContent>
           <MarketInfo />
         </SectionBar>
       ) : null}
 
       {rules.visible ? (
         <SectionBar expanded={rulesExpanded} onChange={() => setRulesExpanded(!rulesExpanded)}>
-          <SectionContent>
-            {renderTitle('Rules')}
-          </SectionContent>
+          <SectionContent>{renderTitle('Rules')}</SectionContent>
           <Rules />
         </SectionBar>
       ) : null}
@@ -202,6 +194,7 @@ const Market = ({
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
+  marketId: state.market.marketId,
   ladders: state.market.ladder,
   eventType: state.market.eventType,
   excludedLadders: state.market.excludedLadders,
