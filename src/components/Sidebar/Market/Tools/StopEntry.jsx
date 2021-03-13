@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import crypto from 'crypto';
 //* @material-ui core
@@ -13,8 +13,9 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 //* Actions
-import { setLTPOperator, setTicks, setStake, setPrice, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
-import { formatPrice, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
+import { setLTPOperator, setTargetLTP, setStake, setPrice, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
+//* Utils
+import { formatPrice, getPriceFromForm, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/stopEntryStyle';
 import StyledMenu from '../../../../jss/StyledMenu';
@@ -22,10 +23,11 @@ import StyledMenuItem from '../../../../jss/StyledMenuItem';
 //* HTTP
 import { saveBet } from '../../../../http/dbHelper';
 
-const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks, operator, side, stake, updateStopEntryList, setSelections, setPrice, setTicks, setStake, setLTPOperator }) => {
+const StopEntry = ({ marketId, runners, selections, price, stopEntryList, targetLTP, operator, side, stake, updateStopEntryList, setSelections, setPrice, setTargetLTP, setStake, setLTPOperator }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [step, setStep] = useState(findPriceStep(price));
+  const [priceStep, setPriceStep] = useState(findPriceStep(price));
+  const [targetLTPStep, setTargetLTPStep] = useState(findPriceStep(targetLTP));
 
   // Load all the runners / set All / The Field as the default
   useEffect(() => {
@@ -45,31 +47,17 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
     setAnchorEl(null);
   };
 
-  const updateStep = useCallback(
-    (e) => {
-      const v = e.target.value;
+  const updateTargetLTPStep = (e) => {
+    const { newPrice, newStep } = getPriceFromForm(e, targetLTP, targetLTPStep);
+    if (newPrice) setTargetLTP(newPrice);
+    if (newStep) setTargetLTPStep(newStep);
+  };
 
-      // Set empty String for non-numbers
-      if (isNaN(parseInt(v))) {
-        setPrice('');
-        return;
-      }
-      if (price === '' && parseInt(v) === 1) {
-        setStep(0.01);
-        setPrice(1.01);
-        return;
-      }
-
-      const newStep = findPriceStep(v);
-
-      if (newStep !== step) {
-        setStep(newStep);
-      }
-
-      setPrice(v);
-    },
-    [price, step, setPrice],
-  );
+  const updateStep = (e) => {
+    const { newPrice, newStep } = getPriceFromForm(e, price, priceStep);
+    if (newPrice) setPrice(newPrice);
+    if (newStep) setPriceStep(newStep);
+  };
 
   // Handle Submit click to place an order
   const placeOrder = async () => {
@@ -85,7 +73,7 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
             strategy: 'Stop Entry',
             marketId,
             selectionId,
-            targetLTP: ticks,
+            targetLTP,
             stopEntryCondition: operator,
             side,
             size: stake,
@@ -139,11 +127,11 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
             <option value=">">{'>'}</option>
           </Select>
         </FormControl>
-        <TextField className={classes.textField} type="number" label="Ticks" value={ticks} inputProps={{ min: '1', max: '100' }} onChange={(e) => setTicks(e.target.value)} margin="normal" />
+        <TextField className={classes.textField} type="number" label="Target" value={targetLTP} inputProps={{ min: '1.00', max: '1000', step: targetLTPStep }} onChange={updateTargetLTPStep} margin="normal" />
       </div>
       <div className={classes.row}>
         <TextField className={classes.backPriceTextFields} type="number" label="Back" value={stake} inputProps={{ min: '1' }} onChange={(e) => setStake(e.target.value)} margin="normal" />
-        <TextField className={classes.backPriceTextFields} type="number" label="@" value={price} inputProps={{ min: '1.00', max: '1000', step }} onChange={updateStep} margin="normal" />
+        <TextField className={classes.backPriceTextFields} type="number" label="@" value={price} inputProps={{ min: '1.00', max: '1000', step: priceStep }} onChange={updateStep} margin="normal" />
       </div>
       <Button variant="outlined" className={classes.button} onClick={placeOrder}>
         Submit
@@ -154,7 +142,7 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, ticks,
 
 const mapStateToProps = (state) => ({
   operator: state.stopEntry.operator,
-  ticks: state.stopEntry.ticks,
+  targetLTP: state.stopEntry.targetLTP,
   stake: state.stopEntry.stake,
   price: state.stopEntry.price,
   side: state.stopEntry.side,
@@ -164,6 +152,6 @@ const mapStateToProps = (state) => ({
   selections: state.stopEntry.selections,
 });
 
-const mapDispatchToProps = { setLTPOperator, setTicks, setStake, setPrice, updateStopEntryList, setSelections };
+const mapDispatchToProps = { setLTPOperator, setTargetLTP, setStake, setPrice, updateStopEntryList, setSelections };
 
 export default connect(mapStateToProps, mapDispatchToProps)(StopEntry);

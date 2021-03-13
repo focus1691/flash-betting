@@ -71,6 +71,23 @@ export const findPriceStep = (v) => {
   }
 };
 
+export const getPriceFromForm = (e, currentPrice, step) => {
+  const v = Number(e.target.value);
+
+  // Set empty String for non-numbers
+  if (isNaN(v)) return { newPrice: '' };
+
+  if (currentPrice === '' && v <= 1.01) {
+    return { newPrice: 1.01, newStep: 0.01 };
+  }
+
+  const newStep = findPriceStep(v);
+
+  if (newStep !== step) return { newStep };
+
+  return { newPrice: v };
+};
+
 export const getPriceNTicksAway = (price, N) => {
   if (N === undefined || N === null || typeof N !== 'number') return null;
   if (N <= 0) return price;

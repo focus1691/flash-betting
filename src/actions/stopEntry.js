@@ -7,9 +7,9 @@ export const setLTPOperator = (operator) => ({
   payload: operator,
 });
 
-export const setTicks = (ticks) => ({
-  type: 'SET_STOP_ENTRY_TICKS',
-  payload: ticks,
+export const setTargetLTP = (ltpTarget) => ({
+  type: 'SET_TARGET_LTP',
+  payload: ltpTarget,
 });
 
 export const setStake = (stake) => ({

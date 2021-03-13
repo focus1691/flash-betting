@@ -4,7 +4,7 @@ import { findIndex, omit } from 'lodash';
 const initialState = {
   selected: false,
   operator: '<',
-  ticks: 3,
+  targetLTP: 3,
   stake: 2,
   price: 2,
   side: 'BACK',
@@ -18,8 +18,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, selected: !state.selected };
     case 'SET_STOP_ENTRY_OPERATOR':
       return { ...state, operator: action.payload };
-    case 'SET_STOP_ENTRY_TICKS':
-      return { ...state, ticks: action.payload };
+    case 'SET_TARGET_LTP':
+      return { ...state, targetLTP: action.payload };
     case 'SET_STOP_ENTRY_STAKE':
       return { ...state, stake: action.payload };
     case 'SET_STOP_ENTRY_PRICE':
