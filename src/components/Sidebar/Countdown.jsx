@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import useInterval from 'react-useinterval';
 //* Actions
@@ -13,27 +12,16 @@ import { setPastEventTime } from '../../actions/market';
 import { removeBet } from '../../http/dbHelper';
 //* Utils
 import { checkBackBets, checkLayBets } from '../../utils/TradingStategy/BackLay';
+import { secondsToHms } from '../../utils/DateHelper';
 import { countDownTime } from '../../utils/Market/CountDown';
 
 const ONE_SECOND = 1000;
 
 const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTime, pastEventTime, setPastEventTime, placeOrder, removeBet, backList, layList, fillOrKillList, removeBackBet, removeLayBet, removeFillOrKill }) => {
   const [timeRemaining, setTimeRemaining] = useState('--');
-  const [currTime, setCurrTime] = useState(null);
-
-  const setTime = () => {
-    if (marketOpen) {
-      if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') {
-        setCurrTime((moment.utc(timeRemaining).format('HH:mm:ss')));
-      } else if (marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') {
-        setCurrTime(marketStatus);
-      }
-    }
-  };
 
   useInterval(() => {
-    setTimeRemaining(countDownTime(marketOpen, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime));
-    setTime();
+    setTimeRemaining(secondsToHms(countDownTime(marketOpen, marketStatus, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime)));
 
     //* BACK Before/After Market
     checkBackBets(backList, marketStartTime, placeOrder, inPlay, removeBackBet);
@@ -54,7 +42,7 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
     }
   }, ONE_SECOND);
 
-  return <>{currTime}</>;
+  return <>{timeRemaining}</>;
 };
 
 const mapStateToProps = (state) => ({

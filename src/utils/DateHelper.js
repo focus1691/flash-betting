@@ -1,4 +1,5 @@
 export const secondsToHms = (d) => {
+  if (d === '--') return d;
   d = Number(d);
   const h = Math.floor(d / 3600);
   const m = Math.floor(d % 3600 / 60);

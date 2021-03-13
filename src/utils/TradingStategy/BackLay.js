@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { removeBet } from '../../http/dbHelper';
 import { secondsToHms } from '../DateHelper';
 
