@@ -1,4 +1,4 @@
-import { ALL_PRICES } from '../ladder/CreateFullLadder';
+import { ALL_PRICES } from '../Bets/PriceCalculations';
 
 export const calcTickOffsetPrice = (price, side, ticks, percent = false) => {
   price = Number(price);

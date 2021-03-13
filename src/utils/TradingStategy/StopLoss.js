@@ -1,4 +1,4 @@
-import { ALL_PRICES } from '../ladder/CreateFullLadder';
+import { ALL_PRICES } from '../Bets/PriceCalculations';
 
 export const calcStopLossPrice = (price, ticks, side, percent = false) => {
   price = Number(price);

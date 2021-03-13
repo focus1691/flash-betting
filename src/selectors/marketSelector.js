@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import GetColoredLTPList from '../utils/ladder/GetColoredLTPList';
 import GetVolumeFraction from '../utils/ladder/GetVolumeFraction';
-import { formatPriceKey } from '../utils/ladder/CreateFullLadder';
+import { formatPriceKey } from '../utils/Bets/PriceCalculations';
 
 const getLadderSelector = (state, { selectionId }) => state[selectionId];
 

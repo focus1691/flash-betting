@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList } from '../../../../actions/back';
 //* Utils
-import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
+import { formatPrice, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/backLayStyle';
 import StyledMenu from '../../../../jss/StyledMenu';

@@ -1,5 +1,5 @@
 import { sortAsc, sortDes } from '../Sort';
-import { formatPriceKey, fivePricesAway } from './CreateFullLadder';
+import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 
 export const CreateLadder = (data) => {
   const runner = data;

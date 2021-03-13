@@ -1,4 +1,4 @@
-import { formatPrice } from '../../utils/ladder/CreateFullLadder';
+import { formatPrice } from '../../utils/Bets/PriceCalculations';
 
 export const data = {
   111: [

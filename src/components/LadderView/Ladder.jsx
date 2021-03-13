@@ -15,7 +15,7 @@ import { getLTP } from '../../selectors/marketSelector';
 import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from '../../selectors/orderSelector';
 //* Utils
 import { getStakeVal } from '../../selectors/settingsSelector';
-import { ALL_PRICES, formatPrice } from '../../utils/ladder/CreateFullLadder';
+import { ALL_PRICES, formatPrice } from '../../utils/Bets/PriceCalculations';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { calcTickOffsetPrice } from '../../utils/TradingStategy/TickOffset';
 import { calcStopLossPrice } from '../../utils/TradingStategy/StopLoss';

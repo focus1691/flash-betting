@@ -14,7 +14,7 @@ import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 //* Actions
 import { setLTPOperator, setTicks, setStake, setPrice, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
-import { formatPrice, findPriceStep } from '../../../../utils/ladder/CreateFullLadder';
+import { formatPrice, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/stopEntryStyle';
 import StyledMenu from '../../../../jss/StyledMenu';

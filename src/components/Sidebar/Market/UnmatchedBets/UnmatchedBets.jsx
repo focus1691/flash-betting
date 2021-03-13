@@ -11,7 +11,7 @@ import { removeFillOrKill } from '../../../../actions/fillOrKill';
 //* Selectors
 import { getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
-import { getPriceNTicksAway } from '../../../../utils/ladder/CreateFullLadder';
+import { getPriceNTicksAway } from '../../../../utils/Bets/PriceCalculations';
 import { removeBet, replaceOrders, updatePrice } from '../../../../http/dbHelper';
 //* HTTP
 import postData from '../../../../http/postData';

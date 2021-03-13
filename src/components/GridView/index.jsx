@@ -9,7 +9,7 @@ import { placeOrder } from '../../actions/bet';
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
 import { getPLForRunner, marketHasBets } from '../../utils/Bets/GetProfitAndLoss';
-import { isValidPrice, getNextPrice } from '../../utils/ladder/CreateFullLadder';
+import { isValidPrice, getNextPrice } from '../../utils/Bets/PriceCalculations';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import { formatCurrency } from '../../utils/NumberFormat';

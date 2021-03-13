@@ -1,5 +1,5 @@
 import { getTimeToDisplay } from '../TradingStategy/BackLay';
-import { formatPrice } from '../ladder/CreateFullLadder';
+import { formatPrice } from './PriceCalculations';
 
 /**
  * This function sums all matched bets to find the total.

@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
-import { ALL_PRICES } from '../../../utils/ladder/CreateFullLadder';
+import { ALL_PRICES } from '../../../utils/Bets/PriceCalculations';
 import HedgeCell from '../Cells/HedgeCell';
 import OddsCell from '../Cells/OddsCell';
 import OrderCell from '../Cells/OrderCell';
