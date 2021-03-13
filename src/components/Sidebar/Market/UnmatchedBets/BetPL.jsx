@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import clsx from 'clsx';
 //* Utils
-import { getStrategyAbbreviation, PLColor, getStrategySuffixForPL } from '../../../../utils/Bets/BettingCalculations';
+import { getStrategyAbbreviation, getStrategySuffixForPL } from '../../../../utils/Bets/BettingCalculations';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/profitLossStyle';
 
@@ -16,9 +17,15 @@ export default ({ bet, marketStartTime }) => {
       clearInterval(countdownInterval);
     };
   }, [marketStartTime, bet]);
-
   return (
-    <td colSpan={4} className={classes.profitLoss} style={PLColor(PL)}>
+    <td
+      colSpan={4}
+      className={clsx(classes.profitLoss, {
+        [classes.profit]: PL < 0,
+        [classes.loss]: PL > 0,
+        [classes.breakEven]: PL === '0.00',
+      })}
+    >
       {PL}
     </td>
   );

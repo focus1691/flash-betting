@@ -16,15 +16,12 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
       <table className={classes.menuBets}>
         <tbody>
           <tr className={classes.heading}>
-            <td>
-              <button type="button" className={classes.button} />
-            </td>
             <td>Odds</td>
             <td>Stake</td>
             <td>P/L</td>
           </tr>
           <tr>
-            <td className={classes.event} colSpan={4}>
+            <td colSpan={3} className={classes.event}>
               {marketName}
             </td>
           </tr>
@@ -36,8 +33,8 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
                 const filteredOrders = Object.values(bets.matched).filter((order) => order.selectionId === selection);
                 return (
                   <React.Fragment key={`sidebar-matched-bet-${selection}-${uuid()}`}>
-                    <tr className={classes.selection} colSpan={4}>
-                      <td>{selectionObject.runnerName}</td>
+                    <tr className={classes.selection}>
+                      <td colSpan={3}>{selectionObject.runnerName}</td>
                     </tr>
                     {filteredOrders.map((order) => {
                       const PL = calcBackProfit(order.size, order.price, order.side).toFixed(2);
@@ -49,10 +46,6 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
                               backgroundColor: order.side === 'BACK' ? '#007aaf' : '#d4696b',
                             }}
                           >
-                            <td>
-                              <button type="button" style={{ height: '22px', width: 'auto', visibility: 'collapse' }} />
-                            </td>
-
                             <td>{twoDecimalPlaces(order.price)}</td>
                             <td>{order.sizeMatched}</td>
                             <td

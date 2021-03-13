@@ -6,7 +6,7 @@ import { formatPrice } from './PriceCalculations';
  * @param {object} ladder - The ladder containing the price data for a runner.
  * @return {number} The total matched bets for the runner.
  */
-const sumMatchedBets = (ladder) => {
+export const sumMatchedBets = (ladder) => {
   const sum = Object.keys(ladder).reduce(
     (sum, key) => sum + parseFloat(ladder[key].tv[0] || 0),
     0,
@@ -14,43 +14,39 @@ const sumMatchedBets = (ladder) => {
   return sum ? Math.floor(sum) : '';
 };
 
-const twoDecimalPlaces = (num) => parseFloat((Math.round(num * 100) / 100).toFixed(2));
+export const twoDecimalPlaces = (num) => parseFloat((Math.round(num * 100) / 100).toFixed(2));
 
-const calcBackProfit = (stake, price, side) => {
+export const calcBackProfit = (stake, price, side) => {
   const profit = parseFloat((stake * price - stake).toFixed(2));
   if (side === 'BACK') return profit || 0;
   if (side === 'LAY') return -profit || 0;
   return 0;
 };
 
-const calcLiability = (stake, side) => {
+export const calcLiability = (stake, side) => {
   if (side === 0) return -stake;
   return Math.abs(stake);
 };
 
-const colorForBack = (side, pl = 0) => {
+export const colorForBack = (side, pl = 0) => {
   if (side === 'BACK' && pl > 0) return '#01CC41';
   return 'red';
 };
 
-const colorForLay = (side) => (side === 0 ? 'red' : '#01CC41');
+export const colorForLay = (side) => (side === 0 ? 'red' : '#01CC41');
 
-const colorForOrder = (side, strategy) => ({
+export const colorForOrder = (side, strategy) => ({
   backgroundColor: (side === 'BACK' || strategy === 'Back') ? '#007aaf' : (side === 'LAY' || strategy === 'Lay') ? '#d4696b' : null,
 });
 
-const PLColor = (PL) => ({
-  color: PL === '0.00' ? 'black' : PL > 0 ? 'green' : 'red',
-});
-
-const getStrategyAbbreviation = (trailing, hedged) => {
+export const getStrategyAbbreviation = (trailing, hedged) => {
   if (trailing && hedged) return 'th';
   if (!trailing && hedged) return 'h';
   if (trailing && !hedged) return 't';
   return '';
 };
 
-const getStrategySuffix = (strategy, stopEntryCondition, targetLTP, strategyAbbreviation) => {
+export const getStrategySuffix = (strategy, stopEntryCondition, targetLTP, strategyAbbreviation) => {
   let suffix = '';
   switch (strategy) {
     case 'Stop Loss':
@@ -75,33 +71,19 @@ const getStrategySuffix = (strategy, stopEntryCondition, targetLTP, strategyAbbr
   return suffix;
 };
 
-const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartTime) => {
+export const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartTime) => {
   switch (order.strategy) {
     case 'Stop Loss':
       return 'SL ';
     case 'Tick Offset':
       return 'T.O.';
     case 'Back':
-      return `${getTimeToDisplay(order, marketStartTime)}s${order.executionTime === 'Before' ? '-' : '+'}`;
+      return `${getTimeToDisplay(order, marketStartTime)}`;
     case 'Lay':
-      return `${getTimeToDisplay(order, marketStartTime)}s${order.executionTime === 'Before' ? '-' : '+'}`;
+      return `${getTimeToDisplay(order, marketStartTime)}`;
     case 'Stop Entry':
       return `${order.stopEntryCondition + formatPrice(order.targetLTP)}SE`;
     default:
       return calcBackProfit(order.size, order.price, order.side) + strategyAbbreviation;
   }
-};
-
-export {
-  sumMatchedBets,
-  calcBackProfit,
-  calcLiability,
-  colorForBack,
-  colorForLay,
-  colorForOrder,
-  PLColor,
-  twoDecimalPlaces,
-  getStrategyAbbreviation,
-  getStrategySuffix,
-  getStrategySuffixForPL,
 };

@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
     background: '#ff6600',
     '& > td': {
       fontFamily: "'Roboto'",
-      fontSize: 'small',
+      fontSize: 'medium',
       fontWeight: '700',
       textAlign: 'center',
     },
@@ -40,7 +40,12 @@ const useStyles = makeStyles(() => ({
     },
   },
   matchedBet: {
-    fontSize: 'small',
+    '& td': {
+      fontFamily: "'Roboto'",
+      fontSize: 'small',
+      fontWeight: '400',
+      textAlign: 'center',
+    },
   },
   profitLoss: {
     fontWeight: 'bold',
