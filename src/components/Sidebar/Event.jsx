@@ -5,17 +5,19 @@ import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import CountDown from './Countdown';
+//* Utils
+import formatEventName from '../../utils/Market/FormatEventName';
 //* JSS
 import useStyles from '../../jss/components/Sidebar/eventStyle';
 
 import MarketStatus from './MarketStatus';
 
-const Event = ({ marketOpen, marketStartTime, event }) => {
+const Event = ({ marketOpen, marketName, marketStartTime, event, eventType }) => {
   const classes = useStyles();
 
   const renderTitle = () => {
     if (marketOpen) {
-      return `${event.name ? event.name : event.venue ? event.venue : ''} ${moment(marketStartTime).format('LT')}`;
+      return formatEventName(marketName, marketStartTime, event, eventType);
     }
     return 'No Event Selected';
   };
@@ -37,8 +39,10 @@ const Event = ({ marketOpen, marketStartTime, event }) => {
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
+  marketName: state.market.marketName,
   marketStartTime: state.market.marketStartTime,
   event: state.market.event,
+  eventType: state.market.eventType,
 });
 
 export default connect(mapStateToProps)(Event);
