@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import dropdownRunnerStyle from '../../../../DropdownList';
 import textFieldStyle from '../../../../textFieldStyle';
 import submitButtonStyle from '../../../../submitButtonStyle';
 import row from '../../../../row';
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   select: {
     margin: theme.spacing(1),
   },
+  ...dropdownRunnerStyle(theme),
 }));
 
 export default useStyles;

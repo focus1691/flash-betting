@@ -101,10 +101,10 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, target
           <ListItemText primary="Runners" secondary={selections ? (typeof selections === 'string' ? runners[selections].runnerName : 'All / The Field') : ''} />
         </ListItem>
       </List>
-      <StyledMenu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <StyledMenu className={classes.runnerList} anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {/* The Menu Item for All / the Field */}
         {runners ? (
-          <StyledMenuItem key="stop-loss-order-all/field" className={classes.root} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
+          <StyledMenuItem key="stop-loss-order-all/field" className={classes.runnerItem} selected={typeof selections !== 'string'} onClick={handleMenuItemClick(Object.keys(runners).map((key) => [runners[key].selectionId]))}>
             All / The Field
           </StyledMenuItem>
         ) : null}
@@ -112,7 +112,7 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, target
          * Store their selectionId to be used to place bets for event clicks
          */}
         {Object.keys(runners).map((key) => (
-          <StyledMenuItem key={`stop-entry-order-${runners[key].runnerName}`} className={classes.root} selected={key === selections} onClick={handleMenuItemClick(key)}>
+          <StyledMenuItem key={`stop-entry-order-${runners[key].runnerName}`} className={classes.runnerItem} selected={key === selections} onClick={handleMenuItemClick(key)}>
             {runners[key].runnerName}
           </StyledMenuItem>
         ))}
