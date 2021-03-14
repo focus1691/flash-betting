@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 //* @material-ui core
 import { List, ListItem, ListItemText } from '@material-ui/core';
 //* Components
@@ -33,8 +34,11 @@ export default () => {
     const getTrades = async () => {
       const { clearedOrders } = await fetchData('/api/list-cleared-orders');
       if (clearedOrders) {
+        for (let i = 0; i < clearedOrders.length; i += 1) {
+          clearedOrders[i].groupDate = moment(clearedOrders[i].settledDate).format('YYYY-MM-DD');
+        }
         setTrades(_.groupBy(clearedOrders, 'eventTypeId'));
-        
+
         if (clearedOrders.length > 0) {
           setSelectedMarket(clearedOrders[0].eventTypeId);
         }
