@@ -4,7 +4,6 @@ import $ from 'jquery';
 import clsx from 'clsx';
 //* Actions
 import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
-import { placeOrder } from '../../actions/bet';
 //* Utils
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
@@ -48,7 +47,6 @@ const Grid = ({
   toggleStakeAndLiability,
   toggleBackAndLay,
   toggleOneClick,
-  placeOrder,
 }) => {
   const classes = useStyles();
   const [rowHovered, setRowHovered] = useState(null);
@@ -293,7 +291,6 @@ const mapDispatchToProps = {
   toggleStakeAndLiability,
   toggleBackAndLay,
   toggleOneClick,
-  placeOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);
