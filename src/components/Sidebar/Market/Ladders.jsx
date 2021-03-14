@@ -58,9 +58,10 @@ const Ladder = ({
     const {
       atb, atl, ltp, ltpStyle,
     } = deconstructLadder(ladder[selectionId]);
+    const runnerName = runners[selectionId] ? runners[selectionId].runnerName : '';
     return (
-      <tr key={`sidebar-ladder${runners[selectionId].runnerName}`}>
-        <td>{runners[selectionId].runnerName}</td>
+      <tr key={`sidebar-ladder${runnerName}`}>
+        <td>{runnerName}</td>
         <td>{atl}</td>
         <td style={ltpStyle}>{ltp}</td>
         <td>{atb}</td>
