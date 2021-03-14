@@ -16,6 +16,7 @@ import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from '../..
 //* Utils
 import { getStakeVal } from '../../selectors/settingsSelector';
 import { ALL_PRICES, formatPrice } from '../../utils/Bets/PriceCalculations';
+import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { calcTickOffsetPrice } from '../../utils/TradingStategy/TickOffset';
 import { calcStopLossPrice } from '../../utils/TradingStategy/StopLoss';
@@ -190,7 +191,7 @@ const Ladder = memo(
           const SL = {
             marketId,
             selectionId,
-            side: side === 'BACK' ? 'LAY' : 'BACK',
+            side: getOppositeSide(side),
             price: calcStopLossPrice(price, stopLossOffset, side),
             custom: false,
             units: stopLossUnits,
@@ -212,7 +213,7 @@ const Ladder = memo(
             selectionId,
             price: calcTickOffsetPrice(price, side, tickOffsetTicks, tickOffsetUnits === 'Percent'),
             size: tickOffsetHedged ? hedgeSize : size,
-            side: side === 'BACK' ? 'LAY' : 'BACK',
+            side: getOppositeSide(side),
             percentageTrigger: tickOffsetTrigger,
             rfs: customerStrategyRef,
             betId,

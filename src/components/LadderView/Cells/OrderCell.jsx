@@ -29,7 +29,7 @@ const LadderOrderCell = memo(({
     setBetPending(false);
   }, [betPending, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossSelected, stopLossUnits]);
 
-  const handleRightClick = useCallback(() => (e) => {
+  const handleRightClick = useCallback((e) => {
     e.preventDefault();
 
     replaceStopLoss(stopLoss, {
