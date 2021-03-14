@@ -30,6 +30,5 @@ export const getProfitAndLoss = (bets, timeFrame) => {
     }
     data.push({ time: dates[i], value: twoDecimalPlaces(cumulativeTotal) });
   }
-  console.log(data);
   return data;
 };
