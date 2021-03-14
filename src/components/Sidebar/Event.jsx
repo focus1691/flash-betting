@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
@@ -9,12 +10,12 @@ import useStyles from '../../jss/components/Sidebar/eventStyle';
 
 import MarketStatus from './MarketStatus';
 
-const Event = ({ marketOpen, marketName, marketStartTime, event }) => {
+const Event = ({ marketOpen, marketStartTime, event }) => {
   const classes = useStyles();
 
   const renderTitle = () => {
     if (marketOpen) {
-      return `${new Date(marketStartTime).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })} ${marketName}${event.venue ? ` ${event.venue}` : ''}`;
+      return `${event.name ? event.name : event.venue ? event.venue : ''} ${moment(marketStartTime).format('LT')}`;
     }
     return 'No Event Selected';
   };
@@ -36,7 +37,6 @@ const Event = ({ marketOpen, marketName, marketStartTime, event }) => {
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
-  marketName: state.market.marketName,
   marketStartTime: state.market.marketStartTime,
   event: state.market.event,
 });
