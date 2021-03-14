@@ -69,7 +69,7 @@ const GridHeader = ({
           <button type="button" className={classes.oneClickBtn} ref={oneClickRef} onClick={toggleOneClick()}>
             {`Turn One click ${oneClickOn ? 'off' : 'on'}`}
           </button>
-          <h1>{marketOpen ? `${moment(marketStartTime).calendar()} ${marketName} ${event.venue || ''}` : 'No Event Selected'}</h1>
+          <h1>{marketOpen ? `${moment(marketStartTime).calendar()} ${event.name ? event.name : event.venue ? event.venue : ''}` : 'No Event Selected'}</h1>
           {oneClickOn ? (
             <>
               <div className={clsx(classes.oneClickButtons, classes.oneClickStake)}>
