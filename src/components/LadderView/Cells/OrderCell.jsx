@@ -25,9 +25,9 @@ const LadderOrderCell = memo(({
   const handleClick = useCallback(async () => {
     if (betPending) return;
     setBetPending(true);
-    await handlePlaceOrder(side, price, marketId, selectionId, stakeVal, stopLossSelected, _.isEmpty(stopLoss), stopLossUnits, hedgeSize);
+    await handlePlaceOrder(side, price, marketId, selectionId, stopLossSelected, _.isEmpty(stopLoss), hedgeSize);
     setBetPending(false);
-  }, [betPending, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stakeVal, stopLoss, stopLossSelected, stopLossUnits]);
+  }, [betPending, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stopLoss, stopLossSelected]);
 
   const handleRightClick = useCallback((e) => {
     e.preventDefault();

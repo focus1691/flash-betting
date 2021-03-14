@@ -173,7 +173,7 @@ const Ladder = memo(
     );
 
     const handlePlaceOrder = useCallback(
-      async (side, price, marketId, selectionId, stakeVal, stopLossSelected, isStopLossActive, stopLossUnits, hedgeSize) => {
+      async (side, price, marketId, selectionId, stopLossSelected, isStopLossActive, hedgeSize) => {
         const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
         const size = customStakeActive && customStake ? customStake : stakeVal[selectionId];
         //* Place the order first with BetFair and then execute the tools
@@ -239,7 +239,7 @@ const Ladder = memo(
           saveBet(FOK);
         }
       },
-      [customStakeActive, customStake, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossHedged, addStopLoss, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, addTickOffset, fillOrKillSeconds, addFillOrKill],
+      [customStakeActive, customStake, stakeVal, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossUnits, stopLossHedged, addStopLoss, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, addTickOffset, fillOrKillSeconds, addFillOrKill],
     );
 
     return (
