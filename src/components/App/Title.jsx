@@ -1,20 +1,15 @@
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 
-const Title = ({
-  marketOpen, marketName, event, marketStartTime,
-}) => (
-  marketOpen ? (
+const Title = ({ marketOpen, marketName, event, marketStartTime }) => {
+  return marketOpen ? (
     <Helmet>
-      <title>
-        {`${new Date(marketStartTime).toLocaleTimeString(navigator.language, {
-          hour: '2-digit',
-          minute: '2-digit',
-        })} ${marketName}  ${event.venue || ''}`}
-      </title>
+      <title>{`${event.name || ''} ${marketName} ${moment(marketStartTime).format('LT')}`}</title>
     </Helmet>
-  ) : null);
+  ) : null;
+};
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
