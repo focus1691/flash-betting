@@ -185,7 +185,6 @@ const Grid = ({
               logo={logo}
               ltp={ltp}
               tv={tv}
-              bets={bets}
               PL={
                 marketHasBets(marketId, bets)
                   ? {
@@ -253,7 +252,6 @@ const Grid = ({
             layBtns={layBtns}
             bets={bets}
             ltpList={ltpSelectionIdObject}
-            placeOrder={placeOrder}
             marketCashout={marketCashout}
           />
           {marketOpen && (marketStatus === 'OPEN' || marketStatus === 'RUNNING' || marketStatus === 'SUSPENDED') ? (

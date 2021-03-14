@@ -10,6 +10,7 @@ import { placeOrder } from '../../actions/bet';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridOrderRow';
 //* Utils
+import { formatPrice } from '../../utils/Bets/PriceCalculations';
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
 const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, bets, price, side, size }) => {
@@ -21,11 +22,9 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
       marketId,
       side,
       size,
-      price,
+      price: formatPrice(price),
       selectionId: runnerId,
       customerStrategyRef: referenceStrategyId,
-      unmatchedBets: bets.unmatched,
-      matchedBets: bets.matched,
     });
   };
 

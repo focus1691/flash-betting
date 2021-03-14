@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import uuid from 'react-uuid'
+import uuid from 'react-uuid';
 import moment from 'moment';
 import crypto from 'crypto';
 import clsx from 'clsx';
 //* @material-ui core
 import Button from '@material-ui/core/Button';
 //* Actions
+import { placeOrder } from '../../actions/bet';
 import { setStakeInOneClick } from '../../actions/settings';
 //* Utils
 import { sumMatchedBets } from '../../utils/Bets/BettingCalculations';
@@ -16,49 +17,24 @@ import { renderRaceStatus } from './RaceStatus';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridHeader';
 
-const GridHeader = ({
-  marketId,
-  ladder,
-  marketOpen,
-  marketName,
-  marketStartTime,
-  event,
-  inPlay,
-  marketStatus,
-  country,
-  oneClickRef,
-  oneClickOn,
-  toggleOneClick,
-  oneClickStake,
-  setStakeInOneClick,
-  stakeBtns,
-  layBtns,
-  bets,
-  ltpList,
-  onPlaceOrder,
-  marketCashout,
-}) => {
+const GridHeader = ({ marketId, ladder, marketOpen, marketStartTime, event, inPlay, marketStatus, country, oneClickRef, oneClickOn, toggleOneClick, placeOrder, setStakeInOneClick, stakeBtns, layBtns, bets, ltpList, marketCashout }) => {
   const classes = useStyles();
   const executeMarketCashout = () => {
     const hedgedBets = getHedgedBetsToMake(marketId, bets, ltpList);
 
     if (hedgedBets.length > 0) {
-      const recursivePlaceHedge = (index, unmatchedBets) => {
+      for (let i = 0; i < hedgedBets.length; i += 1) {
         const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
 
-        onPlaceOrder({
+        placeOrder({
           marketId,
-          side: hedgedBets[index].side,
-          size: hedgedBets[index].stake,
-          price: hedgedBets[index].buyPrice,
-          selectionId: hedgedBets[index].selectionId,
+          side: hedgedBets[i].side,
+          size: hedgedBets[i].stake,
+          price: hedgedBets[i].buyPrice,
+          selectionId: hedgedBets[i].selectionId,
           customerStrategyRef: referenceStrategyId,
-          unmatchedBets,
-          matchedBets: bets.matched,
-          orderCompleteCallBack: (betId, newUnmatchedBets) => recursivePlaceHedge(index + 1, newUnmatchedBets),
         });
-      };
-      recursivePlaceHedge(0, bets.unmatched);
+      }
     }
   };
 
@@ -126,14 +102,13 @@ const GridHeader = ({
 const mapStateToProps = (state) => ({
   inPlay: state.market.inPlay,
   marketId: state.market.marketId,
-  marketName: state.market.marketName,
   marketStartTime: state.market.marketStartTime,
   marketStatus: state.market.status,
   event: state.market.event,
-  oneClickStake: state.settings.stake,
 });
 
 const mapDispatchToProps = {
+  placeOrder,
   setStakeInOneClick,
 };
 

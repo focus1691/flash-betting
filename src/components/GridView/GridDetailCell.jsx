@@ -14,7 +14,7 @@ import { getSelectionMatchedBets } from '../../selectors/orderSelector';
 import useStyles from '../../jss/components/GridView/GridDetailCell';
 
 const GridDetailCell = ({
-  selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, bets, PL, hedge, ltpStyle,
+  selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, PL, hedge, ltpStyle,
 }) => {
   const classes = useStyles();
   const side = useMemo(() => (selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side), 0) <= 0 ? 'BACK' : 'LAY'), [selectionMatchedBets]);
@@ -41,8 +41,6 @@ const GridDetailCell = ({
         price: ltp[0],
         selectionId: runner.selectionId,
         customerStrategyRef: referenceStrategyId,
-        unmatchedBets: bets.unmatched,
-        matchedBets: bets.matched,
       });
     }
   };
