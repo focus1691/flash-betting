@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
       font: 'normal normal normal medium Roboto',
     },
   },
+  profit: {
+    color: '#1ae17d !important',
+  },
+  loss: {
+    color: '#c13232 !important',
+  },
 }));
 
 export default useStyles;

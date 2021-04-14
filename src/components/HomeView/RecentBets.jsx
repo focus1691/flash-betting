@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import clsx from 'clsx';
 import moment from 'moment';
 //* @material-ui core
 import Paper from '@material-ui/core/Paper';
@@ -57,7 +58,14 @@ export default () => {
                 <TableCell>{side}</TableCell>
                 <TableCell>{moment(placedDate).calendar()}</TableCell>
                 <TableCell>{betOutcome}</TableCell>
-                <TableCell>{profit}</TableCell>
+                <TableCell
+                  className={clsx({
+                    [classes.profit]: profit > 0,
+                    [classes.loss]: profit < 0,
+                  })}
+                >
+                  {profit}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
