@@ -77,9 +77,13 @@ const reducer = (state = initialState, action) => {
     case 'UPDATE_LAY_BUTTON':
       return update(state, { layBtns: { [action.payload.id]: { $set: action.payload.value } } });
     case 'SET_STAKE_IN_ONE_CLICK_MODE':
-      const newStake = { ...state.stake };
-      newStake[action.payload.selectionId] = action.payload.price;
-      return { ...state, stake: newStake };
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          [action.payload.selectionId]: action.payload.price
+        },
+      }
     case 'SET_RIGHT_CLICK_TICKS':
       return { ...state, rightClickTicks: action.payload };
     case 'SET_HORSE_RACE_COUNTRIES':
