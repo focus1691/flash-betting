@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 //* Utils
-import { twoDecimalPlaces } from '../Bets/BettingCalculations';
+import { twoDecimalPlaces } from './BettingCalculations';
 
 const getDate = (timeFrame) => {
   if (timeFrame === '1D') return moment(moment()).subtract(1, 'days');
@@ -14,7 +14,7 @@ const getDate = (timeFrame) => {
   return moment(moment()).subtract(10, 'years');
 }
 
-export const getProfitAndLoss = (bets, timeFrame) => {
+export default (bets, timeFrame) => {
   const timeLimit = getDate(timeFrame);
 
   bets = bets.filter((bet) => moment(bet.settledDate) >= timeLimit);

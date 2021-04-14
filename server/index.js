@@ -479,7 +479,7 @@ app.get('/api/list-cleared-orders', (req, res) => {
 });
 
 app.get('/api/list-recent-orders', (req, res) => {
-  betfair.listClearedOrders({ betStatus: 'SETTLED', recordCount: 8 }, (err, { error, result }) => {
+  betfair.listClearedOrders({ betStatus: 'SETTLED', recordCount: 8, groupBy: 'MARKET' }, (err, { error, result }) => {
     if (error) {
       return res.status(401).json({ error });
     }

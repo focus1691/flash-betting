@@ -44,11 +44,12 @@ export default () => {
               <TableCell>Side</TableCell>
               <TableCell>Data / Time</TableCell>
               <TableCell>Outcome</TableCell>
+              <TableCell>Profit</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {recentBets.map(({ eventTypeId, betId, sizeSettled, priceMatched, side, placedDate, betOutcome }) => (
-              <TableRow style={{ backgroundcolor: 'red' }} key={`recent-bets-overview-${betId}`}>
+            {recentBets.map(({ eventTypeId, betId, sizeSettled, priceMatched, side, placedDate, betOutcome, profit }) => (
+              <TableRow key={`recent-bets-overview-${betId}`}>
                 <TableCell>{getEventName(eventTypeId)}</TableCell>
                 <TableCell>{sizeSettled}</TableCell>
                 <TableCell>@</TableCell>
@@ -56,6 +57,7 @@ export default () => {
                 <TableCell>{side}</TableCell>
                 <TableCell>{moment(placedDate).calendar()}</TableCell>
                 <TableCell>{betOutcome}</TableCell>
+                <TableCell>{profit}</TableCell>
               </TableRow>
             ))}
           </TableBody>

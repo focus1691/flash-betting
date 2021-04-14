@@ -9,7 +9,7 @@ import useStyles from '../../../jss/components/HomeView/chartStyle';
 //* Utils
 import { formatCurrency } from '../../../utils/NumberFormat';
 import { twoDecimalPlaces } from '../../../utils/Bets/BettingCalculations';
-import { getProfitAndLoss } from '../../../utils/Charts/tradingActivityChart';
+import createChartData from '../../../utils/Bets/CreateChartData';
 
 const Chart = ({ bets }) => {
   const classes = useStyles();
@@ -61,7 +61,7 @@ const Chart = ({ bets }) => {
           color: '#4D329D',
           title: 'Profit / Loss',
         });
-        lineSeries.setData(getProfitAndLoss(bets, timeFrame));
+        lineSeries.setData(createChartData(bets, timeFrame));
         newChart.timeScale().fitContent();
       }
     }
