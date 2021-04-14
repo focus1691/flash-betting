@@ -50,29 +50,42 @@ const UnmatchedBets = ({
 }) => {
   const classes = useStyles();
   const cancelOrder = useCallback(
-    async (bet) => {
-      removeBet({ rfs: bet.rfs });
-      switch (bet.strategy) {
+    async ({ betId, marketId, rfs, selectionId, strategy }) => {
+      //* Remove from SQLite
+      removeBet({ rfs });
+
+      if (betId) {
+        //* Cancel on BetFair
+        cancelBet(marketId, betId);
+
+        if (fillOrKillList[betId]) {
+          //* Remove Fill Or Kill from state
+          removeFillOrKill({ betId });
+        }
+      }
+
+      switch (strategy) {
         case 'Back':
-          removeBackBet({ rfs: bet.rfs, selectionId: bet.selectionId });
+          //* Remove custom Back bet from state
+          removeBackBet({ rfs, selectionId });
           break;
         case 'Lay':
-          removeLayBet({ rfs: bet.rfs, selectionId: bet.selectionId });
+          //* Remove custom Lay bet from state
+          removeLayBet({ rfs, selectionId });
           break;
         case 'Stop Entry':
-          removeStopEntryBet({ rfs: bet.rfs, selectionId: bet.selectionId });
+          //* Remove Stop Entry bet from state
+          removeStopEntryBet({ rfs, selectionId });
           break;
         case 'Tick Offset':
-          removeTickOffset({ selectionId: bet.selectionId });
+          //* Remove Tick Offset bet from state
+          removeTickOffset({ rfs, selectionId });
           break;
         case 'Stop Loss':
-          removeStopLoss({ selectionId: bet.selectionId });
+          //* Remove Stop Loss bet from state
+          removeStopLoss({ rfs, selectionId });
           break;
         default:
-          if (fillOrKillList[bet.betId]) {
-            removeFillOrKill({ betId: bet.betId });
-          }
-          cancelBet(bet.marketId, bet.betId);
           break;
       }
     },
