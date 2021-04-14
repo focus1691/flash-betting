@@ -73,6 +73,7 @@ const Lay = ({ stake, price, hours, minutes, seconds, executionTime, marketId, r
             executionTime,
             timeOffset: hours * 3600 + minutes * 60 + seconds,
             size: stake,
+            side: 'LAY',
             price: formatPrice(price),
             rfs: customerStrategyRef,
           };

@@ -72,6 +72,7 @@ const Back = ({ stake, price, hours, minutes, seconds, executionTime, marketId, 
             executionTime,
             timeOffset: hours * 3600 + minutes * 60 + seconds,
             size: stake,
+            side: 'BACK',
             price: formatPrice(price),
             rfs: customerStrategyRef,
           };

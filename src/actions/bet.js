@@ -39,9 +39,14 @@ export const setBetExecutionComplete = (data) => ({
 export const executeBet = async (bet) => {
   bet.size = parseFloat(bet.size).toFixed(2);
   const PlaceExecutionReport = await postData('/api/place-order', bet);
-  if (!PlaceExecutionReport || PlaceExecutionReport.status === 'FAILURE') return null;
 
-  const { orderStatus, sizeMatched, betId } = PlaceExecutionReport.instructionReports[0];
+  if (!PlaceExecutionReport) return null;
+
+  const { status, error, instructionReports } = PlaceExecutionReport;
+
+  if (error || status === 'FAILURE' || !instructionReports) return null;
+
+  const { orderStatus, sizeMatched, betId } = instructionReports[0];
 
   if (!betId) return null;
 
