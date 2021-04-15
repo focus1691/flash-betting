@@ -100,7 +100,7 @@ app.get('/api/get-subscription-status', (req, res) => {
 });
 
 app.get('/api/revoke-subscription-status', (req, res) => {
-  betfair.revokeAccessToWebApp({ vendorId: 4242224 }, async (err, { error, result }) => {
+  betfair.revokeAccessToWebApp({ vendorId: process.env.VENDOR_ID }, async (err, { error, result }) => {
     if (err || error) {
       return res.status(401).json({ error });
     }
