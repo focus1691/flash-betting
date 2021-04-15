@@ -15,9 +15,9 @@ const OAuthRedirect = () => {
     (async () => {
       const code = getQueryVariable('code');
       if (!code) return;
-      const { error } = await fetchData(`http://localhost:3000/generate-access-token?code=${encodeURIComponent(code)}`);
+      const data = await fetchData(`http://localhost:3000/generate-access-token?code=${encodeURIComponent(code)}`);
 
-      if (error) {
+      if (data && data.error) {
         cookies.remove('username');
         cookies.remove('sessionKey');
         cookies.remove('accessToken');
