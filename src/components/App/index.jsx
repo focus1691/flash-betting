@@ -136,32 +136,26 @@ const App = ({
 
         // Check if the bet isn't in matched/unmatched already and add it if not
         if (!unmatchedBets[betId] && !matchedBets[betId]) {
+          const betParams = {
+            strategy: 'None',
+            marketId,
+            side,
+            size: priceSize.size,
+            sizeMatched,
+            sizeRemaining,
+            selectionId,
+            rfs: rfs || 'None',
+            betId,
+          }
+
           if (status === 'EXECUTABLE') {
-            addUnmatchedBet({
-              strategy: 'None',
-              marketId,
-              side,
-              price: priceSize.price,
-              size: priceSize.size,
-              sizeMatched,
-              sizeRemaining,
-              selectionId,
-              rfs: rfs || 'None',
-              betId,
-            });
+            // Original price requested
+            betParams.price = priceSize.price;
+            addUnmatchedBet(betParams);
           } else if (status === 'EXECUTION_COMPLETE') {
-            addMatchedBet({
-              strategy: 'None',
-              marketId,
-              side,
-              price: averagePriceMatched,
-              size: priceSize.size,
-              sizeMatched,
-              sizeRemaining,
-              selectionId,
-              rfs: rfs || 'None',
-              betId,
-            });
+            // Average price matched
+            betParams.price = averagePriceMatched;
+            addMatchedBet(betParams);
           }
         }
 
@@ -507,7 +501,7 @@ const App = ({
 
   useEffect(() => {
     if (marketId) {
-      const betsWithRfs = Object.values(unmatchedBets).filter((bet) => bet.rfs);
+      const betsWithRfs = Object.values(unmatchedBets).filter((bet) => bet.rfs && bet.rfs !== 'None');
       if (betsWithRfs.length > 0) {
         socket.emit('order-subscription', {
           customerStrategyRefs: JSON.stringify(betsWithRfs),
