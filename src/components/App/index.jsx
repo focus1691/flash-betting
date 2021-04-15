@@ -41,7 +41,7 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import { removeBet, updateTicks, updateOrderMatched, getAllBets } from '../../http/dbHelper';
+import { removeBet, updateTicks, updateOrderMatched } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
 import handleAuthError from '../../utils/Errors/handleAuthError';
@@ -51,6 +51,8 @@ import { CreateRunners } from '../../utils/Market/CreateRunners';
 import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
+//* Utils > Bets
+import loadCustomBets from '../../utils/Bets/LoadCustomBets';
 //* Utils > Trading Tools
 import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
 import { checkStopLossTrigger, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
@@ -435,46 +437,16 @@ const App = ({
         //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });
 
-        const savedBackOrders = {};
-        const savedLayOrders = {};
-        const savedStopEntryOrders = {};
-        const savedTickOffsetOrders = {};
-        const savedFillOrKillOrders = {};
-        const savedStopLossOrders = {};
+        // Load the customer orders in this market from database into state
+        // Usually happens when orders are made in a market which is later reopened
+        const { backOrders, layOrders, stopEntryOrders, tickOffsetOrders, fillOrKillOrders, stopLossOrders } = await loadCustomBets(marketId);
 
-        const bets = await getAllBets(marketId);
-        bets.map(async (bet) => {
-          if (bet.marketId === marketId) {
-            switch (bet.strategy) {
-              case 'Back':
-                savedBackOrders[bet.selectionId] = savedBackOrders[bet.selectionId] ? savedBackOrders[bet.selectionId].concat(bet) : [bet];
-                break;
-              case 'Lay':
-                savedLayOrders[bet.selectionId] = savedLayOrders[bet.selectionId] ? savedLayOrders[bet.selectionId].concat(bet) : [bet];
-                break;
-              case 'Stop Entry':
-                savedStopEntryOrders[bet.selectionId] = savedStopEntryOrders[bet.selectionId] ? savedStopEntryOrders[bet.selectionId].concat(bet) : [bet];
-                break;
-              case 'Tick Offset':
-                savedTickOffsetOrders[bet.selectionId] = bet;
-                break;
-              case 'Fill Or Kill':
-                savedFillOrKillOrders[bet.betId] = bet;
-                break;
-              case 'Stop Loss':
-                savedStopLossOrders[bet.selectionId] = bet;
-                break;
-              default:
-                break;
-            }
-          }
-        });
-        updateBackList(savedBackOrders);
-        updateLayList(savedLayOrders);
-        updateStopEntryList(savedStopEntryOrders);
-        updateTickOffsetList(savedTickOffsetOrders);
-        updateFillOrKillList(savedFillOrKillOrders);
-        updateStopLossList(savedStopLossOrders);
+        updateBackList(backOrders);
+        updateLayList(layOrders);
+        updateStopEntryList(stopEntryOrders);
+        updateTickOffsetList(tickOffsetOrders);
+        updateFillOrKillList(fillOrKillOrders);
+        updateStopLossList(stopLossOrders);
       }
     }
   };
