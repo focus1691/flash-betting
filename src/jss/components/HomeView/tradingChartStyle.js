@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-    height: '55vh',
+    height: '55%',
     padding: theme.spacing(0, 2),
   },
   menu: {

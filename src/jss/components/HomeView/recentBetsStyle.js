@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   container: {
     padding: theme.spacing(3, 2, 1, 2),
-    height: '30vh',
+    height: '50%',
   },
   sectionHeader: {
     font: 'normal normal bold xx-large Roboto',
