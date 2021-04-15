@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
+import uuid from 'react-uuid';
 import moment from 'moment';
 //* @material-ui core
 import Paper from '@material-ui/core/Paper';
@@ -49,8 +50,8 @@ export default () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {recentBets.map(({ eventTypeId, betId, sizeSettled, priceMatched, side, placedDate, betOutcome, profit }) => (
-              <TableRow key={`recent-bets-overview-${betId}`}>
+            {recentBets.map(({ eventTypeId, sizeSettled, priceMatched, side, placedDate, betOutcome, profit }) => (
+              <TableRow key={`recent-bets-overview-${uuid()}`}>
                 <TableCell>{getEventName(eventTypeId)}</TableCell>
                 <TableCell>{sizeSettled}</TableCell>
                 <TableCell>@</TableCell>
