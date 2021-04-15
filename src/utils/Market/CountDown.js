@@ -4,6 +4,9 @@ export const countDownTime = (marketOpen, marketStatus, marketStartTime, inPlay,
   }
   if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') {
     const currentTime = inPlay ? inPlayTime : marketStartTime;
+
+    if (!currentTime) return marketStatus;
+
     if (new Date() < new Date(currentTime)) {
       return new Date(currentTime).valueOf() / 1000 - new Date().valueOf() / 1000;
     }
