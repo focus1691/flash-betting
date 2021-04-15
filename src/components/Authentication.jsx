@@ -9,7 +9,6 @@ const cookies = new Cookies();
 
 const Authentication = () => {
   const [sessionKey] = useState(cookies.get('sessionKey'));
-  const [isError, setIsError] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -23,12 +22,7 @@ const Authentication = () => {
 
           if (vendorClientId) {
             const { error } = await fetchData(`http://localhost:3000/refresh-access-token?vendorClientId=${vendorClientId}`);
-            if (error) {
-              cookies.remove('username');
-              cookies.remove('sessionKey');
-              cookies.remove('accessToken');
-              setIsError(true);
-            } else {
+            if (!error) {
               setIsAuthenticated(true);
             }
           }
@@ -36,7 +30,7 @@ const Authentication = () => {
       }
     })();
   }, []);
-  return !sessionKey || isError ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
+  return !sessionKey ? <Redirect to="/" /> : isAuthenticated ? <Redirect to="/dashboard" /> : <Spinner />;
 };
 
 export default Authentication;
