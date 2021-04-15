@@ -40,6 +40,7 @@ const GridHeader = ({
   marketCashout,
 }) => {
   const classes = useStyles();
+
   const executeMarketCashout = () => {
     const hedgedBets = getHedgedBetsToMake(marketId, bets, ltpList);
 

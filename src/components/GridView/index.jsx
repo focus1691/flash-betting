@@ -202,7 +202,7 @@ const Grid = ({
           </tr>
 
           <GridOrderRow
-            runnerId={key}
+            selectionId={key}
             order={order}
             toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
             toggleBackAndLay={changeSide}
@@ -210,7 +210,6 @@ const Grid = ({
             updateOrderSize={updateOrderSize}
             updateOrderPrice={handlePriceChange}
             toggleOrderRowVisibility={toggleOrderRowVisibility}
-            bets={bets}
             price={runners[key] ? runners[key].order.price : 0}
             side={side}
             size={activeOrder ? activeOrder.stake : 0}

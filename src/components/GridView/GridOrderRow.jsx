@@ -13,18 +13,18 @@ import useStyles from '../../jss/components/GridView/GridOrderRow';
 import { formatPrice } from '../../utils/Bets/PriceCalculations';
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
-const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, bets, price, side, size }) => {
+const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, price, side, size }) => {
   const classes = useStyles();
 
   const executeOrder = () => {
-    const referenceStrategyId = crypto.randomBytes(15).toString('hex').substring(0, 15);
+    const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
     placeOrder({
       marketId,
+      selectionId,
       side,
       size,
       price: formatPrice(price),
-      selectionId: runnerId,
-      customerStrategyRef: referenceStrategyId,
+      customerStrategyRef,
     });
   };
 
@@ -32,7 +32,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
     <tr className={classes.gridOrderRow}>
       <td colSpan={11}>
         <ul className={classes.gridOrderRow}>
-          <li onClick={toggleStakeAndLiabilityButtons({ id: runnerId })}>
+          <li onClick={toggleStakeAndLiabilityButtons({ id: selectionId })}>
             <img
               className={clsx({
                 [classes.switch]: true,
@@ -55,7 +55,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
               })}
               style={{ background: size === order.stake ? LightenDarkenColor(stakeLiability === 0 ? '#007aaf' : '#d4696b', -20) : '' }}
               onClick={updateOrderSize({
-                id: runnerId,
+                id: selectionId,
                 side,
                 stake: size,
               })}
@@ -63,10 +63,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
               {size}
             </li>
           ))}
-          <span
-            className={classes.toggleBackLay}
-            onClick={toggleBackAndLay(runnerId, side)}
-          >
+          <span className={classes.toggleBackLay} onClick={toggleBackAndLay(selectionId, side)}>
             {side}
           </span>
 
@@ -75,7 +72,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
             name="stake"
             value={order.stake}
             onChange={updateOrderSize({
-              id: runnerId,
+              id: selectionId,
               side,
             })}
           />
@@ -88,7 +85,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
             max="1000"
             value={order.price}
             onChange={updateOrderPrice({
-              id: runnerId,
+              id: selectionId,
               price: order.price,
             })}
           />
@@ -101,7 +98,7 @@ const GridOrderRow = ({ marketId, runnerId, order, toggleStakeAndLiabilityButton
             aria-label="close"
             className={classes.gridImgContainer}
             onClick={toggleOrderRowVisibility({
-              id: runnerId,
+              id: selectionId,
               visible: false,
             })}
           >
