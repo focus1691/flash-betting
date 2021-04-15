@@ -435,46 +435,46 @@ const App = ({
         //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });
 
-        const loadedBackOrders = {};
-        const loadedLayOrders = {};
-        const loadedStopEntryOrders = {};
-        const loadedTickOffsetOrders = {};
-        const loadedFillOrKillOrders = {};
-        const loadedStopLossOrders = {};
+        const savedBackOrders = {};
+        const savedLayOrders = {};
+        const savedStopEntryOrders = {};
+        const savedTickOffsetOrders = {};
+        const savedFillOrKillOrders = {};
+        const savedStopLossOrders = {};
 
         const bets = await getAllBets(marketId);
         bets.map(async (bet) => {
           if (bet.marketId === marketId) {
             switch (bet.strategy) {
               case 'Back':
-                loadedBackOrders[bet.selectionId] = loadedBackOrders[bet.selectionId] ? loadedBackOrders[bet.selectionId].concat(bet) : [bet];
+                savedBackOrders[bet.selectionId] = savedBackOrders[bet.selectionId] ? savedBackOrders[bet.selectionId].concat(bet) : [bet];
                 break;
               case 'Lay':
-                loadedLayOrders[bet.selectionId] = loadedLayOrders[bet.selectionId] ? loadedLayOrders[bet.selectionId].concat(bet) : [bet];
+                savedLayOrders[bet.selectionId] = savedLayOrders[bet.selectionId] ? savedLayOrders[bet.selectionId].concat(bet) : [bet];
                 break;
               case 'Stop Entry':
-                loadedStopEntryOrders[bet.selectionId] = loadedStopEntryOrders[bet.selectionId] ? loadedStopEntryOrders[bet.selectionId].concat(bet) : [bet];
+                savedStopEntryOrders[bet.selectionId] = savedStopEntryOrders[bet.selectionId] ? savedStopEntryOrders[bet.selectionId].concat(bet) : [bet];
                 break;
               case 'Tick Offset':
-                loadedTickOffsetOrders[bet.selectionId] = bet;
+                savedTickOffsetOrders[bet.selectionId] = bet;
                 break;
               case 'Fill Or Kill':
-                loadedFillOrKillOrders[bet.betId] = bet;
+                savedFillOrKillOrders[bet.betId] = bet;
                 break;
               case 'Stop Loss':
-                loadedStopLossOrders[bet.selectionId] = bet;
+                savedStopLossOrders[bet.selectionId] = bet;
                 break;
               default:
                 break;
             }
           }
         });
-        updateBackList(loadedBackOrders);
-        updateLayList(loadedLayOrders);
-        updateStopEntryList(loadedStopEntryOrders);
-        updateTickOffsetList(loadedTickOffsetOrders);
-        updateFillOrKillList(loadedFillOrKillOrders);
-        updateStopLossList(loadedStopLossOrders);
+        updateBackList(savedBackOrders);
+        updateLayList(savedLayOrders);
+        updateStopEntryList(savedStopEntryOrders);
+        updateTickOffsetList(savedTickOffsetOrders);
+        updateFillOrKillList(savedFillOrKillOrders);
+        updateStopLossList(savedStopLossOrders);
       }
     }
   };
