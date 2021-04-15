@@ -426,13 +426,6 @@ const App = ({
         setEventType(eventType);
         loadRunners(CreateRunners(runners));
         setRunner(runners[0]);
-        const selectionNames = {};
-
-        const runnerIds = Object.keys(runners);
-
-        for (let i = 0; i < runnerIds.length; i += 1) {
-          selectionNames[runnerIds[i]] = runners[runnerIds[i]].runnerName;
-        }
 
         //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });
