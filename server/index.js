@@ -84,7 +84,7 @@ app.use('/', async (req, res, next) => {
 });
 
 app.get('/api/get-subscription-status', (req, res) => {
-  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID }, async (error, { result }) => {
+  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID }, async (err, { error, result }) => {
     if (error) {
       return res.status(401).json({ error });
     }
@@ -96,6 +96,15 @@ app.get('/api/get-subscription-status', (req, res) => {
         vendorId: process.env.VENDOR_ID,
       },
     });
+  });
+});
+
+app.get('/api/revoke-subscription-status', (req, res) => {
+  betfair.revokeAccessToWebApp({ vendorId: 4242224 }, async (err, { error, result }) => {
+    if (err || error) {
+      return res.status(401).json({ error });
+    }
+    return res.status(200).json({ result });
   });
 });
 

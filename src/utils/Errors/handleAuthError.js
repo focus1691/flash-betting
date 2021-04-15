@@ -1,7 +1,7 @@
-import { authErrors } from './ErrorTypes';
+import errorList from './AuthErrors';
 
 export default (async (errorCode) => {
-  if (authErrors.includes(errorCode)) {
+  if (errorList[errorCode]) {
     window.location.href = `${window.location.origin}/?error=${errorCode}`;
   }
 });

@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
-import headerStyle from './headerStyle';
-import textFieldStyle from '../../textFieldStyle';
+import headerStyle from '../headerStyle';
+import textFieldStyle from '../../../textFieldStyle';
 
 const useStyles = makeStyles((theme) => ({
   ...headerStyle,

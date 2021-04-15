@@ -17,6 +17,7 @@ import {
   updateRightClickTicks,
   setHorseRacingCountries,
 } from '../../../actions/settings';
+import RevokeAccess from './RevokeAccess';
 import DefaultView from './DefaultView';
 import Sounds from './Sounds';
 import Tools from './Tools';
@@ -32,7 +33,7 @@ import LayButtons from './LayButtons';
 import RightClickTicks from './RightClickTicks';
 import HorseRacing from './HorseRacing';
 //* JSS
-import useStyles from '../../../jss/components/Sidebar/settingsStyle';
+import useStyles from '../../../jss/components/Sidebar/settings/settingsStyle';
 
 const Settings = ({
   premiumMember,
@@ -69,6 +70,8 @@ const Settings = ({
 
   return (
     <div>
+      <RevokeAccess />
+
       <DefaultView defaultView={defaultView} toggleDefaultView={setDefaultView} premiumMember={premiumMember} classes={classes} />
 
       <Sounds sounds={sounds} toggleSounds={toggleSound} classes={classes} />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
 import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router-dom';
 //* @material-ui core
@@ -9,7 +10,7 @@ import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 //* Utils
-import authErrors from '../utils/Errors/AuthErrors';
+import errorList from '../utils/Errors/AuthErrors';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
 //* JSS
 import useStyles from '../jss/components/Login';
@@ -18,12 +19,13 @@ const cookies = new Cookies();
 
 const Login = () => {
   const classes = useStyles();
-
+  const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState('');
   const [sessionKey, setSessionKey] = useState(cookies.get('sessionKey'));
 
   useEffect(() => {
-    const error = authErrors[getQueryVariable('error')];
+    const errorCode = getQueryVariable('error');
+    const error = errorList[errorCode];
     if (error) {
       cookies.remove('username');
       cookies.remove('sessionKey');
@@ -31,6 +33,7 @@ const Login = () => {
       setSessionKey(null);
       setError(error);
     }
+    setIsProcessing(false);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -49,7 +52,7 @@ const Login = () => {
     const sessionKey = cookies.get('sessionKey');
 
     if (error) {
-      setError(authErrors[error] || authErrors.GENERAL_AUTH_ERROR);
+      setError(errorList[error]);
     } else if (cookies.get('sessionKey')) {
       setError('');
       setSessionKey(sessionKey);
@@ -58,7 +61,7 @@ const Login = () => {
 
   return (
     <>
-      {sessionKey ? <Redirect to="/authentication" /> : null}
+      {sessionKey && !isProcessing && _.isEmpty(error) ? <Redirect to="/authentication" /> : null}
       <CssBaseline />
       <Box className={classes.box}>
         <Box className={classes.background} />
@@ -71,17 +74,7 @@ const Login = () => {
           <Typography className={classes.welcomeText} component="p">
             Welcome to Flash Betting
           </Typography>
-          <Typography
-            component="p"
-            style={{
-              backgroundColor: '#C71585',
-              marginTop: '1%',
-              width: '100%',
-              padding: error ? 2 : 0,
-              textAlign: 'center',
-              color: 'white',
-            }}
-          >
+          <Typography component="p" className={classes.errorText}>
             {error}
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>

@@ -100,6 +100,15 @@ const useStyles = makeStyles((theme) => ({
     font: 'normal normal normal large Segoe',
     zIndex: '2',
   },
+  errorText: {
+    backgroundColor: '#e6dadc',
+    marginTop: '1%',
+    width: '100%',
+    textAlign: 'center',
+    color: '#ff2525',
+    fontWeight: 'bold',
+    zIndex: '2',
+  },
   helpText: {
     textAlign: 'center',
     margin: theme.spacing(2, 0),

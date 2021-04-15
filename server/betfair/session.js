@@ -43,6 +43,7 @@ const API_ACCOUNT_METHODS = [
   'transferFunds',
   'token',
   'isAccountSubscribedToWebApp',
+  'revokeAccessToWebApp',
 ];
 
 // ************************************************************************
