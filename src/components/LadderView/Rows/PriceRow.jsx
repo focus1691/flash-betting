@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import uuid from 'react-uuid';
 import { connect } from 'react-redux';
 //* Actions
-import { setStakeInOneClick } from '../../../actions/settings';
+import { setStake } from '../../../actions/settings';
 import { setCustomStake, setCustomStakeActive } from '../../../actions/market';
 //* Utils
 import { getStakeButtonStyle, getCustomStakeStyle } from '../../../utils/ColorManipulator';
@@ -10,7 +10,7 @@ import { getStakeButtonStyle, getCustomStakeStyle } from '../../../utils/ColorMa
 import useStyles from '../../../jss/components/LadderView/priceRowStyle';
 
 const PriceRow = ({
-  selectionId, buttonType, stake, lay, stakeVal, setStakeInOneClick, customStake, customStakeActive, setCustomStake, setCustomStakeActive,
+  selectionId, buttonType, stake, lay, stakeVal, setStake, customStake, customStakeActive, setCustomStake, setCustomStakeActive,
 }) => {
   const classes = useStyles();
   const buttons = buttonType === 'STAKE' ? stake : lay;
@@ -19,11 +19,11 @@ const PriceRow = ({
 
   const handleStakeChanged = (price) => () => {
     setCustomStakeActive({ id: selectionId, customStakeActive: false });
-    setStakeInOneClick({ selectionId, price: parseFloat(price) });
+    setStake({ selectionId, price: parseFloat(price) });
   };
 
   useEffect(() => {
-    if (!stakeVal[selectionId]) setStakeInOneClick({ selectionId, price: 2 });
+    if (!stakeVal[selectionId]) setStake({ selectionId, price: 2 });
   }, []);
 
   return (
@@ -61,6 +61,6 @@ const mapStateToProps = (state, props) => ({
   stakeVal: state.settings.stake,
 });
 
-const mapDispatchToProps = { setStakeInOneClick, setCustomStake, setCustomStakeActive };
+const mapDispatchToProps = { setStake, setCustomStake, setCustomStakeActive };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PriceRow);

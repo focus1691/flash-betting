@@ -25,7 +25,6 @@ import useStyles from '../../jss/components/GridView/GridView';
 
 const Grid = ({
   oneClickOn,
-  oneClickStake,
   marketOpen,
   marketStatus,
   ladder,
@@ -245,7 +244,6 @@ const Grid = ({
             oneClickRef={oneClickRef}
             oneClickOn={oneClickOn}
             toggleOneClick={handleOneClickPress}
-            oneClickStake={oneClickStake}
             stakeBtns={stakeBtns}
             layBtns={layBtns}
             bets={bets}
@@ -266,7 +264,6 @@ const Grid = ({
 
 const mapStateToProps = (state) => ({
   oneClickOn: state.market.oneClickOn,
-  oneClickStake: state.settings.stake,
   marketOpen: state.market.marketOpen,
   marketStatus: state.market.status,
   marketId: state.market.marketId,

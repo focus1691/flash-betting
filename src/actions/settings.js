@@ -113,9 +113,14 @@ export const updateLayBtn = (data) => ({
   payload: data,
 });
 
-export const setStakeInOneClick = (stake) => ({
-  type: 'SET_STAKE_IN_ONE_CLICK_MODE',
+export const setStake = (stake) => ({
+  type: 'SET_STAKE',
   payload: stake,
+});
+
+export const setStakeInOneClick = (data) => ({
+  type: 'SET_STAKE_IN_ONE_CLICK_MODE',
+  payload: data,
 });
 
 export const updateRightClickTicks = (ticks) => ({

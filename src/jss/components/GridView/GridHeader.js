@@ -82,6 +82,12 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  oneClickStakeSelected: {
+    backgroundColor: '#045B81 !important',
+  },
+  oneClickLiabilitySelected: {
+    backgroundColor: '#C94A4F !important',
+  },
   matchedBets: {
     float: 'right',
     paddingInlineEnd: '5px',

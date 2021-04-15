@@ -17,7 +17,28 @@ import { renderRaceStatus } from './RaceStatus';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridHeader';
 
-const GridHeader = ({ marketId, ladder, marketOpen, marketStartTime, event, inPlay, marketStatus, country, oneClickRef, oneClickOn, toggleOneClick, placeOrder, setStakeInOneClick, stakeBtns, layBtns, bets, ltpList, marketCashout }) => {
+const GridHeader = ({
+  marketId,
+  ladder,
+  marketOpen,
+  marketStartTime,
+  event,
+  inPlay,
+  marketStatus,
+  country,
+  oneClickRef,
+  oneClickOn,
+  toggleOneClick,
+  placeOrder,
+  oneClickButtontype,
+  oneClickButtonSelection,
+  setStakeInOneClick,
+  stakeBtns,
+  layBtns,
+  bets,
+  ltpList,
+  marketCashout,
+}) => {
   const classes = useStyles();
   const executeMarketCashout = () => {
     const hedgedBets = getHedgedBetsToMake(marketId, bets, ltpList);
@@ -38,6 +59,8 @@ const GridHeader = ({ marketId, ladder, marketOpen, marketStartTime, event, inPl
     }
   };
 
+  console.log(oneClickButtontype, oneClickButtonSelection);
+
   return (
     <>
       <tr className={classes.gridHeader}>
@@ -50,16 +73,30 @@ const GridHeader = ({ marketId, ladder, marketOpen, marketStartTime, event, inPl
             <>
               <div className={clsx(classes.oneClickButtons, classes.oneClickStake)}>
                 <Button>STAKE</Button>
-                {stakeBtns.map((stake) => (
-                  <button key={`one-click-stake-button-${uuid()}`} type="button" onClick={() => setStakeInOneClick(stake)}>
+                {stakeBtns.map((stake, index) => (
+                  <button
+                    key={`one-click-stake-button-${uuid()}`}
+                    type="button"
+                    className={clsx({
+                      [classes.oneClickStakeSelected]: oneClickButtontype === 'stake' && oneClickButtonSelection === index,
+                    })}
+                    onClick={() => setStakeInOneClick({ buttonType: 'stake', buttonSelected: index })}
+                  >
                     {stake}
                   </button>
                 ))}
               </div>
               <div className={clsx(classes.oneClickButtons, classes.oneClickLiability)}>
                 <Button>LIABILITY</Button>
-                {layBtns.map((stake) => (
-                  <button key={`one-click-liability-button-${uuid()}`} type="button" onClick={() => setStakeInOneClick(stake)}>
+                {layBtns.map((stake, index) => (
+                  <button
+                    key={`one-click-liability-button-${uuid()}`}
+                    type="button"
+                    className={clsx({
+                      [classes.oneClickLiabilitySelected]: oneClickButtontype === 'lay' && oneClickButtonSelection === index,
+                    })}
+                    onClick={() => setStakeInOneClick({ buttonType: 'lay', buttonSelected: index })}
+                  >
                     {stake}
                   </button>
                 ))}
@@ -105,6 +142,8 @@ const mapStateToProps = (state) => ({
   marketStartTime: state.market.marketStartTime,
   marketStatus: state.market.status,
   event: state.market.event,
+  oneClickButtontype: state.settings.oneClickStake.buttonType,
+  oneClickButtonSelection: state.settings.oneClickStake.buttonSelected,
 });
 
 const mapDispatchToProps = {

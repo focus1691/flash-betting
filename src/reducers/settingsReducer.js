@@ -23,6 +23,7 @@ const initialState = {
   stakeBtns: JSON.parse(localStorage.getItem('stakeBtns')),
   layBtns: JSON.parse(localStorage.getItem('layBtns')),
   stake: {},
+  oneClickStake: { buttonType: '', buttonSelected: null },
   rightClickTicks: JSON.parse(localStorage.getItem('rightClickTicks')),
   horseRaces: JSON.parse(localStorage.getItem('horseRaces')),
   laddersExpanded: JSON.parse(localStorage.getItem('laddersExpanded')),
@@ -76,14 +77,23 @@ const reducer = (state = initialState, action) => {
       return update(state, { stakeBtns: { [action.payload.id]: { $set: action.payload.value } } });
     case 'UPDATE_LAY_BUTTON':
       return update(state, { layBtns: { [action.payload.id]: { $set: action.payload.value } } });
-    case 'SET_STAKE_IN_ONE_CLICK_MODE':
+    case 'SET_STAKE':
       return {
         ...state,
         stake: {
           ...state.stake,
-          [action.payload.selectionId]: action.payload.price
+          [action.payload.selectionId]: action.payload.price,
         },
-      }
+      };
+    case 'SET_STAKE_IN_ONE_CLICK_MODE':
+      console.log(action.payload);
+      return {
+        ...state,
+        oneClickStake: {
+          buttonType: action.payload.buttonType,
+          buttonSelected: action.payload.buttonSelected,
+        },
+      };
     case 'SET_RIGHT_CLICK_TICKS':
       return { ...state, rightClickTicks: action.payload };
     case 'SET_HORSE_RACE_COUNTRIES':
