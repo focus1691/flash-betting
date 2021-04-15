@@ -6,7 +6,7 @@ export default async (endpoint) => {
   const { result, error } = await fetch(endpoint).then((res) => res.json());
 
   if (error) {
-    let errorCode = extractErrorCode(error);
+    const errorCode = extractErrorCode(error);
     handleAuthError(errorCode);
     return {
       error,
