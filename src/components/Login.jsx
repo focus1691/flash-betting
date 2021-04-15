@@ -19,16 +19,17 @@ const cookies = new Cookies();
 const Login = () => {
   const classes = useStyles();
 
-  const [error, setError] = useState(authErrors[getQueryVariable('error')] || '');
+  const [error, setError] = useState('');
   const [sessionKey, setSessionKey] = useState(cookies.get('sessionKey'));
 
   useEffect(() => {
+    const error = authErrors[getQueryVariable('error')];
     if (error) {
       cookies.remove('username');
       cookies.remove('sessionKey');
       cookies.remove('accessToken');
       setSessionKey(null);
-      setError('');
+      setError(error);
     }
   }, []);
 
