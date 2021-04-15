@@ -86,7 +86,6 @@ const reducer = (state = initialState, action) => {
         },
       };
     case 'SET_STAKE_IN_ONE_CLICK_MODE':
-      console.log(action.payload);
       return {
         ...state,
         oneClickStake: {

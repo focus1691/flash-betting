@@ -59,8 +59,6 @@ const GridHeader = ({
     }
   };
 
-  console.log(oneClickButtontype, oneClickButtonSelection);
-
   return (
     <>
       <tr className={classes.gridHeader}>
