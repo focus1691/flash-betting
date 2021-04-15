@@ -132,7 +132,7 @@ const App = ({
     try {
       const { currentOrders } = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
       for (let i = 0; i < currentOrders.length; i += 1) {
-        const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize, customerStrategyRef: rfs } = currentOrders[i];
+        const { marketId, selectionId, betId, side, status, sizeMatched, sizeRemaining, averagePriceMatched, priceSize: { price, size }, customerStrategyRef: rfs } = currentOrders[i];
 
         // Check if the bet isn't in matched/unmatched already and add it if not
         if (!unmatchedBets[betId] && !matchedBets[betId]) {
@@ -140,7 +140,7 @@ const App = ({
             strategy: 'None',
             marketId,
             side,
-            size: priceSize.size,
+            size,
             sizeMatched,
             sizeRemaining,
             selectionId,
@@ -150,7 +150,7 @@ const App = ({
 
           if (status === 'EXECUTABLE') {
             // Original price requested
-            betParams.price = priceSize.price;
+            betParams.price = price;
             addUnmatchedBet(betParams);
           } else if (status === 'EXECUTION_COMPLETE') {
             // Average price matched
@@ -188,8 +188,8 @@ const App = ({
                 strategy: 'None',
                 marketId,
                 side,
-                price: priceSize.price,
-                size: priceSize.size,
+                price,
+                size,
                 sizeMatched,
                 sizeRemaining,
                 selectionId,
