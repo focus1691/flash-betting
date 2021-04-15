@@ -1,8 +1,13 @@
 import React from 'react';
+import Cookies from 'universal-cookie';
 //* @material-ui core
 import useStyles from '../../../jss/components/Sidebar/settings/revokeAccessStyle';
 //* HTTP
 import fetchData from '../../../http/fetchData';
+//* Utils
+import { clearCookies, redirectToLogin } from '../../../session/cleanup';
+
+const cookies = new Cookies();
 
 export default () => {
   const classes = useStyles();
@@ -11,7 +16,8 @@ export default () => {
     const result = await fetchData('/api/revoke-subscription-status');
 
     if (result === 'SUCCESS') {
-      window.location.href = window.location.origin;
+      clearCookies(cookies);
+      redirectToLogin();
     }
   };
 

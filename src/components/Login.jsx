@@ -14,6 +14,8 @@ import errorList from '../utils/Errors/AuthErrors';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
 //* JSS
 import useStyles from '../jss/components/Login';
+//* Session
+import { clearCookies } from '../session/cleanup';
 
 const cookies = new Cookies();
 
@@ -27,9 +29,7 @@ const Login = () => {
     const errorCode = getQueryVariable('error');
     const error = errorList[errorCode];
     if (error) {
-      cookies.remove('username');
-      cookies.remove('sessionKey');
-      cookies.remove('accessToken');
+      clearCookies(cookies);
       setSessionKey(null);
       setError(error);
     }

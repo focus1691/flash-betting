@@ -10,6 +10,8 @@ import { formatCurrency } from '../../utils/NumberFormat';
 import fetchData from '../../http/fetchData';
 //* JSS
 import useStyles from '../../jss/components/Sidebar/accountStyle';
+//* Utils
+import { clearCookies, redirectToLogin } from '../../session/cleanup';
 
 const cookies = new Cookies();
 
@@ -17,10 +19,8 @@ const Account = ({ name, countryCode, currencyCode, localeCode, balance, bets, s
   const classes = useStyles();
   const handleLogout = async () => {
     await fetch('/api/logout');
-    cookies.remove('username');
-    cookies.remove('sessionKey');
-    cookies.remove('accessToken');
-    window.location.href = `${window.location.origin}`;
+    clearCookies(cookies);
+    redirectToLogin();
   };
 
   useEffect(() => {
