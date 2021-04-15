@@ -169,16 +169,12 @@ const App = ({
           if (tickOffsetList[rfs]) {
             const tosTriggered = checkTickOffsetTrigger(tickOffsetList[rfs], sizeMatched);
             if (tosTriggered) {
-              removeTickOffset({ selectionId });
-              removeBet({ rfs });
-              placeOrder({
-                marketId,
-                selectionId,
-                side: tickOffsetList[rfs].side,
-                size: tickOffsetList[rfs].size,
-                price: tickOffsetList[rfs].price,
-                customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
-              });
+              const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+              const { side, size, price } = tickOffsetList[rfs];
+
+              placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
+              removeTickOffset({ selectionId }); // Remove from state
+              removeBet({ rfs }); // Remove from database
             }
           }
 
@@ -273,12 +269,12 @@ const App = ({
               const stopEntryBetsToRemove = checkStopEntryTargetMet(stopEntryList, mc.rc[i].id, currentLTP);
               if (!_.isEmpty(stopEntryBetsToRemove)) {
                 for (let i = 0; i < stopEntryBetsToRemove.length; i += 1) {
-                  const { marketId, selectionId, side, size, price } = stopEntryBetsToRemove; 
-                  placeOrder({
-                    marketId, selectionId, side, size, price,
-                    customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
-                  });
-                  removeBet({ rfs: stopEntryBetsToRemove[i].rfs });
+                  
+                  const { rfs, marketId, selectionId, side, size, price } = stopEntryBetsToRemove[i]; 
+                  const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+
+                  placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
+                  removeBet({ rfs }); // Remove from database
                 }
                 removeMultiSelectionStopEntryBets(extractStopEntryRfs(stopEntryBetsToRemove));
               }
@@ -292,17 +288,18 @@ const App = ({
 
                 if (targetMet) {
                   const newMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == SL.selectionId);
-                  placeOrder({
-                    marketId: SL.marketId,
-                    selectionId: SL.selectionId,
-                    side: SL.side,
-                    size: CalculateLadderHedge(parseFloat(SL.price), newMatchedBets, 'hedged').size,
-                    price: SL.price,
-                    customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
-                  });
-                  removeStopLoss({ selectionId: SL.selectionId }); // Remove the SL
-                  removeBet({ rfs: SL.rfs }); // Remove the SL from DB
-                } else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
+                  const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+
+                  const { rfs, marketId, selectionId, side, price } = SL;
+
+                  // Calculate the hedged size for the price
+                  const { size } = CalculateLadderHedge(parseFloat(price), newMatchedBets, 'hedged');
+
+                  placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
+                  removeStopLoss({ selectionId }); // Remove the SL
+                  removeBet({ rfs }); // Remove the SL from DB
+                }
+                else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
                   SL.ticks += 1;
                   updateTicks(SL); //! Update SQLite with new ticks
                   const newStopLossList = { ...stopLossList };
@@ -379,16 +376,14 @@ const App = ({
                   if (tickOffsetList[rfs]) {
                     const tosTriggered = checkTickOffsetTrigger(tickOffsetList[rfs], sizeMatched);
                     if (tosTriggered) {
-                      placeOrder({
-                        marketId,
-                        selectionId,
-                        side: tickOffsetList[rfs].side,
-                        size,
-                        price,
-                        customerStrategyRef: crypto.randomBytes(15).toString('hex').substring(0, 15),
-                      });
-                      removeTickOffset({ selectionId });
-                      removeBet({ rfs });
+
+                      const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+                      const { side } = tickOffsetList[rfs];
+
+                      placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
+
+                      removeTickOffset({ selectionId }); // Remove from state
+                      removeBet({ rfs }); // Remove from database
                     }
                   }
                 }
