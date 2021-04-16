@@ -8,8 +8,8 @@ const electronApp = electron.app;
 electronApp.commandLine.appendSwitch('high-dpi-support', 1)
 electronApp.commandLine.appendSwitch('force-device-scale-factor', 1)
 
-const { remote } = electron;
-const { BrowserWindow } = remote;
+const { BrowserWindow } = electron;
+// const { BrowserWindow } = remote;
 let mainWindow;
 
 const _ = require('lodash');
@@ -94,7 +94,7 @@ app.use('/', async (req, res, next) => {
 });
 
 app.get('/api/get-subscription-status', (req, res) => {
-  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID }, async (error, { result }) => {
+  betfair.isAccountSubscribedToWebApp({ vendorId: process.env.VENDOR_ID }, async (err, { error, result }) => {
     if (error) {
       return res.status(401).json({ error });
     }
@@ -106,6 +106,15 @@ app.get('/api/get-subscription-status', (req, res) => {
         vendorId: process.env.VENDOR_ID,
       },
     });
+  });
+});
+
+app.get('/api/revoke-subscription-status', (req, res) => {
+  betfair.revokeAccessToWebApp({ vendorId: process.env.VENDOR_ID }, async (err, { error, result }) => {
+    if (error) {
+      return res.status(401).json({ error });
+    }
+    return res.status(200).json({ result });
   });
 });
 
@@ -185,7 +194,13 @@ app.get('/api/get-events-with-active-bets', (req, res) => {
 
     if (filteredOrders.length <= 0) return res.json([]);
 
-    return betfair.listMarketCatalogue({ filter: { marketIds: filteredOrders }, maxResults: 100 }, (err, { error, result }) => {
+    return betfair.listMarketCatalogue({
+      filter: {
+        marketIds: filteredOrders
+      },
+      maxResults: 100,
+      marketProjection: ['EVENT'],
+    }, (err, { error, result }) => {
       if (error) {
         return res.status(401).json({ error });
       }
@@ -474,7 +489,7 @@ app.get('/api/list-order-to-duplicate', (req, res) => {
 });
 
 app.get('/api/list-cleared-orders', (req, res) => {
-  betfair.listClearedOrders({ betStatus: 'SETTLED', fromRecord: 0, recordCount: 0 }, (err, { error, result }) => {
+  betfair.listClearedOrders({ betStatus: 'SETTLED', fromRecord: 0, recordCount: 0, groupBy: 'MARKET' }, (err, { error, result }) => {
     if (error) {
       return res.status(401).json({ error });
     }
@@ -483,7 +498,7 @@ app.get('/api/list-cleared-orders', (req, res) => {
 });
 
 app.get('/api/list-recent-orders', (req, res) => {
-  betfair.listClearedOrders({ betStatus: 'SETTLED', recordCount: 8 }, (err, { error, result }) => {
+  betfair.listClearedOrders({ betStatus: 'SETTLED', recordCount: 10, groupBy: 'MARKET' }, (err, { error, result }) => {
     if (error) {
       return res.status(401).json({ error });
     }
