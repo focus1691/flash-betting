@@ -489,19 +489,18 @@ const App = ({
   useInterval(() => retrieveBets(), TWO_HUNDRED_AND_FIFTY_MILLISECONDS);
 
   useEffect(() => {
-    const listMarketPL = async () => {
-      const result = await fetchData(`/api/list-market-pl?marketId=${marketId}`);
-      if (result && result[0]) {
-        const selectionPL = result[0].profitAndLosses.reduce((acc, item) => {
-          acc[item.selectionId] = item.ifWin;
-          return acc;
-        }, {});
-        setMarketPL(selectionPL);
+    (async () => {
+      if (marketId) {
+        const result = await fetchData(`/api/list-market-pl?marketId=${marketId}`);
+        if (result && result[0]) {
+          const selectionPL = result[0].profitAndLosses.reduce((acc, item) => {
+            acc[item.selectionId] = item.ifWin;
+            return acc;
+          }, {});
+          setMarketPL(selectionPL);
+        }
       }
-    };
-    if (marketId) {
-      listMarketPL();
-    }
+    })();
   }, [marketId, matchedBets, setMarketPL]);
 
   if (isLoading) return <Spinner />;
