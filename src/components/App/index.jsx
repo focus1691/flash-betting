@@ -235,40 +235,43 @@ const App = ({
    * @param {obj} data The market change message data: { rc: [(atb, atl, tv, ltp, id)] }
    */
   const onReceiveMarketMessage = useCallback(
-    (data) => {
+    ({ mc, clk, initialClk }) => {
 
-      if (data.clk) setClk(data.clk);
-      if (data.initialClk) setInitialClk(data.initialClk);
+      if (clk) setClk(clk);
+      if (initialClk) setInitialClk(initialClk);
 
-      data.mc.forEach(async (mc) => {
+      mc.forEach(async ({ rc, marketDefinition, }) => {
         const ladders = { ...updates };
         const updatedNonRunners = { ...nonRunners };
 
         // Update the market status
-        if (mc.marketDefinition) {
-          for (let i = 0; i < mc.marketDefinition.runners.length; i += 1) {
-            if (mc.marketDefinition.runners[i].status === 'REMOVED') {
-              if (mc.marketDefinition.runners[i].id in ladders) {
-                delete ladders[mc.marketDefinition.runners[i].id];
+        if (marketDefinition) {
+          const { runners } = marketDefinition;
+          for (let i = 0; i < runners.length; i += 1) {
+            const { id, status } = runners[i];
+            if (status === 'REMOVED') {
+              if (!updatedNonRunners[id]) {
+                updatedNonRunners[id] = ladders[id];
               }
-              if (mc.marketDefinition.runners[i].id in updatedNonRunners === false) {
-                updatedNonRunners[mc.marketDefinition.runners[i].id] = ladders[mc.marketDefinition.runners[i].id];
+              if (ladders[id]) {
+                delete ladders[id];
               }
             }
           }
           loadNonRunners(updatedNonRunners);
         }
 
-        if (mc.rc) {
-          for (let i = 0; i < mc.rc.length; i += 1) {
-            if (ladders[mc.rc[i].id]) {
+        if (rc) {
+          for (let i = 0; i < rc.length; i += 1) {
+            const { id } = rc[i];
+            if (ladders[id]) {
               //* Runner found so we update our object with the mc runner data
-              ladders[mc.rc[i].id] = UpdateLadder(ladders[mc.rc[i].id], mc.rc[i]);
+              ladders[id] = UpdateLadder(ladders[id], rc[i]);
 
-              const currentLTP = mc.rc[i].ltp || ladders[mc.rc[i].id].ltp[0];
+              const currentLTP = rc[i].ltp || ladders[id].ltp[0];
 
               // stop Entry
-              const stopEntryBetsToRemove = checkStopEntryTargetMet(stopEntryList, mc.rc[i].id, currentLTP);
+              const stopEntryBetsToRemove = checkStopEntryTargetMet(stopEntryList, id, currentLTP);
               if (!_.isEmpty(stopEntryBetsToRemove)) {
                 for (let i = 0; i < stopEntryBetsToRemove.length; i += 1) {
                   
@@ -282,9 +285,9 @@ const App = ({
               }
 
               // Increment and check the stoplosses
-              if (stopLossList[mc.rc[i].id] && stopLossList[mc.rc[i].id].assignedIsOrderMatched) {
-                const SL = { ...stopLossList[mc.rc[i].id] };
-                const prevLTP = ladders[mc.rc[i].id].ltp[1] || ladders[mc.rc[i].id].ltp[0];
+              if (stopLossList[id] && stopLossList[id].assignedIsOrderMatched) {
+                const SL = { ...stopLossList[id] };
+                const prevLTP = ladders[id].ltp[1] || ladders[id].ltp[0];
 
                 const targetMet = checkStopLossHit(SL, currentLTP);
 
@@ -309,16 +312,15 @@ const App = ({
                   updateStopLossList(newStopLossList);
                 }
               }
-            } else if (!(mc.rc[i].id in nonRunners) && !(mc.rc[i].id in updatedNonRunners)) {
+            } else if (!nonRunners[id] && !updatedNonRunners[id]) {
               // Runner found so we create the new object with the raw data
-              ladders[mc.rc[i].id] = CreateLadder(mc.rc[i]);
+              ladders[id] = CreateLadder(rc[i]);
 
-              if (i === mc.rc.length - 1) {
-                let j;
+              if (i === rc.length - 1) {
                 if (eventType.id === '4339') {
                   //! Used to track ladder bet when dragging & dropping ladders
                   const newOrderList = {};
-                  for (j = 0; j < sortedLadder.length; j += 1) {
+                  for (let j = 0; j < sortedLadder.length; j += 1) {
                     newOrderList[j] = sortedLadder[j];
                   }
                   updateLadderOrder(newOrderList);
@@ -328,7 +330,7 @@ const App = ({
                   updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
                   //! Used to track ladder bet when dragging & dropping ladders
                   const newOrderList = {};
-                  for (j = 0; j < sortedLadderIndices.length; j += 1) {
+                  for (let j = 0; j < sortedLadderIndices.length; j += 1) {
                     newOrderList[j] = sortedLadderIndices[j];
                   }
                   updateLadderOrder(newOrderList);
