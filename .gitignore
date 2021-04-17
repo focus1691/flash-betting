@@ -26,10 +26,3 @@ yarn-debug.log*
 yarn-error.log*
 
 /Documents
-
-# Electron experimental
-public/navigation-index.html
-public/navigation-index.js
-public/chrome-like.css
-public/resources/*
-public/material-dark.css
