@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
+  "extends": ["airbnb", "prettier"],
   "parser": "babel-eslint",
   "parserOptions": {
     // Only ESLint 6.2.0 and later support ES2020.
@@ -10,7 +10,7 @@
     "node": true,
     "jest/globals": true
   },
-  "plugins": ["react", "react-hooks", "jest", "node"],
+  "plugins": ["react", "react-hooks", "jest"],
   "rules": {
     "no-underscore-dangle": [
       "error",
@@ -56,15 +56,6 @@
     "max-len": ["error", { "code": 250 }],
     "no-param-reassign": "off",
     "no-nested-ternary": "off",
-    "no-shadow": "off",
-    "node/exports-style": ["error", "module.exports"],
-    "node/file-extension-in-import": ["error", "always"],
-    "node/prefer-global/buffer": ["error", "always"],
-    "node/prefer-global/console": ["error", "always"],
-    "node/prefer-global/process": ["error", "always"],
-    "node/prefer-global/url-search-params": ["error", "always"],
-    "node/prefer-global/url": ["error", "always"],
-    "node/prefer-promises/dns": "error",
-    "node/prefer-promises/fs": "error"
+    "no-shadow": "off"
   }
 }
