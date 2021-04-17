@@ -169,7 +169,13 @@ function Navigation(options) {
     NAV._updateUrl();
     NAV._updateCtrls();
     return false;
-  });
+  }).on('click', '#nav-ctrls-reload', function () {
+    if ($(this).find('#nav-ready').length) {
+      NAV.reload();
+    } else {
+      NAV.stop();
+    }
+  });;
 
   $('#nav-tabs-collapse').on('click', function () {
     if ($('#nav-body-tabs').width() === 0) {
@@ -213,44 +219,12 @@ function Navigation(options) {
   //
   // reload page
   //
-  $('#nav-body-ctrls').on('click', '#nav-ctrls-reload', function () {
-    if ($(this).find('#nav-ready').length) {
-      NAV.reload();
-    } else {
-      NAV.stop();
-    }
-  });
-  //
-  // highlight address input text on first select
-  //
-  // $('#nav-ctrls-url').on('focus', function (e) {
-  //   $(this)
-  //     .one('mouseup', function () {
-  //       $(this).select();
-  //       return false;
-  //     })
-  //     .select();
-  // });
-  //
-  // load or search address on enter / shift+enter
-  //
-  // $('#nav-ctrls-url').keyup(function (e) {
-  //   if (e.keyCode == 13) {
-  //     if (e.shiftKey) {
-  //       NAV.newTab(this.value, {
-  //         close: options.closableTabs,
-  //         icon: NAV.TAB_ICON
-  //       });
-  //     } else {
-  //       if ($('.nav-tabs-tab').length) {
-  //         NAV.changeTab(this.value);
-  //       } else {
-  //         NAV.newTab(this.value, {
-  //           close: options.closableTabs,
-  //           icon: NAV.TAB_ICON
-  //         });
-  //       }
-  //     }
+  // $('#nav-body-tabs').on('click', '#nav-ctrls-reload', function () {
+  //   console.log('aadada');
+  //   if ($(this).find('#nav-ready').length) {
+  //     NAV.reload();
+  //   } else {
+  //     NAV.stop();
   //   }
   // });
   if (this.dragTabs) {
@@ -295,11 +269,6 @@ function Navigation(options) {
     } else {
       this._stopLoading();
     }
-    // if (webview.getAttribute('data-readonly') == 'true') {
-    //   $('#nav-ctrls-url').attr('readonly', 'readonly');
-    // } else {
-    //   $('#nav-ctrls-url').removeAttr('readonly');
-    // }
 
   } //:_updateCtrls()
   //
@@ -439,8 +408,7 @@ function Navigation(options) {
       }
     });
     webview[0].addEventListener('did-fail-load', (res) => {
-      // if (res.validatedURL == $('#nav-ctrls-url').val() && res.errorCode != -3) {
-        if (res.errorCode != -3) {
+      if (res.errorCode != -3) {
         this.executeJavaScript('document.body.innerHTML=' +
           '<div style="background-color:whitesmoke;padding:40px;margin:20px;font-family:consolas;">' +
           '<h2 align=center>Oops, this page failed to load correctly.</h2>' +
@@ -468,20 +436,6 @@ function Navigation(options) {
         url = '';
       }
     }
-    // urlInput.off('blur');
-    // if (!urlInput.is(':focus')) {
-    //   urlInput.prop('value', url);
-    //   urlInput.data('last', url);
-    // } else {
-    //   urlInput.on('blur', function () {
-    //     // if url not edited
-    //     if (urlInput.val() == urlInput.data('last')) {
-    //       urlInput.prop('value', url);
-    //       urlInput.data('last', url);
-    //     }
-    //     urlInput.off('blur');
-    //   });
-    // }
   } //:_updateUrl()
 } //:Navigation()
 /**
@@ -847,7 +801,6 @@ Navigation.prototype.goToTab = function (index) {
   }
 
   if ($tabAndViewToActivate.length) {
-    // $('#nav-ctrls-url').blur();
     $activeTabAndView.removeClass('active');
     $tabAndViewToActivate.addClass('active');
 
