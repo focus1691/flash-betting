@@ -5,7 +5,7 @@ const useStyles = makeStyles(() => ({
     color: '#1ae17d',
   },
   loss: {
-    color: '#710909',
+    color: '#ff7a7a',
   },
   breakEven: {
     color: '#000',
