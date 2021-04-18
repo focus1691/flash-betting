@@ -68,13 +68,13 @@ export const executeReduceSize = async (bet) => {
 };
 
 export const placeOrder = (bet) => {
-  bet.size = bet.side === 'LAY' ? calcLayBet(bet.price, bet.size).liability : parseFloat(bet.size);
-  bet.price = parseFloat(bet.price);
+  return async (dispatch) => {
+    bet.size = bet.side === 'LAY' ? calcLayBet(bet.price, bet.size).liability : parseFloat(bet.size);
+    bet.price = parseFloat(bet.price);
 
-  if (isNaN(bet.size)) return null;
+    if (isNaN(bet.size)) return null;
 
-  if (parseFloat(bet.size) < 2.0) {
-    return async (dispatch) => {
+    if (parseFloat(bet.size) < 2.0) {
       const startingBet = await executeBet({
         ...bet,
         price: bet.side === 'BACK' ? 1000 : 1.01,
@@ -122,16 +122,14 @@ export const placeOrder = (bet) => {
         }
         return startingBet.betId;
       }
-    };
-  }
-
-  return async (dispatch) => {
-    const adjustedBet = await executeBet(bet);
-    if (!adjustedBet) return null;
-    if (adjustedBet.status === 'EXECUTION_COMPLETE') dispatch(addMatchedBet(adjustedBet));
-    else if (adjustedBet.status === 'EXECUTABLE') dispatch(addUnmatchedBet(adjustedBet));
-
-    return adjustedBet.betId;
+    } else {
+      const adjustedBet = await executeBet(bet);
+      if (!adjustedBet) return null;
+      if (adjustedBet.status === 'EXECUTION_COMPLETE') dispatch(addMatchedBet(adjustedBet));
+      else if (adjustedBet.status === 'EXECUTABLE') dispatch(addUnmatchedBet(adjustedBet));
+  
+      return adjustedBet.betId;
+    }
   };
 };
 
