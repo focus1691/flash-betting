@@ -2,7 +2,7 @@ import _ from 'lodash';
 import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import useInterval from '../../utils/CustomHooks/useInterval';
+import useInterval from '../../hooks/useInterval';
 //* Actions
 import { setIsLoading, setPremiumStatus } from '../../actions/settings';
 import {
