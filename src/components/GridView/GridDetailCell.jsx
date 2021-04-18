@@ -13,9 +13,7 @@ import { getSelectionMatchedBets } from '../../selectors/orderSelector';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridDetailCell';
 
-const GridDetailCell = ({
-  selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, PL, hedge, ltpStyle,
-}) => {
+const GridDetailCell = ({ selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, PL, hedge, ltpStyle }) => {
   const classes = useStyles();
   const side = useMemo(() => (selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side), 0) <= 0 ? 'BACK' : 'LAY'), [selectionMatchedBets]);
 
@@ -24,15 +22,10 @@ const GridDetailCell = ({
     e.target.src = iconForEvent(Number(sportId));
   };
 
-  const executeHedgeBet = () => () => {
+  const executeHedgeBet = () => {
     if (isHedgingOnSelectionAvailable(selectionMatchedBets)) {
-      const referenceStrategyId = crypto
-        .randomBytes(15)
-        .toString('hex')
-        .substring(0, 15);
-      const hedgeSize = selectionMatchedBets.length > 0
-        ? CalculateLadderHedge(ltp[0], selectionMatchedBets, 'hedged').size
-        : undefined;
+      const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+      const hedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(ltp[0], selectionMatchedBets, 'hedged').size : undefined;
 
       placeOrder({
         marketId,
@@ -40,31 +33,25 @@ const GridDetailCell = ({
         size: hedgeSize,
         price: ltp[0],
         selectionId: runner.selectionId,
-        customerStrategyRef: referenceStrategyId,
+        customerStrategyRef,
       });
     }
   };
 
-  const handleRunnerSelection = useCallback(() => {
-    setRunner(runner);
-  }, [runner]);
-
   return (
-    <td className={classes.gridRunnerDetails} onClick={handleRunnerSelection}>
+    <td className={classes.gridRunnerDetails} onClick={() => setRunner(runner)}>
       <img src={logo} alt="" onError={handleImageError()} />
       <span>{`${number}${name}`}</span>
-      <span style={ltpStyle} className={classes.ltp}>{ltp[0] || ''}</span>
+      <span style={ltpStyle} className={classes.ltp}>
+        {ltp[0] || ''}
+      </span>
 
       <div className={classes.gridPL}>
         <span
           style={{
-					  color: !isHedgingOnSelectionAvailable(selectionMatchedBets)
-					    ? '#D3D3D3'
-					    : hedge < 0
-					      ? 'red'
-					      : '#01CC41',
+            color: !isHedgingOnSelectionAvailable(selectionMatchedBets) ? '#D3D3D3' : hedge < 0 ? 'red' : '#01CC41',
           }}
-          onClick={executeHedgeBet()}
+          onClick={executeHedgeBet}
         >
           {selectionHasBets(selectionMatchedBets) ? hedge : ''}
         </span>
