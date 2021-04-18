@@ -25,13 +25,13 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
     setTimeRemaining(secondsToHms(countDownTime(marketOpen, marketStatus, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime)));
 
     //* BACK Before/After Market
-    checkBackLayBetsAndExecute(backList, marketStartTime, placeOrder, inPlay, removeBackBet);
+    // checkBackLayBetsAndExecute(backList, marketStartTime, placeOrder, inPlay, removeBackBet);
 
     //* LAY Before/After Market
-    checkBackLayBetsAndExecute(layList, marketStartTime, placeOrder, inPlay, removeLayBet);
+    // checkBackLayBetsAndExecute(layList, marketStartTime, placeOrder, inPlay, removeLayBet);
 
     //* FOK
-    checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, removeBet);
+    // checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, removeBet);
   }, ONE_SECOND);
 
   return <>{timeRemaining}</>;

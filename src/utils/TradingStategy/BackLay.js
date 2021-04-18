@@ -11,7 +11,8 @@ export const isBetAfterMarketReady = (marketStartTime, order) => {
   return order.executionTime === 'After' && timePassed >= order.timeOffset;
 };
 
-export const checkBackLayBetsAndExecute = (list, marketStartTime, placeOrder, inPlay, removeSelectionBets) => {
+export const checkBackLayBetsAndExecute = (list, marketStartTime, placeOrder, inPlay, removeSelectionBets, dispatch) => {
+  console.log('checkBackLayBetsAndExecute');
   const selectionIds = Object.keys(list);
 
   for (let i = 0; i < selectionIds.length; i += 1) {
@@ -21,13 +22,13 @@ export const checkBackLayBetsAndExecute = (list, marketStartTime, placeOrder, in
       const isReady = inPlay ? isBetAfterMarketReady(marketStartTime, bets[j]) : isBetBeforeMarketReady(marketStartTime, bets[j]);
 
       if (isReady) {
-        placeOrder({
+        dispatch(placeOrder({
           marketId: bets[j].marketId,
           selectionId: bets[j].selectionId,
           side: bets[j].side,
           size: bets[j].size,
           price: bets[j].price,
-        });
+        }));
         removeBet({ rfs: bets[j].rfs }); // DB
         removeSelectionBets({ selectionId: bets[j].selectionId, rfs: bets[j].rfs }); // Back action
       }

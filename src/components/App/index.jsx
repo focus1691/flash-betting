@@ -120,7 +120,7 @@ const App = ({
   const [clk, setClk] = useState(null);
   const [connectionId, setConnectionId] = useState('');
   const [connectionError, setConnectionError] = useState('');
-  const isOnline = useTest();
+  useTest();
 
   const getPremiumStatus = async () => {
     const result = await fetchData('http://localhost:3000/premium?user=traderjosh');

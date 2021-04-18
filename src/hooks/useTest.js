@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import useInterval from 'react-useinterval';
 import { useSelector, useDispatch } from 'react-redux'
+//* Actions
+import { placeOrder, addUnmatchedBet, addMatchedBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../actions/bet';
+import { removeBackBet } from '../actions/back';
+import { removeLayBet } from '../actions/lay';
 import { addBackBet } from '../actions/back';
+//* Utils
+import { checkBackLayBetsAndExecute } from '../utils/TradingStategy/BackLay';
+import { checkFOKBetsAndExecute } from '../utils/TradingStategy/fillOrKill';
+
+const ONE_SECOND = 1000;
 
 export default function useTest() {
   const dispatch = useDispatch();
-  const [isOnline, setIsOnline] = useState(false);
   const backList = useSelector(state => state.back.list);
-  console.log(backList);
+  const layList = useSelector(state => state.back.list);
+  const marketStartTime = useSelector(state => state.market.marketStartTime);
+  const inPlay = useSelector(state => state.market.inPlay);
 
-  const fakeBet = {
-    strategy: 'BACK',
-    marketId: '1.232323',
-    selectionId: 2242424,
-    size: 2,
-    price: '2.02',
-    side: 'BACK',
-    betId: '23232232',
-    rfs: '142124124sdffs',
-    trailing: false,
-    hedged: false,
-    assignedIsOrderMatched: false,
-    timeOffset: 2 * 3600 + 0 * 60 + 0,
-  };
+  useInterval(() => {
+    //* BACK Before/After Market
+    checkBackLayBetsAndExecute(backList, marketStartTime, placeOrder, inPlay, removeBackBet, dispatch);
 
-  useEffect(() => {
-    setIsOnline(true);
-    // dispatch(addBackBet(fakeBet));
-  }, []);
+    //* LAY Before/After Market
+    checkBackLayBetsAndExecute(layList, marketStartTime, placeOrder, inPlay, removeLayBet, dispatch);
 
-  return isOnline;
+    //* FOK
+    // checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, removeBet);
+  }, ONE_SECOND);
 }
