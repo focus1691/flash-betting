@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { findIndex, omit } from 'lodash';
+import { findIndex, omit, isEmpty } from 'lodash';
 import { isNumeric } from 'validator';
 
 const initialState = {
@@ -65,7 +65,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: {
           ...state.list,
-          [action.payload.selectionId]: [...state.list[action.payload.selectionId], action.payload],
+          [action.payload.selectionId]: isEmpty(state.list[action.payload.selectionId]) ? [action.payload] : [...state.list[action.payload.selectionId], action.payload],
         },
       };
     case 'REMOVE_LAY_BET':
