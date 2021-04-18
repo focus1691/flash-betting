@@ -14,7 +14,7 @@ export const sumMatchedBets = (ladder) => {
   return sum ? Math.floor(sum) : '';
 };
 
-export const twoDecimalPlaces = (num) => parseFloat(num).toFixed(2);
+export const twoDecimalPlaces = (num) => parseFloat((Math.round(num * 100) / 100).toFixed(2));
 
 export const calcBackProfit = (stake, price, side) => {
   const profit = parseFloat((stake * price - stake).toFixed(2));
