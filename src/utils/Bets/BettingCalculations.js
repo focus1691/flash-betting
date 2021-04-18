@@ -78,9 +78,9 @@ export const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartT
     case 'Tick Offset':
       return 'T.O.';
     case 'Back':
-      return `${getTimeToDisplay(order, marketStartTime)}`;
+      return `B ${getTimeToDisplay(order, marketStartTime)}`;
     case 'Lay':
-      return `${getTimeToDisplay(order, marketStartTime)}`;
+      return `L ${getTimeToDisplay(order, marketStartTime)}`;
     case 'Stop Entry':
       return `${order.stopEntryCondition + formatPrice(order.targetLTP)}SE`;
     default:
