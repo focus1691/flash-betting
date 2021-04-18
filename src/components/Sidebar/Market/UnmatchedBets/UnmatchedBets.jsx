@@ -93,41 +93,46 @@ const UnmatchedBets = ({
   );
 
   const replaceOrderPrice = useCallback(
-    async (bet, newPrice) => {
-      switch (bet.strategy) {
+    async ({ rfs, selectionId, marketId, betId, strategy }, newPrice) => {
+      switch (strategy) {
         case 'Back':
-          updateBackBetPrice({ selectionId: bet.selectionId, rfs: bet.rfs, price: newPrice });
+          updateBackBetPrice({ selectionId, rfs, price: newPrice });
           break;
         case 'Lay':
-          updateLayBetPrice({ selectionId: bet.selectionId, rfs: bet.rfs, price: newPrice });
+          updateLayBetPrice({ selectionId, rfs, price: newPrice });
           break;
         case 'Stop Entry':
-          updateStopEntryBetPrice({ selectionId: bet.selectionId, rfs: bet.rfs, price: newPrice });
+          updateStopEntryBetPrice({ selectionId, rfs, price: newPrice });
           break;
         case 'Tick Offset':
-          updateTickOffsetBetPrice({ selectionId: bet.selectionId, price: newPrice });
+          updateTickOffsetBetPrice({ selectionId, price: newPrice });
           break;
         case 'Stop Loss':
-          updateStopLossBetPrice({ selectionId: bet.selectionId, price: newPrice });
+          updateStopLossBetPrice({ selectionId, price: newPrice });
           break;
         case 'None': {
           const { status, instructionReports } = await postData('/api/replace-orders', {
-            marketId: bet.marketId,
-            betId: bet.betId,
+            marketId,
+            betId,
             newPrice,
           });
 
           if (status === 'SUCCESS') {
-            const { betId, instruction } = instructionReports[0].placeInstructionReport;
-            updateBetPrice({ betId: bet.betId, newBetId: betId, price: instruction.limitOrder.price });
-            removeUnmatchedBet({ betId: bet.betId });
+            const {
+              betId,
+              instruction: {
+                limitOrder: { price },
+              },
+            } = instructionReports[0].placeInstructionReport;
+            updateBetPrice({ betId, newBetId: betId, price });
+            removeUnmatchedBet({ betId });
           }
           break;
         }
         default:
           break;
       }
-      updatePrice({ rfs: bet.rfs, price: newPrice });
+      updatePrice({ rfs, price: newPrice });
     },
     [updateBackBetPrice, updateLayBetPrice, updateStopEntryBetPrice, updateTickOffsetBetPrice, updateStopLossBetPrice, updateBetPrice, removeUnmatchedBet],
   );
