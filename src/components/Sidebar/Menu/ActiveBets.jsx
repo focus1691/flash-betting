@@ -20,7 +20,10 @@ const ActiveBets = () => {
     const getActiveBets = async () => {
       const bets = await fetchData('/api/get-events-with-active-bets');
 
-      if (bets) setBets(bets);
+      if (bets) {
+        const { error } = bets;
+        if (!error) setBets(bets);
+      }
     };
     getActiveBets();
   }, []);
