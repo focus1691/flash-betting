@@ -45,5 +45,5 @@ export const getTimeToDisplay = (order, marketStartTime) => {
     return secondsToHms(remainingTime + order.timeOffset);
   }
   const remainingTime = new Date(marketStartTime).valueOf() / 1000 - new Date().valueOf() / 1000;
-  return secondsToHms(remainingTime - order.timeOffset);
+  return secondsToHms(remainingTime > order.timeOffset ? remainingTime - order.timeOffset : order.timeOffset - remainingTime);
 };
