@@ -15,9 +15,6 @@ const Countdown = ({ marketStartTime, marketOpen, marketStatus, inPlay, inPlayTi
 
   useInterval(() => {
     setTimeRemaining(secondsToHms(countDownTime(marketOpen, marketStatus, marketStartTime, inPlay, inPlayTime, pastEventTime, setPastEventTime)));
-
-    //* FOK
-    // checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, removeBet);
   }, ONE_SECOND);
 
   return <>{timeRemaining}</>;
@@ -30,10 +27,6 @@ const mapStateToProps = (state) => ({
   inPlay: state.market.inPlay,
   inPlayTime: state.market.inPlayTime,
   pastEventTime: state.market.pastEventTime,
-  layList: state.lay.list,
-  backList: state.back.list,
-  fillOrKillList: state.fillOrKill.list,
-  tickOffsetList: state.tickOffset.list,
 });
 
 const matchDispatchToProps = {

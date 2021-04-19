@@ -186,57 +186,58 @@ const Ladder = memo(
           customerStrategyRef,
         });
         //* betId only returned if the bet was success
-        if (!betId) return;
-        if (stopLossSelected && !isStopLossActive) {
-          const SL = {
-            marketId,
-            selectionId,
-            side: getOppositeSide(side),
-            price: calcStopLossPrice(price, stopLossOffset, side),
-            custom: false,
-            units: stopLossUnits,
-            ticks: stopLossOffset,
-            rfs: customerStrategyRef,
-            assignedIsOrderMatched: false,
-            size,
-            betId,
-            hedged: stopLossHedged,
-            strategy: 'Stop Loss',
-          };
-          addStopLoss(SL);
-          saveBet(SL);
-        }
-        else if (tickOffsetSelected) {
-          const TOS = {
-            strategy: 'Tick Offset',
-            marketId,
-            selectionId,
-            price: calcTickOffsetPrice(price, side, tickOffsetTicks, tickOffsetUnits === 'Percent'),
-            size: tickOffsetHedged ? hedgeSize : size,
-            side: getOppositeSide(side),
-            percentageTrigger: tickOffsetTrigger,
-            rfs: customerStrategyRef,
-            betId,
-            hedged: tickOffsetHedged,
-            minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1,
-          };
-          addTickOffset(TOS);
-          saveBet(TOS);
-        }
-
-        if (fillOrKillSelected) {
-          const FOK = {
-            strategy: 'Fill Or Kill',
-            marketId,
-            selectionId,
-            side,
-            seconds: fillOrKillSeconds,
-            startTime: Date.now(),
-            betId,
-            rfs: customerStrategyRef,
-          };
-          addFillOrKill(FOK);
-          saveBet(FOK);
+        if (betId) {
+          if (stopLossSelected && !isStopLossActive) {
+            const SL = {
+              marketId,
+              selectionId,
+              side: getOppositeSide(side),
+              price: calcStopLossPrice(price, stopLossOffset, side),
+              custom: false,
+              units: stopLossUnits,
+              ticks: stopLossOffset,
+              rfs: customerStrategyRef,
+              assignedIsOrderMatched: false,
+              size,
+              betId,
+              hedged: stopLossHedged,
+              strategy: 'Stop Loss',
+            };
+            addStopLoss(SL);
+            saveBet(SL);
+          }
+          else if (tickOffsetSelected) {
+            const TOS = {
+              strategy: 'Tick Offset',
+              marketId,
+              selectionId,
+              price: calcTickOffsetPrice(price, side, tickOffsetTicks, tickOffsetUnits === 'Percent'),
+              size: tickOffsetHedged ? hedgeSize : size,
+              side: getOppositeSide(side),
+              percentageTrigger: tickOffsetTrigger,
+              rfs: customerStrategyRef,
+              betId,
+              hedged: tickOffsetHedged,
+              minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1,
+            };
+            addTickOffset(TOS);
+            saveBet(TOS);
+          }
+  
+          if (fillOrKillSelected) {
+            const FOK = {
+              strategy: 'Fill Or Kill',
+              marketId,
+              selectionId,
+              side,
+              seconds: fillOrKillSeconds,
+              startTime: Date.now(),
+              betId,
+              rfs: customerStrategyRef,
+            };
+            addFillOrKill(FOK);
+            saveBet(FOK);
+          }
         }
       },
       [customStakeActive, customStake, stakeVal, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossUnits, stopLossHedged, addStopLoss, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, addTickOffset, fillOrKillSeconds, addFillOrKill],
