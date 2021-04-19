@@ -61,6 +61,8 @@ import { checkStopLossTrigger, checkStopLossHit } from '../../utils/TradingState
 import { checkStopEntryTargetMet, extractStopEntryRfs } from '../../utils/TradingStategy/StopEntry';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
+//* JSS
+import useStyles from '../../jss';
 //* Constants
 import { ONE_SECOND, TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../../constants';
 
@@ -115,6 +117,7 @@ const App = ({
   setBetExecutionComplete,
   updateFillOrKillList,
 }) => {
+  const classes = useStyles();
   const [updates, setUpdates] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [initialClk, setInitialClk] = useState(null);
@@ -514,7 +517,7 @@ const App = ({
       <div className="root">
         <Title />
         <Siderbar />
-        <main className="content">
+        <main className={classes.container}>
           <ConnectionStatus connectionError={connectionError} setConnectionError={setConnectionError} marketId={marketId} clk={clk} initialClk={initialClk} socket={socket} />
           <Draggable />
           {Views[view] || <HomeView />}

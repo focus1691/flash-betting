@@ -1,4 +1,7 @@
-html, body, #root, #root > div {
+html,
+body,
+#root,
+#root>div {
 	height: 100vh;
 	overflow: hidden;
 	margin: 0;
@@ -7,39 +10,37 @@ html, body, #root, #root > div {
 @font-face {
 	font-family: "Segoe";
 	src: url("../fonts/SegoeUI.ttf");
-  }
+}
 
 @media only screen and (max-width: 1200px) {
-    #root > div {
+	#root>div {
 		overflow: auto;
 	}
 }
-
-/* * {
-	font-family: 'Lato', sans-serif;
-} */
 
 .root {
 	display: flex;
 }
 
 .noselect {
-	-webkit-touch-callout: none; /* iOS Safari */
-	  -webkit-user-select: none; /* Safari */
-	   -khtml-user-select: none; /* Konqueror HTML */
-		 -moz-user-select: none; /* Old versions of Firefox */
-		  -ms-user-select: none; /* Internet Explorer/Edge */
-			  user-select: none; /* Non-prefixed version, currently
+	-webkit-touch-callout: none;
+	/* iOS Safari */
+	-webkit-user-select: none;
+	/* Safari */
+	-khtml-user-select: none;
+	/* Konqueror HTML */
+	-moz-user-select: none;
+	/* Old versions of Firefox */
+	-ms-user-select: none;
+	/* Internet Explorer/Edge */
+	user-select: none;
+	/* Non-prefixed version, currently
 									supported by Chrome, Opera and Firefox */
-  }
-
-.content {
-	width: 100%;
-	height: 100vh;
 }
 
- ::-webkit-scrollbar {
-    display: none;
+
+::-webkit-scrollbar {
+	display: none;
 }
 
 #spinner {
