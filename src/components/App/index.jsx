@@ -54,6 +54,7 @@ import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 //* Utils > Bets
 import loadCustomBets from '../../utils/Bets/LoadCustomBets';
+import ExtractCustomerStrategyRfs from '../../utils/Bets/ExtractCustomerStrategyRfs';
 //* Utils > Trading Tools
 import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
 import { checkStopLossTrigger, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
@@ -465,10 +466,10 @@ const App = ({
 
   useEffect(() => {
     if (marketId) {
-      const betsWithRfs = Object.values(unmatchedBets).filter((bet) => bet.rfs && bet.rfs !== 'None');
-      if (betsWithRfs.length > 0) {
+      const customerStrategyRefs = ExtractCustomerStrategyRfs(unmatchedBets);
+      if (customerStrategyRefs.length > 0) {
         socket.emit('order-subscription', {
-          customerStrategyRefs: JSON.stringify(betsWithRfs),
+          customerStrategyRefs: JSON.stringify(customerStrategyRefs),
         });
       }
     }
