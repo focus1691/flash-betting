@@ -4,7 +4,6 @@ import useInterval from 'react-useinterval';
 //* Actions
 import { setPastEventTime } from '../../actions/market';
 //* Utils
-import { checkFOKBetsAndExecute } from '../../utils/TradingStategy/fillOrKill';
 import { secondsToHms } from '../../utils/DateHelper';
 import { countDownTime } from '../../utils/Market/CountDown';
 
@@ -29,8 +28,6 @@ const mapStateToProps = (state) => ({
   pastEventTime: state.market.pastEventTime,
 });
 
-const matchDispatchToProps = {
-  setPastEventTime,
-};
+const matchDispatchToProps = { setPastEventTime };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Countdown);

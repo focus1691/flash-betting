@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import useInterval from '../../hooks/useInterval';
-import useTest from '../../hooks/useTest';
+import useTools from '../../hooks/useTools';
 //* Actions
 import { setIsLoading, setPremiumStatus } from '../../actions/settings';
 import {
@@ -120,7 +120,7 @@ const App = ({
   const [clk, setClk] = useState(null);
   const [connectionId, setConnectionId] = useState('');
   const [connectionError, setConnectionError] = useState('');
-  useTest();
+  useTools();
 
   const getPremiumStatus = async () => {
     const result = await fetchData('http://localhost:3000/premium?user=traderjosh');
