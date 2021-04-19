@@ -11,6 +11,8 @@ import MarketSettlement from './MarketSettlement';
 import fetchData from '../../http/fetchData';
 //* Utils
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
+//* Constants
+import { FLASH_BETTING_URI } from '../../constants';
 //* JSS
 import useStyles from '../../jss/components/ClosedMarketView';
 
@@ -24,7 +26,7 @@ const ClosedMarketView = ({ runners, setPremiumStatus }) => {
   useEffect(() => {
     (async function getMarketResult() {
       //* Load premium in case this route is accessed directly
-      const premiumMember = await fetchData('http://localhost:3000/premium?user=traderjosh');
+      const premiumMember = await fetchData(`${FLASH_BETTING_URI}premium?user=traderjosh`);
       if (premiumMember.error) {
         setPremiumStatus(false);
       } else {

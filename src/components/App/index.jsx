@@ -64,7 +64,7 @@ import ConnectionStatus from '../ConnectionStatus';
 //* JSS
 import useStyles from '../../jss';
 //* Constants
-import { ONE_SECOND, TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../../constants';
+import { ONE_SECOND, TWO_HUNDRED_AND_FIFTY_MILLISECONDS, FLASH_BETTING_URI } from '../../constants';
 
 const App = ({
   view,
@@ -127,7 +127,7 @@ const App = ({
   useTools();
 
   const getPremiumStatus = async () => {
-    const result = await fetchData('http://localhost:3000/premium?user=traderjosh');
+    const result = await fetchData(`${FLASH_BETTING_URI}premium?user=traderjosh`);
     if (result.error) {
       setPremiumStatus(false);
     } else {

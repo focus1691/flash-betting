@@ -5,6 +5,8 @@ import getQueryVariable from '../utils/Market/GetQueryVariable';
 import Spinner from './App/Spinner';
 //* HTTP
 import fetchData from '../http/fetchData';
+//* Constants
+import { FLASH_BETTING_URI } from '../constants';
 //* Session
 import { clearCookies } from '../session/cleanup';
 
@@ -17,7 +19,7 @@ const OAuthRedirect = () => {
     (async () => {
       const code = getQueryVariable('code');
       if (!code) return;
-      const data = await fetchData(`http://localhost:3000/generate-access-token?code=${encodeURIComponent(code)}`);
+      const data = await fetchData(`${FLASH_BETTING_URI}generate-access-token?code=${encodeURIComponent(code)}`);
 
       if (data && data.error) {
         clearCookies(cookies);
