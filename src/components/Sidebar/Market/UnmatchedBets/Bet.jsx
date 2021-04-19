@@ -1,4 +1,5 @@
 import React, { useCallback, memo } from 'react';
+import uuid from 'react-uuid';
 import BetPL from './BetPL';
 //* Utils
 import { colorForOrder, twoDecimalPlaces } from '../../../../utils/Bets/BettingCalculations';
@@ -13,6 +14,7 @@ const Bet = memo(({ bet, handleRightClick, cancelOrder, marketStartTime }) => {
 
   return (
     <tr
+      key={`unmatched-bet-sidebar-${uuid()}`}
       className={classes.betRow}
       style={colorForOrder(bet.side, bet.strategy)}
       onContextMenu={(e) => {

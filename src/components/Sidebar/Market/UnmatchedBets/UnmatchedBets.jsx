@@ -1,3 +1,4 @@
+import uuid from 'react-uuid';
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
@@ -148,13 +149,13 @@ const UnmatchedBets = ({
     <div>
       <table className={classes.menuBets}>
         <tbody>
-          <tr className={classes.heading}>
+          <tr className={classes.heading} key={`unmatched-bet-header-sidebar-${uuid()}`}>
             <td colSpan={2}>Odds</td>
             <td colSpan={2}>Stake</td>
             <td colSpan={4}>P/L</td>
             <td colSpan={1} />
           </tr>
-          <tr>
+          <tr key={`unmatched-bet-event-name-${uuid()}`}>
             <td className={classes.event} colSpan={9}>
               {marketName}
             </td>
@@ -165,39 +166,39 @@ const UnmatchedBets = ({
 
                 const BETS = Object.values(unmatchedBets)
                   .filter((bet) => bet.selectionId == selectionId)
-                  .map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  .map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />);
                 if (BETS.length.length > 0) {
                   list.push(BETS);
                 }
 
                 if (backList[selectionId]) {
-                  const BACK = Object.values(backList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  const BACK = Object.values(backList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />);
                   list.push(BACK);
                 }
 
                 if (layList[selectionId]) {
-                  const LAY = Object.values(layList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  const LAY = Object.values(layList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />);
                   list.push(LAY);
                 }
 
                 if (stopEntryList[selectionId]) {
-                  const SE = Object.values(stopEntryList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  const SE = Object.values(stopEntryList[selectionId]).map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />);
                   list.push(SE);
                 }
 
                 if (stopLossList[selectionId]) {
-                  const SL = <Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
+                  const SL = <Bet bet={stopLossList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />;
                   list.push(SL);
                 }
 
                 if (tickOffsetList[selectionId]) {
-                  const TOS = <Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />;
+                  const TOS = <Bet bet={tickOffsetList[selectionId]} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />;
                   list.push(TOS);
                 }
 
                 const FOK = Object.values(fillOrKillList)
                   .filter((bet) => bet.selectionId == selectionId)
-                  .map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} />);
+                  .map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />);
                 if (FOK.length > 0) {
                   list.push(FOK);
                 }
