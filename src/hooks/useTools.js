@@ -21,6 +21,7 @@ export default function useTest() {
   const marketStartTime = useSelector(state => state.market.marketStartTime);
   const inPlay = useSelector(state => state.market.inPlay);
 
+  console.log('use test');
   useInterval(() => {
     //* BACK Before/After Market
     checkBackLayBetsAndExecute(backList, marketStartTime, placeOrder, inPlay, removeBackBet, dispatch);

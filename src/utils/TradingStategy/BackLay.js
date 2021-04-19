@@ -7,7 +7,7 @@ export const isBetBeforeMarketReady = (marketStartTime, beforeAfter, timeOffset)
   const executionTime = new Date(marketStartTime);
   executionTime.setSeconds(executionTime.getSeconds() - timeOffset);
 
-  return beforeAfter === 'After' && now >= executionTime;
+  return beforeAfter === 'Before' && now >= executionTime;
 };
 
 export const isBetAfterMarketReady = (marketStartTime, beforeAfter, timeOffset) => {
