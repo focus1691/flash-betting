@@ -1,5 +1,5 @@
 export const countDownTime = (marketOpen, marketStatus, marketStartTime, inPlay, inPlayTime, pastEventTime, onPastEventTime) => {
-  if (!marketOpen) {
+  if (!marketOpen || !marketStartTime) {
     return '--';
   }
   if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') {
