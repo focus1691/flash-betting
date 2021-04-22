@@ -21,7 +21,7 @@ import OAuthRedirect from './components/OAuthRedirect';
 import SocketContext from './contexts/SocketContext';
 
 //* Stripe
-const PUBLIC_KEY = 'pk_test_KEJkEziIEKCuTZ1b3Uc5sFrL';
+const PUBLIC_KEY = 'pk_test_51Ii5FXKbtGV5AqwZPcERWcj2YcAnqfvjoozVGmuqqIGr4pUvEXw9yiUF0eaE94PlDj4Zb8IXSSyrlqyJdkkszMda00WxqoPPr1';
 const stripeTestPromise = loadStripe(PUBLIC_KEY);
 
 const socket = openSocket('http://localhost:3001');
