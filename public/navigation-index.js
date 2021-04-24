@@ -288,7 +288,7 @@ function Navigation(options) {
     } else {
       tab.find('.nav-tabs-favicon-loader').css('display', 'block');
       tab.find('.nav-tabs-favicon').css('display', 'none');
-      tab.find('.nav-tabs-favicon-loader').attr('src', path.join(__dirname, ...["resources", "ajax-loader.gif"]));
+      tab.find('.nav-tabs-favicon-loader').attr('src', path.join(__dirname, ...["icons", "ajax-loader.gif"]));
     }
     $('#nav-ctrls-reload').html(this.SVG_CLEAR);
   } //:_loading()
@@ -492,10 +492,10 @@ Navigation.prototype.newTab = function (url, options) {
     tab += '<i class="nav-tabs-favicon nav-icons">' + this.SVG_FAVICON + '</i>';
   } else if (options.icon === 'default') {
     tab += '<img class="nav-tabs-favicon nav-icons" src=""/>';
-    tab += '<img class="nav-tabs-favicon-loader nav-icons" src="' + path.join(__dirname, ...["resources", "ajax-loader.gif"]) + '"/>';
+    tab += '<img class="nav-tabs-favicon-loader nav-icons" src="' + path.join(__dirname, ...["icons", "ajax-loader.gif"]) + '"/>';
   } else {
     tab += '<img class="nav-tabs-favicon nav-icons" src="' + options.icon + '"/>';
-    tab += '<img class="nav-tabs-favicon-loader nav-icons"  src="' + path.join(__dirname, ...["resources", "ajax-loader.gif"]) + '"/>';
+    tab += '<img class="nav-tabs-favicon-loader nav-icons"  src="' + path.join(__dirname, ...["icons", "ajax-loader.gif"]) + '"/>';
   }
   // title
   if (options.title == 'default') {
