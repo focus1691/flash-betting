@@ -119,7 +119,6 @@ const App = ({
   const [isUpdated, setIsUpdated] = useState(true);
   const [initialClk, setInitialClk] = useState(null);
   const [clk, setClk] = useState(null);
-  const [connectionId, setConnectionId] = useState('');
   const [connectionError, setConnectionError] = useState('');
   useTools();
 
@@ -314,15 +313,12 @@ const App = ({
     [matchedBets, stopLossList, tickOffsetList],
   );
 
-  const onMarketDisconnect = useCallback(
-    async ({ errorCode, errorMessage }) => {
-      handleAuthError(errorCode);
-      if (errorMessage) {
-        setConnectionError(`${errorMessage.split(':')[0]}, connection id: ${connectionId}`);
-      }
-    },
-    [connectionId],
-  );
+  const onMarketDisconnect = useCallback(async ({ errorCode, errorMessage }) => {
+    handleAuthError(errorCode);
+    if (errorMessage) {
+      setConnectionError(errorMessage.split(':')[0]);
+    }
+  }, []);
 
   const retrieveMarket = async () => {
     const marketId = getQueryVariable('marketId');
@@ -389,14 +385,12 @@ const App = ({
   useEffect(() => {
     socket.on('mcm', onReceiveMarketMessage);
     socket.on('ocm', onReceiveOrderMessage);
-    socket.on('connection-id', (connectionId) => setConnectionId(connectionId));
     socket.on('subscription-error', onMarketDisconnect);
     socket.on('market-definition', onReceiveMarketDefinition);
 
     return () => {
       socket.off('mcm');
       socket.off('ocm');
-      socket.off('connection-id');
       socket.off('subscription-error');
       socket.off('market-definition');
     };

@@ -59,7 +59,6 @@ class BetFairStreamAPI {
               for (let i = 0; i < this.subscriptions.length; i += 1) {
                 this.client.write(`${JSON.stringify(this.subscriptions[i])}\r\n`);
               }
-              this.socket.emit('connection-id', result.connectionId);
             }
             this.subscriptions = [];
             this.connectionClosed = result.connectionClosed;
