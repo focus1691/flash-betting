@@ -76,7 +76,10 @@
       ]
     },
     "mac": {
-      "target": "dmg"
+      "target": [
+        "zip",
+        "dmg"
+      ]
     }
   },
   "scripts": {
