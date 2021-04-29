@@ -1,4 +1,5 @@
 const initialState = {
+  id: '',
   name: '',
   countryCode: '',
   currencyCode: '',
@@ -23,6 +24,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, balance: action.payload };
     case 'UPDATE_TIME':
       return { ...state, time: action.payload };
+    case 'SET_USER_ID':
+      return { ...state, id: action.payload };
     default:
       return state;
   }

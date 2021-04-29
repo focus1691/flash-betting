@@ -12,3 +12,8 @@ export const setTime = (time) => ({
   type: 'UPDATE_TIME',
   payload: time,
 });
+
+export const setUserId = (id) => ({
+  type: 'SET_USER_ID',
+  payload: id,
+})
