@@ -10,7 +10,7 @@ const SelectMyMarkets = ({ myMarkets, setSubmenu }) => {
   const classes = useStyles();
 
   return Object.values(myMarkets).map(({ id, sportId, name, nodes }) => (
-    <ListItem key={`select-my-market-${sportId}`}>
+    <ListItem key={`select-my-market-${id}`}>
       <ListItem button onClick={() => setSubmenu(id, name, sportId.match(/\d+/)[0], nodes)}>
         <ListItemIcon className={classes.dropdownIcon}>
           <img src={`${window.location.origin}/icons/caret-arrow-up.png`} alt="" />
