@@ -27,7 +27,7 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
       <button type="button" onClick={handleClick('HomeView')} style={view === 'HomeView' ? { background: '#404040' } : {}}>
         <img alt="Home" src={`${window.location.origin}/icons/Home.svg`} />
       </button>
-      <button type="button" onClick={premiumMember ? handleClick('LadderView') : openPremiumDialog(true)} style={view === 'LadderView' ? { background: '#404040' } : {}}>
+      <button type="button" onClick={premiumMember ? handleClick('LadderView') : () => openPremiumDialog(true)} style={view === 'LadderView' ? { background: '#404040' } : {}}>
         <img alt="Ladder" src={`${window.location.origin}/icons/Ladder_View.svg`} />
       </button>
       <button type="button" onClick={handleClick('GridView')} style={view === 'GridView' ? { background: '#404040' } : {}}>

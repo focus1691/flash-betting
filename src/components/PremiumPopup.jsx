@@ -8,33 +8,18 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import IconButton from '@material-ui/core/IconButton';
 import Slide from '@material-ui/core/Slide';
-import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 //* @material-ui icons
 import CloseIcon from '@material-ui/icons/Close';
 //* Actions
-import { openPremiumDialog, setPremiumStatus } from '../actions/settings';
-
-const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: 'relative',
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
-  },
-  paypal: {
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 'auto',
-    width: 'fit-content',
-  },
-}));
+import { openPremiumDialog } from '../actions/settings';
+//* JSS
+import useStyles from '../jss/components/PremiumPopup';
 
 const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog, setPremiumStatus }) => {
+const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog }) => {
   const classes = useStyles();
   const stripe = useStripe();
   const elements = useElements();
@@ -84,6 +69,6 @@ const mapStateToProps = (state) => ({
   selectedPremium: state.settings.selectedPremium,
 });
 
-const mapDispatchToProps = { openPremiumDialog, setPremiumStatus };
+const mapDispatchToProps = { openPremiumDialog };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PremiumPopup);
