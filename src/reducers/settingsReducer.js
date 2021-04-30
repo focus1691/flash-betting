@@ -8,7 +8,6 @@ const initialState = {
   view: localStorage.getItem('defaultView').replace(/['"]+/g, ''),
   isLoading: true,
   premiumMember: false,
-  selectedPremium: 'monthly',
   premiumPopupOpen: false,
   fullscreen: false,
   sounds: JSON.parse(localStorage.getItem('sounds')),
@@ -47,8 +46,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, premiumMember: action.payload };
     case 'TOGGLE_POPUP':
       return { ...state, premiumPopupOpen: action.payload };
-    case 'SET_SELECTED_PREMIUM':
-      return { ...state, selectedPremium: action.payload };
     case 'FULL_SCREEN':
       return { ...state, fullscreen: action.payload };
     case 'TOGGLE_SOUNDS':

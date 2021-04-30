@@ -8,13 +8,13 @@ import Typography from '@material-ui/core/Typography';
 //* Custom Components
 import SubscriptionContainer from './SubscriptionContainer';
 //* Actions
-import { openPremiumDialog, setSelectedPremium } from '../../../actions/settings';
+import { openPremiumDialog } from '../../../actions/settings';
 //* JSS
 import useStyles from '../../../jss/components/HomeView/premiumStyle';
 
 const cookies = new Cookies();
 
-const HomeView = ({ id, premiumMember, openPremiumDialog, setSelectedPremium }) => {
+const HomeView = ({ id, premiumMember, openPremiumDialog }) => {
   const classes = useStyles({ subscribed: premiumMember });
 
   return (
@@ -35,9 +35,9 @@ const HomeView = ({ id, premiumMember, openPremiumDialog, setSelectedPremium }) 
         PREMIUM
       </Typography>
       <div className={classes.subscriptionList}>
-        <SubscriptionContainer plan="Monthly" period="Per Month" price={9.99} openPremiumDialog={openPremiumDialog} setSelectedPremium={setSelectedPremium} classes={classes} />
-        <SubscriptionContainer plan="Biannually" period="6 Months" price={49.99} openPremiumDialog={openPremiumDialog} setSelectedPremium={setSelectedPremium} classes={classes} />
-        <SubscriptionContainer plan="Annually" period="1 Year" price={99.99} openPremiumDialog={openPremiumDialog} setSelectedPremium={setSelectedPremium} classes={classes} />
+        <SubscriptionContainer plan="Monthly" period="Per Month" price={10} openPremiumDialog={openPremiumDialog} classes={classes} />
+        <SubscriptionContainer plan="Biannually" period="6 Months" price={50} openPremiumDialog={openPremiumDialog} classes={classes} />
+        <SubscriptionContainer plan="Annually" period="1 Year" price={100} openPremiumDialog={openPremiumDialog} classes={classes} />
       </div>
     </div>
   );
@@ -48,6 +48,6 @@ const mapStateToProps = (state) => ({
   premiumMember: state.settings.premiumMember,
 });
 
-const mapDispatchToProps = { openPremiumDialog, setSelectedPremium };
+const mapDispatchToProps = { openPremiumDialog };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeView);

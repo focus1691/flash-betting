@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 
-export default ({ plan, period, price, openPremiumDialog, setSelectedPremium, classes }) => (
+export default ({ plan, period, price, openPremiumDialog, classes }) => (
   <div className={classes.subscriptionContainer}>
     <Box className={classes.subscriptionBackground} />
     <div className={classes.subscriptionHeader}>{plan}</div>
@@ -15,7 +15,6 @@ export default ({ plan, period, price, openPremiumDialog, setSelectedPremium, cl
       className={classes.subscriptionButton}
       onClick={() => {
         openPremiumDialog(true);
-        setSelectedPremium(plan.toLowerCase());
       }}
     >
       SIGN UP
