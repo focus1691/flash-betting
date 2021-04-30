@@ -2,6 +2,7 @@ import _ from 'lodash';
 import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
+import Cookies from 'universal-cookie';
 import useInterval from '../../hooks/useInterval';
 import useTools from '../../hooks/useTools';
 //* Actions
@@ -66,6 +67,8 @@ import useStyles from '../../jss';
 //* Constants
 import { ONE_SECOND, FLASH_BETTING_URI } from '../../constants';
 
+const cookies = new Cookies();
+
 const App = ({
   view,
   isLoading,
@@ -123,11 +126,12 @@ const App = ({
   useTools();
 
   const getPremiumStatus = async () => {
-    const result = await fetchData(`${FLASH_BETTING_URI}premium?user=traderjosh`);
-    if (result.error) {
+    const vendorClientId = await fetchData('/api/get-vendor-client-id');
+    const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
+    if (isPremium.error) {
       setPremiumStatus(false);
     } else {
-      setPremiumStatus(result);
+      setPremiumStatus(isPremium);
     }
   };
 
