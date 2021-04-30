@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 //* @material-ui core
 import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -16,10 +17,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import { openPremiumDialog } from '../actions/settings';
 //* JSS
 import useStyles from '../jss/components/PremiumPopup';
+//* Constants
+import { FLASH_BETTING_PAYMENT_URL } from '../constants';
 
 const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog }) => {
+const PremiumPopup = ({ open, premiumMember, openPremiumDialog }) => {
   const classes = useStyles();
   const stripe = useStripe();
   const elements = useElements();
@@ -32,10 +35,11 @@ const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: elements.getElement(CardElement),
-    });
+    window.open(FLASH_BETTING_PAYMENT_URL);
+    // const { error, paymentMethod } = await stripe.createPaymentMethod({
+    //   type: 'card',
+    //   card: elements.getElement(CardElement),
+    // });
   };
 
   return (
@@ -46,12 +50,15 @@ const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog 
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Sports Flash Betting Licence
+            Flash Betting Premium Licence
           </Typography>
         </Toolbar>
       </AppBar>
-      <DialogContent>
-        <DialogContentText>{`You are required to pay the monthly subscription fee of £${selectedPremium === 'monthly' ? 10 : selectedPremium === 'biannually' ? 50 : 100} in order to access Flash Betting&apos;s advanced features.`}</DialogContentText>
+      <DialogContent className={classes.content}>
+        <DialogContentText>Click the button below to be directed to the payment page to pay for a premium licence.</DialogContentText>
+        <Button className={classes.submit} onClick={handleSubmit} variant="contained">
+          Buy
+        </Button>
         <CardElement />
         <form onSubmit={handleSubmit}>
           <button type="submit" disabled={!stripe}>
@@ -66,7 +73,6 @@ const PremiumPopup = ({ open, premiumMember, selectedPremium, openPremiumDialog 
 const mapStateToProps = (state) => ({
   open: state.settings.premiumPopupOpen,
   premiumMember: state.settings.premiumMember,
-  selectedPremium: state.settings.selectedPremium,
 });
 
 const mapDispatchToProps = { openPremiumDialog };
