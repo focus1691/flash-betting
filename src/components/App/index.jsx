@@ -175,7 +175,7 @@ const App = ({
             const { id, status } = runners[i];
             if (status === 'REMOVED') {
               if (!updatedNonRunners[id]) {
-                updatedNonRunners[id] = ladders[id];
+                updatedNonRunners[id] = runners[i];
               }
               if (ladders[id]) {
                 delete ladders[id];
