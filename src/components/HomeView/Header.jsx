@@ -1,27 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
 //* @material-ui core
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
-//* Actions
-import { setUserId } from '../../actions/account';
 //* JSS
 import useStyles from '../../jss/components/HomeView/headerStyle';
-//* HTTP
-import fetchData from '../../http/fetchData';
 
 const cookies = new Cookies();
 
-const Header = ({ premiumMember, id, setUserId }) => {
+const Header = ({ premiumMember, id }) => {
   const classes = useStyles({ subscribed: premiumMember });
-
-  useEffect(() => {
-    (async () => {
-      const vendorClientId = await fetchData('/api/get-vendor-client-id');
-      setUserId(vendorClientId);
-    })();
-  }, []);
 
   return (
     <div className={classes.header}>
@@ -38,6 +27,4 @@ const Header = ({ premiumMember, id, setUserId }) => {
 
 const mapStateToProps = (state) => ({ id: state.account.id });
 
-const mapDispatchToProps = { setUserId };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps)(Header);

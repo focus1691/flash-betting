@@ -14,7 +14,7 @@ import useStyles from '../../../jss/components/HomeView/premiumStyle';
 
 const cookies = new Cookies();
 
-const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
+const HomeView = ({ id, premiumMember, openPremiumDialog, setSelectedPremium }) => {
   const classes = useStyles({ subscribed: premiumMember });
 
   return (
@@ -25,7 +25,7 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
       </Typography>
 
       <div className={classes.statusChips}>
-        <Chip className={classes.user} color="primary" label={`${cookies.get('username')} | Support ID 24442`} />
+        <Chip className={classes.user} color="primary" label={`${cookies.get('username')} | ID ${id}`} />
         <Chip className={classes.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
       </div>
 
@@ -44,9 +44,9 @@ const HomeView = ({ premiumMember, openPremiumDialog, setSelectedPremium }) => {
 };
 
 const mapStateToProps = (state) => ({
+  id: state.account.id,
   premiumMember: state.settings.premiumMember,
 });
-
 
 const mapDispatchToProps = { openPremiumDialog, setSelectedPremium };
 

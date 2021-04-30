@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 //* Custom Components
 import Header from './Header';
 import RecentBets from './RecentBets';
 import TradingChart from './TradingChart';
 import PremiumSubscription from './PremiumSubscription';
+//* Actions
+import { setUserId } from '../../actions/account';
 //* JSS
 import useStyles from '../../jss/components/HomeView/homeViewStyle';
+//* HTTP
+import fetchData from '../../http/fetchData';
 
-const HomeView = ({ premiumMember }) => {
+const HomeView = ({ premiumMember, setUserId }) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    (async () => {
+      const vendorClientId = await fetchData('/api/get-vendor-client-id');
+      setUserId(vendorClientId);
+    })();
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -31,4 +42,6 @@ const mapStateToProps = (state) => ({
   premiumMember: state.settings.premiumMember,
 });
 
-export default connect(mapStateToProps)(HomeView);
+const mapDispatchToProps = { setUserId };
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeView);
