@@ -24,7 +24,7 @@ const HomeView = ({ premiumMember, setUserId }) => {
 
   return (
     <div className={classes.root}>
-      {premiumMember ? (
+      {false ? (
         <>
           <Header premiumMember={premiumMember} />
           <TradingChart />

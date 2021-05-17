@@ -35,9 +35,9 @@ const HomeView = ({ id, premiumMember, openPremiumDialog }) => {
         PREMIUM
       </Typography>
       <div className={classes.subscriptionList}>
-        <SubscriptionContainer plan="Monthly" period="Per Month" price={10} openPremiumDialog={openPremiumDialog} classes={classes} />
-        <SubscriptionContainer plan="Biannually" period="6 Months" price={50} openPremiumDialog={openPremiumDialog} classes={classes} />
-        <SubscriptionContainer plan="Annually" period="1 Year" price={100} openPremiumDialog={openPremiumDialog} classes={classes} />
+        <SubscriptionContainer plan="Monthly" period="Per Month" price={5} openPremiumDialog={openPremiumDialog} classes={classes} />
+        <SubscriptionContainer plan="Biannually" period="6 Months" price={25} openPremiumDialog={openPremiumDialog} classes={classes} />
+        <SubscriptionContainer plan="Annually" period="1 Year" price={50} openPremiumDialog={openPremiumDialog} classes={classes} />
       </div>
     </div>
   );

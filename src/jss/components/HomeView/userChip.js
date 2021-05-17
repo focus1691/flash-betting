@@ -3,6 +3,10 @@ const userChip = (theme) => ({
     color: '#121212',
     font: 'normal normal bold medium Roboto',
     padding: theme.spacing(1),
+    filter: 'blur(4px)',
+    '&:hover': {
+      filter: 'blur(0px)',
+    },
   });
   
   export default userChip;

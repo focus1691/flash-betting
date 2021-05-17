@@ -11,7 +11,7 @@ import useStyles from '../../jss/components/ClosedMarketView/marketSettlementSty
 
 const cookies = new Cookies();
 
-const MarketSettlement = ({ marketInfo, premiumMember }) => {
+const MarketSettlement = ({ id, marketInfo, premiumMember }) => {
   const classes = useStyles({ subscribed: premiumMember });
 
   return (
@@ -19,7 +19,7 @@ const MarketSettlement = ({ marketInfo, premiumMember }) => {
       <Typography component="h1" variant="h2" className={classes.title}>
         Flash Betting Market Settlement
         <div>
-          <Chip className={classes.user} color="primary" label={`${cookies.get('username')} | Support ID 24442`} />
+          <Chip className={classes.user} color="primary" label={`${cookies.get('username')} | ID ${id}`} />
           <Chip className={classes.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
         </div>
       </Typography>
@@ -38,6 +38,7 @@ const MarketSettlement = ({ marketInfo, premiumMember }) => {
 };
 
 const mapStateToProps = (state) => ({
+  id: state.account.id,
   premiumMember: state.settings.premiumMember,
 });
 
