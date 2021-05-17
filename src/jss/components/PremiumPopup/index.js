@@ -14,12 +14,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  submit: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '50%',
-    margin: '0 auto',
-  },
 }));
 
 export default useStyles;
