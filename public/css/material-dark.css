@@ -16,7 +16,6 @@ aside {
 
 #nav-body-ctrls {
     background-color: #2a2a2a;
-    padding: 20px;
     font-family: arial
 }
 
@@ -37,9 +36,9 @@ aside {
 
 #nav-tabs-collapse {
     position: absolute;
-    top: 50%;
-    right: 0;
+    left: 90%;
     z-index: 2;
+    transform: rotate(180deg);
 }
 
 #nav-body-views {

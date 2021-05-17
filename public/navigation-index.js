@@ -125,7 +125,7 @@ function Navigation(options) {
    */
   if (options.verticalTabs) {
     // $('head').append('<style id="nav-core-styles">#nav-body-ctrls,#nav-body-tabs,#nav-body-subtabs,#nav-body-views,.nav-tabs-tab{display:flex;align-items:center;}#nav-body-tabs, #nav-body-subtabs{overflow:auto;min-height:32px;flex-direction:column;}#nav-ctrls-url{box-sizing:border-box;}.nav-tabs-tab{min-width:60px;width:100%;min-height:20px;}.nav-icons{fill:#000;width:24px;height:24px}.nav-icons.disabled{pointer-events:none;opacity:.5}#nav-ctrls-url{flex:1;height:24px}.nav-views-view{flex:0 1;width:0;height:0}.nav-views-view.active{flex:1;width:100%;height:100%}.nav-tabs-favicon{align-content:flex-start;display:none}.nav-tabs-favicon-loader{align-content:flex-start}.nav-tabs-title{flex:1;cursor:default;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-tabs-close{align-content:flex-end}@keyframes nav-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>');
-    $('head').append('<style id="nav-core-styles">#nav-body-ctrls,#nav-body-tabs,#nav-body-subtabs,#nav-body-views,.nav-tabs-tab{display:flex;align-items:center;}#nav-body-tabs, #nav-body-subtabs{overflow:auto;min-height:32px;flex-direction:column;}.nav-tabs-tab{min-width:60px;width:100%;min-height:20px;}.nav-icons{fill:#000;width:24px;height:24px}.nav-icons.disabled{pointer-events:none;opacity:.5}.nav-views-view{flex:0 1;width:0;height:0}.nav-views-view.active{flex:1;width:100%;height:100%}.nav-tabs-favicon{align-content:flex-start;display:none}.nav-tabs-favicon-loader{align-content:flex-start}.nav-tabs-title{flex:1;cursor:default;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-tabs-close{align-content:flex-end}@keyframes nav-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>');
+    $('head').append('<style id="nav-core-styles">#nav-body-ctrls,#nav-body-tabs,#nav-body-subtabs,#nav-body-views,.nav-tabs-tab{display:flex;align-items:center;}#nav-body-tabs, #nav-body-subtabs{overflow:auto;min-height:32px;flex-direction:column;width:100%}.nav-tabs-tab{min-width:60px;width:100%;min-height:20px;}.nav-icons{fill:#000;width:24px;height:24px}.nav-icons.disabled{pointer-events:none;opacity:.5}.nav-views-view{flex:0 1;width:0;height:0}.nav-views-view.active{flex:1;width:100%;height:100%}.nav-tabs-favicon{align-content:flex-start;display:none}.nav-tabs-favicon-loader{align-content:flex-start}.nav-tabs-title{flex:1;cursor:default;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-tabs-close{align-content:flex-end}@keyframes nav-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>');
   } else {
     $('head').append('<style id="nav-core-styles">#nav-body-ctrls,#nav-body-tabs,#nav-body-subtabs,#nav-body-views,.nav-tabs-tab{display:flex;align-items:center}#nav-body-tabs, #nav-body-subtabs{overflow:auto;min-height:32px;}.nav-tabs-tab{min-width:60px;width:180px;min-height:20px;}.nav-icons{fill:#000;width:24px;height:24px}.nav-icons.disabled{pointer-events:none;opacity:.5}.nav-views-view{flex:0 1;width:0;height:0}.nav-views-view.active{flex:1;width:100%;height:100%}.nav-tabs-favicon{align-content:flex-start;display:none}.nav-tabs-favicon-loader{align-content:flex-start}.nav-tabs-title{flex:1;cursor:default;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-tabs-close{align-content:flex-end}@keyframes nav-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>');
   }
@@ -177,11 +177,13 @@ function Navigation(options) {
     }
   });;
 
-  $('#nav-tabs-collapse').on('click', function () {
+  $('#nav-tabs-collapse').on('click', function handleTabsToggle() {
     if ($('#nav-body-tabs').width() === 0) {
-      $('#nav-body-tabs').css('width', '100%');
+      $('#nav-body-tabs').animate({ width: '20vw' });
+      $(this).css({ transform: 'rotate(180deg)' });
     } else {
-      $('#nav-body-tabs').css('width', '0px');
+      $('#nav-body-tabs').animate({ width: '0px' });
+      $(this).css({ transform: 'rotate(0deg)' });
     }
   });
   //
@@ -489,13 +491,13 @@ Navigation.prototype.newTab = function (url, options) {
   var tab = '<span class="nav-tabs-tab active" data-session="' + this.SESSION_ID + '">';
   // favicon
   if (options.icon == 'clean') {
-    tab += '<i class="nav-tabs-favicon nav-icons">' + this.SVG_FAVICON + '</i>';
+    tab += '<i class="nav-tabs-favicon">' + this.SVG_FAVICON + '</i>';
   } else if (options.icon === 'default') {
-    tab += '<img class="nav-tabs-favicon nav-icons" src=""/>';
-    tab += '<img class="nav-tabs-favicon-loader nav-icons" src="' + path.join(__dirname, ...["icons", "ajax-loader.gif"]) + '"/>';
+    tab += '<img class="nav-tabs-favicon" src=""/>';
+    tab += '<img class="nav-tabs-favicon-loader" src="' + path.join(__dirname, ...["icons", "ajax-loader.gif"]) + '"/>';
   } else {
-    tab += '<img class="nav-tabs-favicon nav-icons" src="' + options.icon + '"/>';
-    tab += '<img class="nav-tabs-favicon-loader nav-icons"  src="' + path.join(__dirname, ...["icons", "ajax-loader.gif"]) + '"/>';
+    tab += '<img class="nav-tabs-favicon" src="' + options.icon + '"/>';
+    tab += '<img class="nav-tabs-favicon-loader"  src="' + path.join(__dirname, ...["icons", "ajax-loader.gif"]) + '"/>';
   }
   // title
   if (options.title == 'default') {
