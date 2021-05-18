@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.spacing(0, 0, 3, 3),
     backgroundColor: '#242526',
     width: '100%',
+    height: '8%',
     '& > div': {
       '&:nth-child(1)': {
         marginLeft: '2%',

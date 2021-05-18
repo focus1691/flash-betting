@@ -16,6 +16,7 @@ const useStyles = makeStyles(() => ({
       userSelect: 'none',
       cursor: 'pointer',
       width: '11.5%',
+      height: '3%',
       '& input': {
         width: '100%',
       },
