@@ -49,6 +49,7 @@ class BetFairStreamAPI {
           // Connection status
           if (result.op === 'status') {
             if (result.connectionClosed) {
+              console.log('status with connection closed', result);
               const {
                 connectionClosed, errorCode, errorMessage, statusCode,
               } = result;
