@@ -5,6 +5,7 @@ const useStyles = makeStyles(() => ({
     position: 'sticky',
     borderRadius: '15px',
     filter: 'drop-shadow(0px 4px 5px rgba(0,0,0,0.5))',
+    height: '3%',
     bottom: '0',
     '& th': {
       position: 'sticky',
@@ -16,7 +17,6 @@ const useStyles = makeStyles(() => ({
       userSelect: 'none',
       cursor: 'pointer',
       width: '11.5%',
-      height: '3%',
       '& input': {
         width: '100%',
       },
