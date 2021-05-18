@@ -139,10 +139,11 @@ const App = ({
     async (marketDefinition) => {
       setMarketStatus(marketDefinition.status);
       setInPlay(marketDefinition.inPlay);
+      console.log('market definition', marketDefinition);
 
       if (!inPlayTime && marketDefinition.inPlay) {
         // Start the in-play clock once we get the 'in play' signal
-        setInPlayTime(new Date());
+        setInPlayTime(new Date(marketDefinition.marketTime));
       }
 
       if (marketDefinition.status === 'CLOSED') {
@@ -333,6 +334,7 @@ const App = ({
     if (marketId) {
       const marketCatalogue = await fetchData(`/api/get-market-info?marketId=${marketId}`);
       if (marketCatalogue && marketCatalogue.length >= 1) {
+        console.log(marketCatalogue[0]);
         const { marketId, marketName, marketStartTime, description, event, eventType, runners } = marketCatalogue[0];
         setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
         setMarketId(marketId);

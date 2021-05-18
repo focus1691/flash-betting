@@ -45,6 +45,7 @@ class BetFairStreamAPI {
         // Parse the data String into JSON Object
         try {
           const result = JSON.parse(this.chunks.join(''));
+          console.log(result);
 
           // Connection status
           if (result.op === 'status') {
