@@ -190,9 +190,9 @@ app.get('/api/get-events-with-active-bets', (req, res) => {
       return res.status(401).json({ error });
     }
 
-    const filteredOrders = _.uniq(result.currentOrders.map((order) => order));
+    const filteredOrders = _.uniq(result.currentOrders.map((order) => order.marketId));
 
-    if (filteredOrders.length <= 0) return res.json([]);
+    if (filteredOrders.length <= 0) return res.json({ result: [] });
 
     return betfair.listMarketCatalogue({
       filter: {
