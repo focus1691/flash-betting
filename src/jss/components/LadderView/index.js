@@ -12,6 +12,11 @@ const useStyles = makeStyles(() => ({
   suspendedMarket: {
     zIndex: '-1',
   },
+  closedContainer: {
+    position: 'relative',
+    height: '100%',
+    backgroundColor: '#121212',
+  },
 }));
 
 export default useStyles;

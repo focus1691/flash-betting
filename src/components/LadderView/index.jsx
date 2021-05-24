@@ -43,7 +43,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
         ))}
       <SuspendedWarning marketStatus={marketStatus} />
     </div>
-  ) : null;
+  ) : <div className={classes.closedContainer} />;
 };
 
 const mapStateToProps = (state) => ({
