@@ -70,8 +70,6 @@ const Settings = ({
 
   return (
     <div>
-      <RevokeAccess />
-
       <DefaultView defaultView={defaultView} toggleDefaultView={setDefaultView} premiumMember={premiumMember} classes={classes} />
 
       <Sounds sounds={sounds} toggleSounds={toggleSound} classes={classes} />
@@ -99,6 +97,8 @@ const Settings = ({
       <RightClickTicks rightClickTicks={rightClickTicks} updateRightClickTicks={updateRightClickTicks} classes={classes} />
 
       <HorseRacing horseRaces={horseRaces} toggleHorseRaces={setHorseRacingCountries} classes={classes} />
+
+      <RevokeAccess />
     </div>
   );
 };
