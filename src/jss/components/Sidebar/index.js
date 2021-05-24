@@ -6,7 +6,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '100%',
     overflowX: 'hidden',
     backgroundColor: '#424242',
-
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   },
   topSection: {
     position: 'sticky',

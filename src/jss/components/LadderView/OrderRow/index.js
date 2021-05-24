@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     width: '100%',
     float: 'left',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
     '& td': {
       width: '20%',
       margin: '0',
@@ -85,6 +88,9 @@ const useStyles = makeStyles((theme) => ({
   },
   orderBody: {
     overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
     display: 'flex',
     flexDirection: 'column',
     minHeight: '3.5em',

@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#333F4B',
     borderRadius: theme.spacing(2, 0, 0, 0),
     overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   },
   menuItem: {
     color: '#EEEEEE',

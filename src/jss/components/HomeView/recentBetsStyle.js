@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
     height: 'inherit',
     borderRadius: theme.spacing(2),
     overflowX: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   },
   betTable: {
     height: '100%',

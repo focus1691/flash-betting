@@ -19,6 +19,9 @@ const useStyles = makeStyles(() => ({
     tableLayout: 'fixed',
     width: '100%',
     boxSizing: 'content-box',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
     '& > div': {
       height: '7014px !important',
     },

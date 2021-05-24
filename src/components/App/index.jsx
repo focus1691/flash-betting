@@ -420,17 +420,15 @@ const App = ({
 
   if (isLoading) return <Spinner />;
   return (
-    <div className="horizontal-scroll-wrapper">
-      <div className="root">
-        <Title />
-        <Siderbar />
-        <main className={classes.container}>
-          <ConnectionStatus connectionError={connectionError} setConnectionError={setConnectionError} marketId={marketId} clk={clk} initialClk={initialClk} socket={socket} />
-          <Draggable />
-          {Views[view] || <HomeView />}
-          <PremiumPopup />
-        </main>
-      </div>
+    <div className="root">
+      <Title />
+      <Siderbar />
+      <main className={classes.container}>
+        <ConnectionStatus connectionError={connectionError} setConnectionError={setConnectionError} marketId={marketId} clk={clk} initialClk={initialClk} socket={socket} />
+        <Draggable />
+        {Views[view] || <HomeView />}
+        <PremiumPopup />
+      </main>
     </div>
   );
 };

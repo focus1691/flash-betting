@@ -38,11 +38,6 @@ body,
 									supported by Chrome, Opera and Firefox */
 }
 
-
-::-webkit-scrollbar {
-	display: none;
-}
-
 #spinner {
 	position: fixed;
 	top: 50%;
