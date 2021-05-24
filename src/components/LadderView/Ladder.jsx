@@ -72,7 +72,6 @@ const Ladder = memo(
     stopLossUnits,
     stakeVal,
     draggingLadder,
-    customStakeActive,
     customStake,
   }) => {
     const classes = useStyles();
@@ -175,7 +174,7 @@ const Ladder = memo(
     const handlePlaceOrder = useCallback(
       async (side, price, marketId, selectionId, stopLossSelected, isStopLossActive, hedgeSize) => {
         const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-        const size = customStakeActive && customStake ? customStake : stakeVal;
+        const size = customStake ? customStake : stakeVal;
         //* Place the order first with BetFair and then execute the tools
         const betId = await placeOrder({
           marketId,
@@ -240,7 +239,7 @@ const Ladder = memo(
           }
         }
       },
-      [customStakeActive, customStake, stakeVal, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossUnits, stopLossHedged, addStopLoss, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, addTickOffset, fillOrKillSeconds, addFillOrKill],
+      [customStake, stakeVal, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossUnits, stopLossHedged, addStopLoss, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, addTickOffset, fillOrKillSeconds, addFillOrKill],
     );
 
     return (
@@ -287,7 +286,6 @@ const mapStateToProps = (state, { selectionId }) => ({
   matchedBets: getMatchedBets(state.order.bets),
   stakeVal: getStakeVal(state.settings.stake, { selectionId }),
   customStake: state.market.runners[selectionId].order.customStake,
-  customStakeActive: state.market.runners[selectionId].order.customStakeActive,
   draggingLadder: state.market.draggingLadder,
 
   //* Back/Lay

@@ -128,20 +128,6 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'UPDATE_CUSTOM_STAKE_ACTIVE':
-      return {
-        ...state,
-        runners: {
-          ...state.runners,
-          [action.payload.id]: {
-            ...state.runners[action.payload.id],
-            order: {
-              ...state.runners[action.payload.id].order,
-              customStakeActive: action.payload.customStakeActive,
-            },
-          },
-        },
-      };
     case 'TOGGLE_STAKE_AND_LIABILITY':
       return {
         ...state,

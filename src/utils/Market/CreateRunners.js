@@ -15,7 +15,6 @@ export const CreateRunners = (data) => {
       stakeLiability: 0,
       stake: 2,
       customStake: '',
-      customStakeActive: false,
       price: 0,
     };
   }

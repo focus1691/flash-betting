@@ -128,14 +128,11 @@ export const toggleVisibility = (settings) => ({
   payload: settings,
 });
 
-export const changePriceType = (priceType) => // stake and liability
-  ({
-    type: 'SWITCH_PRICE_TYPE',
-    payload: priceType,
-  });
-export const setCustomStakeActive = ({ id, customStakeActive }) => ({
-  type: 'UPDATE_CUSTOM_STAKE_ACTIVE',
-  payload: { id, customStakeActive },
+export const changePriceType = (
+  priceType, // stake and liability
+) => ({
+  type: 'SWITCH_PRICE_TYPE',
+  payload: priceType,
 });
 
 export const setCustomStake = ({ id, customStake }) => ({

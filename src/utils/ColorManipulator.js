@@ -13,12 +13,12 @@ const LightenDarkenColor = (col, amt) => {
   if (r > 255) r = 255;
   else if (r < 0) r = 0;
 
-  let b = ((num >> 8) & 0x00FF) + amt;
+  let b = ((num >> 8) & 0x00ff) + amt;
 
   if (b > 255) b = 255;
   else if (b < 0) b = 0;
 
-  let g = (num & 0x0000FF) + amt;
+  let g = (num & 0x0000ff) + amt;
 
   if (g > 255) g = 255;
   else if (g < 0) g = 0;
@@ -26,12 +26,4 @@ const LightenDarkenColor = (col, amt) => {
   return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16);
 };
 
-const getStakeButtonStyle = (buttonType, stake, activeStake, colorContrast) => {
-  return stake == activeStake ? '#121212' : buttonType === 'STAKE' ? '#007aaf' : '#d4696b';
-};
-
-const getCustomStakeStyle = (buttonType, selected, colorContrast) => {
-  return selected ? '#121212' : buttonType === 'STAKE' ? '#007aaf' : '#d4696b';
-};
-
-export { getStakeButtonStyle, getCustomStakeStyle, LightenDarkenColor };
+export { LightenDarkenColor };
