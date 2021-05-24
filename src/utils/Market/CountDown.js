@@ -1,5 +1,5 @@
 export const countDownTime = (marketOpen, marketStatus, marketStartTime, inPlay, inPlayTime, pastEventTime, onPastEventTime) => {
-  if (!marketOpen || !marketStartTime || marketStatus === 'CLOSED') {
+  if (!marketOpen || !marketStartTime || marketStatus === 'CLOSED' || marketStatus === 'SUSPENDED') {
     return '--';
   }
   if (marketStatus === 'OPEN' || marketStatus === 'RUNNING') {
@@ -14,8 +14,6 @@ export const countDownTime = (marketOpen, marketStatus, marketStartTime, inPlay,
       if (!pastEventTime) onPastEventTime();
       return Math.abs(new Date(currentTime).valueOf() / 1000 - new Date().valueOf() / 1000);
     }
-  } else if (marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') {
-    return marketStatus;
   }
   return '--';
 };
