@@ -6,7 +6,7 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     overflowY: 'hidden',
     overflowX: 'hidden',
-    height: '78%',
+    height: '65%',
     '& th': {
       position: 'sticky',
       top: '0',

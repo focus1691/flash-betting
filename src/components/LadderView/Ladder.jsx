@@ -23,6 +23,7 @@ import { calcStopLossPrice } from '../../utils/TradingStategy/StopLoss';
 //* Components
 import Container from './Container';
 import Header from './Header';
+import BottomPanel from './BottomPanel';
 import LadderRow from './Rows/LadderRow';
 import OrderRow from './Rows/OrderRow/OrderRow';
 import PercentageRow from './Rows/PercentageRow/PercentageRow';
@@ -272,7 +273,8 @@ const Ladder = memo(
           </AutoSizer>
         </div>
         <PriceRow selectionId={selectionId} />
-        <OrderRow selectionId={selectionId} />
+        <BottomPanel selectionId={selectionId} />
+        {/* <OrderRow selectionId={selectionId} /> */}
       </Container>
     );
   },
