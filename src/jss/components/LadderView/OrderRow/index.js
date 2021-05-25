@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   orderRow: {
     bottom: '0',
-    height: '9%',
+    height: '85%',
     background: '#424242',
     display: 'block',
     width: '100%',
