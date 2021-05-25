@@ -1,73 +1,73 @@
 import { sortAsc, sortDes } from '../Sort';
 import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 
-export const CreateLadder = (data) => {
-  const runner = data;
-  runner.id = data.id;
-  runner.ltp = runner.ltp ? [runner.ltp] : [null];
-  runner.ltpDelta = new Date();
-  runner.tv = runner.tv ? [runner.tv, runner.tv] : [null, null];
-  runner.atb = runner.atb || [];
-  runner.atl = runner.atl || [];
-  runner.atbo = {};
-  runner.atlo = {};
-  runner.trd = runner.trd || [];
-  runner.trdo = {};
-  runner.order = {
+export const CreateLadder = (ladder) => {
+  ladder.ltp = ladder.ltp ? [ladder.ltp] : [null];
+  ladder.ltpDelta = new Date();
+  ladder.tv = ladder.tv ? [ladder.tv, ladder.tv] : [null, null];
+  ladder.atb = ladder.atb || [];
+  ladder.atl = ladder.atl || [];
+  ladder.atbo = {};
+  ladder.atlo = {};
+  ladder.trd = ladder.trd || [];
+  ladder.trdo = {};
+  ladder.order = {
     visible: false,
     side: 'BACK',
     stakeLiability: 0,
     stake: 2,
     price: 0,
   };
+  ladder.expanded = false;
+  ladder.bottom = 'graph';
 
   // make it easier for ladder
-  runner.trd.forEach((trd) => {
-    runner.trdo[formatPriceKey(trd[0])] = trd[1];
+  ladder.trd.forEach((trd) => {
+    ladder.trdo[formatPriceKey(trd[0])] = trd[1];
   });
 
-  for (let i = 0; i < runner.atb.length; i += 1) {
-    const price = formatPriceKey(runner.atb[i][0]);
-    const matched = Math.floor(runner.atb[i][1]);
+  for (let i = 0; i < ladder.atb.length; i += 1) {
+    const price = formatPriceKey(ladder.atb[i][0]);
+    const matched = Math.floor(ladder.atb[i][1]);
 
     if (matched <= 0) {
-      runner.atb.splice(i, 1);
+      ladder.atb.splice(i, 1);
       i -= 1;
     } else {
       // Alter the value to round down
-      runner.atb[i][1] = matched;
+      ladder.atb[i][1] = matched;
 
-      runner.atlo[price] = matched;
+      ladder.atlo[price] = matched;
     }
   }
 
-  for (let i = 0; i < runner.atl.length; i += 1) {
-    const price = formatPriceKey(runner.atl[i][0]);
-    const matched = Math.floor(runner.atl[i][1]);
+  for (let i = 0; i < ladder.atl.length; i += 1) {
+    const price = formatPriceKey(ladder.atl[i][0]);
+    const matched = Math.floor(ladder.atl[i][1]);
 
     if (matched <= 0) {
-      runner.atl.splice(i, 1);
+      ladder.atl.splice(i, 1);
       i -= 1;
     } else {
       // Alter the value to round down
-      runner.atl[i][1] = matched;
+      ladder.atl[i][1] = matched;
 
-      runner.atbo[price] = matched;
+      ladder.atbo[price] = matched;
     }
   }
 
-  sortAsc(runner.trd);
-  sortDes(runner.atb);
-  sortAsc(runner.atl);
+  sortAsc(ladder.trd);
+  sortDes(ladder.atb);
+  sortAsc(ladder.atl);
 
-  runner.percent = calcBackLayPercentages(runner.atbo, runner.atlo, runner.ltp[0]);
+  ladder.percent = calcBackLayPercentages(ladder.atbo, ladder.atlo, ladder.ltp[0]);
 
-  return runner;
+  return ladder;
 };
 
 /**
  * This function calculates the back/lay percentage of matched bets 5 prices away from the LTP
- * @param {object} ladder - The ladder for the runner
+ * @param {object} ladder - The ladder for the ladder
  * @param {object} ltp - The Last Traded Price
  * @return {object} The back/lay percentages
  */

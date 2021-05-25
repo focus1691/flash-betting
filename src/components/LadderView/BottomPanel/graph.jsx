@@ -14,12 +14,11 @@ const Graph = ({ marketId, selectionId }) => {
   }, []);
 
   useInterval(() => {
-    console.log('graph');
     const URI = `https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selectionId}`;
     setGraph(URI);
   }, FIVE_SECONDS);
 
-  return graph ? <img alt="Chart" src={graph} /> : null;
+  return graph ? <img alt="" src={graph} /> : null;
 };
 
 const mapStateToProps = (state) => ({

@@ -51,25 +51,47 @@ const reducer = (state = initialState, action) => {
       return { ...state, event: action.payload };
     case 'SET_EVENT_TYPE':
       return { ...state, eventType: action.payload };
-    case 'LOAD_LADDER':
+    case 'LOAD_LADDER'://! ladder
       return { ...state, marketOpen: true, ladder: action.payload };
+    case 'SET_LADDER_EXPANDED'://! ladder
+      return {
+        ...state,
+        ladder: {
+          ...state.ladder,
+          [action.payload]: {
+            ...state.ladder[action.payload],
+            expanded: !state.ladder[action.payload].expanded,
+          },
+        },
+      };
+    case 'SET_LADDER_BOTTOM':
+      return {
+        ...state,
+        ladder: {
+          ...state.ladder,
+          [action.payload.selectionId]: {
+            ...state.ladder[action.payload.selectionId],
+            bottom: action.payload.bottom,
+          },
+        },
+      };
     case 'SET_SORTED_LADDER':
       return { ...state, sortedLadder: action.payload };
     case 'LOAD_NON_RUNNERS':
       return { ...state, nonRunners: action.payload };
     case 'LOAD_RUNNERS':
       return { ...state, runners: action.payload };
-    case 'EXCLUDE_LADDERS':
+    case 'EXCLUDE_LADDERS'://! ladder
       return { ...state, excludedLadders: action.payload };
-    case 'UPDATE_LADDER_ORDER':
+    case 'UPDATE_LADDER_ORDER'://! ladder
       return { ...state, ladderOrder: action.payload };
-    case 'SET_BACK_LAY_COL_LADDER_ORDER':
+    case 'SET_BACK_LAY_COL_LADDER_ORDER'://! ladder
       return { ...state, layFirstCol: !state.layFirstCol };
-    case 'SELECT_RUNNER':
+    case 'SELECT_RUNNER'://! ladder / grid
       return { ...state, runnerSelection: action.payload };
-    case 'TOGGLE_ONE_CLICK':
+    case 'TOGGLE_ONE_CLICK'://! grid
       return { ...state, oneClickOn: action.payload };
-    case 'UPDATE_ORDER':
+    case 'UPDATE_ORDER'://! grid
       return {
         ...state,
         runners: {
@@ -86,7 +108,7 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'UPDATE_ORDER_VALUE':
+    case 'UPDATE_ORDER_VALUE'://! grid
       return {
         ...state,
         runners: {
@@ -100,7 +122,7 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'UPDATE_ORDER_PRICE':
+    case 'UPDATE_ORDER_PRICE': //! grid
       return {
         ...state,
         runners: {
@@ -114,7 +136,7 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'UPDATE_CUSTOM_STAKE':
+    case 'UPDATE_CUSTOM_STAKE': //! ladder
       return {
         ...state,
         runners: {
@@ -128,7 +150,7 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'TOGGLE_STAKE_AND_LIABILITY':
+    case 'TOGGLE_STAKE_AND_LIABILITY'://! grid
       return {
         ...state,
         runners: {
@@ -142,7 +164,7 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'TOGGLE_BACK_AND_LAY':
+    case 'TOGGLE_BACK_AND_LAY'://! ladder
       return {
         ...state,
         runners: {
@@ -156,7 +178,7 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'TOGGLE_ORDER_VISIBILITY':
+    case 'TOGGLE_ORDER_VISIBILITY'://! grid
       return {
         ...state,
         runners: {
@@ -170,13 +192,13 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-    case 'SWITCH_PRICE_TYPE':
+    case 'SWITCH_PRICE_TYPE'://! grid
       return { ...state, priceType: action.payload };
-    case 'SET_ODDS_HOVERED':
+    case 'SET_ODDS_HOVERED': //! ladder
       return { ...state, oddsHovered: action.payload };
     case 'SET_MARKET_PL':
       return { ...state, marketPL: action.payload };
-    case 'SET_DRAGGING_LADDER':
+    case 'SET_DRAGGING_LADDER'://! ladder
       return { ...state, draggingLadder: action.payload };
     default:
       return state;

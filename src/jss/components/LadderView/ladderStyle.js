@@ -13,6 +13,9 @@ const useStyles = makeStyles(() => ({
       padding: '0',
     },
   },
+  expanded: {
+    height: 'calc(65% + 22% * 0.85)',
+  },
   List: {
     fontFamily: 'Lato, Arial, Helvetica, sans-serif',
     borderCollapse: 'collapse',

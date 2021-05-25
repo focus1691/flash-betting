@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() => ({
   container: {
-    height: '23%',
+    height: '22%',
     background: '#424242',
     '& img': {
       width: '100%',
@@ -11,8 +11,18 @@ const useStyles = makeStyles(() => ({
   },
   controls: {
     height: '15%',
-    display: 'flex',
-    flexDirection: 'row-reverse',
+    display: 'grid',
+    gridTemplateRows: '100%',
+    gridTemplateColumns: '15% 15% 15%',
+    '& button': {
+      borderRadius: '0',
+      '&:first-child': {
+        gridArea: '1/15',
+      },
+    },
+  },
+  selected: {
+    backgroundColor: '#565656',
   },
   graph: {
     height: '85%',

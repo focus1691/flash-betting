@@ -58,6 +58,16 @@ export const loadLadder = (ladder) => ({
   payload: ladder,
 });
 
+export const setLadderExpanded = (selectionId) => ({
+  type: 'SET_LADDER_EXPANDED',
+  payload: selectionId,
+});
+
+export const setLadderBottom = (selectionId, bottom) => ({
+  type: 'SET_LADDER_BOTTOM',
+  payload: { selectionId, bottom },
+});
+
 export const setSortedLadder = (sortedLadder) => ({
   type: 'SET_SORTED_LADDER',
   payload: sortedLadder,

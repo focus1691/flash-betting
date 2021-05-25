@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import clsx from 'clsx';
 import React, { memo, useMemo, useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -39,6 +40,7 @@ const Ladder = memo(
   ({
     selectionId,
     ltp,
+    expanded,
     placeOrder,
     updateOrders,
     order,
@@ -247,7 +249,14 @@ const Ladder = memo(
       <Container isReferenceSet={isReferenceSet} order={order} containerRef={containerRef} isMoving={isMoving} isLadderDown={isLadderDown} setIsReferenceSet={setReferenceSent} setIsMoving={setIsMoving} setLadderDown={setLadderDown}>
         <Header selectionId={selectionId} setLadderDown={setLadderDown} hedge={ltpHedge} />
 
-        <div className={classes.ladder} onContextMenu={() => false} onPointerOver={onHoverLadder} onPointerLeave={overLeaveLadder}>
+        <div
+          className={clsx(classes.ladder, {
+            [classes.expanded]: expanded,
+          })}
+          onContextMenu={() => false}
+          onPointerOver={onHoverLadder}
+          onPointerLeave={overLeaveLadder}
+        >
           <PercentageRow setLadderSideLeft={setLadderSideLeft} selectionId={selectionId} />
           <AutoSizer>
             {({ height, width }) => (
@@ -283,6 +292,7 @@ const Ladder = memo(
 
 const mapStateToProps = (state, { selectionId }) => ({
   ltp: getLTP(state.market.ladder, { selectionId }),
+  expanded: state.market.ladder[selectionId].expanded,
   selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
   unmatchedBets: getUnmatchedBets(state.order.bets),
   matchedBets: getMatchedBets(state.order.bets),
