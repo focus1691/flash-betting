@@ -153,7 +153,7 @@ const App = ({
         }
       }
     },
-    [setMarketStatus, setInPlay, inPlayTime, marketOpen, setInPlayTime, closeMarket, marketId],
+    [inPlayTime, marketOpen, marketId],
   );
 
   /**
@@ -416,7 +416,7 @@ const App = ({
         }
       }
     })();
-  }, [marketId, matchedBets, setMarketPL]);
+  }, [marketId, matchedBets]);
 
   if (isLoading) return <Spinner />;
   return (
