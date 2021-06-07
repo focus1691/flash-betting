@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { updateLadderOrder, setDraggingLadder } from '../../actions/market';
+import { updateLadderOrder, setDraggingLadder } from '../../actions/ladder';
 //* JSS
 import useStyles from '../../jss/components/LadderView/containerStyle';
 
@@ -130,8 +130,8 @@ const moveLadder = (offsetPos, cursorPosition, isReferenceSet, containerRef, ord
 const mapStateToProps = (state) => ({
   marketStatus: state.market.status,
   runners: state.market.runners,
-  ladderOrderList: state.market.ladderOrder,
-  draggingLadder: state.market.draggingLadder,
+  ladderOrderList: state.ladder.ladderOrder,
+  draggingLadder: state.ladder.draggingLadder,
 });
 
 const mapDispatchToProps = { updateLadderOrder, setDraggingLadder };

@@ -1,7 +1,8 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { setRunner, setDraggingLadder } from '../../actions/market';
+import { setRunner } from '../../actions/market';
+import { setDraggingLadder } from '../../actions/ladder';
 //* Selectors
 import { getRunner, getSportId, getPL } from '../../selectors/marketSelector';
 //* Utils
@@ -109,8 +110,8 @@ const mapStateToProps = (state, { selectionId }) => ({
   marketId: state.market.marketId,
   sportId: getSportId(state.market.eventType),
   runner: getRunner(state.market.runners, { selectionId }),
-  oddsHovered: state.market.oddsHovered,
-  PL: getPL(state.market.marketPL, { selectionId }),
+  oddsHovered: state.ladder.oddsHovered,
+  PL: getPL(state.ladder.marketPL, { selectionId }),
   bets: state.order.bets,
 });
 

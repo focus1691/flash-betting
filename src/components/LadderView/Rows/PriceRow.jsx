@@ -42,7 +42,7 @@ const PriceRow = ({ selectionId, buttonType, stake, lay, stakeVal, setStake, cus
 
 const mapStateToProps = (state, props) => ({
   customStake: state.market.runners[props.selectionId].order.customStake,
-  buttonType: state.market.priceType,
+  buttonType: state.ladder.priceType,
   stake: state.settings.stakeBtns,
   lay: state.settings.layBtns,
   stakeVal: state.settings.stake,

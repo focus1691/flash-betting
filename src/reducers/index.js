@@ -1,5 +1,7 @@
 import sportReducer from './sportReducer';
 import marketReducer from './marketReducer';
+import ladderReducer from './ladderReducer';
+import gridReducer from './gridReducer';
 import accountReducer from './accountReducer';
 import settingsReducer from './settingsReducer';
 import orderReducer from './orderReducer';
@@ -15,6 +17,8 @@ export default {
   account: accountReducer,
   sports: sportReducer,
   market: marketReducer,
+  ladder: ladderReducer,
+  grid: gridReducer,
   settings: settingsReducer,
   order: orderReducer,
   stopLoss: stopLossReducer,

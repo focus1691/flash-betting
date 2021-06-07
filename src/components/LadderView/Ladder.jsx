@@ -298,7 +298,7 @@ const mapStateToProps = (state, { selectionId }) => ({
   matchedBets: getMatchedBets(state.order.bets),
   stakeVal: getStakeVal(state.settings.stake, { selectionId }),
   customStake: state.market.runners[selectionId].order.customStake,
-  draggingLadder: state.market.draggingLadder,
+  draggingLadder: state.ladder.draggingLadder,
 
   //* Back/Lay
   layList: state.lay.list,

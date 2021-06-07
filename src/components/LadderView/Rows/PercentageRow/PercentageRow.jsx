@@ -8,7 +8,7 @@ import { removeAllSelectionLayBets } from '../../../../actions/lay';
 import { removeStopLossOnSide } from '../../../../actions/stopLoss';
 import { removeTickOffsetOnSide } from '../../../../actions/tickOffset';
 import { removeStopEntryBetsOnSide } from '../../../../actions/stopEntry';
-import { setBackLayColOrder } from '../../../../actions/market';
+import { setBackLayColOrder } from '../../../../actions/ladder';
 import { getLTP, getLTPDelta, getPercent, getTV } from '../../../../selectors/marketSelector';
 import { getLTPstyle } from '../../../../utils/ladder/DeconstructLadder';
 import CancelBets from './CancelBets';
@@ -62,12 +62,12 @@ const PercentageRow = memo(({
 });
 
 const mapStateToProps = (state, { selectionId, price }) => ({
-  priceType: state.market.priceType,
+  priceType: state.ladder.priceType,
   ltp: getLTP(state.market.ladder, { selectionId }),
   tv: getTV(state.market.ladder, { selectionId }),
   percent: getPercent(state.market.ladder, { selectionId }),
   ltpDelta: getLTPDelta(state.market.ladder, { selectionId }),
-  layFirstCol: state.market.layFirstCol,
+  layFirstCol: state.ladder.layFirstCol,
   unmatchedBets: getSelectionUnmatchedBets(state.order.bets, { selectionId }),
 });
 

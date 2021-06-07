@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import $ from 'jquery';
 import clsx from 'clsx';
 //* Actions
-import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay, toggleOneClick } from '../../actions/market';
+import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay } from '../../actions/market';
+import { toggleOneClick } from '../../actions/grid';
 //* Utils
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
@@ -262,7 +263,7 @@ const Grid = ({
 };
 
 const mapStateToProps = (state) => ({
-  oneClickOn: state.market.oneClickOn,
+  oneClickOn: state.grid.oneClickOn,
   marketOpen: state.market.marketOpen,
   marketStatus: state.market.status,
   marketId: state.market.marketId,

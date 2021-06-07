@@ -2,7 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
 import { cancelBet, cancelBets } from '../../../../actions/bet';
-import { changePriceType } from '../../../../actions/market';
+import { changePriceType } from '../../../../actions/ladder';
 import { removeBackBet, removeAllSelectionBackBets } from '../../../../actions/back';
 import { removeLayBet, removeAllSelectionLayBets } from '../../../../actions/lay';
 import { removeStopEntryBet, removeAllSelectionStopEntryBets } from '../../../../actions/stopEntry';
@@ -169,7 +169,7 @@ const OrderRow = memo(
 );
 
 const mapStateToProps = (state, { selectionId }) => ({
-  priceType: state.market.priceType,
+  priceType: state.ladder.priceType,
   matchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
   unmatchedBets: getSelectionUnmatchedBets(state.order.bets, { selectionId }),
   backList: state.back.list,

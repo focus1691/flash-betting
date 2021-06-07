@@ -14,7 +14,8 @@ import { removeAllStopLoss } from '../../../actions/stopLoss';
 import { removeAllTickOffset } from '../../../actions/tickOffset';
 import { removeAllFillOrKill } from '../../../actions/fillOrKill';
 import { setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatchedBetsExpanded, setRulesExpanded, setToolsExpanded, setUnmatchedBetsExpanded } from '../../../actions/settings';
-import { updateLadderOrder, setSortedLadder, updateExcludedLadders } from '../../../actions/market';
+import { setSortedLadder } from '../../../actions/market';
+import { updateExcludedLadders, updateLadderOrder } from '../../../actions/ladder';
 import Graph from './Graphs';
 import Ladders from './Ladders';
 import MarketInfo from './MarketInfo';
@@ -197,7 +198,7 @@ const mapStateToProps = (state) => ({
   marketId: state.market.marketId,
   ladders: state.market.ladder,
   eventType: state.market.eventType,
-  excludedLadders: state.market.excludedLadders,
+  excludedLadders: state.ladder.excludedLadders,
   tools: state.settings.tools,
   unmatchedBets: state.settings.unmatchedBets,
   matchedBets: state.settings.matchedBets,

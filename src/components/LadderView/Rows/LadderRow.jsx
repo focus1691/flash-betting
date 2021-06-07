@@ -78,8 +78,8 @@ const mapStateToProps = (state, { data: { selectionId } }) => ({
   ladderUnmatchedDisplay: state.settings.ladderUnmatched,
   selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
   stakeVal: getStakeVal(state.settings.stake, { selectionId }),
-  PL: getPL(state.market.marketPL, { selectionId }),
-  layFirstCol: state.market.layFirstCol,
+  PL: getPL(state.ladder.marketPL, { selectionId }),
+  layFirstCol: state.ladder.layFirstCol,
 });
 
 export default connect(mapStateToProps)(LadderRow);

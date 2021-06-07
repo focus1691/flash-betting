@@ -5,7 +5,7 @@ import React, {
 import { connect } from 'react-redux';
 //* Actions
 import { replaceStopLoss } from '../../../actions/stopLoss';
-import { setOddsHovered } from '../../../actions/market';
+import { setOddsHovered } from '../../../actions/ladder';
 //* Selectors
 import { getMatched } from '../../../selectors/marketSelector';
 import { getStopLoss } from '../../../selectors/stopLossSelector';

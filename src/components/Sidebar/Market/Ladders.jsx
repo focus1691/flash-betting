@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { updateExcludedLadders, updateLadderOrder } from '../../../actions/market';
+import { updateExcludedLadders, updateLadderOrder } from '../../../actions/ladder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market/ladderStyle';
 
@@ -92,8 +92,8 @@ const mapStateToProps = (state) => ({
   ladder: state.market.ladder,
   sortedLadder: state.market.sortedLadder,
   runners: state.market.runners,
-  excludedLadders: state.market.excludedLadders,
-  ladderOrder: state.market.ladderOrder,
+  excludedLadders: state.ladder.excludedLadders,
+  ladderOrder: state.ladder.ladderOrder,
 });
 
 const mapDispatchToProps = { updateExcludedLadders, updateLadderOrder };

@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
-import { updateLadderOrder, setSortedLadder } from '../../actions/market';
+import { setSortedLadder } from '../../actions/market';
+import { updateLadderOrder } from '../../actions/ladder';
 import { sortLadder } from '../../utils/ladder/SortLadder';
 import SuspendedWarning from '../GridView/SuspendedWarning';
 import Ladder from './Ladder';
@@ -52,8 +53,8 @@ const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
   marketStatus: state.market.status,
   sortedLadder: state.market.sortedLadder, //! Sorted by LTP
-  ladderOrder: state.market.ladderOrder, //! For the ladderview specifically when swapping ladders
-  excludedLadders: state.market.excludedLadders,
+  ladderOrder: state.ladder.ladderOrder, //! For the ladderview specifically when swapping ladders
+  excludedLadders: state.ladder.excludedLadders,
   eventType: state.market.eventType,
   ladders: state.market.ladder,
 });

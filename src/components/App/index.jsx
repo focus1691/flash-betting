@@ -23,10 +23,8 @@ import {
   setMarketStatus,
   setInPlay,
   setInPlayTime,
-  setMarketPL,
-  updateLadderOrder,
-  updateExcludedLadders,
 } from '../../actions/market';
+import { updateExcludedLadders, updateLadderOrder, setMarketPL } from '../../actions/ladder';
 import { placeOrder, removeUnmatchedBet, setBetExecutionComplete } from '../../actions/bet';
 import { updateBackList } from '../../actions/back';
 import { updateLayList } from '../../actions/lay';
