@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import thunk from 'redux-thunk';
 import openSocket from 'socket.io-client';
+import combineMiddleWares from './utils/Redux/CombineMiddlewares';
 //* Stripe
 //* Reducers
 import reducers from './reducers';
@@ -18,13 +18,15 @@ import OAuthRedirect from './components/OAuthRedirect';
 //* Contexts
 import SocketContext from './contexts/SocketContext';
 
+
 const socket = openSocket('http://localhost:3001');
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers(reducers);
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+const middlewares = combineMiddleWares();
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middlewares)));
 
 ReactDOM.render(
   <Provider store={store}>
