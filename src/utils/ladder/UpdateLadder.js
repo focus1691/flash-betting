@@ -3,6 +3,8 @@ import { formatPriceKey } from '../Bets/PriceCalculations';
 import { sortAsc, sortDes } from '../Sort';
 
 const UpdateLadder = (ladder, rawData) => {
+  ladder.expanded = Boolean(ladder.expanded);
+
   if (rawData.ltp) {
     ladder.ltp = [rawData.ltp, ...ladder.ltp];
     ladder.ltpDelta = new Date();
