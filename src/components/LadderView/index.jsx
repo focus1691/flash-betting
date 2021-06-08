@@ -13,7 +13,7 @@ const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOr
   const classes = useStyles();
   //* Sort ladder on market open, excluding ladders are first 6
   useEffect(() => {
-    if (eventType === '4339') {
+    if (eventType.id === '4339') {
       const newOrderList = {};
       for (let i = 0; i < sortedLadder.length; i += 1) {
         newOrderList[i] = sortedLadder[i];
