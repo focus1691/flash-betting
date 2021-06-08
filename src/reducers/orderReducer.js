@@ -77,6 +77,7 @@ const reducer = (state = initialState, action) => {
             ...state.bets.matched,
             [action.payload.betId]: {
               ...state.bets.unmatched[action.payload.betId],
+              price: action.payload.price,
               sizeMatched: action.payload.sizeMatched,
               sizeRemaining: action.payload.sizeRemaining,
             },

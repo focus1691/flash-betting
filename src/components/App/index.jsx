@@ -282,12 +282,12 @@ const App = ({
                 const { id: selectionId } = data.oc[i].orc[j];
                 for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
                   // If the bet isn't in the unmatchedBets, we should delete it.
-                  const { id: betId, s: size, p: price, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
+                  const { id: betId, s: size, p: price, avp: averagePriceMatched,  sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
                   if (sizeRemaining === 0 && sizeMatched === 0) {
                     //! this is what happens when an bet doesn't get any matched
                     removeUnmatchedBet({ betId });
-                  } else if (status === 'EXECUTION_COMPLETE' && !matchedBets[betId]) {
-                    setBetExecutionComplete({ betId, sizeMatched, sizeRemaining });
+                  } else if (status === 'EXECUTION_COMPLETE' && unmatchedBets[betId] && !matchedBets[betId]) {
+                    setBetExecutionComplete({ betId, sizeMatched, sizeRemaining, price: averagePriceMatched });
                   }
 
                   //* Check if the stop loss is matched to initiate the trigger

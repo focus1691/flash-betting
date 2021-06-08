@@ -60,31 +60,6 @@ export default function useTest() {
             customerStrategyRef: rfs,
           } = currentOrders[i];
 
-          // Check if the bet isn't in matched/unmatched already and add it if not
-          if (!unmatchedBets[betId] && !matchedBets[betId]) {
-            const betParams = {
-              strategy: 'None',
-              marketId,
-              side,
-              size,
-              sizeMatched,
-              sizeRemaining,
-              selectionId,
-              rfs: rfs || 'None',
-              betId,
-            };
-
-            if (status === 'EXECUTABLE') {
-              // Original price requested
-              betParams.price = price;
-              dispatch(addUnmatchedBet(betParams));
-            } else if (status === 'EXECUTION_COMPLETE') {
-              // Average price matched
-              betParams.price = averagePriceMatched;
-              dispatch(addMatchedBet(betParams));
-            }
-          }
-
           if (rfs) {
             //* Check if the stop loss is matched to initiate the trigger
             const isStopLossMatched = isStopLossTriggered(stopLossList[selectionId], rfs, sizeRemaining);
@@ -103,33 +78,34 @@ export default function useTest() {
               removeBet({ rfs }); // Remove from database
             }
           }
+
+          // Check if the bet isn't in matched/unmatched already and add it if not
+          if (!unmatchedBets[betId] && !matchedBets[betId]) {
+            const betParams = {
+              strategy: 'None',
+              marketId,
+              side,
+              size,
+              price: status === 'EXECUTION_COMPLETE' ? averagePriceMatched : price,
+              sizeMatched,
+              sizeRemaining,
+              selectionId,
+              rfs: rfs || 'None',
+              betId,
+            };
+
+            if (status === 'EXECUTABLE') dispatch(addUnmatchedBet(betParams));
+            else if (status === 'EXECUTION_COMPLETE') dispatch(addMatchedBet(betParams));
+          }
+
+          // Move from unmatched to matched
+          else if (status === 'EXECUTION_COMPLETE' && unmatchedBets[betId] && !matchedBets[betId]) {
+            dispatch(setBetExecutionComplete({ betId, sizeMatched, sizeRemaining, price: averagePriceMatched }));
+          }
           
-          else if (!rfs) {
-            // Move from unmatched to matched
-            if (status === 'EXECUTION_COMPLETE' && !matchedBets[betId]) {
-              dispatch(setBetExecutionComplete({ betId, sizeMatched, sizeRemaining }));
-            } else if (status === 'EXECUTABLE') {
-              if (!unmatchedBets[betId]) {
-                // Add it to unmatched
-                dispatch(
-                  addUnmatchedBet({
-                    strategy: 'None',
-                    marketId,
-                    side,
-                    price,
-                    size,
-                    sizeMatched,
-                    sizeRemaining,
-                    selectionId,
-                    rfs: rfs || 'None',
-                    betId,
-                  }),
-                );
-              } else if (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets.sizeRemaining != sizeRemaining) {
-                // update the prices
-                dispatch(updateSizeMatched({ betId, sizeMatched, sizeRemaining }));
-              }
-            }
+          // Size matched / Size remaining has changed in the unmatched bet
+          else if (status === 'EXECUTABLE' && unmatchedBets[betId] && (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets[betId].sizeRemaining != sizeRemaining)) {
+            dispatch(updateSizeMatched({ betId, sizeMatched, sizeRemaining }));
           }
         }
       } catch (e) {
