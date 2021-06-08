@@ -154,24 +154,7 @@ const Ladder = memo(
           if (result.bets) updateOrders(result.bets);
         }
       },
-      [
-        backList,
-        fillOrKillList,
-        layList,
-        matchedBets,
-        updateBackList,
-        updateFillOrKillList,
-        updateLayList,
-        updateStopEntryList,
-        updateStopLossList,
-        updateTickOffsetList,
-        placeOrder,
-        updateOrders,
-        stopEntryList,
-        stopLossList,
-        tickOffsetList,
-        unmatchedBets,
-      ],
+      [backList, fillOrKillList, layList, matchedBets, stopEntryList, stopLossList, tickOffsetList, unmatchedBets],
     );
 
     const handlePlaceOrder = useCallback(
@@ -207,8 +190,7 @@ const Ladder = memo(
             };
             addStopLoss(SL);
             saveBet(SL);
-          }
-          else if (tickOffsetSelected) {
+          } else if (tickOffsetSelected) {
             const TOS = {
               strategy: 'Tick Offset',
               marketId,
@@ -225,7 +207,7 @@ const Ladder = memo(
             addTickOffset(TOS);
             saveBet(TOS);
           }
-  
+
           if (fillOrKillSelected) {
             const FOK = {
               strategy: 'Fill Or Kill',
@@ -242,7 +224,7 @@ const Ladder = memo(
           }
         }
       },
-      [customStake, stakeVal, placeOrder, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossUnits, stopLossHedged, addStopLoss, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, addTickOffset, fillOrKillSeconds, addFillOrKill],
+      [customStake, stakeVal, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossUnits, stopLossHedged, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, fillOrKillSeconds],
     );
 
     return (
