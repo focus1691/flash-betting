@@ -33,4 +33,4 @@ export const checkStopLossHit = ({ price, side }, LTP) => {
   return ((side === 'BACK' && LTP <= price) || (side === 'LAY' && LTP >= price));
 };
 
-export const checkStopLossTrigger = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;
+export const isStopLossTriggered = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;

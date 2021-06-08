@@ -174,8 +174,10 @@ const Ladder = memo(
         if (betId) {
           if (stopLossSelected && !isStopLossActive) {
             const SL = {
+              strategy: 'Stop Loss',
               marketId,
               selectionId,
+              size,
               side: getOppositeSide(side),
               price: calcStopLossPrice(price, stopLossOffset, side),
               custom: false,
@@ -183,10 +185,8 @@ const Ladder = memo(
               ticks: stopLossOffset,
               rfs: customerStrategyRef,
               assignedIsOrderMatched: false,
-              size,
               betId,
               hedged: stopLossHedged,
-              strategy: 'Stop Loss',
             };
             addStopLoss(SL);
             saveBet(SL);
@@ -195,14 +195,13 @@ const Ladder = memo(
               strategy: 'Tick Offset',
               marketId,
               selectionId,
-              price: calcTickOffsetPrice(price, side, tickOffsetTicks, tickOffsetUnits === 'Percent'),
               size: tickOffsetHedged ? hedgeSize : size,
               side: getOppositeSide(side),
+              price: calcTickOffsetPrice(price, side, tickOffsetTicks, tickOffsetUnits === 'Percent'),
               percentageTrigger: tickOffsetTrigger,
               rfs: customerStrategyRef,
               betId,
               hedged: tickOffsetHedged,
-              minFillSize: fillOrKillSelected ? (tickOffsetHedged ? hedgeSize : stakeVal[selectionId]) : 1,
             };
             addTickOffset(TOS);
             saveBet(TOS);

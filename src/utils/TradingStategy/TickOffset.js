@@ -26,4 +26,4 @@ export const calcTickOffsetPrice = (price, side, ticks, percent = false) => {
   return ALL_PRICES[indexToStop];
 };
 
-export const checkTickOffsetTrigger = (tos, sizeMatched) => tos && sizeMatched / tos.size >= tos.percentageTrigger / 100;
+export const isTickOffsetTriggered = (tos, rfs, sizeMatched) => tos && tos.rfs == rfs && sizeMatched / tos.size >= tos.percentageTrigger / 100;

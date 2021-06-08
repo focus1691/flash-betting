@@ -55,8 +55,8 @@ import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import loadCustomBets from '../../utils/Bets/LoadCustomBets';
 import ExtractCustomerStrategyRfs from '../../utils/Bets/ExtractCustomerStrategyRfs';
 //* Utils > Trading Tools
-import { checkTickOffsetTrigger } from '../../utils/TradingStategy/TickOffset';
-import { checkStopLossTrigger, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
+import { isTickOffsetTriggered } from '../../utils/TradingStategy/TickOffset';
+import { isStopLossTriggered, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
 import { checkStopEntryTargetMet, extractStopEntryRfs } from '../../utils/TradingStategy/StopEntry';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import ConnectionStatus from '../ConnectionStatus';
@@ -291,15 +291,15 @@ const App = ({
                   }
 
                   //* Check if the stop loss is matched to initiate the trigger
-                  const isStopLossMatched = checkStopLossTrigger(stopLossList[selectionId], rfs, sizeRemaining);
+                  const isStopLossMatched = isStopLossTriggered(stopLossList[selectionId], rfs, sizeRemaining);
                   if (isStopLossMatched) {
                     setStopLossBetMatched({ selectionId });
                     updateOrderMatched({ rfs, assignedIsOrderMatched: true });
                   }
-                  const tosTriggered = checkTickOffsetTrigger(tickOffsetList[rfs], sizeMatched);
+                  const tosTriggered = isTickOffsetTriggered(tickOffsetList[selectionId], rfs, sizeMatched);
                   if (tosTriggered) {
                     const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-                    const { side } = tickOffsetList[rfs];
+                    const { side } = tickOffsetList[selectionId];
 
                     placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
 
