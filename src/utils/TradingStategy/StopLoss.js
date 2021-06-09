@@ -47,11 +47,11 @@ export const checkAndExecuteStopLoss = (stopLoss, currentLTP, ltp, matchedBets, 
   const targetMet = checkStopLossHit(stopLoss, currentLTP);
 
   if (targetMet) {
-    const newMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == selectionId);
+    const selectionMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == selectionId);
     const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
 
     // Calculate the hedged size for the price
-    const { size } = CalculateLadderHedge(parseFloat(price), newMatchedBets, 'hedged');
+    const { size } = CalculateLadderHedge(parseFloat(price), selectionMatchedBets, 'hedged');
 
     placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
     removeStopLoss({ selectionId }); // Remove the SL
