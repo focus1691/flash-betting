@@ -93,6 +93,17 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
+    case 'UPDATE_STOP_LOSS_TICKS':
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.selectionId]: {
+            ...state.list[action.payload.selectionId],
+            ticks: action.payload.ticks,
+          },
+        },
+      };
     default:
       return state;
   }

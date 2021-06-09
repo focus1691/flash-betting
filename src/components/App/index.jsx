@@ -28,7 +28,7 @@ import { updateExcludedLadders, updateLadderOrder, setMarketPL } from '../../act
 import { placeOrder, removeUnmatchedBet, setBetExecutionComplete } from '../../actions/bet';
 import { updateBackList } from '../../actions/back';
 import { updateLayList } from '../../actions/lay';
-import { updateStopLossList, setStopLossBetMatched, removeStopLoss } from '../../actions/stopLoss';
+import { updateStopLossList, setStopLossBetMatched, removeStopLoss, updateStopLossTicks } from '../../actions/stopLoss';
 import { updateTickOffsetList, removeTickOffset } from '../../actions/tickOffset';
 import { updateStopEntryList, removeMultiSelectionStopEntryBets } from '../../actions/stopEntry';
 import { updateFillOrKillList } from '../../actions/fillOrKill';
@@ -41,7 +41,7 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import { removeBet, updateTicks, updateOrderMatched } from '../../http/dbHelper';
+import { removeBet, updateOrderMatched } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
 import handleAuthError from '../../utils/Errors/handleAuthError';
@@ -56,9 +56,8 @@ import loadCustomBets from '../../utils/Bets/LoadCustomBets';
 import ExtractCustomerStrategyRfs from '../../utils/Bets/ExtractCustomerStrategyRfs';
 //* Utils > Trading Tools
 import { isTickOffsetTriggered } from '../../utils/TradingStategy/TickOffset';
-import { isStopLossTriggered, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
-import { checkStopEntryTargetMet, extractStopEntryRfs } from '../../utils/TradingStategy/StopEntry';
-import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
+import { isStopLossTriggered, checkAndExecuteStopLoss } from '../../utils/TradingStategy/StopLoss';
+import { checkAndExecuteStopEntry } from '../../utils/TradingStategy/StopEntry';
 import ConnectionStatus from '../ConnectionStatus';
 //* JSS
 import useStyles from '../../jss';
@@ -104,6 +103,7 @@ const App = ({
   setStopLossBetMatched,
   removeStopLoss,
   updateStopLossList,
+  updateStopLossTicks,
   removeTickOffset,
   updateTickOffsetList,
   updateStopEntryList,
@@ -190,53 +190,17 @@ const App = ({
             if (ladders[id]) {
               //* Runner found so we update our object with the mc runner data
               ladders[id] = UpdateLadder(ladders[id], rc[i]);
-
               const currentLTP = rc[i].ltp || ladders[id].ltp[0];
 
-              // stop Entry
-              const stopEntryBetsToRemove = checkStopEntryTargetMet(stopEntryList, id, currentLTP);
-              if (!_.isEmpty(stopEntryBetsToRemove)) {
-                for (let i = 0; i < stopEntryBetsToRemove.length; i += 1) {
-                  const { rfs, marketId, selectionId, side, size, price } = stopEntryBetsToRemove[i];
-                  const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-
-                  placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
-                  removeBet({ rfs }); // Remove from database
-                }
-                removeMultiSelectionStopEntryBets(extractStopEntryRfs(stopEntryBetsToRemove));
-              }
-
-              // Increment and check the stoplosses
-              if (stopLossList[id] && stopLossList[id].assignedIsOrderMatched) {
-                const SL = { ...stopLossList[id] };
-                const prevLTP = ladders[id].ltp[1] || ladders[id].ltp[0];
-
-                const targetMet = checkStopLossHit(SL, currentLTP);
-
-                if (targetMet) {
-                  const newMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == SL.selectionId);
-                  const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-
-                  const { rfs, marketId, selectionId, side, price } = SL;
-
-                  // Calculate the hedged size for the price
-                  const { size } = CalculateLadderHedge(parseFloat(price), newMatchedBets, 'hedged');
-
-                  placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
-                  removeStopLoss({ selectionId }); // Remove the SL
-                  removeBet({ rfs }); // Remove the SL from DB
-                } else if (SL.trailing && ((currentLTP < prevLTP && SL.side == 'BACK') || (currentLTP > prevLTP && SL.side == 'LAY'))) {
-                  SL.ticks += 1;
-                  updateTicks(SL); //! Update SQLite with new ticks
-                  const newStopLossList = { ...stopLossList };
-                  newStopLossList[SL.selectionId] = SL;
-                  updateStopLossList(newStopLossList);
-                }
-              }
+              checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeOrder, removeMultiSelectionStopEntryBets);
+              checkAndExecuteStopLoss(stopLossList[id], currentLTP, ladders[id].ltp, matchedBets, placeOrder, removeStopLoss, updateStopLossTicks);
             } else if (!nonRunners[id] && !updatedNonRunners[id]) {
               // Runner found so we create the new object with the raw data
               ladders[id] = CreateLadder(rc[i]);
-              sortLadders(eventTypeId, ladders, sortedLadder, updateLadderOrder, setSortedLadder, updateExcludedLadders, true);
+
+              if (i === rc.length - 1) {
+                sortLadders(eventTypeId, ladders, sortedLadder, updateLadderOrder, setSortedLadder, updateExcludedLadders, true);
+              }
             }
           }
           setUpdates(ladders);
@@ -455,6 +419,7 @@ const mapDispatchToProps = {
   setStopLossBetMatched,
   removeStopLoss,
   updateStopLossList,
+  updateStopLossTicks,
   removeTickOffset,
   updateTickOffsetList,
   updateStopEntryList,

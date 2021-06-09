@@ -99,3 +99,8 @@ export const updateStopLossBetPrice = (data) => ({
   type: 'UPDATE_STOP_LOSS_BET_PRICE',
   payload: data,
 });
+
+export const updateStopLossTicks = (data) => ({
+  type: 'UPDATE_STOP_LOSS_TICKS',
+  payload: data,
+});
