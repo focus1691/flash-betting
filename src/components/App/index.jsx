@@ -48,7 +48,7 @@ import handleAuthError from '../../utils/Errors/handleAuthError';
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 //* Utils > Ladder
-import { sortLadder, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
+import { sortLadders, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 //* Utils > Bets
@@ -85,7 +85,7 @@ const App = ({
   setMarketName,
   setMarketDescription,
   setMarketStartTime,
-  eventType,
+  eventTypeId,
   setEvent,
   setEventType,
   closeMarket,
@@ -236,27 +236,7 @@ const App = ({
             } else if (!nonRunners[id] && !updatedNonRunners[id]) {
               // Runner found so we create the new object with the raw data
               ladders[id] = CreateLadder(rc[i]);
-
-              if (i === rc.length - 1) {
-                if (eventType.id === '4339') {
-                  //! Used to track ladder bet when dragging & dropping ladders
-                  const newOrderList = {};
-                  for (let j = 0; j < sortedLadder.length; j += 1) {
-                    newOrderList[j] = sortedLadder[j];
-                  }
-                  updateLadderOrder(newOrderList);
-                } else {
-                  const sortedLadderIndices = sortLadder(ladders);
-                  setSortedLadder(sortedLadderIndices);
-                  updateExcludedLadders(sortedLadderIndices.slice(6, sortedLadderIndices.length));
-                  //! Used to track ladder bet when dragging & dropping ladders
-                  const newOrderList = {};
-                  for (let j = 0; j < sortedLadderIndices.length; j += 1) {
-                    newOrderList[j] = sortedLadderIndices[j];
-                  }
-                  updateLadderOrder(newOrderList);
-                }
-              }
+              sortLadders(eventTypeId, ladders, sortedLadder, updateLadderOrder, setSortedLadder, updateExcludedLadders, true);
             }
           }
           setUpdates(ladders);
@@ -264,7 +244,7 @@ const App = ({
         }
       });
     },
-    [updates, nonRunners, stopEntryList, unmatchedBets, matchedBets, stopLossList, eventType.id],
+    [updates, nonRunners, stopEntryList, unmatchedBets, matchedBets, stopLossList, eventTypeId],
   );
 
   /**
@@ -440,7 +420,7 @@ const mapStateToProps = (state) => ({
   inPlayTime: state.market.inPlayTime,
   marketOpen: state.market.marketOpen,
   marketId: state.market.marketId,
-  eventType: state.market.eventType,
+  eventTypeId: state.market.eventType.id,
   ladders: state.market.ladder,
   sortedLadder: state.market.sortedLadder,
   nonRunners: state.market.nonRunners,

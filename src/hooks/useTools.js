@@ -16,10 +16,11 @@ import { isTickOffsetTriggered } from '../utils/TradingStategy/TickOffset';
 import fetchData from '../http/fetchData';
 import { removeBet, updateOrderMatched } from '../http/dbHelper';
 //* Constants
-import { TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../constants';
+import { TWO_HUNDRED_AND_FIFTY_MILLISECONDS, ONE_SECOND } from '../constants';
 
 export default function useTest() {
   const dispatch = useDispatch();
+  const marketOpen = useSelector((state) => state.market.marketOpen);
   const marketId = useSelector((state) => state.market.marketId);
   const matchedBets = useSelector((state) => state.order.bets.matched);
   const unmatchedBets = useSelector((state) => state.order.bets.unmatched);
@@ -33,8 +34,9 @@ export default function useTest() {
   const inPlay = useSelector((state) => state.market.inPlay);
 
   console.log('use test');
+
   useInterval(async () => {
-    if (marketId) {
+    if (marketOpen && marketId) {
       //* BACK Before/After Market
       checkBackLayBetsAndExecute(backList, marketStartTime, placeOrder, inPlay, removeBackBet, dispatch);
 

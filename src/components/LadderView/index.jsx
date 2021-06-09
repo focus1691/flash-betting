@@ -3,31 +3,17 @@ import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { setSortedLadder } from '../../actions/market';
 import { updateLadderOrder } from '../../actions/ladder';
-import { sortLadder } from '../../utils/ladder/SortLadder';
+import { sortLadders } from '../../utils/ladder/SortLadder';
 import SuspendedWarning from '../GridView/SuspendedWarning';
 import Ladder from './Ladder';
 //* JSS
 import useStyles from '../../jss/components/LadderView';
 
-const Ladders = ({ eventType, ladders, ladderOrder, sortedLadder, updateLadderOrder, marketOpen, marketStatus, setSortedLadder, excludedLadders }) => {
+const Ladders = ({ eventTypeId, ladders, ladderOrder, sortedLadder, updateLadderOrder, marketOpen, marketStatus, setSortedLadder, excludedLadders }) => {
   const classes = useStyles();
   //* Sort ladder on market open, excluding ladders are first 6
   useEffect(() => {
-    if (eventType.id === '4339') {
-      const newOrderList = {};
-      for (let i = 0; i < sortedLadder.length; i += 1) {
-        newOrderList[i] = sortedLadder[i];
-      }
-      updateLadderOrder(newOrderList);
-    } else {
-      const sortedLadderIndices = sortLadder(ladders);
-      setSortedLadder(sortedLadderIndices);
-      const newOrderList = {};
-      for (let i = 0; i < sortedLadderIndices.length; i += 1) {
-        newOrderList[i] = sortedLadderIndices[i];
-      }
-      updateLadderOrder(newOrderList);
-    }
+    sortLadders(eventTypeId, ladders, sortedLadder, updateLadderOrder, setSortedLadder, null, false);
   }, [Object.keys(ladders).length > 0]);
 
   return marketOpen && (marketStatus === 'SUSPENDED' || marketStatus === 'OPEN' || marketStatus === 'RUNNING') ? (
@@ -55,7 +41,7 @@ const mapStateToProps = (state) => ({
   sortedLadder: state.market.sortedLadder, //! Sorted by LTP
   ladderOrder: state.ladder.ladderOrder, //! For the ladderview specifically when swapping ladders
   excludedLadders: state.ladder.excludedLadders,
-  eventType: state.market.eventType,
+  eventTypeId: state.market.eventType.id,
   ladders: state.market.ladder,
 });
 
