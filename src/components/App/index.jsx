@@ -226,7 +226,7 @@ const App = ({
                 const { id: selectionId } = data.oc[i].orc[j];
                 for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
                   // If the bet isn't in the unmatchedBets, we should delete it.
-                  const { id: betId, s: size, p: price, avp: averagePriceMatched,  sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
+                  const { id: betId, s: size, p: price, avp: averagePriceMatched, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
                   if (sizeRemaining === 0 && sizeMatched === 0) {
                     //! this is what happens when an bet doesn't get any matched
                     removeUnmatchedBet({ betId });
@@ -321,7 +321,7 @@ const App = ({
   }, []);
 
   useEffect(() => {
-    if (marketId) {
+    if (marketOpen && marketId) {
       const customerStrategyRefs = ExtractCustomerStrategyRfs(unmatchedBets);
       if (customerStrategyRefs.length > 0) {
         socket.emit('order-subscription', {
@@ -329,7 +329,7 @@ const App = ({
         });
       }
     }
-  }, [marketId, socket, unmatchedBets]);
+  }, [marketOpen, marketId, socket, unmatchedBets]);
 
   useEffect(() => {
     socket.on('mcm', onReceiveMarketMessage);
@@ -347,7 +347,7 @@ const App = ({
 
   useEffect(() => {
     (async () => {
-      if (marketId) {
+      if (marketOpen && marketId) {
         const result = await fetchData(`/api/list-market-pl?marketId=${marketId}`);
         if (result && result[0]) {
           const selectionPL = result[0].profitAndLosses.reduce((acc, item) => {
@@ -358,10 +358,11 @@ const App = ({
         }
       }
     })();
-  }, [marketId, matchedBets]);
+  }, [marketOpen, marketId, matchedBets]);
 
-  if (isLoading) return <Spinner />;
-  return (
+  return isLoading ? (
+    <Spinner />
+  ) : (
     <div className="root">
       <Title />
       <Siderbar />
