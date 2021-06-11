@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import IconButton from '@material-ui/core/IconButton';
 //* Actions
-import { setLadderExpanded, setLadderBottom } from '../../../actions/market';
+import { setLadderExpanded, setLadderBottom } from '../../../redux/actions/market';
 //* Components
 import Graph from './graph';
 import OrderRow from '../Rows/OrderRow/OrderRow';

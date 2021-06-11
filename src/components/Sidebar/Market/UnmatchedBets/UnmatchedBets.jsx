@@ -2,13 +2,13 @@ import uuid from 'react-uuid';
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { cancelBet, removeUnmatchedBet, updateBetPrice } from '../../../../actions/bet';
-import { removeBackBet, updateBackBetPrice } from '../../../../actions/back';
-import { removeLayBet, updateLayBetPrice } from '../../../../actions/lay';
-import { removeStopEntryBet, updateStopEntryBetPrice } from '../../../../actions/stopEntry';
-import { removeStopLoss, updateStopLossBetPrice } from '../../../../actions/stopLoss';
-import { removeTickOffset, updateTickOffsetBetPrice } from '../../../../actions/tickOffset';
-import { removeFillOrKill } from '../../../../actions/fillOrKill';
+import { cancelBet, removeUnmatchedBet, updateBetPrice } from '../../../../redux/actions/bet';
+import { removeBackBet, updateBackBetPrice } from '../../../../redux/actions/back';
+import { removeLayBet, updateLayBetPrice } from '../../../../redux/actions/lay';
+import { removeStopEntryBet, updateStopEntryBetPrice } from '../../../../redux/actions/stopEntry';
+import { removeStopLoss, updateStopLossBetPrice } from '../../../../redux/actions/stopLoss';
+import { removeTickOffset, updateTickOffsetBetPrice } from '../../../../redux/actions/tickOffset';
+import { removeFillOrKill } from '../../../../redux/actions/fillOrKill';
 //* Selectors
 import { getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils

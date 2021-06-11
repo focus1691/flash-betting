@@ -12,7 +12,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import TextField from '@material-ui/core/TextField';
 //* Actions
-import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList } from '../../../../actions/back';
+import { setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateBackList } from '../../../../redux/actions/back';
 //* Utils
 import { formatPrice, getPriceFromForm, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
 //* JSS

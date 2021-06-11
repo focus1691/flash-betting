@@ -3,8 +3,8 @@ import uuid from 'react-uuid';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 //* Actions
-import { setStake } from '../../../actions/settings';
-import { setCustomStake } from '../../../actions/market';
+import { setStake } from '../../../redux/actions/settings';
+import { setCustomStake } from '../../../redux/actions/market';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/priceRowStyle';
 

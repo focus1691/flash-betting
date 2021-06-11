@@ -1,14 +1,14 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { cancelBet, cancelBets } from '../../../../actions/bet';
-import { changePriceType } from '../../../../actions/ladder';
-import { removeBackBet, removeAllSelectionBackBets } from '../../../../actions/back';
-import { removeLayBet, removeAllSelectionLayBets } from '../../../../actions/lay';
-import { removeStopEntryBet, removeAllSelectionStopEntryBets } from '../../../../actions/stopEntry';
-import { removeStopLoss } from '../../../../actions/stopLoss';
-import { removeTickOffset } from '../../../../actions/tickOffset';
-import { removeFillOrKill } from '../../../../actions/fillOrKill';
+import { cancelBet, cancelBets } from '../../../../redux/actions/bet';
+import { changePriceType } from '../../../../redux/actions/ladder';
+import { removeBackBet, removeAllSelectionBackBets } from '../../../../redux/actions/back';
+import { removeLayBet, removeAllSelectionLayBets } from '../../../../redux/actions/lay';
+import { removeStopEntryBet, removeAllSelectionStopEntryBets } from '../../../../redux/actions/stopEntry';
+import { removeStopLoss } from '../../../../redux/actions/stopLoss';
+import { removeTickOffset } from '../../../../redux/actions/tickOffset';
+import { removeFillOrKill } from '../../../../redux/actions/fillOrKill';
 import { MatchedBet } from './MatchedBet';
 import { UnmatchedBet } from './UnmatchedBet';
 //* Selectors

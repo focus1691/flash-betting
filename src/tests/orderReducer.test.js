@@ -1,7 +1,7 @@
-import betReducer from '../reducers/orderReducer';
-import backReducer from '../reducers/backReducer';
-import tosReducer from '../reducers/tickOffsetReducer';
-import SLReducer from '../reducers/stopLossReducer';
+import betReducer from '../redux/reducers/orderReducer';
+import backReducer from '../redux/reducers/backReducer';
+import tosReducer from '../redux/reducers/tickOffsetReducer';
+import SLReducer from '../redux/reducers/stopLossReducer';
 
 describe('bets reducer', () => {
   const emptyState = {

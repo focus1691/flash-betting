@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 //* Custom Components
 import SubscriptionContainer from './SubscriptionContainer';
 //* Actions
-import { openPremiumDialog } from '../../../actions/settings';
+import { openPremiumDialog } from '../../../redux/actions/settings';
 //* JSS
 import useStyles from '../../../jss/components/HomeView/premiumStyle';
 

@@ -9,12 +9,12 @@ import TableBody from '@material-ui/core/TableBody';
 import useStyles from '../../../../jss/components/Sidebar/market/tools';
 import { ToolsTableCell, ToolsTableRow } from '../../../../jss/components/Sidebar/market/tools/toolsTableStyle';
 //* Actions
-import { setBackSelected } from '../../../../actions/back';
-import { setFillOrKillSelected } from '../../../../actions/fillOrKill';
-import { setLaySelected } from '../../../../actions/lay';
-import { setStopEntrySelected } from '../../../../actions/stopEntry';
-import { setStopLossSelected } from '../../../../actions/stopLoss';
-import { setTickOffsetSelected } from '../../../../actions/tickOffset';
+import { setBackSelected } from '../../../../redux/actions/back';
+import { setFillOrKillSelected } from '../../../../redux/actions/fillOrKill';
+import { setLaySelected } from '../../../../redux/actions/lay';
+import { setStopEntrySelected } from '../../../../redux/actions/stopEntry';
+import { setStopLossSelected } from '../../../../redux/actions/stopLoss';
+import { setTickOffsetSelected } from '../../../../redux/actions/tickOffset';
 import Back from './Back';
 import FillOrKill from './FillOrKill';
 import Lay from './Lay';

@@ -7,8 +7,8 @@ import clsx from 'clsx';
 //* @material-ui core
 import Button from '@material-ui/core/Button';
 //* Actions
-import { placeOrder } from '../../actions/bet';
-import { setStakeInOneClick } from '../../actions/settings';
+import { placeOrder } from '../../redux/actions/bet';
+import { setStakeInOneClick } from '../../redux/actions/settings';
 //* Utils
 import { sumMatchedBets } from '../../utils/Bets/BettingCalculations';
 import { getHedgedBetsToMake } from '../../utils/TradingStategy/HedingCalculator';

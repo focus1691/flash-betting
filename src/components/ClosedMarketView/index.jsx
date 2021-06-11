@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 //* Actions
-import { setPremiumStatus } from '../../actions/settings';
+import { setPremiumStatus } from '../../redux/actions/settings';
 //* Components
 import BetsPlaced from './BetsPlaced';
 import MarketReport from './MarketReport';

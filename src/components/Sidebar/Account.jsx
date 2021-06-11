@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
 //* Actions
-import { setAccountDetails, setBalance } from '../../actions/account';
+import { setAccountDetails, setBalance } from '../../redux/actions/account';
 import FlagIcon from './FlagIcon';
 import Clock from './Clock';
 import { formatCurrency } from '../../utils/NumberFormat';

@@ -2,7 +2,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { updateSubmenuList, updateMyMarketsSubmenu } from '../../../actions/sport';
+import { updateSubmenuList, updateMyMarketsSubmenu } from '../../../redux/actions/sport';
 import ActiveBets from './ActiveBets';
 import AllSports from './AllSports';
 import MyMarkets from './MyMarkets';

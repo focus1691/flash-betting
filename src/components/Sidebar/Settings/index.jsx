@@ -16,7 +16,7 @@ import {
   updateLayBtn,
   updateRightClickTicks,
   setHorseRacingCountries,
-} from '../../../actions/settings';
+} from '../../../redux/actions/settings';
 import RevokeAccess from './RevokeAccess';
 import DefaultView from './DefaultView';
 import Sounds from './Sounds';

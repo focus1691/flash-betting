@@ -11,7 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import TextField from '@material-ui/core/TextField';
 //* Actions
-import { setDisplayText, setStopLossOffset, setStopLossUnit, toggleStopLossTrailing, toggleStopLossHedged, setSelections } from '../../../../actions/stopLoss';
+import { setDisplayText, setStopLossOffset, setStopLossUnit, toggleStopLossTrailing, toggleStopLossHedged, setSelections } from '../../../../redux/actions/stopLoss';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/stopLossStyle';
 import StyledMenu from '../../../../jss/StyledMenu';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useInterval from 'react-useinterval';
 //* Actions
-import { setPastEventTime } from '../../actions/market';
+import { setPastEventTime } from '../../redux/actions/market';
 //* Utils
 import { secondsToHms } from '../../utils/DateHelper';
 import { countDownTime } from '../../utils/Market/CountDown';

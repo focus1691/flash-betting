@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 //* @material-ui icons
 import CloseIcon from '@material-ui/icons/Close';
 //* Actions
-import { openPremiumDialog } from '../actions/settings';
+import { openPremiumDialog } from '../redux/actions/settings';
 //* JSS
 import useStyles from '../jss/components/PremiumPopup';
 

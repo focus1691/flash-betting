@@ -1,12 +1,12 @@
 import useInterval from 'react-useinterval';
 import { useSelector, useDispatch } from 'react-redux';
 //* Actions
-import { addUnmatchedBet, addMatchedBet, placeOrder, cancelBet, updateSizeMatched, setBetExecutionComplete } from '../actions/bet';
-import { removeBackBet } from '../actions/back';
-import { removeLayBet } from '../actions/lay';
-import { removeFillOrKill } from '../actions/fillOrKill';
-import { setStopLossBetMatched } from '../actions/stopLoss';
-import { removeTickOffset } from '../actions/tickOffset';
+import { addUnmatchedBet, addMatchedBet, placeOrder, cancelBet, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
+import { removeBackBet } from '../redux/actions/back';
+import { removeLayBet } from '../redux/actions/lay';
+import { removeFillOrKill } from '../redux/actions/fillOrKill';
+import { setStopLossBetMatched } from '../redux/actions/stopLoss';
+import { removeTickOffset } from '../redux/actions/tickOffset';
 //* Utils
 import { checkBackLayBetsAndExecute } from '../utils/TradingStategy/BackLay';
 import { checkFOKBetsAndExecute } from '../utils/TradingStategy/fillOrKill';

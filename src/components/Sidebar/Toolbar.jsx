@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { setActiveView, setFullscreen, openPremiumDialog } from '../../actions/settings';
-import { openLiveStream } from '../../actions/draggable';
+import { setActiveView, setFullscreen, openPremiumDialog } from '../../redux/actions/settings';
+import { openLiveStream } from '../../redux/actions/draggable';
 //* JSS
 import useStyles from '../../jss/components/Sidebar/toolbarStyle';
 

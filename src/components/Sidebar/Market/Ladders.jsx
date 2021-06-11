@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { updateExcludedLadders, updateLadderOrder } from '../../../actions/ladder';
+import { updateExcludedLadders, updateLadderOrder } from '../../../redux/actions/ladder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market/ladderStyle';
 

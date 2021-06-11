@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { openLiveStream } from '../../actions/draggable';
+import { openLiveStream } from '../../redux/actions/draggable';
 //* JSS
 import useStyles from '../../jss/components/videoStyle';
 

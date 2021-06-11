@@ -5,13 +5,13 @@ import { connect } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 //* Actions
-import { updateBackList } from '../../actions/back';
-import { updateLayList } from '../../actions/lay';
-import { addStopLoss, updateStopLossList } from '../../actions/stopLoss';
-import { addTickOffset, updateTickOffsetList } from '../../actions/tickOffset';
-import { updateStopEntryList } from '../../actions/stopEntry';
-import { addFillOrKill, updateFillOrKillList } from '../../actions/fillOrKill';
-import { cancelBets, placeOrder, updateOrders } from '../../actions/bet';
+import { updateBackList } from '../../redux/actions/back';
+import { updateLayList } from '../../redux/actions/lay';
+import { addStopLoss, updateStopLossList } from '../../redux/actions/stopLoss';
+import { addTickOffset, updateTickOffsetList } from '../../redux/actions/tickOffset';
+import { updateStopEntryList } from '../../redux/actions/stopEntry';
+import { addFillOrKill, updateFillOrKillList } from '../../redux/actions/fillOrKill';
+import { cancelBets, placeOrder, updateOrders } from '../../redux/actions/bet';
 import { getLTP } from '../../selectors/marketSelector';
 import { getMatchedBets, getUnmatchedBets, getSelectionMatchedBets } from '../../selectors/orderSelector';
 //* Utils

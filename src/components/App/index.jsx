@@ -6,7 +6,7 @@ import Cookies from 'universal-cookie';
 import useInterval from '../../hooks/useInterval';
 import useTools from '../../hooks/useTools';
 //* Actions
-import { setIsLoading, setPremiumStatus } from '../../actions/settings';
+import { setIsLoading, setPremiumStatus } from '../../redux/actions/settings';
 import {
   setMarketId,
   setMarketName,
@@ -23,15 +23,15 @@ import {
   setMarketStatus,
   setInPlay,
   setInPlayTime,
-} from '../../actions/market';
-import { updateExcludedLadders, updateLadderOrder, setMarketPL } from '../../actions/ladder';
-import { placeOrder, removeUnmatchedBet, setBetExecutionComplete } from '../../actions/bet';
-import { updateBackList } from '../../actions/back';
-import { updateLayList } from '../../actions/lay';
-import { updateStopLossList, setStopLossBetMatched, removeStopLoss, updateStopLossTicks } from '../../actions/stopLoss';
-import { updateTickOffsetList, removeTickOffset } from '../../actions/tickOffset';
-import { updateStopEntryList, removeMultiSelectionStopEntryBets } from '../../actions/stopEntry';
-import { updateFillOrKillList } from '../../actions/fillOrKill';
+} from '../../redux/actions/market';
+import { updateExcludedLadders, updateLadderOrder, setMarketPL } from '../../redux/actions/ladder';
+import { placeOrder, removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
+import { updateBackList } from '../../redux/actions/back';
+import { updateLayList } from '../../redux/actions/lay';
+import { updateStopLossList, setStopLossBetMatched, removeStopLoss, updateStopLossTicks } from '../../redux/actions/stopLoss';
+import { updateTickOffsetList, removeTickOffset } from '../../redux/actions/tickOffset';
+import { updateStopEntryList, removeMultiSelectionStopEntryBets } from '../../redux/actions/stopEntry';
+import { updateFillOrKillList } from '../../redux/actions/fillOrKill';
 import Spinner from './Spinner';
 import Siderbar from '../Sidebar';
 import HomeView from '../HomeView';

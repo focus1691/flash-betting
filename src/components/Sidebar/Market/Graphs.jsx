@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { openGraph } from '../../../actions/draggable';
+import { openGraph } from '../../../redux/actions/draggable';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market/graphStyle';
 

@@ -7,7 +7,7 @@ import openSocket from 'socket.io-client';
 import combineMiddleWares from './utils/Redux/CombineMiddlewares';
 //* Stripe
 //* Reducers
-import reducers from './reducers';
+import reducers from './redux/reducers';
 //* Components
 import Login from './components/Login';
 import Logout from './components/Logout';

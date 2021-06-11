@@ -1,8 +1,8 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { setRunner } from '../../actions/market';
-import { setDraggingLadder } from '../../actions/ladder';
+import { setRunner } from '../../redux/actions/market';
+import { setDraggingLadder } from '../../redux/actions/ladder';
 //* Selectors
 import { getRunner, getSportId, getPL } from '../../selectors/marketSelector';
 //* Utils

@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/tickOffsetStyle';
 //* Actions
-import { setDisplayText, setTicks, setUnit, setPercentTrigger, setHedged } from '../../../../actions/tickOffset';
+import { setDisplayText, setTicks, setUnit, setPercentTrigger, setHedged } from '../../../../redux/actions/tickOffset';
 
 const TickOffset = ({ ticks, unit, percentTrigger, hedged, setDisplayText, setTicks, setUnit, setPercentTrigger, setHedged }) => {
   const classes = useStyles();

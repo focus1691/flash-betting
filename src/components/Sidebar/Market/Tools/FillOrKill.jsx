@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/tools/fillOrKillStyle';
 //* Actions
-import { setDisplayText, setFillOrKill } from '../../../../actions/fillOrKill';
+import { setDisplayText, setFillOrKill } from '../../../../redux/actions/fillOrKill';
 
 const FillOrKill = ({ seconds, setDisplayText, setFillOrKill }) => {
   const classes = useStyles();

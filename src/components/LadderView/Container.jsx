@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { updateLadderOrder, setDraggingLadder } from '../../actions/ladder';
+import { updateLadderOrder, setDraggingLadder } from '../../redux/actions/ladder';
 //* JSS
 import useStyles from '../../jss/components/LadderView/containerStyle';
 

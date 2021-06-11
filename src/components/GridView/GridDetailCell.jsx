@@ -2,8 +2,8 @@ import crypto from 'crypto';
 import React, { useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { setRunner } from '../../actions/market';
-import { placeOrder } from '../../actions/bet';
+import { setRunner } from '../../redux/actions/market';
+import { placeOrder } from '../../redux/actions/bet';
 import { calcBackProfit } from '../../utils/Bets/BettingCalculations';
 import { selectionHasBets } from '../../utils/Bets/SelectionHasBets';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';

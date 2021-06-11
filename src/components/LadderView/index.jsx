@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
-import { setSortedLadder } from '../../actions/market';
-import { updateLadderOrder } from '../../actions/ladder';
+import { setSortedLadder } from '../../redux/actions/market';
+import { updateLadderOrder } from '../../redux/actions/ladder';
 import { sortLadders } from '../../utils/ladder/SortLadder';
 import SuspendedWarning from '../GridView/SuspendedWarning';
 import Ladder from './Ladder';

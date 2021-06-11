@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 //* Actions
-import { placeOrder } from '../../actions/bet';
+import { placeOrder } from '../../redux/actions/bet';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridOrderRow';
 //* Utils

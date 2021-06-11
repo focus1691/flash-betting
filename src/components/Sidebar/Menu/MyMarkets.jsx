@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import { updateMyMarketsSubmenu } from '../../../actions/sport';
+import { updateMyMarketsSubmenu } from '../../../redux/actions/sport';
 import DeselectSubmenu from './DeselectSubmenu';
 import SelectMyMarkets from './SelectMyMarkets';
 import SelectSubmenu from './SelectSubmenu';

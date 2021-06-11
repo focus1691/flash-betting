@@ -6,7 +6,7 @@ import RecentBets from './RecentBets';
 import TradingChart from './TradingChart';
 import PremiumSubscription from './PremiumSubscription';
 //* Actions
-import { setUserId } from '../../actions/account';
+import { setUserId } from '../../redux/actions/account';
 //* JSS
 import useStyles from '../../jss/components/HomeView/homeViewStyle';
 //* HTTP

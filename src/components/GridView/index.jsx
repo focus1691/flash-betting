@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import $ from 'jquery';
 import clsx from 'clsx';
 //* Actions
-import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay } from '../../actions/market';
-import { toggleOneClick } from '../../actions/grid';
+import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay } from '../../redux/actions/market';
+import { toggleOneClick } from '../../redux/actions/grid';
 //* Utils
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';

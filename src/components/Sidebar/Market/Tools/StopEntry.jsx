@@ -13,7 +13,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 //* Actions
-import { setLTPOperator, setTargetLTP, setStake, setPrice, updateStopEntryList, setSelections } from '../../../../actions/stopEntry';
+import { setLTPOperator, setTargetLTP, setStake, setPrice, updateStopEntryList, setSelections } from '../../../../redux/actions/stopEntry';
 //* Utils
 import { formatPrice, getPriceFromForm, findPriceStep } from '../../../../utils/Bets/PriceCalculations';
 //* JSS

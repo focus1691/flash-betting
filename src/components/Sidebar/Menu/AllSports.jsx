@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import List from '@material-ui/core/List';
 //* Actions
-import { setAllSports, updateSubmenuList } from '../../../actions/sport';
+import { setAllSports, updateSubmenuList } from '../../../redux/actions/sport';
 import { sortSports } from '../../../utils/Sort';
 import DeselectSubmenu from './DeselectSubmenu';
 import SelectSport from './SelectSport';

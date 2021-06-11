@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 //* @material-ui core
 import { ListItemIcon } from '@material-ui/core';
 //* Actions
-import { addNewMarket, removeMarket } from '../../../actions/sport';
+import { addNewMarket, removeMarket } from '../../../redux/actions/sport';
 
 const MarketSaveButton = ({ id, sportId, name, nodes, myMarkets, addNewMarket, removeMarket }) => {
   const marketItemSaved = !_.isEmpty(myMarkets[id]);
