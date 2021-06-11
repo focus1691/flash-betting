@@ -1,5 +1,6 @@
-import { calcLayBet } from '../../utils/TradingStategy/HedingCalculator';
+import { calcBetPriceSize } from '../../utils/Bets/CalcBetPriceSize';
 import postData from '../../http/postData';
+import { executeBet, executeReduceSize } from '../../http/placeBets';
 
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
@@ -36,43 +37,9 @@ export const setBetExecutionComplete = (data) => ({
   payload: data,
 });
 
-//! Add to http/placeBet call()
-export const executeBet = async (bet) => {
-  bet.size = parseFloat(bet.size).toFixed(2);
-  const PlaceExecutionReport = await postData('/api/place-order', bet);
-
-  if (!PlaceExecutionReport) return null;
-
-  const { status, error, instructionReports } = PlaceExecutionReport;
-
-  if (error || status === 'FAILURE' || !instructionReports) return null;
-
-  const { orderStatus, sizeMatched, betId } = instructionReports[0];
-
-  if (!betId) return null;
-
-  const adjustedBet = { ...bet };
-  adjustedBet.rfs = bet.customerStrategyRef;
-  delete adjustedBet.customerStrategyRef;
-  adjustedBet.betId = betId;
-  adjustedBet.status = orderStatus;
-  adjustedBet.sizeMatched = sizeMatched;
-  adjustedBet.sizeRemaining = bet.size - sizeMatched;
-  adjustedBet.strategy = 'None';
-
-  return adjustedBet;
-};
-
-export const executeReduceSize = async (bet) => {
-  const cancelOrder = await postData('/api/cancel-order', bet);
-  return cancelOrder && cancelOrder.status === 'SUCCESS';
-};
-
 export const placeOrder = (bet) => {
   return async (dispatch) => {
-    //! adjustPriceSize() utils/Bets/PriceCalculations (no async)
-    bet.size = bet.side === 'LAY' ? calcLayBet(bet.price, bet.size).liability : parseFloat(bet.size);
-    bet.price = parseFloat(bet.price);
+    bet = calcBetPriceSize(bet);
     if (isNaN(bet.size)) return null;
 
     if (parseFloat(bet.size) < 2.0) {
@@ -129,11 +96,6 @@ export const placeOrder = (bet) => {
       //! Saga call()
       const adjustedBet = await executeBet(bet);
       if (!adjustedBet) return null;
-
-      //! Saga put
-      if (adjustedBet.status === 'EXECUTION_COMPLETE') dispatch(addMatchedBet(adjustedBet));
-      else if (adjustedBet.status === 'EXECUTABLE') dispatch(addUnmatchedBet(adjustedBet));
-  
       return adjustedBet.betId;
     }
   };
