@@ -1,4 +1,4 @@
-import { removeBet, updateStoredStopLoss } from '../http/dbHelper';
+import { removeBet, updateStoredStopLoss } from '../../http/dbHelper';
 
 export const setStopLossSelected = () => ({
   type: 'SET_STOP_LOSS_SELECTED',

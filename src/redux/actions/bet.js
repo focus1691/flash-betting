@@ -1,5 +1,5 @@
-import { calcLayBet } from '../utils/TradingStategy/HedingCalculator';
-import postData from '../http/postData';
+import { calcLayBet } from '../../utils/TradingStategy/HedingCalculator';
+import postData from '../../http/postData';
 
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
@@ -36,6 +36,7 @@ export const setBetExecutionComplete = (data) => ({
   payload: data,
 });
 
+//! Add to http/placeBet call()
 export const executeBet = async (bet) => {
   bet.size = parseFloat(bet.size).toFixed(2);
   const PlaceExecutionReport = await postData('/api/place-order', bet);
@@ -69,12 +70,13 @@ export const executeReduceSize = async (bet) => {
 
 export const placeOrder = (bet) => {
   return async (dispatch) => {
+    //! adjustPriceSize() utils/Bets/PriceCalculations (no async)
     bet.size = bet.side === 'LAY' ? calcLayBet(bet.price, bet.size).liability : parseFloat(bet.size);
     bet.price = parseFloat(bet.price);
-
     if (isNaN(bet.size)) return null;
 
     if (parseFloat(bet.size) < 2.0) {
+      //! Yield call()
       const startingBet = await executeBet({
         ...bet,
         price: bet.side === 'BACK' ? 1000 : 1.01,
@@ -82,6 +84,7 @@ export const placeOrder = (bet) => {
       });
       if (!startingBet) return null;
 
+      //! Yield call()
       // cancel part of the first one
       await executeReduceSize({
         marketId: startingBet.marketId,
@@ -123,8 +126,11 @@ export const placeOrder = (bet) => {
         return startingBet.betId;
       }
     } else {
+      //! Saga call()
       const adjustedBet = await executeBet(bet);
       if (!adjustedBet) return null;
+
+      //! Saga put
       if (adjustedBet.status === 'EXECUTION_COMPLETE') dispatch(addMatchedBet(adjustedBet));
       else if (adjustedBet.status === 'EXECUTABLE') dispatch(addUnmatchedBet(adjustedBet));
   

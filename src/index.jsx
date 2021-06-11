@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import openSocket from 'socket.io-client';
-import combineMiddleWares from './utils/Redux/CombineMiddlewares';
+import combineMiddleWares from './redux/CombineMiddlewares';
 //* Stripe
 //* Reducers
 import reducers from './redux/reducers';
