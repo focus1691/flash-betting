@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { calculateHedgePL } from '../TradingStategy/HedingCalculator';
 import { calcBackProfit } from '../Bets/BettingCalculations';
 
@@ -10,7 +11,7 @@ import { calcBackProfit } from '../Bets/BettingCalculations';
  * @return {object} side, profit
  */
 export default (odds, selectionMatchedBets, ladderUnmatched, stake, pl) => {
-  if (selectionMatchedBets !== undefined && ladderUnmatched === 'hedged') {
+  if (ladderUnmatched === 'hedged') {
     // calculate the profit based on the current row (the odds decide this)
     const profitArray = selectionMatchedBets.map((bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgePL(parseFloat(bet.size), parseFloat(bet.price), parseFloat(odds)));
 
@@ -31,10 +32,8 @@ export default (odds, selectionMatchedBets, ladderUnmatched, stake, pl) => {
 
     return { side, profit, size };
   }
-
   if (ladderUnmatched === 'pl') {
     return { side: 'BACK', profit: parseFloat(calcBackProfit(parseFloat(stake), odds, 0)) + parseFloat(pl), size: stake };
   }
-
   return undefined;
 };

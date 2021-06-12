@@ -1,6 +1,5 @@
 import { twoDecimalPlaces } from '../Bets/BettingCalculations';
 import { getOppositeSide } from '../Bets/GetOppositeSide';
-import CalculateLadderHedge from '../ladder/CalculateLadderHedge';
 
 // eslint-disable-next-line no-extend-native
 Number.prototype.round = function (places) {
@@ -38,6 +37,15 @@ const calcHedgeStake = (size, price, exitPrice, side) => {
   return side === 'BACK' ? PL : -PL;
 };
 
+/**
+ * Another function to calculate the profit/loss from a hedged position using the back price instead of liability.
+ * @param {string} stake - The amount the bet was placed at.
+ * @param {number} backPrice - The odds the bet was placed at.
+ * @param {string} exitPrice - The odds the bet will be exited at.
+ * @return {number} The Profit or loss.
+ */
+ const calculateHedgePL = (stake, backPrice, exitPrice) => twoDecimalPlaces(((stake * backPrice) / exitPrice - stake));
+
 const calcHedge = (size, price, side, ltp, exitPrice) => ({
   hedgePL: calculateHedgePL(size, price, ltp),
   hedgeStake: calcHedgeStake(size, price, exitPrice, side),
@@ -49,17 +57,6 @@ const calcHedgeAtLTP = (bets, ltp) => {
   );
   return (-1 * arr.reduce((a, b) => a - b, 0)).toFixed(2);
 };
-
-const calcHedgeSize = (bets, ltp) => (bets.length > 0 ? CalculateLadderHedge(ltp, bets, 'hedged').size : 0);
-
-/**
- * Another function to calculate the profit/loss from a hedged position using the back price instead of liability.
- * @param {string} stake - The amount the bet was placed at.
- * @param {number} backPrice - The odds the bet was placed at.
- * @param {string} exitPrice - The odds the bet will be exited at.
- * @return {number} The Profit or loss.
- */
-const calculateHedgePL = (stake, backPrice, exitPrice) => twoDecimalPlaces(((stake * backPrice) / exitPrice - stake));
 
 const getHedgedBets = (betsToMake, ltp) => betsToMake.map((bets) => bets.reduce(({ stake }, {
   price, size, side, selectionId,
@@ -98,5 +95,5 @@ const getHedgedBetsToMake = (marketId, bets, ltps) => {
 };
 
 export {
-  calcLiability, calcHedge, calculateHedgePL, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP, calcHedgeSize,
+  calcLiability, calcHedge, calculateHedgePL, calcBackBet, calcLayBet, isHedgingOnSelectionAvailable, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP,
 };

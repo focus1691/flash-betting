@@ -1,6 +1,6 @@
 import { ALL_PRICES } from '../Bets/PriceCalculations';
 import CalculateLadderHedge from '../ladder/CalculateLadderHedge';
-import { removeBet, updateTicks } from '../../http/dbHelper';
+import { updateTicks } from '../../http/dbHelper';
 
 export const calcStopLossPrice = (price, ticks, side, percent = false) => {
   price = Number(price);

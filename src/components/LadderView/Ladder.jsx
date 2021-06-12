@@ -89,7 +89,7 @@ const Ladder = memo(
 
     const ladderStyle = useMemo(() => (listRefSet ? { paddingRight: `${listRef.current.offsetWidth - listRef.current.clientWidth - 17}px` } : ''), [listRefSet]);
     const ltpHedge = useMemo(() => CalculateLadderHedge(ltp, selectionMatchedBets, 'hedged'), [ltp, selectionMatchedBets]);
-    const hedgingAvailable = useMemo(() => ltpHedge.size >= 0.01, [ltpHedge]);
+    const hedgingAvailable = useMemo(() => ltpHedge && ltpHedge.size >= 0.01, [ltpHedge]);
 
     const setReferenceSent = () => {
       setIsReferenceSet(true);
