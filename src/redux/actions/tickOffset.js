@@ -37,6 +37,11 @@ export const addTickOffset = (data) => ({
   payload: data,
 });
 
+export const placeTickOffsetBet = (data) => ({
+  type: 'PLACE_TICK_OFFSET_BET_SAGA',
+  payload: data,
+});
+
 export const removeTickOffset = (data) => ({
   type: 'REMOVE_TICK_OFFSET',
   payload: data,

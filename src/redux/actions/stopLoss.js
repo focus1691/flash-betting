@@ -63,6 +63,11 @@ export const setStopLossBetMatched = (data) => ({
   payload: data,
 });
 
+export const placeStopLossBet = (data) => ({
+  type: 'PLACE_STOP_LOSS_BET_SAGA',
+  payload: data,
+});
+
 export const replaceStopLoss = async (SL, { selectionId, stakeVal, price, side, stopLossUnits, stopLossHedged }) => {
   return async (dispatch) => {
     if (SL) {

@@ -37,10 +37,10 @@ export const checkStopLossHit = ({ price, side }, LTP) => {
 
 export const isStopLossTriggered = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;
 
-export const checkAndExecuteStopLoss = (stopLoss, currentLTP, ltp, matchedBets, placeOrder, removeStopLoss, updateStopLossTicks) => {
+export const checkAndExecuteStopLoss = (stopLoss, currentLTP, ltp, matchedBets, placeStopLossBet, updateStopLossTicks) => {
   if (!stopLoss) return;
 
-  const { rfs, marketId, selectionId, side, price, trailing } = stopLoss;
+  const { marketId, selectionId, side, price, trailing } = stopLoss;
 
   const prevLTP = ltp[1] || ltp[0];
 
@@ -48,15 +48,10 @@ export const checkAndExecuteStopLoss = (stopLoss, currentLTP, ltp, matchedBets, 
 
   if (targetMet) {
     const selectionMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == selectionId);
-    const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-
-    // Calculate the hedged size for the price
     const { size } = CalculateLadderHedge(parseFloat(price), selectionMatchedBets, 'hedged');
-
-    placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
-    removeStopLoss({ selectionId }); // Remove the SL
-    removeBet({ rfs }); // Remove the SL from DB
-  } else if (trailing && ((currentLTP < prevLTP && side === 'BACK') || (currentLTP > prevLTP && side === 'LAY'))) {
+    placeStopLossBet({ marketId, selectionId, side, size, price });
+  }
+  else if (trailing && ((currentLTP < prevLTP && side === 'BACK') || (currentLTP > prevLTP && side === 'LAY'))) {
     stopLoss.ticks += 1;
     updateTicks(stopLoss); //! Update SQLite with new ticks
     updateStopLossTicks({ selectionId, ticks: stopLoss.ticks });

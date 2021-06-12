@@ -28,8 +28,8 @@ import { updateExcludedLadders, updateLadderOrder, setMarketPL } from '../../red
 import { placeOrder, removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
 import { updateBackList } from '../../redux/actions/back';
 import { updateLayList } from '../../redux/actions/lay';
-import { updateStopLossList, setStopLossBetMatched, removeStopLoss, updateStopLossTicks } from '../../redux/actions/stopLoss';
-import { updateTickOffsetList, removeTickOffset } from '../../redux/actions/tickOffset';
+import { updateStopLossList, placeStopLossBet, setStopLossBetMatched, updateStopLossTicks } from '../../redux/actions/stopLoss';
+import { updateTickOffsetList, placeTickOffsetBet } from '../../redux/actions/tickOffset';
 import { updateStopEntryList, removeMultiSelectionStopEntryBets } from '../../redux/actions/stopEntry';
 import { updateFillOrKillList } from '../../redux/actions/fillOrKill';
 import Spinner from './Spinner';
@@ -41,7 +41,7 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import { removeBet, updateOrderMatched } from '../../http/dbHelper';
+import { updateOrderMatched } from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
 import handleAuthError from '../../utils/Errors/handleAuthError';
@@ -101,11 +101,11 @@ const App = ({
   setInPlayTime,
   setMarketPL,
   setStopLossBetMatched,
-  removeStopLoss,
+  placeStopLossBet,
   updateStopLossList,
   updateStopLossTicks,
-  removeTickOffset,
   updateTickOffsetList,
+  placeTickOffsetBet,
   updateStopEntryList,
   removeMultiSelectionStopEntryBets,
   updateLayList,
@@ -193,7 +193,7 @@ const App = ({
               const currentLTP = rc[i].ltp || ladders[id].ltp[0];
 
               checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeOrder, removeMultiSelectionStopEntryBets);
-              checkAndExecuteStopLoss(stopLossList[id], currentLTP, ladders[id].ltp, matchedBets, placeOrder, removeStopLoss, updateStopLossTicks);
+              checkAndExecuteStopLoss(stopLossList[id], currentLTP, ladders[id].ltp, matchedBets, placeStopLossBet, updateStopLossTicks);
             } else if (!nonRunners[id] && !updatedNonRunners[id]) {
               // Runner found so we create the new object with the raw data
               ladders[id] = CreateLadder(rc[i]);
@@ -220,13 +220,12 @@ const App = ({
       if (data.oc) {
         for (let i = 0; i < data.oc.length; i += 1) {
           if (data.oc[i].orc) {
-            const { id: marketId } = data.oc[i];
             for (let j = 0; j < data.oc[i].orc.length; j += 1) {
               if (data.oc[i].orc[j].uo) {
                 const { id: selectionId } = data.oc[i].orc[j];
                 for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
                   // If the bet isn't in the unmatchedBets, we should delete it.
-                  const { id: betId, s: size, p: price, avp: averagePriceMatched, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
+                  const { id: betId, avp: averagePriceMatched, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
                   if (sizeRemaining === 0 && sizeMatched === 0) {
                     //! this is what happens when an bet doesn't get any matched
                     removeUnmatchedBet({ betId });
@@ -241,15 +240,7 @@ const App = ({
                     updateOrderMatched({ rfs, assignedIsOrderMatched: true });
                   }
                   const tosTriggered = isTickOffsetTriggered(tickOffsetList[selectionId], rfs, sizeMatched);
-                  if (tosTriggered) {
-                    const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-                    const { side } = tickOffsetList[selectionId];
-
-                    placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
-
-                    removeTickOffset({ selectionId }); // Remove from state
-                    removeBet({ rfs }); // Remove from database
-                  }
+                  if (tosTriggered) placeTickOffsetBet({ tickOffset: tickOffsetList[selectionId] });
                 }
               }
             }
@@ -418,11 +409,11 @@ const mapDispatchToProps = {
   setInPlayTime,
   setMarketPL,
   setStopLossBetMatched,
-  removeStopLoss,
+  placeStopLossBet,
   updateStopLossList,
   updateStopLossTicks,
-  removeTickOffset,
   updateTickOffsetList,
+  placeTickOffsetBet,
   updateStopEntryList,
   removeMultiSelectionStopEntryBets,
   updateLayList,

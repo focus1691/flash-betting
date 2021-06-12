@@ -43,15 +43,12 @@ export const placeOrder = (bet) => {
     if (isNaN(bet.size)) return null;
 
     if (parseFloat(bet.size) < 2.0) {
-      //! Yield call()
       const startingBet = await executeBet({
         ...bet,
         price: bet.side === 'BACK' ? 1000 : 1.01,
         size: 2,
       });
       if (!startingBet) return null;
-
-      //! Yield call()
       // cancel part of the first one
       await executeReduceSize({
         marketId: startingBet.marketId,
@@ -69,7 +66,6 @@ export const placeOrder = (bet) => {
       if (ReplaceExecutionReport && ReplaceExecutionReport.status === 'SUCCESS') {
         if (ReplaceExecutionReport.instructionReports[0] && ReplaceExecutionReport.instructionReports[0].placeInstructionReport) {
           const { betId, orderStatus, sizeMatched } = ReplaceExecutionReport.instructionReports[0].placeInstructionReport;
-
           startingBet.betId = betId;
 
           if (orderStatus === 'EXECUTION_COMPLETE') {
@@ -89,15 +85,15 @@ export const placeOrder = (bet) => {
               }),
             );
           }
+
+          return betId;
         }
-        return startingBet.betId;
       }
-    } else {
-      //! Saga call()
-      const adjustedBet = await executeBet(bet);
-      if (!adjustedBet) return null;
-      return adjustedBet.betId;
+      return null;
     }
+    const adjustedBet = await executeBet(bet);
+    if (!adjustedBet) return null;
+    return adjustedBet.betId;
   };
 };
 
@@ -132,7 +128,6 @@ export const cancelMarketBets = (marketId, unmatchedBets) => {
   const cancelledBets = [];
 
   for (let i = 0; i < unmatchedBets.length; i += 1) {
-
     cancelledBets.push(unmatchedBets[i].betId);
     postData('/api/cancel-order', {
       marketId: unmatchedBets[i].marketId,

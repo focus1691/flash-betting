@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { put, takeLeading, call } from 'redux-saga/effects';
 import { removeStopLoss, updateStopLossTicks } from '../actions/stopLoss';
 import { executeBet } from '../../http/placeBets';
@@ -6,11 +7,13 @@ import calcBetPriceSize from '../../utils/Bets/CalcBetPriceSize';
 
 function* placeStopLossBet(action) {
   let { betParams } = action.payload;
+  const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+
   betParams = yield call(calcBetPriceSize, betParams);
-  const bet = yield call(executeBet, betParams);
+  const bet = yield call(executeBet, { ...betParams, customerStrategyRef });
   if (bet) {
-    yield put(removeStopLoss({ selectionId: bet.selectionId }));
     yield call(removeBet({ rfs: betParams.rfs }));
+    yield put(removeStopLoss({ selectionId: bet.selectionId }));
   }
 }
 

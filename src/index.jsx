@@ -18,7 +18,6 @@ import OAuthRedirect from './components/OAuthRedirect';
 //* Contexts
 import SocketContext from './contexts/SocketContext';
 
-
 const socket = openSocket('http://localhost:3001');
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

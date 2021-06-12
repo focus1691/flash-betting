@@ -1,7 +1,9 @@
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
+import rootSaga from './saga';
 
 const sagaMiddleware = createSagaMiddleware();
+sagaMiddleware.run(rootSaga);
 
 export default () => {
   const middlewares = [thunk, sagaMiddleware];

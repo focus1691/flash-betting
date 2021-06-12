@@ -6,7 +6,7 @@ import { removeBackBet } from '../redux/actions/back';
 import { removeLayBet } from '../redux/actions/lay';
 import { removeFillOrKill } from '../redux/actions/fillOrKill';
 import { setStopLossBetMatched } from '../redux/actions/stopLoss';
-import { removeTickOffset } from '../redux/actions/tickOffset';
+import { placeTickOffsetBet } from '../redux/actions/tickOffset';
 //* Utils
 import { checkBackLayBetsAndExecute } from '../utils/TradingStategy/BackLay';
 import { checkFOKBetsAndExecute } from '../utils/TradingStategy/fillOrKill';
@@ -16,7 +16,7 @@ import { isTickOffsetTriggered } from '../utils/TradingStategy/TickOffset';
 import fetchData from '../http/fetchData';
 import { removeBet, updateOrderMatched } from '../http/dbHelper';
 //* Constants
-import { TWO_HUNDRED_AND_FIFTY_MILLISECONDS, ONE_SECOND } from '../constants';
+import { TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../constants';
 
 export default function useTest() {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export default function useTest() {
   const marketStartTime = useSelector((state) => state.market.marketStartTime);
   const inPlay = useSelector((state) => state.market.inPlay);
 
-  console.log('use test');
+  console.log('Test hook rendered');
 
   useInterval(async () => {
     if (marketOpen && marketId) {
@@ -70,15 +70,11 @@ export default function useTest() {
               updateOrderMatched({ rfs, assignedIsOrderMatched: true });
             }
 
+            /**
+             * This is an asynchronous saga action that schedules one call to place the Tick Offset bet, and remove it (takes latest)
+             */
             const tosTriggered = isTickOffsetTriggered(tickOffsetList[selectionId], rfs, sizeMatched);
-            if (tosTriggered) {
-              const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-              const { side, size, price } = tickOffsetList[selectionId];
-
-              dispatch(placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef }));
-              dispatch(removeTickOffset({ selectionId })); // Remove from state
-              removeBet({ rfs }); // Remove from database
-            }
+            if (tosTriggered) dispatch(placeTickOffsetBet({ tickOffset: tickOffsetList[selectionId] }));
           }
 
           // Check if the bet isn't in matched/unmatched already and add it if not
@@ -104,7 +100,7 @@ export default function useTest() {
           else if (status === 'EXECUTION_COMPLETE' && unmatchedBets[betId] && !matchedBets[betId]) {
             dispatch(setBetExecutionComplete({ betId, sizeMatched, sizeRemaining, price: averagePriceMatched }));
           }
-          
+
           // Size matched / Size remaining has changed in the unmatched bet
           else if (status === 'EXECUTABLE' && unmatchedBets[betId] && (unmatchedBets[betId].sizeMatched != sizeMatched || unmatchedBets[betId].sizeRemaining != sizeRemaining)) {
             dispatch(updateSizeMatched({ betId, sizeMatched, sizeRemaining }));
