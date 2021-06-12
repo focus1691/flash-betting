@@ -1,3 +1,13 @@
+export const setInitialClk = (initialClk) => ({
+  type: 'SET_INITIAL_CLK',
+  payload: initialClk,
+});
+
+export const setClk = (clk) => ({
+  type: 'SET_CLK',
+  payload: clk,
+});
+
 export const setMarketName = (marketName) => ({
   type: 'SET_MARKET_NAME',
   payload: marketName,

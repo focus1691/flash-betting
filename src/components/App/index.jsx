@@ -7,6 +7,8 @@ import useTools from '../../hooks/useTools';
 //* Actions
 import { setIsLoading, setPremiumStatus } from '../../redux/actions/settings';
 import {
+  setInitialClk,
+  setClk,
   setMarketId,
   setMarketName,
   setMarketDescription,
@@ -79,6 +81,8 @@ const App = ({
   socket,
   setIsLoading,
   setPremiumStatus,
+  setInitialClk,
+  setClk,
   setMarketId,
   setMarketName,
   setMarketDescription,
@@ -117,8 +121,6 @@ const App = ({
   const classes = useStyles();
   const [marketUpdates, setMarketUpdates] = useState([]);
   const [lastMarketUpdate, setLastMarketUpdate] = useState(new Date());
-  const [initialClk, setInitialClk] = useState(null);
-  const [clk, setClk] = useState(null);
   const [connectionError, setConnectionError] = useState('');
   useTools();
 
@@ -153,55 +155,58 @@ const App = ({
     [inPlayTime, marketOpen, marketId],
   );
 
-    /**
+  /**
    * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
    * @param {obj} data The market change message data: { rc: [(atb, atl, tv, ltp, id)] }
    */
-  const handleMarketMessage = useCallback((mc) => {
-    mc.forEach(async ({ rc, marketDefinition }) => {
-      const updatedLadders = { ...ladders };
-      const updatedNonRunners = { ...nonRunners };
+  const handleMarketMessage = useCallback(
+    (mc) => {
+      mc.forEach(async ({ rc, marketDefinition }) => {
+        const updatedLadders = { ...ladders };
+        const updatedNonRunners = { ...nonRunners };
 
-      // Update the market status
-      if (marketDefinition) {
-        const { runners } = marketDefinition;
-        for (let i = 0; i < runners.length; i += 1) {
-          const { id, status } = runners[i];
-          if (status === 'REMOVED') {
-            if (!updatedNonRunners[id]) {
-              updatedNonRunners[id] = runners[i];
+        // Update the market status
+        if (marketDefinition) {
+          const { runners } = marketDefinition;
+          for (let i = 0; i < runners.length; i += 1) {
+            const { id, status } = runners[i];
+            if (status === 'REMOVED') {
+              if (!updatedNonRunners[id]) {
+                updatedNonRunners[id] = runners[i];
+              }
+              if (updatedLadders[id]) {
+                delete updatedLadders[id];
+              }
             }
+          }
+          loadNonRunners(updatedNonRunners);
+        }
+
+        if (rc) {
+          for (let i = 0; i < rc.length; i += 1) {
+            const { id } = rc[i];
             if (updatedLadders[id]) {
-              delete updatedLadders[id];
+              //* Runner found so we update our object with the mc runner data
+              updatedLadders[id] = UpdateLadder(updatedLadders[id], rc[i]);
+              const currentLTP = rc[i].ltp || updatedLadders[id].ltp[0];
+
+              checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeStopEntryBet);
+              checkAndExecuteStopLoss(stopLossList[id], currentLTP, updatedLadders[id].ltp, matchedBets, placeStopLossBet, updateStopLossTicks);
+            } else if (!nonRunners[id] && !updatedNonRunners[id]) {
+              // Runner found so we create the new object with the raw data
+              updatedLadders[id] = CreateLadder(rc[i]);
+
+              if (i === rc.length - 1) {
+                sortLadders(eventTypeId, updatedLadders, sortedLadder, updateLadderOrder, setSortedLadder, updateExcludedLadders, true);
+              }
             }
           }
         }
-        loadNonRunners(updatedNonRunners);
-      }
-
-      if (rc) {
-        for (let i = 0; i < rc.length; i += 1) {
-          const { id } = rc[i];
-          if (updatedLadders[id]) {
-            //* Runner found so we update our object with the mc runner data
-            updatedLadders[id] = UpdateLadder(updatedLadders[id], rc[i]);
-            const currentLTP = rc[i].ltp || updatedLadders[id].ltp[0];
-
-            checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeStopEntryBet);
-            checkAndExecuteStopLoss(stopLossList[id], currentLTP, updatedLadders[id].ltp, matchedBets, placeStopLossBet, updateStopLossTicks);
-          } else if (!nonRunners[id] && !updatedNonRunners[id]) {
-            // Runner found so we create the new object with the raw data
-            updatedLadders[id] = CreateLadder(rc[i]);
-
-            if (i === rc.length - 1) {
-              sortLadders(eventTypeId, updatedLadders, sortedLadder, updateLadderOrder, setSortedLadder, updateExcludedLadders, true);
-            }
-          }
-        }
-      }
-      loadLadder(updatedLadders);
-    });
-  }, [ladders, nonRunners, stopEntryList, unmatchedBets, matchedBets, stopLossList, eventTypeId]);
+        loadLadder(updatedLadders);
+      });
+    },
+    [ladders, nonRunners, stopEntryList, unmatchedBets, matchedBets, stopLossList, eventTypeId],
+  );
 
   /**
    * Listen for bet Change Messages from the Exchange Streaming socket and create/update them
@@ -294,11 +299,11 @@ const App = ({
     if (timeElapsed >= ONE_SECOND && !isEmpty(marketUpdates)) {
       const { initialClk, clk, mc } = marketUpdates[0];
 
-      if (clk) setClk(clk);
       if (initialClk) setInitialClk(initialClk);
+      if (clk) setClk(clk);
       if (mc) handleMarketMessage(mc);
 
-      setMarketUpdates(updates => updates.slice(1, updates.length));
+      setMarketUpdates((updates) => updates.slice(1, updates.length));
       setLastMarketUpdate(new Date());
     }
   }, ONE_SECOND);
@@ -324,7 +329,7 @@ const App = ({
   }, [marketOpen, marketId, socket, unmatchedBets]);
 
   useEffect(() => {
-    socket.on('mcm', ({ mc, clk, initialClk }) => setMarketUpdates(updates => [...updates, { mc, clk, initialClk }]));
+    socket.on('mcm', ({ mc, clk, initialClk }) => setMarketUpdates((updates) => [...updates, { mc, clk, initialClk }]));
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('subscription-error', onMarketDisconnect);
     socket.on('market-definition', onReceiveMarketDefinition);
@@ -359,7 +364,7 @@ const App = ({
       <Title />
       <Siderbar />
       <main className={classes.container}>
-        <ConnectionStatus connectionError={connectionError} setConnectionError={setConnectionError} marketId={marketId} clk={clk} initialClk={initialClk} socket={socket} />
+        <ConnectionStatus connectionError={connectionError} setConnectionError={setConnectionError} socket={socket} />
         <Draggable />
         {Views[view] || <HomeView />}
         <PremiumPopup />
@@ -391,6 +396,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   setIsLoading,
   setPremiumStatus,
+  setInitialClk,
+  setClk,
   setMarketId,
   setMarketName,
   setMarketDescription,

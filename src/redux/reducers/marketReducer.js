@@ -1,6 +1,8 @@
 import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 
 const initialState = {
+  initialClk: null,
+  clk: null,
   marketOpen: false,
   marketId: null,
   marketName: '',
@@ -21,6 +23,10 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'SET_INITIAL_CLK':
+      return { ...state, initialClk: action.payload };
+    case 'SET_CLK':
+      return { ...state, clk: action.payload };
     case 'SET_MARKET_NAME':
       return { ...state, marketName: action.payload };
     case 'SET_MARKET_ID':
