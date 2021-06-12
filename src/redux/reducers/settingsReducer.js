@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { setupStorage } from '../localStorage/settings';
+import { setupStorage } from '../../localStorage/settings';
 
 setupStorage();
 

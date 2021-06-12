@@ -1,4 +1,4 @@
-import { getOppositeSide } from '../utils/Bets/GetOppositeSide';
+import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 
 const initialState = {
   marketOpen: false,

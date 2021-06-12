@@ -1,12 +1,7 @@
 import thunk from 'redux-thunk';
-import createSagaMiddleware from 'redux-saga';
-import rootSaga from './saga';
-
-const sagaMiddleware = createSagaMiddleware();
-sagaMiddleware.run(rootSaga);
 
 export default () => {
-  const middlewares = [thunk, sagaMiddleware];
+  const middlewares = [thunk];
 
   if (process.env.REACT_APP_STAGE === 'development') {
     // eslint-disable-next-line global-require

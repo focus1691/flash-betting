@@ -2,9 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import openSocket from 'socket.io-client';
 import combineMiddleWares from './redux/CombineMiddlewares';
+import rootSaga from './redux/saga';
 //* Stripe
 //* Reducers
 import reducers from './redux/reducers';
@@ -24,8 +26,10 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers(reducers);
 
-const middlewares = combineMiddleWares();
+const sagaMiddleware = createSagaMiddleware();
+const middlewares = [...combineMiddleWares(), sagaMiddleware];
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middlewares)));
+sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <Provider store={store}>

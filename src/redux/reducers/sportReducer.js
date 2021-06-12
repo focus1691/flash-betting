@@ -1,5 +1,5 @@
 import { omit } from 'lodash';
-import { setupStorage, addNewMarket, removeMarket } from '../localStorage/sportsMenu';
+import { setupStorage, addNewMarket, removeMarket } from '../../localStorage/sportsMenu';
 
 setupStorage();
 
