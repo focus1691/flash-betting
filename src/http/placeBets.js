@@ -1,6 +1,5 @@
 import postData from './postData';
 
-//! Add to http/placeBet call()
 export const executeBet = async (bet) => {
   bet.size = parseFloat(bet.size).toFixed(2);
   const PlaceExecutionReport = await postData('/api/place-order', bet);

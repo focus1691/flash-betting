@@ -25,12 +25,12 @@ import {
   setInPlayTime,
 } from '../../redux/actions/market';
 import { updateExcludedLadders, updateLadderOrder, setMarketPL } from '../../redux/actions/ladder';
-import { placeOrder, removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
+import { removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
 import { updateBackList } from '../../redux/actions/back';
 import { updateLayList } from '../../redux/actions/lay';
 import { updateStopLossList, placeStopLossBet, setStopLossBetMatched, updateStopLossTicks } from '../../redux/actions/stopLoss';
 import { updateTickOffsetList, placeTickOffsetBet } from '../../redux/actions/tickOffset';
-import { updateStopEntryList, removeMultiSelectionStopEntryBets } from '../../redux/actions/stopEntry';
+import { updateStopEntryList, placeStopEntryBet } from '../../redux/actions/stopEntry';
 import { updateFillOrKillList } from '../../redux/actions/fillOrKill';
 import Spinner from './Spinner';
 import Siderbar from '../Sidebar';
@@ -107,10 +107,9 @@ const App = ({
   updateTickOffsetList,
   placeTickOffsetBet,
   updateStopEntryList,
-  removeMultiSelectionStopEntryBets,
+  placeStopEntryBet,
   updateLayList,
   updateBackList,
-  placeOrder,
   removeUnmatchedBet,
   setBetExecutionComplete,
   updateFillOrKillList,
@@ -192,7 +191,7 @@ const App = ({
               ladders[id] = UpdateLadder(ladders[id], rc[i]);
               const currentLTP = rc[i].ltp || ladders[id].ltp[0];
 
-              checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeOrder, removeMultiSelectionStopEntryBets);
+              checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeStopEntryBet);
               checkAndExecuteStopLoss(stopLossList[id], currentLTP, ladders[id].ltp, matchedBets, placeStopLossBet, updateStopLossTicks);
             } else if (!nonRunners[id] && !updatedNonRunners[id]) {
               // Runner found so we create the new object with the raw data
@@ -415,10 +414,9 @@ const mapDispatchToProps = {
   updateTickOffsetList,
   placeTickOffsetBet,
   updateStopEntryList,
-  removeMultiSelectionStopEntryBets,
+  placeStopEntryBet,
   updateLayList,
   updateBackList,
-  placeOrder,
   removeUnmatchedBet,
   setBetExecutionComplete,
   updateFillOrKillList,

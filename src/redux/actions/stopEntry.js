@@ -42,6 +42,11 @@ export const addStopEntryBet = (data) => ({
   payload: data,
 });
 
+export const placeStopEntryBet = (data) => ({
+  type: 'PLACE_STOP_ENTRY_BET_SAGA',
+  payload: data,
+});
+
 export const removeStopEntryBet = (data) => ({
   type: 'REMOVE_STOP_ENTRY_BET',
   payload: data,

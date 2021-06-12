@@ -38,7 +38,7 @@ export const setBetExecutionComplete = (data) => ({
 });
 
 export const placeOrder = (bet) => {
-  return async (dispatch) => {
+  return async () => {
     bet = calcBetPriceSize(bet);
     if (isNaN(bet.size)) return null;
 
@@ -65,27 +65,7 @@ export const placeOrder = (bet) => {
 
       if (ReplaceExecutionReport && ReplaceExecutionReport.status === 'SUCCESS') {
         if (ReplaceExecutionReport.instructionReports[0] && ReplaceExecutionReport.instructionReports[0].placeInstructionReport) {
-          const { betId, orderStatus, sizeMatched } = ReplaceExecutionReport.instructionReports[0].placeInstructionReport;
-          startingBet.betId = betId;
-
-          if (orderStatus === 'EXECUTION_COMPLETE') {
-            dispatch(
-              addMatchedBet({
-                ...startingBet,
-                sizeMatched,
-                sizeRemaining: 0,
-              }),
-            );
-          } else if (orderStatus === 'EXECUTABLE') {
-            dispatch(
-              addUnmatchedBet({
-                ...startingBet,
-                sizeMatched,
-                sizeRemaining: bet.size - sizeMatched,
-              }),
-            );
-          }
-
+          const { betId } = ReplaceExecutionReport.instructionReports[0].placeInstructionReport;
           return betId;
         }
       }
