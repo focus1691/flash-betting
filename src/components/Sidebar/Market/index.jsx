@@ -24,7 +24,7 @@ import Tools from './Tools';
 import Rules from './Rules';
 import UnmatchedBets from './UnmatchedBets/UnmatchedBets';
 import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
-import { sortLadder } from '../../../utils/ladder/SortLadder';
+import { sortLaddersByLTP } from '../../../utils/ladder/SortLadder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market';
 //* Custom @material-ui components
@@ -56,7 +56,7 @@ const Market = ({
   setMarketInfoExpanded,
   setRulesExpanded,
   ladders,
-  eventType,
+  eventTypeId,
   setSortedLadder,
   updateExcludedLadders,
   updateLadderOrder,
@@ -92,18 +92,9 @@ const Market = ({
     (e) => {
       e.stopPropagation();
       setLaddersExpanded(true);
-      if (eventType !== '4339') {
-        const sortedLadderIndices = sortLadder(ladders);
-        setSortedLadder(sortedLadderIndices);
-        updateExcludedLadders(sortedLadderIndices);
-        const newOrderList = {};
-        for (let j = 0; j < sortedLadderIndices.length; j += 1) {
-          newOrderList[j] = sortedLadderIndices[j];
-        }
-        updateLadderOrder(newOrderList);
-      }
+      sortLaddersByLTP(eventTypeId, ladders, updateLadderOrder, setSortedLadder, updateExcludedLadders);
     },
-    [eventType, ladders, setLaddersExpanded, setSortedLadder, updateExcludedLadders, updateLadderOrder],
+    [eventTypeId, ladders, setLaddersExpanded],
   );
 
   const renderTitle = (name, position) => (
@@ -197,7 +188,7 @@ const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
   marketId: state.market.marketId,
   ladders: state.market.ladder,
-  eventType: state.market.eventType,
+  eventTypeId: state.market.eventType.id,
   excludedLadders: state.ladder.excludedLadders,
   tools: state.settings.tools,
   unmatchedBets: state.settings.unmatchedBets,
