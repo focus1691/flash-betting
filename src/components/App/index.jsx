@@ -1,5 +1,3 @@
-import _ from 'lodash';
-import crypto from 'crypto';
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
