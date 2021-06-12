@@ -1,4 +1,4 @@
-import { calcBetPriceSize } from '../../utils/Bets/CalcBetPriceSize';
+import calcBetPriceSize from '../../utils/Bets/CalcBetPriceSize';
 import postData from '../../http/postData';
 import { executeBet, executeReduceSize } from '../../http/placeBets';
 

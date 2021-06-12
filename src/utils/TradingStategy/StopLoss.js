@@ -56,7 +56,7 @@ export const checkAndExecuteStopLoss = (stopLoss, currentLTP, ltp, matchedBets, 
     placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef });
     removeStopLoss({ selectionId }); // Remove the SL
     removeBet({ rfs }); // Remove the SL from DB
-  } else if (trailing && ((currentLTP < prevLTP && side == 'BACK') || (currentLTP > prevLTP && side == 'LAY'))) {
+  } else if (trailing && ((currentLTP < prevLTP && side === 'BACK') || (currentLTP > prevLTP && side === 'LAY'))) {
     stopLoss.ticks += 1;
     updateTicks(stopLoss); //! Update SQLite with new ticks
     updateStopLossTicks({ selectionId, ticks: stopLoss.ticks });
