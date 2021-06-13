@@ -161,9 +161,9 @@ const App = ({
    */
   const handleMarketMessage = useCallback(
     (mc) => {
+      const updatedLadders = { ...ladders };
+      const updatedNonRunners = { ...nonRunners };
       mc.forEach(async ({ rc, marketDefinition }) => {
-        const updatedLadders = { ...ladders };
-        const updatedNonRunners = { ...nonRunners };
 
         // Update the market status
         if (marketDefinition) {
