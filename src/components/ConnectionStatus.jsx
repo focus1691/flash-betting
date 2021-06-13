@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
+import { setConnectionErrorMessage } from '../redux/actions/market';
 
-const ConnectionStatus = ({ connectionError, setConnectionError, marketId, clk, initialClk, socket }) => {
-
+const ConnectionStatus = ({ connectionError, setConnectionErrorMessage, marketId, clk, initialClk, socket }) => {
   const resubscribe = useCallback(() => {
     if (marketId && initialClk && clk) {
       socket.emit('market-resubscription', { marketId, initialClk, clk });
-      setConnectionError('');
+      setConnectionErrorMessage('');
     }
-  }, [clk, initialClk, marketId, setConnectionError, socket]);
+  }, [clk, initialClk, marketId, socket]);
 
   return (
     <div className="connectionbug-container" style={{ visibility: connectionError !== '' ? 'visible' : 'hidden' }}>
@@ -23,7 +23,10 @@ const ConnectionStatus = ({ connectionError, setConnectionError, marketId, clk, 
 const mapStateToProps = (state) => ({
   initialClk: state.market.initialClk,
   clk: state.market.clk,
+  connectionError: state.market.connectionError,
   marketId: state.market.marketId,
 });
 
-export default connect(mapStateToProps)(ConnectionStatus);
+const mapDispatchToProps = { setConnectionErrorMessage };
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectionStatus);

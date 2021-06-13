@@ -9,6 +9,7 @@ import { setIsLoading, setPremiumStatus } from '../../redux/actions/settings';
 import {
   setInitialClk,
   setClk,
+  setConnectionErrorMessage,
   setMarketId,
   setMarketName,
   setMarketDescription,
@@ -83,6 +84,7 @@ const App = ({
   setPremiumStatus,
   setInitialClk,
   setClk,
+  setConnectionErrorMessage,
   setMarketId,
   setMarketName,
   setMarketDescription,
@@ -121,7 +123,6 @@ const App = ({
   const classes = useStyles();
   const [marketUpdates, setMarketUpdates] = useState([]);
   const [lastMarketUpdate, setLastMarketUpdate] = useState(new Date());
-  const [connectionError, setConnectionError] = useState('');
   useTools();
 
   const getPremiumStatus = async () => {
@@ -252,7 +253,7 @@ const App = ({
     console.log('market disconnected', errorCode, errorMessage);
     handleAuthError(errorCode);
     if (errorMessage) {
-      setConnectionError(errorMessage.split(':')[0]);
+      setConnectionErrorMessage(errorMessage.split(':')[0]);
     }
   }, []);
 
@@ -364,7 +365,7 @@ const App = ({
       <Title />
       <Siderbar />
       <main className={classes.container}>
-        <ConnectionStatus connectionError={connectionError} setConnectionError={setConnectionError} socket={socket} />
+        <ConnectionStatus socket={socket} />
         <Draggable />
         {Views[view] || <HomeView />}
         <PremiumPopup />
@@ -398,6 +399,7 @@ const mapDispatchToProps = {
   setPremiumStatus,
   setInitialClk,
   setClk,
+  setConnectionErrorMessage,
   setMarketId,
   setMarketName,
   setMarketDescription,

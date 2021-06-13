@@ -8,6 +8,11 @@ export const setClk = (clk) => ({
   payload: clk,
 });
 
+export const setConnectionErrorMessage = (errorMessage) => ({
+  type: 'SET_CONNECTION_ERROR_MESSAGE',
+  payload: errorMessage,
+});
+
 export const setMarketName = (marketName) => ({
   type: 'SET_MARKET_NAME',
   payload: marketName,
