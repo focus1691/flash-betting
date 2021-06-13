@@ -4,6 +4,7 @@ import buttonStyle from '../../../buttonStyle';
 const useStyles = makeStyles(() => ({
   ...buttonStyle,
   betRow: {
+    color: '#fff',
     '& td': {
       fontFamily: "'Roboto'",
       fontSize: 'small',

@@ -40,6 +40,7 @@ const useStyles = makeStyles(() => ({
     },
   },
   matchedBet: {
+    color: '#fff',
     '& td': {
       fontFamily: "'Roboto'",
       fontSize: 'small',
