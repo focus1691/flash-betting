@@ -16,7 +16,7 @@ import { isTickOffsetTriggered } from '../utils/TradingStategy/TickOffset';
 import fetchData from '../http/fetchData';
 import { removeBet, updateOrderMatched } from '../http/dbHelper';
 //* Constants
-import { TWO_HUNDRED_AND_FIFTY_MILLISECONDS } from '../constants';
+import { ONE_SECOND } from '../constants';
 
 export default function useTest() {
   const dispatch = useDispatch();
@@ -110,5 +110,5 @@ export default function useTest() {
         // console.log(e);
       }
     }
-  }, TWO_HUNDRED_AND_FIFTY_MILLISECONDS);
+  }, ONE_SECOND);
 }
