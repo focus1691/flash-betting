@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { calculateHedgePL } from '../TradingStategy/HedingCalculator';
 import { calcBackProfit } from '../Bets/BettingCalculations';
 
