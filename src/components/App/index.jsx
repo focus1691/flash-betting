@@ -1,14 +1,11 @@
-import { isEmpty } from 'lodash';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
-import useInterval from '../../hooks/useInterval';
 import useTools from '../../hooks/useTools';
 //* Actions
 import { setIsLoading, setPremiumStatus } from '../../redux/actions/settings';
 import {
-  setInitialClk,
-  setClk,
+  processMarketUpdates,
   setConnectionErrorMessage,
   setMarketId,
   setMarketName,
@@ -17,22 +14,20 @@ import {
   setEvent,
   setEventType,
   closeMarket,
-  loadLadder,
   setSortedLadder,
   setRunner,
   loadRunners,
-  loadNonRunners,
   setMarketStatus,
   setInPlay,
   setInPlayTime,
 } from '../../redux/actions/market';
-import { updateExcludedLadders, updateLadderOrder, setMarketPL } from '../../redux/actions/ladder';
+import { updateLadderOrder, setMarketPL } from '../../redux/actions/ladder';
 import { removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
 import { updateBackList } from '../../redux/actions/back';
 import { updateLayList } from '../../redux/actions/lay';
-import { updateStopLossList, placeStopLossBet, setStopLossBetMatched, updateStopLossTicks } from '../../redux/actions/stopLoss';
+import { updateStopLossList, setStopLossBetMatched } from '../../redux/actions/stopLoss';
 import { updateTickOffsetList, placeTickOffsetBet } from '../../redux/actions/tickOffset';
-import { updateStopEntryList, placeStopEntryBet } from '../../redux/actions/stopEntry';
+import { updateStopEntryList } from '../../redux/actions/stopEntry';
 import { updateFillOrKillList } from '../../redux/actions/fillOrKill';
 import Spinner from './Spinner';
 import Siderbar from '../Sidebar';
@@ -50,21 +45,18 @@ import handleAuthError from '../../utils/Errors/handleAuthError';
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 //* Utils > Ladder
-import { sortLadders, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
-import { UpdateLadder } from '../../utils/ladder/UpdateLadder';
-import { CreateLadder } from '../../utils/ladder/CreateLadder';
+import { sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 //* Utils > Bets
 import loadCustomBets from '../../utils/Bets/LoadCustomBets';
 import ExtractCustomerStrategyRfs from '../../utils/Bets/ExtractCustomerStrategyRfs';
 //* Utils > Trading Tools
 import { isTickOffsetTriggered } from '../../utils/TradingStategy/TickOffset';
-import { isStopLossTriggered, checkAndExecuteStopLoss } from '../../utils/TradingStategy/StopLoss';
-import { checkAndExecuteStopEntry } from '../../utils/TradingStategy/StopEntry';
+import { isStopLossTriggered } from '../../utils/TradingStategy/StopLoss';
 import ConnectionStatus from '../ConnectionStatus';
 //* JSS
 import useStyles from '../../jss';
 //* Constants
-import { ONE_SECOND, FLASH_BETTING_URI } from '../../constants';
+import { FLASH_BETTING_URI } from '../../constants';
 
 const cookies = new Cookies();
 
@@ -73,47 +65,35 @@ const App = ({
   isLoading,
   marketOpen,
   marketId,
-  nonRunners,
   unmatchedBets,
   matchedBets,
   stopLossList,
   tickOffsetList,
-  stopEntryList,
   socket,
   setIsLoading,
   setPremiumStatus,
-  setInitialClk,
-  setClk,
+  processMarketUpdates,
   setConnectionErrorMessage,
   setMarketId,
   setMarketName,
   setMarketDescription,
   setMarketStartTime,
-  ladders,
-  eventTypeId,
   setEvent,
   setEventType,
   closeMarket,
-  loadLadder,
-  sortedLadder,
   setSortedLadder,
-  updateExcludedLadders,
   setRunner,
   loadRunners,
-  loadNonRunners,
   setMarketStatus,
   inPlayTime,
   setInPlay,
   setInPlayTime,
   setMarketPL,
   setStopLossBetMatched,
-  placeStopLossBet,
   updateStopLossList,
-  updateStopLossTicks,
   updateTickOffsetList,
   placeTickOffsetBet,
   updateStopEntryList,
-  placeStopEntryBet,
   updateLayList,
   updateBackList,
   removeUnmatchedBet,
@@ -121,8 +101,6 @@ const App = ({
   updateFillOrKillList,
 }) => {
   const classes = useStyles();
-  const [marketUpdates, setMarketUpdates] = useState([]);
-  const [lastMarketUpdate, setLastMarketUpdate] = useState(new Date());
   useTools();
 
   const getPremiumStatus = async () => {
@@ -160,54 +138,54 @@ const App = ({
    * Listen for Market Change Messages from the Exchange Streaming socket and create/update them
    * @param {obj} data The market change message data: { rc: [(atb, atl, tv, ltp, id)] }
    */
-  const handleMarketMessage = useCallback(
-    (mc) => {
-      const updatedLadders = { ...ladders };
-      const updatedNonRunners = { ...nonRunners };
-      mc.forEach(async ({ rc, marketDefinition }) => {
+  // const handleMarketMessage = useCallback(
+  //   (mc) => {
+  //     const updatedLadders = { ...ladders };
+  //     const updatedNonRunners = { ...nonRunners };
+  //     mc.forEach(async ({ rc, marketDefinition }) => {
 
-        // Update the market status
-        if (marketDefinition) {
-          const { runners } = marketDefinition;
-          for (let i = 0; i < runners.length; i += 1) {
-            const { id, status } = runners[i];
-            if (status === 'REMOVED') {
-              if (!updatedNonRunners[id]) {
-                updatedNonRunners[id] = runners[i];
-              }
-              if (updatedLadders[id]) {
-                delete updatedLadders[id];
-              }
-            }
-          }
-          loadNonRunners(updatedNonRunners);
-        }
+  //       // Update the market status
+  //       if (marketDefinition) {
+  //         const { runners } = marketDefinition;
+  //         for (let i = 0; i < runners.length; i += 1) {
+  //           const { id, status } = runners[i];
+  //           if (status === 'REMOVED') {
+  //             if (!updatedNonRunners[id]) {
+  //               updatedNonRunners[id] = runners[i];
+  //             }
+  //             if (updatedLadders[id]) {
+  //               delete updatedLadders[id];
+  //             }
+  //           }
+  //         }
+  //         loadNonRunners(updatedNonRunners);
+  //       }
 
-        if (rc) {
-          for (let i = 0; i < rc.length; i += 1) {
-            const { id } = rc[i];
-            if (updatedLadders[id]) {
-              //* Runner found so we update our object with the mc runner data
-              updatedLadders[id] = UpdateLadder(updatedLadders[id], rc[i]);
-              const currentLTP = rc[i].ltp || updatedLadders[id].ltp[0];
+  //       if (rc) {
+  //         for (let i = 0; i < rc.length; i += 1) {
+  //           const { id } = rc[i];
+  //           if (updatedLadders[id]) {
+  //             //* Runner found so we update our object with the mc runner data
+  //             updatedLadders[id] = UpdateLadder(updatedLadders[id], rc[i]);
+  //             const currentLTP = rc[i].ltp || updatedLadders[id].ltp[0];
 
-              checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeStopEntryBet);
-              checkAndExecuteStopLoss(stopLossList[id], currentLTP, updatedLadders[id].ltp, matchedBets, placeStopLossBet, updateStopLossTicks);
-            } else if (!nonRunners[id] && !updatedNonRunners[id]) {
-              // Runner found so we create the new object with the raw data
-              updatedLadders[id] = CreateLadder(rc[i]);
+  //             checkAndExecuteStopEntry(stopEntryList, id, currentLTP, placeStopEntryBet);
+  //             checkAndExecuteStopLoss(stopLossList[id], currentLTP, updatedLadders[id].ltp, matchedBets, placeStopLossBet, updateStopLossTicks);
+  //           } else if (!nonRunners[id] && !updatedNonRunners[id]) {
+  //             // Runner found so we create the new object with the raw data
+  //             updatedLadders[id] = CreateLadder(rc[i]);
 
-              if (i === rc.length - 1) {
-                sortLadders(eventTypeId, updatedLadders, sortedLadder, updateLadderOrder, setSortedLadder, updateExcludedLadders, true);
-              }
-            }
-          }
-        }
-        loadLadder(updatedLadders);
-      });
-    },
-    [ladders, nonRunners, stopEntryList, unmatchedBets, matchedBets, stopLossList, eventTypeId],
-  );
+  //             if (i === rc.length - 1) {
+  //               sortLadders(eventTypeId, updatedLadders, sortedLadder, updateLadderOrder, setSortedLadder, updateExcludedLadders, true);
+  //             }
+  //           }
+  //         }
+  //       }
+  //       loadLadder(updatedLadders);
+  //     });
+  //   },
+  //   [ladders, nonRunners, stopEntryList, unmatchedBets, matchedBets, stopLossList, eventTypeId],
+  // );
 
   /**
    * Listen for bet Change Messages from the Exchange Streaming socket and create/update them
@@ -294,21 +272,6 @@ const App = ({
     }
   };
 
-  useInterval(() => {
-    const now = new Date();
-    const timeElapsed = now - lastMarketUpdate;
-    if (timeElapsed >= ONE_SECOND && !isEmpty(marketUpdates)) {
-      const { initialClk, clk, mc } = marketUpdates[0];
-
-      if (initialClk) setInitialClk(initialClk);
-      if (clk) setClk(clk);
-      if (mc) handleMarketMessage(mc);
-
-      setMarketUpdates((updates) => updates.slice(1, updates.length));
-      setLastMarketUpdate(new Date());
-    }
-  }, ONE_SECOND);
-
   useEffect(() => {
     const loadData = async () => {
       await getPremiumStatus();
@@ -330,7 +293,7 @@ const App = ({
   }, [marketOpen, marketId, socket, unmatchedBets]);
 
   useEffect(() => {
-    socket.on('mcm', ({ mc, clk, initialClk }) => setMarketUpdates((updates) => [...updates, { mc, clk, initialClk }]));
+    socket.on('mcm', (data) => processMarketUpdates(data));
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('subscription-error', onMarketDisconnect);
     socket.on('market-definition', onReceiveMarketDefinition);
@@ -341,7 +304,7 @@ const App = ({
       socket.off('subscription-error');
       socket.off('market-definition');
     };
-  }, [onMarketDisconnect, onReceiveMarketDefinition, setMarketUpdates, onReceiveOrderMessage, socket]);
+  }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveOrderMessage, socket]);
 
   useEffect(() => {
     (async () => {
@@ -383,22 +346,16 @@ const mapStateToProps = (state) => ({
   inPlayTime: state.market.inPlayTime,
   marketOpen: state.market.marketOpen,
   marketId: state.market.marketId,
-  eventTypeId: state.market.eventType.id,
-  ladders: state.market.ladder,
-  sortedLadder: state.market.sortedLadder,
-  nonRunners: state.market.nonRunners,
   unmatchedBets: state.order.bets.unmatched,
   matchedBets: state.order.bets.matched,
   stopLossList: state.stopLoss.list,
   tickOffsetList: state.tickOffset.list,
-  stopEntryList: state.stopEntry.list,
 });
 
 const mapDispatchToProps = {
   setIsLoading,
   setPremiumStatus,
-  setInitialClk,
-  setClk,
+  processMarketUpdates,
   setConnectionErrorMessage,
   setMarketId,
   setMarketName,
@@ -407,25 +364,19 @@ const mapDispatchToProps = {
   setEvent,
   setEventType,
   closeMarket,
-  loadLadder,
   setSortedLadder,
   updateLadderOrder,
-  updateExcludedLadders,
   setRunner,
   loadRunners,
-  loadNonRunners,
   setMarketStatus,
   setInPlay,
   setInPlayTime,
   setMarketPL,
   setStopLossBetMatched,
-  placeStopLossBet,
   updateStopLossList,
-  updateStopLossTicks,
   updateTickOffsetList,
   placeTickOffsetBet,
   updateStopEntryList,
-  placeStopEntryBet,
   updateLayList,
   updateBackList,
   removeUnmatchedBet,

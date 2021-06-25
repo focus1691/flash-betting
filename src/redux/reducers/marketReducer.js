@@ -1,4 +1,7 @@
+import { assign, omit } from 'lodash';
 import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
+import { CreateLadder } from '../../utils/ladder/CreateLadder';
+import { UpdateLadder, constructNonRunnersObj } from '../../utils/ladder/UpdateLadder';
 
 const initialState = {
   initialClk: null,
@@ -53,7 +56,14 @@ const reducer = (state = initialState, action) => {
     case 'SET_EVENT_TYPE':
       return { ...state, eventType: action.payload };
     case 'LOAD_LADDER':
-      return { ...state, marketOpen: true, ladder: action.payload };
+      return {
+        ...state,
+        marketOpen: true,
+        ladder: {
+          ...state.ladder,
+          [action.payload.id]: state.ladder[action.payload.id] ? UpdateLadder(state.ladder[action.payload.id], action.payload) : CreateLadder(action.payload),
+        },
+      };
     case 'SET_LADDER_EXPANDED':
       return {
         ...state,
@@ -80,6 +90,16 @@ const reducer = (state = initialState, action) => {
       return { ...state, sortedLadder: action.payload };
     case 'LOAD_NON_RUNNERS':
       return { ...state, nonRunners: action.payload };
+
+    case 'ADD_NON_RUNNERS':
+      return {
+        ...state,
+        nonRunners: assign(state.nonRunners, constructNonRunnersObj(action.payload)),
+        ladder: omit(
+          state.ladder,
+          action.payload.map(({ id }) => id),
+        ),
+      };
     case 'LOAD_RUNNERS':
       return { ...state, runners: action.payload };
     case 'SELECT_RUNNER':

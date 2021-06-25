@@ -36,7 +36,7 @@ import useStyles from '../../jss/components/LadderView/ladderStyle';
 
 const isMoving = (prevProps, nextProps) => nextProps.draggingLadder === nextProps.selectionId && prevProps.order === nextProps.order;
 
-const Ladder = memo(
+const Ladder =
   ({
     selectionId,
     ltp,
@@ -267,9 +267,7 @@ const Ladder = memo(
         {/* <OrderRow selectionId={selectionId} /> */}
       </Container>
     );
-  },
-  isMoving,
-);
+  };
 
 const mapStateToProps = (state, { selectionId }) => ({
   ltp: getLTP(state.market.ladder, { selectionId }),

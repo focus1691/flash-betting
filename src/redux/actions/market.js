@@ -1,3 +1,9 @@
+//!
+export const processMarketUpdates = (data) => ({
+  type: 'PROCESS_MARKET_UPDATES',
+  payload: data,
+});
+
 export const setInitialClk = (initialClk) => ({
   type: 'SET_INITIAL_CLK',
   payload: initialClk,
@@ -91,6 +97,12 @@ export const setSortedLadder = (sortedLadder) => ({
 export const loadRunners = (runners) => ({
   type: 'LOAD_RUNNERS',
   payload: runners,
+});
+
+//!
+export const addNonRunners = (nonRunners) => ({
+  type: 'ADD_NON_RUNNERS',
+  payload: nonRunners,
 });
 
 export const loadNonRunners = (nonRunners) => ({

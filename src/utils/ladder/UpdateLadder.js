@@ -2,16 +2,31 @@ import { calcBackLayPercentages } from './CreateLadder';
 import { formatPriceKey } from '../Bets/PriceCalculations';
 import { sortAsc, sortDes } from '../Sort';
 
-const UpdateLadder = (ladder, rawData) => {
-  console.log(rawData);
-  ladder.expanded = Boolean(ladder.expanded);
-
-  if (rawData.ltp) {
-    ladder.ltp = [rawData.ltp, ...ladder.ltp];
-    ladder.ltpDelta = new Date();
+export const constructNonRunnersObj = (nonRunners) => {
+  const nonRunnersObj = {};
+  for (let i = 0; i < nonRunners.length; i += 1) {
+    const data = nonRunners[i];
+    const { id } = data;
+    nonRunnersObj[id] = data;
   }
+  return nonRunnersObj;
+};
+
+export const UpdateLadder = (ladder, rawData) => {
+  const newLadder = Object.assign(ladder, {});
+
+  newLadder.expanded = Boolean(newLadder.expanded);
+
+  // The last traded price goes to the front of the array
+  if (rawData.ltp) {
+    newLadder.ltp = [rawData.ltp, ...newLadder.ltp];
+    newLadder.ltpDelta = new Date();
+  }
+
+  // Update the trade volume
+  // ? Why is the trade volume an array. Simplify to number?
   if (rawData.tv) {
-    ladder.tv = [rawData.tv, ladder.tv[0]];
+    newLadder.tv = [rawData.tv, newLadder.tv[0]];
   }
 
   if (rawData.trd) {
@@ -19,15 +34,15 @@ const UpdateLadder = (ladder, rawData) => {
       if (rawData.trd[i]) {
         const price = rawData.trd[i][0];
         const volumeMatched = Math.floor(rawData.trd[i][1]);
-        const index = ladder.trd.map((trd) => trd[0]).findIndex((val) => val === price);
+        const index = newLadder.trd.map((trd) => trd[0]).findIndex((val) => val === price);
 
         if (volumeMatched >= 100) {
-          ladder.trdo[formatPriceKey(price)] = volumeMatched;
-          if (index === -1) ladder.trd.push([price, volumeMatched]);
-          else (ladder.trd[index][1] = volumeMatched);
+          newLadder.trdo[formatPriceKey(price)] = volumeMatched;
+          if (index === -1) newLadder.trd.push([price, volumeMatched]);
+          else newLadder.trd[index][1] = volumeMatched;
         } else if (volumeMatched < 100) {
-          delete ladder.trdo[formatPriceKey(price)];
-          if (index > -1) ladder.trd.splice(index, 1);
+          delete newLadder.trdo[formatPriceKey(price)];
+          if (index > -1) newLadder.trd.splice(index, 1);
         }
       }
     }
@@ -40,38 +55,41 @@ const UpdateLadder = (ladder, rawData) => {
         const matched = Math.floor(rawData.atb[i][1]);
 
         if (matched <= 0) {
-          ladder.atb = ladder.atb.filter((v) => v[0] !== price);
-          delete ladder.atlo[formatPriceKey(price)];
+          newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
+          delete newLadder.atlo[formatPriceKey(price)];
         } else {
-          const atbIdx = ladder.atb.findIndex((v) => v[0] === price);
-          const atlIdx = ladder.atl.findIndex((v) => v[0] === price);
+          const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
+          // const atlIdx = newLadder.atl.findIndex((v) => v[0] === price);
 
           // price exists already in available to lay
-          if (atlIdx > -1) {
-            if (matched > ladder.atb[atlIdx][1]) {
-              ladder.atl = ladder.atl.filter((v) => v[0] !== price);
-              delete ladder.atbo[formatPriceKey(price)];
-            } else if (matched > ladder.atl[atlIdx][1]) {
-              ladder.atb = ladder.atb.filter((v) => v[0] !== price);
-              delete ladder.atlo[formatPriceKey(price)];
-            }
+          // if (atlIdx > -1) {
+          //   if (matched > newLadder.atb[atlIdx][1]) {
+          //     newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
+          //     delete newLadder.atbo[formatPriceKey(price)];
+          //   } else if (matched > newLadder.atl[atlIdx][1]) {
+          //     newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
+          //     delete newLadder.atlo[formatPriceKey(price)];
+          //   }
+          // }
+          // price exists in available to back
+          // else
+          if (atbIdx > -1) {
+            newLadder.atb[atbIdx][1] = matched;
+            newLadder.atlo[formatPriceKey(price)] = matched;
           }
-          // price exists already in available to back
-          else if (atbIdx > -1) {
-            ladder.atb[atbIdx][1] = matched;
-            ladder.atlo[formatPriceKey(price)] = matched;
-          } else {
-            ladder.atb.push([price, matched]);
-            ladder.atlo[formatPriceKey(price)] = matched;
+          // The price doesn't exist as available to back
+          else {
+            newLadder.atb.push([price, matched]);
+            newLadder.atlo[formatPriceKey(price)] = matched;
           }
         }
-        ladder.atl = ladder.atl.filter(([atlPrice]) => {
-          if (atlPrice <= price || (ladder.ltp[0] && atlPrice < ladder.ltp[0])) {
-            delete ladder.atbo[formatPriceKey(atlPrice)];
-            return false;
-          }
-          return true;
-        });
+        // newLadder.atl = newLadder.atl.filter(([atlPrice]) => {
+        //   if (atlPrice <= price || (newLadder.ltp[0] && atlPrice < newLadder.ltp[0])) {
+        //     delete newLadder.atbo[formatPriceKey(atlPrice)];
+        //     return false;
+        //   }
+        //   return true;
+        // });
       }
     }
   }
@@ -83,66 +101,64 @@ const UpdateLadder = (ladder, rawData) => {
         const matched = Math.floor(rawData.atl[i][1]);
 
         if (matched <= 0) {
-          ladder.atl = ladder.atl.filter((v) => v[0] !== price);
-          delete ladder.atbo[formatPriceKey(price)];
+          newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
+          delete newLadder.atbo[formatPriceKey(price)];
         } else {
-          const atlIdx = ladder.atl.findIndex((v) => v[0] === price);
-          const atbIdx = ladder.atb.findIndex((v) => v[0] === price);
+          const atlIdx = newLadder.atl.findIndex((v) => v[0] === price);
+          // const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
 
-          if (atbIdx > -1) {
-            if (matched > ladder.atb[atbIdx][1]) {
-              ladder.atb = ladder.atb.filter((v) => v[0] !== price);
-              delete ladder.atlo[formatPriceKey(price)];
-            } else if (matched > ladder.atb[atbIdx][1]) {
-              ladder.atl = ladder.atl.filter((v) => v[0] !== price);
-              delete ladder.atbo[formatPriceKey(price)];
-            }
-          } else if (atlIdx > -1) {
-            ladder.atl[atlIdx][1] = matched;
-            ladder.atbo[formatPriceKey(price)] = matched;
+          // if (atbIdx > -1) {
+          //   if (matched > newLadder.atb[atbIdx][1]) {
+          //     newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
+          //     delete newLadder.atlo[formatPriceKey(price)];
+          //   } else if (matched > newLadder.atb[atbIdx][1]) {
+          //     newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
+          //     delete newLadder.atbo[formatPriceKey(price)];
+          //   }
+          // } else
+          if (atlIdx > -1) {
+            newLadder.atl[atlIdx][1] = matched;
+            newLadder.atbo[formatPriceKey(price)] = matched;
           } else {
-            ladder.atl.push([price, matched]);
-            ladder.atbo[formatPriceKey(price)] = matched;
+            newLadder.atl.push([price, matched]);
+            newLadder.atbo[formatPriceKey(price)] = matched;
           }
         }
-        ladder.atb = ladder.atb.filter((v) => {
-          if (v[0] >= price) {
-            delete ladder.atlo[formatPriceKey(v[0])];
-            return false;
-          }
-          return true;
-        });
+        // newLadder.atb = newLadder.atb.filter((v) => {
+        //   if (v[0] >= price) {
+        //     delete newLadder.atlo[formatPriceKey(v[0])];
+        //     return false;
+        //   }
+        //   return true;
+        // });
       }
     }
   }
 
-  ladder.atb = ladder.atb.filter((v) => {
-    if (ladder.ltp[0] && v[0] > ladder.ltp[0]) {
-      delete ladder.atlo[formatPriceKey(v[0])];
+  const LTP = newLadder.ltp[0];
+
+  newLadder.atb = newLadder.atb.filter(([price]) => {
+    if (LTP && price > LTP) {
+      delete newLadder.atlo[formatPriceKey(price)];
       return false;
     }
     return true;
   });
 
-  ladder.atl = ladder.atl.filter((v) => {
-    if (ladder.ltp[0] && v[0] < ladder.ltp[0]) {
-      delete ladder.atbo[formatPriceKey(v[0])];
+  newLadder.atl = newLadder.atl.filter(([price]) => {
+    if (LTP && price < LTP) {
+      delete newLadder.atbo[formatPriceKey(price)];
       return false;
     }
     return true;
   });
 
-  sortAsc(ladder.trd);
-  sortDes(ladder.atb);
-  sortAsc(ladder.atl);
+  sortAsc(newLadder.trd);
+  sortDes(newLadder.atb);
+  sortAsc(newLadder.atl);
 
-  ladder.percent = calcBackLayPercentages(
-    ladder.atbo,
-    ladder.atlo,
-    ladder.ltp[0],
-  );
+  newLadder.percent = calcBackLayPercentages(newLadder.atbo, newLadder.atlo, LTP);
 
-  return ladder;
+  return newLadder;
 };
 
-export { UpdateLadder };

@@ -1,43 +1,23 @@
-import { delay, put, takeEvery } from 'redux-saga/effects';
-import { HALF_SECOND } from '../../constants/index';
+import { put, takeEvery } from 'redux-saga/effects';
+import { setInitialClk, setClk, addNonRunners, loadLadder } from '../actions/market';
 
 function* processMarketUpdates(action) {
   const { mc, clk, initialClk } = action.payload;
 
-  const { ltp, tv, atb, atl, trd } = mc;
+  for (let i = 0; i < mc.length; i += 1) {
+    const { rc, marketDefinition } = mc[i];
+    if (marketDefinition && marketDefinition.runners) {
+      const nonRunners = yield marketDefinition.runners.filter(({ status }) => status === 'REMOVED');
+      yield put(addNonRunners(nonRunners));
+    }
 
-  if (ltp) {
-    // Update the last traded price
-    yield put();
-  }
-  if (tv) {
-    // Update the trade volume
-    yield put();
-  }
-  if (atb) {
-
+    for (let j = 0; j < rc.length; j += 1) {
+      yield put(loadLadder(rc[j]));
+    }
   }
 
-  if (atl) {
-
-  }
-
-  if (trd) {
-
-  }
-
-  if (clk) {
-    
-  }
-
-  if (initialClk) {
-
-  }
-  
-  // We delay for half a second after the update
-  // This is to be sure if there are frequent updates,
-  // they are throttled so as to not crash and cause render lag
-  yield delay(HALF_SECOND);
+  if (initialClk) yield put(setInitialClk({ initialClk }));
+  if (clk) yield put(setClk({ clk }));
 }
 
 export function* watchMarketUpdates() {

@@ -2,7 +2,6 @@ import { sortAsc, sortDes } from '../Sort';
 import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 
 export const CreateLadder = (ladder) => {
-  console.log(ladder);
   ladder.ltp = ladder.ltp ? [ladder.ltp] : [null];
   ladder.ltpDelta = new Date();
   ladder.tv = ladder.tv ? [ladder.tv, ladder.tv] : [null, null];
@@ -23,8 +22,8 @@ export const CreateLadder = (ladder) => {
   ladder.bottom = 'graph';
 
   // make it easier for ladder
-  ladder.trd.forEach((trd) => {
-    ladder.trdo[formatPriceKey(trd[0])] = trd[1];
+  ladder.trd.forEach(([price, size]) => {
+    ladder.trdo[formatPriceKey(price)] = size;
   });
 
   for (let i = 0; i < ladder.atb.length; i += 1) {
@@ -37,7 +36,6 @@ export const CreateLadder = (ladder) => {
     } else {
       // Alter the value to round down
       ladder.atb[i][1] = matched;
-
       ladder.atlo[price] = matched;
     }
   }
