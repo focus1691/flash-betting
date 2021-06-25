@@ -3,6 +3,7 @@ import { formatPriceKey } from '../Bets/PriceCalculations';
 import { sortAsc, sortDes } from '../Sort';
 
 const UpdateLadder = (ladder, rawData) => {
+  console.log(rawData);
   ladder.expanded = Boolean(ladder.expanded);
 
   if (rawData.ltp) {
@@ -45,6 +46,7 @@ const UpdateLadder = (ladder, rawData) => {
           const atbIdx = ladder.atb.findIndex((v) => v[0] === price);
           const atlIdx = ladder.atl.findIndex((v) => v[0] === price);
 
+          // price exists already in available to lay
           if (atlIdx > -1) {
             if (matched > ladder.atb[atlIdx][1]) {
               ladder.atl = ladder.atl.filter((v) => v[0] !== price);
@@ -53,7 +55,9 @@ const UpdateLadder = (ladder, rawData) => {
               ladder.atb = ladder.atb.filter((v) => v[0] !== price);
               delete ladder.atlo[formatPriceKey(price)];
             }
-          } else if (atbIdx > -1) {
+          }
+          // price exists already in available to back
+          else if (atbIdx > -1) {
             ladder.atb[atbIdx][1] = matched;
             ladder.atlo[formatPriceKey(price)] = matched;
           } else {
@@ -61,11 +65,12 @@ const UpdateLadder = (ladder, rawData) => {
             ladder.atlo[formatPriceKey(price)] = matched;
           }
         }
-        ladder.atl = ladder.atl.filter((v) => {
-          if (v[0] <= price || (ladder.ltp[0] && v[0] < ladder.ltp[0])) {
-            delete ladder.atbo[formatPriceKey(v[0])];
+        ladder.atl = ladder.atl.filter(([atlPrice]) => {
+          if (atlPrice <= price || (ladder.ltp[0] && atlPrice < ladder.ltp[0])) {
+            delete ladder.atbo[formatPriceKey(atlPrice)];
+            return false;
           }
-          return v[0] > price || (ladder.ltp[0] && v[0] < ladder.ltp[0]);
+          return true;
         });
       }
     }
