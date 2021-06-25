@@ -103,7 +103,7 @@ const App = ({
   const classes = useStyles();
   useTools();
 
-  const getPremiumStatus = async () => {
+  const getPremiumStatus = useCallback(async () => {
     const vendorClientId = await fetchData('/api/get-vendor-client-id');
     const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
     if (isPremium.error) {
@@ -111,7 +111,7 @@ const App = ({
     } else {
       setPremiumStatus(isPremium);
     }
-  };
+  }, []);
 
   const onReceiveMarketDefinition = useCallback(
     async (marketDefinition) => {
@@ -235,7 +235,7 @@ const App = ({
     }
   }, []);
 
-  const retrieveMarket = async () => {
+  const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
 
     // Check if the page has query parameter 'marketId'
@@ -270,7 +270,7 @@ const App = ({
         updateStopLossList(stopLossOrders);
       }
     }
-  };
+  }, [socket]);
 
   useEffect(() => {
     const loadData = async () => {
