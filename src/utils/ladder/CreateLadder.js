@@ -2,6 +2,7 @@ import { sortAsc, sortDes } from '../Sort';
 import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 
 export const CreateLadder = (ladder) => {
+  console.log(ladder);
   ladder.ltp = ladder.ltp ? [ladder.ltp] : [null];
   ladder.ltpDelta = new Date();
   ladder.tv = ladder.tv ? [ladder.tv, ladder.tv] : [null, null];
@@ -27,8 +28,9 @@ export const CreateLadder = (ladder) => {
   });
 
   for (let i = 0; i < ladder.atb.length; i += 1) {
-    const price = formatPriceKey(ladder.atb[i][0]);
-    const matched = Math.floor(ladder.atb[i][1]);
+    let [price, matched] = ladder.atb[i];
+    price = formatPriceKey(price);
+    matched = Math.floor(matched);
 
     if (matched <= 0) {
       ladder.atb.splice(i, 1);
@@ -41,8 +43,9 @@ export const CreateLadder = (ladder) => {
   }
 
   for (let i = 0; i < ladder.atl.length; i += 1) {
-    const price = formatPriceKey(ladder.atl[i][0]);
-    const matched = Math.floor(ladder.atl[i][1]);
+    let [price, matched] = ladder.atl[i];
+    price = formatPriceKey(price);
+    matched = Math.floor(matched);
 
     if (matched <= 0) {
       ladder.atl.splice(i, 1);
