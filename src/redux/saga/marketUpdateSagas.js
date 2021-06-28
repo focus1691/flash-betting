@@ -16,8 +16,8 @@ function* processMarketUpdates(action) {
     }
   }
 
-  if (initialClk) yield put(setInitialClk({ initialClk }));
-  if (clk) yield put(setClk({ clk }));
+  if (initialClk) yield put(setInitialClk(initialClk));
+  if (clk) yield put(setClk(clk));
 }
 
 export function* watchMarketUpdates() {
