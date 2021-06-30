@@ -107,6 +107,7 @@ describe('bets reducer', () => {
         type: 'SET_BET_EXECUTION_COMPLETE',
         payload: {
           betId: '23232232',
+          price: '2.02',
           sizeMatched: 2,
           sizeRemaining: 0,
         },

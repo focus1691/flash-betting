@@ -1,4 +1,0 @@
-
-describe('Add new bet', () => {
-  
-});
