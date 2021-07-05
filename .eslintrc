@@ -10,7 +10,7 @@
     "node": true,
     "jest/globals": true
   },
-  "plugins": ["react", "react-hooks", "jest"],
+  "plugins": ["react", "react-hooks", "testing-library", "jest-dom", "jest"],
   "rules": {
     "no-underscore-dangle": [
       "error",
@@ -41,6 +41,17 @@
     "jest/no-identical-title": "error",
     "jest/prefer-to-have-length": "warn",
     "jest/valid-expect": "error",
+    // testing-library
+    "testing-library/await-async-query": "error",
+    "testing-library/no-await-sync-query": "error",
+    "testing-library/no-debug": "warn",
+    "testing-library/no-dom-import": "off",
+    // jest-dom
+    "jest-dom/prefer-checked": "error",
+    "jest-dom/prefer-enabled-disabled": "error",
+    "jest-dom/prefer-required": "error",
+    "jest-dom/prefer-to-have-attribute": "error",
+    // react hooks 
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/click-events-have-key-events": "off",
