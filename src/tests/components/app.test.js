@@ -1,5 +1,5 @@
 import React from 'react';
-import { queryByTestId, render, screen } from '@testing-library/react';
+import { queryByTestId, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
@@ -57,8 +57,11 @@ describe('App startup loading', () => {
       </Provider>,
     );
 
-    const spinner = screen.getByTestId('spinner');
-    
-    expect(spinner).toBeTruthy();
+    const spinner = screen.queryByTestId('spinner');
+    expect(spinner).toBeInTheDocument();
+
+    // await waitForElementToBeRemoved(() => spinner);
+
+    // expect(spinner).not.toBeInTheDocument();
   });
 });
