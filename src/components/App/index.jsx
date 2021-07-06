@@ -275,7 +275,7 @@ const App = ({
   useEffect(() => {
     const loadData = async () => {
       await getPremiumStatus();
-      // await retrieveMarket();
+      await retrieveMarket();
       await setIsLoading(false);
     };
     loadData();

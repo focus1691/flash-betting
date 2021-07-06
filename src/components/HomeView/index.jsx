@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 //* Custom Components
 import Header from './Header';
 import RecentBets from './RecentBets';
-// import TradingChart from './TradingChart';
+import TradingChart from './TradingChart';
 import PremiumSubscription from './PremiumSubscription';
 //* Actions
 import { setUserId } from '../../redux/actions/account';
@@ -27,7 +27,7 @@ const HomeView = ({ premiumMember, setUserId }) => {
       {premiumMember ? (
         <>
           <Header premiumMember={premiumMember} />
-          {/* <TradingChart /> */}
+          <TradingChart />
           <RecentBets />
         </>
       ) : (
