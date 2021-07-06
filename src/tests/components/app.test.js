@@ -49,7 +49,7 @@ describe('App startup loading', () => {
     });
     socket.socketClient.emit('message', 'Hello World!');
 
-    const wrapper = render(
+    render(
       <Provider store={store}>
         <SocketContext.Provider value={socket}>
           <App />
@@ -57,11 +57,12 @@ describe('App startup loading', () => {
       </Provider>,
     );
 
+    // Spinner at start
     const spinner = screen.queryByTestId('spinner');
     expect(spinner).toBeInTheDocument();
 
-    // await waitForElementToBeRemoved(() => spinner);
-
-    // expect(spinner).not.toBeInTheDocument();
+    // Spinner removed
+    await waitForElementToBeRemoved(() => screen.queryByTestId('spinner'));
+    expect(spinner).not.toBeInTheDocument();
   });
 });

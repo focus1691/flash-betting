@@ -104,13 +104,13 @@ const App = ({
   useTools();
 
   const getPremiumStatus = useCallback(async () => {
-    const vendorClientId = await fetchData('/api/get-vendor-client-id');
-    const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
-    if (isPremium.error) {
-      setPremiumStatus(false);
-    } else {
-      setPremiumStatus(isPremium);
-    }
+    // const vendorClientId = await fetchData('/api/get-vendor-client-id');
+    // const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
+    // if (isPremium.error) {
+    //   setPremiumStatus(false);
+    // } else {
+    //   setPremiumStatus(isPremium);
+    // }
   }, []);
 
   const onReceiveMarketDefinition = useCallback(
@@ -275,8 +275,8 @@ const App = ({
   useEffect(() => {
     const loadData = async () => {
       await getPremiumStatus();
-      await retrieveMarket();
-      setIsLoading(false);
+      // await retrieveMarket();
+      await setIsLoading(false);
     };
     loadData();
   }, []);
