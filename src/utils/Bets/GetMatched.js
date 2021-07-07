@@ -21,6 +21,8 @@ const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, pendi
 };
 
 const textForOrderCell = (stopLoss, totalMatched) => {
+  // The matched amount much be an integer, so remove any pence to the amount, e.g. £2.57 -> £2.00 (2.57 -> 2)
+  totalMatched = Math.floor(totalMatched);
   if (stopLoss) {
     const { hedged, size } = stopLoss;
     if (hedged) return 'H';
