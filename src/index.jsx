@@ -7,7 +7,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import openSocket from 'socket.io-client';
 import combineMiddleWares from './redux/CombineMiddlewares';
 import rootSaga from './redux/saga';
-//* Stripe
 //* Reducers
 import reducers from './redux/reducers';
 //* Components
