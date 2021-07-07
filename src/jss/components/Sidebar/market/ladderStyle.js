@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
       '&:nth-child(n+1)': {
         '& td': {
           textAlign: 'center',
-        }
+        },
       },
       '&:first-child': {
         '& td': {
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& input[type=checkbox]': {
       border: '1px solid #333',
-      content: "\\00a0",
+      content: '\\00a0',
       display: 'inline-block',
       font: '16px/1em sans-serif',
       height: '16px',
@@ -63,6 +63,23 @@ const useStyles = makeStyles((theme) => ({
       verticalAlign: 'top',
       width: '16px',
     },
+  },
+  ltp: {
+    color: '#121212',
+  },
+  ltpEqual: {
+    backgroundColor: '#d3d44f',
+    color: '#121212',
+  },
+  // A higher odds value for last traded price is red = less likely to win
+  ltpIncrease: {
+    backgroundColor: '#BD2B32',
+    color: '#d3d44f',
+  },
+  // A lower odds value for last traded price is green = more likely to win
+  ltpDecrease: {
+    backgroundColor: '#0BBF63',
+    color: '#121212',
   },
 }));
 

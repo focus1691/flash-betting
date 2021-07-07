@@ -1,36 +1,22 @@
+import { isEmpty } from 'lodash';
 import React from 'react';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 //* Actions
 import { updateExcludedLadders, updateLadderOrder } from '../../../redux/actions/ladder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market/ladderStyle';
 
-const Ladder = ({
-  marketOpen, ladder, sortedLadder, runners, excludedLadders, ladderOrder, updateExcludedLadders, updateLadderOrder,
-}) => {
-  const classes = useStyles();
+const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, ladderOrder, updateExcludedLadders, updateLadderOrder }) => {
+  const styles = useStyles();
   const deconstructLadder = (ladder) => {
-    if (ladder === undefined) return {};
+    if (isEmpty(ladder)) return {};
 
     const data = {
-      ltp: null,
-      color: '#FFFFFF',
+      ltp: ladder.ltp,
+      atb: ladder.atb && ladder.atb[0] ? ladder.atb[0][0] : null,
+      atl: ladder.atl && ladder.atl[0] ? ladder.atl[0][0] : null,
     };
-
-    if (ladder.ltp && ladder.ltp[0]) {
-      data.ltpStyle = ladder.ltp[0] < ladder.ltp[1]
-        ? { background: '#BD2B32', color: '#d3d44f' } // #BD2B32 (Red Lower LTP)
-        : ladder.ltp[0] > ladder.ltp[1]
-          ? { background: '#0BBF63', color: '#121212' } // #0BBF63 (Green Higher LTP)
-          : ladder.ltp[0]
-            ? { background: '#d3d44f', color: '#121212' } // #d3d44f (Yellow Same LTP)
-            : { background: '#FFF', color: '#121212' }; // #FFF (No Value)
-      data.ltp = ladder.ltp[0];
-    }
-
-    data.atb = ladder.atb && ladder.atb[0] ? ladder.atb[0][0] : null;
-    data.atl = ladder.atl && ladder.atl[0] ? ladder.atl[0][0] : null;
-
     return data;
   };
 
@@ -38,7 +24,9 @@ const Ladder = ({
     if (Object.keys(ladderOrder).length > 0) {
       // we send it to the end when we select a new ladder
 
-      const newLadderOrder = Object.values(ladderOrder).filter((item) => item !== selectionId).concat(selectionId);
+      const newLadderOrder = Object.values(ladderOrder)
+        .filter((item) => item !== selectionId)
+        .concat(selectionId);
       // convert it back to an object
       const newLadderOrderObject = {};
       newLadderOrder.map((item, index) => {
@@ -54,32 +42,39 @@ const Ladder = ({
     }
   };
 
-  const renderRunners = () => sortedLadder.map((selectionId) => {
-    const {
-      atb, atl, ltp, ltpStyle,
-    } = deconstructLadder(ladder[selectionId]);
-    const runnerName = runners[selectionId] ? runners[selectionId].runnerName : '';
-    return (
-      <tr key={`sidebar-ladder${runnerName}`}>
-        <td>{runnerName}</td>
-        <td>{atl}</td>
-        <td style={ltpStyle}>{ltp}</td>
-        <td>{atb}</td>
-        <td>
-          <input
-            type="checkbox"
-            checked={excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
-            onChange={handleRunnerSelection(selectionId)}
-          />
-        </td>
-      </tr>
-    );
-  });
+  const renderRunners = () =>
+    sortedLadder.map((selectionId) => {
+      const { atb, atl, ltp } = deconstructLadder(ladder[selectionId]);
+      const runnerName = runners[selectionId] ? runners[selectionId].runnerName : '';
+      return (
+        <tr key={`sidebar-ladder${runnerName}`}>
+          <td>{runnerName}</td>
+          <td>{atl}</td>
+          <td
+            className={clsx(styles.ltp, {
+              [styles.ltpEqual]: !isEmpty(ltp[0]) && !isEmpty(ltp[1]) && ladder.ltp[0] === ladder.ltp[1],
+              [styles.ltpIncrease]: !isEmpty(ltp[0]) && !isEmpty(ltp[1]) && ladder.ltp[0] > ladder.ltp[1],
+              [styles.ltpDecrease]: !isEmpty(ltp[0]) && !isEmpty(ltp[1]) && ladder.ltp[0] < ladder.ltp[1],
+            })}
+          >
+            {ltp}
+          </td>
+          <td>{atb}</td>
+          <td>
+            <input
+              type="checkbox"
+              checked={excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
+              onChange={handleRunnerSelection(selectionId)}
+            />
+          </td>
+        </tr>
+      );
+    });
 
   return (
     <>
       {marketOpen ? (
-        <table className={classes.ladder}>
+        <table className={styles.ladder}>
           <tbody>{renderRunners()}</tbody>
         </table>
       ) : null}
