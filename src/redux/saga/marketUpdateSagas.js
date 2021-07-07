@@ -6,13 +6,16 @@ function* processMarketUpdates(action) {
 
   for (let i = 0; i < mc.length; i += 1) {
     const { rc, marketDefinition } = mc[i];
+
+    // Load each ladder individually
+    for (let j = 0; j < rc.length; j += 1) {
+      yield put(loadLadder(rc[j]));
+    }
+
+    // Remove the non-runners
     if (marketDefinition && marketDefinition.runners) {
       const nonRunners = yield marketDefinition.runners.filter(({ status }) => status === 'REMOVED');
       yield put(addNonRunners(nonRunners));
-    }
-
-    for (let j = 0; j < rc.length; j += 1) {
-      yield put(loadLadder(rc[j]));
     }
   }
 
