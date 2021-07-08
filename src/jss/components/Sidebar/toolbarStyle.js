@@ -8,13 +8,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'stretch',
     '& button': {
-      flexBasis: '20%',
+      flexBasis: 'calc(100% / 6)',
       width: '15px',
       border: '0',
       background: 'transparent',
       padding: theme.spacing(2, 0),
       '&:focus': {
         outline: 'none',
+      },
+      '&:nth-child(6) > img': {
+        width: '32px',
+        height: '32px',
+        cursor: 'not-allowed',
       },
     },
   },

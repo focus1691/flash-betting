@@ -105,7 +105,9 @@ const App = ({
 
   const getPremiumStatus = useCallback(async () => {
     const vendorClientId = await fetchData('/api/get-vendor-client-id');
+    console.log(vendorClientId);
     const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
+    console.log(isPremium);
     if (isPremium.error) {
       setPremiumStatus(false);
     } else {

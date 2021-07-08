@@ -1,8 +1,6 @@
+import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
-//* Actions
-import { setPremiumStatus } from '../../redux/actions/settings';
 //* Components
 import BetsPlaced from './BetsPlaced';
 import MarketReport from './MarketReport';
@@ -11,13 +9,11 @@ import MarketSettlement from './MarketSettlement';
 import fetchData from '../../http/fetchData';
 //* Utils
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
-//* Constants
-import { FLASH_BETTING_URI } from '../../constants';
 //* JSS
 import useStyles from '../../jss/components/ClosedMarketView';
 
-const ClosedMarketView = ({ runners, setPremiumStatus }) => {
-  const classes = useStyles();
+const ClosedMarketView = ({ runners }) => {
+  const styles = useStyles();
   const [completedOrders, setCompletedOrders] = useState([]);
   const [runnerDetails, setRunnerDetails] = useState([]);
   const [marketInfo, setMarketInfo] = useState({});
@@ -25,22 +21,15 @@ const ClosedMarketView = ({ runners, setPremiumStatus }) => {
 
   useEffect(() => {
     (async function getMarketResult() {
-      //* Load premium in case this route is accessed directly
-      const premiumMember = await fetchData(`${FLASH_BETTING_URI}premium?user=traderjosh`);
-      if (premiumMember.error) {
-        setPremiumStatus(false);
-      } else {
-        setPremiumStatus(premiumMember);
-      }
-
       //* Runners[] (selectionId, runnerName, status)
       const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
       const marketCatalogue = await fetchData(`api/get-market-info?marketId=${marketId}`);
+      console.log(marketBook, marketCatalogue);
 
       if (marketBook.length > 0) {
         //* runners will be empty if route is accessed directly for selected marketId
         //* Otherwise it will remain in redux from the market open
-        if (_.isEmpty(runners)) {
+        if (isEmpty(runners)) {
           //! marketCatalogue runner {} contains the runner name
           if (marketCatalogue.length > 0) {
             // Store the race status of each runner
@@ -77,9 +66,9 @@ const ClosedMarketView = ({ runners, setPremiumStatus }) => {
   }, []);
 
   return (
-    <div className={classes.container}>
+    <div className={styles.container}>
       <MarketSettlement marketInfo={marketInfo} />
-      <div className={classes.tables}>
+      <div className={styles.tables}>
         <MarketReport matchedBets={completedOrders} runners={runnerDetails} />
         <BetsPlaced matchedBets={completedOrders} runners={runnerDetails} />
       </div>
@@ -91,8 +80,4 @@ const mapStateToProps = (state) => ({
   runners: state.market.runners,
 });
 
-const mapDispatchToProps = {
-  setPremiumStatus,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClosedMarketView);
+export default connect(mapStateToProps)(ClosedMarketView);

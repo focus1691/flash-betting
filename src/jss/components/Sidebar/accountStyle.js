@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
   welcome: {
     display: 'flex',
     justifyContent: 'space-evenly',
+    alignItems: 'center',
     '& p': {
       color: '#f9f9f9',
       borderRadius: theme.spacing(4),

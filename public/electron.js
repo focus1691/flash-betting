@@ -377,7 +377,7 @@ app.get('/api/get-market-info', (req, res) => {
 
 app.get('/api/list-market-book', (req, res) => {
   const { marketId } = req.query;
-  betfair.listMarketBook({ marketIds: marketId, priceProjection: { priceData: ['EX_TRADED', 'EX_ALL_OFFERS'] } }, (err, { error, result }) => {
+  betfair.listMarketBook({ marketIds: [marketId], priceProjection: { priceData: ['EX_TRADED', 'EX_ALL_OFFERS'] } }, (err, { error, result }) => {
     if (error) {
       return res.status(401).json({ error });
     }
