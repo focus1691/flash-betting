@@ -13,7 +13,6 @@ import reducers from './redux/reducers';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import App from './components/App';
-import ClosedMarketView from './components/ClosedMarketView';
 import Authentication from './components/Authentication';
 import OAuthRedirect from './components/OAuthRedirect';
 //* Contexts
@@ -37,7 +36,6 @@ ReactDOM.render(
         <Switch>
           <Route path="/" exact component={Login} />
           <Route path="/dashboard" component={App} />
-          <Route path="/getClosedMarketStats" component={ClosedMarketView} />
           <Route path="/authentication" exact component={Authentication} />
           <Route path="/validation" exact component={OAuthRedirect} />
           <Route path="/logout" exact component={Logout} />

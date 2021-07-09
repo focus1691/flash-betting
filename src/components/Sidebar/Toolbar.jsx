@@ -6,7 +6,7 @@ import { openLiveStream } from '../../redux/actions/draggable';
 //* JSS
 import useStyles from '../../jss/components/Sidebar/toolbarStyle';
 
-const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, setFullscreen, openPremiumDialog, openLiveStream }) => {
+const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, premiumMember, videoOpen, setActiveView, setFullscreen, openPremiumDialog, openLiveStream }) => {
   const classes = useStyles();
   const handleClick = (view) => () => {
     setActiveView(view);
@@ -14,6 +14,13 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
 
   const toggleFullScreen = () => {
     setFullscreen(!fullscreen);
+  };
+
+  const handleReportClick = () => {
+    console.log(marketOpen, marketStatus);
+    // if (!marketOpen && marketStatus === 'OPEN') {
+    //   setActiveView('ReportView')
+    // }
   };
 
   return (
@@ -33,7 +40,7 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
       <button type="button" onClick={handleClick('GridView')} style={view === 'GridView' ? { background: '#404040' } : {}}>
         <img alt="" src={`${window.location.origin}/icons/Grid_View.svg`} />
       </button>
-      <button type="button">
+      <button type="button" onClick={handleReportClick}>
         <img alt="" src={`${window.location.origin}/icons/notepad.svg`} />
       </button>
     </div>
@@ -41,6 +48,8 @@ const Toolbar = ({ view, fullscreen, premiumMember, videoOpen, setActiveView, se
 };
 
 const mapStateToProps = (state) => ({
+  marketOpen: state.market.marketOpen,
+  marketStatus: state.market.status,
   view: state.settings.view,
   fullscreen: state.settings.fullscreen,
   premiumMember: state.settings.premiumMember,
