@@ -10,14 +10,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 //* JSS
 import useStyles from '../../jss/components/ClosedMarketView/betsPlacedStyle';
-
-const columns = [
-  { id: 'placedDate', label: 'Placed' },
-  { id: 'selection', label: 'Selection' },
-  { id: 'averagePriceMatched', label: 'Odds' },
-  { id: 'sizeMatched', label: 'Stake / (Liability)' },
-  { id: 'win', label: 'Status' },
-];
+//* Data
+import { betsPlacedColumns as columns } from '../../data/tables';
 
 const calculateNewPlacedDate = (bet) => {
   const betPlacedDate = new Date(bet.placedDate);
@@ -50,10 +44,8 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
     runnersObject[runner.selectionId] = runner.runnerName;
   });
 
-  const sortedMatchedBets = matchedBets.sort((a, b) => Date.parse(b.placedDate) - Date.parse(a.placedDate));
-  const matchedBetsAdjustments = sortedMatchedBets.map((bet) => getStatus(getRunner(calculateNewPlacedDate(bet), runnersObject)));
-
-  const rows = matchedBetsAdjustments;
+  // const sortedMatchedBets = matchedBets.sort((a, b) => Date.parse(b.placedDate) - Date.parse(a.placedDate));
+  const rows = matchedBets.map((bet) => getStatus(getRunner(calculateNewPlacedDate(bet), runnersObject)));
 
   return (
     <div className={classes.betsPlaced}>

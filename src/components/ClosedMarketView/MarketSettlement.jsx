@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
-import _ from 'lodash';
 import moment from 'moment';
 //* @material-ui core
 import Chip from '@material-ui/core/Chip';
@@ -11,25 +10,25 @@ import useStyles from '../../jss/components/ClosedMarketView/marketSettlementSty
 
 const cookies = new Cookies();
 
-const MarketSettlement = ({ id, marketInfo, premiumMember }) => {
-  const classes = useStyles({ subscribed: premiumMember });
+const MarketSettlement = ({ id, premiumMember, marketName, marketStartTime, venue }) => {
+  const styles = useStyles({ subscribed: premiumMember });
 
   return (
-    <div className={classes.container}>
-      <Typography component="h1" variant="h2" className={classes.title}>
+    <div className={styles.container}>
+      <Typography component="h1" variant="h2" className={styles.title}>
         Flash Betting Market Settlement
         <div>
-          <Chip className={classes.user} color="primary" label={`${cookies.get('username')} | ID ${id}`} />
-          <Chip className={classes.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
+          <Chip className={styles.user} color="primary" label={`${cookies.get('username')} | ID ${id}`} />
+          <Chip className={styles.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
         </div>
       </Typography>
-      <div className={classes.marketReportContainer}>
+      <div className={styles.marketReportContainer}>
         <div>
-          {_.isEmpty(marketInfo) ? null : <p className={classes.marketName}>{`${moment(marketInfo.marketStartTime).calendar()} ${marketInfo.marketName} ${marketInfo.event.venue}`}</p>}
-          <em className={classes.createdAt}>{`Created ${moment().format('MMMM Do YYYY, h:mm:ss a')} (commission not included)`}</em>
+          <p className={styles.marketName}>{marketStartTime && `${moment(marketStartTime).calendar()} ${marketName} ${venue}`}</p>
+          <em className={styles.createdAt}>{`Created ${moment().format('MMMM Do YYYY, h:mm:ss a')} (commission not included)`}</em>
         </div>
 
-        <a href={`${window.location.origin}/dashboard`} className={classes.backButton}>
+        <a href={`${window.location.origin}/dashboard`} className={styles.backButton}>
           Back To Dashboard →
         </a>
       </div>
@@ -40,6 +39,9 @@ const MarketSettlement = ({ id, marketInfo, premiumMember }) => {
 const mapStateToProps = (state) => ({
   id: state.account.id,
   premiumMember: state.settings.premiumMember,
+  marketName: state.market.marketName,
+  marketStartTime: state.market.marketStartTime,
+  venue: state.market.event.venue,
 });
 
 export default connect(mapStateToProps)(MarketSettlement);

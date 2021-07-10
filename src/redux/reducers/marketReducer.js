@@ -16,7 +16,7 @@ const initialState = {
   marketStartTime: null,
   pastEventTime: false,
   status: 'OPEN',
-  event: { id: null, name: null },
+  event: { id: null, name: null, venue: null },
   eventType: {},
   runnerSelection: 0,
   nonRunners: {},

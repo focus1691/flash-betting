@@ -16,7 +16,6 @@ const ClosedMarketView = ({ runners }) => {
   const styles = useStyles();
   const [completedOrders, setCompletedOrders] = useState([]);
   const [runnerDetails, setRunnerDetails] = useState([]);
-  const [marketInfo, setMarketInfo] = useState({});
   const marketId = getQueryVariable('marketId');
 
   useEffect(() => {
@@ -54,10 +53,6 @@ const ClosedMarketView = ({ runners }) => {
         }
       }
 
-      if (marketCatalogue.length > 0) {
-        setMarketInfo(marketCatalogue[0]);
-      }
-
       //* Orders
       const { currentOrders } = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
       const completedOrders = currentOrders.filter((order) => order.status === 'EXECUTION_COMPLETE');
@@ -67,7 +62,7 @@ const ClosedMarketView = ({ runners }) => {
 
   return (
     <div className={styles.container}>
-      <MarketSettlement marketInfo={marketInfo} />
+      <MarketSettlement />
       <div className={styles.tables}>
         <MarketReport matchedBets={completedOrders} runners={runnerDetails} />
         <BetsPlaced matchedBets={completedOrders} runners={runnerDetails} />

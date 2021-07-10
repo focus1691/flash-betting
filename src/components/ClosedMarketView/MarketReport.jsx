@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import uuid from 'react-uuid';
 import clsx from 'clsx';
 //* @material-ui core
@@ -14,7 +15,7 @@ import { getPLForRunner, getLossForRunner } from '../../utils/Bets/GetProfitAndL
 //* JSS
 import useStyles from '../../jss/components/ClosedMarketView/marketReportStyle';
 //* Data
-import { columns } from '../../data/marketReport';
+import { marketReportColumns as columns } from '../../data/tables';
 
 const MarketReport = ({ matchedBets, runners }) => {
   const classes = useStyles();
@@ -62,7 +63,7 @@ const MarketReport = ({ matchedBets, runners }) => {
             <TableBody>
               {rows.map((row) => (
                 <TableRow hover key={`market-report-${uuid()}`}>
-                  {columns.map(({ title, align, format }) => {
+                  {columns.map(({ title, align }) => {
                     const value = row[title];
                     const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
                     const color = isBetOnSelection ? (parseFloat(value) < 0 ? 'red' : 'green') : 'black';
@@ -79,7 +80,7 @@ const MarketReport = ({ matchedBets, runners }) => {
                             {row.isComplete ? (row.isWinner ? 'Won' : 'Lost') : 'N/A'}
                           </span>
                         ) : null}
-                        <span style={{ color, fontWeight: isBetOnSelection ? 'bold' : 'normal' }}>{format && typeof value === 'number' ? format(value) : value}</span>
+                        <span style={{ color, fontWeight: isBetOnSelection ? 'bold' : 'normal' }}>{value}</span>
                       </TableCell>
                     );
                   })}
@@ -93,4 +94,10 @@ const MarketReport = ({ matchedBets, runners }) => {
   );
 };
 
-export default MarketReport;
+const mapStateToProps = (state) => ({
+  priceType: state.ladder.priceType,
+  matchedBets: state.order.bets.unmatched,
+});
+
+
+export default connect(mapStateToProps)(MarketReport);

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
 import useTools from '../../hooks/useTools';
 //* Actions
+import { setUserId } from '../../redux/actions/account';
 import { setIsLoading, setPremiumStatus } from '../../redux/actions/settings';
 import {
   processMarketUpdates,
@@ -70,6 +71,7 @@ const App = ({
   stopLossList,
   tickOffsetList,
   socket,
+  setUserId,
   setIsLoading,
   setPremiumStatus,
   processMarketUpdates,
@@ -105,13 +107,15 @@ const App = ({
 
   const getPremiumStatus = useCallback(async () => {
     const vendorClientId = await fetchData('/api/get-vendor-client-id');
-    console.log(vendorClientId);
-    const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
-    console.log(isPremium);
-    if (isPremium.error) {
-      setPremiumStatus(false);
-    } else {
-      setPremiumStatus(isPremium);
+    if (vendorClientId) {
+      setUserId(vendorClientId);
+      const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
+      console.log(vendorClientId, isPremium);
+      if (isPremium.error) {
+        setPremiumStatus(false);
+      } else {
+        setPremiumStatus(isPremium);
+      }
     }
   }, []);
 
@@ -356,6 +360,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setIsLoading,
+  setUserId,
   setPremiumStatus,
   processMarketUpdates,
   setConnectionErrorMessage,

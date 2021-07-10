@@ -60,6 +60,7 @@ export default function useTest() {
             averagePriceMatched,
             priceSize: { price, size },
             customerStrategyRef: rfs,
+            placedDate,
           } = currentOrders[i];
 
           if (rfs) {
@@ -90,6 +91,7 @@ export default function useTest() {
               selectionId,
               rfs: rfs || 'None',
               betId,
+              placedDate,
             };
 
             if (status === 'EXECUTABLE') dispatch(addUnmatchedBet(betParams));
