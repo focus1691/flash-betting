@@ -14,6 +14,12 @@ export const sumMatchedBets = (ladder) => {
   return sum ? Math.floor(sum) : '';
 };
 
+/**
+ * This rounding function is for numbers, and not for string representation of a value (for display purposes)
+ * 
+ * @param {the number to round} num 
+ * @returns Rounds a number to two decimal places
+ */
 export const twoDecimalPlaces = (num) => parseFloat((Math.round(num * 100) / 100).toFixed(2));
 
 export const calcBackProfit = (stake, price, side) => {

@@ -61,9 +61,8 @@ const MarketReport = ({ matchedBets, runners }) => {
               {rows.map((row) => (
                 <TableRow hover key={`market-report-${uuid()}`}>
                   {columns.map(({ title, align }) => {
-                    const value = row[title];
+                    const data = row[title];
                     const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
-                    const color = isBetOnSelection ? (parseFloat(value) < 0 ? 'red' : 'green') : 'black';
                     return (
                       <TableCell key={title} align={align}>
                         {title === 'result' ? (
@@ -77,7 +76,15 @@ const MarketReport = ({ matchedBets, runners }) => {
                             {row.isComplete ? (row.isWinner ? 'Won' : 'Lost') : 'N/A'}
                           </span>
                         ) : null}
-                        <span style={{ color, fontWeight: isBetOnSelection ? 'bold' : 'normal' }}>{value}</span>
+                        <span
+                          className={clsx({
+                            [classes.hasBets]: isBetOnSelection,
+                            [classes.selectionBetsProfit]: parseFloat(data) > 0,
+                            [classes.selectionBetsLoss]: parseFloat(data) < 0,
+                          })}
+                        >
+                          {data}
+                        </span>
                       </TableCell>
                     );
                   })}

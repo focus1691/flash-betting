@@ -5,6 +5,16 @@ const marketHasBets = (marketId, bets) => (Object.values(bets.matched))
   .filter((order) => order.marketId === marketId)
   .length > 0;
 
+
+/**
+ * TODO The two functions below can be simplified into one. The first calculates the selection profit, and the second the selection loss.
+ * The only difference between the two is where the 'side' ternary is computed
+ * 
+ * @param {The market id} marketId 
+ * @param {The selection id} selectionId 
+ * @param {Bets object for an open tab} bets 
+ * @returns the profit for a selection from the bets placed
+ */
 const getPLForRunner = (marketId, selectionId, bets) => twoDecimalPlaces(Object.values(bets.matched)
   .filter((order) => order.marketId === marketId)
   .map((order) => {

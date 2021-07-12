@@ -21,5 +21,6 @@ export const createRows = (runners, matchedBets) => {
       isWinner: status === 'WINNER',
     };
   });
+  
   return rows;
 };

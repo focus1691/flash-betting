@@ -51,6 +51,15 @@ const useStyles = makeStyles((theme) => ({
   selectionPending: {
     backgroundColor: '#97979E',
   },
+  selectionBetsProfit: {
+    color: 'green',
+  },
+  selectionBetsLoss: {
+    color: 'red',
+  },
+  hasBets: {
+    fontWeight: 'bold',
+  }
 }));
 
 export default useStyles;
