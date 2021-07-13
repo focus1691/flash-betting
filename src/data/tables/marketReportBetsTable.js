@@ -5,3 +5,7 @@ export const columns = [
   { id: 'sizeMatched', label: 'Stake / (Liability)' },
   { id: 'win', label: 'Status' },
 ];
+
+export const createRows = (runners, matchedBets) => {
+  return rows;
+};

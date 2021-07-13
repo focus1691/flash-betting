@@ -15,7 +15,7 @@ const marketHasBets = (marketId, bets) => (Object.values(bets.matched))
  * @param {Bets object for an open tab} bets 
  * @returns the profit for a selection from the bets placed
  */
-const getPLForRunner = (marketId, selectionId, bets) => twoDecimalPlaces(Object.values(bets.matched)
+const getPLForRunner = (marketId, selectionId, matchedBets) => twoDecimalPlaces(Object.values(matchedBets)
   .filter((order) => order.marketId === marketId)
   .map((order) => {
     if (order.selectionId === selectionId) {

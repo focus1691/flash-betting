@@ -11,9 +11,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 //* JSS
-import useStyles from '../../jss/components/ClosedMarketView/marketReportStyle';
+import useStyles from '../../../jss/components/ClosedMarketView/marketReportStyle';
 //* Data
-import { columns, createRows } from '../../data/tables/marketReportTable';
+import { columns, createRows } from '../../../data/tables/marketReportTable';
 
 const MarketReport = ({ matchedBets, runners }) => {
   const classes = useStyles();
@@ -59,12 +59,12 @@ const MarketReport = ({ matchedBets, runners }) => {
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <TableRow hover key={`market-report-${uuid()}`}>
+                <TableRow hover key={`market-report-row-${uuid()}`}>
                   {columns.map(({ title, align }) => {
                     const data = row[title];
                     const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
                     return (
-                      <TableCell key={title} align={align}>
+                      <TableCell key={`market-report-cell-${title}-${uuid()}`} align={align}>
                         {title === 'result' ? (
                           <span
                             className={clsx(classes.marketOutcome, {
@@ -100,7 +100,7 @@ const MarketReport = ({ matchedBets, runners }) => {
 
 const mapStateToProps = (state) => ({
   priceType: state.ladder.priceType,
-  matchedBets: state.order.bets.unmatched,
+  matchedBets: state.order.bets.matched,
 });
 
 export default connect(mapStateToProps)(MarketReport);

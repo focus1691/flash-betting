@@ -1,4 +1,5 @@
 import React from 'react';
+import uuid from 'react-uuid';
 import clsx from 'clsx';
 //* @material-ui core
 import Paper from '@material-ui/core/Paper';
@@ -9,9 +10,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 //* JSS
-import useStyles from '../../jss/components/ClosedMarketView/betsPlacedStyle';
+import useStyles from '../../../jss/components/ClosedMarketView/betsPlacedStyle';
 //* Data
-import { betsPlacedColumns as columns } from '../../data/tables';
+import { columns } from '../../../data/tables/marketReportBetsTable';
 
 const calculateNewPlacedDate = (bet) => {
   const betPlacedDate = new Date(bet.placedDate);
@@ -57,42 +58,40 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align}>
-                    {column.label}
-                  </TableCell>
+                {columns.map(({ id, label }) => (
+                  <TableCell key={id}>{label}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
+                <TableRow hover role="checkbox" tabIndex={-1} key={`market-report-bets-row-${uuid()}`}>
+                  {columns.map(({ id }) => {
+                    const value = row[id];
                     const isSideBack = row.side === 'BACK';
                     return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.id === 'sizeMatched' ? (
+                      <TableCell key={`market-report-bets-cell-${id}-${uuid()}`}>
+                        {id === 'sizeMatched' ? (
                           <span
                             className={clsx(classes.betSide, {
                               [classes.backText]: isSideBack,
                               [classes.layText]: !isSideBack,
                             })}
                           >
-                            {isSideBack ? 'BACK' : 'LAY'}
+                            {row.sizeMatched}
                           </span>
                         ) : null}
-                        {column.id === 'win' ? (
+                        {id === 'win' ? (
                           <span
                             className={clsx(classes.betOutcome, {
-                              [classes.betWin]: column.win,
-                              [classes.betLose]: !column.win,
+                              [classes.betWin]: row.win,
+                              [classes.betLose]: !row.win,
                             })}
                           >
-                            {column.win ? 'Won' : 'Lost'}
+                            {row.win ? 'Won' : 'Lost'}
                           </span>
                         ) : null}
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                        {value}
                       </TableCell>
                     );
                   })}

@@ -6,7 +6,7 @@ import moment from 'moment';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 //* JSS
-import useStyles from '../../jss/components/ClosedMarketView/marketSettlementStyle';
+import useStyles from '../../../jss/components/ClosedMarketView/marketSettlementStyle';
 
 const cookies = new Cookies();
 
