@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Cookies from 'universal-cookie';
@@ -247,8 +248,20 @@ const App = ({
     // Check if the page has query parameter 'marketId'
     // Load the market if found
     if (marketId) {
+        // Load the customer orders in this market from database into state
+        // Usually happens when orders are made in a market which is later reopened
+        const { backOrders, layOrders, stopEntryOrders, tickOffsetOrders, fillOrKillOrders, stopLossOrders } = await loadCustomBets(marketId);
+
+        updateBackList(backOrders);
+        updateLayList(layOrders);
+        updateStopEntryList(stopEntryOrders);
+        updateTickOffsetList(tickOffsetOrders);
+        updateFillOrKillList(fillOrKillOrders);
+        updateStopLossList(stopLossOrders);
+
       const marketCatalogue = await fetchData(`/api/get-market-info?marketId=${marketId}`);
-      if (marketCatalogue && marketCatalogue.length >= 1) {
+
+      if (!isEmpty(marketCatalogue)) {
         console.log(marketCatalogue[0]);
         const { marketId, marketName, marketStartTime, description, event, eventType, runners } = marketCatalogue[0];
         setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
@@ -263,17 +276,13 @@ const App = ({
 
         //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });
+      }
+      else {
+        const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
 
-        // Load the customer orders in this market from database into state
-        // Usually happens when orders are made in a market which is later reopened
-        const { backOrders, layOrders, stopEntryOrders, tickOffsetOrders, fillOrKillOrders, stopLossOrders } = await loadCustomBets(marketId);
-
-        updateBackList(backOrders);
-        updateLayList(layOrders);
-        updateStopEntryList(stopEntryOrders);
-        updateTickOffsetList(tickOffsetOrders);
-        updateFillOrKillList(fillOrKillOrders);
-        updateStopLossList(stopLossOrders);
+        if (!isEmpty(marketBook)) {
+          // Load the results
+        }
       }
     }
   }, [socket]);
