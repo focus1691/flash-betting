@@ -83,13 +83,13 @@ class BetfairInvocation {
       headers: {
         'X-Application': this.applicationKey,
         'X-Authentication': BetfairInvocation.sessionKey,
+        Authorization: `BEARER ${BetfairInvocation.accessToken}`,
         'Content-Type': 'application/json',
         'Content-Length': this.jsonRequestBody.length,
         'Accept-Encoding': 'gzip, deflate',
         Connection: 'keep-alive',
       },
     };
-    httpOptions.headers.Authorization = `BEARER ${BetfairInvocation.accessToken}`;
 
     HttpRequest.post(this.service, this.jsonRequestBody, httpOptions, (err, result) => {
       if (err) {
