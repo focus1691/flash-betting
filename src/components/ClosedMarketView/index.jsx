@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 //* Components
 import BetsPlaced from './BetsPlaced';
 import MarketReport from './MarketReport';
@@ -21,7 +20,4 @@ const ClosedMarketView = () => {
   );
 };
 
-const mapStateToProps = (state) => ({
-});
-
-export default connect(mapStateToProps)(ClosedMarketView);
+export default ClosedMarketView;

@@ -16,7 +16,7 @@ const MarketSettlement = ({ id, premiumMember, marketName, marketStartTime, venu
   return (
     <div className={styles.container}>
       <Typography component="h1" variant="h2" className={styles.title}>
-        Flash Betting Market Settlement
+        Market Settlement
         <div>
           <Chip className={styles.user} color="primary" label={`${cookies.get('username')} | ID ${id}`} />
           <Chip className={styles.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
