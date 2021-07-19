@@ -139,7 +139,7 @@ const App = ({
           const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
 
           if (!isEmpty(marketBook)) {
-            const { runners } = marketBook;
+            const { runners } = marketBook[0];
             // Load the runner results
             loadRunnerResults(runners);
           }
@@ -289,7 +289,8 @@ const App = ({
         const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
 
         if (!isEmpty(marketBook)) {
-          const { marketId, status, runners } = marketBook;
+          const { marketId, status, runners } = marketBook[0];
+          console.log(marketBook, runners);
           // Load the results
           setMarketId(marketId);
           setMarketStatus(status);
