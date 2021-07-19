@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  marketClosed: {
+    cursor: 'default !important',
+  },
 }));
 
 export default useStyles;

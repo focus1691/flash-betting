@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 //* Actions
 import { setActiveView, setFullscreen, openPremiumDialog } from '../../redux/actions/settings';
@@ -41,7 +42,13 @@ const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, premiumMember, vi
         <img alt="" src={`${window.location.origin}/icons/Grid_View.svg`} />
       </button>
       <button type="button" onClick={handleReportClick}>
-        <img alt="" src={`${window.location.origin}/icons/notepad.svg`} />
+        <img
+          alt=""
+          src={`${window.location.origin}/icons/${!marketOpen && marketStatus === 'CLOSED' ? 'completed' : 'incompleted'}-task.png`}
+          className={clsx({
+            [classes.marketClosed]: !marketOpen && marketStatus === 'CLOSED',
+         })}
+        />
       </button>
     </div>
   );
