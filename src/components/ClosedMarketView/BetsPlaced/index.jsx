@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import uuid from 'react-uuid';
 import clsx from 'clsx';
 //* @material-ui core
@@ -12,41 +13,11 @@ import Typography from '@material-ui/core/Typography';
 //* JSS
 import useStyles from '../../../jss/components/ClosedMarketView/betsPlacedStyle';
 //* Data
-import { columns } from '../../../data/tables/marketReportBetsTable';
+import { columns, createRows } from '../../../data/tables/marketReportBetsTable';
 
-const calculateNewPlacedDate = (bet) => {
-  const betPlacedDate = new Date(bet.placedDate);
-  const currentDate = new Date(Date.now()).getDate();
-  const placedDate = betPlacedDate.getDate();
-
-  const currentMonth = new Date(Date.now()).getMonth();
-  const placedMonth = betPlacedDate.getMonth();
-
-  const betPlacedOnDiffDay = currentMonth !== placedMonth || placedDate > currentDate || placedDate < currentDate;
-
-  const newPlacedDate = betPlacedOnDiffDay ? betPlacedDate.toLocaleString('en-GB', { hour12: false }) : betPlacedDate.toLocaleTimeString(betPlacedDate, { hour12: false });
-
-  return { ...bet, placedDate: newPlacedDate };
-};
-
-const getRunner = (bet, runners) => ({ ...bet, selection: runners[bet.selectionId] });
-
-const getStatus = (bet, runners) => {
-  if (runners) {
-    return { ...bet, win: runners[bet.selectionId].status === 'WINNER' };
-  }
-  return bet;
-};
-
-const BetsPlaced = ({ matchedBets, runners = [] }) => {
+const BetsPlaced = ({ matchedBets, runners, runnerResults }) => {
   const classes = useStyles();
-  const runnersObject = {};
-  runners.map((runner) => {
-    runnersObject[runner.selectionId] = runner.runnerName;
-  });
-
-  // const sortedMatchedBets = matchedBets.sort((a, b) => Date.parse(b.placedDate) - Date.parse(a.placedDate));
-  const rows = matchedBets.map((bet) => getStatus(getRunner(calculateNewPlacedDate(bet), runnersObject)));
+  const rows = createRows(runners, runnerResults, matchedBets);
 
   return (
     <div className={classes.betsPlaced}>
@@ -67,7 +38,7 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
               {rows.map((row) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={`market-report-bets-row-${uuid()}`}>
                   {columns.map(({ id }) => {
-                    const value = row[id];
+                    const data = row[id];
                     const isSideBack = row.side === 'BACK';
                     return (
                       <TableCell key={`market-report-bets-cell-${id}-${uuid()}`}>
@@ -91,7 +62,7 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
                             {row.win ? 'Won' : 'Lost'}
                           </span>
                         ) : null}
-                        {value}
+                        {data}
                       </TableCell>
                     );
                   })}
@@ -105,4 +76,10 @@ const BetsPlaced = ({ matchedBets, runners = [] }) => {
   );
 };
 
-export default BetsPlaced;
+const mapStateToProps = (state) => ({
+  matchedBets: state.order.bets.matched,
+  runners: state.market.runners,
+  runnerResults: state.market.runnerResults,
+});
+
+export default connect(mapStateToProps)(BetsPlaced);

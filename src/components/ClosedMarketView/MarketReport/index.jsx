@@ -15,30 +15,9 @@ import useStyles from '../../../jss/components/ClosedMarketView/marketReportStyl
 //* Data
 import { columns, createRows } from '../../../data/tables/marketReportTable';
 
-const MarketReport = ({ matchedBets, runners }) => {
+const MarketReport = ({ matchedBets, runners, runnerResults }) => {
   const classes = useStyles();
-  const rows = createRows(runners, matchedBets);
-
-  // matchedBets.forEach((bet) => {
-  //   bet.price = bet.averagePriceMatched;
-  //   bet.size = bet.sizeMatched;
-  //   bet.marketId = runners.marketId;
-  //   if (selectionWithBets[bet.selectionId]) selectionWithBets[bet.selectionId].push(bet);
-  //   else selectionWithBets[bet.selectionId] = [bet];
-  // });
-
-  // const rows = runners.map(({ selectionId, runnerName, status }) => {
-  //   const win = matchedBets ? getPLForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
-  //   const lose = matchedBets ? getLossForRunner(runners.marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
-  //   return {
-  //     selection: runnerName,
-  //     win,
-  //     lose,
-  //     settled: status === 'WINNER' ? win : lose,
-  //     isComplete: status !== 'ACTIVE',
-  //     isWinner: status === 'WINNER',
-  //   };
-  // });
+  const rows = createRows(runners, runnerResults, matchedBets);
 
   return (
     <div className={classes.marketReport}>
@@ -101,6 +80,8 @@ const MarketReport = ({ matchedBets, runners }) => {
 const mapStateToProps = (state) => ({
   priceType: state.ladder.priceType,
   matchedBets: state.order.bets.matched,
+  runners: state.market.runners,
+  runnerResults: state.market.runnerResults,
 });
 
 export default connect(mapStateToProps)(MarketReport);

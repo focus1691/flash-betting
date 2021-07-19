@@ -18,9 +18,9 @@ const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, premiumMember, vi
 
   const handleReportClick = () => {
     console.log(marketOpen, marketStatus);
-    // if (!marketOpen && marketStatus === 'OPEN') {
-    //   setActiveView('ReportView')
-    // }
+    if (!marketOpen && marketStatus === 'CLOSED') {
+      setActiveView('ReportView')
+    }
   };
 
   return (

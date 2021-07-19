@@ -99,7 +99,11 @@ export const loadRunners = (runners) => ({
   payload: runners,
 });
 
-//!
+export const loadRunnerResults = (runnerResults) => ({
+  type: 'LOAD_RUNNER_RESULTS',
+  payload: runnerResults,
+});
+
 export const addNonRunners = (nonRunners) => ({
   type: 'ADD_NON_RUNNERS',
   payload: nonRunners,

@@ -8,12 +8,12 @@ export const columns = [
   { title: 'result', label: 'Result' },
 ];
 
-export const createRows = (runners, matchedBets) => {
-  const rows = runners.map(({ marketId, selectionId, runnerName, status }) => {
+export const createRows = (runners, runnerResults, matchedBets) => {
+  const rows = runnerResults.map(({ marketId, selectionId, status }) => {
     const win = matchedBets ? getPLForRunner(marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
     const lose = matchedBets ? getLossForRunner(marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
     return {
-      selection: runnerName,
+      selection: runners[selectionId] ? runners[selectionId].runnerName : selectionId,
       win,
       lose,
       settled: status === 'WINNER' ? win : lose,
@@ -21,6 +21,6 @@ export const createRows = (runners, matchedBets) => {
       isWinner: status === 'WINNER',
     };
   });
-  
+
   return rows;
 };

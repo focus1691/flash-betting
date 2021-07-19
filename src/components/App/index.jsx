@@ -19,6 +19,7 @@ import {
   setSortedLadder,
   setRunner,
   loadRunners,
+  loadRunnerResults,
   setMarketStatus,
   setInPlay,
   setInPlayTime,
@@ -87,6 +88,7 @@ const App = ({
   setSortedLadder,
   setRunner,
   loadRunners,
+  loadRunnerResults,
   setMarketStatus,
   inPlayTime,
   setInPlay,
@@ -132,9 +134,15 @@ const App = ({
       }
 
       if (marketDefinition.status === 'CLOSED') {
-        window.open(`${window.location.origin}/getClosedMarketStats?marketId=${marketId}`);
         if (marketOpen) {
           closeMarket();
+          const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
+
+          if (!isEmpty(marketBook)) {
+            const { runners } = marketBook;
+            // Load the runner results
+            loadRunnerResults(runners);
+          }
         }
       }
     },
@@ -281,7 +289,11 @@ const App = ({
         const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
 
         if (!isEmpty(marketBook)) {
+          const { marketId, status, runners } = marketBook;
           // Load the results
+          setMarketId(marketId);
+          setMarketStatus(status);
+          loadRunnerResults(runners);
         }
       }
     }
@@ -384,6 +396,7 @@ const mapDispatchToProps = {
   updateLadderOrder,
   setRunner,
   loadRunners,
+  loadRunnerResults,
   setMarketStatus,
   setInPlay,
   setInPlayTime,

@@ -2,6 +2,7 @@ import { assign, omit } from 'lodash';
 import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { UpdateLadder, constructNonRunnersObj } from '../../utils/ladder/UpdateLadder';
+import GetRunnerResults from '../../utils/Market/GetRunnerResults';
 
 const initialState = {
   initialClk: null,
@@ -21,6 +22,7 @@ const initialState = {
   runnerSelection: 0,
   nonRunners: {},
   runners: {},
+  runnerResults: [],
   ladder: {},
   sortedLadder: [],
 };
@@ -102,6 +104,8 @@ const reducer = (state = initialState, action) => {
       };
     case 'LOAD_RUNNERS':
       return { ...state, runners: action.payload };
+    case 'LOAD_RUNNER_RESULTS':
+      return { ...state, runnerResults: GetRunnerResults(action.payload) };
     case 'SELECT_RUNNER':
       return { ...state, runnerSelection: action.payload };
     case 'UPDATE_ORDER':
