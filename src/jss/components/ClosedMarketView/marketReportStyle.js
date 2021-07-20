@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
   reportTable: {
     height: '100%',
+    '& span': {
+      fontFamily: 'Roboto',
+      color: '#EEEEEE',
+    }
   },
   title: {
     backgroundColor: '#333F4B',
@@ -57,10 +61,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#97979E',
   },
   selectionBetsProfit: {
-    color: 'green',
+    color: 'green !important',
   },
   selectionBetsLoss: {
-    color: 'red',
+    color: 'red !important',
   },
   hasBets: {
     fontWeight: 'bold',

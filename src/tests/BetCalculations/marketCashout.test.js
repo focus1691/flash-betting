@@ -28,10 +28,10 @@ describe('Profit / Loss for a runner calculated from matched bets', () => {
   });
 
   it('Return the correct profit for this selection from the bets placed in the market', () => {
-    expect(getPLForRunner(marketId, selectionId, bets)).toEqual(10.20);
+    expect(getPLForRunner(marketId, selectionId, bets.matched)).toEqual(10.20);
 
     addBet(bets, marketId, selectionId, '3.05', 25, 'BACK');
 
-    expect(getPLForRunner(marketId, selectionId, bets)).toEqual(61.45);
+    expect(getPLForRunner(marketId, selectionId, bets.matched)).toEqual(61.45);
   });
 });

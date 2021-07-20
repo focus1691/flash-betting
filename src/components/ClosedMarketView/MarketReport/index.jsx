@@ -41,7 +41,7 @@ const MarketReport = ({ matchedBets, runners, runnerResults }) => {
               <TableRow hover key={`market-report-row-${uuid()}`}>
                 {columns.map(({ title, align }) => {
                   const data = row[title];
-                  const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
+                  const isBetCol = title === 'win' || title === 'lose' || title === 'settled';
                   return (
                     <TableCell key={`market-report-cell-${title}-${uuid()}`} align={align}>
                       {title === 'result' ? (
@@ -57,9 +57,9 @@ const MarketReport = ({ matchedBets, runners, runnerResults }) => {
                       ) : null}
                       <span
                         className={clsx({
-                          [classes.hasBets]: isBetOnSelection,
-                          [classes.selectionBetsProfit]: parseFloat(data) > 0,
-                          [classes.selectionBetsLoss]: parseFloat(data) < 0,
+                          [classes.hasBets]: isBetCol,
+                          [classes.selectionBetsProfit]: isBetCol && parseFloat(data) > 0,
+                          [classes.selectionBetsLoss]: isBetCol && parseFloat(data) < 0,
                         })}
                       >
                         {data}

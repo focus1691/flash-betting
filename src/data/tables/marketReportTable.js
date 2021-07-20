@@ -9,9 +9,10 @@ export const columns = [
 ];
 
 export const createRows = (runners, runnerResults, matchedBets) => {
+  console.log(runnerResults, matchedBets);
   const rows = runnerResults.map(({ marketId, selectionId, status }) => {
-    const win = matchedBets ? getPLForRunner(marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
-    const lose = matchedBets ? getLossForRunner(marketId, selectionId, { matched: matchedBets }).toFixed(2) : 0;
+    const win = matchedBets ? getPLForRunner(marketId, selectionId, matchedBets).toFixed(2) : 0;
+    const lose = matchedBets ? getLossForRunner(marketId, selectionId, matchedBets).toFixed(2) : 0;
     return {
       selection: runners[selectionId] ? runners[selectionId].runnerName : selectionId,
       win,

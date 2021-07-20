@@ -186,8 +186,8 @@ const Grid = ({
               PL={
                 marketHasBets(marketId, bets)
                   ? {
-                      val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, Number(key), bets)),
-                      color: colorForBack(order.side, getPLForRunner(marketId, Number(key), bets)),
+                      val: formatCurrency(localeCode, currencyCode, getPLForRunner(marketId, Number(key), bets.matched)),
+                      color: colorForBack(order.side, getPLForRunner(marketId, Number(key), bets.matched)),
                     }
                   : order.visible && rowHovered === key && activeOrder
                   ? renderProfitAndLossAndHedge(order, colorForBack(order.side))

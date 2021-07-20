@@ -25,7 +25,7 @@ const getPLForRunner = (marketId, selectionId, matchedBets) => twoDecimalPlaces(
   })
   .reduce((acc, total) => acc + total, 0));
 
-const getLossForRunner = (marketId, selectionId, bets) => twoDecimalPlaces(Object.values(bets.matched)
+const getLossForRunner = (marketId, selectionId, matchedBets) => twoDecimalPlaces(Object.values(matchedBets)
   .filter((order) => order.marketId === marketId)
   .map((order) => {
     if (order.selectionId === selectionId) {
