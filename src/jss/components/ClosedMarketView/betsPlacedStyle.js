@@ -2,24 +2,26 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   betsPlaced: {
-    width: '49%',
+    width: '100%',
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    marginLeft: theme.spacing(0.5),
     [theme.breakpoints.down('sm')]: {
       width: '100%',
       marginTop: '1%',
     },
   },
-  container: {
-    width: '100%',
-    height: '90%',
-  },
   tableContainer: {
     overflowX: 'auto',
+    width: 'auto',
     height: '100%',
     background: '#242526',
     border: '2px solid #333F4B',
+    overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   },
   title: {
     backgroundColor: '#333F4B',

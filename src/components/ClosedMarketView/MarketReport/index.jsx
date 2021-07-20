@@ -4,6 +4,7 @@ import uuid from 'react-uuid';
 import clsx from 'clsx';
 //* @material-ui core
 import Paper from '@material-ui/core/Paper';
+import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -24,55 +25,53 @@ const MarketReport = ({ matchedBets, runners, runnerResults }) => {
       <Typography component="h1" variant="h2" className={classes.title}>
         Closed Market Report
       </Typography>
-      <Paper className={classes.container}>
-        <div className={classes.tableContainer}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.title} align={column.align}>
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow hover key={`market-report-row-${uuid()}`}>
-                  {columns.map(({ title, align }) => {
-                    const data = row[title];
-                    const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
-                    return (
-                      <TableCell key={`market-report-cell-${title}-${uuid()}`} align={align}>
-                        {title === 'result' ? (
-                          <span
-                            className={clsx(classes.marketOutcome, {
-                              [classes.selectionPending]: !row.isComplete,
-                              [classes.selectionWin]: row.isComplete && row.isWinner,
-                              [classes.selectionLose]: row.isComplete && !row.isWinner,
-                            })}
-                          >
-                            {row.isComplete ? (row.isWinner ? 'Won' : 'Lost') : 'N/A'}
-                          </span>
-                        ) : null}
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table stickyHeader className={classes.reportTable}>
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell key={column.title} align={column.align}>
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow hover key={`market-report-row-${uuid()}`}>
+                {columns.map(({ title, align }) => {
+                  const data = row[title];
+                  const isBetOnSelection = title === 'win' || title === 'lose' || title === 'settled';
+                  return (
+                    <TableCell key={`market-report-cell-${title}-${uuid()}`} align={align}>
+                      {title === 'result' ? (
                         <span
-                          className={clsx({
-                            [classes.hasBets]: isBetOnSelection,
-                            [classes.selectionBetsProfit]: parseFloat(data) > 0,
-                            [classes.selectionBetsLoss]: parseFloat(data) < 0,
+                          className={clsx(classes.marketOutcome, {
+                            [classes.selectionPending]: !row.isComplete,
+                            [classes.selectionWin]: row.isComplete && row.isWinner,
+                            [classes.selectionLose]: row.isComplete && !row.isWinner,
                           })}
                         >
-                          {data}
+                          {row.isComplete ? (row.isWinner ? 'Won' : 'Lost') : 'N/A'}
                         </span>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Paper>
+                      ) : null}
+                      <span
+                        className={clsx({
+                          [classes.hasBets]: isBetOnSelection,
+                          [classes.selectionBetsProfit]: parseFloat(data) > 0,
+                          [classes.selectionBetsLoss]: parseFloat(data) < 0,
+                        })}
+                      >
+                        {data}
+                      </span>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

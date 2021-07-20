@@ -4,6 +4,7 @@ import uuid from 'react-uuid';
 import clsx from 'clsx';
 //* @material-ui core
 import Paper from '@material-ui/core/Paper';
+import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -24,54 +25,52 @@ const BetsPlaced = ({ matchedBets, runners, runnerResults }) => {
       <Typography component="h1" variant="h2" className={classes.title}>
         Bets Placed
       </Typography>
-      <Paper className={classes.container}>
-        <div className={classes.tableContainer}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {columns.map(({ id, label }) => (
-                  <TableCell key={id}>{label}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={`market-report-bets-row-${uuid()}`}>
-                  {columns.map(({ id }) => {
-                    const data = row[id];
-                    const isSideBack = row.side === 'BACK';
-                    return (
-                      <TableCell key={`market-report-bets-cell-${id}-${uuid()}`}>
-                        {id === 'sizeMatched' ? (
-                          <span
-                            className={clsx(classes.betSide, {
-                              [classes.backText]: isSideBack,
-                              [classes.layText]: !isSideBack,
-                            })}
-                          >
-                            {row.sizeMatched}
-                          </span>
-                        ) : null}
-                        {id === 'win' ? (
-                          <span
-                            className={clsx(classes.betOutcome, {
-                              [classes.betWin]: row.win,
-                              [classes.betLose]: !row.win,
-                            })}
-                          >
-                            {row.win ? 'Won' : 'Lost'}
-                          </span>
-                        ) : null}
-                        {data}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              {columns.map(({ id, label }) => (
+                <TableCell key={id}>{label}</TableCell>
               ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Paper>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow hover role="checkbox" tabIndex={-1} key={`market-report-bets-row-${uuid()}`}>
+                {columns.map(({ id }) => {
+                  const data = row[id];
+                  const isSideBack = row.side === 'BACK';
+                  return (
+                    <TableCell key={`market-report-bets-cell-${id}-${uuid()}`}>
+                      {id === 'sizeMatched' ? (
+                        <span
+                          className={clsx(classes.betSide, {
+                            [classes.backText]: isSideBack,
+                            [classes.layText]: !isSideBack,
+                          })}
+                        >
+                          {row.sizeMatched}
+                        </span>
+                      ) : null}
+                      {id === 'win' ? (
+                        <span
+                          className={clsx(classes.betOutcome, {
+                            [classes.betWin]: row.win,
+                            [classes.betLose]: !row.win,
+                          })}
+                        >
+                          {row.win ? 'Won' : 'Lost'}
+                        </span>
+                      ) : null}
+                      {data}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
