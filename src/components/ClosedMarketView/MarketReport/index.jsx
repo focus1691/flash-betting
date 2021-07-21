@@ -39,11 +39,11 @@ const MarketReport = ({ matchedBets, runners, runnerResults }) => {
           <TableBody>
             {rows.map((row) => (
               <TableRow hover key={`market-report-row-${uuid()}`}>
-                {columns.map(({ title, align }) => {
+                {columns.map(({ title }) => {
                   const data = row[title];
                   const isBetCol = title === 'win' || title === 'lose' || title === 'settled';
                   return (
-                    <TableCell key={`market-report-cell-${title}-${uuid()}`} align={align}>
+                    <TableCell key={`market-report-cell-${title}-${uuid()}`}>
                       {title === 'result' ? (
                         <span
                           className={clsx(classes.marketOutcome, {

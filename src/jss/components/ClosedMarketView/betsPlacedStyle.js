@@ -23,6 +23,13 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  betTable: {
+    paddingBottom: theme.spacing(4),
+    '& span': {
+      fontFamily: 'Roboto',
+      color: '#EEEEEE',
+    }
+  },
   title: {
     backgroundColor: '#333F4B',
     boxShadow: '0px 6px 7px #00000029',

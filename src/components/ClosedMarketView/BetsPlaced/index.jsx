@@ -26,7 +26,7 @@ const BetsPlaced = ({ matchedBets, runners, runnerResults }) => {
         Bets Placed
       </Typography>
       <TableContainer component={Paper} className={classes.tableContainer}>
-        <Table stickyHeader>
+        <Table stickyHeader className={classes.betTable}>
           <TableHead>
             <TableRow>
               {columns.map(({ id, label }) => (
@@ -36,7 +36,7 @@ const BetsPlaced = ({ matchedBets, runners, runnerResults }) => {
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <TableRow hover role="checkbox" tabIndex={-1} key={`market-report-bets-row-${uuid()}`}>
+              <TableRow hover key={`market-report-bets-row-${uuid()}`}>
                 {columns.map(({ id }) => {
                   const data = row[id];
                   const isSideBack = row.side === 'BACK';

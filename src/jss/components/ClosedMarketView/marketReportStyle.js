@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   reportTable: {
     height: '100%',
+    paddingBottom: theme.spacing(4),
     '& span': {
       fontFamily: 'Roboto',
       color: '#EEEEEE',
