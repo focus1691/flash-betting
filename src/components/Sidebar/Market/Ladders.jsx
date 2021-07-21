@@ -57,7 +57,7 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
               [styles.ltpDecrease]: !isEmpty(ltp[0]) && !isEmpty(ltp[1]) && ladder.ltp[0] < ladder.ltp[1],
             })}
           >
-            {ltp}
+            {ltp[0]}
           </td>
           <td>{atb}</td>
           <td>
