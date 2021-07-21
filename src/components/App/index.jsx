@@ -134,19 +134,17 @@ const App = ({
       }
 
       if (marketDefinition.status === 'CLOSED') {
-        if (marketOpen) {
-          closeMarket();
-          const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
+        closeMarket();
+        const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
 
-          if (!isEmpty(marketBook)) {
-            const { runners } = marketBook[0];
-            // Load the runner results
-            loadRunnerResults(runners);
-          }
+        if (!isEmpty(marketBook)) {
+          const { runners } = marketBook[0];
+          // Load the runner results
+          loadRunnerResults(runners);
         }
       }
     },
-    [inPlayTime, marketOpen, marketId],
+    [inPlayTime, marketId],
   );
 
   /**
