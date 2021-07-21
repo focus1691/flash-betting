@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 //* @material-ui core
@@ -29,7 +29,7 @@ const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, h
       }, []);
 
       // call the api with the id and get new selections
-      const data = await fetchData(`/api/list-todays-card?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : undefined}&country=${isHorseRace ? JSON.stringify(countryCodes) : undefined}`);
+      const data = await fetchData(`/api/list-todays-card?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : ''}&country=${isHorseRace ? JSON.stringify(countryCodes) : ''}`);
 
       // set the old submenu as the type: children we received from the api
       if (data) {
@@ -37,10 +37,10 @@ const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, h
       }
     }
     // fetch the sport data
-    else if (_.isEmpty(myMarketsSubmenu.data)) {
+    else if (isEmpty(myMarketsSubmenu.data)) {
       const data = await fetchData(`/api/fetch-sport-data?id=${sportId}`);
-      if (data) {
-        updateMyMarketsSubmenu({ sportId, name, data, nodes: _.isEmpty(nodes) ? [] : nodes });
+      if (!isEmpty(data)) {
+        updateMyMarketsSubmenu({ sportId, name, data, nodes: isEmpty(nodes) ? [] : nodes });
       }
     } else {
       const newSubmenuList = { ...myMarketsSubmenu };
@@ -62,7 +62,7 @@ const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, h
   };
 
   useEffect(() => {
-    if (!_.isEmpty(myMarketsSubmenu) && myMarketsSubmenu.name.includes("Today's Card")) {
+    if (!isEmpty(myMarketsSubmenu) && myMarketsSubmenu.name.includes("Today's Card")) {
       //* Reset the market submenu if the 'WIN' or 'Horse Racing' settings are changed
       updateMyMarketsSubmenu({});
     }
@@ -70,11 +70,11 @@ const MyMarkets = ({ myMarketsSubmenu, updateMyMarketsSubmenu, winMarketsOnly, h
 
   return (
     <List className={classes.allSports}>
-      {_.isEmpty(myMarketsSubmenu.data) ? (
+      {isEmpty(myMarketsSubmenu.data) ? (
         <SelectMyMarkets setSubmenu={setSubmenu} />
       ) : (
         <>
-          {_.isEmpty(myMarketsSubmenu.nodes) ? <DeselectSubmenu key={`all-sports-deselect-${myMarketsSubmenu.sportId}`} name={myMarketsSubmenu.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} /> :
+          {isEmpty(myMarketsSubmenu.nodes) ? <DeselectSubmenu key={`all-sports-deselect-${myMarketsSubmenu.sportId}`} name={myMarketsSubmenu.name} isFirst index={0} isLast={false} deselectSubmenu={deselectSubmenu} /> :
           myMarketsSubmenu.nodes.map(({ id, name }, index) => (
             <DeselectSubmenu key={`my-markets-deselect-${id}`} name={name} index={index} isFirst={index === 0} isLast={index === myMarketsSubmenu.nodes.length - 1} deselectSubmenu={deselectSubmenu} />
           ))}

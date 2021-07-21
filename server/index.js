@@ -273,17 +273,24 @@ app.get('/api/get-all-sports', (req, res) => {
 });
 
 app.get('/api/list-todays-card', (req, res) => {
+  const filter = {
+    eventTypeIds: [req.query.id],
+    marketStartTime: {
+      from: new Date(new Date().setSeconds(new Date().getSeconds() - 3600)).toJSON(),
+      to: new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON(),
+    },
+  };
+
+  if (!_.isEmpty(req.query.marketTypes)) {
+    filter.marketTypeCodes = [req.query.marketTypes];
+  }
+  if (!_.isEmpty(req.query.country)) {
+    filter.marketCountries = JSON.parse(req.query.country);
+  }
+
   betfair.listMarketCatalogue(
     {
-      filter: {
-        eventTypeIds: [req.query.id],
-        marketTypeCodes: req.query.marketTypes !== 'undefined' ? [req.query.marketTypes] : undefined,
-        marketCountries: req.query.country !== 'undefined' ? JSON.parse(req.query.country) : undefined,
-        marketStartTime: {
-          from: new Date(new Date().setSeconds(new Date().getSeconds() - 3600)).toJSON(),
-          to: new Date(new Date().setSeconds(new Date().getSeconds() + 86400)).toJSON(),
-        },
-      },
+      filter,
       sort: 'FIRST_TO_START',
       maxResults: '1000',
       marketProjection: ['COMPETITION', 'EVENT', 'EVENT_TYPE', 'MARKET_START_TIME'],
@@ -323,7 +330,6 @@ app.get('/api/list-todays-card', (req, res) => {
         name: item.marketName,
         type: 'MARKET',
       }));
-
       res.json({ result: mappedResponse });
     },
   );
