@@ -16,11 +16,11 @@ const BottomPanel = ({ selectionId, expanded, setLadderExpanded, bottom, setLadd
   return (
     <div className={classes.container}>
       <div className={classes.controls}>
-        <IconButton onClick={() => setLadderExpanded(selectionId)}>
+        <IconButton onClick={() => setLadderExpanded(selectionId)} className={classes.controlBtn}>
           <img src={`${window.location.origin}/icons/caret-arrow-up.png`} alt="" />
         </IconButton>
         <IconButton
-          className={clsx({
+          className={clsx(classes.controlBtn, {
             [classes.selected]: bottom === 'bets',
           })}
           onClick={() => setLadderBottom(selectionId, 'bets')}
@@ -28,7 +28,7 @@ const BottomPanel = ({ selectionId, expanded, setLadderExpanded, bottom, setLadd
           <img src={`${window.location.origin}/icons/poker-chip.png`} alt="" />
         </IconButton>
         <IconButton
-          className={clsx({
+          className={clsx(classes.controlBtn, {
             [classes.selected]: bottom === 'graph',
           })}
           onClick={() => setLadderBottom(selectionId, 'graph')}

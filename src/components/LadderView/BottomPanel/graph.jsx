@@ -4,21 +4,22 @@ import { connect } from 'react-redux';
 import useInterval from '../../../hooks/useInterval';
 //* constants
 import { FIVE_SECONDS } from '../../../constants';
+//* Styles
+import useStyles from '../../../jss/components/LadderView/BottomContainer/graphStyle';
 
 const Graph = ({ marketId, selectionId }) => {
+  const styles = useStyles();
   const [graph, setGraph] = useState(null);
 
   useEffect(() => {
-    const URI = `https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selectionId}`;
-    setGraph(URI);
+    setGraph(`https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selectionId}`);
   }, []);
 
   useInterval(() => {
-    const URI = `https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selectionId}`;
-    setGraph(URI);
+    setGraph(`https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selectionId}`);
   }, FIVE_SECONDS);
 
-  return graph ? <img alt="" src={graph} /> : null;
+  return graph ? <img alt="" src={graph} className={styles.graph} /> : null;
 };
 
 const mapStateToProps = (state) => ({

@@ -53,7 +53,7 @@ const AllSports = ({ sports, submenuList, winMarketsOnly, horseRaces, setAllSpor
       }, []);
 
       // call the api with the id and get new selections
-      const data = await fetchData(`/api/list-todays-card?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : ''}&country=${JSON.stringify(isHorseRace ? countryCodes : [])}`);
+      const data = await fetchData(`/api/list-todays-card?id=${sportId}&marketTypes=${winMarketsOnly === true ? 'WIN' : ''}&country=${isHorseRace ? JSON.stringify(countryCodes) : ''}`);
 
       // set the old submenu as the type: children we received from the api
       if (data) {

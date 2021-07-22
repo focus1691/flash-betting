@@ -80,7 +80,6 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 'small',
       fontWeight: '400',
       textAlign: 'center',
-      overflow: 'scroll',
       margin: theme.spacing(`calc(${theme.spacing(1)}px / 4)`, 1),
       borderRadius: theme.spacing(3),
       display: 'table-cell',
@@ -93,8 +92,6 @@ const useStyles = makeStyles((theme) => ({
     },
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '3.5em',
-    maxHeight: '3.5em',
   },
 }));
 
