@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     '&::-webkit-scrollbar': {
       display: 'none',
     },
+    '& tr:first-of-type': {
+      height: '100%', 
+    },
     '& td': {
       width: '20%',
       margin: '0',
@@ -19,8 +22,12 @@ const useStyles = makeStyles((theme) => ({
         width: '40%',
       },
       '&:nth-child(2)': {
-        display: 'block',
         width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexFlow: 'column-reverse',
+        alignItems: 'center',
+        justifyContent: 'center',
       },
       '&:nth-child(3)': {
         width: '40%',
@@ -40,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
       marginBottom: '2px',
       width: '100%',
-      height: '100%',
       color: '#ffffff',
       backgroundColor: 'Transparent',
       backgroundRepeat: 'no-repeat',
@@ -86,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   orderBody: {
+    height: '100%',
     overflowY: 'scroll',
     '&::-webkit-scrollbar': {
       display: 'none',

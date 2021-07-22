@@ -268,6 +268,7 @@ const App = ({
       const marketCatalogue = await fetchData(`/api/get-market-info?marketId=${marketId}`);
 
       if (!isEmpty(marketCatalogue)) {
+        console.log('market catlaogue empty');
         console.log(marketCatalogue[0]);
         const { marketId, marketName, marketStartTime, description, event, eventType, runners } = marketCatalogue[0];
         setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
@@ -288,11 +289,13 @@ const App = ({
 
         if (!isEmpty(marketBook)) {
           const { marketId, status, runners } = marketBook[0];
-          console.log(marketBook, runners);
           // Load the results
           setMarketId(marketId);
           setMarketStatus(status);
           loadRunnerResults(runners);
+          if (status === 'CLOSED') {
+            closeMarket();
+          }
         }
       }
     }

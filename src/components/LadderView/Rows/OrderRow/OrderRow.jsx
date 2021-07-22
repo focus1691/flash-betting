@@ -139,14 +139,14 @@ const OrderRow = memo(
         <table>
           <tbody>
             <tr>
-              <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
+              <td colSpan={3} rowSpan={4}>
                 <table className={classes.orderTable}>
                   <tbody className={classes.orderBody}>
                     {renderUnmatchedBets()}
                   </tbody>
                 </table>
               </td>
-              <td colSpan={1} rowSpan={4} style={{ verticalAlign: 'top', minHeight: '1.675em' }}>
+              <td colSpan={1} rowSpan={4}>
                 <button type="button">0</button>
                 <button type="button" onClick={handleButtonClick}>
                   {priceType === 'STAKE' ? 'S' : 'L'}
@@ -155,7 +155,7 @@ const OrderRow = memo(
                   K
                 </button>
               </td>
-              <td colSpan={3} rowSpan={4} style={{ verticalAlign: 'top' }}>
+              <td colSpan={3} rowSpan={4}>
                 <table className={classes.orderTable}>
                   <tbody className={classes.orderBody}>{renderMatchedBets()}</tbody>
                 </table>
