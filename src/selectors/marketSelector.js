@@ -7,39 +7,21 @@ const getLadderSelector = (state, { selectionId }) => state[selectionId];
 
 const getRunnerSelector = (state, { selectionId }) => state[selectionId];
 
-export const getSportId = createSelector(
-  (state) => state,
-  (state) => state.id,
-);
+export const getSportId = createSelector((state) => state, (state) => state.id);
 
-export const getRunner = createSelector(
-  getRunnerSelector,
-  (runner) => runner,
-);
+export const getRunner = createSelector(getRunnerSelector, (runner) => runner);
 
-export const getLadder = createSelector(
-  getLadderSelector,
-  (ladder) => ladder,
-);
+export const getLadder = createSelector(getLadderSelector, (ladder) => ladder);
 
-export const getLTP = createSelector(
-  getLadderSelector,
-  (ladder) => ((ladder && ladder.ltp) ? ladder.ltp : null),
-);
+export const getLTP = createSelector(getLadderSelector, (ladder) => ((ladder && ladder.ltp) ? ladder.ltp : null));
 
 const getPLSelector = (state, { selectionId }) => state[selectionId];
 
-export const getPL = createSelector(
-  getPLSelector,
-  (pl) => pl,
-);
+export const getPL = createSelector(getPLSelector, (pl) => pl);
 
 const getLTPCheckerSelector = (state, { selectionId, price }) => parseFloat(state[selectionId].ltp[0]) === parseFloat(price);
 
-export const getIsLTP = createSelector(
-  getLTPCheckerSelector,
-  (isLTP) => isLTP,
-);
+export const getIsLTP = createSelector(getLTPCheckerSelector, (isLTP) => isLTP);
 
 const getVolumeLTP = (state, { selectionId, price }) => ({ trd: state[selectionId].trd, trdo: state[selectionId].trdo[formatPriceKey(price)] });
 
