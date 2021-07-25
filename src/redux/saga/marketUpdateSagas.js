@@ -13,9 +13,10 @@ function* processMarketUpdates(action) {
     for (let j = 0; j < rc.length; j += 1) {
       yield put(loadLadder(rc[j]));
 
+      const { id, ltp } = rc[j];
+
       // The Last Traded Price has changed which can trigger the Stop Entry / Stop Loss
-      if (rc[j].ltp) {
-        const { id, ltp } = rc[j];
+      if (ltp) {
         yield call(executeStopEntry, id, ltp);
 
         // Stop Loss
