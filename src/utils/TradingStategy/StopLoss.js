@@ -1,6 +1,4 @@
 import { ALL_PRICES } from '../Bets/PriceCalculations';
-import CalculateLadderHedge from '../ladder/CalculateLadderHedge';
-import { updateTicks } from '../../http/dbHelper';
 
 export const calcStopLossPrice = (price, ticks, side, percent = false) => {
   price = Number(price);
@@ -36,24 +34,3 @@ export const checkStopLossHit = ({ price, side }, LTP) => {
 };
 
 export const isStopLossTriggered = (SL, rfs, sizeRemaining) => SL && !SL.assignedIsOrderMatched && SL.rfs == rfs && sizeRemaining == 0;
-
-export const checkAndExecuteStopLoss = (stopLoss, currentLTP, ltp, matchedBets, placeStopLossBet, updateStopLossTicks) => {
-  if (!stopLoss) return;
-
-  const { marketId, selectionId, side, price, trailing } = stopLoss;
-
-  const prevLTP = ltp[1] || ltp[0];
-
-  const targetMet = checkStopLossHit(stopLoss, currentLTP);
-
-  if (targetMet) {
-    const selectionMatchedBets = Object.values(matchedBets).filter((bet) => bet.selectionId == selectionId);
-    const { size } = CalculateLadderHedge(parseFloat(price), selectionMatchedBets, 'hedged');
-    placeStopLossBet({ marketId, selectionId, side, size, price });
-  }
-  else if (trailing && ((currentLTP < prevLTP && side === 'BACK') || (currentLTP > prevLTP && side === 'LAY'))) {
-    stopLoss.ticks += 1;
-    updateTicks(stopLoss); //! Update SQLite with new ticks
-    updateStopLossTicks({ selectionId, ticks: stopLoss.ticks });
-  }
-};

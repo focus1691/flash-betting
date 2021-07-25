@@ -1,5 +1,7 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import { setInitialClk, setClk, addNonRunners, loadLadder } from '../actions/market';
+import executeStopEntry from './stopEntrySaga';
+import executeStopLoss from './stopLossSagas';
 
 function* processMarketUpdates(action) {
   const { mc, clk, initialClk } = action.payload;
@@ -10,6 +12,15 @@ function* processMarketUpdates(action) {
     // Load each ladder individually
     for (let j = 0; j < rc.length; j += 1) {
       yield put(loadLadder(rc[j]));
+
+      // The Last Traded Price has changed which can trigger the Stop Entry / Stop Loss
+      if (rc[j].ltp) {
+        const { id, ltp } = rc[j];
+        yield call(executeStopEntry, id, ltp);
+
+        // Stop Loss
+        yield call(executeStopLoss, id, ltp);
+      }
     }
 
     // Remove the non-runners
