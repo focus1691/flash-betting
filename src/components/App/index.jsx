@@ -59,7 +59,7 @@ import ConnectionStatus from '../ConnectionStatus';
 //* JSS
 import useStyles from '../../jss';
 //* Constants
-import { FLASH_BETTING_URI } from '../../constants';
+import { FLASH_BETTING_URL } from '../../constants';
 
 const cookies = new Cookies();
 
@@ -112,7 +112,7 @@ const App = ({
     const vendorClientId = await fetchData('/api/get-vendor-client-id');
     if (vendorClientId) {
       setUserId(vendorClientId);
-      const isPremium = await fetchData(`${FLASH_BETTING_URI}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
+      const isPremium = await fetchData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
       console.log(vendorClientId, isPremium);
       if (isPremium.error) {
         setPremiumStatus(false);

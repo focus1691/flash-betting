@@ -5,7 +5,7 @@ import Spinner from './App/Spinner';
 //* HTTP
 import fetchData from '../http/fetchData';
 //* Constants
-import { FLASH_BETTING_URI } from '../constants';
+import { FLASH_BETTING_URL } from '../constants';
 
 const cookies = new Cookies();
 
@@ -23,7 +23,7 @@ const Authentication = () => {
           const vendorClientId = await fetchData('/api/get-vendor-client-id');
 
           if (vendorClientId) {
-            const { error } = await fetchData(`${FLASH_BETTING_URI}refresh-access-token?vendorClientId=${vendorClientId}`);
+            const { error } = await fetchData(`${FLASH_BETTING_URL}refresh-access-token?vendorClientId=${vendorClientId}`);
             if (!error) {
               setIsAuthenticated(true);
             }
