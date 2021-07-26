@@ -28,7 +28,7 @@ export default function* executeStopEntry(id, ltp) {
       yield call(removeBet, { rfs }); // Remove from database
     }
     const extractedRfs = yield call(extractStopEntryRfs, targetsMet);
-    yield put(removeMultiSelectionStopEntryBets, extractedRfs);
+    yield put(removeMultiSelectionStopEntryBets(extractedRfs));
   }
 }
 
