@@ -26,7 +26,6 @@ import Container from './Container';
 import Header from './Header';
 import BottomPanel from './BottomPanel';
 import LadderRow from './Rows/LadderRow';
-import OrderRow from './Rows/OrderRow/OrderRow';
 import PercentageRow from './Rows/PercentageRow/PercentageRow';
 import PriceRow from './Rows/PriceRow';
 //* HTTP

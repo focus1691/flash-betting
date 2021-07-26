@@ -38,8 +38,8 @@ const Ladders = ({ eventTypeId, ladders, ladderOrder, sortedLadder, updateLadder
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
   marketStatus: state.market.status,
-  sortedLadder: state.market.sortedLadder, //! Sorted by LTP
-  ladderOrder: state.ladder.ladderOrder, //! For the ladderview specifically when swapping ladders
+  sortedLadder: state.market.sortedLadder,
+  ladderOrder: state.ladder.ladderOrder,
   excludedLadders: state.ladder.excludedLadders,
   eventTypeId: state.market.eventType.id,
   ladders: state.market.ladder,

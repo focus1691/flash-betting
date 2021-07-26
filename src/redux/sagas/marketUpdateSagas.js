@@ -18,8 +18,6 @@ function* processMarketUpdates(action) {
       // The Last Traded Price has changed which can trigger the Stop Entry / Stop Loss
       if (ltp) {
         yield call(executeStopEntry, id, ltp);
-
-        // Stop Loss
         yield call(executeStopLoss, id, ltp);
       }
     }
