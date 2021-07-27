@@ -46,6 +46,7 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
     sortedLadder.map((selectionId) => {
       const { atb, atl, ltp } = deconstructLadder(ladder[selectionId]);
       const runnerName = runners[selectionId] ? runners[selectionId].runnerName : '';
+      const isSelected = excludedLadders.indexOf(selectionId) === -1;
       return (
         <tr key={`sidebar-ladder${runnerName}`}>
           <td>{runnerName}</td>
@@ -63,7 +64,7 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
           <td>
             <input
               type="checkbox"
-              checked={excludedLadders.indexOf(selectionId) === -1} // false automatically omits attribute
+              checked={isSelected}
               onChange={handleRunnerSelection(selectionId)}
             />
           </td>
