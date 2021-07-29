@@ -1,3 +1,8 @@
+export const setLadderLoaded = () => ({
+  type: 'SET_LADDER_LOADED',
+  payload: true,
+});
+
 export const updateExcludedLadders = (ladders) => ({
   type: 'EXCLUDE_LADDERS',
   payload: ladders,

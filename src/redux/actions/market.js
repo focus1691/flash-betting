@@ -1,4 +1,3 @@
-//!
 export const processMarketUpdates = (data) => ({
   type: 'PROCESS_MARKET_UPDATES',
   payload: data,

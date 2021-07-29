@@ -1,4 +1,5 @@
 const initialState = {
+  isLoaded: false,
   excludedLadders: [],
   ladderOrder: {},
   layFirstCol: true,
@@ -10,6 +11,8 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'SET_LADDER_LOADED':
+      return { ...state, isLoaded: action.payload };
     case 'EXCLUDE_LADDERS':
       return { ...state, excludedLadders: action.payload };
     case 'UPDATE_LADDER_ORDER':

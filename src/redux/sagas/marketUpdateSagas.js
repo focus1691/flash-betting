@@ -1,7 +1,9 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
-import { setInitialClk, setClk, addNonRunners, loadLadder } from '../actions/market';
+import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { setInitialClk, setClk, addNonRunners, loadLadder, setSortedLadder } from '../actions/market';
+import { setLadderLoaded, updateLadderOrder, updateExcludedLadders } from '../actions/ladder';
 import executeStopEntry from './stopEntrySaga';
 import executeStopLoss from './stopLossSagas';
+import { SAFE_LADDER_LIMIT } from '../../constants';
 
 function* processMarketUpdates(action) {
   const { mc, clk, initialClk } = action.payload;
@@ -20,6 +22,19 @@ function* processMarketUpdates(action) {
         yield call(executeStopEntry, id, ltp);
         yield call(executeStopLoss, id, ltp);
       }
+    }
+
+    // Ladders are sorted in order of LTP after each update
+    yield put(setSortedLadder());
+
+    // A check to see if the ladders have been loaded for the first time
+    const isLoaded = yield select(state => state.ladder.isLoaded);
+
+    if (!isLoaded) {
+      const sortedLadder = yield select(state => state.market.sortedLadder);
+      yield put(updateLadderOrder({ ...sortedLadder }));
+      yield put(updateExcludedLadders(sortedLadder.slice(SAFE_LADDER_LIMIT, sortedLadder.length)));
+      yield put(setLadderLoaded());
     }
 
     // Remove the non-runners

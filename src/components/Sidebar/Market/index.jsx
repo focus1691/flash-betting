@@ -15,7 +15,7 @@ import { removeAllTickOffset } from '../../../redux/actions/tickOffset';
 import { removeAllFillOrKill } from '../../../redux/actions/fillOrKill';
 import { setGraphExpanded, setLaddersExpanded, setMarketInfoExpanded, setMatchedBetsExpanded, setRulesExpanded, setToolsExpanded, setUnmatchedBetsExpanded } from '../../../redux/actions/settings';
 import { setSortedLadder } from '../../../redux/actions/market';
-import { updateExcludedLadders, updateLadderOrder } from '../../../redux/actions/ladder';
+import { updateLadderOrder } from '../../../redux/actions/ladder';
 import Graph from './Graphs';
 import Ladders from './Ladders';
 import MarketInfo from './MarketInfo';
@@ -24,7 +24,7 @@ import Tools from './Tools';
 import Rules from './Rules';
 import UnmatchedBets from './UnmatchedBets/UnmatchedBets';
 import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
-import { sortLaddersByLTP } from '../../../utils/ladder/SortLadder';
+import { sortLadders } from '../../../utils/ladder/SortLadder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market';
 //* Custom @material-ui components
@@ -58,7 +58,6 @@ const Market = ({
   ladders,
   eventTypeId,
   setSortedLadder,
-  updateExcludedLadders,
   updateLadderOrder,
   cancelMarketBets,
   removeAllBackBets,
@@ -92,9 +91,9 @@ const Market = ({
     (e) => {
       e.stopPropagation();
       setLaddersExpanded(true);
-      sortLaddersByLTP(eventTypeId, ladders, updateLadderOrder, setSortedLadder, updateExcludedLadders);
+      sortLadders(eventTypeId, ladders, updateLadderOrder, setSortedLadder);
     },
-    [eventTypeId, ladders, setLaddersExpanded],
+    [eventTypeId, ladders],
   );
 
   const renderTitle = (name, position) => (
@@ -216,7 +215,6 @@ const mapDispatchToProps = {
   setRulesExpanded,
   updateLadderOrder,
   setSortedLadder,
-  updateExcludedLadders,
   cancelMarketBets,
   removeAllBackBets,
   removeAllLayBets,
