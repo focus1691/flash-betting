@@ -1,27 +1,20 @@
 import React, { memo } from 'react';
+import uuid from 'react-uuid';
 import { connect } from 'react-redux';
-import clsx from  'clsx';
+import clsx from 'clsx';
 import { getCandleStickColor, getVolume, getVolumeDivider } from '../../../selectors/marketSelector';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/volumeStyle';
 
-const LadderVolumeCell = memo(({
-  ltpList, price, selectionId, vol, candleStickInfo, volFraction,
-}) => {
+const VolumeCell = memo(({ price, selectionId, vol, candleStickInfo, volFraction }) => {
   const classes = useStyles();
-  const volumeVal = vol || 0;
   return (
     <div className={clsx(classes.candleStick, 'td')} colSpan={3}>
-      {candleStickInfo.map((item, idx) => (
-        <img
-          key={`ladder-volume-${selectionId}-${price}-${idx}`}
-          src={`${window.location.origin}/icons/${item.color === 'R' ? 'Red_Candlestick.svg' : 'Green_Candlestick.svg'}`}
-          alt=""
-          style={{ right: item.index * 2 }}
-        />
+      {candleStickInfo.map((item) => (
+        <img key={`ladder-volume-${selectionId}-${price}-${uuid()}`} src={`${window.location.origin}/icons/${item.color === 'R' ? 'Red_Candlestick.svg' : 'Green_Candlestick.svg'}`} alt="" style={{ right: item.index * 2 }} />
       ))}
       <div className={classes.volumeCol} style={{ width: `${volFraction / 2}%` }}>
-        {volumeVal === 0 ? null : volumeVal}
+        {vol || null}
       </div>
     </div>
   );
@@ -45,4 +38,4 @@ const mapStateToProps = (state, { selectionId, price }) => ({
   }),
 });
 
-export default connect(mapStateToProps)(memo(LadderVolumeCell, isMoving));
+export default connect(mapStateToProps)(memo(VolumeCell, isMoving));

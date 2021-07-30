@@ -10,9 +10,7 @@ const arePropsEqual = (prevProps, nextProps) => {
   return true;
 };
 
-const LadderLTPCell = memo(({
-  price, isLTP, ltp, ltpDelta,
-}) => {
+const LTPCell = memo(({ price, isLTP, ltp, ltpDelta }) => {
   const ltpStyle = isLTP ? getLTPstyle(ltp, ltpDelta) : { background: '#333f4b' };
 
   return (
@@ -28,4 +26,4 @@ const mapStateToProps = (state, { selectionId, price }) => ({
   ltpDelta: getLTPDelta(state.market.ladder, { selectionId }),
 });
 
-export default connect(mapStateToProps)(LadderLTPCell);
+export default connect(mapStateToProps)(LTPCell);
