@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 //* Actions
-import { cancelMarketBets } from '../../../redux/actions/bet';
 import { removeAllBackBets } from '../../../redux/actions/back';
 import { removeAllLayBets } from '../../../redux/actions/lay';
 import { removeAllStopEntryBets } from '../../../redux/actions/stopEntry';
@@ -27,6 +26,7 @@ import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
 import { sortLadders } from '../../../utils/ladder/SortLadder';
 //* HTTP
 import updateCustomOrder from '../../../http/updateCustomOrder';
+import { cancelMarketBets } from '../../../http/placeBets';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market';
 //* Custom @material-ui components
@@ -61,7 +61,6 @@ const Market = ({
   eventTypeId,
   setSortedLadder,
   updateLadderOrder,
-  cancelMarketBets,
   removeAllBackBets,
   removeAllLayBets,
   removeAllStopEntryBets,
@@ -92,7 +91,7 @@ const Market = ({
       // The SQLite store should also remove the custom orders by marketId
       updateCustomOrder('remove-all-bets', { marketId });
     },
-    [cancelMarketBets, marketId, removeAllBackBets, removeAllFillOrKill, removeAllLayBets, removeAllStopEntryBets, removeAllStopLoss, removeAllTickOffset, setUnmatchedBetsExpanded, unmatchedMarketBets],
+    [marketId, removeAllBackBets, removeAllFillOrKill, removeAllLayBets, removeAllStopEntryBets, removeAllStopLoss, removeAllTickOffset, setUnmatchedBetsExpanded, unmatchedMarketBets],
   );
 
   const reorderByLTP = useCallback(
@@ -223,7 +222,6 @@ const mapDispatchToProps = {
   setRulesExpanded,
   updateLadderOrder,
   setSortedLadder,
-  cancelMarketBets,
   removeAllBackBets,
   removeAllLayBets,
   removeAllStopEntryBets,

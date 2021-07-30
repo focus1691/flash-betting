@@ -2,7 +2,6 @@ import React, { memo, useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
 //* Actions
-import { cancelBets } from '../../../../redux/actions/bet';
 import { removeAllSelectionBackBets } from '../../../../redux/actions/back';
 import { removeAllSelectionLayBets } from '../../../../redux/actions/lay';
 import { removeStopLossOnSide } from '../../../../redux/actions/stopLoss';
@@ -14,12 +13,13 @@ import { getLTPstyle } from '../../../../utils/ladder/DeconstructLadder';
 import CancelBets from './CancelBets';
 //* HTTP
 import updateCustomOrder from '../../../../http/updateCustomOrder';
+import { cancelBets } from '../../../../http/placeBets';
 //* Selectors
 import { getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* JSS
 import useStyles from '../../../../jss/components/LadderView/percentageRowStyle';
 
-const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstCol, unmatchedBets, setBackLayColOrder, cancelBets, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
+const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstCol, unmatchedBets, setBackLayColOrder, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
   const classes = useStyles();
   const ltpStyle = useMemo(() => getLTPstyle(ltp, ltpDelta), [ltp, ltpDelta]);
 
@@ -35,7 +35,7 @@ const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstC
       removeStopEntryBetsOnSide({ selectionId, side });
 
       // Remove any unmatched bets on this selectionId and side
-      cancelBets(selectionId, side, unmatchedBets);
+      cancelBets(unmatchedBets, selectionId, side);
 
       // Finally, all custom orders set by the tools are removed by selectionId and side
       updateCustomOrder('remove-selection-bets-on-side', { selectionId, side });
@@ -75,6 +75,6 @@ const mapStateToProps = (state, { selectionId }) => ({
   unmatchedBets: getSelectionUnmatchedBets(state.order.bets, { selectionId }),
 });
 
-const mapDispatchToProps = { setBackLayColOrder, cancelBets, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide };
+const mapDispatchToProps = { setBackLayColOrder, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow);

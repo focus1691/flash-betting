@@ -22,7 +22,7 @@ export const getUnmatchedBetsOnRow = createSelector(getUnmatchedBetsOnRowSelecto
 }) => {
   if (unmatched) {
     const unmatchedBets = Object.values(unmatched).filter((bet) => bet.selectionId == selectionId && parseFloat(bet.price) == parseFloat(price) && bet.side === side);
-    return unmatchedBets.length > 0 ? unmatchedBets : undefined;
+    return unmatchedBets.length > 0 ? unmatchedBets : [];
   }
-  return undefined;
+  return [];
 });

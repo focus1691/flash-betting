@@ -5,6 +5,8 @@ import clsx from 'clsx';
 import { connect } from 'react-redux';
 //* Actions
 import { placeOrder } from '../../../redux/actions/bet';
+//* HTTP
+import { cancelMarketBets } from '../../../http/placeBets';
 //* Selectors
 import { getUnmatchedBetsOnRow } from '../../../selectors/orderSelector';
 //* Utils
@@ -21,7 +23,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBets, sid
 
   const handleClick = useCallback(() => {
     if (unmatchedBets) {
-      //
+      cancelMarketBets(marketId, unmatchedBets);
     }
     else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);

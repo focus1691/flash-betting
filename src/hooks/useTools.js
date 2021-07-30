@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import useInterval from 'react-useinterval';
 import { useSelector, useDispatch } from 'react-redux';
 //* Actions
-import { addUnmatchedBet, addMatchedBet, placeOrder, cancelBet, removeUnmatchedBets, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
+import { addUnmatchedBet, addMatchedBet, placeOrder, removeUnmatchedBets, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
 import { removeBackBet } from '../redux/actions/back';
 import { removeLayBet } from '../redux/actions/lay';
 import { removeFillOrKill } from '../redux/actions/fillOrKill';
@@ -45,7 +45,7 @@ export default function useTest() {
       checkBackLayBetsAndExecute(layList, marketStartTime, placeOrder, inPlay, removeLayBet, dispatch);
 
       //* FOK
-      checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, updateCustomOrder, dispatch);
+      checkFOKBetsAndExecute(fillOrKillList, removeFillOrKill, updateCustomOrder, dispatch);
 
       try {
         const { currentOrders } = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);

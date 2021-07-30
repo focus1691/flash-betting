@@ -3,7 +3,7 @@ import uuid from 'react-uuid';
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { cancelBet, removeUnmatchedBet, updateBetPrice } from '../../../../redux/actions/bet';
+import { removeUnmatchedBet, updateBetPrice } from '../../../../redux/actions/bet';
 import { removeBackBet, updateBackBetPrice } from '../../../../redux/actions/back';
 import { removeLayBet, updateLayBetPrice } from '../../../../redux/actions/lay';
 import { removeStopEntryBet, updateStopEntryBetPrice } from '../../../../redux/actions/stopEntry';
@@ -17,6 +17,7 @@ import { getPriceNTicksAway } from '../../../../utils/Bets/PriceCalculations';
 import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* HTTP
 import postData from '../../../../http/postData';
+import { cancelBet } from '../../../../http/placeBets';
 import Bet from './Bet';
 //* JSS
 import useStyles from '../../../../jss/components/Sidebar/market/betsStyle';
@@ -34,7 +35,6 @@ const UnmatchedBets = ({
   fillOrKillList,
   unmatchedBets,
   updateBetPrice,
-  cancelBet,
   removeUnmatchedBet,
   removeBackBet,
   updateBackBetPrice,
@@ -237,7 +237,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   updateBetPrice,
-  cancelBet,
   removeUnmatchedBet,
   removeBackBet,
   updateBackBetPrice,

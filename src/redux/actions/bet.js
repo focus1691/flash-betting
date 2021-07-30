@@ -78,30 +78,6 @@ export const placeOrder = (bet) => {
   };
 };
 
-export const cancelBet = async (marketId, betId) => {
-  await postData('/api/cancel-order', { marketId, betId });
-};
-
-export const cancelBets = (selectionId, side, unmatchedBets) => {
-  const betIds = Object.keys(unmatchedBets);
-
-  for (let i = 0; i < betIds.length; i += 1) {
-    const betId = betIds[i];
-    if (unmatchedBets[betId].selectionId === selectionId && (!side || side === unmatchedBets[betId].side)) {
-      const { marketId } = unmatchedBets[betId];
-      cancelBet(marketId, betId);
-    }
-  }
-};
-
-export const cancelMarketBets = (marketId, unmatchedBets) => {
-  for (let i = 0; i < unmatchedBets.length; i += 1) {
-    const { betId } = unmatchedBets[i];
-
-    cancelBet(marketId, betId)
-  }
-};
-
 export const updateBetPrice = (data) => ({
   type: 'UPDATE_BET_PRICE',
   payload: data,

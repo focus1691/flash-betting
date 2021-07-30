@@ -1,7 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
 //* Actions
-import { cancelBet, cancelBets } from '../../../../redux/actions/bet';
 import { changePriceType } from '../../../../redux/actions/ladder';
 import { removeBackBet, removeAllSelectionBackBets } from '../../../../redux/actions/back';
 import { removeLayBet, removeAllSelectionLayBets } from '../../../../redux/actions/lay';
@@ -11,6 +10,8 @@ import { removeTickOffset } from '../../../../redux/actions/tickOffset';
 import { removeFillOrKill } from '../../../../redux/actions/fillOrKill';
 import { MatchedBet } from './MatchedBet';
 import { UnmatchedBet } from './UnmatchedBet';
+//* HTTP
+import { cancelBet, cancelBets } from '../../../../http/placeBets';
 //* Selectors
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
@@ -30,8 +31,6 @@ const OrderRow = memo(
     fokList,
     seList,
     priceType,
-    cancelBet,
-    cancelBets,
     changePriceType,
     removeBackBet,
     removeAllSelectionBackBets,
@@ -70,7 +69,7 @@ const OrderRow = memo(
             break;
         }
       },
-      [cancelBet, fokList, removeBackBet, removeFillOrKill, removeLayBet, removeStopLoss, removeTickOffset, selectionId],
+      [fokList, removeBackBet, removeFillOrKill, removeLayBet, removeStopLoss, removeTickOffset, selectionId],
     );
 
     const cancelAllSelectionBets = useCallback(() => {
@@ -79,8 +78,8 @@ const OrderRow = memo(
       removeAllSelectionStopEntryBets({ selectionId });
       removeStopLoss({ selectionId });
       removeTickOffset({ selectionId });
-      cancelBets(selectionId, null, unmatchedBets);
-    }, [cancelBets, removeAllSelectionBackBets, removeAllSelectionLayBets, removeAllSelectionStopEntryBets, removeStopLoss, removeTickOffset, selectionId, unmatchedBets]);
+      cancelBets(unmatchedBets, selectionId);
+    }, [removeAllSelectionBackBets, removeAllSelectionLayBets, removeAllSelectionStopEntryBets, removeStopLoss, removeTickOffset, selectionId, unmatchedBets]);
 
     const handleButtonClick = useCallback(() => {
       changePriceType(priceType === 'STAKE' ? 'LIABILITY' : 'STAKE');
@@ -180,6 +179,6 @@ const mapStateToProps = (state, { selectionId }) => ({
   seList: state.stopEntry.list,
 });
 
-const mapDispatchToProps = { changePriceType, cancelBet, cancelBets, removeBackBet, removeAllSelectionBackBets, removeLayBet, removeAllSelectionLayBets, removeAllSelectionStopEntryBets, removeStopLoss, removeTickOffset, removeFillOrKill };
+const mapDispatchToProps = { changePriceType, removeBackBet, removeAllSelectionBackBets, removeLayBet, removeAllSelectionLayBets, removeAllSelectionStopEntryBets, removeStopLoss, removeTickOffset, removeFillOrKill };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderRow);
