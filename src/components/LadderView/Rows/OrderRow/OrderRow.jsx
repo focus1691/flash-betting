@@ -15,8 +15,6 @@ import { cancelBet, cancelBets } from '../../../../http/placeBets';
 import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* Selectors
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
-//* Utils
-import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* JSS
 import useStyles from '../../../../jss/components/LadderView/OrderRow';
 

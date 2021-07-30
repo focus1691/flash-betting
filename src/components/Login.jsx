@@ -38,14 +38,25 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = e.currentTarget;
+    let {
+      password: { value: password },
+    } = e.currentTarget;
+    const {
+      email: { value: user },
+      twofactorauthentication: { value: twoFactorAuthentication },
+    } = e.currentTarget;
+
+    if (twoFactorAuthentication) {
+      password = password.concat(twoFactorAuthentication);
+    }
+
     const response = await fetch('/api/login', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       method: 'POST',
-      body: JSON.stringify({ user: email.value, password: password.value }),
+      body: JSON.stringify({ user, password }),
     });
     const data = await response.json();
     const { error } = data;
@@ -53,7 +64,7 @@ const Login = () => {
 
     if (error) {
       setError(errorList[error]);
-    } else if (cookies.get('sessionKey')) {
+    } else if (sessionKey) {
       setError('');
       setSessionKey(sessionKey);
     }
@@ -104,6 +115,20 @@ const Login = () => {
               type="password"
               autoComplete="current-password"
               placeholder="Enter your Password"
+              InputProps={{
+                className: classes.loginInput,
+              }}
+            />
+            <TextField
+              className={classes.loginTextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="twofactorauthentication"
+              label="2-step Authentication Code"
+              type="text"
+              autoComplete="2fa"
+              placeholder="2FA"
               InputProps={{
                 className: classes.loginInput,
               }}
