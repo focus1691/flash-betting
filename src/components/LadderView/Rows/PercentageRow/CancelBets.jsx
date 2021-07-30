@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 
-export default ({ cancelBets, side, layFirstCol }) => {
+export default ({ cancelBetsOnSide, side, layFirstCol }) => {
   const [text, setText] = useState('');
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default ({ cancelBets, side, layFirstCol }) => {
 
   return (
     <Tooltip title={`Cancel selection ${text} bets`} aria-label="Cancel selections">
-      <div className="th" role="button" tabIndex="0" onClick={() => cancelBets(side)} />
+      <div className="th" role="button" tabIndex="0" onClick={() => cancelBetsOnSide(side)} />
     </Tooltip>
   );
 };

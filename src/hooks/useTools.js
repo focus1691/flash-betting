@@ -1,7 +1,8 @@
+import { isEmpty } from 'lodash';
 import useInterval from 'react-useinterval';
 import { useSelector, useDispatch } from 'react-redux';
 //* Actions
-import { addUnmatchedBet, addMatchedBet, placeOrder, cancelBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
+import { addUnmatchedBet, addMatchedBet, placeOrder, cancelBet, removeUnmatchedBets, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
 import { removeBackBet } from '../redux/actions/back';
 import { removeLayBet } from '../redux/actions/lay';
 import { removeFillOrKill } from '../redux/actions/fillOrKill';
@@ -112,11 +113,10 @@ export default function useTest() {
           }
         }
         // Check to see if a bet exists in unmatched bets that should be removed (probably due to cancellation)
-        Object.keys(unmatchedBets).forEach((betId) => {
-          if (!betIds.includes(betId)) {
-            removeUnmatchedBet({ betId });
-          }
-        });
+        const removedBets = Object.keys(unmatchedBets).filter((betId) => !betIds.includes(betId));
+        if (!isEmpty(removedBets)) {
+          dispatch(removeUnmatchedBets({ betIds: removedBets }));
+        }
       } catch (e) {
         // console.log(e);
       }

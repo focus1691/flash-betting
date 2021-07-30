@@ -80,44 +80,26 @@ export const placeOrder = (bet) => {
 
 export const cancelBet = async (marketId, betId) => {
   await postData('/api/cancel-order', { marketId, betId });
-
-  return async (dispatch) => {
-    dispatch(removeUnmatchedBets({ betIds: [betId] }));
-  };
 };
 
 export const cancelBets = (selectionId, side, unmatchedBets) => {
   const betIds = Object.keys(unmatchedBets);
-  const cancelledBets = [];
 
   for (let i = 0; i < betIds.length; i += 1) {
     const betId = betIds[i];
     if (unmatchedBets[betId].selectionId === selectionId && (!side || side === unmatchedBets[betId].side)) {
-      cancelledBets.push(betId);
       const { marketId } = unmatchedBets[betId];
-      postData('/api/cancel-order', { marketId, betId });
+      cancelBet(marketId, betId);
     }
   }
-
-  return async (dispatch) => {
-    dispatch(removeUnmatchedBets({ betIds: cancelledBets }));
-  };
 };
 
 export const cancelMarketBets = (marketId, unmatchedBets) => {
-  const cancelledBets = [];
-
   for (let i = 0; i < unmatchedBets.length; i += 1) {
-    cancelledBets.push(unmatchedBets[i].betId);
-    postData('/api/cancel-order', {
-      marketId: unmatchedBets[i].marketId,
-      betId: unmatchedBets[i].betId,
-    });
-  }
+    const { betId } = unmatchedBets[i];
 
-  return async (dispatch) => {
-    dispatch(removeUnmatchedBets({ betIds: cancelledBets }));
-  };
+    cancelBet(marketId, betId)
+  }
 };
 
 export const updateBetPrice = (data) => ({

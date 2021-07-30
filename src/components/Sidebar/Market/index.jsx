@@ -25,6 +25,8 @@ import Rules from './Rules';
 import UnmatchedBets from './UnmatchedBets/UnmatchedBets';
 import { getMarketUnmatchedBets } from '../../../selectors/orderSelector';
 import { sortLadders } from '../../../utils/ladder/SortLadder';
+//* HTTP
+import updateCustomOrder from '../../../http/updateCustomOrder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market';
 //* Custom @material-ui components
@@ -73,16 +75,22 @@ const Market = ({
     async (e) => {
       e.stopPropagation();
       setUnmatchedBetsExpanded(true);
-      if (!_.isEmpty(unmatchedMarketBets) && !_.isEmpty(marketId)) {
+
+      // Removed the unmatched bets from this market
+      if (!_.isEmpty(unmatchedMarketBets) && marketId) {
         cancelMarketBets(marketId, unmatchedMarketBets);
       }
 
+      // All custom orders set by tools (back, lay, SL, SE, TOS, FOK) are removed in this market
       removeAllBackBets();
       removeAllLayBets();
       removeAllStopEntryBets();
       removeAllStopLoss();
       removeAllTickOffset();
       removeAllFillOrKill();
+
+      // The SQLite store should also remove the custom orders by marketId
+      updateCustomOrder('remove-all-bets', { marketId });
     },
     [cancelMarketBets, marketId, removeAllBackBets, removeAllFillOrKill, removeAllLayBets, removeAllStopEntryBets, removeAllStopLoss, removeAllTickOffset, setUnmatchedBetsExpanded, unmatchedMarketBets],
   );
