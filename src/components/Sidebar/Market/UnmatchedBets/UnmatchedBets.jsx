@@ -60,29 +60,24 @@ const UnmatchedBets = ({
         cancelBet(marketId, betId);
       }
       if (fillOrKillList[betId]) {
-        //* Remove Fill Or Kill from state
         removeFillOrKill({ betId });
       }
 
+      // If a custom order, remove them from their list in redux
       switch (strategy) {
         case 'Back':
-          //* Remove custom Back bet from state
           removeBackBet({ rfs, selectionId });
           break;
         case 'Lay':
-          //* Remove custom Lay bet from state
           removeLayBet({ rfs, selectionId });
           break;
         case 'Stop Entry':
-          //* Remove Stop Entry bet from state
           removeStopEntryBet({ rfs, selectionId });
           break;
         case 'Tick Offset':
-          //* Remove Tick Offset bet from state
           removeTickOffset({ rfs, selectionId });
           break;
         case 'Stop Loss':
-          //* Remove Stop Loss bet from state
           removeStopLoss({ rfs, selectionId });
           break;
         default:
