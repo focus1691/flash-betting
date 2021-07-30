@@ -39,7 +39,7 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import updateCustomOrder from '../../http/dbHelper';
+import updateCustomOrder from '../../http/updateCustomOrder';
 import Draggable from '../Draggable';
 //* Utils
 import handleAuthError from '../../utils/Errors/handleAuthError';
