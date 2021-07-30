@@ -12,6 +12,7 @@ import { MatchedBet } from './MatchedBet';
 import { UnmatchedBet } from './UnmatchedBet';
 //* HTTP
 import { cancelBet, cancelBets } from '../../../../http/placeBets';
+import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* Selectors
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
@@ -44,7 +45,10 @@ const OrderRow = memo(
     const classes = useStyles();
     const cancelUnmatchedBet = useCallback(
       (bet) => {
+        // Remove the custom order in SQLite
         updateCustomOrder('remove-bet', { rfs: bet.rfs });
+
+        // If this order was made with the tools, it will be removed by rfs or selectionId
         switch (bet.strategy) {
           case 'Back':
             removeBackBet({ rfs: bet.rfs, selectionId });
@@ -62,6 +66,7 @@ const OrderRow = memo(
             removeStopLoss({ selectionId });
             break;
           default:
+            // A BetFair unmatched order needs a cancellation request. It could also exist in a Fill or Kill list.
             if (fokList[bet.betId]) {
               removeFillOrKill({ betId: bet.betId });
             }
@@ -73,12 +78,18 @@ const OrderRow = memo(
     );
 
     const cancelAllSelectionBets = useCallback(() => {
+      // Any orders made with the tools will be removed by selectionId
       removeAllSelectionBackBets({ selectionId });
       removeAllSelectionLayBets({ selectionId });
       removeAllSelectionStopEntryBets({ selectionId });
       removeStopLoss({ selectionId });
       removeTickOffset({ selectionId });
+
+      // Remove any BetFair orders by selectionId
       cancelBets(unmatchedBets, selectionId);
+
+      // Remove the custom orders in SQLite
+      updateCustomOrder('remove-selection-bets', { selectionId });
     }, [removeAllSelectionBackBets, removeAllSelectionLayBets, removeAllSelectionStopEntryBets, removeStopLoss, removeTickOffset, selectionId, unmatchedBets]);
 
     const handleButtonClick = useCallback(() => {
