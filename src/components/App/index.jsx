@@ -21,8 +21,6 @@ import {
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
-  setInPlay,
-  setInPlayTime,
 } from '../../redux/actions/market';
 import { updateLadderOrder, setMarketPL } from '../../redux/actions/ladder';
 import { removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
@@ -90,9 +88,6 @@ const App = ({
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
-  inPlayTime,
-  setInPlay,
-  setInPlayTime,
   setMarketPL,
   setStopLossBetMatched,
   updateStopLossList,
@@ -121,31 +116,6 @@ const App = ({
       }
     }
   }, []);
-
-  const onReceiveMarketDefinition = useCallback(
-    async (marketDefinition) => {
-      setMarketStatus(marketDefinition.status);
-      setInPlay(marketDefinition.inPlay);
-      console.log('market definition', marketDefinition);
-
-      if (!inPlayTime && marketDefinition.inPlay) {
-        // Start the in-play clock once we get the 'in play' signal
-        setInPlayTime(new Date(marketDefinition.marketTime));
-      }
-
-      if (marketDefinition.status === 'CLOSED') {
-        closeMarket();
-        const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
-
-        if (!isEmpty(marketBook)) {
-          const { runners } = marketBook[0];
-          // Load the runner results
-          loadRunnerResults(runners);
-        }
-      }
-    },
-    [inPlayTime, marketId],
-  );
 
   /**
    * Listen for bet Change Messages from the Exchange Streaming socket and create/update them
@@ -272,15 +242,13 @@ const App = ({
     socket.on('mcm', (data) => processMarketUpdates(data));
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('subscription-error', onMarketDisconnect);
-    socket.on('market-definition', onReceiveMarketDefinition);
 
     return () => {
       socket.off('mcm');
       socket.off('ocm');
       socket.off('subscription-error');
-      socket.off('market-definition');
     };
-  }, [onMarketDisconnect, onReceiveMarketDefinition, onReceiveOrderMessage, socket]);
+  }, [onMarketDisconnect, onReceiveOrderMessage, socket]);
 
   useEffect(() => {
     (async () => {
@@ -319,7 +287,6 @@ const mapStateToProps = (state) => ({
   view: state.settings.view,
   isLoading: state.settings.isLoading,
   inPlay: state.market.inPlay,
-  inPlayTime: state.market.inPlayTime,
   marketOpen: state.market.marketOpen,
   marketId: state.market.marketId,
   unmatchedBets: state.order.bets.unmatched,
@@ -347,8 +314,6 @@ const mapDispatchToProps = {
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
-  setInPlay,
-  setInPlayTime,
   setMarketPL,
   setStopLossBetMatched,
   updateStopLossList,

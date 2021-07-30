@@ -68,9 +68,6 @@ class BetFairStreamAPI {
 
           // Market Change Message Data Found
           if (result.op === 'mcm' && result.mc) {
-            if (result.mc[0].marketDefinition) {
-              this.socket.emit('market-definition', result.mc[0].marketDefinition);
-            }
             this.socket.emit('mcm', result);
           }
           // Order Change Message Data Found
@@ -78,7 +75,9 @@ class BetFairStreamAPI {
             this.socket.emit('ocm', result);
           }
           this.chunks = [];
-        } catch (e) { }
+        } catch (e) {
+          //
+        }
       });
 
       this.client.on('end', (data) => {

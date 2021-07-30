@@ -1,9 +1,57 @@
+import { isEmpty } from 'lodash';
 import { call, put, select, takeEvery } from 'redux-saga/effects';
-import { setInitialClk, setClk, addNonRunners, loadLadder, setSortedLadder } from '../actions/market';
+//* Actions
+import {
+  setInitialClk,
+  setClk,
+  setMarketStatus,
+  setInPlay,
+  setInPlayTime,
+  addNonRunners,
+  loadLadder,
+  loadRunnerResults,
+  setSortedLadder,
+  closeMarket,
+} from '../actions/market';
 import { setLadderLoaded, updateLadderOrder, updateExcludedLadders } from '../actions/ladder';
+//* Sagas
 import executeStopEntry from './stopEntrySaga';
 import executeStopLoss from './stopLossSagas';
 import { SAFE_LADDER_LIMIT } from '../../constants';
+//* HTTP
+import fetchData from '../../http/fetchData';
+
+function* processMarketDefinition(marketDefinition) {
+  console.log('market definition', marketDefinition);
+  const { runners, inPlay, status, marketTime } = marketDefinition;
+
+  if (runners) {
+    const nonRunners = yield runners.filter(({ status }) => status === 'REMOVED');
+    yield put(addNonRunners(nonRunners));
+  }
+
+  yield put(setMarketStatus(status));
+  yield put(setInPlay(inPlay));
+
+  const inPlayTime = yield select(state => state.market.inPlayTime);
+  const marketId = yield select(state => state.market.marketId);
+
+  if (!inPlayTime && inPlay) {
+    // Start the in-play clock once we get the 'in play' signal
+    yield put(setInPlayTime(new Date(marketTime)));
+  }
+
+  if (status === 'CLOSED') {
+    yield put(closeMarket());
+    const marketBook = yield call(fetchData, `/api/list-market-book?marketId=${marketId}`);
+
+    if (!isEmpty(marketBook)) {
+      const { runners } = marketBook[0];
+      // Load the runner results
+      yield put(loadRunnerResults(runners));
+    }
+  }
+}
 
 function* processMarketUpdates(action) {
   const { mc, clk, initialClk } = action.payload;
@@ -37,10 +85,8 @@ function* processMarketUpdates(action) {
       yield put(setLadderLoaded());
     }
 
-    // Remove the non-runners
-    if (marketDefinition && marketDefinition.runners) {
-      const nonRunners = yield marketDefinition.runners.filter(({ status }) => status === 'REMOVED');
-      yield put(addNonRunners(nonRunners));
+    if (marketDefinition) {
+      yield call(processMarketDefinition, marketDefinition);
     }
   }
 
