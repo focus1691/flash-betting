@@ -81,16 +81,16 @@ class BetFairStreamAPI {
       });
 
       this.client.on('end', (data) => {
-        console.log(`end: ${data}`);
+        console.log(`Connection end: ${data}`);
       });
 
-      this.client.on('close', () => {
-        console.log('Connection closed');
+      this.client.on('close', (data) => {
+        console.log(`Connection closed: ${data}`);
         this.connectionClosed = true;
       });
 
-      this.client.on('error', (err) => {
-        console.log(`Error:${err}`);
+      this.client.on('error', (data) => {
+        console.log(`Error: ${data}`);
       });
     });
   }
