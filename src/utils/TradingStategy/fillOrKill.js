@@ -4,7 +4,7 @@ export const isFOKReady = (FOK) => {
   return (FOK && Date.now() / 1000 - FOK.startTime / 1000 >= FOK.seconds);
 };
 
-export const checkFOKBetsAndExecute = (list, cancelBet, removeFOK, removeBet, dispatch) => {
+export const checkFOKBetsAndExecute = (list, cancelBet, removeFOK, updateCustomOrder, dispatch) => {
   const bets = Object.values(list);
 
   for (let i = 0; i < bets.length; i += 1) {
@@ -13,7 +13,7 @@ export const checkFOKBetsAndExecute = (list, cancelBet, removeFOK, removeBet, di
       const { marketId, betId, rfs } = FOK;
       dispatch(cancelBet(marketId, betId)); // BetFair
       dispatch(removeFOK({ betId })); // FOK Action
-      removeBet({ rfs }); // DB
+      updateCustomOrder('remove-bet', { rfs }); // DB
     }
   }
 };

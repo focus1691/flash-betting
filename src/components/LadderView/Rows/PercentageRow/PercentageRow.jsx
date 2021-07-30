@@ -17,34 +17,28 @@ import { getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* JSS
 import useStyles from '../../../../jss/components/LadderView/percentageRowStyle';
 
-const PercentageRow = memo(({
-  selectionId, ltp, tv, percent, ltpDelta, layFirstCol, unmatchedBets, setBackLayColOrder, cancelBets, removeAllSelectionBackBets, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide,
-}) => {
+const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstCol, unmatchedBets, setBackLayColOrder, cancelBets, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
   const classes = useStyles();
   const ltpStyle = useMemo(() => getLTPstyle(ltp, ltpDelta), [ltp, ltpDelta]);
 
-  const cancelBackOrders = useCallback(() => {
-    removeAllSelectionBackBets({ selectionId });
-    removeStopLossOnSide({ selectionId, side: 'BACK' });
-    removeTickOffsetOnSide({ selectionId, side: 'BACK' });
-    removeStopEntryBetsOnSide({ selectionId, side: 'BACK' });
-    cancelBets(selectionId, 'BACK', unmatchedBets);
-  }, [cancelBets, removeAllSelectionBackBets, removeStopEntryBetsOnSide, removeStopLossOnSide, removeTickOffsetOnSide, selectionId, unmatchedBets]);
-
-  const cancelLayOrders = useCallback(() => {
-    removeAllSelectionLayBets({ selectionId });
-    removeStopLossOnSide({ selectionId, side: 'LAY' });
-    removeTickOffsetOnSide({ selectionId, side: 'LAY' });
-    removeStopEntryBetsOnSide({ selectionId, side: 'LAY' });
-    cancelBets(selectionId, 'LAY', unmatchedBets);
-  }, [cancelBets, removeAllSelectionLayBets, removeStopEntryBetsOnSide, removeStopLossOnSide, removeTickOffsetOnSide, selectionId, unmatchedBets]);
+  const cancelBetsOnSide = useCallback(
+    (side) => {
+      if (side === 'BACK') removeAllSelectionBackBets({ selectionId })
+      else if (side === 'LAY') removeAllSelectionLayBets({ selectionId });
+      removeStopLossOnSide({ selectionId, side });
+      removeTickOffsetOnSide({ selectionId, side });
+      removeStopEntryBetsOnSide({ selectionId, side });
+      cancelBets(selectionId, side, unmatchedBets);
+    },
+    [selectionId],
+  );
 
   return (
     <div className={classes.percentageRow}>
       <div colSpan={3} className="th">
         {tv}
       </div>
-      <CancelBets cancelBets={layFirstCol ? cancelLayOrders : cancelBackOrders} side="lay" layFirstCol={layFirstCol} />
+      <CancelBets cancelBetsOnSide={cancelBetsOnSide} side={layFirstCol ? 'LAY' : 'BACK'} layFirstCol={layFirstCol} />
       <div className="th" style={{ backgroundColor: layFirstCol ? '#eba8a6' : '#007aaf' }}>
         {`${percent[layFirstCol ? 'lay' : 'back']}%`}
       </div>
@@ -56,12 +50,12 @@ const PercentageRow = memo(({
       <div className="th" style={{ backgroundColor: layFirstCol ? '#007aaf' : '#eba8a6' }}>
         {`${percent[layFirstCol ? 'back' : 'lay']}%`}
       </div>
-      <CancelBets cancelBets={layFirstCol ? cancelBackOrders : cancelLayOrders} side="back" layFirstCol={layFirstCol} />
+      <CancelBets cancelBetsOnSide={cancelBetsOnSide} side={layFirstCol ? 'BACK' : 'LAY'} layFirstCol={layFirstCol} />
     </div>
   );
 });
 
-const mapStateToProps = (state, { selectionId, price }) => ({
+const mapStateToProps = (state, { selectionId }) => ({
   priceType: state.ladder.priceType,
   ltp: getLTP(state.market.ladder, { selectionId }),
   tv: getTV(state.market.ladder, { selectionId }),
@@ -71,6 +65,6 @@ const mapStateToProps = (state, { selectionId, price }) => ({
   unmatchedBets: getSelectionUnmatchedBets(state.order.bets, { selectionId }),
 });
 
-const mapDispatchToProps = { setBackLayColOrder, cancelBets, removeAllSelectionBackBets, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide };
+const mapDispatchToProps = { setBackLayColOrder, cancelBets, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PercentageRow);

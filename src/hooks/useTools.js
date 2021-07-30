@@ -1,7 +1,7 @@
 import useInterval from 'react-useinterval';
 import { useSelector, useDispatch } from 'react-redux';
 //* Actions
-import { addUnmatchedBet, addMatchedBet, placeOrder, cancelBet, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
+import { addUnmatchedBet, addMatchedBet, placeOrder, cancelBet, removeUnmatchedBet, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
 import { removeBackBet } from '../redux/actions/back';
 import { removeLayBet } from '../redux/actions/lay';
 import { removeFillOrKill } from '../redux/actions/fillOrKill';
@@ -14,7 +14,7 @@ import { isStopLossTriggered } from '../utils/TradingStategy/StopLoss';
 import { isTickOffsetTriggered } from '../utils/TradingStategy/TickOffset';
 //* HTTP
 import fetchData from '../http/fetchData';
-import { removeBet, updateOrderMatched } from '../http/dbHelper';
+import updateCustomOrder from '../http/updateCustomOrder';
 //* Constants
 import { ONE_SECOND } from '../constants';
 
@@ -44,10 +44,11 @@ export default function useTest() {
       checkBackLayBetsAndExecute(layList, marketStartTime, placeOrder, inPlay, removeLayBet, dispatch);
 
       //* FOK
-      checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, removeBet, dispatch);
+      checkFOKBetsAndExecute(fillOrKillList, cancelBet, removeFillOrKill, updateCustomOrder, dispatch);
 
       try {
         const { currentOrders } = await fetchData(`/api/listCurrentOrders?marketId=${marketId}`);
+        const betIds = [];
         for (let i = 0; i < currentOrders.length; i += 1) {
           const {
             marketId,
@@ -63,12 +64,14 @@ export default function useTest() {
             placedDate,
           } = currentOrders[i];
 
+          betIds.push(betId);
+
           if (rfs) {
             //* Check if the stop loss is matched to initiate the trigger
             const isStopLossMatched = isStopLossTriggered(stopLossList[selectionId], rfs, sizeRemaining);
             if (isStopLossMatched) {
               dispatch(setStopLossBetMatched({ selectionId }));
-              updateOrderMatched({ rfs, assignedIsOrderMatched: true });
+              updateCustomOrder('update-bet-matched', { rfs, assignedIsOrderMatched: true });
             }
 
             /**
@@ -108,6 +111,12 @@ export default function useTest() {
             dispatch(updateSizeMatched({ betId, sizeMatched, sizeRemaining }));
           }
         }
+        // Check to see if a bet exists in unmatched bets that should be removed (probably due to cancellation)
+        Object.keys(unmatchedBets).forEach((betId) => {
+          if (!betIds.includes(betId)) {
+            removeUnmatchedBet({ betId });
+          }
+        });
       } catch (e) {
         // console.log(e);
       }

@@ -5,7 +5,7 @@ import { call, put, select } from 'redux-saga/effects';
 import { removeStopLoss, updateStopLossTicks } from '../actions/stopLoss';
 //* HTTP
 import { executeBet } from '../../http/placeBets';
-import { removeBet, updateTicks } from '../../http/dbHelper';
+import updateCustomOrder from '../../http/updateCustomOrder';
 //* Utils
 import calcBetPriceSize from '../../utils/Bets/CalcBetPriceSize';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
@@ -44,7 +44,7 @@ function* placeStopLossBet(id, stopLoss) {
   const betParams = yield call(calcBetPriceSize, data);
   const bet = yield call(executeBet, { ...betParams, customerStrategyRef });
   if (bet) {
-    yield call(removeBet({ rfs: betParams.rfs }));
+    yield call(updateCustomOrder('remove-bet', { rfs: betParams.rfs }));
     yield put(removeStopLoss({ selectionId: bet.selectionId }));
   }
 }
@@ -57,7 +57,7 @@ function* updateStopLoss(stopLoss, ltp) {
   if (trailing && ((ltp < prevLTP && side === 'BACK') || (ltp > prevLTP && side === 'LAY'))) {
     ticks += 1;
 
-    yield call(updateTicks({ rfs, ticks })); // db
+    yield call(updateCustomOrder('update-ticks', { rfs, ticks })); // db
     yield put(updateStopLossTicks({ selectionId, ticks })); // redux store
   }
 }

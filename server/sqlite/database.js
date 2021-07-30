@@ -78,6 +78,20 @@ class SQLiteDatabase {
     await stmt.finalize();
   }
 
+  async removeSelectionBets(bet) {
+    const { selectionId } = bet;
+    const stmt = await this.db.prepare('DELETE FROM bets WHERE selectionId = (?)');
+    await stmt.run(selectionId);
+    await stmt.finalize();
+  }
+
+  async removeSelectionBetsOnSide(bet) {
+    const { selectionId, side } = bet;
+    const stmt = await this.db.prepare('DELETE FROM bets WHERE selectionId = (?), side = (?)');
+    await stmt.run(selectionId, side);
+    await stmt.finalize();
+  }
+
   async removeAllBets(bet) {
     const { marketId } = bet;
     const stmt = await this.db.prepare('DELETE FROM bets WHERE marketId = (?)');

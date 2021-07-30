@@ -14,7 +14,7 @@ import { removeFillOrKill } from '../../../../redux/actions/fillOrKill';
 import { getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
 import { getPriceNTicksAway } from '../../../../utils/Bets/PriceCalculations';
-import { removeBet, replaceOrders, updatePrice } from '../../../../http/dbHelper';
+import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* HTTP
 import postData from '../../../../http/postData';
 import Bet from './Bet';
@@ -53,7 +53,7 @@ const UnmatchedBets = ({
   const cancelOrder = useCallback(
     async ({ betId, marketId, rfs, selectionId, strategy }) => {
       //* Remove from SQLite
-      removeBet({ rfs });
+      updateCustomOrder('remove-bet', { rfs });
 
       if (unmatchedBets[betId]) {
         //* Cancel on BetFair
@@ -132,7 +132,7 @@ const UnmatchedBets = ({
         default:
           break;
       }
-      updatePrice({ rfs, price: newPrice });
+      updateCustomOrder('update-price', { rfs, price: newPrice });
     },
     [updateBackBetPrice, updateLayBetPrice, updateStopEntryBetPrice, updateTickOffsetBetPrice, updateStopLossBetPrice, updateBetPrice, removeUnmatchedBet],
   );

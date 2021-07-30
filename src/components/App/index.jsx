@@ -39,7 +39,7 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import { updateOrderMatched } from '../../http/dbHelper';
+import updateCustomOrder from '../../http/dbHelper';
 import Draggable from '../Draggable';
 //* Utils
 import handleAuthError from '../../utils/Errors/handleAuthError';
@@ -143,7 +143,7 @@ const App = ({
                   const isStopLossMatched = isStopLossTriggered(stopLossList[selectionId], rfs, sizeRemaining);
                   if (isStopLossMatched) {
                     setStopLossBetMatched({ selectionId });
-                    updateOrderMatched({ rfs, assignedIsOrderMatched: true });
+                    updateCustomOrder('update-bet-matched', { rfs, assignedIsOrderMatched: true });
                   }
                   const tosTriggered = isTickOffsetTriggered(tickOffsetList[selectionId], rfs, sizeMatched);
                   if (tosTriggered) placeTickOffsetBet({ tickOffset: tickOffsetList[selectionId] });

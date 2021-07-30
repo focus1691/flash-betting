@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 
-export default (({ cancelBets, side, layFirstCol }) => {
+export default ({ cancelBets, side, layFirstCol }) => {
   const [text, setText] = useState('');
 
   useEffect(() => {
     switch (side) {
       case 'back':
-        setText(layFirstCol && side === 'back' ? 'back' : 'lay');
+        setText(layFirstCol && side === 'BACK' ? 'back' : 'lay');
         break;
       case 'lay':
-        setText(layFirstCol && side === 'lay' ? 'lay' : 'back');
+        setText(layFirstCol && side === 'LAY' ? 'lay' : 'back');
         break;
       default:
         break;
     }
   }, [layFirstCol, side]);
 
-  const handleClick = () => {
-    cancelBets();
-  };
-
   return (
     <Tooltip title={`Cancel selection ${text} bets`} aria-label="Cancel selections">
-      <div className="th" onClick={handleClick} />
+      <div className="th" role="button" tabIndex="0" onClick={() => cancelBets(side)} />
     </Tooltip>
   );
-});
+};

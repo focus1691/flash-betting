@@ -20,7 +20,7 @@ import useStyles from '../../../../jss/components/Sidebar/market/tools/backLaySt
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
 //* HTTP
-import { saveBet } from '../../../../http/dbHelper';
+import updateCustomOrder from '../../../../http/updateCustomOrder';
 
 const Lay = ({ stake, price, hours, minutes, seconds, executionTime, marketId, runners, selections, list, setDisplayText, setStake, setPrice, setHours, setMinutes, setSeconds, toggleExecutionTime, setSelections, updateLayList }) => {
   const classes = useStyles();
@@ -77,7 +77,7 @@ const Lay = ({ stake, price, hours, minutes, seconds, executionTime, marketId, r
             price: formatPrice(price),
             rfs: customerStrategyRef,
           };
-          saveBet(addedOrder);
+          updateCustomOrder('save-bet', addedOrder);
 
           if (!newLayList[selectionId]) {
             newLayList[selectionId] = [addedOrder];

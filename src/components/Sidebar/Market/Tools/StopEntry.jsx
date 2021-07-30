@@ -21,7 +21,7 @@ import useStyles from '../../../../jss/components/Sidebar/market/tools/stopEntry
 import StyledMenu from '../../../../jss/StyledMenu';
 import StyledMenuItem from '../../../../jss/StyledMenuItem';
 //* HTTP
-import { saveBet } from '../../../../http/dbHelper';
+import updateCustomOrder from '../../../../http/updateCustomOrder';
 
 const StopEntry = ({ marketId, runners, selections, price, stopEntryList, targetLTP, operator, side, stake, updateStopEntryList, setSelections, setPrice, setTargetLTP, setStake, setLTPOperator }) => {
   const classes = useStyles();
@@ -80,7 +80,7 @@ const StopEntry = ({ marketId, runners, selections, price, stopEntryList, target
             price: formatPrice(price),
             rfs: referenceStrategyId,
           };
-          saveBet(addedOrder);
+          updateCustomOrder('save-bet', addedOrder);
 
           if (!newStopEntryList[selectionId]) {
             newStopEntryList[selectionId] = [addedOrder];

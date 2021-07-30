@@ -219,6 +219,20 @@ app.post('/api/remove-bet', (req, res) =>
     }),
   ),
 );
+app.post('/api/remove-selection-bets', (req, res) =>
+  db.removeSelectionBets(req.body).then(() =>
+    res.json({
+      message: 'Removed selection bets',
+    }),
+  ),
+);
+app.post('/api/remove-selection-bets-on-side', (req, res) =>
+  db.removeSelectionBetsOnSide(req.body).then(() =>
+    res.json({
+      message: 'Removed selection bets on side',
+    }),
+  ),
+);
 app.post('/api/remove-all-bets', (req, res) =>
   db.removeAllBets(req.body).then(() =>
     res.json({

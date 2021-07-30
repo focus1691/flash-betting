@@ -1,4 +1,4 @@
-import { removeBet, updateStoredStopLoss } from '../../http/dbHelper';
+import updateCustomOrder from '../../http/updateCustomOrder';
 
 export const setStopLossSelected = () => ({
   type: 'SET_STOP_LOSS_SELECTED',
@@ -74,11 +74,11 @@ export const replaceStopLoss = async (SL, { selectionId, stakeVal, price, side, 
       side = side.toUpperCase();
       //* Just remove it if the stop loss position is clicked
       if (SL.price == price && SL.side == side) {
-        removeBet({ rfs: SL.rfs });
+        updateCustomOrder('remove-bet', { rfs: SL.rfs });
         dispatch(removeStopLoss({ selectionId }));
       } else {
         //* Change the stop position otherwise
-        removeBet({ rfs: SL.rfs });
+        updateCustomOrder('remove-bet', { rfs: SL.rfs });
         const newStopLoss = {
           rfs: SL.rfs,
           size: stakeVal,
@@ -89,7 +89,7 @@ export const replaceStopLoss = async (SL, { selectionId, stakeVal, price, side, 
           tickOffset: 0,
           hedged: stopLossHedged,
         };
-        updateStoredStopLoss(newStopLoss);
+        updateCustomOrder('update-stop-loss', newStopLoss);
         dispatch(updateStopLoss(newStopLoss));
       }
     }

@@ -14,7 +14,7 @@ import { UnmatchedBet } from './UnmatchedBet';
 //* Selectors
 import { getSelectionMatchedBets, getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
-import { removeBet } from '../../../../http/dbHelper';
+import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* JSS
 import useStyles from '../../../../jss/components/LadderView/OrderRow';
 
@@ -45,7 +45,7 @@ const OrderRow = memo(
     const classes = useStyles();
     const cancelUnmatchedBet = useCallback(
       (bet) => {
-        removeBet({ rfs: bet.rfs });
+        updateCustomOrder('remove-bet', { rfs: bet.rfs });
         switch (bet.strategy) {
           case 'Back':
             removeBackBet({ rfs: bet.rfs, selectionId });

@@ -26,7 +26,7 @@ import LadderRow from './Rows/LadderRow';
 import PercentageRow from './Rows/PercentageRow/PercentageRow';
 import PriceRow from './Rows/PriceRow';
 //* HTTP
-import { saveBet } from '../../http/dbHelper';
+import updateCustomOrder from '../../http/updateCustomOrder';
 //* JSS
 import useStyles from '../../jss/components/LadderView/ladderStyle';
 
@@ -141,7 +141,7 @@ const Ladder = ({
             hedged: stopLossHedged,
           };
           addStopLoss(SL);
-          saveBet(SL);
+          updateCustomOrder('save-bet', SL);
         } else if (tickOffsetSelected) {
           const TOS = {
             strategy: 'Tick Offset',
@@ -156,7 +156,7 @@ const Ladder = ({
             hedged: tickOffsetHedged,
           };
           addTickOffset(TOS);
-          saveBet(TOS);
+          updateCustomOrder('save-bet', TOS);
         }
 
         if (fillOrKillSelected) {
@@ -171,7 +171,7 @@ const Ladder = ({
             rfs: customerStrategyRef,
           };
           addFillOrKill(FOK);
-          saveBet(FOK);
+          updateCustomOrder('save-bet', FOK);
         }
       }
     },

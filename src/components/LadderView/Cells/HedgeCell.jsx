@@ -13,14 +13,14 @@ import GetUnmatchedStake from '../../../utils/Bets/GetUnmatchedStake';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/hedgeCellStyle';
 
-const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow, side, hedgingAvailable, PLHedgeNumber, handleHedgeCellClick, placeOrder }) => {
+const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBets, side, hedgingAvailable, PLHedgeNumber, placeOrder }) => {
   const classes = useStyles();
   const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber, side]);
-  const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBetsOnRow), [unmatchedBetsOnRow]);
+  const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBets), [unmatchedBets]);
   const text = useMemo(() => (unmatchedStake > 0 ? unmatchedStake : hedgingAvailable ? hedgePL : null), [unmatchedStake, hedgingAvailable, hedgePL]);
 
   const handleClick = useCallback(() => {
-    if (unmatchedBetsOnRow) {
+    if (unmatchedBets) {
       //
     }
     else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
@@ -34,7 +34,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow
         customerStrategyRef,
       });
     }
-  }, [marketId, selectionId, unmatchedBetsOnRow, side, price, PLHedgeNumber]);
+  }, [marketId, selectionId, unmatchedBets, side, price, PLHedgeNumber]);
 
   return (
     <div
@@ -43,7 +43,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow
       className={clsx('td', {
         [classes.profit]: hedgePL >= 0,
         [classes.loss]: hedgePL < 0,
-        [classes.breakEven]: !_.isEmpty(unmatchedBetsOnRow),
+        [classes.breakEven]: !_.isEmpty(unmatchedBets),
       })}
       onClick={handleClick}
     >
@@ -54,7 +54,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBetsOnRow
 
 const mapStateToProps = (state, { selectionId, price, side }) => ({
   marketId: state.market.marketId,
-  unmatchedBetsOnRow: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side }),
+  unmatchedBets: getUnmatchedBetsOnRow(state.order.bets, { selectionId, price, side }),
 });
 
 const mapDispatchToProps = { placeOrder };

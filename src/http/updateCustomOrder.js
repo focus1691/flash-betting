@@ -1,3 +1,18 @@
+
+/**
+ * This does that
+ */
+export default async (endpoint, data) => {
+  fetch(`/api/${endpoint}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};
+
 export const saveBet = (bet) => {
   fetch('/api/save-bet', {
     headers: {

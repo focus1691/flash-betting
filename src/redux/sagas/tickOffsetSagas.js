@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { put, takeLeading, call } from 'redux-saga/effects';
 import { executeBet } from '../../http/placeBets';
-import { removeBet } from '../../http/dbHelper';
+import updateCustomOrder from '../../http/updateCustomOrder';
 import { removeTickOffset } from '../actions/tickOffset';
 
 function* placeTickOffsetBet(action) {
@@ -10,7 +10,7 @@ function* placeTickOffsetBet(action) {
 
   const bet = yield call(executeBet, { ...tickOffset, customerStrategyRef });
   if (bet) {
-    yield call(removeBet({ rfs: tickOffset.rfs }));
+    yield call(updateCustomOrder, 'remove-bet', { rfs: tickOffset.rfs });
     yield put(removeTickOffset({ selectionId: tickOffset.selectionId }));
   }
 }

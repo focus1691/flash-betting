@@ -1,4 +1,4 @@
-import { getAllBets } from '../../http/dbHelper';
+import { getAllBets } from '../../http/updateCustomOrder';
 
 export default async (marketId) => {
   const backOrders = {};

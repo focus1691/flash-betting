@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { removeBet } from '../../http/dbHelper';
+import updateCustomOrder from '../../http/updateCustomOrder';
 import { secondsToHms } from '../DateHelper';
 
 export const isBetBeforeMarketReady = (marketStartTime, beforeAfter, timeOffset) => {
@@ -31,7 +31,7 @@ export const checkBackLayBetsAndExecute = (list, marketStartTime, placeOrder, in
       if (isReady) {
         const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
         dispatch(placeOrder({ marketId, selectionId, side, size, price, customerStrategyRef }));
-        removeBet({ rfs }); // DB
+        updateCustomOrder('remove-bet', { rfs }); // DB
         dispatch(removeSelectionBets({ selectionId, rfs })); // Back action
       }
     }
