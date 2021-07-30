@@ -42,7 +42,6 @@ import fetchData from '../../http/fetchData';
 import updateCustomOrder from '../../http/updateCustomOrder';
 import Draggable from '../Draggable';
 //* Utils
-import handleAuthError from '../../utils/Errors/handleAuthError';
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 //* Utils > Ladder
@@ -159,7 +158,6 @@ const App = ({
 
   const onMarketDisconnect = useCallback(async ({ errorCode, errorMessage }) => {
     console.log('market disconnected', errorCode, errorMessage);
-    handleAuthError(errorCode);
     if (errorMessage) {
       setConnectionErrorMessage(errorMessage.split(':')[0]);
     }
