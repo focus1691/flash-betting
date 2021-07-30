@@ -12,6 +12,8 @@ import { setBackLayColOrder } from '../../../../redux/actions/ladder';
 import { getLTP, getLTPDelta, getPercent, getTV } from '../../../../selectors/marketSelector';
 import { getLTPstyle } from '../../../../utils/ladder/DeconstructLadder';
 import CancelBets from './CancelBets';
+//* HTTP
+import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* Selectors
 import { getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* JSS
@@ -23,12 +25,20 @@ const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstC
 
   const cancelBetsOnSide = useCallback(
     (side) => {
+      // Remove back / lay custom orders depending on the column's side
       if (side === 'BACK') removeAllSelectionBackBets({ selectionId })
       else if (side === 'LAY') removeAllSelectionLayBets({ selectionId });
+
+      // Remove all stop loss, tick offset, stop entry based on selectionId and side
       removeStopLossOnSide({ selectionId, side });
       removeTickOffsetOnSide({ selectionId, side });
       removeStopEntryBetsOnSide({ selectionId, side });
+
+      // Remove any unmatched bets on this selectionId and side
       cancelBets(selectionId, side, unmatchedBets);
+
+      // Finally, all custom orders set by the tools are removed by selectionId and side
+      updateCustomOrder('remove-selection-bets-on-side', { selectionId, side });
     },
     [selectionId],
   );
