@@ -49,7 +49,6 @@ app.use(express.static(path.join(__dirname, '../build')));
 const bundlePath = path.join(__dirname, '../build/index.html');
 app.get('/', (req, res) => res.sendFile(bundlePath));
 app.get('/dashboard', (req, res) => res.sendFile(bundlePath));
-app.get('/getClosedMarketStats', (req, res) => res.sendFile(bundlePath));
 app.get('/authentication', (req, res) => res.sendFile(bundlePath));
 app.get('/validation', (req, res) => res.sendFile(bundlePath));
 app.get('/logout', (req, res) => res.sendFile(bundlePath));

@@ -13,7 +13,8 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
     if (isEmpty(ladder)) return {};
 
     const data = {
-      ltp: ladder.ltp,
+      ltp: !isEmpty(ladder.ltp) && ladder.ltp[0] ? ladder.ltp[0] : null, 
+      ltpPrev: !isEmpty(ladder.ltp) && ladder.ltp[1] ? ladder.ltp[1] : null, 
       atb: ladder.atb && ladder.atb[0] ? ladder.atb[0][0] : null,
       atl: ladder.atl && ladder.atl[0] ? ladder.atl[0][0] : null,
     };
@@ -44,7 +45,8 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
 
   const renderRunners = () =>
     sortedLadder.map((selectionId) => {
-      const { atb, atl, ltp } = deconstructLadder(ladder[selectionId]);
+      const { atb, atl, ltp, ltpPrev } = deconstructLadder(ladder[selectionId]);
+      console.log(atb, atl, ltp);
       const runnerName = runners[selectionId] ? runners[selectionId].runnerName : '';
       const isSelected = excludedLadders.indexOf(selectionId) === -1;
       return (
@@ -53,12 +55,12 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
           <td>{atl}</td>
           <td
             className={clsx(styles.ltp, {
-              [styles.ltpEqual]: !isEmpty(ltp[0]) && !isEmpty(ltp[1]) && ladder.ltp[0] === ladder.ltp[1],
-              [styles.ltpIncrease]: !isEmpty(ltp[0]) && !isEmpty(ltp[1]) && ladder.ltp[0] > ladder.ltp[1],
-              [styles.ltpDecrease]: !isEmpty(ltp[0]) && !isEmpty(ltp[1]) && ladder.ltp[0] < ladder.ltp[1],
+              [styles.ltpEqual]: !isEmpty(ltpPrev) && ltp === ltpPrev,
+              [styles.ltpIncrease]: !isEmpty(ltpPrev) && ltp > ltpPrev,
+              [styles.ltpDecrease]: !isEmpty(ltpPrev) && ltp < ltpPrev,
             })}
           >
-            {ltp[0]}
+            {ltp}
           </td>
           <td>{atb}</td>
           <td>
