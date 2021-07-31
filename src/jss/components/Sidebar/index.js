@@ -38,6 +38,15 @@ const useStyles = makeStyles((theme) => ({
       paddingRight: '3px',
     },
   },
+  toggleSidebarButton: {
+    color: 'cornflowerblue',
+  },
+  openSideBarButton: {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    zIndex: '10',
+  },
 }));
 
 export default useStyles;
