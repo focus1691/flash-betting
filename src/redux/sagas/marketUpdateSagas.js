@@ -72,22 +72,22 @@ function* processMarketUpdates(action) {
       }
     }
 
-    // Ladders are sorted in order of LTP after each update
-    yield put(setSortedLadder());
-
-    // A check to see if the ladders have been loaded for the first time
-    const isLoaded = yield select(state => state.ladder.isLoaded);
-
-    if (!isLoaded) {
-      const sortedLadder = yield select(state => state.market.sortedLadder);
-      yield put(updateLadderOrder({ ...sortedLadder }));
-      yield put(updateExcludedLadders(sortedLadder.slice(SAFE_LADDER_LIMIT, sortedLadder.length)));
-      yield put(setLadderLoaded());
-    }
-
     if (marketDefinition) {
       yield call(processMarketDefinition, marketDefinition);
     }
+  }
+
+  // Ladders are sorted in order of LTP after each update
+  yield put(setSortedLadder());
+
+  // A check to see if the ladders have been loaded for the first time
+  const isLoaded = yield select(state => state.ladder.isLoaded);
+
+  if (!isLoaded) {
+    const sortedLadder = yield select(state => state.market.sortedLadder);
+    yield put(updateLadderOrder({ ...sortedLadder }));
+    yield put(updateExcludedLadders(sortedLadder.slice(SAFE_LADDER_LIMIT, sortedLadder.length)));
+    yield put(setLadderLoaded());
   }
 
   if (initialClk) yield put(setInitialClk(initialClk));
