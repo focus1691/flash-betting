@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cookieParser = require('cookie-parser');
 
 const App = require('./app.js');
@@ -10,7 +11,7 @@ const BetFairBettingControlling = require('./controllers/betfair-betting');
 const BetFairMenuController = require('./controllers/betfair-menu');
 const TradingToolsController = require('./controllers/trading-tools');
 
-new App({
+const app = new App({
   port: process.env.PORT || 3001,
   controllers: [
     new BetFairAccountController(),
@@ -23,6 +24,7 @@ new App({
     express.json(),
     express.urlencoded({ extended: true }),
     cookieParser(),
+    express.static(path.join(__dirname, '../build'))
   ],
 }).listen();
 
@@ -45,3 +47,5 @@ process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 
 // Catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
+
+module.exports = app;
