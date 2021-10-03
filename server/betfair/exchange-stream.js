@@ -4,6 +4,8 @@ const decoder = new StringDecoder('utf8');
 
 const tls = require('tls');
 
+let isDisconnected = false;
+
 class BetFairStreamAPI {
   constructor(socket, accessToken) {
     this.id = 1;
@@ -57,7 +59,13 @@ class BetFairStreamAPI {
               this.socket.emit('subscription-error', {
                 connectionClosed, errorCode, errorMessage, statusCode,
               });
-            } else {
+            }
+            // For debug purposes, simulate a connection disconnect
+            else if (process.env.TESTING_CONNECTION_ERROR === true && !isDisconnected) {
+              this.client.destroy();
+              isDisconnected = true;
+            } 
+            else {
               for (let i = 0; i < this.subscriptions.length; i += 1) {
                 this.client.write(`${JSON.stringify(this.subscriptions[i])}\r\n`);
               }
