@@ -1,8 +1,10 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { setConnectionErrorMessage } from '../redux/actions/market';
+import useStyles from '../jss/components/ConnectionStatus';
 
 const ConnectionStatus = ({ connectionError, setConnectionErrorMessage, marketId, clk, initialClk, socket }) => {
+  const styles = useStyles();
   const resubscribe = useCallback(() => {
     if (marketId && initialClk && clk) {
       socket.emit('market-resubscription', { marketId, initialClk, clk });
@@ -11,9 +13,9 @@ const ConnectionStatus = ({ connectionError, setConnectionErrorMessage, marketId
   }, [clk, initialClk, marketId, socket]);
 
   return (
-    <div className="connectionbug-container" style={{ visibility: connectionError ? 'visible' : 'hidden' }}>
-      <p className="connectionbug-text">{connectionError}</p>
-      <button type="button" onClick={resubscribe}>
+    <div className={styles.container} style={{ visibility: connectionError ? 'visible' : 'hidden' }}>
+      <p className={styles.text}>{connectionError}</p>
+      <button className={styles.resubscribeBtn} type="button" onClick={resubscribe}>
         Resubscribe
       </button>
     </div>
