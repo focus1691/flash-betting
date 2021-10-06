@@ -5,8 +5,6 @@ const decoder = new StringDecoder('utf8');
 const tls = require('tls');
 
 const testWaitTime = 20 * 1000;
-let isTestDisconnected = false;
-
 
 class BetFairStreamAPI {
   constructor(socket, accessToken) {
@@ -17,6 +15,7 @@ class BetFairStreamAPI {
     this.accessToken = accessToken;
     this.chunks = [];
     this.subscriptions = [];
+    this.isTestDisconnected = false;
   }
 
   authenticate() {
@@ -51,7 +50,7 @@ class BetFairStreamAPI {
         this.chunks.push(decoder.write(bufferedData));
 
         // For debug purposes, simulate a connection disconnect
-        if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !isTestDisconnected && now - this.connectedAt > testWaitTime) {
+        if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !this.isTestDisconnected && now - this.connectedAt > testWaitTime) {
           console.log('simulating a disconnect from a Exchange Streaming connection')
           if (this.client) {
             this.client.destroy();
@@ -60,7 +59,7 @@ class BetFairStreamAPI {
             errorCode: 'A_TEST_ERROR_CODE',
             errorMessage: 'This is a simulated socket disconnect from the Streaming API',
           });
-          isTestDisconnected = true;
+          this.isTestDisconnected = true;
         }
 
         // Parse the data String into JSON Object
@@ -68,7 +67,7 @@ class BetFairStreamAPI {
           const result = JSON.parse(this.chunks.join(''));
           console.log(result);
 
-          console.log(process.env.BETFAIR_CONNECTION_ERROR === 'test', !isTestDisconnected && now - this.connectedAt > testWaitTime, now - this.connectedAt);
+          console.log(process.env.BETFAIR_CONNECTION_ERROR === 'test', !this.isTestDisconnected && now - this.connectedAt > testWaitTime, now - this.connectedAt);
 
           // Connection status
           if (result.op === 'status') {
