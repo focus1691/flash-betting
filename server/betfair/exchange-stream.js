@@ -4,7 +4,9 @@ const decoder = new StringDecoder('utf8');
 
 const tls = require('tls');
 
-let isDisconnected = false;
+const testWaitTime = 5 * 1000;
+let isTestDisconnected = false;
+
 
 class BetFairStreamAPI {
   constructor(socket, accessToken) {
@@ -36,7 +38,11 @@ class BetFairStreamAPI {
 
       this.client.write(`${JSON.stringify(authParams)}\r\n`);
 
+      this.connectedAt = new Date();
+
       this.client.on('data', (data) => {
+
+        const now = new Date().getTime();
 
         // Read the data into Buffer
         const bufferedData = Buffer.from(data);
@@ -61,9 +67,9 @@ class BetFairStreamAPI {
               });
             }
             // For debug purposes, simulate a connection disconnect
-            else if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !isDisconnected) {
+            else if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !isTestDisconnected && now - this.connectedAt > testWaitTime) {
               this.client.destroy();
-              isDisconnected = true;
+              isTestDisconnected = true;
             } 
             else {
               for (let i = 0; i < this.subscriptions.length; i += 1) {
