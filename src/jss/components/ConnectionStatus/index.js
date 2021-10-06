@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     ...buttonStyle.button,
     font: 'normal normal normal large Roboto',
     color: '#f9f9f9',
-    // backgroundColor: '#ececec',
     padding: theme.spacing(1),
     borderRadius: theme.spacing(2.5),
     borderWidth: '2px',
