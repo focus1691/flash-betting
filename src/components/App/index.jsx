@@ -52,6 +52,7 @@ import ExtractCustomerStrategyRfs from '../../utils/Bets/ExtractCustomerStrategy
 //* Utils > Trading Tools
 import { isTickOffsetTriggered } from '../../utils/TradingStategy/TickOffset';
 import { isStopLossTriggered } from '../../utils/TradingStategy/StopLoss';
+import handleAuthError from '../../utils/Errors/handleAuthError';
 import ConnectionStatus from '../ConnectionStatus';
 //* JSS
 import useStyles from '../../jss';
@@ -159,6 +160,7 @@ const App = ({
   const onMarketDisconnect = useCallback(async ({ errorCode, errorMessage }) => {
     console.log('market disconnected', errorCode, errorMessage);
     if (errorMessage) {
+      handleAuthError(errorCode);
       setConnectionErrorMessage(errorMessage.split(':')[0]);
     }
   }, []);
