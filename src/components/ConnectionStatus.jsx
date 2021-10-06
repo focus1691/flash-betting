@@ -11,7 +11,7 @@ const ConnectionStatus = ({ connectionError, setConnectionErrorMessage, marketId
   }, [clk, initialClk, marketId, socket]);
 
   return (
-    <div className="connectionbug-container" style={{ visibility: connectionError !== '' ? 'visible' : 'hidden' }}>
+    <div className="connectionbug-container" style={{ visibility: connectionError ? 'visible' : 'hidden' }}>
       <p className="connectionbug-text">{connectionError}</p>
       <button type="button" onClick={resubscribe}>
         Resubscribe

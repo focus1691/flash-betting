@@ -61,7 +61,7 @@ class BetFairStreamAPI {
               });
             }
             // For debug purposes, simulate a connection disconnect
-            else if (process.env.TESTING_CONNECTION_ERROR === true && !isDisconnected) {
+            else if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !isDisconnected) {
               this.client.destroy();
               isDisconnected = true;
             } 
