@@ -4,7 +4,7 @@ const decoder = new StringDecoder('utf8');
 
 const tls = require('tls');
 
-const testWaitTime = 5 * 1000;
+const testWaitTime = 20 * 1000;
 let isTestDisconnected = false;
 
 
@@ -38,7 +38,7 @@ class BetFairStreamAPI {
 
       this.client.write(`${JSON.stringify(authParams)}\r\n`);
 
-      this.connectedAt = new Date();
+      this.connectedAt = new Date().getTime();
 
       this.client.on('data', (data) => {
 
@@ -50,27 +50,33 @@ class BetFairStreamAPI {
         // Convert the buffer into a String
         this.chunks.push(decoder.write(bufferedData));
 
+        // For debug purposes, simulate a connection disconnect
+        if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !isTestDisconnected && now - this.connectedAt > testWaitTime) {
+          console.log('simulating a disconnect from a Exchange Streaming connection')
+          if (this.client) {
+            this.client.destroy();
+          }
+          this.socket.emit('subscription-error', {
+            errorCode: 'A_TEST_ERROR_CODE',
+            errorMessage: 'This is a simulated socket disconnect from the Streaming API',
+          });
+          isTestDisconnected = true;
+        }
+
         // Parse the data String into JSON Object
         try {
           const result = JSON.parse(this.chunks.join(''));
           console.log(result);
 
+          console.log(process.env.BETFAIR_CONNECTION_ERROR === 'test', !isTestDisconnected && now - this.connectedAt > testWaitTime, now - this.connectedAt);
+
           // Connection status
           if (result.op === 'status') {
             if (result.connectionClosed) {
               console.log('status with connection closed', result);
-              const {
-                connectionClosed, errorCode, errorMessage, statusCode,
-              } = result;
-              this.socket.emit('subscription-error', {
-                connectionClosed, errorCode, errorMessage, statusCode,
-              });
+              const { errorCode, errorMessage } = result;
+              this.socket.emit('subscription-error', { errorCode, errorMessage });
             }
-            // For debug purposes, simulate a connection disconnect
-            else if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !isTestDisconnected && now - this.connectedAt > testWaitTime) {
-              this.client.destroy();
-              isTestDisconnected = true;
-            } 
             else {
               for (let i = 0; i < this.subscriptions.length; i += 1) {
                 this.client.write(`${JSON.stringify(this.subscriptions[i])}\r\n`);
