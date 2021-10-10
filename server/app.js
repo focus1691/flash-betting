@@ -98,6 +98,8 @@ class App {
   }
 
   async onClientConnected(client) {
+    console.log('new socket connection', client.id);
+    
     const accessToken = betfair.accessToken || (await apiHelper.getAccessToken());
 
     betfair.createExchangeStream(client, accessToken);
@@ -116,6 +118,7 @@ class App {
 
     client.on('disconnect', () => {
       betfair.exchangeStream.unsubscribe();
+      console.log('socket disconnected', client.id);
     });
   }
 };
