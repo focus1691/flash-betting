@@ -28,11 +28,22 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     flexBasis: '35%',
+    // height: '100%',
     flexDirection: 'column',
     alignItems: 'center',
     borderRadius: theme.spacing(2),
     border: '6px solid #BD2B32',
     zIndex: '2',
+    [theme.breakpoints.down('md')]: {
+      flexBasis: '40%',
+      width: '100%',
+    },
+    [theme.breakpoints.up('md')]: {
+      flexBasis: '30%',
+    },
+    [theme.breakpoints.up('lg')]: {
+      flexBasis: '35%',
+    },
   },
   loginBackground: {
     position: 'absolute',
@@ -51,6 +62,12 @@ const useStyles = makeStyles((theme) => ({
     width: '45%',
     maxHeight: '100%',
     zIndex: '2',
+    [theme.breakpoints.down('md')]: {
+      width: '60%',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '30%',
+    },
   },
   titleText: {
     color: '#EEEEEE',
@@ -86,13 +103,23 @@ const useStyles = makeStyles((theme) => ({
         borderColor: '#0BBF63 !important',
       },
     },
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
   loginInput: {
-    font: 'normal normal normal x-large Segoe',
+    fontSize: 'x-large',
+    fontFamily: 'Segoe',
     color: '#0BBF63',
     backgroundColor: '#0D1C1E',
     borderRadius: theme.spacing(3),
     zIndex: '2',
+    [theme.breakpoints.down('md')]: {
+      fontSize: 'x-small',
+    },
+    [theme.breakpoints.up('md')]: {
+      backgroundColor: theme.palette.primary.main,
+    },
   },
   welcomeText: {
     textAlign: 'center',

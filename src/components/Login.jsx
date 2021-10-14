@@ -125,7 +125,7 @@ const Login = () => {
               margin="normal"
               fullWidth
               name="twofactorauthentication"
-              label="2-step Authentication Code"
+              label="2FA"
               type="text"
               autoComplete="2fa"
               placeholder="2FA"
