@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     flexBasis: '35%',
-    // height: '100%',
     flexDirection: 'column',
     alignItems: 'center',
     borderRadius: theme.spacing(2),
