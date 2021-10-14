@@ -1,9 +1,15 @@
 const subscriptionChip = (theme, subscribed) => ({
   background: subscribed ? '#0BBF63' : '#F44336',
   color: '#121212',
-  font: 'normal normal bold medium Roboto',
+  fontFamily: 'Roboto',
+  fontWeight: 'bold',
   marginLeft: theme.spacing(1),
   padding: theme.spacing(2, 1),
+  [theme.breakpoints.down('sm')]: {
+    width: '50%',
+    padding: '0',
+    margin: '0',
+  },
 });
 
 export default subscriptionChip;

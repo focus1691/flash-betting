@@ -8,11 +8,14 @@ const useStyles = makeStyles((theme) => ({
   },
   menu: {
     padding: '0',
-    flexBasis: '30%',
+    flexBasis: '25%',
     backgroundColor: '#333F4B',
     borderRadius: theme.spacing(2, 0, 0, 0),
     overflowY: 'scroll',
     '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    [theme.breakpoints.down('md')]: {
       display: 'none',
     },
   },
@@ -27,7 +30,11 @@ const useStyles = makeStyles((theme) => ({
   },
   marketName: {
     '& span': {
-      font: 'normal normal normal xx-large Roboto',
+      fontSize: '1.5rem',
+      fontFamily: 'Roboto',
+      [theme.breakpoints.down('md')]: {
+        fontSize: '1rem',
+      },
     },
   },
 }));

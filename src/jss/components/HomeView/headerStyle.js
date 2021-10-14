@@ -7,10 +7,19 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     height: '5%',
     padding: theme.spacing(3, 2, 1, 2),
+    overFlowX: 'hidden',
   },
   statusChips: {
     width: '100%',
-    textAlign: 'end',
+    maxWidth: '100%',
+    display: 'flex',
+    justifyContent: 'end',
+    [theme.breakpoints.down('md')]: {
+      justifyContent: 'center',
+    },
+    [theme.breakpoints.down('sm')]: {
+      display: 'inline-block',
+    },
   },
   sectionHeader: {
     font: 'normal normal bold xx-large Roboto',
