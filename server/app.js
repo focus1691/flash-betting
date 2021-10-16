@@ -109,7 +109,7 @@ class App {
     });
 
     client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
-      betfair.exchangeStream.makeMarketResubscription(initialClk, clk, marketId);
+      betfair.exchangeStream.makeMarketSubscription(marketId, initialClk, clk);
     });
 
     client.on('order-subscription', async ({ customerStrategyRefs }) => {

@@ -144,8 +144,8 @@ class BetFairStreamAPI {
     }
   }
 
-  makeMarketSubscription(marketId) {
-    this.subscribe({
+  makeMarketSubscription(marketId, initialClk, clk) {
+    const params = {
       op: 'marketSubscription',
       id: this.id += 1,
       marketFilter: {
@@ -154,25 +154,18 @@ class BetFairStreamAPI {
       marketDataFilter: {
         ladderLevels: 2,
         fields: ['EX_ALL_OFFERS', 'EX_TRADED', 'EX_TRADED_VOL', 'EX_LTP', 'EX_MARKET_DEF'],
-      },
-    });
-  }
+      },  
+    }
 
-  makeMarketResubscription(initialClk, clk, marketId) {
-    this.subscribe({
-      op: 'marketSubscription',
-      id: this.id += 1,
-      initialClk,
-      clk,
+    if (initialClk) {
+      params.initialClk = initialClk;
+    }
 
-      marketFilter: {
-        marketIds: [marketId],
-      },
-      marketDataFilter: {
-        ladderLevels: 2,
-        fields: ['EX_ALL_OFFERS', 'EX_TRADED', 'EX_TRADED_VOL', 'EX_LTP', 'EX_MARKET_DEF'],
-      },
-    });
+    if (clk) {
+      params.clk = clk;
+    }
+
+    this.subscribe(params);
   }
 
   makeOrderSubscription(customerStrategyRefs) {
