@@ -24,7 +24,7 @@ class BetFairMenuController {
       'X-Authentication': req.betfair.sessionKey,
       'Accept-Encoding': 'gzip, deflate',
     };
-    fetch('https:/.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
+    fetch('	https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
       headers,
     })
       .then((res) => res.json())
@@ -34,8 +34,8 @@ class BetFairMenuController {
         });
         response.status(200).json({ sports: req.betfair.allSports });
       })
-      .catch(() => {
-        response.sendStatus(400);
+      .catch((error) => {
+        response.status(400).json({ error: error.message });
       });
   }
 
