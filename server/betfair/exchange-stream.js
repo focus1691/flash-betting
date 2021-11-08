@@ -8,7 +8,6 @@ const testWaitTime = 20 * 1000;
 
 class BetFairStreamAPI {
   constructor(socket, accessToken) {
-    this.id = 1;
     this.connectionClosed = true;
     this.client = null;
     this.socket = socket;
@@ -114,12 +113,8 @@ class BetFairStreamAPI {
     });
   }
 
-  setAccessToken(accessToken) {
-    this.accessToken = accessToken;
-  }
-
   subscribe(params) {
-    if (this.connectionClosed) {
+    if (this.connectionClosed || !this.client) {
       this.authenticate();
       this.subscriptions.push(params);
     } else {
@@ -131,23 +126,21 @@ class BetFairStreamAPI {
     if (this.client) {
       const marketSubscriptionParams = {
         op: 'marketSubscription',
-        id: this.id += 1,
+        id: BetFairStreamAPI.id += 1,
         marketFilter: {
           marketIds: [],
-        },
-        marketDataFilter: {
-          ladderLevels: 2,
         },
       };
       this.client.write(`${JSON.stringify(marketSubscriptionParams)}\r\n`);
       this.client.destroy();
+      this.connectionClosed = true;
     }
   }
 
   makeMarketSubscription(marketId, initialClk, clk) {
     const params = {
       op: 'marketSubscription',
-      id: this.id += 1,
+      id: BetFairStreamAPI.id += 1,
       marketFilter: {
         marketIds: [marketId],
       },
@@ -179,5 +172,7 @@ class BetFairStreamAPI {
     });
   }
 }
+
+BetFairStreamAPI.id = 1;
 
 module.exports = BetFairStreamAPI;

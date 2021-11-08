@@ -101,23 +101,22 @@ class App {
     console.log('new socket connection', client.id);
     
     const accessToken = betfair.accessToken || (await apiHelper.getAccessToken());
-
-    betfair.createExchangeStream(client, accessToken);
+    const exchangeStream = betfair.createExchangeStream(client, accessToken);
 
     client.on('market-subscription', async ({ marketId }) => {
-      betfair.exchangeStream.makeMarketSubscription(marketId);
+      exchangeStream.makeMarketSubscription(marketId);
     });
 
     client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
-      betfair.exchangeStream.makeMarketSubscription(marketId, initialClk, clk);
+      exchangeStream.makeMarketSubscription(marketId, initialClk, clk);
     });
 
     client.on('order-subscription', async ({ customerStrategyRefs }) => {
-      betfair.exchangeStream.makeOrderSubscription(customerStrategyRefs);
+      exchangeStream.makeOrderSubscription(customerStrategyRefs);
     });
 
     client.on('disconnect', () => {
-      betfair.exchangeStream.unsubscribe();
+      exchangeStream.unsubscribe();
       console.log('socket disconnected', client.id);
     });
   }

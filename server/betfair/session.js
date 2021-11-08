@@ -70,7 +70,7 @@ class BetfairSession {
     this.applicationKey = applicationKey;
     this.email = null;
     this.allSports = {};
-    this.exchangeStream = null;
+    // this.exchangeStream = null;
     BetfairInvocation.setApplicationKey(applicationKey);
 
     this.createApiMethods('betting', API_BETTING_METHODS);
@@ -87,9 +87,6 @@ class BetfairSession {
   setAccessToken(accessToken) {
     this.accessToken = accessToken;
     BetfairInvocation.setAccessToken(accessToken);
-    if (this.exchangeStream) {
-      this.exchangeStream.setAccessToken(accessToken);
-    }
   }
 
   setEmailAddress(email) {
@@ -132,7 +129,7 @@ class BetfairSession {
   }
 
   createExchangeStream(client, accessToken=this.accessToken) {
-    this.exchangeStream = new ExchangeStream(client, accessToken);
+    return new ExchangeStream(client, accessToken);
   }
 
   // Create multiple Betfair API calls (account API, bettint api, etc)
