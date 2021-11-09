@@ -19,6 +19,8 @@ import Menu from './Menu';
 import Market from './Market';
 import Settings from './Settings';
 import BootstrapButton from '../../jss/components/bootstrapButton';
+//* Actions
+import { setDrawerOpen } from '../../redux/actions/settings';
 //* JSS
 import useStyles from '../../jss/components/Sidebar';
 
@@ -28,9 +30,8 @@ const theme = createMuiTheme({
   },
 });
 
-const Sidebar = ({ fullscreen }) => {
+const Sidebar = ({ fullscreen, open, setDrawerOpen }) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
   const [openTab, setOpenTab] = useState(2);
   const activeStyle = '#404040';
 
@@ -39,11 +40,11 @@ const Sidebar = ({ fullscreen }) => {
   };
 
   const handleDrawerOpen = () => {
-    $(`.${classes.sidebar}`).animate({ width: '16.5rem' }, 200, 'swing', () => setOpen(true));
+    $(`.${classes.sidebar}`).animate({ width: '16.5rem' }, 200, 'swing', () => setDrawerOpen(true));
   };
 
   const handleDrawerClose = () => {
-    $(`.${classes.sidebar}`).animate({ width: '0px' }, 200, 'swing', () => setOpen(false) );
+    $(`.${classes.sidebar}`).animate({ width: '0px' }, 200, 'swing', () => setDrawerOpen(false) );
   };
 
   const createToggleButton = (name, tab) => (
@@ -100,7 +101,10 @@ const Sidebar = ({ fullscreen }) => {
 };
 
 const mapStateToProps = (state) => ({
+  open: state.settings.drawerOpen,
   fullscreen: state.settings.fullscreen,
 });
 
-export default connect(mapStateToProps)(Sidebar);
+const mapDispatchToProps = { setDrawerOpen };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

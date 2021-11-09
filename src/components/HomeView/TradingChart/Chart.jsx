@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { connect } from 'react-redux';
 import { createChart } from 'lightweight-charts';
 //* @material-ui core
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -11,7 +12,7 @@ import { formatCurrency } from '../../../utils/NumberFormat';
 import { twoDecimalPlaces } from '../../../utils/Bets/BettingCalculations';
 import createChartData from '../../../utils/Bets/CreateChartData';
 
-const Chart = ({ bets }) => {
+const Chart = ({ bets, drawerOpen }) => {
   const classes = useStyles();
   const [timeFrame, setTimeframe] = useState(localStorage.getItem('chartTimeRestriction') || 'ALL');
   const [chart, setChart] = useState(null);
@@ -70,21 +71,25 @@ const Chart = ({ bets }) => {
     };
   }, [bets, timeFrame]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (chart) {
-        const { offsetWidth, offsetHeight } = chartRef.current;
-        chart.resize(offsetWidth, offsetHeight);
-        chart.timeScale().fitContent();
-      }
-    };
+  const handleResize = useCallback(() => {
+    if (chart) {
+      const { offsetWidth, offsetHeight } = chartRef.current;
+      chart.resize(offsetWidth, offsetHeight);
+      chart.timeScale().fitContent();
+    }
+  }, [chart]);
 
+  useEffect(() => {
+    handleResize();
+  }, [drawerOpen, handleResize])
+
+  useEffect(() => {
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [chart, chartRef]);
+  }, [chart, chartRef, drawerOpen, handleResize]);
 
   return (
     <div className={classes.container}>
@@ -100,4 +105,8 @@ const Chart = ({ bets }) => {
   );
 };
 
-export default Chart;
+const mapStateToProps = (state) => ({
+  drawerOpen: state.settings.drawerOpen,
+});
+
+export default connect(mapStateToProps)(Chart);

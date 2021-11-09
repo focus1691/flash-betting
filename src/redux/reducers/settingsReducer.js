@@ -10,6 +10,7 @@ const initialState = {
   premiumMember: false,
   premiumPopupOpen: false,
   fullscreen: false,
+  drawerOpen: true,
   sounds: JSON.parse(localStorage.getItem('sounds')),
   tools: JSON.parse(localStorage.getItem('tools')),
   unmatchedBets: JSON.parse(localStorage.getItem('unmatchedBets')),
@@ -115,6 +116,8 @@ const reducer = (state = initialState, action) => {
     case 'SET_RULES_EXPANDED':
       localStorage.setItem('rulesExpanded', JSON.stringify(action.payload));
       return { ...state, rulesExpanded: action.payload };
+    case 'SET_DRAWER_OPEN':
+      return { ... state, drawerOpen: action.payload };
     default:
       return state;
   }

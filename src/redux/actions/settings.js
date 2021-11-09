@@ -164,3 +164,8 @@ export const setRulesExpanded = (expanded) => ({
   type: 'SET_RULES_EXPANDED',
   payload: expanded,
 });
+
+export const setDrawerOpen = (isOpen) => ({
+  type: 'SET_DRAWER_OPEN',
+  payload: isOpen,
+});
