@@ -14,7 +14,7 @@ class APIHelper {
     }).catch((error) => ({ error }));
 
     if (result) {
-      const response = await fetch(`http://localhost:51459/access-token?vendorClientId=${result}`);
+      const response = await fetch(`https://flash-betting.herokuapp.com/access-token?vendorClientId=${result}`);
       const data = await response.json();
       const { accessToken } = data;
       return accessToken;
