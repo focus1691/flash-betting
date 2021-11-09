@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 import { ThemeProvider } from '@material-ui/styles';
 //* @material-ui core
 import Drawer from '@material-ui/core/Drawer';
@@ -33,16 +34,16 @@ const Sidebar = ({ fullscreen }) => {
   const [openTab, setOpenTab] = useState(2);
   const activeStyle = '#404040';
 
-  const changeTab = (tab) => (e) => {
+  const changeTab = (tab) => () => {
     setOpenTab(tab);
   };
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    $(`.${classes.sidebar}`).animate({ width: '16.5rem' }, 200, 'swing', () => setOpen(true));
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    $(`.${classes.sidebar}`).animate({ width: '0px' }, 200, 'swing', () => setOpen(false) );
   };
 
   const createToggleButton = (name, tab) => (
@@ -67,34 +68,35 @@ const Sidebar = ({ fullscreen }) => {
     }
   };
 
-  return open ? (
-    <Drawer
-      className={classes.sidebar}
-      variant="persistent"
-      open={open}
-      classes={{
-        paper: classes.sidebar,
-      }}
-      anchor="left"
-    >
-      <div className={classes.topSection}>
-        <div className={classes.drawerHeader}>
-          <IconButton className={classes.toggleSidebarButton} onClick={handleDrawerClose}><ChevronLeftIcon /></IconButton>
+  return (
+    <>
+      <Drawer
+        className={classes.sidebar}
+        variant="persistent"
+        open
+        classes={{
+          paper: classes.sidebar,
+        }}
+        anchor="left"
+      >
+        <div className={classes.topSection}>
+          <div className={classes.drawerHeader}>
+            <IconButton className={classes.toggleSidebarButton} onClick={handleDrawerClose}><ChevronLeftIcon /></IconButton>
+          </div>
+          {fullscreen ? null : <Account />}
+          <Toolbar />
+          <Event />
+          <div className={classes.menuButtons}>
+            {createToggleButton('Menu', 1)}
+            {createToggleButton('Market', 2)}
+            {createToggleButton('Settings', 3)}
+          </div>
         </div>
-        {fullscreen ? null : <Account />}
-        <Toolbar />
-        <Event />
-        <div className={classes.menuButtons}>
-          {createToggleButton('Menu', 1)}
-          {createToggleButton('Market', 2)}
-          {createToggleButton('Settings', 3)}
-        </div>
-      </div>
-      {renderActiveTab()}
-    </Drawer>
-  ) : (
-    <IconButton className={clsx(classes.toggleSidebarButton, classes.openSideBarButton)} onClick={handleDrawerOpen}><ChevronRightIcon /></IconButton>
-  );
+        {renderActiveTab()}
+      </Drawer>
+      {!open ? <IconButton className={clsx(classes.toggleSidebarButton, classes.openSideBarButton)} onClick={handleDrawerOpen}><ChevronRightIcon /></IconButton> : null}
+    </>
+  )
 };
 
 const mapStateToProps = (state) => ({

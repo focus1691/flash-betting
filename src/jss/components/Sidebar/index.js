@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#3a3b3c',
     marginBottom: theme.spacing(2),
   },
+  drawerHeader: {
+    textAlign: 'right',
+  },
   menuButtons: {
     margin: theme.spacing(2, 0, 0, 0),
     filter: 'drop-shadow(0px 6px 5px rgba(45,44,44,0.5))',
