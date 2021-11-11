@@ -7,15 +7,16 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 2),
   },
   menu: {
+    display: 'inline-table',
+    position: 'absolute',
+    width: '15%',
+    height: 'inherit',
+    zIndex: '3',
     padding: '0',
-    flexBasis: '25%',
     backgroundColor: '#333F4B',
     borderRadius: theme.spacing(2, 0, 0, 0),
     overflowY: 'scroll',
     '&::-webkit-scrollbar': {
-      display: 'none',
-    },
-    [theme.breakpoints.down('md')]: {
       display: 'none',
     },
   },
