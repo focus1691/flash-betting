@@ -54,7 +54,7 @@
   },
   "homepage": "./",
   "build": {
-    "appId": "com.flashbetting.app",
+    "appId": "co.uk.flashbetting",
     "files": [
       "./build/**/*",
       "./server/**/*",
