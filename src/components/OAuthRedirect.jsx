@@ -18,8 +18,9 @@ const OAuthRedirect = () => {
   useEffect(() => {
     (async () => {
       const code = getQueryVariable('code');
-      if (!code) return;
-      const data = await fetchData(`${FLASH_BETTING_URL}generate-access-token?code=${encodeURIComponent(code)}`);
+      const email = cookies.get('username');
+      if (!code || !email) return;
+      const data = await fetchData(`${FLASH_BETTING_URL}generate-access-token?code=${encodeURIComponent(code)}&email=${email}`);
 
       if (data && data.error) {
         clearCookies(cookies);
