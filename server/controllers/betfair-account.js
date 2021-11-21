@@ -21,7 +21,7 @@ class BetFairAccountController {
       if (error) {
         return res.status(401).json({ error });
       }
-      const accessToken = await req.apiHelper.getAccessToken();
+      const accessToken = await req.apiHelper.getAccessToken(req.cookies.token);
       return res.status(200).json({
         result: {
           isSubscribed: result,

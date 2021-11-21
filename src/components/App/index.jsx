@@ -38,7 +38,7 @@ import SocketContext from '../../contexts/SocketContext';
 import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
-import fetchData from '../../http/fetchData';
+import fetchData, { fetchSecureData } from '../../http/fetchData';
 import updateCustomOrder from '../../http/updateCustomOrder';
 import Draggable from '../Draggable';
 //* Utils
@@ -109,7 +109,7 @@ const App = ({
       setUserId(vendorClientId);
 
       try {
-        const isPremium = await fetchData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
+        const isPremium = await fetchSecureData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`, cookies.get('token'));
         setPremiumStatus(Boolean(isPremium));
       } catch (error) {
         console.log(error);
