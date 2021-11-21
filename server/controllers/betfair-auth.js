@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 const express = require('express');
+const APIHelper = require('../api/helper');
 
 class BetFairAuthenticationController {
   constructor() {
@@ -18,13 +19,19 @@ class BetFairAuthenticationController {
     const { user, password } = req.body;
     req.betfair.login(user, password).then(async ({ sessionKey }) => {
       req.betfair.getVendorClientId({}, async (err, { error, result }) => {
-        if (error) return res.status(401).json({ error });
 
-        res.cookie('token', result);
-        res.cookie('sessionKey', sessionKey);
-        res.cookie('username', user);
-        res.json(result);
+        if (error) {
+          return res.status(401).json({ error });
+        }
 
+        const token = await APIHelper.login({ vendorClientId: result, user });
+
+        if (token) {
+          res.cookie('token', token);
+          res.cookie('sessionKey', sessionKey);
+          res.cookie('username', user);
+  
+        }
         return res.status(200).json(result);
       });
     }).catch((error) => res.json({ error }));

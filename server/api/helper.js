@@ -21,6 +21,23 @@ class APIHelper {
     }
     return null;
   }
+
+  static async login(params) {
+    const response = await fetch('https://flash-betting.herokuapp.com/login', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+
+    if (response.ok) {
+      const token = await response.json();
+      return token;
+    }
+    return false;
+  }
 }
 
 module.exports = APIHelper;
