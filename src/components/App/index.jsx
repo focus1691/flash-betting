@@ -109,8 +109,9 @@ const App = ({
       setUserId(vendorClientId);
 
       try {
-        const isPremium = await fetchSecureData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`, cookies.get('token'));
-        setPremiumStatus(Boolean(isPremium));
+        const response = await fetchSecureData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`, cookies.get('token'));
+        const { result } = await response.json();
+        setPremiumStatus(Boolean(result));
       } catch (error) {
         console.log(error);
       }
