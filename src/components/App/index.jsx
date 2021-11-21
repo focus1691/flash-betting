@@ -107,12 +107,12 @@ const App = ({
     const vendorClientId = await fetchData('/api/get-vendor-client-id');
     if (vendorClientId) {
       setUserId(vendorClientId);
-      const isPremium = await fetchData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
-      console.log(vendorClientId, isPremium);
-      if (isPremium.error) {
-        setPremiumStatus(false);
-      } else {
-        setPremiumStatus(isPremium);
+
+      try {
+        const isPremium = await fetchData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`);
+        setPremiumStatus(Boolean(isPremium));
+      } catch (error) {
+        console.log(error);
       }
     }
   }, []);

@@ -1,4 +1,5 @@
 export const clearCookies = (cookies) => {
+  cookies.remove('token');
   cookies.remove('username');
   cookies.remove('sessionKey');
   cookies.remove('accessToken');

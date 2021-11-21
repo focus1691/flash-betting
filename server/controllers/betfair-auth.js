@@ -16,15 +16,23 @@ class BetFairAuthenticationController {
 
   login(req, res) {
     const { user, password } = req.body;
-    req.betfair.login(user, password).then(async (result) => {
-      res.cookie('sessionKey', result.sessionKey);
-      res.cookie('username', user);
-      res.json(result);
+    req.betfair.login(user, password).then(async ({ sessionKey }) => {
+      req.betfair.getVendorClientId({}, async (err, { error, result }) => {
+        if (error) return res.status(401).json({ error });
+
+        res.cookie('token', result);
+        res.cookie('sessionKey', sessionKey);
+        res.cookie('username', user);
+        res.json(result);
+
+        return res.status(200).json(result);
+      });
     }).catch((error) => res.json({ error }));
   }
 
   logout(req, res) {
     req.betfair.logout().then((res) => {
+      res.clearCookie('token');
       res.clearCookie('sessionKey');
       res.clearCookie('accessToken');
       res.clearCookie('username');

@@ -23,6 +23,7 @@
     "html-react-parser": "^0.14.0",
     "immutability-helper": "^3.1.1",
     "jquery": "^3.5.1",
+    "jwt-decode": "^3.1.2",
     "lightweight-charts": "^3.2.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
