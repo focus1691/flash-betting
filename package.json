@@ -85,8 +85,8 @@
     }
   },
   "scripts": {
-    "start": "cross-env PORT=9090 react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env PORT=9090 NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
     "rebuild": "electron-rebuild -f -w node_modules/sqlite3",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
