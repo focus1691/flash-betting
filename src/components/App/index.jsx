@@ -110,10 +110,11 @@ const App = ({
 
       try {
         const response = await fetchSecureData(`${FLASH_BETTING_URL}premium-status?user=${cookies.get('username')}&vendorClientId=${vendorClientId}`, cookies.get('token'));
+        console.log(cookies.get('token'));
         const { result } = await response.json();
         setPremiumStatus(Boolean(result));
       } catch (error) {
-        console.log(error);
+        console.log(`Error: Premium ${error}`);
       }
     }
   }, []);

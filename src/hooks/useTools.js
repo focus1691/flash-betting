@@ -98,12 +98,15 @@ export default function useTest() {
               placedDate,
             };
 
+            console.log(`Adding new bet (${status}) to the list: ${betParams}`);
+
             if (status === 'EXECUTABLE') dispatch(addUnmatchedBet(betParams));
             else if (status === 'EXECUTION_COMPLETE') dispatch(addMatchedBet(betParams));
           }
 
           // Move from unmatched to matched
           else if (status === 'EXECUTION_COMPLETE' && unmatchedBets[betId] && !matchedBets[betId]) {
+            console.log(`Moving bet from unmatched to matched ${betId}`);
             dispatch(setBetExecutionComplete({ betId, sizeMatched, sizeRemaining, price: averagePriceMatched }));
           }
 
