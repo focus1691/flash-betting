@@ -55,7 +55,7 @@ const useStyles = makeStyles(() => ({
     color: '#85ff85',
   },
   loss: {
-    color: '#ea5b5b',
+    color: '#780303',
   },
   neutral: {
     color: 'black',
