@@ -104,6 +104,7 @@ class BetFairStreamAPI {
 
       this.client.on('close', (data) => {
         console.log(`Connection closed: ${data}`);
+        this.socket.emit('subscription-error', { errorMessage: 'Disconnected from the market. Reconnect to start receiving market data.' });
         this.connectionClosed = true;
       });
 

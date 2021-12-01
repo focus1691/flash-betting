@@ -108,6 +108,7 @@ class App {
       });
   
       client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
+        console.log(`resubscribing to market ${marketId}`);
         exchangeStream.makeMarketSubscription(marketId, initialClk, clk);
       });
   

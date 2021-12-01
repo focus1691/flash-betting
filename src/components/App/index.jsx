@@ -161,8 +161,10 @@ const App = ({
 
   const onMarketDisconnect = useCallback(async ({ errorCode, errorMessage }) => {
     console.log('market disconnected', errorCode, errorMessage);
-    if (errorMessage) {
+    if (errorCode) {
       handleAuthError(errorCode);
+    }
+    if (marketOpen && errorMessage) {
       setConnectionErrorMessage(errorMessage.split(':')[0]);
     }
   }, []);
