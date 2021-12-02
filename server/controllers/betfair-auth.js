@@ -39,12 +39,16 @@ class BetFairAuthenticationController {
 
   logout(req, res) {
     req.betfair.logout().then((res) => {
-      res.clearCookie('token');
-      res.clearCookie('sessionKey');
-      res.clearCookie('accessToken');
-      res.clearCookie('username');
+      this.clearSession(res);
       res.json(res);
     }).catch((error) => res.json({ error }));
+  }
+
+  clearSession(res) {
+    res.clearCookie('token');
+    res.clearCookie('sessionKey');
+    res.clearCookie('accessToken');
+    res.clearCookie('username');
   }
 
   keepAlive(req, res) {

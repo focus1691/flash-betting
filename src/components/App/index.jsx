@@ -236,9 +236,8 @@ const App = ({
     if (marketOpen && marketId) {
       const customerStrategyRefs = ExtractCustomerStrategyRfs(unmatchedBets);
       if (customerStrategyRefs.length > 0) {
-        socket.emit('order-subscription', {
-          customerStrategyRefs: JSON.stringify(customerStrategyRefs),
-        });
+        console.log(`Resubscribing to orders ${customerStrategyRefs}`);
+        socket.emit('order-subscription', { customerStrategyRefs });
       }
     }
   }, [marketOpen, marketId, socket, unmatchedBets]);

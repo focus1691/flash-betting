@@ -100,27 +100,25 @@ class App {
   async onClientConnected(client) {
     console.log('new socket connection', client.id);
     
-    if (betfair.accessToken) {
-      const exchangeStream = betfair.createExchangeStream(client, betfair.accessToken);
+    const exchangeStream = betfair.createExchangeStream(client, betfair.accessToken);
 
-      client.on('market-subscription', async ({ marketId }) => {
-        exchangeStream.makeMarketSubscription(marketId);
-      });
-  
-      client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
-        console.log(`resubscribing to market ${marketId}`);
-        exchangeStream.makeMarketSubscription(marketId, initialClk, clk);
-      });
-  
-      client.on('order-subscription', async ({ customerStrategyRefs }) => {
-        exchangeStream.makeOrderSubscription(customerStrategyRefs);
-      });
-  
-      client.on('disconnect', () => {
-        exchangeStream.unsubscribe();
-        console.log('socket disconnected', client.id);
-      });
-    }
+    client.on('market-subscription', async ({ marketId }) => {
+      exchangeStream.makeMarketSubscription(betfair.accessToken, marketId);
+    });
+
+    client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
+      console.log(`resubscribing to market ${marketId}`);
+      exchangeStream.makeMarketSubscription(betfair.accessToken, marketId, initialClk, clk);
+    });
+
+    client.on('order-subscription', async ({ customerStrategyRefs }) => {
+      exchangeStream.makeOrderSubscription(betfair.accessToken, customerStrategyRefs);
+    });
+
+    client.on('disconnect', () => {
+      exchangeStream.unsubscribe();
+      console.log('socket disconnected', client.id);
+    });
   }
 };
 

@@ -7,17 +7,16 @@ const tls = require('tls');
 const testWaitTime = 20 * 1000;
 
 class BetFairStreamAPI {
-  constructor(socket, accessToken) {
+  constructor(socket) {
     this.connectionClosed = true;
     this.client = null;
     this.socket = socket;
-    this.accessToken = accessToken;
     this.chunks = [];
     this.subscriptions = [];
     this.isTestDisconnected = false;
   }
 
-  authenticate() {
+  authenticate(accessToken) {
     const options = {
       host: 'stream-api.betfair.com',
       port: 443,
@@ -30,7 +29,7 @@ class BetFairStreamAPI {
       const authParams = {
         op: 'authentication',
         appKey: process.env.APP_KEY,
-        session: `BEARER ${this.accessToken}`
+        session: `BEARER ${accessToken}`
       }
       console.log(authParams);
 
@@ -116,9 +115,9 @@ class BetFairStreamAPI {
     });
   }
 
-  subscribe(params) {
+  subscribe(accessToken, params) {
     if (this.connectionClosed || !this.client) {
-      this.authenticate();
+      this.authenticate(accessToken);
       this.subscriptions.push(params);
     } else {
       this.client.write(`${JSON.stringify(params)}\r\n`);
@@ -140,7 +139,7 @@ class BetFairStreamAPI {
     }
   }
 
-  makeMarketSubscription(marketId, initialClk, clk) {
+  makeMarketSubscription(accessToken, marketId, initialClk, clk) {
     const params = {
       op: 'marketSubscription',
       id: BetFairStreamAPI.id += 1,
@@ -161,18 +160,19 @@ class BetFairStreamAPI {
       params.clk = clk;
     }
 
-    this.subscribe(params);
+    this.subscribe(accessToken, params);
   }
 
-  makeOrderSubscription(customerStrategyRefs) {
-    this.subscribe({
+  makeOrderSubscription(accessToken, customerStrategyRefs) {
+    const params = {
       op: 'orderSubscription',
       orderFilter: {
         includeOverallPosition: false,
         customerStrategyRefs,
       },
       segmentationEnabled: true,
-    });
+    }
+    this.subscribe(accessToken, params);
   }
 }
 
