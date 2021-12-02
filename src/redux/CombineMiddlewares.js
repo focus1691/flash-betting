@@ -11,7 +11,7 @@ export default () => {
       // ...options
     });
 
-    // middlewares.push(logger);
+    middlewares.push(logger);
   }
 
   return middlewares;

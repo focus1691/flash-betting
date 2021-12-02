@@ -164,10 +164,11 @@ const App = ({
     if (errorCode) {
       handleAuthError(errorCode);
     }
+    console.log(marketOpen, errorMessage);
     if (marketOpen && errorMessage) {
       setConnectionErrorMessage(errorMessage.split(':')[0]);
     }
-  }, []);
+  }, [marketOpen]);
 
   const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
