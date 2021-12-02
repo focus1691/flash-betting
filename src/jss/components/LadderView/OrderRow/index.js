@@ -11,9 +11,9 @@ const useStyles = makeStyles((theme) => ({
     '&::-webkit-scrollbar': {
       display: 'none',
     },
-    '& tr:first-of-type': {
-      height: '100%', 
-    },
+    // '& tr:first-of-type': {
+    //   height: '100%', 
+    // },
     '& td': {
       width: '20%',
       margin: '0',
