@@ -28,14 +28,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBets, sid
     }
     else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      console.log(`hedging: ${{
-        marketId,
-        side,
-        size: PLHedgeNumber.size,
-        price,
-        selectionId,
-        customerStrategyRef,
-      }}`);
+      console.log(`hedging: ${marketId} ${side} ${PLHedgeNumber.size} ${price} ${selectionId} ${customerStrategyRef}`);
       placeOrder({
         marketId,
         side,
