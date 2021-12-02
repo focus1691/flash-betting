@@ -36,12 +36,11 @@ export const cancelBet = async (marketId, betId) => {
 };
 
 export const cancelBets = (unmatchedBets, selectionId, side, price) => {
-  const betIds = Object.keys(unmatchedBets);
-
-  for (let i = 0; i < betIds.length; i += 1) {
-    const betId = betIds[i];
-    if (unmatchedBets[betId].selectionId === selectionId && (!side || side === unmatchedBets[betId].side) && (!price || price == unmatchedBets[betId].price)) {
-      const { marketId } = unmatchedBets[betId];
+  console.log('cancel bets in ladder order row');
+  for (let i = 0; i < unmatchedBets.length; i += 1) {
+    console.log(unmatchedBets[i].selectionId, selectionId, unmatchedBets[i].side, side, unmatchedBets[i].price, price);
+    if (unmatchedBets[i].selectionId == selectionId && (!side || side === unmatchedBets[i].side) && (!price || price == unmatchedBets[i].price)) {
+      const { marketId, betId } = unmatchedBets[i];
       cancelBet(marketId, betId);
     }
   }

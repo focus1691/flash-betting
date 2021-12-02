@@ -87,7 +87,7 @@ class SQLiteDatabase {
 
   async removeSelectionBetsOnSide(bet) {
     const { selectionId, side } = bet;
-    const stmt = await this.db.prepare('DELETE FROM bets WHERE selectionId = (?), side = (?)');
+    const stmt = await this.db.prepare('DELETE FROM bets WHERE selectionId = (?) AND side = (?)');
     await stmt.run(selectionId, side);
     await stmt.finalize();
   }

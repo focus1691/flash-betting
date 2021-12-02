@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { findIndex, omit } from 'lodash';
+import { findIndex, omit, isEmpty } from 'lodash';
 
 const initialState = {
   selected: false,
@@ -39,6 +39,7 @@ const reducer = (state = initialState, action) => {
         },
       };
     case 'REMOVE_STOP_ENTRY_BET':
+      if (isEmpty(state.list[action.payload.selectionId])) return state;
       return {
         ...state,
         list: {
@@ -47,6 +48,7 @@ const reducer = (state = initialState, action) => {
         },
       };
     case 'REMOVE_STOP_ENTRY_BETS_ON_SIDE':
+      if (isEmpty(state.list[action.payload.selectionId])) return state;
       return {
         ...state,
         list: {
@@ -55,6 +57,7 @@ const reducer = (state = initialState, action) => {
         },
       };
     case 'REMOVE_MULTI_SELECTION_STOP_ENTRY_BETS':
+      if (isEmpty(state.list[action.payload.selectionId])) return state;
       return {
         ...state,
         list: {

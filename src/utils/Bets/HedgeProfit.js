@@ -1,6 +1,6 @@
 import { calcBackBet } from '../TradingStategy/HedingCalculator';
 
-export const calcHedgeProfit = (PLHedgeNumber, side) => (PLHedgeNumber && PLHedgeNumber.side === side && PLHedgeNumber.profit ? PLHedgeNumber.profit : undefined);
+export const calcHedgeProfit = (hedge, side) => (hedge && hedge.side === side && hedge.profit ? hedge.profit : undefined);
 
 export const calcOddsOnPriceHover = (price, side, selectionId, hoveredSelectionId, PL) => (
   ((side === 'BACK' && hoveredSelectionId === selectionId) || (side === 'LAY' && hoveredSelectionId !== selectionId)

@@ -40,7 +40,7 @@ const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstC
       // Finally, all custom orders set by the tools are removed by selectionId and side
       updateCustomOrder('remove-selection-bets-on-side', { selectionId, side });
     },
-    [selectionId],
+    [selectionId, unmatchedBets],
   );
 
   return (

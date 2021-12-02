@@ -1,6 +1,12 @@
 import { calculateHedgePL } from '../TradingStategy/HedingCalculator';
 import { calcBackProfit } from '../Bets/BettingCalculations';
 
+// eslint-disable-next-line no-extend-native
+Number.prototype.round = function(places) {
+	// eslint-disable-next-line prefer-template
+	return +(Math.round(this + "e+" + places) + "e-" + places);
+};
+
 /**
  * This function calculates a hedge column in the ladder
  * @param {number} odds - The odds we are calculating for
@@ -27,7 +33,7 @@ export default (odds, selectionMatchedBets, ladderUnmatched, stake, pl) => {
     }, 0);
 
     // calculate the size required to bet
-    const size = side === 'BACK' ? parseFloat(offset) - parseFloat(profit) : parseFloat(profit) - parseFloat(offset);
+    const size = side === 'BACK' ? (parseFloat(offset) - parseFloat(profit)).round(2) : (parseFloat(profit) - parseFloat(offset)).round(2);
 
     return { side, profit, size };
   }

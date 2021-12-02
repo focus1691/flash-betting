@@ -69,6 +69,7 @@ const reducer = (state = initialState, action) => {
         },
       };
     case 'REMOVE_BACK_BET':
+      if (isEmpty(state.list[action.payload.selectionId])) return state;
       return {
         ...state,
         list: {
