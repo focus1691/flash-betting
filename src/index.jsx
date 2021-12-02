@@ -17,6 +17,10 @@ import Authentication from './components/Authentication';
 import OAuthRedirect from './components/OAuthRedirect';
 //* Contexts
 import SocketContext from './contexts/SocketContext';
+//* Utility
+import removeLogs from './utils/RemoveLogs';
+
+removeLogs();
 
 const socket = openSocket('http://localhost:3001');
 
