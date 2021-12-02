@@ -14,6 +14,7 @@ import { removeFillOrKill } from '../../../../redux/actions/fillOrKill';
 import { getMarketUnmatchedBets } from '../../../../selectors/orderSelector';
 //* Utils
 import { getPriceNTicksAway } from '../../../../utils/Bets/PriceCalculations';
+import { isBetFairBet } from '../../../../utils/Bets/BetStatus';
 import updateCustomOrder from '../../../../http/updateCustomOrder';
 //* HTTP
 import postData from '../../../../http/postData';
@@ -54,8 +55,9 @@ const UnmatchedBets = ({
     async ({ betId, marketId, rfs, selectionId, strategy }) => {
       //* Remove from SQLite
       updateCustomOrder('remove-bet', { rfs });
+      console.log(`cancel order in sidebar ${unmatchedBets[betId]} ${betId} ${marketId} ${rfs} ${selectionId} ${strategy} ${unmatchedBets}`);
 
-      if (unmatchedBets[betId]) {
+      if (isBetFairBet(betId, unmatchedBets)) {
         //* Cancel on BetFair
         cancelBet(marketId, betId);
       }
@@ -161,7 +163,7 @@ const UnmatchedBets = ({
                 const BETS = Object.values(unmatchedBets)
                   .filter((bet) => bet.selectionId == selectionId)
                   .map((bet) => <Bet bet={bet} handleRightClick={handleRightClick} cancelOrder={cancelOrder} marketStartTime={marketStartTime} key={`unmatched-bet-sidebar-${uuid()}`} />);
-                if (BETS.length.length > 0) {
+                if (BETS.length > 0) {
                   list.push(BETS);
                 }
 
