@@ -22,11 +22,20 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBets, sid
   const text = useMemo(() => (unmatchedStake > 0 ? unmatchedStake : hedgingAvailable ? hedgePL : null), [unmatchedStake, hedgingAvailable, hedgePL]);
 
   const handleClick = useCallback(() => {
-    if (unmatchedBets) {
+    console.log(`unmatched Bets: ${Boolean(unmatchedBets) && unmatchedBets.length} PL hedge ${PLHedgeNumber && PLHedgeNumber.size}`);
+    if (unmatchedBets && unmatchedBets.length > 0) {
       cancelMarketBets(marketId, unmatchedBets);
     }
     else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+      console.log(`hedging: ${{
+        marketId,
+        side,
+        size: PLHedgeNumber.size,
+        price,
+        selectionId,
+        customerStrategyRef,
+      }}`);
       placeOrder({
         marketId,
         side,
