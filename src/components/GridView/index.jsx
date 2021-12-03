@@ -166,11 +166,6 @@ const Grid = ({
       const { name, number, logo, order } = DeconstructRunner(runners[key], eventType.id);
       const { side, stakeLiability } = order;
 
-      const profitArray = Object.values(bets.matched)
-        .filter((bet) => bet.selectionId == runners[key].selectionId)
-        .map((bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgePL(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp[0])));
-      const profit = (-1 * profitArray.reduce((a, b) => a - b, 0)).toFixed(2);
-
       return (
         <React.Fragment key={`grid-runner-${key}`}>
           <tr>
@@ -195,7 +190,6 @@ const Grid = ({
                   ? renderProfitAndLossAndHedge(order, colorForBack(activeOrder.side))
                   : { val: '', color: '' }
               }
-              hedge={profit}
               ltpStyle={ltpStyle}
             />
             {renderRow(atb, key, 'BACK').reverse()}

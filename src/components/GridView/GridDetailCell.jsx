@@ -5,38 +5,39 @@ import { connect } from 'react-redux';
 import { setRunner } from '../../redux/actions/market';
 import { placeOrder } from '../../redux/actions/bet';
 import { calcBackProfit } from '../../utils/Bets/BettingCalculations';
-import { selectionHasBets } from '../../utils/Bets/SelectionHasBets';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { iconForEvent } from '../../utils/Market/EventIcons';
-import { isHedgingOnSelectionAvailable } from '../../utils/TradingStategy/HedingCalculator';
 import { getSelectionMatchedBets } from '../../selectors/orderSelector';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridDetailCell';
 
-const GridDetailCell = ({ selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, PL, hedge, ltpStyle }) => {
+const GridDetailCell = ({ selectionMatchedBets, setRunner, placeOrder, sportId, marketId, runner, name, number, logo, ltp, tv, PL, ltpStyle }) => {
   const classes = useStyles();
-  const side = useMemo(() => (selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side), 0) <= 0 ? 'BACK' : 'LAY'), [selectionMatchedBets]);
+  const hedge = useMemo(() => CalculateLadderHedge(ltp, selectionMatchedBets, 'hedged'), [ltp, selectionMatchedBets]);
+  const hedgingAvailable = useMemo(() => hedge && hedge.size >= 0.01, [hedge]);
 
   const handleImageError = () => (e) => {
     e.target.onerror = null;
     e.target.src = iconForEvent(Number(sportId));
   };
 
-  const executeHedgeBet = () => {
-    if (isHedgingOnSelectionAvailable(selectionMatchedBets)) {
+  const executeHedgeBet = useCallback(() => {
+    if (hedgingAvailable) {
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      const hedgeSize = selectionMatchedBets.length > 0 ? CalculateLadderHedge(ltp[0], selectionMatchedBets, 'hedged').size : undefined;
-
-      placeOrder({
+      const order = {
         marketId,
-        side,
-        size: hedgeSize,
-        price: ltp[0],
+        side: hedge.side,
+        size: hedge.size,
+        price: hedge.price,
         selectionId: runner.selectionId,
         customerStrategyRef,
-      });
+      }
+
+      console.log(`hedging out in the grid view ${hedge.side} ${hedge.size} ${hedge.price} ${runner.selectionId} ${customerStrategyRef}`);
+
+      placeOrder(order);
     }
-  };
+  }, [hedgingAvailable, marketId, hedge.side, hedge.size, hedge.price, runner.selectionId]);
 
   return (
     <td className={classes.gridRunnerDetails} onClick={() => setRunner(runner)}>
@@ -48,12 +49,14 @@ const GridDetailCell = ({ selectionMatchedBets, setRunner, placeOrder, sportId, 
 
       <div className={classes.gridPL}>
         <span
+          role="button"
+          tabIndex="0"
           style={{
-            color: !isHedgingOnSelectionAvailable(selectionMatchedBets) ? '#D3D3D3' : hedge < 0 ? 'red' : '#01CC41',
+            color: !hedgingAvailable ? '#D3D3D3' : hedge.profit < 0 ? 'red' : '#01CC41',
           }}
           onClick={executeHedgeBet}
         >
-          {selectionHasBets(selectionMatchedBets) ? hedge : ''}
+          {hedgingAvailable ? hedge.profit : null}
         </span>
         <span style={{ color: PL.color }}>{PL.val}</span>
         <span>{tv[0] ? Math.floor(tv[0]).toLocaleString() : ''}</span>
