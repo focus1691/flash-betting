@@ -13,7 +13,6 @@ import { isValidPrice, getNextPrice } from '../../utils/Bets/PriceCalculations';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import { formatCurrency } from '../../utils/NumberFormat';
-import { calculateHedgePL } from '../../utils/TradingStategy/HedingCalculator';
 import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 // Grid Components
 import GridDetailCell from './GridDetailCell';
