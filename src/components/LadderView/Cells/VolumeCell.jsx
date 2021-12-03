@@ -6,7 +6,7 @@ import { getCandleStickColor, getVolume, getVolumeDivider } from '../../../selec
 //* JSS
 import useStyles from '../../../jss/components/LadderView/volumeStyle';
 
-const VolumeCell = memo(({ price, selectionId, vol, candleStickInfo, volFraction }) => {
+const VolumeCell = ({ price, selectionId, vol, candleStickInfo, volFraction }) => {
   const classes = useStyles();
   return (
     <div className={clsx(classes.candleStick, 'td')} colSpan={3}>
@@ -18,13 +18,6 @@ const VolumeCell = memo(({ price, selectionId, vol, candleStickInfo, volFraction
       </div>
     </div>
   );
-});
-
-const isMoving = (prevProps, nextProps) => {
-  if (nextProps.isMoving) {
-    return true;
-  }
-  return false;
 };
 
 const mapStateToProps = (state, { selectionId, price }) => ({
@@ -38,4 +31,4 @@ const mapStateToProps = (state, { selectionId, price }) => ({
   }),
 });
 
-export default connect(mapStateToProps)(memo(VolumeCell, isMoving));
+export default connect(mapStateToProps)(memo(VolumeCell));

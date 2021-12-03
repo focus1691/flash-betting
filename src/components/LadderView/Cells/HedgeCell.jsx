@@ -15,7 +15,7 @@ import GetUnmatchedStake from '../../../utils/Bets/GetUnmatchedStake';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/hedgeCellStyle';
 
-const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBets, side, hedgingAvailable, PLHedgeNumber, placeOrder }) => {
+const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBets, side, hedgingAvailable, PLHedgeNumber, placeOrder }) => {
   const classes = useStyles();
   const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber, side]);
   const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBets), [unmatchedBets]);
@@ -54,7 +54,7 @@ const LadderHedgeCell = memo(({ marketId, selectionId, price, unmatchedBets, sid
       {text}
     </div>
   );
-});
+};
 
 const mapStateToProps = (state, { selectionId, price, side }) => ({
   marketId: state.market.marketId,
@@ -63,4 +63,4 @@ const mapStateToProps = (state, { selectionId, price, side }) => ({
 
 const mapDispatchToProps = { placeOrder };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LadderHedgeCell);
+export default connect(mapStateToProps, mapDispatchToProps)(memo(LadderHedgeCell));

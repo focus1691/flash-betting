@@ -11,7 +11,7 @@ import { getTickOffset } from '../../../selectors/tickOffsetSelector';
 import { getTotalMatched, orderStyle, textForOrderCell } from '../../../utils/Bets/GetMatched';
 import { formatPrice } from '../../../utils/Bets/PriceCalculations';
 
-const OrderCell = memo(({ selectionId, side, price, marketId, handlePlaceOrder, stopLoss, stopLossUnits, stopLossHedged, stopLossSelected, tickOffset, hedgeSize, stakeVal, cellMatched, replaceStopLoss }) => {
+const OrderCell = ({ selectionId, side, price, marketId, handlePlaceOrder, stopLoss, stopLossUnits, stopLossHedged, stopLossSelected, tickOffset, hedgeSize, stakeVal, cellMatched, replaceStopLoss }) => {
   const [betPending, setBetPending] = useState(false);
   const totalMatched = useMemo(() => getTotalMatched(betPending, stakeVal[selectionId], cellMatched, null), [betPending, cellMatched, selectionId, stakeVal]);
   const text = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
@@ -53,7 +53,7 @@ const OrderCell = memo(({ selectionId, side, price, marketId, handlePlaceOrder, 
       {text}
     </div>
   );
-});
+};
 
 const mapStateToProps = (state, props) => ({
   marketId: state.market.marketId,
@@ -73,4 +73,4 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = { setOddsHovered, replaceStopLoss };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderCell);
+export default connect(mapStateToProps, mapDispatchToProps)(memo(OrderCell));
