@@ -57,8 +57,8 @@ function createWindow() {
   });
 
   mainWindow.loadURL(`file:///${__dirname}/navigation-index.html`);
-  // mainWindow.removeMenu();
-  // mainWindow.setMenu(null);
+  mainWindow.removeMenu();
+  mainWindow.setMenu(null);
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
