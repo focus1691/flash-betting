@@ -1,5 +1,9 @@
-//* Dependencies
-require('dotenv').config();
+const dotenv = require('dotenv');
+const dotenvExpand = require('dotenv-expand');
+
+const config = dotenv.config();
+
+dotenvExpand(config);
 
 //* Electron
 const electron = require('electron');
