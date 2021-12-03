@@ -9,12 +9,6 @@ import useStyles from '../../jss/components/LadderView';
 const Ladders = ({ marketOpen, marketStatus, ladderOrder, excludedLadders }) => {
   const classes = useStyles();
 
-  const tesss = Object.values(ladderOrder)
-    .filter((value) => excludedLadders.indexOf(value) === -1)
-    .map((selectionId) => selectionId);
-
-    console.log(tesss);
-
   return marketOpen && (marketStatus === 'SUSPENDED' || marketStatus === 'OPEN' || marketStatus === 'RUNNING') ? (
     <div
       className={clsx(classes.ladderContainer, {
