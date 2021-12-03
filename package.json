@@ -60,7 +60,8 @@
       "./build/**/*",
       "./server/**/*",
       "./public/electron.js",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "./.env"
     ],
     "directories": {
       "buildResources": "assets"
@@ -118,7 +119,6 @@
     "cross-env": "^5.2.1",
     "electron": "^12.2.2",
     "electron-builder": "^22.9.1",
-    "electron-rebuild": "^2.3.5",
     "eslint": "^7.11.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.15.0",
