@@ -21,6 +21,8 @@ import { SAFE_LADDER_LIMIT } from '../../constants';
 //* HTTP
 import fetchData from '../../http/fetchData';
 
+const delay = (ms) => new Promise(res => setTimeout(res, ms))
+
 function* processMarketDefinition(marketDefinition) {
   console.log('market definition', marketDefinition);
   const { runners, inPlay, status, marketTime } = marketDefinition;
@@ -92,6 +94,8 @@ function* processMarketUpdates(action) {
 
   if (initialClk) yield put(setInitialClk(initialClk));
   if (clk) yield put(setClk(clk));
+
+  yield delay(1000);
 }
 
 export function* watchMarketUpdates() {
