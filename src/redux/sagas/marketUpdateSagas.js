@@ -56,6 +56,8 @@ function* processMarketDefinition(marketDefinition) {
 }
 
 function* processMarketUpdates(action) {
+  yield delay(1000);
+
   const { mc, clk, initialClk } = action.payload;
 
   for (let i = 0; i < mc.length; i += 1) {
@@ -94,8 +96,6 @@ function* processMarketUpdates(action) {
 
   if (initialClk) yield put(setInitialClk(initialClk));
   if (clk) yield put(setClk(clk));
-
-  yield delay(1000);
 }
 
 export function* watchMarketUpdates() {
