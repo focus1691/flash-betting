@@ -18,19 +18,19 @@ const LadderRow = memo(({ data: { selectionId, hedgingAvailable, isMoving, handl
   const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
 
   // gets all the bets and returns a hedge or new pl
-  const PLHedgeNumber = useMemo(() => (selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined), [selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
+  const hedge = useMemo(() => (selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined), [selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
 
   // for the stoploss and tickoffset
   const HedgeSize = useMemo(() => (selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined), [selectionMatchedBets, key, stakeVal, PL]);
 
   return (
-    <div key={key} className="tr" style={style}>
+    <div key={`ladder-row-${selectionId}-${key}`} style={style}>
       <VolumeCell selectionId={selectionId} price={key} isMoving={isMoving} />
-      <HedgeCell selectionId={selectionId} price={key} side={side.left} PLHedgeNumber={PLHedgeNumber} hedgingAvailable={hedgingAvailable} />
+      <HedgeCell selectionId={selectionId} price={key} side={side.left} hedge={hedge} hedgingAvailable={hedgingAvailable} />
       <OrderCell selectionId={selectionId} price={key} side={side.left} handlePlaceOrder={handlePlaceOrder} hedgeSize={HedgeSize} />
       <OddsCell selectionId={selectionId} price={key} isMoving={isMoving} />
       <OrderCell selectionId={selectionId} price={key} side={side.right} handlePlaceOrder={handlePlaceOrder} hedgeSize={HedgeSize} />
-      <HedgeCell selectionId={selectionId} price={key} side={side.right} hedgingAvailable={hedgingAvailable} PLHedgeNumber={PLHedgeNumber} />
+      <HedgeCell selectionId={selectionId} price={key} side={side.right} hedgingAvailable={hedgingAvailable} hedge={hedge} />
     </div>
   );
 }, isMoving);

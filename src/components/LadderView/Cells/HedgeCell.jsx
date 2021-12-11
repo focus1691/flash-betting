@@ -15,36 +15,36 @@ import GetUnmatchedStake from '../../../utils/Bets/GetUnmatchedStake';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/hedgeCellStyle';
 
-const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBets, side, hedgingAvailable, PLHedgeNumber, placeOrder }) => {
+const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBets, side, hedgingAvailable, hedge, placeOrder }) => {
   const classes = useStyles();
-  const hedgePL = useMemo(() => calcHedgeProfit(PLHedgeNumber, side), [PLHedgeNumber, side]);
+  const hedgePL = useMemo(() => calcHedgeProfit(hedge, side), [hedge, side]);
   const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBets), [unmatchedBets]);
   const text = useMemo(() => (unmatchedStake > 0 ? unmatchedStake : hedgingAvailable ? hedgePL : null), [unmatchedStake, hedgingAvailable, hedgePL]);
 
   const handleClick = useCallback(() => {
-    console.log(`unmatched Bets: ${Boolean(unmatchedBets) && unmatchedBets.length} PL hedge ${PLHedgeNumber && PLHedgeNumber.size}`);
+    console.log(`unmatched Bets: ${Boolean(unmatchedBets) && unmatchedBets.length} PL hedge ${hedge && hedge.size}`);
     if (unmatchedBets && unmatchedBets.length > 0) {
       cancelMarketBets(marketId, unmatchedBets);
     }
-    else if (PLHedgeNumber && PLHedgeNumber.size > 0) {
+    else if (hedge && hedge.size > 0) {
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      console.log(`hedging: ${marketId} ${side} ${PLHedgeNumber.size} ${price} ${selectionId} ${customerStrategyRef}`);
+      console.log(`hedging: ${marketId} ${side} ${hedge.size} ${price} ${selectionId} ${customerStrategyRef}`);
       placeOrder({
         marketId,
         side,
-        size: PLHedgeNumber.size,
+        size: hedge.size,
         price,
         selectionId,
         customerStrategyRef,
       });
     }
-  }, [marketId, selectionId, unmatchedBets, side, price, PLHedgeNumber]);
+  }, [marketId, selectionId, unmatchedBets, side, price, hedge]);
 
   return (
     <div
       role="button"
       tabIndex="0"
-      className={clsx('td', {
+      className={clsx({
         [classes.profit]: hedgePL >= 0,
         [classes.loss]: hedgePL < 0,
         [classes.breakEven]: !_.isEmpty(unmatchedBets),
