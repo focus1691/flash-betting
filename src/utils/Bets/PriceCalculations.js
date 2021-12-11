@@ -109,7 +109,7 @@ export const fivePricesAway = (ltp) => {
   const index = ALL_PRICES.indexOf(ltp);
 
   return {
-    back: ALL_PRICES.slice(index + 1, index + 6).map((s, v) => formatPrice(s)),
-    lay: ALL_PRICES.slice(index - 5, index).map((s, v) => formatPrice(s)),
+    back: ALL_PRICES.slice(index + 1, index + 6).map((s) => formatPrice(s)),
+    lay: ALL_PRICES.slice(index - 5, index).map((s) => formatPrice(s)),
   };
 };
