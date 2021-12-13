@@ -3,29 +3,38 @@ import handleAuthError from '../utils/Errors/handleAuthError';
 import extractErrorCode from '../utils/Errors/ExtractErrorCode';
 
 export default async (endpoint) => {
+  try {
+    const { result, error } = await fetch(endpoint).then((res) => res.json());
 
-  const { result, error } = await fetch(endpoint).then((res) => res.json());
-
-  if (error) {
-    const errorCode = extractErrorCode(error);
-    handleAuthError(errorCode);
-    return {
-      error,
+    if (error) {
+      const errorCode = extractErrorCode(error);
+      handleAuthError(errorCode);
+      return {
+        error,
+      }
     }
+    return result;
+  } catch (error) {
+    console.log(`Error: fetching data ${error}`);
+    return null;
   }
-  return result;
 };
 
 export const fetchSecureData = async (endpoint, token) => {
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Authorization': token,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-  });
-  return response;
+  try {
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(`Error: fetching secure data ${error}`);
+    return null;
+  }
 }
 
 export const isTokenExpired = (token) => {
