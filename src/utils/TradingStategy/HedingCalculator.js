@@ -14,23 +14,15 @@ Number.prototype.round = function (places) {
  * @param {string} layOdds - Current lay odds
  * @return {number} This amount will be deducted from your balance should your bet lose
  */
-const calcLiability = (side, backStake, layOdds) => {
+const calcLiability = (side, backerStake, layOdds) => {
   // When backing an outcome, the liability is your stake
-  if (side === 'BACK') return backStake;
+  if (side === 'BACK') return backerStake;
 
   // Calculate the lay liability
-  return backStake * (layOdds - 1);
+  return (backerStake * (layOdds - 1)).round(2);
 };
 
 const calcBackBet = (odds, stake) => stake * odds - stake;
-
-const calcLayBet = (odds, stake) => {
-  const backersStake = (stake / (odds - 1));
-  return {
-    backersStake,
-    liability: calcLiability('LAY', backersStake, odds).round(2),
-  };
-};
 
 const calcHedgeStake = (size, price, exitPrice, side) => {
   const PL = twoDecimalPlaces((size * price) / exitPrice);
@@ -78,5 +70,5 @@ const getHedgedBetsToMake = (marketId, bets, ltps) => {
 };
 
 export {
-  calcLiability, calcHedge, calculateHedgePL, calcBackBet, calcLayBet, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP,
+  calcLiability, calcHedge, calculateHedgePL, calcBackBet, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP,
 };
