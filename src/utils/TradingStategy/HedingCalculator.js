@@ -36,16 +36,16 @@ const calcHedgeStake = (size, price, exitPrice, side) => {
  * @param {string} exitPrice - The odds the bet will be exited at.
  * @return {number} The Profit or loss.
  */
- const calculateHedgePL = (stake, backPrice, exitPrice) => ((stake * backPrice) / exitPrice - stake);
+ const calculateHedgeProfit = (stake, backPrice, exitPrice) => ((stake * backPrice) / exitPrice - stake);
 
 const calcHedge = (size, price, side, ltp, exitPrice) => ({
-  hedgePL: calculateHedgePL(size, price, ltp),
+  hedgePL: calculateHedgeProfit(size, price, ltp),
   hedgeStake: calcHedgeStake(size, price, exitPrice, side),
 });
 
 const calcHedgeAtLTP = (bets, ltp) => {
   const arr = bets.map(
-    (bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgePL(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp)),
+    (bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgeProfit(parseFloat(bet.size), parseFloat(bet.price), parseFloat(ltp)),
   );
   return (-1 * arr.reduce((a, b) => a - b, 0)).toFixed(2);
 };
@@ -70,5 +70,5 @@ const getHedgedBetsToMake = (marketId, bets, ltps) => {
 };
 
 export {
-  calcLiability, calcHedge, calculateHedgePL, calcBackBet, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP,
+  calcLiability, calcHedge, calculateHedgeProfit, calcBackBet, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP,
 };
