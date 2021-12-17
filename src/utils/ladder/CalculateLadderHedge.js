@@ -10,23 +10,23 @@ Number.prototype.round = function(places) {
 /**
  * This function calculates a hedge column in the ladder
  * @param {number} odds - The odds we are calculating for
- * @param {number} ladderUnmatched - The setting that is associated with what happens to the columns (hedged, pl, none)
+ * @param {number} hedgeType - The setting that is associated with what happens to the columns (hedged, pl, none)
  * @param {number} stake - The current stake value that is selected, [2, 4, 6, 8, 10] <- default 2
  * @param {number} pl - The current profit/loss of the ladder
  * @return {object} side, profit
  */
-export default (LTP, selectionMatchedBets, ladderUnmatched, stake, pl) => {
-  console.log(`calculate ladder hedge ${LTP}`);
+export default (odds, selectionMatchedBets, hedgeType, stake, pl) => {
+  console.log(`calculate ladder hedge ${odds}`);
   // find which side the column is supposed to be on
   const side = selectionMatchedBets.reduce((a, b) => a + calcBackProfit(b.size, b.price, b.side), 0) <= 0 ? 'BACK' : 'LAY';
-  const multiplePrices = typeof LTP === 'object';
+  const multiplePrices = typeof odds === 'object';
 
-  const smallestPrice = multiplePrices ? Math.min(...LTP) : LTP;
-  const largestPrice = multiplePrices ? Math.max(...LTP) : LTP;
+  const smallestPrice = multiplePrices ? Math.min(...odds) : odds;
+  const largestPrice = multiplePrices ? Math.max(...odds) : odds;
 
   const price = side === 'BACK' ? smallestPrice : largestPrice;
 
-  if (ladderUnmatched === 'hedged') {
+  if (hedgeType === 'hedged') {
     // calculate the profit based on the current row (the odds decide this)
     const profitArray = selectionMatchedBets.map((bet) => (bet.side === 'LAY' ? -1 : 1) * calculateHedgeProfit(parseFloat(bet.size), parseFloat(bet.price), parseFloat(price)));
 
@@ -44,8 +44,8 @@ export default (LTP, selectionMatchedBets, ladderUnmatched, stake, pl) => {
 
     return { side, profit, price, size };
   }
-  if (ladderUnmatched === 'pl') {
-    return { side: 'BACK', profit: parseFloat(calcBackProfit(parseFloat(stake), LTP, 0)) + parseFloat(pl), size: stake };
+  if (hedgeType === 'pl') {
+    return { side: 'BACK', profit: parseFloat(calcBackProfit(parseFloat(stake), odds, 0)) + parseFloat(pl), size: stake };
   }
   return undefined;
 };

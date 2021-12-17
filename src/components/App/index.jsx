@@ -22,7 +22,7 @@ import {
   loadRunnerResults,
   setMarketStatus,
 } from '../../redux/actions/market';
-import { updateLadderOrder, setMarketPL } from '../../redux/actions/ladder';
+import { updateLadderOrder } from '../../redux/actions/ladder';
 import { removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
 import { updateBackList } from '../../redux/actions/back';
 import { updateLayList } from '../../redux/actions/lay';
@@ -88,7 +88,6 @@ const App = ({
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
-  setMarketPL,
   setStopLossBetMatched,
   updateStopLossList,
   updateTickOffsetList,
@@ -262,21 +261,6 @@ const App = ({
     };
   }, [onMarketDisconnect, onSocketDisconnect, onReceiveOrderMessage, socket]);
 
-  useEffect(() => {
-    (async () => {
-      if (marketOpen && marketId) {
-        const result = await fetchData(`/api/list-market-pl?marketId=${marketId}`);
-        if (result && result[0]) {
-          const selectionPL = result[0].profitAndLosses.reduce((acc, item) => {
-            acc[item.selectionId] = item.ifWin;
-            return acc;
-          }, {});
-          setMarketPL(selectionPL);
-        }
-      }
-    })();
-  }, [marketOpen, marketId, matchedBets]);
-
   return isLoading ? (
     <Spinner />
   ) : (
@@ -326,7 +310,6 @@ const mapDispatchToProps = {
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
-  setMarketPL,
   setStopLossBetMatched,
   updateStopLossList,
   updateTickOffsetList,

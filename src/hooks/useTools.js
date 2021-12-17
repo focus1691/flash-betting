@@ -1,7 +1,9 @@
 import { isEmpty } from 'lodash';
+import { useEffect } from 'react';
 import useInterval from 'react-useinterval';
 import { useSelector, useDispatch } from 'react-redux';
 //* Actions
+import { setMarketPL } from '../redux/actions/ladder';
 import { addUnmatchedBet, addMatchedBet, placeOrder, removeUnmatchedBets, updateSizeMatched, setBetExecutionComplete } from '../redux/actions/bet';
 import { removeBackBet } from '../redux/actions/back';
 import { removeLayBet } from '../redux/actions/lay';
@@ -125,4 +127,19 @@ export default function useTest() {
       }
     }
   }, ONE_SECOND);
+
+  useEffect(() => {
+    (async () => {
+      if (marketOpen && marketId) {
+        const result = await fetchData(`/api/list-market-pl?marketId=${marketId}`);
+        if (result && result[0]) {
+          const selectionPL = result[0].profitAndLosses.reduce((acc, item) => {
+            acc[item.selectionId] = item.ifWin;
+            return acc;
+          }, {});
+          dispatch(setMarketPL(selectionPL));
+        }
+      }
+    })();
+  }, [marketOpen, marketId, matchedBets]);
 }
