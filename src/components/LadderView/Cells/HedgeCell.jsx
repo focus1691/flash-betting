@@ -44,7 +44,7 @@ const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBets, side, he
     <div
       role="button"
       tabIndex="0"
-      className={clsx({
+      className={clsx('td', {
         [classes.profit]: hedgePL >= 0,
         [classes.loss]: hedgePL < 0,
         [classes.breakEven]: !_.isEmpty(unmatchedBets),

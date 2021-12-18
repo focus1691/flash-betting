@@ -22,7 +22,7 @@ const LadderRow = memo(({ data: { selectionId, hedgingAvailable, handlePlaceOrde
   const HedgeSize = useMemo(() => (selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined), [selectionMatchedBets, key, stakeVal, PL]);
 
   return (
-    <div key={`ladder-row-${selectionId}-${key}`} style={style}>
+    <div key={`ladder-row-${selectionId}-${key}`} className="tr" style={style}>
       <VolumeCell selectionId={selectionId} price={key} />
       <HedgeCell selectionId={selectionId} price={key} side={side.left} hedge={hedge} hedgingAvailable={hedgingAvailable} />
       <OrderCell selectionId={selectionId} price={key} side={side.left} handlePlaceOrder={handlePlaceOrder} hedgeSize={HedgeSize} />

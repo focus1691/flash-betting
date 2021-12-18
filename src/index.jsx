@@ -20,6 +20,12 @@ import SocketContext from './contexts/SocketContext';
 //* Utility
 import removeLogs from './utils/RemoveLogs';
 
+// eslint-disable-next-line no-extend-native
+Number.prototype.round = function(places) {
+	// eslint-disable-next-line prefer-template
+	return +(Math.round(this + "e+" + places) + "e-" + places);
+};
+
 removeLogs();
 
 const socket = openSocket('http://localhost:3001');

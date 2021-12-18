@@ -29,6 +29,19 @@ const calcHedgeStake = (size, price, exitPrice, side) => {
   return side === 'BACK' ? PL : -PL;
 };
 
+const backToLayProfit = (backStake, backOdds, layOdds) => {
+  const profit = (backStake * backOdds) / layOdds - backStake;
+  // console.log(`(${backStake} * ${backOdds}) / ${layOdds}`);
+  return profit.round(2);
+};
+
+const layToBackHedgeProfit = (layStake, backOdds, layOdds) => {
+  const backStake = (layOdds * layStake) / backOdds;
+  const layLiability = calcLiability('LAY', layStake, layOdds);
+  const profit = (backStake * backOdds) - (layLiability) - (backStake);
+  return profit.round(2);
+};
+
 /**
  * Another function to calculate the profit/loss from a hedged position using the back price instead of liability.
  * @param {string} stake - The amount the bet was placed at.
@@ -36,12 +49,11 @@ const calcHedgeStake = (size, price, exitPrice, side) => {
  * @param {string} exitPrice - The odds the bet will be exited at.
  * @return {number} The Profit or loss.
  */
- const calculateHedgeProfit = (stake, backPrice, exitPrice) => ((stake * backPrice) / exitPrice - stake);
-
-const calcHedge = (size, price, side, ltp, exitPrice) => ({
-  hedgePL: calculateHedgeProfit(size, price, ltp),
-  hedgeStake: calcHedgeStake(size, price, exitPrice, side),
-});
+const calculateHedgeProfit = (side, stake, entryPrice, exitPrice) => {
+  if (side === 'LAY') return layToBackHedgeProfit(stake, entryPrice, exitPrice);
+  return backToLayProfit(stake, entryPrice, exitPrice);
+};
+//  const calculateHedgeProfit = (stake, backPrice, exitPrice) => ((stake * backPrice) / exitPrice - stake);
 
 const calcHedgeAtLTP = (bets, ltp) => {
   const arr = bets.map(
@@ -63,12 +75,12 @@ const getHedgedBetsToMake = (marketId, bets, ltps) => {
   const selections = Object.values(bets.matched).reduce((acc, cur) => (acc.indexOf(cur.selectionId) === -1 ? acc.concat(cur.selectionId) : acc), []);
 
   const betsToMake = selections.map((selection) => {
-      return Object.values(bets.matched).filter((bet) => bet.marketId == marketId && bet.selectionId == selection);
+    return Object.values(bets.matched).filter((bet) => bet.marketId == marketId && bet.selectionId == selection);
   }).filter((selection) => selection !== undefined);
 
   return getHedgedBets(betsToMake, ltps);
 };
 
 export {
-  calcLiability, calcHedge, calculateHedgeProfit, calcBackBet, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP,
+  calcLiability, calculateHedgeProfit, calcBackBet, getHedgedBetsToMake, getHedgedBets, calcHedgeAtLTP,
 };
