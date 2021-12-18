@@ -147,7 +147,6 @@ class BetFairStreamAPI {
         marketIds: [marketId],
       },
       marketDataFilter: {
-        ladderLevels: 2,
         fields: ['EX_ALL_OFFERS', 'EX_TRADED', 'EX_TRADED_VOL', 'EX_LTP', 'EX_MARKET_DEF'],
       },  
     }
