@@ -2,6 +2,11 @@ import calcBetPriceSize from '../../utils/Bets/CalcBetPriceSize';
 import postData from '../../http/postData';
 import { executeBet, executeReduceSize } from '../../http/placeBets';
 
+export const processOrder = (order) => ({
+  type: 'PROCESS_ORDERS',
+  payload: order,
+});
+
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
   payload: order,

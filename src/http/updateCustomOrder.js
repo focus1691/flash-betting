@@ -4,7 +4,7 @@
  */
 export default async (endpoint, data) => {
   try {
-    fetch(`/api/${endpoint}`, {
+    await fetch(`/api/${endpoint}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

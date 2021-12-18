@@ -1,7 +1,8 @@
 import _ from 'lodash';
-import React, { useState, memo, useMemo, useCallback } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import { connect } from 'react-redux';
 //* Actions
+import { processOrder } from '../../../redux/actions/bet';
 import { replaceStopLoss } from '../../../redux/actions/stopLoss';
 import { setOddsHovered } from '../../../redux/actions/ladder';
 //* Selectors
@@ -11,42 +12,39 @@ import { getTickOffset } from '../../../selectors/tickOffsetSelector';
 import { getTotalMatched, orderStyle, textForOrderCell } from '../../../utils/Bets/GetMatched';
 import { formatPrice } from '../../../utils/Bets/PriceCalculations';
 
-const OrderCell = ({ selectionId, side, price, marketId, handlePlaceOrder, stopLoss, stopLossUnits, stopLossHedged, stopLossSelected, tickOffset, hedgeSize, stakeVal, cellMatched, replaceStopLoss }) => {
+const OrderCell = ({ selectionId, side, price, marketId, processOrder, stopLoss, stopLossUnits, stopLossHedged, stopLossSelected, tickOffset, hedgeSize, stakeVal, cellMatched, replaceStopLoss }) => {
   const [betPending, setBetPending] = useState(false);
   const totalMatched = useMemo(() => getTotalMatched(betPending, stakeVal[selectionId], cellMatched, null), [betPending, cellMatched, selectionId, stakeVal]);
   const text = useMemo(() => textForOrderCell(stopLoss, totalMatched), [stopLoss, totalMatched]);
   const style = useMemo(() => orderStyle(side, stopLoss, tickOffset, cellMatched, totalMatched, betPending), [side, stopLoss, tickOffset, cellMatched, totalMatched, betPending]);
 
-  const handleClick = useCallback(async () => {
+  const handleClick = async () => {
     if (betPending) return;
     setBetPending(true);
-    await handlePlaceOrder(side, price, marketId, selectionId, stopLossSelected, _.isEmpty(stopLoss), hedgeSize);
+    await processOrder({ side, price, marketId, selectionId, stopLossSelected, isStopLossActive: _.isEmpty(stopLoss), hedgeSize} );
     setBetPending(false);
-  }, [betPending, handlePlaceOrder, hedgeSize, marketId, price, selectionId, side, stopLoss, stopLossSelected]);
+  };
 
-  const handleRightClick = useCallback(
-    (e) => {
-      e.preventDefault();
+  const handleRightClick = (e) => {
+    e.preventDefault();
 
-      replaceStopLoss(stopLoss, {
-        selectionId,
-        stakeVal,
-        side,
-        price: formatPrice(price),
-        units: stopLossUnits,
-        stopLossHedged,
-      });
-    },
-    [price, replaceStopLoss, selectionId, side, stakeVal, stopLoss, stopLossHedged, stopLossUnits],
-  );
+    replaceStopLoss(stopLoss, {
+      selectionId,
+      stakeVal,
+      side,
+      price: formatPrice(price),
+      units: stopLossUnits,
+      stopLossHedged,
+    });
+  };
 
-  const handleMouseEnter = useCallback(() => {
+  const handleMouseEnter = () => {
     setOddsHovered({ selectionId, odds: price, side });
-  }, [selectionId, price, side]);
+  };
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = () => {
     setOddsHovered({ selectionId, odds: 0, side });
-  }, [selectionId, side]);
+  };
 
   return (
     <div role="button" tabIndex="0" className="td" style={style} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={handleClick} onContextMenu={handleRightClick}>
@@ -71,6 +69,6 @@ const mapStateToProps = (state, props) => ({
   cellMatched: getMatched(state.market.ladder, props),
 });
 
-const mapDispatchToProps = { setOddsHovered, replaceStopLoss };
+const mapDispatchToProps = { processOrder, setOddsHovered, replaceStopLoss };
 
 export default connect(mapStateToProps, mapDispatchToProps)(memo(OrderCell));

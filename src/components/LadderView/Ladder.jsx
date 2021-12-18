@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import clsx from 'clsx';
 import React, { useMemo, useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
@@ -13,11 +12,8 @@ import { getLTP } from '../../selectors/marketSelector';
 import { getSelectionMatchedBets } from '../../selectors/orderSelector';
 //* Utils
 import { getStakeVal } from '../../selectors/settingsSelector';
-import { ALL_PRICES, formatPrice } from '../../utils/Bets/PriceCalculations';
-import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
+import { ALL_PRICES } from '../../utils/Bets/PriceCalculations';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
-import { calcTickOffsetPrice } from '../../utils/TradingStategy/TickOffset';
-import { calcStopLossPrice } from '../../utils/TradingStategy/StopLoss';
 //* Components
 import Container from './Container';
 import Header from './Header';
@@ -25,38 +21,10 @@ import BottomPanel from './BottomPanel';
 import LadderRow from './Rows/LadderRow';
 import PercentageRow from './Rows/PercentageRow/PercentageRow';
 import PriceRow from './Rows/PriceRow';
-//* HTTP
-import updateCustomOrder from '../../http/updateCustomOrder';
 //* JSS
 import useStyles from '../../jss/components/LadderView/ladderStyle';
 
-const isMoving = (prevProps, nextProps) => nextProps.draggingLadder === nextProps.selectionId && prevProps.order === nextProps.order;
-
-const Ladder = ({
-  selectionId,
-  ltp,
-  expanded,
-  placeOrder,
-  order,
-  selectionMatchedBets,
-  setLadderSideLeft,
-  addTickOffset,
-  stopLossHedged,
-  tickOffsetSelected,
-  tickOffsetTicks,
-  tickOffsetUnits,
-  tickOffsetTrigger,
-  tickOffsetHedged,
-  addFillOrKill,
-  fillOrKillSelected,
-  fillOrKillSeconds,
-  addStopLoss,
-  stopLossOffset,
-  stopLossUnits,
-  stakeVal,
-  draggingLadder,
-  customStake,
-}) => {
+const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLadderSideLeft, draggingLadder }) => {
   const classes = useStyles();
   const containerRef = useRef(null);
   const listRef = useRef();
@@ -109,75 +77,6 @@ const Ladder = ({
     if (!ladderLocked) scrollToLTP();
   }, [ltp, draggingLadder, scrollToLTP, ladderLocked]);
 
-  const handlePlaceOrder = useCallback(
-    async (side, price, marketId, selectionId, stopLossSelected, isStopLossActive, hedgeSize) => {
-      const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-      const size = customStake || stakeVal;
-      //* Place the order first with BetFair and then execute the tools
-      const betId = await placeOrder({
-        marketId,
-        selectionId,
-        side,
-        size,
-        price: formatPrice(price),
-        customerStrategyRef,
-      });
-      //* betId only returned if the bet was success
-      if (betId) {
-        if (stopLossSelected && !isStopLossActive) {
-          const SL = {
-            strategy: 'Stop Loss',
-            marketId,
-            selectionId,
-            size,
-            side: getOppositeSide(side),
-            price: calcStopLossPrice(price, stopLossOffset, side),
-            custom: false,
-            units: stopLossUnits,
-            ticks: stopLossOffset,
-            rfs: customerStrategyRef,
-            assignedIsOrderMatched: false,
-            betId,
-            hedged: stopLossHedged,
-          };
-          addStopLoss(SL);
-          updateCustomOrder('save-bet', SL);
-        } else if (tickOffsetSelected) {
-          const TOS = {
-            strategy: 'Tick Offset',
-            marketId,
-            selectionId,
-            size: tickOffsetHedged ? hedgeSize : size,
-            side: getOppositeSide(side),
-            price: calcTickOffsetPrice(price, side, tickOffsetTicks, tickOffsetUnits === 'Percent'),
-            percentageTrigger: tickOffsetTrigger,
-            rfs: customerStrategyRef,
-            betId,
-            hedged: tickOffsetHedged,
-          };
-          addTickOffset(TOS);
-          updateCustomOrder('save-bet', TOS);
-        }
-
-        if (fillOrKillSelected) {
-          const FOK = {
-            strategy: 'Fill Or Kill',
-            marketId,
-            selectionId,
-            side,
-            seconds: fillOrKillSeconds,
-            startTime: Date.now(),
-            betId,
-            rfs: customerStrategyRef,
-          };
-          addFillOrKill(FOK);
-          updateCustomOrder('save-bet', FOK);
-        }
-      }
-    },
-    [customStake, stakeVal, tickOffsetSelected, fillOrKillSelected, stopLossOffset, stopLossUnits, stopLossHedged, tickOffsetTicks, tickOffsetUnits, tickOffsetHedged, tickOffsetTrigger, fillOrKillSeconds],
-  );
-
   return (
     <Container isReferenceSet={isReferenceSet} order={order} containerRef={containerRef} isMoving={isMoving} isLadderDown={isLadderDown} setIsReferenceSet={setReferenceSent} setIsMoving={setIsMoving} setLadderDown={setLadderDown}>
       <Header selectionId={selectionId} setLadderDown={setLadderDown} hedge={ltpHedge} />
@@ -203,7 +102,6 @@ const Ladder = ({
               style={ladderStyle}
               itemData={{
                 selectionId,
-                handlePlaceOrder,
                 isMoving,
                 hedgingAvailable,
               }}
@@ -226,23 +124,6 @@ const mapStateToProps = (state, { selectionId }) => ({
   stakeVal: getStakeVal(state.settings.stake, { selectionId }),
   customStake: state.market.runners[selectionId].order.customStake,
   draggingLadder: state.ladder.draggingLadder,
-
-  //* SL
-  stopLossOffset: state.stopLoss.offset,
-  stopLossSelected: state.stopLoss.selected,
-  stopLossUnits: state.stopLoss.units,
-  stopLossHedged: state.stopLoss.hedged,
-
-  //* TO
-  tickOffsetSelected: state.tickOffset.selected,
-  tickOffsetTicks: state.tickOffset.ticks,
-  tickOffsetUnits: state.tickOffset.units,
-  tickOffsetTrigger: state.tickOffset.percentTrigger,
-  tickOffsetHedged: state.tickOffset.hedged,
-
-  //* FOK
-  fillOrKillSelected: state.fillOrKill.selected,
-  fillOrKillSeconds: state.fillOrKill.seconds,
 });
 
 const mapDispatchToProps = { placeOrder, addStopLoss, addTickOffset, addFillOrKill };

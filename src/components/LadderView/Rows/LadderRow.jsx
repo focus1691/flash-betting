@@ -11,7 +11,7 @@ import { getStakeVal } from '../../../selectors/settingsSelector';
 import { getPL } from '../../../selectors/marketSelector';
 import { getMatchedSide } from '../../../utils/Bets/GetMatched';
 
-const LadderRow = memo(({ data: { selectionId, hedgingAvailable, handlePlaceOrder }, PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol }) => {
+const LadderRow = memo(({ data: { selectionId, hedgingAvailable }, PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol }) => {
   const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
   const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
 
@@ -25,9 +25,9 @@ const LadderRow = memo(({ data: { selectionId, hedgingAvailable, handlePlaceOrde
     <div key={`ladder-row-${selectionId}-${key}`} className="tr" style={style}>
       <VolumeCell selectionId={selectionId} price={key} />
       <HedgeCell selectionId={selectionId} price={key} side={side.left} hedge={hedge} hedgingAvailable={hedgingAvailable} />
-      <OrderCell selectionId={selectionId} price={key} side={side.left} handlePlaceOrder={handlePlaceOrder} hedgeSize={HedgeSize} />
+      <OrderCell selectionId={selectionId} price={key} side={side.left} hedgeSize={HedgeSize} />
       <OddsCell selectionId={selectionId} price={key} />
-      <OrderCell selectionId={selectionId} price={key} side={side.right} handlePlaceOrder={handlePlaceOrder} hedgeSize={HedgeSize} />
+      <OrderCell selectionId={selectionId} price={key} side={side.right} hedgeSize={HedgeSize} />
       <HedgeCell selectionId={selectionId} price={key} side={side.right} hedgingAvailable={hedgingAvailable} hedge={hedge} />
     </div>
   );

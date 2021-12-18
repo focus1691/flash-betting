@@ -2,14 +2,15 @@ import crypto from 'crypto';
 import { isEmpty } from 'lodash';
 import { call, put, select } from 'redux-saga/effects';
 //* Actions
-import { removeStopLoss, updateStopLossTicks } from '../actions/stopLoss';
+import { addStopLoss, removeStopLoss, updateStopLossTicks } from '../actions/stopLoss';
 //* HTTP
 import { executeBet } from '../../http/placeBets';
 import updateCustomOrder from '../../http/updateCustomOrder';
 //* Utils
 import calcBetPriceSize from '../../utils/Bets/CalcBetPriceSize';
+import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
-import { checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
+import { calcStopLossPrice, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
 
 /**
  * 
@@ -29,6 +30,29 @@ export default function* executeStopLoss(id, ltp) {
       yield call(updateStopLoss, stopLoss, ltp);
     }
   }
+}
+
+export function* addStopLossBet(marketId, selectionId, size, side, price, rfs, betId) {
+  const { offset, units, hedged } = yield select(state => state.stopLoss);
+
+  const SL = {
+    strategy: 'Stop Loss',
+    marketId,
+    selectionId,
+    size,
+    side: getOppositeSide(side),
+    price: calcStopLossPrice(price, offset, side),
+    custom: false,
+    units,
+    ticks: offset,
+    rfs,
+    assignedIsOrderMatched: false,
+    betId,
+    hedged,
+  };
+
+  yield put(addStopLoss(SL));
+  yield call(updateCustomOrder('save-bet', SL));
 }
 
 function* placeStopLossBet(id, stopLoss) {
