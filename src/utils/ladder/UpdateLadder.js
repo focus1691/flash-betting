@@ -13,7 +13,6 @@ export const constructNonRunnersObj = (nonRunners) => {
 };
 
 export const UpdateLadder = (ladder, rawData) => {
-  console.log(rawData);
   const newLadder = Object.assign(ladder, {});
 
   newLadder.expanded = Boolean(newLadder.expanded);
@@ -60,9 +59,30 @@ export const UpdateLadder = (ladder, rawData) => {
           delete newLadder.atlo[formatPriceKey(price)];
         }
         else {
+          const atlIdx = newLadder.atl.findIndex((v) => v[0] === price);
           const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
+
+          if (atlIdx > -1) {
+            const difference = newLadder.atl[atlIdx][1] - matched;
+
+            if (difference <= 0) {
+              newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
+              delete newLadder.atbo[formatPriceKey(price)];
+
+              newLadder.atb[atbIdx][1] = Math.abs(matched);
+              newLadder.atlo[formatPriceKey(price)] = Math.abs(matched);
+            }
+            else {
+              newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
+              delete newLadder.atlo[formatPriceKey(price)];
+
+              newLadder.atl[atlIdx][1] = Math.abs(matched);
+              newLadder.atbo[formatPriceKey(price)] = Math.abs(matched);
+            }
+          }
+
           // 2) Price exists already, so we just update the matched amount
-          if (atbIdx > -1) {
+          else if (atbIdx > -1) {
             newLadder.atb[atbIdx][1] = matched;
             newLadder.atlo[formatPriceKey(price)] = matched;
           }
@@ -88,6 +108,27 @@ export const UpdateLadder = (ladder, rawData) => {
         }
         else {
           const atlIdx = newLadder.atl.findIndex((v) => v[0] === price);
+          const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
+
+          if (atbIdx > -1) {
+            const difference = newLadder.atb[atbIdx][1] - matched;
+
+            if (difference <= 0) {
+              newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
+              delete newLadder.atlo[formatPriceKey(price)];
+
+              newLadder.atl[atlIdx][1] = Math.abs(matched);
+              newLadder.atbo[formatPriceKey(price)] = Math.abs(matched);
+            }
+            else {
+              newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
+              delete newLadder.atbo[formatPriceKey(price)];
+
+              newLadder.atb[atbIdx][1] = Math.abs(matched);
+              newLadder.atlo[formatPriceKey(price)] = Math.abs(matched);
+            }
+          }
+
           // 2) Price exists already, so we just update the matched amount
           if (atlIdx > -1) {
             newLadder.atl[atlIdx][1] = matched;
