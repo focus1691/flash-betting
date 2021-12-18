@@ -1,14 +1,21 @@
-export const sortAsc = (arr) => {
-  if (!arr || arr.length <= 0) return [];
+import { isEmpty } from 'lodash';
 
+export const sortAsc2 = (arr) => {
+  if (isEmpty(arr)) return [];
   arr = arr.sort((a, b) => a[0] - b[0]);
   return arr;
 };
 
-export const sortDes = (arr) => {
-  if (!arr || arr.length <= 0) return [];
+export const sortAsc = (arr) => {
+  if (isEmpty(arr)) return [];
+  arr = arr.sort((a, b) => a - b);
+  return arr;
+};
 
-  arr = arr.sort((a, b) => b[0] - a[0]);
+
+export const sortDes = (arr) => {
+  if (isEmpty(arr)) return [];
+  arr = arr.sort((a, b) => b - a);
   return arr;
 };
 

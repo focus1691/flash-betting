@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   ltp: {
+    backgroundColor: '#545454',
     color: '#121212',
   },
   ltpEqual: {

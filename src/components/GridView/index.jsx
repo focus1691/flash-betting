@@ -126,6 +126,13 @@ const Grid = ({
     setRunner(runner);
   };
 
+  const createCell = (odds, matched, key, side) => (
+    <td key={`grid-${odds}`} className={classes.gridCell} onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, side, odds)} onContextMenu={handlePriceClick(key, (getOppositeSide(side)), odds)}>
+      <span>{odds}</span>
+      <span>{matched}</span>
+    </td>
+  );
+
   const renderRow = (betOdds, key, side) => {
     //* Fill all empty cells if no data found
     if (!betOdds) {
@@ -135,7 +142,8 @@ const Grid = ({
     const rows = [];
 
     for (let i = 0; i < betOdds.length; i += 1) {
-      rows.push(createCell(betOdds[i][0], betOdds[i][1], key, side));
+      const [odds, matched] = betOdds[i];
+      rows.push(createCell(odds, matched, key, side));
       if (i === 4) break;
     }
 
@@ -146,13 +154,6 @@ const Grid = ({
 
     return rows;
   };
-
-  const createCell = (odds, matched, key, side) => (
-    <td key={`grid-${odds}`} className={classes.gridCell} onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, side, odds)} onContextMenu={handlePriceClick(key, (getOppositeSide(side)), odds)}>
-      <span>{odds}</span>
-      <span>{matched}</span>
-    </td>
-  );
 
   const renderProfitAndLossAndHedge = (order, color) => ({
     val: formatCurrency(localeCode, currencyCode, calcBackProfit(order.stake, order.price, order.side)),
@@ -192,7 +193,7 @@ const Grid = ({
               ltpStyle={ltpStyle}
             />
             {renderRow(atb, key, 'BACK').reverse()}
-            {renderRow(atl, key, 'BACK')}
+            {renderRow(atl, key, 'LAY')}
           </tr>
 
           <GridOrderRow
@@ -216,7 +217,7 @@ const Grid = ({
 
   Object.keys(ladder).forEach((key) => {
     const { ltp } = DeconstructLadder(ladder[key]);
-    ltpSelectionIdObject[key] = ltp[0];
+    ltpSelectionIdObject[key] = ltp;
   });
 
   const marketCashout = getMarketCashout(marketId, bets, ladder);

@@ -4,24 +4,15 @@ import clsx from 'clsx';
 import { connect } from 'react-redux';
 //* Actions
 import { updateExcludedLadders, updateLadderOrder } from '../../../redux/actions/ladder';
+//* Utils
+import { DeconstructLadder } from '../../../utils/ladder/DeconstructLadder';
 //* JSS
 import useStyles from '../../../jss/components/Sidebar/market/ladderStyle';
 
 const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, ladderOrder, updateExcludedLadders, updateLadderOrder }) => {
   const styles = useStyles();
-  const deconstructLadder = (ladder) => {
-    if (isEmpty(ladder)) return {};
 
-    const data = {
-      ltp: !isEmpty(ladder.ltp) && ladder.ltp[0] ? ladder.ltp[0] : null, 
-      ltpPrev: !isEmpty(ladder.ltp) && ladder.ltp[1] ? ladder.ltp[1] : null, 
-      atb: ladder.atb && ladder.atb[0] ? ladder.atb[0][0] : null,
-      atl: ladder.atl && ladder.atl[0] ? ladder.atl[0][0] : null,
-    };
-    return data;
-  };
-
-  const handleRunnerSelection = (selectionId) => (e) => {
+  const handleRunnerSelection = (selectionId) => () => {
     if (Object.keys(ladderOrder).length > 0) {
       // we send it to the end when we select a new ladder
 
@@ -45,13 +36,13 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
 
   const renderRunners = () =>
     sortedLadder.map((selectionId) => {
-      const { atb, atl, ltp, ltpPrev } = deconstructLadder(ladder[selectionId]);
+      const { atb, atl, ltp, ltpPrev } = DeconstructLadder(ladder[selectionId]);
       const runnerName = runners[selectionId] ? runners[selectionId].runnerName : '';
       const isSelected = excludedLadders.indexOf(selectionId) === -1;
       return (
         <tr key={`sidebar-ladder${runnerName}`}>
           <td>{runnerName}</td>
-          <td>{atl}</td>
+          <td>{atl && atl[0] ? atl[0][0] : null}</td>
           <td
             className={clsx(styles.ltp, {
               [styles.ltpEqual]: !isEmpty(ltpPrev) && ltp === ltpPrev,
@@ -61,7 +52,7 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
           >
             {ltp}
           </td>
-          <td>{atb}</td>
+          <td>{atb && atb[0] ? atb[0][0] : null}</td>
           <td>
             <input
               type="checkbox"

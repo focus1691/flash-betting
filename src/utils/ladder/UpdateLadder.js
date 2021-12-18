@@ -13,7 +13,7 @@ export const constructNonRunnersObj = (nonRunners) => {
 };
 
 export const UpdateLadder = (ladder, rawData) => {
-  const newLadder = Object.assign(ladder, {});
+  const newLadder = { ...ladder };
 
   newLadder.expanded = Boolean(newLadder.expanded);
 
@@ -160,27 +160,26 @@ export const UpdateLadder = (ladder, rawData) => {
   const LTP = newLadder.ltp[0];
 
   // REMOVE AVAILABLE TO BACK prices that are ABOVE the last traded price
-  newLadder.atb = newLadder.atb.filter(([price]) => {
-    if (LTP && price > LTP) {
-      delete newLadder.atlo[formatPriceKey(price)];
-      return false;
-    }
-    return true;
-  });
+  // newLadder.atb = newLadder.atb.filter(([price]) => {
+  //   if (LTP && price > LTP) {
+  //     delete newLadder.atlo[formatPriceKey(price)];
+  //     return false;
+  //   }
+  //   return true;
+  // });
 
-  // REMOVE AVAILABLE TO LAY prices that are BELOW the last traded price
-  newLadder.atl = newLadder.atl.filter(([price]) => {
-    if (LTP && price < LTP) {
-      delete newLadder.atbo[formatPriceKey(price)];
-      return false;
-    }
-    return true;
-  });
+  // // REMOVE AVAILABLE TO LAY prices that are BELOW the last traded price
+  // newLadder.atl = newLadder.atl.filter(([price]) => {
+  //   if (LTP && price < LTP) {
+  //     delete newLadder.atbo[formatPriceKey(price)];
+  //     return false;
+  //   }
+  //   return true;
+  // });
 
   sortAsc(newLadder.trd);
-  sortAsc(newLadder.atl);
-
-  sortDes(newLadder.atb);
+  // sortAsc(newLadder.atl);
+  // sortDes(newLadder.atb);
 
   newLadder.percent = calcBackLayPercentages(newLadder.atbo, newLadder.atlo, LTP);
 
