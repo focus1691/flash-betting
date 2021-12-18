@@ -31,7 +31,6 @@ const calcHedgeStake = (size, price, exitPrice, side) => {
 
 const backToLayProfit = (backStake, backOdds, layOdds) => {
   const profit = (backStake * backOdds) / layOdds - backStake;
-  // console.log(`(${backStake} * ${backOdds}) / ${layOdds}`);
   return profit.round(2);
 };
 

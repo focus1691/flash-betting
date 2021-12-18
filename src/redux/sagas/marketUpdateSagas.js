@@ -22,7 +22,6 @@ import { SAFE_LADDER_LIMIT } from '../../constants';
 import fetchData from '../../http/fetchData';
 
 function* processMarketDefinition(marketDefinition) {
-  console.log('market definition', marketDefinition);
   const { runners, inPlay, status, marketTime } = marketDefinition;
 
   if (runners) {

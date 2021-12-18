@@ -38,7 +38,6 @@ export const setBetExecutionComplete = (data) => ({
 });
 
 export const placeOrder = (bet) => {
-  console.log('place order', bet);
   return async () => {
     bet = calcBetPriceSize(bet);
     if (isNaN(bet.size)) return null;

@@ -33,8 +33,6 @@ const GridDetailCell = ({ selectionMatchedBets, setRunner, placeOrder, sportId, 
         customerStrategyRef,
       }
 
-      console.log(`hedging out in the grid view ${hedge.side} ${hedge.size} ${hedge.price} ${runner.selectionId} ${customerStrategyRef}`);
-
       placeOrder(order);
     }
   }, [hedgingAvailable, marketId, hedge.side, hedge.size, hedge.price, runner.selectionId]);

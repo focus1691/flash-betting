@@ -46,7 +46,6 @@ const Ladder = ({ marketOpen, ladder, sortedLadder, runners, excludedLadders, la
   const renderRunners = () =>
     sortedLadder.map((selectionId) => {
       const { atb, atl, ltp, ltpPrev } = deconstructLadder(ladder[selectionId]);
-      console.log(atb, atl, ltp);
       const runnerName = runners[selectionId] ? runners[selectionId].runnerName : '';
       const isSelected = excludedLadders.indexOf(selectionId) === -1;
       return (
