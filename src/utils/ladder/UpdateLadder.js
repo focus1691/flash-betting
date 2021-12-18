@@ -21,7 +21,6 @@ export const UpdateLadder = (ladder, rawData) => {
   // The last traded price goes to the front of the array
   if (rawData.ltp) {
     newLadder.ltp = [rawData.ltp, ...newLadder.ltp];
-    newLadder.ltpDelta = new Date();
   }
 
   // Update the trade volume

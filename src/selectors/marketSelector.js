@@ -48,11 +48,6 @@ export const getCandleStickColor = createSelector(
   },
 );
 
-export const getLTPDelta = createSelector(
-  getLadderSelector,
-  (ladder) => ((ladder && ladder.ltpDelta) ? ladder.ltpDelta : null),
-);
-
 const getLadderMatchedSelector = (state, { selectionId, side, price }) => ({ matched: state[selectionId][side == 'BACK' ? 'atbo' : 'atlo'][formatPriceKey(price)], side });
 
 export const getMatched = createSelector(

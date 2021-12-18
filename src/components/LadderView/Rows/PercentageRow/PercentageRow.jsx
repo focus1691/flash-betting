@@ -8,7 +8,7 @@ import { removeStopLossOnSide } from '../../../../redux/actions/stopLoss';
 import { removeTickOffsetOnSide } from '../../../../redux/actions/tickOffset';
 import { removeStopEntryBetsOnSide } from '../../../../redux/actions/stopEntry';
 import { setBackLayColOrder } from '../../../../redux/actions/ladder';
-import { getLTP, getLTPDelta, getPercent, getTV } from '../../../../selectors/marketSelector';
+import { getLTP, getPercent, getTV } from '../../../../selectors/marketSelector';
 import { getLTPstyle } from '../../../../utils/ladder/DeconstructLadder';
 import CancelBets from './CancelBets';
 //* HTTP
@@ -19,9 +19,9 @@ import { getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* JSS
 import useStyles from '../../../../jss/components/LadderView/percentageRowStyle';
 
-const PercentageRow = memo(({ selectionId, ltp, tv, percent, ltpDelta, layFirstCol, unmatchedBets, setBackLayColOrder, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
+const PercentageRow = memo(({ selectionId, ltp, tv, percent, layFirstCol, unmatchedBets, setBackLayColOrder, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
   const classes = useStyles();
-  const ltpStyle = useMemo(() => getLTPstyle(ltp, ltpDelta), [ltp, ltpDelta]);
+  const ltpStyle = useMemo(() => getLTPstyle(ltp), [ltp]);
 
   const cancelBetsOnSide = useCallback(
     (side) => {
@@ -70,7 +70,6 @@ const mapStateToProps = (state, { selectionId }) => ({
   ltp: getLTP(state.market.ladder, { selectionId }),
   tv: getTV(state.market.ladder, { selectionId }),
   percent: getPercent(state.market.ladder, { selectionId }),
-  ltpDelta: getLTPDelta(state.market.ladder, { selectionId }),
   layFirstCol: state.ladder.layFirstCol,
   unmatchedBets: getSelectionUnmatchedBets(state.order.bets, { selectionId }),
 });

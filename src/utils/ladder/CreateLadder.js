@@ -4,7 +4,6 @@ import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 export const CreateLadder = (ladder) => {
   console.log(ladder);
   ladder.ltp = ladder.ltp ? [ladder.ltp] : [null];
-  ladder.ltpDelta = new Date();
   ladder.tv = ladder.tv ? [ladder.tv, ladder.tv] : [null, null];
   ladder.atb = ladder.atb || [];
   ladder.atl = ladder.atl || [];

@@ -1,4 +1,4 @@
-const getLTPstyle = (ltp, ltpDelta) => {
+const getLTPstyle = (ltp) => {
   if (ltp === null || ltp === undefined || ltp[0] === null || ltp[0] === undefined) {
     return { background: '#FFF', color: '#000' };
   }
@@ -35,7 +35,7 @@ const DeconstructLadder = (ladder) => {
     ltp: ladder.ltp ? ladder.ltp : [null, null],
     tv: ladder.tv ? ladder.tv : null,
     color: '#FFFFFF',
-    ltpStyle: getLTPstyle(ladder.ltp, ladder.ltpDelta),
+    ltpStyle: getLTPstyle(ladder.ltp),
     atb: ladder.atb || {},
     atl: ladder.atl || {},
   };
