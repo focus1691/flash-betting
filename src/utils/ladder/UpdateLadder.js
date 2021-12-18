@@ -63,21 +63,27 @@ export const UpdateLadder = (ladder, rawData) => {
           const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
 
           if (atlIdx > -1) {
-            const difference = newLadder.atl[atlIdx][1] - matched;
+            let difference = newLadder.atl[atlIdx][1] - matched;
 
             if (difference <= 0) {
+              difference = Math.abs(difference);
               newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
               delete newLadder.atbo[formatPriceKey(price)];
 
-              newLadder.atb[atbIdx][1] = Math.abs(matched);
-              newLadder.atlo[formatPriceKey(price)] = Math.abs(matched);
+              if (atbIdx > -1) {
+                newLadder.atb[atbIdx][1] = difference;
+              } else {
+                newLadder.atb.push([price, difference]);
+              }
+              
+              newLadder.atlo[formatPriceKey(price)] = difference;
             }
             else {
               newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
               delete newLadder.atlo[formatPriceKey(price)];
 
-              newLadder.atl[atlIdx][1] = Math.abs(matched);
-              newLadder.atbo[formatPriceKey(price)] = Math.abs(matched);
+              newLadder.atl[atlIdx][1] = difference;
+              newLadder.atbo[formatPriceKey(price)] = difference;
             }
           }
 
@@ -111,21 +117,28 @@ export const UpdateLadder = (ladder, rawData) => {
           const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
 
           if (atbIdx > -1) {
-            const difference = newLadder.atb[atbIdx][1] - matched;
+            let difference = newLadder.atb[atbIdx][1] - matched;
 
             if (difference <= 0) {
+              difference = Math.abs(difference);
               newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
               delete newLadder.atlo[formatPriceKey(price)];
 
-              newLadder.atl[atlIdx][1] = Math.abs(matched);
-              newLadder.atbo[formatPriceKey(price)] = Math.abs(matched);
+              if (atlIdx > -1) {
+                newLadder.atl[atlIdx][1] = difference;
+              }
+              else {
+                newLadder.atl.push([price, difference]);
+              }
+
+              newLadder.atbo[formatPriceKey(price)] = difference;
             }
             else {
               newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
               delete newLadder.atbo[formatPriceKey(price)];
 
-              newLadder.atb[atbIdx][1] = Math.abs(matched);
-              newLadder.atlo[formatPriceKey(price)] = Math.abs(matched);
+              newLadder.atb[atbIdx][1] = difference;
+              newLadder.atlo[formatPriceKey(price)] = difference;
             }
           }
 
