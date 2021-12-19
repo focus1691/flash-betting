@@ -41,7 +41,7 @@ class BetFairStreamAPI {
 
       this.connectedAt = new Date().getTime();
 
-      this.messageSender = setInterval(this.sendUpdates.bind(this), 1000);
+      this.messageSender = setInterval(this.sendUpdates.bind(this), 250);
 
       this.client.on('data', (data) => {
 
