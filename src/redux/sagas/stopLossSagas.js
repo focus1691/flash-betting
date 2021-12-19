@@ -7,7 +7,6 @@ import { addStopLoss, removeStopLoss, updateStopLossTicks } from '../actions/sto
 import { executeBet } from '../../http/placeBets';
 import updateCustomOrder from '../../http/updateCustomOrder';
 //* Utils
-import calcBetPriceSize from '../../utils/Bets/CalcBetPriceSize';
 import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 import CalculateLadderHedge from '../../utils/ladder/CalculateLadderHedge';
 import { calcStopLossPrice, checkStopLossHit } from '../../utils/TradingStategy/StopLoss';
@@ -63,9 +62,8 @@ function* placeStopLossBet(id, stopLoss) {
 
   const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
 
-  const data = { marketId, selectionId, side, size, price };
+  const betParams = { marketId, selectionId, side, size, price };
 
-  const betParams = yield call(calcBetPriceSize, data);
   const bet = yield call(executeBet, { ...betParams, customerStrategyRef });
   if (bet) {
     yield call(updateCustomOrder('remove-bet', { rfs: betParams.rfs }));

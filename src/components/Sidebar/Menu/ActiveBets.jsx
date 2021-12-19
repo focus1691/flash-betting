@@ -19,8 +19,6 @@ const ActiveBets = () => {
   useEffect(() => {
     const getActiveBets = async () => {
       const bets = await fetchData('/api/get-events-with-active-bets');
-      console.log(bets);
-
       if (bets) {
         setBets(bets);
       }

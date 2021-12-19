@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 //* Sagas
 import { addStopLossBet } from './stopLossSagas';

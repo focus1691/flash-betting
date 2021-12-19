@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
 import { ALL_PRICES } from '../../../utils/Bets/PriceCalculations';
 import HedgeCell from '../Cells/HedgeCell';
@@ -16,10 +16,10 @@ const LadderRow = ({ data: { selectionId, hedgingAvailable }, PL, selectionMatch
   const side = getMatchedSide(layFirstCol);
 
   // gets all the bets and returns a hedge or new pl
-  const hedge = useMemo(() => (selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined), [selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
+  const hedge = useMemo(() => (hedgingAvailable ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined), [hedgingAvailable, selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
 
   // for the stoploss and tickoffset
-  const HedgeSize = useMemo(() => (selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined), [selectionMatchedBets, key, stakeVal, PL]);
+  const HedgeSize = useMemo(() => (hedgingAvailable ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined), [hedgingAvailable, selectionMatchedBets, key, stakeVal, PL]);
 
   return (
     <div key={`ladder-row-${selectionId}-${key}`} className="tr" style={style}>

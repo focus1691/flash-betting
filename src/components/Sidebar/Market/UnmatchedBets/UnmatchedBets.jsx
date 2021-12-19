@@ -55,7 +55,6 @@ const UnmatchedBets = ({
     async ({ betId, marketId, rfs, selectionId, strategy }) => {
       //* Remove from SQLite
       updateCustomOrder('remove-bet', { rfs });
-      console.log(`cancel order in sidebar ${unmatchedBets[betId]} ${betId} ${marketId} ${rfs} ${selectionId} ${strategy} ${unmatchedBets}`);
 
       if (isBetFairBet(betId, unmatchedBets)) {
         //* Cancel on BetFair
@@ -202,12 +201,12 @@ const UnmatchedBets = ({
                 if (list.length <= 0) return null;
 
                 return (
-                  <>
+                  <React.Fragment key={`sidebar-unmatched-bets-group-${selectionId}`}>
                     <tr className={classes.selection} colSpan={9}>
                       <td colSpan={9}>{runnerName}</td>
                     </tr>
                     {list}
-                  </>
+                  </React.Fragment>
                 );
               })
             : null}

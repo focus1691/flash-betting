@@ -52,7 +52,6 @@ const calculateHedgeProfit = (side, stake, entryPrice, exitPrice) => {
   if (side === 'LAY') return layToBackHedgeProfit(stake, entryPrice, exitPrice);
   return backToLayProfit(stake, entryPrice, exitPrice);
 };
-//  const calculateHedgeProfit = (stake, backPrice, exitPrice) => ((stake * backPrice) / exitPrice - stake);
 
 const calcHedgeAtLTP = (bets, ltp) => {
   const arr = bets.map(

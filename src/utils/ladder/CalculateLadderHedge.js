@@ -1,5 +1,5 @@
 import { calculateHedgeProfit } from '../TradingStategy/HedingCalculator';
-import { calcBackProfit } from '../Bets/BettingCalculations';
+import { twoDecimalPlaces, calcBackProfit } from '../Bets/BettingCalculations';
 
 /**
  * This function calculates a hedge column in the ladder
@@ -24,7 +24,7 @@ export default (price, selectionMatchedBets, ladderUnmatched, stake, pl) => {
     }, 0).round(2);
 
     // calculate the size required to bet
-    const size = side === 'BACK' ? (parseFloat(offset) - parseFloat(profit)).round(2) : (parseFloat(profit) - parseFloat(offset)).round(2);
+    const size = side === 'BACK' ? twoDecimalPlaces((parseFloat(offset) - parseFloat(profit))) : twoDecimalPlaces((parseFloat(profit) - parseFloat(offset)));
 
     return { side, profit, price, size };
   }

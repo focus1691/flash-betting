@@ -32,12 +32,11 @@ const MatchedBets = ({ marketOpen, marketName, runners, bets }) => {
 
                 const filteredOrders = Object.values(bets.matched).filter((order) => order.selectionId === selection);
                 return (
-                  <React.Fragment key={`sidebar-matched-bet-${selection}-${uuid()}`}>
+                  <React.Fragment key={`sidebar-matched-bets-group-${selection}-${uuid()}`}>
                     <tr className={classes.selection}>
                       <td colSpan={3}>{selectionObject.runnerName}</td>
                     </tr>
                     {filteredOrders.map((order) => {
-                      console.log(order.size, order.price, order.side);
                       const PL = calcBackProfit(order.size, order.price, order.side).toFixed(2);
                       return (
                         <React.Fragment key={`sidebar-matched-bet-filtered-${order.selectionId}-${uuid()}`}>

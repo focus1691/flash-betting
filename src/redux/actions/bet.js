@@ -1,4 +1,3 @@
-import calcBetPriceSize from '../../utils/Bets/CalcBetPriceSize';
 import postData from '../../http/postData';
 import { executeBet, executeReduceSize } from '../../http/placeBets';
 
@@ -44,7 +43,7 @@ export const setBetExecutionComplete = (data) => ({
 
 export const placeOrder = (bet) => {
   return async () => {
-    bet = calcBetPriceSize(bet);
+    console.log(bet);
     if (isNaN(bet.size)) return null;
 
     if (parseFloat(bet.size) < 2.0) {
