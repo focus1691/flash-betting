@@ -36,8 +36,6 @@ export default function useTest() {
   const marketStartTime = useSelector((state) => state.market.marketStartTime);
   const inPlay = useSelector((state) => state.market.inPlay);
 
-  console.log('Test hook rendered');
-
   useInterval(async () => {
     if (marketOpen && marketId) {
       //* BACK Before/After Market

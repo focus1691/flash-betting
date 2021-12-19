@@ -23,8 +23,6 @@ const Authentication = () => {
           const authToken = cookies.get('token');
           const vendorClientId = await fetchData('/api/get-vendor-client-id');
 
-          console.log(authToken, vendorClientId);
-
           if (vendorClientId && !!authToken && !isTokenExpired(authToken)) {
             const response = await fetchSecureData(`${FLASH_BETTING_URL}refresh-access-token?vendorClientId=${vendorClientId}`, authToken);
             if (response.ok) {
