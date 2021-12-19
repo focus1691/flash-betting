@@ -116,9 +116,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       fontSize: 'x-small',
     },
-    [theme.breakpoints.up('md')]: {
-      backgroundColor: theme.palette.primary.main,
-    },
   },
   welcomeText: {
     textAlign: 'center',
