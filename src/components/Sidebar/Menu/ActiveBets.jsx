@@ -19,10 +19,10 @@ const ActiveBets = () => {
   useEffect(() => {
     const getActiveBets = async () => {
       const bets = await fetchData('/api/get-events-with-active-bets');
+      console.log(bets);
 
       if (bets) {
-        const { error } = bets;
-        if (!error) setBets(bets);
+        setBets(bets);
       }
     };
     getActiveBets();
@@ -31,14 +31,14 @@ const ActiveBets = () => {
   return (
     <List className={classes.allSports}>
       {bets.map((bet) => (
-        <>
-          <ListItem key={`active-bets-${bet.event.name}`}>
+        <React.Fragment key={`active-bets-${bet.event.id}`}>
+          <ListItem>
             <ListItem button onClick={openMarket(bet.marketId)}>
               <ListItemText className={classes.activeBetName}>{bet.event.name}</ListItemText>
             </ListItem>
           </ListItem>
           <Divider />
-        </>
+        </React.Fragment>
       ))}
     </List>
   );
