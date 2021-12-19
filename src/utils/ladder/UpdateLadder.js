@@ -52,51 +52,28 @@ export const UpdateLadder = (ladder, rawData) => {
     for (let i = 0; i < rawData.atb.length; i += 1) {
       if (rawData.atb[i]) {
         const [price, matched] = rawData.atb[i];
+        const key = formatPriceKey(price);
 
         // 1) Remove the price as 0 means no more matched bets at this AVAILABLE TO BACK price
         if (matched <= 0) {
-          newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
-          delete newLadder.atlo[formatPriceKey(price)];
+          delete newLadder.atlo[key];
+        }
+        else if (ladder.atbo[key]) {
+          let difference = ladder.atbo[key] - matched;
+
+          if (difference <= 0) {
+            difference = Math.abs(difference);
+
+            delete newLadder.atbo[key];
+            newLadder.atlo[key] = difference;
+          }
+          else {
+            delete newLadder.atlo[key];
+            newLadder.atbo[key] = difference;
+          }
         }
         else {
-          const atlIdx = newLadder.atl.findIndex((v) => v[0] === price);
-          const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
-
-          if (atlIdx > -1) {
-            let difference = newLadder.atl[atlIdx][1] - matched;
-
-            if (difference <= 0) {
-              difference = Math.abs(difference);
-              newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
-              delete newLadder.atbo[formatPriceKey(price)];
-
-              if (atbIdx > -1) {
-                newLadder.atb[atbIdx][1] = difference;
-              } else {
-                newLadder.atb.push([price, difference]);
-              }
-              
-              newLadder.atlo[formatPriceKey(price)] = difference;
-            }
-            else {
-              newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
-              delete newLadder.atlo[formatPriceKey(price)];
-
-              newLadder.atl[atlIdx][1] = difference;
-              newLadder.atbo[formatPriceKey(price)] = difference;
-            }
-          }
-
-          // 2) Price exists already, so we just update the matched amount
-          else if (atbIdx > -1) {
-            newLadder.atb[atbIdx][1] = matched;
-            newLadder.atlo[formatPriceKey(price)] = matched;
-          }
-          // 3) The price doesn't exist as AVAILABLE TO BACK, so we add it
-          else {
-            newLadder.atb.push([price, matched]);
-            newLadder.atlo[formatPriceKey(price)] = matched;
-          }
+          newLadder.atlo[key] = matched;
         }
       }
     }
@@ -106,52 +83,28 @@ export const UpdateLadder = (ladder, rawData) => {
     for (let i = 0; i < rawData.atl.length; i += 1) {
       if (rawData.atl[i]) {
         const [price, matched] = rawData.atl[i];
+        const key = formatPriceKey(price);
 
-        // 1) Remove the price as 0 means no more matched bets at this AVAILABLE TO LAY price
+        // 1) Remove the price as 0 means no more matched bets at this AVAILABLE TO BACK price
         if (matched <= 0) {
-          newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
-          delete newLadder.atbo[formatPriceKey(price)];
+          delete newLadder.atbo[key];
+        }
+        else if (ladder.atlo[key]) {
+          let difference = ladder.atlo[key] - matched;
+
+          if (difference <= 0) {
+            difference = Math.abs(difference);
+
+            delete newLadder.atlo[key];
+            newLadder.atbo[key] = difference;
+          }
+          else {
+            delete newLadder.atbo[key];
+            newLadder.atlo[key] = difference;
+          }
         }
         else {
-          const atlIdx = newLadder.atl.findIndex((v) => v[0] === price);
-          const atbIdx = newLadder.atb.findIndex((v) => v[0] === price);
-
-          if (atbIdx > -1) {
-            let difference = newLadder.atb[atbIdx][1] - matched;
-
-            if (difference <= 0) {
-              difference = Math.abs(difference);
-              newLadder.atb = newLadder.atb.filter((v) => v[0] !== price);
-              delete newLadder.atlo[formatPriceKey(price)];
-
-              if (atlIdx > -1) {
-                newLadder.atl[atlIdx][1] = difference;
-              }
-              else {
-                newLadder.atl.push([price, difference]);
-              }
-
-              newLadder.atbo[formatPriceKey(price)] = difference;
-            }
-            else {
-              newLadder.atl = newLadder.atl.filter((v) => v[0] !== price);
-              delete newLadder.atbo[formatPriceKey(price)];
-
-              newLadder.atb[atbIdx][1] = difference;
-              newLadder.atlo[formatPriceKey(price)] = difference;
-            }
-          }
-
-          // 2) Price exists already, so we just update the matched amount
-          if (atlIdx > -1) {
-            newLadder.atl[atlIdx][1] = matched;
-            newLadder.atbo[formatPriceKey(price)] = matched;
-          }
-          // 3) The price doesn't exist as AVAILABLE TO LAY, so we add it
-          else {
-            newLadder.atl.push([price, matched]);
-            newLadder.atbo[formatPriceKey(price)] = matched;
-          }
+          newLadder.atbo[key] = matched;
         }
       }
     }
@@ -159,28 +112,9 @@ export const UpdateLadder = (ladder, rawData) => {
 
   const LTP = newLadder.ltp[0];
 
-  // REMOVE AVAILABLE TO BACK prices that are ABOVE the last traded price
-  // newLadder.atb = newLadder.atb.filter(([price]) => {
-  //   if (LTP && price > LTP) {
-  //     delete newLadder.atlo[formatPriceKey(price)];
-  //     return false;
-  //   }
-  //   return true;
-  // });
-
-  // // REMOVE AVAILABLE TO LAY prices that are BELOW the last traded price
-  // newLadder.atl = newLadder.atl.filter(([price]) => {
-  //   if (LTP && price < LTP) {
-  //     delete newLadder.atbo[formatPriceKey(price)];
-  //     return false;
-  //   }
-  //   return true;
-  // });
-
   sortAsc(newLadder.trd);
 
   newLadder.percent = calcBackLayPercentages(newLadder.atbo, newLadder.atlo, LTP);
 
   return newLadder;
-};
-
+}

@@ -1,56 +1,45 @@
 import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 
-export const CreateLadder = (ladder) => {
-  ladder.ltp = ladder.ltp ? [ladder.ltp] : [null];
-  ladder.tv = ladder.tv ? [ladder.tv, ladder.tv] : [null, null];
-  ladder.atb = ladder.atb || [];
-  ladder.atl = ladder.atl || [];
-  ladder.atbo = {};
-  ladder.atlo = {};
-  ladder.trd = ladder.trd || [];
-  ladder.trdo = {};
-  ladder.order = {
-    visible: false,
-    side: 'BACK',
-    stakeLiability: 0,
-    stake: 2,
-    price: 0,
-  };
-  ladder.expanded = false;
-  ladder.bottom = 'graph';
+export const CreateLadder = (rawData) => {
+  const ladder = {
+    ltp: [rawData.ltp || null],
+    tv: rawData.tv ? [rawData.tv, rawData.tv] : [null, null],
+    atbo: {},
+    atlo: {},
+    trd: rawData.trd || [],
+    trdo: {},
+    order: {
+      visible: false,
+      side: 'BACK',
+      stakeLiability: 0,
+      stake: 2,
+      price: 0,
+    },
+    expanded: false,
+    bottom: 'graph',
+  }
 
   // make it easier for ladder
-  ladder.trd.forEach(([price, size]) => {
+  rawData.trd.forEach(([price, size]) => {
     ladder.trdo[formatPriceKey(price)] = size;
   });
 
-  for (let i = 0; i < ladder.atb.length; i += 1) {
-    let [price, matched] = ladder.atb[i];
+  for (let i = 0; i < rawData.atb.length; i += 1) {
+    let [price, matched] = rawData.atb[i];
     price = formatPriceKey(price);
     matched = Math.floor(matched);
 
-    if (matched <= 0) {
-      ladder.atb.splice(i, 1);
-      i -= 1;
-    } else {
-      // Alter the value to round down
-      ladder.atb[i][1] = matched;
+    if (matched > 0) {
       ladder.atlo[price] = matched;
     }
   }
 
-  for (let i = 0; i < ladder.atl.length; i += 1) {
-    let [price, matched] = ladder.atl[i];
+  for (let i = 0; i < rawData.atl.length; i += 1) {
+    let [price, matched] = rawData.atl[i];
     price = formatPriceKey(price);
     matched = Math.floor(matched);
 
-    if (matched <= 0) {
-      ladder.atl.splice(i, 1);
-      i -= 1;
-    } else {
-      // Alter the value to round down
-      ladder.atl[i][1] = matched;
-
+    if (matched > 0) {
       ladder.atbo[price] = matched;
     }
   }
