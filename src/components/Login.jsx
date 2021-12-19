@@ -21,6 +21,7 @@ const cookies = new Cookies();
 
 const Login = () => {
   const classes = useStyles();
+  const [authPending, setAuthPending] = useState(false);
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState('');
   const [sessionKey, setSessionKey] = useState(cookies.get('sessionKey'));
@@ -38,6 +39,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setAuthPending(true);
     let {
       password: { value: password },
     } = e.currentTarget;
@@ -68,6 +70,7 @@ const Login = () => {
       setError('');
       setSessionKey(sessionKey);
     }
+    setAuthPending(false);
   };
 
   return (
@@ -134,7 +137,7 @@ const Login = () => {
               }}
             />
             <div className={classes.submit}>
-              <Button type="submit" fullWidth variant="contained">
+              <Button type="submit" fullWidth variant="contained" disabled={authPending} >
                 Sign In
               </Button>
             </div>
