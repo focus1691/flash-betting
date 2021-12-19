@@ -20,10 +20,10 @@ export const sumMatchedBets = (ladder) => {
  * @param {the number to round} num 
  * @returns Rounds a number to two decimal places
  */
-export const twoDecimalPlaces = (num) => parseFloat(num).round(2);
+export const twoDecimalPlaces = (num) => parseFloat((Math.round(num * 100) / 100).toFixed(2));
 
 export const calcBackProfit = (stake, price, side) => {
-  const profit = twoDecimalPlaces(stake * price - stake);
+  const profit = parseFloat((stake * price - stake).toFixed(2));
   if (side === 'BACK') return profit || 0;
   if (side === 'LAY') return -profit || 0;
   return 0;
