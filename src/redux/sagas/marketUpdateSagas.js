@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { call, put, select, takeEvery, delay } from 'redux-saga/effects';
 //* Actions
 import {
   setInitialClk,
@@ -60,9 +60,9 @@ function* processMarketUpdates(action) {
 
     // Load each ladder individually
     for (let j = 0; j < rc.length; j += 1) {
-      yield put(loadLadder(rc[j]));
-
       const { id, ltp } = rc[j];
+
+      yield put(loadLadder(rc[j]));
 
       // The Last Traded Price has changed which can trigger the Stop Entry / Stop Loss
       if (ltp) {
@@ -91,6 +91,8 @@ function* processMarketUpdates(action) {
 
   if (initialClk) yield put(setInitialClk(initialClk));
   if (clk) yield put(setClk(clk));
+
+  yield delay(250);
 }
 
 export function* watchMarketUpdates() {

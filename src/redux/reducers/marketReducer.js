@@ -64,6 +64,8 @@ const reducer = (state = initialState, action) => {
         marketOpen: true,
         ladder: {
           ...state.ladder,
+
+          ...state.ladder,
           [action.payload.id]: state.ladder[action.payload.id] ? UpdateLadder(state.ladder[action.payload.id], action.payload) : CreateLadder(action.payload),
         },
       };

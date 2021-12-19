@@ -1,6 +1,6 @@
 import { calcBackLayPercentages } from './CreateLadder';
 import { formatPriceKey } from '../Bets/PriceCalculations';
-import { sortAsc, sortDes } from '../Sort';
+import { sortAsc } from '../Sort';
 
 export const constructNonRunnersObj = (nonRunners) => {
   const nonRunnersObj = {};
@@ -178,8 +178,6 @@ export const UpdateLadder = (ladder, rawData) => {
   // });
 
   sortAsc(newLadder.trd);
-  // sortAsc(newLadder.atl);
-  // sortDes(newLadder.atb);
 
   newLadder.percent = calcBackLayPercentages(newLadder.atbo, newLadder.atlo, LTP);
 

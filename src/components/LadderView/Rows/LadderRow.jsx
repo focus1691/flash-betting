@@ -11,9 +11,9 @@ import { getStakeVal } from '../../../selectors/settingsSelector';
 import { getPL } from '../../../selectors/marketSelector';
 import { getMatchedSide } from '../../../utils/Bets/GetMatched';
 
-const LadderRow = memo(({ data: { selectionId, hedgingAvailable }, PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol }) => {
-  const key = useMemo(() => ALL_PRICES[ALL_PRICES.length - index - 1], [index]);
-  const side = useMemo(() => getMatchedSide(layFirstCol), [layFirstCol]);
+const LadderRow = ({ data: { selectionId, hedgingAvailable }, PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol }) => {
+  const key = ALL_PRICES[ALL_PRICES.length - index - 1];
+  const side = getMatchedSide(layFirstCol);
 
   // gets all the bets and returns a hedge or new pl
   const hedge = useMemo(() => (selectionMatchedBets.length > 0 ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined), [selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
@@ -31,7 +31,7 @@ const LadderRow = memo(({ data: { selectionId, hedgingAvailable }, PL, selection
       <HedgeCell selectionId={selectionId} price={key} side={side.right} hedgingAvailable={hedgingAvailable} hedge={hedge} />
     </div>
   );
-});
+};
 
 const mapStateToProps = (state, { data: { selectionId } }) => ({
   ladderUnmatchedDisplay: state.settings.ladderUnmatched,

@@ -1,4 +1,3 @@
-import { sortAsc2, sortDes } from '../Sort';
 import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 
 export const CreateLadder = (ladder) => {
@@ -55,8 +54,6 @@ export const CreateLadder = (ladder) => {
       ladder.atbo[price] = matched;
     }
   }
-
-  sortAsc2(ladder.trd);
 
   ladder.percent = calcBackLayPercentages(ladder.atbo, ladder.atlo, ladder.ltp[0]);
 
