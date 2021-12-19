@@ -24,6 +24,7 @@ const $ = require('jquery');
 const Color = require('color.js');
 const sortable = require('sortablejs');
 const contextMenu = require('electron-context-menu');
+const { shell } = require('electron');
 
 let globalCloseableTabsOverride;
 const path = require('path');
@@ -62,7 +63,7 @@ function Navigation(options) {
     newTabButtonDefaultHandler: true,
     dragTabs: true,
     dragOptions: null,
-    defaultLandingPageUrl: "http://localhost:3001/"
+    defaultLandingPageUrl: "http://localhost:9090/"
   };
   options = options ? Object.assign(defaults, options) : defaults;
   /**
@@ -198,7 +199,7 @@ function Navigation(options) {
       else if (options.newTabParams instanceof Array) {
         params = options.newTabParams
       } else {
-        params = ['http://localhost:3001/', {
+        params = ['http://localhost:9090/', {
           close: options.closableTabs,
           icon: NAV.TAB_ICON
         }];
@@ -395,7 +396,9 @@ function Navigation(options) {
     });
     if (options.newWindowHandler) {
       webview[0].addEventListener("new-window", (res) => {
-        if (!(options.newWindowFrameNameBlacklistExpression instanceof RegExp && options.newWindowFrameNameBlacklistExpression.test(res.frameName))) {
+        if (!res.url.includes('localhost')) {
+          shell.openExternal(res.url);  
+        } else if (!(options.newWindowFrameNameBlacklistExpression instanceof RegExp && options.newWindowFrameNameBlacklistExpression.test(res.frameName))) {
           NAV.newTab(res.url, {
             icon: NAV.TAB_ICON
           });

@@ -6,13 +6,11 @@ const config = dotenv.config({ path: `${__dirname}/.env`});
 dotenvExpand(config);
 
 //* Electron
-const electron = require('electron');
+const { app, BrowserWindow, screen } = require('electron');
 
-const { app } = electron;
 app.commandLine.appendSwitch('high-dpi-support', 1);
 app.commandLine.appendSwitch('force-device-scale-factor', 1);
 
-const { BrowserWindow } = electron;
 let mainWindow;
 
 require('../server');
@@ -46,7 +44,7 @@ if (!gotTheLock) {
 }
 
 function createWindow() {
-  const screenSize = electron.screen.getPrimaryDisplay().size;
+  const screenSize = screen.getPrimaryDisplay().size;
   mainWindow = new BrowserWindow({
     width: screenSize.width,
     height: screenSize.height,

@@ -28,7 +28,7 @@ Number.prototype.round = function(places) {
 
 removeLogs();
 
-const socket = openSocket('http://localhost:3001');
+const socket = openSocket(`http://localhost:${process.env.NODE_ENV === 'production' ? 9090 : 3001}`);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

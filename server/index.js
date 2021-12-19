@@ -12,7 +12,7 @@ const BetFairMenuController = require('./controllers/betfair-menu');
 const TradingToolsController = require('./controllers/trading-tools');
 
 const app = new App({
-  port: process.env.PORT || 3001,
+  port: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_PORT : process.env.PORT || 3001,
   controllers: [
     new BetFairAccountController(),
     new BetFairAuthController(),
