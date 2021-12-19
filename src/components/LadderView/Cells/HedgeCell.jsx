@@ -22,6 +22,7 @@ const LadderHedgeCell = ({ marketId, selectionId, price, unmatchedBets, side, he
   const text = useMemo(() => (unmatchedStake > 0 ? unmatchedStake : hedgingAvailable ? hedgePL : null), [unmatchedStake, hedgingAvailable, hedgePL]);
 
   const handleClick = useCallback(() => {
+    console.log(hedge);
     if (unmatchedBets && unmatchedBets.length > 0) {
       cancelMarketBets(marketId, unmatchedBets);
     }

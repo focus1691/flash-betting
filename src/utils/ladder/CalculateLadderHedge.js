@@ -15,7 +15,7 @@ export default (price, selectionMatchedBets, ladderUnmatched, stake, pl) => {
 
   if (ladderUnmatched === 'hedged') {
     // calculate the profit based on the current row (the odds decide this)
-    const profit = selectionMatchedBets.reduce((prev, bet) => prev + calculateHedgeProfit(bet.side, parseFloat(bet.size), parseFloat(bet.price), parseFloat(price)), 0);
+    const profit = selectionMatchedBets.reduce((prev, bet) => prev + calculateHedgeProfit(bet.side, parseFloat(bet.size), parseFloat(bet.price), parseFloat(price)), 0).round(2);
 
     // get the offset to the size ex. 2 BACK = 2 LAY
     const offset = selectionMatchedBets.reduce((a, b) => {
