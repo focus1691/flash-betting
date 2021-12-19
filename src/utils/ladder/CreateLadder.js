@@ -24,23 +24,27 @@ export const CreateLadder = (rawData) => {
     ladder.trdo[formatPriceKey(price)] = size;
   });
 
-  for (let i = 0; i < rawData.atb.length; i += 1) {
-    let [price, matched] = rawData.atb[i];
-    price = formatPriceKey(price);
-    matched = Math.floor(matched);
+  if (rawData.atb) {
+    for (let i = 0; i < rawData.atb.length; i += 1) {
+      let [price, matched] = rawData.atb[i];
+      price = formatPriceKey(price);
+      matched = Math.floor(matched);
 
-    if (matched > 0) {
-      ladder.atlo[price] = matched;
+      if (matched > 0) {
+        ladder.atlo[price] = matched;
+      }
     }
   }
 
-  for (let i = 0; i < rawData.atl.length; i += 1) {
-    let [price, matched] = rawData.atl[i];
-    price = formatPriceKey(price);
-    matched = Math.floor(matched);
+  if (rawData.atl) {
+    for (let i = 0; i < rawData.atl.length; i += 1) {
+      let [price, matched] = rawData.atl[i];
+      price = formatPriceKey(price);
+      matched = Math.floor(matched);
 
-    if (matched > 0) {
-      ladder.atbo[price] = matched;
+      if (matched > 0) {
+        ladder.atbo[price] = matched;
+      }
     }
   }
 
@@ -55,7 +59,7 @@ export const CreateLadder = (rawData) => {
  * @param {object} ltp - The Last Traded Price
  * @return {object} The back/lay percentages
  */
- export const calcBackLayPercentages = (atbo, atlo, ltp) => {
+export const calcBackLayPercentages = (atbo, atlo, ltp) => {
   if (!ltp) {
     return { back: 0, lay: 0 };
   }
