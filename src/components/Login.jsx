@@ -98,7 +98,7 @@ const Login = () => {
               margin="normal"
               required
               fullWidth
-              label="Email Address"
+              label="Username / Email Address"
               name="email"
               autoComplete="email"
               placeholder="Enter your Email"
