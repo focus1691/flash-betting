@@ -55,6 +55,27 @@ class APIHelper {
     }
     return false;
   }
+
+  static async isUserRegistered(user) {
+    try {
+      const response = await fetch(`https://flash-betting.herokuapp.com/user-status?user=${user}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'GET',
+      });
+  
+      if (response.ok) {
+        const { registered } = await response.json();
+        console.log(registered);
+        return registered;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return false;
+  }
 }
 
 module.exports = APIHelper;

@@ -9,11 +9,20 @@ class BetFairAccountController {
   }
 
   initRoutes() {
+    this.router.get('/vendor-id', this.getVendorId);
     this.router.get('/get-subscription-status', this.getSubscriptionStatus);
     this.router.get('/revoke-subscription-status', this.revokeSubscription);
     this.router.get('/get-vendor-client-id', this.getVendorClientId);
     this.router.get('/get-account-balance', this.getAccountBalance);
     this.router.get('/get-account-details', this.getAccountDetails);
+  }
+
+  getVendorId(req, res) {
+    return res.status(200).json({
+      result: {
+        vendorId: process.env.VENDOR_ID,
+      },
+    });
   }
 
   getSubscriptionStatus(req, res) {

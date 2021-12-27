@@ -17,7 +17,10 @@ const OAuthRedirect = () => {
     (async () => {
       const code = getQueryVariable('code');
       const email = cookies.get('username');
-      if (!code || !email) return;
+      if (!code || !email) {
+        setIsError(true);
+        return;
+      }
       const response = await fetch(`${FLASH_BETTING_URL}generate-access-token?code=${encodeURIComponent(code)}&email=${email}`);
 
       if (response && response.ok) {

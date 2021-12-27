@@ -12,29 +12,18 @@ class BetFairAuthenticationController {
   initRoutes() {
     this.router.post('/login', this.login);
     this.router.get('/logout', this.logout);
+    this.router.get('/registration-status', this.registrationStatus);
+    this.router.get('/authenticate-user', this.authenticate);
     this.router.get('/keep-alive', this.keepAlive);
   }
 
   login(req, res) {
     const { user, password } = req.body;
     req.betfair.login(user, password).then(async ({ sessionKey }) => {
-      req.betfair.getVendorClientId({}, async (err, { error, result }) => {
-
-        if (error) {
-          return res.status(401).json({ error });
-        }
-
-        const token = await APIHelper.login({ vendorClientId: result, user });
-
-        if (token) {
-          res.cookie('token', token);
-          res.cookie('sessionKey', sessionKey);
-          res.cookie('username', user);
-  
-        }
-        return res.status(200).json(result);
-      });
-    }).catch((error) => res.json({ error }));
+      res.cookie('sessionKey', sessionKey);
+      res.cookie('username', user);
+      res.status(200).json({ sessionKey });
+    }).catch((error) => res.status(401).json({ error }));
   }
 
   logout(req, res) {
@@ -42,6 +31,37 @@ class BetFairAuthenticationController {
       this.clearSession(res);
       res.json(res);
     }).catch((error) => res.json({ error }));
+  }
+
+  async registrationStatus(req, res) {
+    if (!req.cookies.username) {
+      return res.status(400).json({ error: 'Username not found' });
+    }
+    const isRegistered = await APIHelper.isUserRegistered(req.cookies.username);
+    return res.status(200).json({ result: isRegistered });
+  }
+
+  async authenticate(req, res) {
+    if (!req.cookies.username) {
+      return res.status(400).json({ error: 'Username not found' });
+    }
+    if (!req.cookies.token) {
+      // const accessToken = await apiHelper.getAccessToken(req.cookies.token);
+      // req.betfair.getVendorClientId({}, async (err, { error, result }) => {
+      // if (error) {
+      //   return res.status(401).json({ error });
+      // }
+
+      const token = await APIHelper.login({ user: req.cookies.username });
+
+      if (token) {
+        res.cookie('token', token);
+        return res.status(200).json({ result: token });
+      }
+      return res.status(400).json({ error: 'Cannot authenticate' });
+      // });
+    }
+    return res.status(200).json({ result: req.cookies.token });
   }
 
   clearSession(res) {

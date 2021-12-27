@@ -65,6 +65,12 @@ class App {
           error: 'NO_SESSION',
         });
       }
+
+      if (!req.cookies.token && !isAuthURL(req.url)) {
+        return res.status(401).json({
+          error: 'NO_SESSION',
+        });
+      }
     
       if (!betfair.accessToken && req.cookies.accessToken) {
         betfair.setAccessToken(req.cookies.accessToken);
