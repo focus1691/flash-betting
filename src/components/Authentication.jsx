@@ -17,7 +17,7 @@ const Authentication = () => {
 
   useEffect(() => {
     const resetSession = () => {
-      clearCookies();
+      clearCookies(cookies);
       setSessionKey(null);
     };
 
