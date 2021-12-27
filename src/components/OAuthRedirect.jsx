@@ -3,6 +3,8 @@ import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router-dom';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
 import Spinner from './App/Spinner';
+//* HTTP
+import { fetchSecureData } from '../http/fetchData';
 //* Constants
 import { FLASH_BETTING_URL } from '../constants';
 //* Session
@@ -21,7 +23,8 @@ const OAuthRedirect = () => {
         setIsError(true);
         return;
       }
-      const response = await fetch(`${FLASH_BETTING_URL}generate-access-token?code=${encodeURIComponent(code)}&email=${email}`);
+      const authToken = cookies.get('token');
+      const response = await fetchSecureData(`${FLASH_BETTING_URL}generate-access-token?code=${encodeURIComponent(code)}&email=${email}`, authToken);
 
       if (response && response.ok) {
         setIsAuthenticated(true);
