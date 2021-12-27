@@ -45,7 +45,7 @@ const Authentication = () => {
 
               if (vendorClientId && !!authToken && !isTokenExpired(authToken)) {
                 const response = await fetchSecureData(`${FLASH_BETTING_URL}refresh-access-token?vendorClientId=${vendorClientId}`, authToken);
-                if (response.ok) {
+                if (response && response.ok) {
                   setIsAuthenticated(true);
                 }
               }
