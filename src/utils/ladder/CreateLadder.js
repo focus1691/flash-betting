@@ -20,9 +20,11 @@ export const CreateLadder = (rawData) => {
   }
 
   // make it easier for ladder
-  rawData.trd.forEach(([price, size]) => {
-    ladder.trdo[formatPriceKey(price)] = size;
-  });
+  if (rawData.trd) {
+    rawData.trd.forEach(([price, size]) => {
+      ladder.trdo[formatPriceKey(price)] = size;
+    });    
+  }
 
   if (rawData.atb) {
     for (let i = 0; i < rawData.atb.length; i += 1) {
