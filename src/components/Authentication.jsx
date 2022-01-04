@@ -31,9 +31,8 @@ const Authentication = () => {
             // Not registered so go straight to O-Auth
 
             const { vendorId } = await fetchData('/api/vendor-id');
-            const { error } = await fetchData('/api/authenticate-user');
 
-            if (error || !vendorId) {
+            if (!vendorId) {
               errorOccurred = true;
             } else {
               window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
