@@ -76,7 +76,7 @@
     "node-fetch": "^2.6.1",
     "socket.io": "^2.4.1",
     "sortablejs": "^1.13.0",
-    "sqlite-async": "^1.1.1"
+    "sqlite-async": "^1.1.2"
   },
   "devDependencies": {
     "@material-ui/core": "^4.11.0",
