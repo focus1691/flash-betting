@@ -23,36 +23,47 @@ const Authentication = () => {
 
     (async () => {
       if (sessionKey) {
-        const isRegistered = await fetchData('/api/registration-status');
+        let errorOccurred = false;
+        try {
+          const isRegistered = await fetchData('/api/registration-status');
 
-        if (isRegistered === false) {
-          // Not registered so go straight to O-Auth
-          const { vendorId } = await fetchData('/api/vendor-id');
-          window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
-        }
-        else if (isRegistered === true) {
-          // Authenticate user to create the token
-          const { error } = await fetchData('/api/authenticate-user');
-          if (error) {
-            resetSession();
-          } else {
-            const { vendorId, isSubscribed, accessToken } = await fetchData('/api/get-subscription-status');
-            if (isSubscribed === false || !accessToken) {
-              window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
+          if (isRegistered === false) {
+            // Not registered so go straight to O-Auth
+            const { vendorId } = await fetchData('/api/vendor-id');
+            if (!vendorId) {
+              errorOccurred = true;
             } else {
-              const authToken = cookies.get('token');
-              const vendorClientId = await fetchData('/api/get-vendor-client-id');
+              window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
+            }
+          } else if (isRegistered === true) {
+            // Authenticate user to create the token
+            const { error } = await fetchData('/api/authenticate-user');
+            if (error) {
+              errorOccurred = true;
+            } else {
+              const { vendorId, isSubscribed, accessToken } = await fetchData('/api/get-subscription-status');
+              if (isSubscribed === false || !accessToken) {
+                window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
+              } else {
+                const authToken = cookies.get('token');
+                const vendorClientId = await fetchData('/api/get-vendor-client-id');
 
-              if (vendorClientId && !!authToken && !isTokenExpired(authToken)) {
-                const response = await fetchSecureData(`${FLASH_BETTING_URL}refresh-access-token?vendorClientId=${vendorClientId}`, authToken);
-                if (response && response.ok) {
-                  setIsAuthenticated(true);
+                if (vendorClientId && !!authToken && !isTokenExpired(authToken)) {
+                  const response = await fetchSecureData(`${FLASH_BETTING_URL}refresh-access-token?vendorClientId=${vendorClientId}`, authToken);
+                  if (response && response.ok) {
+                    setIsAuthenticated(true);
+                  }
                 }
               }
             }
           }
-        } else {
-          resetSession();
+        } catch (error) {
+          console.log(`ERROR: Authentication ${error}`);
+          errorOccurred = true;
+        } finally {
+          if (errorOccurred) {
+            resetSession();
+          }
         }
       }
     })();
