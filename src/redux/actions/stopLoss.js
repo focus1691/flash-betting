@@ -68,7 +68,7 @@ export const placeStopLossBet = (data) => ({
   payload: data,
 });
 
-export const replaceStopLoss = async (SL, { selectionId, stakeVal, price, side, stopLossUnits, stopLossHedged }) => {
+export const replaceStopLoss = (SL, { selectionId, stakeVal, price, side, stopLossUnits, stopLossHedged }) => {
   return async (dispatch) => {
     if (SL) {
       side = side.toUpperCase();
