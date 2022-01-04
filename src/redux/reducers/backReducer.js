@@ -1,6 +1,6 @@
 import update from 'immutability-helper';
 import { findIndex, omit, isEmpty } from 'lodash';
-import { isNumeric } from 'validator';
+import { isNumeric } from '../../utils/validator';
 
 const initialState = {
   selected: false,

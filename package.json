@@ -50,8 +50,7 @@
     "socket.io": "^2.4.1",
     "sortablejs": "^1.13.0",
     "sqlite-async": "^1.1.1",
-    "universal-cookie": "^4.0.4",
-    "validator": "^13.7.0"
+    "universal-cookie": "^4.0.4"
   },
   "homepage": "./",
   "build": {
