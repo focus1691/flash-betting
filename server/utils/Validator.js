@@ -1,11 +1,5 @@
 function isAuthURL(url) {
-  return url.includes('login') ||
-    url.includes('logout') ||
-    url.includes('get-subscription-status') ||
-    url.includes('get-vendor-client-id') ||
-    url.includes('keep-alive') ||
-    url.includes('registration-status') ||
-    url.includes('authenticate-user');
+  return /(?:login|logout|get-subscription-status|get-vendor-client-id|keep-alive|registration-statusauthenticate-user|vendor-id|registration-status)/.test(url);
 }
 
 module.exports = {
