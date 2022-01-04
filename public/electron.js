@@ -7,6 +7,7 @@ dotenvExpand(config);
 
 //* Electron
 const electron = require('electron');
+
 const { app, BrowserWindow } = electron;
 
 app.commandLine.appendSwitch('high-dpi-support', 1);
