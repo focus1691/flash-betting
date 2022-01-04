@@ -58,6 +58,7 @@
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "off",
     "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": false, "peerDependencies": false}],
     "no-use-before-define": [
       "error", {
         "functions": false,
