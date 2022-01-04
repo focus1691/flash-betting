@@ -18,11 +18,6 @@ class App {
     this.app = express();
     this.server = http.createServer(this.app);
 
-    this.applyMiddlewares(middleWares);
-    this.applyAuthMiddleware();
-
-    this.initRoutes(controllers);
-
     if (process.env.NODE_ENV === 'production') {
       const bundlePath = path.join(__dirname, '../build/index.html');
       this.app.get('/', (req, res) => res.sendFile(bundlePath));
@@ -31,6 +26,11 @@ class App {
       this.app.get('/validation', (req, res) => res.sendFile(bundlePath));
       this.app.get('/logout', (req, res) => res.sendFile(bundlePath));
     }
+
+    this.applyMiddlewares(middleWares);
+    this.applyAuthMiddleware();
+
+    this.initRoutes(controllers);
 
     this.io = SocketIO(this.server);
     this.io.on('connection', this.onClientConnected);
