@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import getQueryVariable from '../utils/Market/GetQueryVariable';
 import Spinner from './App/Spinner';
 //* HTTP
-import { fetchSecureData } from '../http/fetchData';
+import fetchData, { fetchSecureData } from '../http/fetchData';
 //* Constants
 import { FLASH_BETTING_URL } from '../constants';
 //* Session
@@ -16,21 +16,40 @@ const OAuthRedirect = () => {
   const [isError, setIsError] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   useEffect(() => {
-    (async () => {
-      const code = getQueryVariable('code');
-      const email = cookies.get('username');
-      if (!code || !email) {
-        setIsError(true);
-        return;
-      }
-      const authToken = cookies.get('token');
-      const response = await fetchSecureData(`${FLASH_BETTING_URL}generate-access-token?code=${encodeURIComponent(code)}&email=${email}`, authToken);
+    const resetSession = () => {
+      clearCookies(cookies);
+      setIsError(true);
+    };
 
-      if (response && response.ok) {
-        setIsAuthenticated(true);
-      } else {
-        clearCookies(cookies);
-        setIsError(true);
+    (async () => {
+      let errorOccurred = false;
+      try {
+        const code = getQueryVariable('code');
+        const email = cookies.get('username');
+        if (!code || !email) {
+          setIsError(true);
+          return;
+        }
+        const authToken = cookies.get('token');
+        const response = await fetchSecureData(`${FLASH_BETTING_URL}generate-access-token?code=${encodeURIComponent(code)}&email=${email}`, authToken);
+
+        if (response && response.ok) {
+          const { error } = await fetchData('/api/authenticate-user');
+
+          if (error) {
+            errorOccurred = true;
+          } else {
+            setIsAuthenticated(true);
+          }
+        } else {
+          errorOccurred = true;
+        }
+      } catch (error) {
+        console.log(`ERROR: O-Auth ${error}`);
+      } finally {
+        if (errorOccurred) {
+          resetSession();
+        }
       }
     })();
   }, []);
