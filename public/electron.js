@@ -6,7 +6,9 @@ const config = dotenv.config({ path: `${__dirname}/.env`});
 dotenvExpand(config);
 
 //* Electron
-const { app, BrowserWindow, screen } = require('electron');
+const electron = require('electron');
+
+const { app, BrowserWindow } = electron;
 
 app.commandLine.appendSwitch('high-dpi-support', 1);
 app.commandLine.appendSwitch('force-device-scale-factor', 1);
@@ -44,6 +46,8 @@ if (!gotTheLock) {
 }
 
 function createWindow() {
+  const { screen } = electron;
+
   const screenSize = screen.getPrimaryDisplay().size;
   mainWindow = new BrowserWindow({
     width: screenSize.width,
@@ -60,7 +64,6 @@ function createWindow() {
   });
 
   mainWindow.loadURL(`file:///${__dirname}/navigation-index.html`);
-  mainWindow.removeMenu();
   mainWindow.setMenu(null);
 
   mainWindow.on('closed', () => {
