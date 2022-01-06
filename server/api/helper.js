@@ -1,43 +1,35 @@
 const fetch = require('node-fetch');
+const { FLASH_BETTING_URL } = require('../constants');
 
 class APIHelper {
   constructor(betfair) {
     this.betfair = betfair;
   }
 
-  async getAccessToken(token) {
+  static async getAccessToken(token) {
     try {
-      const { result } = await new Promise((resolve, reject) => {
-        this.betfair.getVendorClientId({}, (err, { error, result }) => {
-          if (error) reject(error);
-          resolve({ result });
-        });
-      }).catch((error) => ({ error }));
-  
-      if (result) {
-        const response = await fetch(`https://flash-betting.herokuapp.com/access-token?vendorClientId=${result}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': token,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          const { accessToken } = data;
-          return accessToken;
-        }
+      const response = await fetch(`${FLASH_BETTING_URL}/refresh-access-token`, {
+        method: 'GET',
+        headers: {
+          'Authorization': token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const { result: { accessToken } } = data;
+        return accessToken;
       }
     } catch (error) {
       console.log(error);
     }
     return null;
   }
-
+ 
   static async login(params) {
     try {
-      const response = await fetch('https://flash-betting.herokuapp.com/login', {
+      const response = await fetch(`${FLASH_BETTING_URL}/login-app`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -58,7 +50,7 @@ class APIHelper {
 
   static async isUserRegistered(user) {
     try {
-      const response = await fetch(`https://flash-betting.herokuapp.com/user-status?user=${user}`, {
+      const response = await fetch(`${FLASH_BETTING_URL}/user-status?user=${user}`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -68,7 +60,6 @@ class APIHelper {
   
       if (response.ok) {
         const { registered } = await response.json();
-        console.log(registered);
         return registered;
       }
     } catch (error) {
