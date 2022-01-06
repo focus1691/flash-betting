@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable */
 /**
  * @author      Jeremy England
  * @license     MIT
@@ -558,14 +558,6 @@ Navigation.prototype.newTab = function (url, options) {
 
 } //:newTab()
 
-Navigation.prototype.closeTabs = function () {
-  $('#nav-body-subtabs').empty();
-  $('#nav-body-views').empty();
-
-  // enable reload button
-  $('#nav-ctrls-reload').removeClass('disabled');
-}
-
 //
 // change current or specified tab and view
 //
@@ -611,6 +603,15 @@ Navigation.prototype.closeTab = function (id) {
   this._updateUrl();
   this._updateCtrls();
 } //:closeTab()
+
+Navigation.prototype.closeTabs = function () {
+  $('#nav-body-subtabs').empty();
+  $('#nav-body-views').empty();
+
+  // enable reload button
+  $('#nav-ctrls-reload').removeClass('disabled');
+}
+
 //
 // go back on current or specified view
 //
