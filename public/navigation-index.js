@@ -557,6 +557,15 @@ Navigation.prototype.newTab = function (url, options) {
   return newWebview;
 
 } //:newTab()
+
+Navigation.prototype.closeTabs = function () {
+  $('#nav-body-subtabs').empty();
+  $('#nav-body-views').empty();
+
+  // enable reload button
+  $('#nav-ctrls-reload').removeClass('disabled');
+}
+
 //
 // change current or specified tab and view
 //

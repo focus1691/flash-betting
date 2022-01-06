@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const SocketIO = require('socket.io');
+const SseStream = require('ssestream').default;
 
 const BetFairSession = require('./betfair/session.js');
 const APIHelper = require('./api/helper');
@@ -25,6 +26,16 @@ class App {
       this.app.get('/authentication', (req, res) => res.sendFile(bundlePath));
       this.app.get('/validation', (req, res) => res.sendFile(bundlePath));
       this.app.get('/logout', (req, res) => res.sendFile(bundlePath));
+
+      this.app.get('/sse', (req, res) => {
+      
+        this.sseStream = new SseStream(req);
+        this.sseStream.pipe(res);
+      
+        res.on('close', () => {
+          this.sseStream.unpipe(res);
+        })
+      })
     }
 
     this.applyMiddlewares(middleWares);
@@ -89,8 +100,9 @@ class App {
       }
       req.betfair = betfair;
       req.apiHelper = apiHelper;
+      req.sseStream = this.sseStream;
       return next();
-    });
+    }).bind(this);
   }
 
   initRoutes(controllers) {

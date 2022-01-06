@@ -55,7 +55,7 @@ function createWindow() {
     minWidth: screenSize.width * 0.80,
     minHeight: screenSize.height * 0.80,
     webPreferences: {
-      devTools: false,
+      // devTools: false,
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
@@ -64,7 +64,7 @@ function createWindow() {
   });
 
   mainWindow.loadURL(`file:///${__dirname}/navigation-index.html`);
-  mainWindow.setMenu(null);
+  // mainWindow.setMenu(null);
 
   mainWindow.on('closed', () => {
     mainWindow = null;

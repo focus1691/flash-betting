@@ -31,6 +31,13 @@ class BetFairAuthenticationController {
       await req.betfair.logout();
       this.clearSession(res);
       res.sendStatus(200);
+
+      if (req.sseStream) {
+        req.sseStream.write({
+          event: 'close-tabs',
+          data: new Date().toTimeString(),
+        });
+      }
     } catch (error) {
       res.json({ error });
     }

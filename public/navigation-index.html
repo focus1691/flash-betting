@@ -27,6 +27,24 @@
       showUrlBar: false
     });
     enav.newTab('http://localhost:9090/')
+
+    let es = new EventSource(`http://localhost:9090/sse`);
+
+    setInterval(() => {
+      if (es.readyState === es.CLOSED) {
+        es = new EventSource(`http://localhost:${process.env.PRODUCTION_PORT}/sse`);
+      }
+      console.log(es.readyState);
+    }, 5000);
+
+    es.addEventListener('server-time', function (e) {
+      console.log(e.data);
+    });
+
+    es.addEventListener('close-tabs', function closeTabs() {
+      console.log('close tabs');
+      enav.closeTabs();
+    });
   </script>
 </body>
 
