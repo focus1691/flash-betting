@@ -36,7 +36,7 @@ const Authentication = () => {
             // Not registered so go straight to O-Auth
             window.location = `${BETFAIR_LOGIN_PAGE}?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
           } else if (isRegistered === true && !errorOccurred) {
-            // Authenticate user to create the token
+            // Authenticate user to create the JWT token / retrieve the user's access token
             const { error } = await fetchData('/api/authenticate-user');
             if (error) {
               errorOccurred = true;
