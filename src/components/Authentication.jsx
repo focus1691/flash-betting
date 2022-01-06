@@ -3,11 +3,11 @@ import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import Spinner from './App/Spinner';
 //* HTTP
-import fetchData, { fetchSecureData, isTokenExpired } from '../http/fetchData';
+import fetchData from '../http/fetchData';
 //* Utils
 import { clearCookies } from '../session/cleanup';
 //* Constants
-import { FLASH_BETTING_URL } from '../constants';
+import { BETFAIR_LOGIN_PAGE } from '../constants';
 
 const cookies = new Cookies();
 
@@ -26,36 +26,28 @@ const Authentication = () => {
         let errorOccurred = false;
         try {
           const isRegistered = await fetchData('/api/registration-status');
+          const { vendorId } = await fetchData('/api/vendor-id');
 
-          if (isRegistered === false) {
+          if (!vendorId) {
+            errorOccurred = true;
+          }
+
+          if (isRegistered === false && !errorOccurred) {
             // Not registered so go straight to O-Auth
-
-            const { vendorId } = await fetchData('/api/vendor-id');
-
-            if (!vendorId) {
-              errorOccurred = true;
-            } else {
-              window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
-            }
-          } else if (isRegistered === true) {
+            window.location = `${BETFAIR_LOGIN_PAGE}?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
+          } else if (isRegistered === true && !errorOccurred) {
             // Authenticate user to create the token
             const { error } = await fetchData('/api/authenticate-user');
             if (error) {
               errorOccurred = true;
             } else {
-              const { vendorId, isSubscribed, accessToken } = await fetchData('/api/get-subscription-status');
-              if (isSubscribed === false || !accessToken) {
-                window.location = `http://identitysso.betfair.com/view/vendor-login?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
+              const { isSubscribed } = await fetchData('/api/get-subscription-status');
+              if (isSubscribed === false) {
+                window.location = `${BETFAIR_LOGIN_PAGE}?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
+              } else if (isSubscribed === true) {
+                setIsAuthenticated(true);
               } else {
-                const authToken = cookies.get('token');
-                const vendorClientId = await fetchData('/api/get-vendor-client-id');
-
-                if (vendorClientId && !!authToken && !isTokenExpired(authToken)) {
-                  const response = await fetchSecureData(`${FLASH_BETTING_URL}refresh-access-token?vendorClientId=${vendorClientId}`, authToken);
-                  if (response && response.ok) {
-                    setIsAuthenticated(true);
-                  }
-                }
+                errorOccurred = true;
               }
             }
           }
