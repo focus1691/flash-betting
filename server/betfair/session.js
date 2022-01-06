@@ -116,16 +116,18 @@ class BetfairSession {
   }
 
   logout() {
-    return new Promise((res, rej) => {
+    return new Promise((res) => {
       auth.logout(this.sessionKey, (err, result) => {
-        if (err) rej(err);
-        if (result) {
-          this.sessionKey = null;
-          this.email = null;
-        }
-        res(this);
+        if (err) res(err);
+        res(result);
       });
     });
+  }
+
+  reset() {
+    this.sessionKey = null;
+    this.email = null;
+    this.setAccessToken(null);
   }
 
   createExchangeStream(client, accessToken=this.accessToken) {
