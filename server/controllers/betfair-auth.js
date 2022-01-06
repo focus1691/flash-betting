@@ -11,7 +11,7 @@ class BetFairAuthenticationController {
 
   initRoutes() {
     this.router.post('/login', this.login);
-    this.router.get('/logout', this.logout);
+    this.router.get('/logout', this.logout.bind(this));
     this.router.get('/registration-status', this.registrationStatus);
     this.router.get('/authenticate-user', this.authenticate);
     this.router.get('/keep-alive', this.keepAlive);
@@ -26,11 +26,14 @@ class BetFairAuthenticationController {
     }).catch((error) => res.status(401).json({ error }));
   }
 
-  logout(req, res) {
-    req.betfair.logout().then((res) => {
+  async logout(req, res) {
+    try {
+      await req.betfair.logout();
       this.clearSession(res);
-      res.json(res);
-    }).catch((error) => res.json({ error }));
+      res.sendStatus(200);
+    } catch (error) {
+      res.json({ error });
+    }
   }
 
   async registrationStatus(req, res) {
@@ -42,26 +45,31 @@ class BetFairAuthenticationController {
   }
 
   async authenticate(req, res) {
-    if (!req.cookies.username) {
+    const { username } = req.cookies;
+    let { token, accessToken } = req.cookies;
+
+    if (!username) {
       return res.status(400).json({ error: 'Username not found' });
     }
-    if (!req.cookies.token) {
-      // const accessToken = await apiHelper.getAccessToken(req.cookies.token);
-      // req.betfair.getVendorClientId({}, async (err, { error, result }) => {
-      // if (error) {
-      //   return res.status(401).json({ error });
-      // }
 
-      const token = await APIHelper.login({ user: req.cookies.username });
-
-      if (token) {
-        res.cookie('token', token);
-        return res.status(200).json({ result: token });
-      }
-      return res.status(400).json({ error: 'Cannot authenticate' });
-      // });
+    if (!token) {
+      token = await APIHelper.login({ user: req.cookies.username });
+      if (token) res.cookie('token', token);
     }
-    return res.status(200).json({ result: req.cookies.token });
+    
+    if (token && !accessToken) {
+      accessToken = await APIHelper.getAccessToken(token);
+      if (accessToken) {
+        res.cookie('accessToken', accessToken);
+        req.betfair.setAccessToken(accessToken);
+      }
+    }
+
+    if (!token || !accessToken) {
+      return res.status(400).json({ error: 'Cannot authenticate' });
+    }
+
+    return res.status(200).json({ result: true });
   }
 
   clearSession(res) {
