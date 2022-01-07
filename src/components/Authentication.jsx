@@ -41,8 +41,8 @@ const Authentication = () => {
             if (error) {
               errorOccurred = true;
             } else {
-              const { isSubscribed } = await fetchData('/api/get-subscription-status');
-              if (isSubscribed === false) {
+              const { isSubscribed, error } = await fetchData('/api/get-subscription-status');
+              if (isSubscribed === false || error) {
                 window.location = `${BETFAIR_LOGIN_PAGE}?client_id=${vendorId}&response_type=code&redirect_uri=validation`;
               } else if (isSubscribed === true) {
                 setIsAuthenticated(true);

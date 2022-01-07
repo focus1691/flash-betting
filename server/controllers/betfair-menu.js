@@ -32,10 +32,10 @@ class BetFairMenuController {
         res.children.forEach((item) => {
           req.betfair.allSports[item.id] = item.children;
         });
-        response.status(200).json({ sports: req.betfair.allSports });
+        return response.status(200).json({ sports: req.betfair.allSports });
       })
       .catch((error) => {
-        response.status(400).json({ error: error.message });
+        return response.status(400).json({ error: error.message });
       });
   }
 
@@ -116,7 +116,7 @@ class BetFairMenuController {
           name: item.marketName,
           type: 'MARKET',
         }));
-        res.json({ result: mappedResponse });
+        return res.json({ result: mappedResponse });
       },
     );
   }

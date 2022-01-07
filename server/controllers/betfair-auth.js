@@ -19,18 +19,20 @@ class BetFairAuthenticationController {
 
   login(req, res) {
     const { user, password } = req.body;
-    req.betfair.login(user, password).then(async ({ sessionKey }) => {
-      res.cookie('sessionKey', sessionKey);
-      res.cookie('username', user);
-      res.status(200).json({ sessionKey });
-    }).catch((error) => res.status(401).json({ error }));
+    req.betfair
+      .login(user, password)
+      .then(async ({ sessionKey }) => {
+        res.cookie('sessionKey', sessionKey);
+        res.cookie('username', user);
+        res.status(200).json({ sessionKey });
+      })
+      .catch((error) => res.status(401).json({ error }));
   }
 
   async logout(req, res) {
     try {
       await req.betfair.logout();
       this.clearSession(res);
-      res.sendStatus(200);
 
       if (req.sseStream) {
         req.sseStream.write({
@@ -38,8 +40,9 @@ class BetFairAuthenticationController {
           data: new Date().toTimeString(),
         });
       }
+      return res.sendStatus(200);
     } catch (error) {
-      res.json({ error });
+      return res.sendStatus(400).json({ error });
     }
   }
 
@@ -63,7 +66,7 @@ class BetFairAuthenticationController {
       token = await APIHelper.login({ user: req.cookies.username });
       if (token) res.cookie('token', token);
     }
-    
+
     if (token && !accessToken) {
       accessToken = await APIHelper.getAccessToken(token);
       if (accessToken) {
@@ -87,13 +90,14 @@ class BetFairAuthenticationController {
   }
 
   keepAlive(req, res) {
-    req.betfair.keepAlive().then(async (result) => {
-      res.json(result);
-    }).catch((error) =>
-      res.json({
-        error,
-      }),
-    );
+    req.betfair
+      .keepAlive()
+      .then(async (result) => {
+        return res.json(result);
+      })
+      .catch((error) => {
+        return res.json({ error });
+      });
   }
 }
 
