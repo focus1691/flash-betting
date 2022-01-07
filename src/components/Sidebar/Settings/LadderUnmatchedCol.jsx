@@ -35,13 +35,13 @@ export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
       <SectionContent>
         <AppBar className={classes.appBar} position="absolute">
           <Typography variant="h6" className={classes.title}>
-            Ladder Unmatched Column
+            Ladder Unmatched
           </Typography>
         </AppBar>
       </SectionContent>
       {renderSaveBtn()}
       <RadioGroup
-        aria-label="Unmatched Column"
+        aria-label="Ladder Column"
         name="unmatched "
         className={classes.radioButtons}
         value={ladderUnmatched}
