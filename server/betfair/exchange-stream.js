@@ -34,8 +34,6 @@ class BetFairStreamAPI {
         appKey: process.env.APP_KEY,
         session: `BEARER ${accessToken}`
       }
-      console.log(authParams);
-
 
       this.client.write(`${JSON.stringify(authParams)}\r\n`);
 
@@ -98,8 +96,6 @@ class BetFairStreamAPI {
   sendUpdates() {
     try {
       const result = this.updates.shift();
-      console.log(result);
-
       if (result) {
         // Connection status
         if (result.op === 'status') {
