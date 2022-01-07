@@ -108,7 +108,7 @@ class BetfairSession {
 
   keepAlive() {
     return new Promise((res, rej) => {
-      auth.keepAlive(this.sessionKey, (err, result) => {
+      auth.keepAlive(this.accessToken, (err, result) => {
         if (err) rej(err);
         res(result);
       });
@@ -117,7 +117,7 @@ class BetfairSession {
 
   logout() {
     return new Promise((res) => {
-      auth.logout(this.sessionKey, (err, result) => {
+      auth.logout(this.accessToken, (err, result) => {
         if (err) res(err);
         res(result);
       });
@@ -125,7 +125,7 @@ class BetfairSession {
   }
 
   reset() {
-    this.sessionKey = null;
+    this.setSession(null);
     this.email = null;
     this.setAccessToken(null);
   }

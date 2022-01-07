@@ -21,7 +21,7 @@ class BetFairMenuController {
     req.betfair.allSports = {};
     const headers = {
       'X-Application': process.env.APP_KEY,
-      'X-Authentication': req.betfair.sessionKey,
+      Authorization: req.betfair.accessToken,
       'Accept-Encoding': 'gzip, deflate',
     };
     fetch('	https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {

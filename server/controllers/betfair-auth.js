@@ -33,6 +33,7 @@ class BetFairAuthenticationController {
     try {
       await req.betfair.logout();
       this.clearSession(res);
+      req.betfair.reset();
 
       if (req.sseStream) {
         req.sseStream.write({

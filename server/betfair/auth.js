@@ -67,7 +67,7 @@ class BetfairAuth {
     });
   }
 
-  logout(sessionKey, cb = () => {}) {
+  logout(accessToken, cb = () => {}) {
     const formData = querystring.stringify({
       product: 'home.betfair.int',
       url: 'https://www.betfair.com/',
@@ -78,7 +78,7 @@ class BetfairAuth {
         accept: 'application/json',
         'content-type': 'application/x-www-form-urlencoded',
         'content-length': formData.length,
-        'x-authentication': sessionKey,
+        Authorization: accessToken,
       },
     };
     HttpRequest.post(AUTH_URLS.logout, formData, options, (err, res) => {
@@ -100,7 +100,7 @@ class BetfairAuth {
     });
   }
 
-  keepAlive(sessionKey, cb = () => {}) {
+  keepAlive(accessToken, cb = () => {}) {
     const formData = querystring.stringify({
       product: 'home.betfair.int',
       url: 'https://www.betfair.com/',
@@ -111,7 +111,7 @@ class BetfairAuth {
         accept: 'application/json',
         'content-type': 'application/x-www-form-urlencoded',
         'content-length': formData.length,
-        'x-authentication': sessionKey,
+        Authorization: accessToken,
       },
     };
     HttpRequest.post(AUTH_URLS.keepAlive, formData, options, (err, res) => {
