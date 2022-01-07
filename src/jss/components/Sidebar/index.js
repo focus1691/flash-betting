@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import scrollbar from '../../scrollbarStyle';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -6,9 +7,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '100%',
     overflowX: 'hidden',
     backgroundColor: '#424242',
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
+    ...scrollbar,
   },
   topSection: {
     position: 'sticky',
