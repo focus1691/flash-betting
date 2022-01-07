@@ -21,17 +21,22 @@ class BetFairMenuController {
     req.betfair.allSports = {};
     const headers = {
       'X-Application': process.env.APP_KEY,
-      Authorization: req.betfair.accessToken,
+      'X-Authentication': req.betfair.sessionKey,
+      // Authorization: `BEARER ${req.betfair.accessToken}`,
+      'Content-Type': 'application/json',
       'Accept-Encoding': 'gzip, deflate',
+      Connection: 'keep-alive',
     };
     fetch('	https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
       headers,
     })
       .then((res) => res.json())
-      .then((res) => {
-        res.children.forEach((item) => {
-          req.betfair.allSports[item.id] = item.children;
-        });
+      .then((menu) => {
+        if (menu && menu.children) {
+          menu.children.forEach((item) => {
+            req.betfair.allSports[item.id] = item.children;
+          });
+        }
         return response.status(200).json({ sports: req.betfair.allSports });
       })
       .catch((error) => {
