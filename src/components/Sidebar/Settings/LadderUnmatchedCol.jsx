@@ -42,7 +42,7 @@ export default ({ ladderUnmatched, toggleLadderUnmatched, classes }) => {
       {renderSaveBtn()}
       <RadioGroup
         aria-label="Ladder Column"
-        name="unmatched "
+        name="unmatched"
         className={classes.radioButtons}
         value={ladderUnmatched}
         onChange={(e) => {
