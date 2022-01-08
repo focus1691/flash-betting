@@ -16,13 +16,11 @@ import {
   setEvent,
   setEventType,
   closeMarket,
-  setSortedLadder,
   setRunner,
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
 } from '../../redux/actions/market';
-import { updateLadderOrder } from '../../redux/actions/ladder';
 import { removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
 import { updateBackList } from '../../redux/actions/back';
 import { updateLayList } from '../../redux/actions/lay';
@@ -44,8 +42,6 @@ import Draggable from '../Draggable';
 //* Utils
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
-//* Utils > Ladder
-import { sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 //* Utils > Bets
 import loadCustomBets from '../../utils/Bets/LoadCustomBets';
 import ExtractCustomerStrategyRfs from '../../utils/Bets/ExtractCustomerStrategyRfs';
@@ -83,7 +79,6 @@ const App = ({
   setEvent,
   setEventType,
   closeMarket,
-  setSortedLadder,
   setRunner,
   loadRunners,
   loadRunnerResults,
@@ -197,7 +192,6 @@ const App = ({
         console.log('market catlaogue empty');
         console.log(marketCatalogue[0]);
         const { marketId, marketName, marketStartTime, description, event, eventType, runners } = marketCatalogue[0];
-        setSortedLadder(sortGreyHoundMarket(eventType.id, runners));
         setMarketId(marketId);
         setMarketName(marketName);
         setMarketDescription(description);
@@ -303,8 +297,6 @@ const mapDispatchToProps = {
   setEvent,
   setEventType,
   closeMarket,
-  setSortedLadder,
-  updateLadderOrder,
   setRunner,
   loadRunners,
   loadRunnerResults,

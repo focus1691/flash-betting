@@ -1,8 +1,8 @@
-import { assign, omit } from 'lodash';
+import { isEmpty, assign, omit } from 'lodash';
 import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { UpdateLadder, constructNonRunnersObj } from '../../utils/ladder/UpdateLadder';
-import { sortLadder, isGreyHoundRace } from '../../utils/ladder/SortLadder';
+import { sortLadder, isGreyHoundRace, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
 import GetRunnerResults from '../../utils/Market/GetRunnerResults';
 
 const initialState = {
@@ -95,7 +95,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         // Greyhound races don't need to be sorted by LTP
-        sortedLadder: isGreyHoundRace(state.eventType.id) ? state.sortedLadder : sortLadder(state.ladder),
+        sortedLadder: isGreyHoundRace(state.eventType.id) ? (isEmpty(state.sortedLadder) ? sortGreyHoundMarket(state.runners) : state.sortedLadder) : sortLadder(state.ladder),
       };
     case 'LOAD_NON_RUNNERS':
       return { ...state, nonRunners: action.payload };

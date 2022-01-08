@@ -9,14 +9,13 @@ export const sortLadder = (ladders) => {
     .map((data) => data[1]);
 };
 
-export const sortGreyHoundMarket = (sportId, runners) => {
-  if (sportId === '4339') {
-    return Object.keys(runners)
-      .map((key) => [runners[key].runnerName, key])
-      .sort()
-      .map((val) => val[1]);
-  }
-  return [];
+export const sortGreyHoundMarket = (runners) => {
+  if (isEmpty(runners)) return [];
+
+  return Object.keys(runners)
+    .map((key) => [runners[key].runnerName, key])
+    .sort()
+    .map((val) => val[1]);
 };
 
 export const isGreyHoundRace = (eventTypeId) => {
