@@ -36,7 +36,7 @@ const Menu = ({ updateSubmenuList, updateMyMarketsSubmenu }) => {
   const createAccordionSummary = (name) => <SectionContent>{createTitle(name)}</SectionContent>;
 
   return (
-    <>
+    <div className={classes.menuContainer}>
       <SectionBar expanded={expanded === 'my_markets'} onChange={handleChange('my_markets')}>
         {createAccordionSummary('My Markets')}
         <MyMarkets />
@@ -51,7 +51,7 @@ const Menu = ({ updateSubmenuList, updateMyMarketsSubmenu }) => {
         {createAccordionSummary('Active Bets')}
         <ActiveBets />
       </SectionBar>
-    </>
+    </div>
   );
 };
 

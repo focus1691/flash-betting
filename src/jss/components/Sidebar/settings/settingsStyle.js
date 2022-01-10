@@ -1,8 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
 import headerStyle from '../headerStyle';
 import textFieldStyle from '../../../textFieldStyle';
+import scrollbar from '../../../scrollbarStyle';
 
 const useStyles = makeStyles((theme) => ({
+  settingsContainer: {
+    ...scrollbar,
+    overflowX: 'hidden',
+    overflowY: 'scroll',
+  },
   ...headerStyle,
   radioButtons: {
     margin: theme.spacing(1, 3),

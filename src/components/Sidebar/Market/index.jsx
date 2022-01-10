@@ -125,7 +125,7 @@ const Market = ({
   );
 
   return (
-    <>
+    <div className={classes.marketContainer}>
       <SectionBar expanded={laddersExpanded} onChange={() => setLaddersExpanded(!laddersExpanded)}>
         {createAccordionSummaryLadders('Ladders')}
         <div className={classes.ladderBackground} />
@@ -186,7 +186,7 @@ const Market = ({
           <Rules />
         </SectionBar>
       ) : null}
-    </>
+    </div>
   );
 };
 

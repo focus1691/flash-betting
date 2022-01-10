@@ -1,8 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
 import headerStyle from '../headerStyle';
 import buttonStyle from '../../../buttonStyle';
+import scrollbar from '../../../scrollbarStyle';
 
 const useStyles = makeStyles((theme) => ({
+  marketContainer: {
+    ...scrollbar,
+    overflowX: 'hidden',
+    overflowY: 'scroll',
+  },
   ...headerStyle,
   ...buttonStyle,
   appBarButton: {

@@ -69,7 +69,7 @@ const Settings = ({
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.settingsContainer}>
       <DefaultView defaultView={defaultView} toggleDefaultView={setDefaultView} premiumMember={premiumMember} classes={classes} />
 
       <Sounds sounds={sounds} toggleSounds={toggleSound} classes={classes} />
