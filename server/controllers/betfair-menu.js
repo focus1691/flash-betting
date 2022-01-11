@@ -2,6 +2,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const _ = require('lodash');
+const APIHelper = require('../api/helper');
 
 class BetFairMenuController {
   constructor() {
@@ -17,31 +18,13 @@ class BetFairMenuController {
     this.router.get('/list-todays-card', this.getTodaysCard);
   }
 
-  loadSportsMenu(req, response) {
-    req.betfair.allSports = {};
-    const headers = {
-      'X-Application': process.env.APP_KEY,
-      'X-Authentication': req.betfair.sessionKey,
-      // Authorization: `BEARER ${req.betfair.accessToken}`,
-      'Content-Type': 'application/json',
-      'Accept-Encoding': 'gzip, deflate',
-      Connection: 'keep-alive',
-    };
-    fetch('	https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
-      headers,
-    })
-      .then((res) => res.json())
-      .then((menu) => {
-        if (menu && menu.children) {
-          menu.children.forEach((item) => {
-            req.betfair.allSports[item.id] = item.children;
-          });
-        }
-        return response.status(200).json({ sports: req.betfair.allSports });
-      })
-      .catch((error) => {
-        return response.status(400).json({ error: error.message });
-      });
+  async loadSportsMenu(req, res) {
+    const navigationMenu = await APIHelper.getNavigationMenu(req.cookies.token);
+    if (navigationMenu) {
+      req.betfair.allSports = navigationMenu;
+      return res.sendStatus(200);
+    }
+    return res.sendStatus(401);
   }
 
   getSportData(req, res) {

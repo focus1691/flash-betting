@@ -26,7 +26,7 @@ class APIHelper {
     }
     return null;
   }
- 
+
   static async login(params) {
     try {
       const response = await fetch(`${FLASH_BETTING_URL}/login-app`, {
@@ -37,7 +37,7 @@ class APIHelper {
         method: 'POST',
         body: JSON.stringify(params),
       });
-  
+
       if (response.ok) {
         const { token } = await response.json();
         return token;
@@ -57,7 +57,7 @@ class APIHelper {
         },
         method: 'GET',
       });
-  
+
       if (response.ok) {
         const { registered } = await response.json();
         return registered;
@@ -66,6 +66,26 @@ class APIHelper {
       console.log(error);
     }
     return false;
+  }
+
+  static async getNavigationMenu(token) {
+    try {
+      const response = await fetch(`${FLASH_BETTING_URL}/navigation-menu`, {
+        headers: {
+          'Authorization': token,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const { sports } = await response.json();
+        return sports;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return {};
   }
 }
 
