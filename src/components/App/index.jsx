@@ -163,12 +163,6 @@ const App = ({
     }
   }, [marketOpen]);
 
-  const onSocketDisconnect = useCallback(() => {
-    if (marketOpen) {
-      setConnectionErrorMessage('Socket has been disconnected');
-    }
-  }, [marketOpen]);
-
   const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
 
@@ -244,7 +238,6 @@ const App = ({
     socket.on('mcm', (data) => processMarketUpdates(data));
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('subscription-error', onMarketDisconnect);
-    socket.on('disconnect', onSocketDisconnect);
 
     return () => {
       socket.off('mcm');
@@ -252,7 +245,7 @@ const App = ({
       socket.off('subscription-error');
       socket.off('disconnect');
     };
-  }, [onMarketDisconnect, onSocketDisconnect, onReceiveOrderMessage, socket]);
+  }, [onMarketDisconnect, onReceiveOrderMessage, socket]);
 
   return isLoading ? (
     <Spinner />
