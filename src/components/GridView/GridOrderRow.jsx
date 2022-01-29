@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 //* Actions
 import { placeOrder } from '../../redux/actions/bet';
+import { updateOrderValue, updateOrderPrice } from '../../redux/actions/market';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridOrderRow';
 //* Utils
@@ -14,14 +15,33 @@ import { formatPrice, isValidPrice } from '../../utils/Bets/PriceCalculations';
 import { isNumeric } from '../../utils/validator';
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
-const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, price, side, size }) => {
+const GridOrderRow = ({
+  marketId,
+  selectionId,
+  order,
+  toggleStakeAndLiabilityButtons,
+  toggleBackAndLay,
+  stakeBtns,
+  layBtns,
+  stakeLiability,
+  handleOrderChange,
+  handlePriceChange,
+  updateOrderPrice,
+  updateOrderValue,
+  toggleOrderRowVisibility,
+  placeOrder,
+  ltp,
+  price,
+  side,
+  size,
+}) => {
   const classes = useStyles();
   const [validStake, setValidStake] = useState(true);
   const [validPrice, setValidPrice] = useState(true);
 
   const executeOrder = () => {
     setValidPrice(isValidPrice(price));
-    setValidStake(isNumeric(size));
+    setValidStake(isNumeric(size) && size > 0);
 
     if (validPrice && validStake) {
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
@@ -33,6 +53,8 @@ const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityBut
         price: formatPrice(price),
         customerStrategyRef,
       });
+      updateOrderPrice({ id: selectionId, price: ltp });
+      updateOrderValue({ id: selectionId, side, stake: 0 });
     }
   };
 
@@ -62,7 +84,7 @@ const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityBut
                 [classes.liabilityButton]: stakeLiability === 1,
               })}
               style={{ background: size === order.stake ? LightenDarkenColor(stakeLiability === 0 ? '#007aaf' : '#d4696b', -20) : '' }}
-              onClick={updateOrderSize({
+              onClick={handleOrderChange({
                 id: selectionId,
                 side,
                 stake: size,
@@ -77,12 +99,12 @@ const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityBut
 
           <input
             className={clsx({
-              [classes.invalidInput]: !validStake
+              [classes.invalidInput]: !validStake,
             })}
             type="text"
             name="stake"
             value={order.stake}
-            onChange={updateOrderSize({
+            onChange={handleOrderChange({
               id: selectionId,
               side,
             })}
@@ -91,14 +113,14 @@ const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityBut
 
           <input
             className={clsx({
-              [classes.invalidInput]: !validPrice
+              [classes.invalidInput]: !validPrice,
             })}
             type="number"
             name="price"
             min="1"
             max="1000"
             value={order.price}
-            onChange={updateOrderPrice({
+            onChange={handlePriceChange({
               id: selectionId,
               price: order.price,
             })}
@@ -130,6 +152,6 @@ const mapStateToProps = (state) => ({
   layBtns: state.settings.layBtns,
 });
 
-const mapDispatchToProps = { placeOrder };
+const mapDispatchToProps = { placeOrder, updateOrderValue, updateOrderPrice };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GridOrderRow);

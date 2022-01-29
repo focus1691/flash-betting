@@ -104,7 +104,7 @@ const Grid = ({
     setOrdersVisible(ordersVisible - 1);
   };
 
-  const updateOrderSize = (data) => (e) => {
+  const handleOrderChange = (data) => (e) => {
     // Size comes from the textfield input from event if not sent from the button
     if (!data.stake) {
       data.stake = e.target.value;
@@ -202,10 +202,11 @@ const Grid = ({
             toggleStakeAndLiabilityButtons={toggleStakeAndLiabilityButtons}
             toggleBackAndLay={changeSide}
             stakeLiability={stakeLiability}
-            updateOrderSize={updateOrderSize}
-            updateOrderPrice={handlePriceChange}
+            handleOrderChange={handleOrderChange}
+            handlePriceChange={handlePriceChange}
             toggleOrderRowVisibility={toggleOrderRowVisibility}
             price={runners[key] ? runners[key].order.price : 0}
+            ltp={ltp}
             side={side}
             size={activeOrder ? activeOrder.stake : 0}
           />
