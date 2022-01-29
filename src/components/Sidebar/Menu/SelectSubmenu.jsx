@@ -26,7 +26,7 @@ export default ({ setSubmenu, submenuList: { sportId, data, nodes } }) => {
       setSubmenu(id, name, sportId, nodes);
     }
   };
-  return dataWithoutRaces.map(({ id, name, type }) => (
+  return dataWithoutRaces && dataWithoutRaces.map(({ id, name, type }) => (
     <ListItem key={`select-submenu-${id}`}>
       <ListItem button onClick={handleItemClick(id, name, type)}>
         <ListItemText className={classes.name}>{name}</ListItemText>
