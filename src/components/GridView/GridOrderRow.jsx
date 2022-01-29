@@ -23,8 +23,6 @@ const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityBut
     setValidPrice(isValidPrice(price));
     setValidStake(isNumeric(size));
 
-    console.log(validStake, validPrice);
-
     if (validPrice && validStake) {
       const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
       placeOrder({
