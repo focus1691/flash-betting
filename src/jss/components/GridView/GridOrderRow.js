@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     color: '#D3D44F',
     border: '2px solid #D3D44F',
   },
+  invalidInput: {
+    borderColor: 'red',
+  },
   gridImgContainer: {
     display: 'inline-block',
     height: '100%',

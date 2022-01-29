@@ -10,6 +10,10 @@ function assertString(input) {
   }
 }
 
+function assertNumber(input) {
+  return typeof input === 'number' || input instanceof Number;
+}
+
 const decimal = {
   'en-US': '.',
   ar: '٫',
@@ -18,6 +22,9 @@ const decimal = {
 const numericNoSymbols = /^[0-9]+$/;
 
 export function isNumeric(str, options) {
+  if (assertNumber(str)) {
+    return true;
+  }
   assertString(str);
   if (options && options.no_symbols) {
     return numericNoSymbols.test(str);

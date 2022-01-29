@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import crypto from 'crypto';
@@ -10,22 +10,32 @@ import { placeOrder } from '../../redux/actions/bet';
 //* JSS
 import useStyles from '../../jss/components/GridView/GridOrderRow';
 //* Utils
-import { formatPrice } from '../../utils/Bets/PriceCalculations';
+import { formatPrice, isValidPrice } from '../../utils/Bets/PriceCalculations';
+import { isNumeric } from '../../utils/validator';
 import { LightenDarkenColor } from '../../utils/ColorManipulator';
 
 const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityButtons, toggleBackAndLay, stakeBtns, layBtns, stakeLiability, updateOrderSize, updateOrderPrice, toggleOrderRowVisibility, placeOrder, price, side, size }) => {
   const classes = useStyles();
+  const [validStake, setValidStake] = useState(true);
+  const [validPrice, setValidPrice] = useState(true);
 
   const executeOrder = () => {
-    const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
-    placeOrder({
-      marketId,
-      selectionId,
-      side,
-      size,
-      price: formatPrice(price),
-      customerStrategyRef,
-    });
+    setValidPrice(isValidPrice(price));
+    setValidStake(isNumeric(size));
+
+    console.log(validStake, validPrice);
+
+    if (validPrice && validStake) {
+      const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+      placeOrder({
+        marketId,
+        selectionId,
+        side,
+        size,
+        price: formatPrice(price),
+        customerStrategyRef,
+      });
+    }
   };
 
   return order.visible ? (
@@ -68,6 +78,9 @@ const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityBut
           </span>
 
           <input
+            className={clsx({
+              [classes.invalidInput]: !validStake
+            })}
             type="text"
             name="stake"
             value={order.stake}
@@ -79,6 +92,9 @@ const GridOrderRow = ({ marketId, selectionId, order, toggleStakeAndLiabilityBut
           <span>@</span>
 
           <input
+            className={clsx({
+              [classes.invalidInput]: !validPrice
+            })}
             type="number"
             name="price"
             min="1"

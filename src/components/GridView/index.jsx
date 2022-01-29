@@ -10,6 +10,7 @@ import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculatio
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
 import { getPLForRunner, marketHasBets } from '../../utils/Bets/GetProfitAndLoss';
 import { isValidPrice, getNextPrice } from '../../utils/Bets/PriceCalculations';
+import { isNumeric } from '../../utils/validator';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import { formatCurrency } from '../../utils/NumberFormat';
@@ -115,11 +116,10 @@ const Grid = ({
 
   const handlePriceChange = (data) => (e) => {
     const val = e.target.value;
+    const isCustomInput = e.nativeEvent.inputType === 'insertText';
 
-    if (isValidPrice(val)) {
-      data.price = getNextPrice(data.price, e.target.value);
-      updateOrderPrice(data);
-    }
+    data.price = (!isCustomInput && isNumeric(val)) ? getNextPrice(data.price, e.target.value) : val;
+    updateOrderPrice(data);
   };
 
   const selectRunner = (runner) => () => {
