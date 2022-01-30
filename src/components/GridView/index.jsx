@@ -2,14 +2,16 @@ import React, { createRef, useState } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import clsx from 'clsx';
+import crypto from 'crypto';
 //* Actions
+import { placeOrder } from '../../redux/actions/bet';
 import { setRunner, updateOrder, updateOrderValue, updateOrderPrice, toggleVisibility, toggleStakeAndLiability, toggleBackAndLay } from '../../redux/actions/market';
 import { toggleOneClick } from '../../redux/actions/grid';
 //* Utils
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
 import { getPLForRunner, marketHasBets } from '../../utils/Bets/GetProfitAndLoss';
-import { getNextPrice } from '../../utils/Bets/PriceCalculations';
+import { formatPrice, getNextPrice } from '../../utils/Bets/PriceCalculations';
 import { isNumeric } from '../../utils/validator';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
@@ -36,6 +38,7 @@ const Grid = ({
   nonRunners,
   stakeBtns,
   layBtns,
+  oneClickStake,
   currencyCode,
   localeCode,
   bets,
@@ -47,6 +50,7 @@ const Grid = ({
   toggleStakeAndLiability,
   toggleBackAndLay,
   toggleOneClick,
+  placeOrder,
 }) => {
   const classes = useStyles();
   const [rowHovered, setRowHovered] = useState(null);
@@ -54,17 +58,32 @@ const Grid = ({
   const [ordersVisible, setOrdersVisible] = useState(0);
   const oneClickRef = createRef();
 
-  const handlePriceClick = (key, side, odds) => (e) => {
+  const handlePriceClick = (key, side, price) => (e) => {
     e.preventDefault();
 
     if (!marketOpen || marketStatus === 'SUSPENDED' || marketStatus === 'CLOSED') return;
 
-    if (!oneClickOn) {
+    if (oneClickOn) {
+      const index = oneClickStake.buttonSelected;
+      if (index !== null && index !== undefined && index >= 0 && index < stakeBtns.length) {
+        const size = oneClickStake.buttonType === 'stake' ? stakeBtns[index] : layBtns[index];
+
+        const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+        placeOrder({
+          marketId,
+          selectionId: key,
+          side,
+          size,
+          price: formatPrice(price),
+          customerStrategyRef,
+        });
+      }
+    } else {
       updateOrder({
         id: key,
         visible: true,
         side,
-        price: odds,
+        price,
       });
       setOrdersVisible(ordersVisible + 1);
     }
@@ -269,6 +288,7 @@ const mapStateToProps = (state) => ({
   eventType: state.market.eventType,
   stakeBtns: state.settings.stakeBtns,
   layBtns: state.settings.layBtns,
+  oneClickStake: state.settings.oneClickStake,
   currencyCode: state.account.currencyCode,
   localeCode: state.account.localeCode,
   bets: state.order.bets,
@@ -283,6 +303,7 @@ const mapDispatchToProps = {
   toggleStakeAndLiability,
   toggleBackAndLay,
   toggleOneClick,
+  placeOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);
