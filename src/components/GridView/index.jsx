@@ -9,7 +9,7 @@ import { toggleOneClick } from '../../redux/actions/grid';
 import { calcBackProfit, colorForBack } from '../../utils/Bets/BettingCalculations';
 import { getMarketCashout } from '../../utils/Bets/GetMarketCashout';
 import { getPLForRunner, marketHasBets } from '../../utils/Bets/GetProfitAndLoss';
-import { isValidPrice, getNextPrice } from '../../utils/Bets/PriceCalculations';
+import { getNextPrice } from '../../utils/Bets/PriceCalculations';
 import { isNumeric } from '../../utils/validator';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
