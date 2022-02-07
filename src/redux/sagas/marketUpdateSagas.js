@@ -12,6 +12,7 @@ import {
   loadRunnerResults,
   setSortedLadder,
   closeMarket,
+  setOverround,
 } from '../actions/market';
 import { setLadderLoaded, updateLadderOrder, updateExcludedLadders } from '../actions/ladder';
 //* Sagas
@@ -70,6 +71,8 @@ function* processMarketUpdates(action) {
         yield call(executeStopLoss, id, ltp);
       }
     }
+
+    yield put(setOverround());
 
     if (marketDefinition) {
       yield call(processMarketDefinition, marketDefinition);

@@ -25,6 +25,7 @@ const GridHeader = ({
   event,
   inPlay,
   marketStatus,
+  overround,
   country,
   oneClickRef,
   oneClickOn,
@@ -117,19 +118,20 @@ const GridHeader = ({
             {marketCashout}
           </span>
         </th>
-        <th colSpan="2" />
-        <th />
-        <th />
+        <th className={classes.overround} colSpan="4">{`${overround.back}%`}</th>
+        {/* <th />
+        <th /> */}
         <th>
           <span className={classes.headerText}>BACK</span>
         </th>
         <th>
           <span className={classes.headerText}>LAY</span>
         </th>
+        <th className={classes.overround} colSpan="4">{`${overround.lay}%`}</th>
+        {/* <th />
         <th />
         <th />
-        <th />
-        <th />
+        <th /> */}
       </tr>
     </>
   );
@@ -141,6 +143,7 @@ const mapStateToProps = (state) => ({
   marketStartTime: state.market.marketStartTime,
   marketStatus: state.market.status,
   event: state.market.event,
+  overround: state.market.overround,
   oneClickButtontype: state.settings.oneClickStake.buttonType,
   oneClickButtonSelection: state.settings.oneClickStake.buttonSelected,
 });

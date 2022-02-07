@@ -73,6 +73,10 @@ export const setEventType = (eventType) => ({
   payload: eventType,
 });
 
+export const setOverround = () => ({
+  type: 'SET_OVERROUND',
+})
+
 export const loadLadder = (ladder) => ({
   type: 'LOAD_LADDER',
   payload: ladder,

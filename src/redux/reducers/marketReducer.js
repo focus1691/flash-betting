@@ -3,6 +3,7 @@ import { getOppositeSide } from '../../utils/Bets/GetOppositeSide';
 import { CreateLadder } from '../../utils/ladder/CreateLadder';
 import { UpdateLadder, constructNonRunnersObj } from '../../utils/ladder/UpdateLadder';
 import { sortLadder, isGreyHoundRace, sortGreyHoundMarket } from '../../utils/ladder/SortLadder';
+import calculateOverround from '../../utils/Bets/overround';
 import GetRunnerResults from '../../utils/Market/GetRunnerResults';
 
 const initialState = {
@@ -26,6 +27,10 @@ const initialState = {
   runnerResults: [],
   ladder: {},
   sortedLadder: [],
+  overround: {
+    back: 0,
+    lay: 0,
+  },
 };
 
 const reducer = (state = initialState, action) => {
@@ -58,13 +63,13 @@ const reducer = (state = initialState, action) => {
       return { ...state, event: action.payload };
     case 'SET_EVENT_TYPE':
       return { ...state, eventType: action.payload };
+    case 'SET_OVERROUND':
+      return { ...state, overround: calculateOverround(state.ladder)};
     case 'LOAD_LADDER':
       return {
         ...state,
         marketOpen: true,
         ladder: {
-          ...state.ladder,
-
           ...state.ladder,
           [action.payload.id]: state.ladder[action.payload.id] ? UpdateLadder(state.ladder[action.payload.id], action.payload) : CreateLadder(action.payload),
         },

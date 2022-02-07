@@ -94,15 +94,24 @@ const useStyles = makeStyles((theme) => ({
   },
   gridSubheader: {
     '& th': {
-      '&:nth-child(n+2)': {
+      '&:nth-child(2)': {
         background: '#007aaf',
       },
-      '&:nth-child(n+6)': {
+      '&:nth-child(3)': {
+        background: '#007aaf',
+      },
+      '&:nth-child(4)': {
+        background: '#D4696B',
+      },
+      '&:nth-child(5)': {
         background: '#D4696B',
       },
     },
   },
   headerText: {
+    color: '#EEEEEE',
+  },
+  overround: {
     color: '#EEEEEE',
   },
   marketCashout: {
