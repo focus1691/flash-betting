@@ -1,7 +1,6 @@
 import { isEmpty } from 'lodash';
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import Cookies from 'universal-cookie';
 import useTools from '../../hooks/useTools';
 //* Actions
 import { setUserId } from '../../redux/actions/account';
@@ -36,7 +35,7 @@ import SocketContext from '../../contexts/SocketContext';
 import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
-import fetchData, { fetchSecureData } from '../../http/fetchData';
+import fetchData from '../../http/fetchData';
 import updateCustomOrder from '../../http/updateCustomOrder';
 import Draggable from '../Draggable';
 //* Utils
@@ -52,10 +51,6 @@ import handleAuthError from '../../utils/Errors/handleAuthError';
 import ConnectionStatus from '../ConnectionStatus';
 //* JSS
 import useStyles from '../../jss';
-//* Constants
-import { FLASH_BETTING_URL } from '../../constants';
-
-const cookies = new Cookies();
 
 const App = ({
   view,
@@ -236,7 +231,6 @@ const App = ({
       socket.off('mcm');
       socket.off('ocm');
       socket.off('subscription-error');
-      socket.off('disconnect');
     };
   }, [onMarketDisconnect, onReceiveOrderMessage, socket]);
 
