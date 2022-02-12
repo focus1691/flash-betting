@@ -97,6 +97,7 @@ class BetFairStreamAPI {
     try {
       const result = this.updates.shift();
       if (result) {
+        console.log(result);
         // Connection status
         if (result.op === 'status') {
           if (result.connectionClosed) {

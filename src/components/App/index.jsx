@@ -53,6 +53,8 @@ import ConnectionStatus from '../ConnectionStatus';
 import useStyles from '../../jss';
 
 const App = ({
+  initialClk,
+  clk,
   view,
   isLoading,
   marketOpen,
@@ -226,13 +228,21 @@ const App = ({
     socket.on('mcm', (data) => processMarketUpdates(data));
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('subscription-error', onMarketDisconnect);
+    socket.on('reconnect', () => {
+      console.log('you have been reconnected');
+      if (marketOpen && marketId && initialClk && clk) {
+        socket.emit('market-resubscription', { marketId, initialClk, clk });
+        setConnectionErrorMessage('');
+      }
+  });
 
     return () => {
       socket.off('mcm');
       socket.off('ocm');
       socket.off('subscription-error');
+      socket.off('reconnect');
     };
-  }, [onMarketDisconnect, onReceiveOrderMessage, socket]);
+  }, [onMarketDisconnect, onReceiveOrderMessage, socket, clk, initialClk, marketId, marketOpen]);
 
   return isLoading ? (
     <Spinner />
@@ -253,6 +263,8 @@ const App = ({
 const AppWithSocket = (props) => <SocketContext.Consumer>{(socket) => <App {...props} socket={socket} />}</SocketContext.Consumer>;
 
 const mapStateToProps = (state) => ({
+  initialClk: state.market.initialClk,
+  clk: state.market.clk,
   view: state.settings.view,
   isLoading: state.settings.isLoading,
   inPlay: state.market.inPlay,

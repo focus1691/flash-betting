@@ -59,25 +59,28 @@ function* processMarketUpdates(action) {
   for (let i = 0; i < mc.length; i += 1) {
     const { rc, marketDefinition } = mc[i];
 
-    // Load each ladder individually
-    for (let j = 0; j < rc.length; j += 1) {
-      const { id, ltp } = rc[j];
+    if (rc) {
+      // Load each ladder individually
+      for (let j = 0; j < rc.length; j += 1) {
+        const { id, ltp } = rc[j];
 
-      yield put(loadLadder(rc[j]));
+        yield put(loadLadder(rc[j]));
 
-      // The Last Traded Price has changed which can trigger the Stop Entry / Stop Loss
-      if (ltp) {
-        yield call(executeStopEntry, id, ltp);
-        yield call(executeStopLoss, id, ltp);
+        // The Last Traded Price has changed which can trigger the Stop Entry / Stop Loss
+        if (ltp) {
+          yield call(executeStopEntry, id, ltp);
+          yield call(executeStopLoss, id, ltp);
+        }
       }
     }
 
-    yield put(setOverround());
-
     if (marketDefinition) {
+      console.log(marketDefinition);
       yield call(processMarketDefinition, marketDefinition);
     }
   }
+
+  yield put(setOverround());
 
   // Ladders are sorted in order of LTP after each update
   yield put(setSortedLadder());
