@@ -25,7 +25,7 @@ class BetFairStreamAPI {
       port: 443,
     };
     this.client = tls.connect(options, () => {
-      console.log('Connected');
+      console.log(`Connected ${this.socket.id}`);
 
       this.client.setEncoding('utf8');
 
@@ -53,7 +53,7 @@ class BetFairStreamAPI {
 
         // For debug purposes, simulate a connection disconnect
         if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !this.isTestDisconnected && now - this.connectedAt > testWaitTime) {
-          console.log('simulating a disconnect from a Exchange Streaming connection')
+          console.log(`simulating a disconnect from a Exchange Streaming connection ${this.socket.id}`);
           if (this.client) {
             this.client.destroy();
           }
@@ -75,11 +75,11 @@ class BetFairStreamAPI {
       });
 
       this.client.on('end', (data) => {
-        console.log(`Connection end: ${data}`);
+        console.log(`Connection end: ${data} ${this.socket.id}`);
       });
 
       this.client.on('close', (data) => {
-        console.log(`Connection closed: ${data}`);
+        console.log(`Connection closed: ${data} ${this.socket.id}`);
         if (!this.connectionClosed) {
           this.socket.emit('subscription-error', { errorMessage: 'Disconnected from the market. Reconnect to start receiving market data.' });
           this.connectionClosed = true;
@@ -88,7 +88,7 @@ class BetFairStreamAPI {
       });
 
       this.client.on('error', (data) => {
-        console.log(`Error: ${data}`);
+        console.log(`Error: ${data} ${this.socket.id}`);
       });
     });
   }
@@ -100,7 +100,7 @@ class BetFairStreamAPI {
         // Connection status
         if (result.op === 'status') {
           if (result.connectionClosed) {
-            console.log('status with connection closed', result);
+            console.log(`status with connection closed ${result} ${this.socket.id}`);
             const { errorCode, errorMessage } = result;
             this.socket.emit('subscription-error', { errorCode, errorMessage });
           }
