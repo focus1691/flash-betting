@@ -8,6 +8,8 @@ import { addFillOrKillBet } from './fillOrKillSagas';
 import { placeOrder } from '../actions/bet';
 //* Utils
 import { formatPrice } from '../../utils/Bets/PriceCalculations';
+//* HTTP
+import { cancelMarketBets } from '../../http/placeBets';
 
 function* processOrder(action) {
   const { side, price, marketId, selectionId, stopLossSelected, isStopLossActive, hedgeSize } = action.payload;
@@ -42,6 +44,35 @@ function* processOrder(action) {
   }
 };
 
+function* processHedge(action) {
+  const { side, price, selectionId, hedge } = action.payload;
+
+  const marketId = yield select(state => state.market.marketId);
+  const allUnmatchedBets = yield select(state => state.order.bets.unmatched);
+  let unmatchedBets = [];
+
+  if (allUnmatchedBets) {
+    unmatchedBets = Object.values(allUnmatchedBets).filter((bet) => bet.selectionId == selectionId && parseFloat(bet.price) == parseFloat(price) && bet.side === side);
+  }
+
+  if (unmatchedBets && unmatchedBets.length > 0) {
+    yield call(cancelMarketBets, marketId, unmatchedBets);
+  }
+  else if (hedge && hedge.size > 0) {
+    const customerStrategyRef = crypto.randomBytes(15).toString('hex').substring(0, 15);
+
+    yield put(placeOrder({
+      marketId,
+      side,
+      size: hedge.size,
+      price,
+      selectionId,
+      customerStrategyRef,
+    }));
+  }
+};
+
 export function* watchPlaceOrders() {
   yield takeEvery('PROCESS_ORDERS', processOrder);
+  yield takeEvery('PROCESS_HEDGES', processHedge);
 };

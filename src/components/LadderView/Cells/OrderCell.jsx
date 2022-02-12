@@ -21,7 +21,7 @@ const OrderCell = ({ selectionId, side, price, marketId, processOrder, stopLoss,
   const handleClick = async () => {
     if (betPending) return;
     setBetPending(true);
-    await processOrder({ side, price, marketId, selectionId, stopLossSelected, isStopLossActive: _.isEmpty(stopLoss), hedgeSize} );
+    await processOrder({ side, price, marketId, selectionId, stopLossSelected, isStopLossActive: _.isEmpty(stopLoss), hedgeSize });
     setBetPending(false);
   };
 

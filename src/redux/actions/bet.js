@@ -6,6 +6,11 @@ export const processOrder = (order) => ({
   payload: order,
 });
 
+export const processHedge = (data) => ({
+  type: 'PROCESS_HEDGES',
+  payload: data,
+})
+
 export const updateOrders = (order) => ({
   type: 'UPDATE_BET',
   payload: order,
