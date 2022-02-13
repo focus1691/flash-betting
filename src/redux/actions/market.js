@@ -156,3 +156,8 @@ export const setCustomStake = ({ id, customStake }) => ({
   type: 'UPDATE_CUSTOM_STAKE',
   payload: { id, customStake },
 });
+
+export const removeMatchedAmount = (selectionId) => ({
+  type: 'REMOVE_MATCHED_AMOUNT',
+  payload: selectionId,
+})

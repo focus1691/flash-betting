@@ -1,18 +1,18 @@
 import { createSelector } from 'reselect';
 
-export const getUnmatchedBets = createSelector((state) => state, (state) => state.unmatched);
-export const getMatchedBets = createSelector((state) => state, (state) => state.matched);
+export const getUnmatchedBets = createSelector((bets) => bets, (bets) => bets.unmatched);
+export const getMatchedBets = createSelector((bets) => bets, (bets) => bets.matched);
 
-const getMarketMatchedBetsSelector = (state, { marketId }) => ({ bets: state.matched, marketId });
+const getMarketMatchedBetsSelector = (bets, { marketId }) => ({ bets: bets.matched, marketId });
 export const getMarketMatchedBets = createSelector(getMarketMatchedBetsSelector, ({ bets, marketId }) => Object.values(bets).filter((bet) => (parseInt(bet.marketId) === parseInt(marketId))));
 
-const getMarketUnmatchedBetsSelector = (state, { marketId }) => ({ bets: state.unmatched, marketId });
+const getMarketUnmatchedBetsSelector = (bets, { marketId }) => ({ bets: bets.unmatched, marketId });
 export const getMarketUnmatchedBets = createSelector(getMarketUnmatchedBetsSelector, ({ bets, marketId }) => Object.values(bets).filter((bet) => bet.marketId == marketId));
 
-const getSelectionUnmatchedBetsSelector = (state, { selectionId }) => ({ bets: state.unmatched, selectionId });
+const getSelectionUnmatchedBetsSelector = (bets, { selectionId }) => ({ bets: bets.unmatched, selectionId });
 export const getSelectionUnmatchedBets = createSelector(getSelectionUnmatchedBetsSelector, ({ bets, selectionId }) => Object.values(bets).filter((bet) => bet.selectionId == selectionId));
 
-const getSelectionMatchedBetsSelector = (state, { selectionId }) => ({ bets: state.matched, selectionId });
+const getSelectionMatchedBetsSelector = (bets, { selectionId }) => ({ bets: bets.matched, selectionId });
 export const getSelectionMatchedBets = createSelector(getSelectionMatchedBetsSelector, ({ bets, selectionId }) => Object.values(bets).filter((bet) => (parseInt(bet.selectionId) === parseInt(selectionId))));
 
 // The unmatched bets on a Ladder Row given by selectionId and price
@@ -26,3 +26,5 @@ export const getUnmatchedBetsOnRow = createSelector(getUnmatchedBetsOnRowSelecto
   }
   return [];
 });
+
+// export getMatchedBet = createSelector(Function, ({ }))

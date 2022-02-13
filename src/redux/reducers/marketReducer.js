@@ -64,7 +64,7 @@ const reducer = (state = initialState, action) => {
     case 'SET_EVENT_TYPE':
       return { ...state, eventType: action.payload };
     case 'SET_OVERROUND':
-      return { ...state, overround: calculateOverround(state.ladder)};
+      return { ...state, overround: calculateOverround(state.ladder) };
     case 'LOAD_LADDER':
       return {
         ...state,
@@ -73,6 +73,17 @@ const reducer = (state = initialState, action) => {
           ...state.ladder,
           [action.payload.id]: state.ladder[action.payload.id] ? UpdateLadder(state.ladder[action.payload.id], action.payload) : CreateLadder(action.payload),
         },
+      };
+    case 'REMOVE_MATCHED_AMOUNT':
+      return {
+        ...state,
+        ladder: {
+          ...state.ladder,
+          [action.payload]: {
+            ...state.ladder[action.payload],
+            matched: null,
+          }
+        }
       };
     case 'SET_LADDER_EXPANDED':
       return {

@@ -59,17 +59,20 @@ export const UpdateLadder = (ladder, rawData) => {
           delete newLadder.atlo[key];
         }
         else if (ladder.atbo[key]) {
-          let difference = ladder.atbo[key] - matched;
+          let difference = (ladder.atbo[key] - matched).round(2);
 
-          if (difference <= 0) {
+          if (difference > 0) {
+            delete newLadder.atlo[key];
+            newLadder.atbo[key] = difference;
+            newLadder.matched = { side: 'BACK', price, amount: matched };
+          }
+          else {
             difference = Math.abs(difference);
 
             delete newLadder.atbo[key];
             newLadder.atlo[key] = difference;
-          }
-          else {
-            delete newLadder.atlo[key];
-            newLadder.atbo[key] = difference;
+
+            newLadder.matched = { side: 'LAY', price, amount: matched };
           }
         }
         else {
@@ -90,17 +93,20 @@ export const UpdateLadder = (ladder, rawData) => {
           delete newLadder.atbo[key];
         }
         else if (ladder.atlo[key]) {
-          let difference = ladder.atlo[key] - matched;
+          let difference = (ladder.atlo[key] - matched).round(2);
 
-          if (difference <= 0) {
+          if (difference > 0) {
+            delete newLadder.atbo[key];
+            newLadder.atlo[key] = difference;
+            newLadder.matched = { side: 'LAY', price, amount: matched };
+          }
+          else {
             difference = Math.abs(difference);
 
             delete newLadder.atlo[key];
             newLadder.atbo[key] = difference;
-          }
-          else {
-            delete newLadder.atbo[key];
-            newLadder.atlo[key] = difference;
+
+            newLadder.matched = { side: 'BACK', price, amount: matched };
           }
         }
         else {

@@ -8,6 +8,7 @@ export const CreateLadder = (rawData) => {
     atlo: {},
     trd: rawData.trd || [],
     trdo: {},
+    matched: null,
     order: {
       visible: false,
       side: 'BACK',

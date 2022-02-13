@@ -48,14 +48,23 @@ export const getCandleStickColor = createSelector(
   },
 );
 
-const getLadderMatchedSelector = (state, { selectionId, side, price }) => ({ matched: state[selectionId][side == 'BACK' ? 'atbo' : 'atlo'][formatPriceKey(price)], side });
+const getLadderUnmatchedSelector = (ladder, { selectionId, side, price }) => ({ matched: ladder[selectionId][side == 'BACK' ? 'atbo' : 'atlo'][formatPriceKey(price)], side });
 
-export const getMatched = createSelector(
-  getLadderMatchedSelector,
+export const getUnmatched = createSelector(
+  getLadderUnmatchedSelector,
   ({ matched, side }) => ({
     matched: matched || null,
     side,
   }),
+);
+
+const getLadderMatchedSelector = (ladder, { selectionId, price, side }) => ({ matched: ladder[selectionId].matched, price, side });
+
+export const getMatched = createSelector(
+  getLadderMatchedSelector,
+  ({ matched, price, side }) => (
+    matched && matched.price === price && matched.side === side && matched.amount ? matched.amount : null
+  ),
 );
 
 const getLadderVolumeSelector = (state, { selectionId, price }) => state[selectionId].trdo[formatPriceKey(price)];

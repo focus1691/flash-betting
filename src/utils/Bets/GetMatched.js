@@ -9,18 +9,22 @@ const getTotalMatched = (betPending, stake, cellMatched, cellUnmatched) => {
   return totalMatched;
 };
 
-const orderStyle = (side, stopLoss, tickOffset, cellMatched, totalMatched, pendingBets) => {
+const orderStyle = (side, stopLoss, tickOffset, cellMatched, cellUnmatched, totalMatched, pendingBets) => {
+  if (cellMatched) return { color: 'black', fontWeight: 'bold' };
   if (pendingBets) return { background: 'red' };
   if (stopLoss) return { background: 'yellow' };
   if (tickOffset) return { background: 'yellow' };
-  if (cellMatched.side === 'BACK' && totalMatched >= 1 && side) return { background: '#0a5271' };
-  if (cellMatched.side === 'LAY' && totalMatched >= 1 && side === 'LAY') return { background: '#d4696b' };
+  if (cellUnmatched.side === 'BACK' && totalMatched >= 1 && side) return { background: '#0a5271' };
+  if (cellUnmatched.side === 'LAY' && totalMatched >= 1 && side === 'LAY') return { background: '#d4696b' };
   if (side === 'LAY') return { background: '#eba8a6' };
   if (side === 'BACK') return { background: '#007aaf' };
   return null;
 };
 
-const textForOrderCell = (stopLoss, totalMatched) => {
+const textForOrderCell = (matched, stopLoss, totalMatched) => {
+  if (matched) {
+    return matched;
+  }
   // The matched amount much be an integer, so remove any pence to the amount, e.g. £2.57 -> £2.00 (2.57 -> 2)
   totalMatched = Math.floor(totalMatched);
   if (stopLoss) {
