@@ -63,7 +63,7 @@ const getLadderMatchedSelector = (ladder, { selectionId, price, side }) => ({ ma
 export const getMatched = createSelector(
   getLadderMatchedSelector,
   ({ matched, price, side }) => (
-    matched && matched.price === price && matched.side === side && matched.amount ? matched.amount : null
+    matched && matched.price === price && matched.side === side ? matched.amount : null
   ),
 );
 
