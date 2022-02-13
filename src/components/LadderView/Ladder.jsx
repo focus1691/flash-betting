@@ -43,18 +43,18 @@ const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLa
     setIsReferenceSet(true);
   };
 
-  const onHoverLadder = useCallback(() => {
+  const onHoverLadder = () => {
     if (!ladderLocked) {
       setLadderLocked(true);
       setLadderLastHovered(Date.now());
     }
-  }, [ladderLocked]);
+  };
 
-  const overLeaveLadder = useCallback(() => {
+  const overLeaveLadder = () => {
     if (ladderLocked && Date.now() - ladderLastHovered > 100) {
       setLadderLocked(false);
     }
-  }, [ladderLastHovered, ladderLocked]);
+  };
 
   const scrollToLTP = useCallback(() => {
     const ltpIndex = ALL_PRICES.findIndex((item) => parseFloat(item) === parseFloat(ltp[0]));
