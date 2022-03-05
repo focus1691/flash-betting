@@ -65,7 +65,7 @@ const Login = () => {
     const sessionKey = cookies.get('sessionKey');
 
     if (error) {
-      setError(errorList[error]);
+      setError(errorList[error] || errorList.UNKNOWN_ERROR);
     } else if (sessionKey) {
       setError('');
       setSessionKey(sessionKey);

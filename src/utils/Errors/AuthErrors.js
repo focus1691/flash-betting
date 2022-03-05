@@ -54,4 +54,5 @@ export default {
   TEMPORARY_BAN_TOO_MANY_REQUESTS: 'The limit for successful login requests per minute has been exceeded. New login attempts will be banned for 20 minutes',
   TRADING_MASTER: 'Trading Master Account',
   TRADING_MASTER_SUSPENDED: 'Suspended Trading Master Account',
+  UNKNOWN_ERROR: 'Unable to login',
 };
