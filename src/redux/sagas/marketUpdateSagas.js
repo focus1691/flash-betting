@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { call, put, select, takeEvery, delay } from 'redux-saga/effects';
+import { call, put, select, takeEvery } from 'redux-saga/effects';
 //* Actions
 import {
   setInitialClk,
@@ -97,8 +97,6 @@ function* processMarketUpdates(action) {
 
   if (initialClk) yield put(setInitialClk(initialClk));
   if (clk) yield put(setClk(clk));
-
-  yield delay(250);
 }
 
 export function* watchMarketUpdates() {
