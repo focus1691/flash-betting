@@ -1,5 +1,4 @@
 const { StringDecoder } = require('string_decoder');
-const { clearInterval } = require('timers');
 
 const decoder = new StringDecoder('utf8');
 
@@ -13,10 +12,8 @@ class BetFairStreamAPI {
     this.client = null;
     this.socket = socket;
     this.chunks = [];
-    this.updates = [];
     this.subscriptions = [];
     this.isTestDisconnected = false;
-    this.messageSender = null;
   }
 
   authenticate(accessToken) {
@@ -38,8 +35,6 @@ class BetFairStreamAPI {
       this.client.write(`${JSON.stringify(authParams)}\r\n`);
 
       this.connectedAt = new Date().getTime();
-
-      this.messageSender = setInterval(this.sendUpdates.bind(this), 250);
 
       this.client.on('data', (data) => {
 
@@ -67,7 +62,29 @@ class BetFairStreamAPI {
         // Parse the data String into JSON Object
         try {
           const result = JSON.parse(this.chunks.join(''));
-          this.updates.push(result);
+          if (result.op === 'status') {
+            if (result.connectionClosed) {
+              console.log(`status with connection closed ${result} ${this.socket.id}`);
+              const { errorCode, errorMessage } = result;
+              this.socket.emit('subscription-error', { errorCode, errorMessage });
+            }
+            else {
+              for (let i = 0; i < this.subscriptions.length; i += 1) {
+                this.client.write(`${JSON.stringify(this.subscriptions[i])}\r\n`);
+              }
+            }
+            this.subscriptions = [];
+            this.connectionClosed = result.connectionClosed;
+          }
+  
+          // Market Change Message Data Found
+          if (result.op === 'mcm' && result.mc) {
+            this.socket.emit('mcm', result);
+          }
+          // Order Change Message Data Found
+          else if (result.op === 'ocm' && result.oc) {
+            this.socket.emit('ocm', result);
+          }
           this.chunks = [];
         } catch (e) {
           //
@@ -84,48 +101,12 @@ class BetFairStreamAPI {
           this.socket.emit('subscription-error', { errorMessage: 'Disconnected from the market. Reconnect to start receiving market data.' });
           this.connectionClosed = true;
         }
-        this.messageSender = clearInterval(this.messageSender);
       });
 
       this.client.on('error', (data) => {
         console.log(`Error: ${data} ${this.socket.id}`);
       });
     });
-  }
-
-  sendUpdates() {
-    try {
-      const result = this.updates.shift();
-      if (result) {
-        console.log(result);
-        // Connection status
-        if (result.op === 'status') {
-          if (result.connectionClosed) {
-            console.log(`status with connection closed ${result} ${this.socket.id}`);
-            const { errorCode, errorMessage } = result;
-            this.socket.emit('subscription-error', { errorCode, errorMessage });
-          }
-          else {
-            for (let i = 0; i < this.subscriptions.length; i += 1) {
-              this.client.write(`${JSON.stringify(this.subscriptions[i])}\r\n`);
-            }
-          }
-          this.subscriptions = [];
-          this.connectionClosed = result.connectionClosed;
-        }
-
-        // Market Change Message Data Found
-        if (result.op === 'mcm' && result.mc) {
-          this.socket.emit('mcm', result);
-        }
-        // Order Change Message Data Found
-        else if (result.op === 'ocm' && result.oc) {
-          this.socket.emit('ocm', result);
-        }
-      }
-    } catch (error) {
-      //
-    }
   }
 
   subscribe(accessToken, params) {
