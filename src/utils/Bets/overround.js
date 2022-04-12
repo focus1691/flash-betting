@@ -12,8 +12,8 @@ export default (ladders) => {
     const batb = _.isEmpty(allBackPrices) ? 0 : Math.max(...allBackPrices);
     const batl = _.isEmpty(allLayPrices) ? 0 : Math.min(...allLayPrices);
 
-    overround.back += 100 / batb;
-    overround.lay += 100 / batl;
+    overround.back += (batb ? (100 / batb) : 0);
+    overround.lay += (batl ? (100 / batl) : 0);
   });
   overround.back = overround.back.round(2);
   overround.lay = overround.lay.round(2);

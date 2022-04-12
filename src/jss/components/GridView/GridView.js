@@ -56,12 +56,14 @@ const useStyles = makeStyles((theme) => ({
     },
     '& span': {
       '&:nth-child(1)': {
+        display: 'block',
         width: '100%',
         float: 'left',
         textAlign: 'center',
         fontSize: 'small',
       },
       '&:nth-child(2)': {
+        display: 'block',
         width: '100%',
         float: 'left',
         clear: 'both',
