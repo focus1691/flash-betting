@@ -57,19 +57,17 @@ const useStyles = makeStyles((theme) => ({
     '& span': {
       '&:nth-child(1)': {
         display: 'block',
-        width: '100%',
-        float: 'left',
         textAlign: 'center',
         fontSize: 'small',
+        border: 'none',
       },
       '&:nth-child(2)': {
         display: 'block',
-        width: '100%',
-        float: 'left',
         clear: 'both',
         textAlign: 'center',
         fontSize: 'x-small',
         fontWeight: 'normal',
+        border: 'none',
       },
     },
   },
