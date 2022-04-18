@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
 import useTools from '../../hooks/useTools';
 //* Actions
@@ -94,6 +94,8 @@ const App = ({
   const classes = useStyles();
   useTools();
 
+  const hasAddedSockets = useRef(false);
+
   const getPremiumStatus = useCallback(async () => {
     const vendorClientId = await fetchData('/api/get-vendor-client-id');
     if (vendorClientId) {
@@ -142,16 +144,19 @@ const App = ({
     [matchedBets, stopLossList, tickOffsetList],
   );
 
-  const onMarketDisconnect = useCallback(async ({ errorCode, errorMessage }) => {
-    console.log('market disconnected', errorCode, errorMessage);
-    if (errorCode) {
-      handleAuthError(errorCode);
-    }
-    console.log(marketOpen, errorMessage);
-    if (marketOpen && errorMessage) {
-      setConnectionErrorMessage(errorMessage.split(':')[0]);
-    }
-  }, [marketOpen]);
+  const onMarketDisconnect = useCallback(
+    async ({ errorCode, errorMessage }) => {
+      console.log('market disconnected', errorCode, errorMessage);
+      if (errorCode) {
+        handleAuthError(errorCode);
+      }
+      console.log(marketOpen, errorMessage);
+      if (marketOpen && errorMessage) {
+        setConnectionErrorMessage(errorMessage.split(':')[0]);
+      }
+    },
+    [marketOpen],
+  );
 
   const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
@@ -159,16 +164,16 @@ const App = ({
     // Check if the page has query parameter 'marketId'
     // Load the market if found
     if (marketId) {
-        // Load the customer orders in this market from database into state
-        // Usually happens when orders are made in a market which is later reopened
-        const { backOrders, layOrders, stopEntryOrders, tickOffsetOrders, fillOrKillOrders, stopLossOrders } = await loadCustomBets(marketId);
+      // Load the customer orders in this market from database into state
+      // Usually happens when orders are made in a market which is later reopened
+      const { backOrders, layOrders, stopEntryOrders, tickOffsetOrders, fillOrKillOrders, stopLossOrders } = await loadCustomBets(marketId);
 
-        updateBackList(backOrders);
-        updateLayList(layOrders);
-        updateStopEntryList(stopEntryOrders);
-        updateTickOffsetList(tickOffsetOrders);
-        updateFillOrKillList(fillOrKillOrders);
-        updateStopLossList(stopLossOrders);
+      updateBackList(backOrders);
+      updateLayList(layOrders);
+      updateStopEntryList(stopEntryOrders);
+      updateTickOffsetList(tickOffsetOrders);
+      updateFillOrKillList(fillOrKillOrders);
+      updateStopLossList(stopLossOrders);
 
       const marketCatalogue = await fetchData(`/api/get-market-info?marketId=${marketId}`);
 
@@ -187,8 +192,7 @@ const App = ({
 
         //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });
-      }
-      else {
+      } else {
         const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
 
         if (!isEmpty(marketBook)) {
@@ -225,7 +229,15 @@ const App = ({
   }, [marketOpen, marketId, socket, unmatchedBets]);
 
   useEffect(() => {
-    socket.on('mcm', (data) => processMarketUpdates(data));
+    // // only mount sockets once
+    if (hasAddedSockets.current) return;
+    if (!socket || !marketId) return;
+
+    hasAddedSockets.current = true;
+
+    socket.on('mcm', (data) => {
+      processMarketUpdates(data);
+    });
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('subscription-error', onMarketDisconnect);
     socket.on('reconnect', () => {
@@ -234,16 +246,18 @@ const App = ({
         socket.emit('market-resubscription', { marketId, initialClk, clk });
         setConnectionErrorMessage('');
       }
-  });
-
-    return () => {
-      socket.off('mcm');
-      socket.off('ocm');
-      socket.off('subscription-error');
-      socket.off('reconnect');
-    };
+    });
   }, [onMarketDisconnect, onReceiveOrderMessage, socket, clk, initialClk, marketId, marketOpen]);
 
+  // useEffect(() => {
+  //   // remove sockets on unmount
+  //   return () => {
+  //     socket.off('mcm');
+  //     socket.off('ocm');
+  //     socket.off('subscription-error');
+  //     socket.off('reconnect');
+  //   };
+  // }, []);
   return isLoading ? (
     <Spinner />
   ) : (
