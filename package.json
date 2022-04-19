@@ -76,7 +76,6 @@
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
-    "redux-saga-worker": "^0.0.9",
     "socket.io": "^2.4.1",
     "sortablejs": "^1.13.0",
     "sqlite-async": "^1.1.2",
