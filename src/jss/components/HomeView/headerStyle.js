@@ -27,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
   },
   user: () => userChip(theme),
   subscription: ({ subscribed }) => subscriptionChip(theme, subscribed),
+  username: {
+    textSecurity: 'disc',
+    '-webkit-text-security': 'disc',
+    '-moz-text-security': 'disc',
+  },
 }));
 
 export default useStyles;

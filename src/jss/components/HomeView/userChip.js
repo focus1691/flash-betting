@@ -4,9 +4,10 @@ const userChip = (theme) => ({
     fontFamily: 'Roboto',
     fontWeight: 'bold',
     padding: theme.spacing(1),
-    filter: 'blur(4px)',
-    '&:hover': {
-      filter: 'blur(0px)',
+    '&:hover span': {
+      textSecurity: 'none',
+      '-webkit-text-security': 'none',
+      '-moz-text-security': 'none',
     },
     [theme.breakpoints.down('sm')]: {
       width: '50%',

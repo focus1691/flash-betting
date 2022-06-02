@@ -18,7 +18,21 @@ const Header = ({ premiumMember, id }) => {
         Dashboard
       </Typography>
       <div className={classes.statusChips}>
-        <Chip className={classes.user} color="primary" label={`${cookies.get('username')} | ID ${id}`} />
+        <Chip
+          className={classes.user}
+          color="primary"
+          label={(
+            <>
+              <span>{cookies.get('username')}</span>
+              {' '}
+              <span>|</span>
+              {' '}
+              <span>ID</span>
+              {' '}
+              <span className={classes.username}>{id}</span>
+            </>
+          )}
+        />
         <Chip className={classes.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
       </div>
     </div>
