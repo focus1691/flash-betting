@@ -95,8 +95,12 @@ export const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartT
   }
 };
 
+const calculateDutchProfit = () => {
+
+}
+
 const calculateDutch = (selectionPercent, totalPercent, stake) => {
-  return (selectionPercent / totalPercent).round(2) * stake;
+  return (selectionPercent / totalPercent * stake).round(2);
 }
 
 export const performMarketCalculations = (ladders, dutchingStake) => {
@@ -122,11 +126,20 @@ export const performMarketCalculations = (ladders, dutchingStake) => {
   overround.lay = overround.lay.round(2);
 
   const totalDutchingPercentages = Object.values(runnersDutchingList).map(({ percent }) => percent).reduce((total, percent) => total + percent).round(2);
+  let totalStake = 0;
+  let returnIfWin = 0;
+  let profitIfWin = 0;
 
   Object.values(runnersDutchingList).forEach((runner) => {
-    Object.assign(runner, { stake: calculateDutch(runner.percent, totalDutchingPercentages, dutchingStake) });
+    const stake = calculateDutch(runner.percent, totalDutchingPercentages, dutchingStake);
+    totalStake += stake;
+
+    returnIfWin = (runner.price * stake).round(2);
+    profitIfWin = (returnIfWin - dutchingStake).round(2);
+
+    Object.assign(runner, { stake });
     return runner;
   });
 
-  return { overround, dutching: runnersDutchingList };
+  return { overround, dutching: { list: runnersDutchingList, totalStake, returnIfWin, profitIfWin } };
 };
