@@ -14,7 +14,12 @@ const useStyles = makeStyles(() => ({
     '& p': {
       color: '#fff',
     },
-  }
+  },
+  calculations: {
+    '& p': {
+      color: '#fff',
+    },
+  },
 }));
 
 export default useStyles;
