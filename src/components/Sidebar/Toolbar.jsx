@@ -49,6 +49,9 @@ const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, premiumMember, vi
          })}
         />
       </button>
+      <button type="button" onClick={handleClick('DutchingView')} style={view === 'DutchingView' ? { background: '#404040' } : {}}>
+        <img alt="" src={`${window.location.origin}/icons/scale.png`} />
+      </button>
     </div>
   );
 };
