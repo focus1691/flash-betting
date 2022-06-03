@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { getTimeToDisplay } from '../TradingStategy/BackLay';
 import { formatPrice } from './PriceCalculations';
 
@@ -92,4 +93,40 @@ export const getStrategySuffixForPL = (order, strategyAbbreviation, marketStartT
     default:
       return calcBackProfit(order.size, order.price, order.side) + strategyAbbreviation;
   }
+};
+
+const calculateDutch = (selectionPercent, totalPercent, stake) => {
+  return (selectionPercent / totalPercent).round(2) * stake;
+}
+
+export const performMarketCalculations = (ladders, dutchingStake) => {
+  const overround = {
+    back: 0,
+    lay: 0,
+  }
+  const runnersDutchingList = {};
+
+  Object.values(ladders).forEach(ladder => {
+    const allBackPrices = Object.keys(ladder.atlo);
+    const allLayPrices = Object.keys(ladder.atbo);
+
+    const batb = _.isEmpty(allBackPrices) ? 0 : Math.max(...allBackPrices);
+    const batl = _.isEmpty(allLayPrices) ? 0 : Math.min(...allLayPrices);
+
+    overround.back += (batb ? (100 / batb) : 0);
+    overround.lay += (batl ? (100 / batl) : 0);
+
+    runnersDutchingList[ladder.id] = ({ id: ladder.id, percent: (100 / (batb || 0)).round(2), price: batb })
+  });
+  overround.back = overround.back.round(2);
+  overround.lay = overround.lay.round(2);
+
+  const totalDutchingPercentages = Object.values(runnersDutchingList).map(({ percent }) => percent).reduce((total, percent) => total + percent).round(2);
+
+  Object.values(runnersDutchingList).forEach((runner) => {
+    Object.assign(runner, { stake: calculateDutch(runner.percent, totalDutchingPercentages, dutchingStake) });
+    return runner;
+  });
+
+  return { overround, dutching: runnersDutchingList };
 };
