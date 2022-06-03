@@ -2,6 +2,7 @@ import { formatPriceKey, fivePricesAway } from '../Bets/PriceCalculations';
 
 export const CreateLadder = (rawData) => {
   const ladder = {
+    id: null,
     ltp: [rawData.ltp || null],
     tv: rawData.tv ? [rawData.tv, rawData.tv] : [null, null],
     atbo: {},
@@ -18,6 +19,10 @@ export const CreateLadder = (rawData) => {
     },
     expanded: false,
     bottom: 'graph',
+  }
+
+  if (rawData.id) {
+    ladder.id = rawData.id;
   }
 
   // make it easier for ladder
