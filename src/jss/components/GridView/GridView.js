@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2, 3),
       '&:first-child': {
         padding: theme.spacing(0.5),
+        width: '20%',
       },
       '&:nth-child(6)': {
         backgroundColor: '#007AAF',
@@ -74,6 +75,9 @@ const useStyles = makeStyles((theme) => ({
         border: 'none',
       },
     },
+  },
+  gridPriceCell: {
+    width: 'calc(80% / 10)'
   },
   suspendedMarket: {
     zIndex: '-1',

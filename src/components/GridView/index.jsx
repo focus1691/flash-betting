@@ -146,7 +146,7 @@ const Grid = ({
   };
 
   const createCell = (odds, matched, key, side) => (
-    <td key={`grid-${odds}`} className={classes.gridCell} onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, side, odds)} onContextMenu={handlePriceClick(key, (getOppositeSide(side)), odds)}>
+    <td key={`grid-${odds}`} className={clsx(classes.gridCell, classes.gridPriceCell)} onMouseEnter={handlePriceHover(key)} onClick={handlePriceClick(key, side, odds)} onContextMenu={handlePriceClick(key, (getOppositeSide(side)), odds)}>
       <span>{odds}</span>
       <span>{matched}</span>
     </td>
