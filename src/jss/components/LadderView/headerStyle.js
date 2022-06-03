@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '3px',
     padding: '3px',
     borderRadius: theme.spacing(2),
+    width: '32px',
+    height: '32px',
+    objectFit: 'fill',
   },
   runnerodds: {
     color: '#1ae17d',
