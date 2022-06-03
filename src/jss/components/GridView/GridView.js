@@ -1,10 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles';
+import scrollbar from '../../scrollbarStyle';
 
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
     position: 'relative',
     height: '100%',
-    overflowX: 'hidden',
+    ...scrollbar,
+    overflowX: 'scroll',
     overflowY: 'scroll',
     whiteSpace: 'nowrap',
     backgroundColor: '#121212',

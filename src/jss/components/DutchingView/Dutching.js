@@ -1,9 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
+import scrollbar from '../../scrollbarStyle';
 
 const useStyles = makeStyles(() => ({
   container: {
     position: 'relative',
     height: '100%',
+    ...scrollbar,
     overflowX: 'hidden',
     overflowY: 'scroll',
     whiteSpace: 'nowrap',
