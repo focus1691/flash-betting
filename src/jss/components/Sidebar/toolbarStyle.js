@@ -6,19 +6,22 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#242526',
     marginTop: theme.spacing(2),
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'stretch',
     '& button': {
-      flexBasis: 'calc(100% / 6)',
+      flexBasis: 'calc(100% / 5)',
       width: '15px',
       border: '0',
       background: 'transparent',
-      padding: theme.spacing(2, 0),
+      padding: theme.spacing(1, 0),
       '&:focus': {
         outline: 'none',
       },
-      '&:nth-child(6) > img': {
+      '& img': {
         width: '32px',
         height: '32px',
+      },
+      '&:nth-child(6) > img': {
         cursor: 'not-allowed',
       },
     },
