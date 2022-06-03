@@ -12,7 +12,7 @@ import {
   loadRunnerResults,
   setSortedLadder,
   closeMarket,
-  setOverround,
+  performMarketCalculations,
 } from '../actions/market';
 import { setLadderLoaded, updateLadderOrder, updateExcludedLadders } from '../actions/ladder';
 //* Sagas
@@ -80,7 +80,7 @@ function* processMarketUpdates(action) {
     }
   }
 
-  yield put(setOverround());
+  yield put(performMarketCalculations());
 
   // Ladders are sorted in order of LTP after each update
   yield put(setSortedLadder());
