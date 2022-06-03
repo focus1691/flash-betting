@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Slider from '@material-ui/core/Slider';
+import { Button, Icon, Slider } from '@material-ui/core';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import useStyles from '../../jss/components/DutchingView/Dutching';
@@ -50,15 +50,8 @@ const DutchingView = ({ marketOpen, marketStatus, ladder, sortedLadder, runners,
             <p>Profit if any win {dutching.profitIfWin}</p>
             <p>Return if any win {dutching.returnIfWin}</p>
           </div>
-          <Slider
-            value={value}
-            min={2}
-            step={0.01}
-            max={dutchingStake}
-            onChange={handleChange}
-            valueLabelDisplay="auto"
-            aria-labelledby="non-linear-slider"
-          />
+          <Slider value={value} min={2} step={0.01} max={dutchingStake} onChange={handleChange} valueLabelDisplay="auto" aria-labelledby="non-linear-slider" className={classes.slider} />
+          <Button variant="contained" color="primary" disabled={dutching.profitIfWin === 0} className={classes.button} endIcon={<Icon>Execute Dutching</Icon>} />
         </>
       ) : null}
     </div>
