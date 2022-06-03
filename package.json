@@ -107,7 +107,7 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.1.2",
     "eslint-plugin-testing-library": "^4.7.0",
-    "html-react-parser": "^0.14.0",
+    "html-react-parser": "^1.4.14",
     "immutability-helper": "^3.1.1",
     "jest": "^26.6.1",
     "jwt-decode": "^3.1.2",
