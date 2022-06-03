@@ -1,29 +1,35 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Slider from '@material-ui/core/Slider';
 import { DeconstructLadder } from '../../utils/ladder/DeconstructLadder';
 import { DeconstructRunner } from '../../utils/Market/DeconstructRunner';
 import useStyles from '../../jss/components/DutchingView/Dutching';
 
-const DutchingView = ({ marketOpen, marketStatus, ladder, sortedLadder, runners, eventType, dutching }) => {
+const DutchingView = ({ marketOpen, marketStatus, ladder, sortedLadder, runners, eventType, dutching, dutchingStake }) => {
   const classes = useStyles();
+  const [value, setValue] = React.useState(1);
 
-  console.log(dutching);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const renderRunners = () => {
     return sortedLadder.map((key) => {
       const { atb, atl, ltp, tv, ltpStyle } = DeconstructLadder(ladder[key]);
       const { name, number, logo, order } = DeconstructRunner(runners[key], eventType.id);
       const { side, stakeLiability } = order;
-      console.log(dutching[key]);
 
       return (
         <div className={classes.runners} key={`dutching-${key}`}>
           <div>
             <p>
-              {atb && atb[0] && atb[0][0] ? <span>{name} @ {atb[0][0]}</span> : null}
-              {name} @ {atb[0][0]}
+              {atb && atb[0] && atb[0][0] ? (
+                <span>
+                  {name} @ {atb[0][0]}
+                </span>
+              ) : null}
+              {dutching.list[key] && dutching.list[key].stake ? <span>You should stake {dutching.list[key].stake}</span> : null}
             </p>
-            {dutching[key] && dutching[key].stake ? <p>You should stake {dutching[key].stake}</p> : null}
           </div>
         </div>
       );
@@ -39,10 +45,20 @@ const DutchingView = ({ marketOpen, marketStatus, ladder, sortedLadder, runners,
       {isMarketReady() ? (
         <>
           {renderRunners()}
-          <div>
-            <p>Profit if any win</p>
-            <p>Return if any win</p>
+          <div className={classes.calculations}>
+            <p>Total Stake {dutchingStake}</p>
+            <p>Profit if any win {dutching.profitIfWin}</p>
+            <p>Return if any win {dutching.returnIfWin}</p>
           </div>
+          <Slider
+            value={value}
+            min={2}
+            step={0.01}
+            max={dutchingStake}
+            onChange={handleChange}
+            valueLabelDisplay="auto"
+            aria-labelledby="non-linear-slider"
+          />
         </>
       ) : null}
     </div>
@@ -57,6 +73,7 @@ const mapStateToProps = (state) => ({
   runners: state.market.runners,
   eventType: state.market.eventType,
   dutching: state.market.dutching,
+  dutchingStake: state.market.dutchingStake,
 });
 
 export default connect(mapStateToProps)(DutchingView);
