@@ -32,7 +32,12 @@ const initialState = {
     lay: 0,
   },
   dutchingStake: 50,
-  dutching: {},
+  dutching: {
+    list: {},
+    totalStake: 0,
+    profitIfWin: 0,
+    returnIfWin: 0,
+  },
 };
 
 const reducer = (state = initialState, action) => {
