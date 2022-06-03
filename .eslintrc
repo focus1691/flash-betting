@@ -69,6 +69,7 @@
     "max-len": ["error", { "code": 250 }],
     "no-param-reassign": "off",
     "no-nested-ternary": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "no-extend-native": "off"
   }
 }
