@@ -32,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
     },
     '& img': {
       float: 'left',
+      width: '25px',
+      height: '25px',
     },
   },
   gridCell: {
