@@ -73,8 +73,8 @@ export const setEventType = (eventType) => ({
   payload: eventType,
 });
 
-export const setOverround = () => ({
-  type: 'SET_OVERROUND',
+export const performMarketCalculations = () => ({
+  type: 'PERFORM_MARKET_CALCULATIONS',
 })
 
 export const loadLadder = (ladder) => ({
