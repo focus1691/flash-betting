@@ -75,7 +75,6 @@ function* processMarketUpdates(action) {
     }
 
     if (marketDefinition) {
-      console.log(marketDefinition);
       yield call(processMarketDefinition, marketDefinition);
     }
   }

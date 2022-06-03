@@ -146,11 +146,9 @@ const App = ({
 
   const onMarketDisconnect = useCallback(
     async ({ errorCode, errorMessage }) => {
-      console.log('market disconnected', errorCode, errorMessage);
       if (errorCode) {
         handleAuthError(errorCode);
       }
-      console.log(marketOpen, errorMessage);
       if (marketOpen && errorMessage) {
         setConnectionErrorMessage(errorMessage.split(':')[0]);
       }
@@ -178,8 +176,6 @@ const App = ({
       const marketCatalogue = await fetchData(`/api/get-market-info?marketId=${marketId}`);
 
       if (!isEmpty(marketCatalogue)) {
-        console.log('market catlaogue empty');
-        console.log(marketCatalogue[0]);
         const { marketId, marketName, marketStartTime, description, event, eventType, runners } = marketCatalogue[0];
         setMarketId(marketId);
         setMarketName(marketName);
@@ -222,7 +218,6 @@ const App = ({
     if (marketOpen && marketId) {
       const customerStrategyRefs = ExtractCustomerStrategyRfs(unmatchedBets);
       if (customerStrategyRefs.length > 0) {
-        console.log(`Resubscribing to orders ${customerStrategyRefs}`);
         socket.emit('order-subscription', { customerStrategyRefs });
       }
     }
@@ -241,7 +236,6 @@ const App = ({
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('subscription-error', onMarketDisconnect);
     socket.on('reconnect', () => {
-      console.log('you have been reconnected');
       if (marketOpen && marketId && initialClk && clk) {
         socket.emit('market-resubscription', { marketId, initialClk, clk });
         setConnectionErrorMessage('');
