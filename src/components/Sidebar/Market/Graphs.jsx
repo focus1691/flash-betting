@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-//* Actions
 import { openGraph } from '../../../redux/actions/draggable';
-//* JSS
+import useInterval from '../../../hooks/useInterval';
 import useStyles from '../../../jss/components/Sidebar/market/graphStyle';
+import { FIVE_SECONDS } from '../../../constants';
 
 const Graph = ({ marketOpen, marketId, selection, openGraph }) => {
   const classes = useStyles();
   const [graph, setGraph] = useState(null);
 
-  useEffect(() => {
+  useInterval(() => {
     if (marketOpen && selection) {
-      const URI = `https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selection.selectionId}`;
-      setGraph(URI);
+      setGraph(`https://xtsd.betfair.com/LoadRunnerInfoChartAction/?marketId=${marketId}&selectionId=${selection.selectionId}`);
     }
-  }, [selection, marketId, marketOpen]);
+  }, FIVE_SECONDS);
 
   return (
     <div className={classes.graph}>
