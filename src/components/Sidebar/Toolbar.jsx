@@ -109,17 +109,6 @@ const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, premiumMember, vi
           onMouseLeave={handlePopoverClose}
         />
       </Button>
-      <Button
-        type="button"
-        onClick={handleClick('DutchingView')}
-        style={view === 'DutchingView' ? { background: '#404040' } : {}}
-        aria-owns={open ? 'mouse-over-popover' : undefined}
-        aria-haspopup="true"
-        onMouseEnter={handlePopoverOpen('Dutching Calculator')}
-        onMouseLeave={handlePopoverClose}
-      >
-        <img alt="" src={`${window.location.origin}/icons/scales.png`} />
-      </Button>
       <Popover
         id="mouse-over-popover"
         className={classes.popover}
