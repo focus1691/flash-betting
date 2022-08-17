@@ -52,7 +52,7 @@ class BetFairStreamAPI {
           if (this.client) {
             this.client.destroy();
           }
-          this.socket.emit('subscription-error', {
+          this.socket.emit('connection-disconnected', {
             errorCode: 'A_TEST_ERROR_CODE',
             errorMessage: 'This is a simulated socket disconnect from the Streaming API',
           });
@@ -66,7 +66,7 @@ class BetFairStreamAPI {
             if (result.connectionClosed) {
               console.log(`status with connection closed ${result} ${this.socket.id}`);
               const { errorCode, errorMessage } = result;
-              this.socket.emit('subscription-error', { errorCode, errorMessage });
+              this.socket.emit('connection-disconnected', { errorCode, errorMessage });
             }
             else {
               for (let i = 0; i < this.subscriptions.length; i += 1) {
@@ -98,7 +98,7 @@ class BetFairStreamAPI {
       this.client.on('close', (data) => {
         console.log(`Connection closed: ${data} ${this.socket.id}`);
         if (!this.connectionClosed) {
-          this.socket.emit('subscription-error', { errorMessage: 'Disconnected from the market. Reconnect to start receiving market data.' });
+          this.socket.emit('connection-disconnected', { errorMessage: 'Disconnected from the market. Reconnect to start receiving market data.' });
           this.connectionClosed = true;
         }
       });

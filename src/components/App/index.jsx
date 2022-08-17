@@ -234,7 +234,7 @@ const App = ({
       processMarketUpdates(data);
     });
     socket.on('ocm', onReceiveOrderMessage);
-    socket.on('subscription-error', onMarketDisconnect);
+    socket.on('connection-disconnected', onMarketDisconnect);
     socket.on('reconnect', () => {
       if (marketOpen && marketId && initialClk && clk) {
         socket.emit('market-resubscription', { marketId, initialClk, clk });
@@ -248,7 +248,7 @@ const App = ({
   //   return () => {
   //     socket.off('mcm');
   //     socket.off('ocm');
-  //     socket.off('subscription-error');
+  //     socket.off('connection-disconnected');
   //     socket.off('reconnect');
   //   };
   // }, []);
