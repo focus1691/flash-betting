@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 //* Actions
 import { removeMatchedAmount } from '../../../redux/actions/market';
 import { processOrder } from '../../../redux/actions/bet';

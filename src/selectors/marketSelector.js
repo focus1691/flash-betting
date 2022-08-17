@@ -17,13 +17,7 @@ export const getPL = createSelector(getPLSelector, (pl) => pl);
 
 const getLadderUnmatchedSelector = (ladder, { selectionId, side, price }) => ({ matched: ladder[selectionId][side == 'BACK' ? 'atbo' : 'atlo'][formatPriceKey(price)], side });
 
-export const getUnmatched = createSelector(
-  getLadderUnmatchedSelector,
-  ({ matched, side }) => ({
-    matched: matched || null,
-    side,
-  }),
-);
+export const getUnmatched = createSelector(getLadderUnmatchedSelector, ({ matched, side }) => ({ matched: matched || null, side}));
 
 const getLadderMatchedSelector = (ladder, { selectionId, price, side }) => ({ matched: ladder[selectionId].matched, price, side });
 
