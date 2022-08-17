@@ -102,7 +102,6 @@ const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLa
               style={ladderStyle}
               itemData={{
                 selectionId,
-                isMoving,
                 hedgingAvailable,
               }}
             >
