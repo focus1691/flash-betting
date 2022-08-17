@@ -85,7 +85,7 @@ const Ladder = ({ selectionId, ltps, expanded, order, selectionMatchedBets, setL
         className={clsx(classes.ladder, {
           [classes.expanded]: expanded,
         })}
-        onContextMenu={() => false}
+        // onContextMenu={() => false}
         onPointerOver={onHoverLadder}
         onPointerLeave={overLeaveLadder}
       >
