@@ -1,19 +1,16 @@
-import React, { memo, useMemo } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
 //* Actions
 import { processHedge } from '../../../redux/actions/bet';
 //* Utils
 import { calcHedgeProfit } from '../../../utils/Bets/HedgeProfit';
-import GetUnmatchedStake from '../../../utils/Bets/GetUnmatchedStake';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/hedgeCellStyle';
 
-const LadderHedgeCell = memo(({ selectionId, price, unmatchedBets, side, hedgingAvailable, hedge, processHedge }) => {
+const LadderHedgeCell = ({ selectionId, price, side, hedge, processHedge }) => {
   const classes = useStyles();
   const hedgePL = calcHedgeProfit(hedge, side);
-  const unmatchedStake = useMemo(() => GetUnmatchedStake(unmatchedBets), [unmatchedBets]);
-  const text = unmatchedStake > 0 ? unmatchedStake : hedgingAvailable ? hedgePL : null;
 
   return (
     <div
@@ -26,10 +23,10 @@ const LadderHedgeCell = memo(({ selectionId, price, unmatchedBets, side, hedging
       })}
       onClick={() => processHedge({ selectionId, price, side, hedge })}
     >
-      {text}
+      {hedgePL}
     </div>
   );
-});
+};
 
 const mapDispatchToProps = { processHedge };
 

@@ -1,11 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { ALL_PRICES } from '../../../utils/Bets/PriceCalculations';
 import HedgeCell from '../Cells/HedgeCell';
 import OddsCell from '../Cells/OddsCell';
 import OrderCell from '../Cells/OrderCell';
 import VolumeCell from '../Cells/VolumeCell';
-import CalculateLadderHedge from '../../../utils/ladder/CalculateLadderHedge';
 import { getSelectionMatchedBets } from '../../../selectors/orderSelector';
 import { getStakeVal } from '../../../selectors/settingsSelector';
 import { getPL } from '../../../selectors/marketSelector';
@@ -16,19 +15,19 @@ const LadderRow = ({ data: { selectionId, hedgingAvailable }, PL, selectionMatch
   const side = getMatchedSide(layFirstCol);
 
   // gets all the bets and returns a hedge or new pl
-  const hedge = useMemo(() => (hedgingAvailable ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined), [hedgingAvailable, selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
+  // const hedge = useMemo(() => (hedgingAvailable ? CalculateLadderHedge(key, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, PL) : undefined), [hedgingAvailable, selectionMatchedBets, key, ladderUnmatchedDisplay, stakeVal, PL]);
 
   // for the stoploss and tickoffset
-  const HedgeSize = useMemo(() => (hedgingAvailable ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined), [hedgingAvailable, selectionMatchedBets, key, stakeVal, PL]);
+  // const HedgeSize = useMemo(() => (hedgingAvailable ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined), [hedgingAvailable, selectionMatchedBets, key, stakeVal, PL]);
 
   return (
     <div key={`ladder-row-${selectionId}-${key}`} className="tr" style={style}>
       <VolumeCell selectionId={selectionId} price={key} />
-      <HedgeCell selectionId={selectionId} price={key} side={side.left} hedge={hedge} hedgingAvailable={hedgingAvailable} />
-      <OrderCell selectionId={selectionId} price={key} side={side.left} hedgeSize={HedgeSize} />
+      <HedgeCell selectionId={selectionId} price={key} side={side.left} hedgingAvailable={hedgingAvailable} />
+      <OrderCell selectionId={selectionId} price={key} side={side.left} />
       <OddsCell selectionId={selectionId} price={key} />
-      <OrderCell selectionId={selectionId} price={key} side={side.right} hedgeSize={HedgeSize} />
-      <HedgeCell selectionId={selectionId} price={key} side={side.right} hedgingAvailable={hedgingAvailable} hedge={hedge} />
+      <OrderCell selectionId={selectionId} price={key} side={side.right} />
+      <HedgeCell selectionId={selectionId} price={key} side={side.right} hedgingAvailable={hedgingAvailable} />
     </div>
   );
 };

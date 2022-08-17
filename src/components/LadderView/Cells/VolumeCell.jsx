@@ -1,34 +1,47 @@
-import React, { memo } from 'react';
+import React, { useMemo } from 'react';
 import uuid from 'react-uuid';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash'
 import clsx from 'clsx';
-import { getCandleStickColor, getVolume, getVolumeDivider } from '../../../selectors/marketSelector';
+import { getVolumeFractional } from '../../../selectors/volumeSelector';
+import { getLadderLTPs } from '../../../selectors/lastTradedPriceSelector';
 //* JSS
 import useStyles from '../../../jss/components/LadderView/volumeStyle';
 
-const VolumeCell = ({ price, selectionId, vol, candleStickInfo, volFraction }) => {
+const renderCandles = (price, ltps) => {
+  const candles = [];
+  if (!isEmpty(ltps)) {
+    for (let i = 1; i < ltps.length; i++) {
+      if (price === ltps[i]) {
+        if (ltps[i] > ltps[i - 1]) {
+          candles.push(<img key={`ladder-candlesticks-${uuid()}`} src={`${window.location.origin}/icons/Green_Candlestick.svg`} alt="" style={{ right: (i - 1) * 2 }} />);
+        }
+        else if (ltps[i] < ltps[i - 1]) {
+          candles.push(<img key={`ladder-candlesticks-${uuid()}`} src={`${window.location.origin}/icons/Red_Candlestick.svg`} alt="" style={{ right: (i - 1) * 2 }} />);
+        }
+      }
+    }
+  }
+  return candles;
+}
+
+const VolumeCell = ({ volFraction, ltps, price }) => {
+  const candles = useMemo(() => renderCandles(price, ltps), [price, ltps])
   const classes = useStyles();
+
   return (
     <div className={clsx(classes.candleStick, 'td')} colSpan={3}>
-      {candleStickInfo.map((item) => (
-        <img key={`ladder-volume-${selectionId}-${price}-${uuid()}`} src={`${window.location.origin}/icons/${item.color === 'R' ? 'Red_Candlestick.svg' : 'Green_Candlestick.svg'}`} alt="" style={{ right: item.index * 2 }} />
-      ))}
-      <div className={classes.volumeCol} style={{ width: `${volFraction / 2}%` }}>
-        {vol || null}
+      {candles}
+      <div className={classes.volumeCol} style={{ width: `${volFraction * 5}%` }}>
+        {volFraction}
       </div>
     </div>
   );
 };
 
 const mapStateToProps = (state, { selectionId, price }) => ({
-  price,
-  selectionId,
-  vol: getVolume(state.market.ladder, { selectionId, price }),
-  volFraction: getVolumeDivider(state.market.ladder, { selectionId, price }),
-  candleStickInfo: getCandleStickColor(state.market.ladder, {
-    selectionId,
-    price,
-  }),
+  volFraction: getVolumeFractional(state.market.ladder, { selectionId, price }),
+  ltps: getLadderLTPs(state.market.ladder, selectionId),
 });
 
-export default connect(mapStateToProps)(memo(VolumeCell));
+export default connect(mapStateToProps)(VolumeCell);

@@ -1,6 +1,6 @@
-import _, { set } from 'lodash';
-import React, { useState, useEffect, memo, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 //* Actions
 import { removeMatchedAmount } from '../../../redux/actions/market';
 import { processOrder } from '../../../redux/actions/bet';
@@ -84,4 +84,4 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = { processOrder, setOddsHovered, replaceStopLoss, removeMatchedAmount };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(OrderCell));
+export default connect(mapStateToProps, mapDispatchToProps)(OrderCell);
