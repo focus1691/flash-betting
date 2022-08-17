@@ -129,10 +129,6 @@ class App {
       exchangeStream.makeMarketSubscription(betfair.accessToken, marketId, initialClk, clk);
     });
 
-    client.on('order-subscription', async ({ customerStrategyRefs }) => {
-      exchangeStream.makeOrderSubscription(betfair.accessToken, customerStrategyRefs);
-    });
-
     client.on('disconnect', () => {
       exchangeStream.unsubscribe();
       console.log('socket disconnected', client.id);

@@ -155,18 +155,6 @@ class BetFairStreamAPI {
 
     this.subscribe(accessToken, params);
   }
-
-  makeOrderSubscription(accessToken, customerStrategyRefs) {
-    const params = {
-      op: 'orderSubscription',
-      orderFilter: {
-        includeOverallPosition: false,
-        customerStrategyRefs,
-      },
-      segmentationEnabled: true,
-    }
-    this.subscribe(accessToken, params);
-  }
 }
 
 BetFairStreamAPI.id = 1;
