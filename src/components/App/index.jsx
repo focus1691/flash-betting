@@ -19,12 +19,12 @@ import {
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
+  reconnectSocket,
 } from '../../redux/actions/market';
-import { removeUnmatchedBet, setBetExecutionComplete } from '../../redux/actions/bet';
 import { updateBackList } from '../../redux/actions/back';
 import { updateLayList } from '../../redux/actions/lay';
-import { updateStopLossList, setStopLossBetMatched } from '../../redux/actions/stopLoss';
-import { updateTickOffsetList, placeTickOffsetBet } from '../../redux/actions/tickOffset';
+import { updateStopLossList } from '../../redux/actions/stopLoss';
+import { updateTickOffsetList } from '../../redux/actions/tickOffset';
 import { updateStopEntryList } from '../../redux/actions/stopEntry';
 import { updateFillOrKillList } from '../../redux/actions/fillOrKill';
 import Spinner from './Spinner';
@@ -36,17 +36,13 @@ import Title from './Title';
 import PremiumPopup from '../PremiumPopup';
 //* HTTP
 import fetchData from '../../http/fetchData';
-import updateCustomOrder from '../../http/updateCustomOrder';
 import Draggable from '../Draggable';
 //* Utils
 import getQueryVariable from '../../utils/Market/GetQueryVariable';
 import { CreateRunners } from '../../utils/Market/CreateRunners';
 //* Utils > Bets
 import loadCustomBets from '../../utils/Bets/LoadCustomBets';
-import ExtractCustomerStrategyRfs from '../../utils/Bets/ExtractCustomerStrategyRfs';
 //* Utils > Trading Tools
-import { isTickOffsetTriggered } from '../../utils/TradingStategy/TickOffset';
-import { isStopLossTriggered } from '../../utils/TradingStategy/StopLoss';
 import handleAuthError from '../../utils/Errors/handleAuthError';
 import ConnectionStatus from '../ConnectionStatus';
 //* JSS
@@ -59,10 +55,6 @@ const App = ({
   isLoading,
   marketOpen,
   marketId,
-  unmatchedBets,
-  matchedBets,
-  stopLossList,
-  tickOffsetList,
   socket,
   setUserId,
   setIsLoading,
@@ -80,16 +72,13 @@ const App = ({
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
-  setStopLossBetMatched,
   updateStopLossList,
   updateTickOffsetList,
-  placeTickOffsetBet,
   updateStopEntryList,
   updateLayList,
   updateBackList,
-  removeUnmatchedBet,
-  setBetExecutionComplete,
   updateFillOrKillList,
+  reconnectSocket,
 }) => {
   const classes = useStyles();
   useTools();
@@ -103,59 +92,6 @@ const App = ({
       setPremiumStatus(true);
     }
   }, []);
-
-  /**
-   * Listen for bet Change Messages from the Exchange Streaming socket and create/update them
-   * @param {obj} data The bet change message data:
-   */
-  const onReceiveOrderMessage = async (data) => {
-    if (data.oc) {
-      for (let i = 0; i < data.oc.length; i += 1) {
-        if (data.oc[i].orc) {
-          for (let j = 0; j < data.oc[i].orc.length; j += 1) {
-            if (data.oc[i].orc[j].uo) {
-              const { id: selectionId } = data.oc[i].orc[j];
-              for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
-                // If the bet isn't in the unmatchedBets, we should delete it.
-                const { id: betId, avp: averagePriceMatched, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
-                if (sizeRemaining === 0 && sizeMatched === 0) {
-                  //! this is what happens when an bet doesn't get any matched
-                  removeUnmatchedBet({ betId });
-                } else if (status === 'EXECUTION_COMPLETE' && unmatchedBets[betId] && !matchedBets[betId]) {
-                  setBetExecutionComplete({ betId, sizeMatched, sizeRemaining, price: averagePriceMatched });
-                }
-
-                //* Check if the stop loss is matched to initiate the trigger
-                const isStopLossMatched = isStopLossTriggered(stopLossList[selectionId], rfs, sizeRemaining);
-                if (isStopLossMatched) {
-                  setStopLossBetMatched({ selectionId });
-                  updateCustomOrder('update-bet-matched', { rfs, assignedIsOrderMatched: true });
-                }
-                const tosTriggered = isTickOffsetTriggered(tickOffsetList[selectionId], rfs, sizeMatched);
-                if (tosTriggered) placeTickOffsetBet({ tickOffset: tickOffsetList[selectionId] });
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  const onMarketDisconnect = async ({ errorCode, errorMessage }) => {
-    if (errorCode) {
-      handleAuthError(errorCode);
-    }
-    if (marketOpen && errorMessage) {
-      setConnectionErrorMessage(errorMessage.split(':')[0]);
-    }
-  }
-
-  const onSocketReconnect = () => {
-    if (marketOpen && marketId && initialClk && clk) {
-      socket.emit('market-resubscription', { marketId, initialClk, clk });
-      setConnectionErrorMessage('');
-    }
-  }
 
   const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
@@ -215,28 +151,25 @@ const App = ({
     loadData();
   }, []);
 
-  useEffect(() => {
-    if (marketOpen && marketId) {
-      const customerStrategyRefs = ExtractCustomerStrategyRfs(unmatchedBets);
-      if (customerStrategyRefs.length > 0) {
-        socket.emit('order-subscription', { customerStrategyRefs });
-      }
+  const onMarketDisconnect = async ({ errorCode, errorMessage }) => {
+    console.log('onMarketDisconnect', errorCode, errorMessage);
+    if (errorCode) {
+      handleAuthError(errorCode);
     }
-  }, [marketOpen, marketId, socket, unmatchedBets]);
+    if (marketOpen && errorMessage) {
+      setConnectionErrorMessage(errorMessage.split(':')[0]);
+    }
+  }
 
   useEffect(() => {
-    // // only mount sockets once
     if (hasAddedSockets.current || !socket || !marketId) return;
 
     hasAddedSockets.current = true;
 
-    socket.on('mcm', (data) => {
-      processMarketUpdates(data);
-    });
-    socket.on('ocm', onReceiveOrderMessage);
+    socket.on('mcm', processMarketUpdates);
     socket.on('connection-disconnected', onMarketDisconnect);
-    socket.on('reconnect', onSocketReconnect);
-  }, [onReceiveOrderMessage, onMarketDisconnect, onSocketReconnect, socket, clk, initialClk, marketId, marketOpen]);
+    socket.on('reconnect', () => reconnectSocket({socket}));
+  }, [socket, marketId]);
 
   return isLoading ? (
     <Spinner />
@@ -287,16 +220,13 @@ const mapDispatchToProps = {
   loadRunners,
   loadRunnerResults,
   setMarketStatus,
-  setStopLossBetMatched,
   updateStopLossList,
   updateTickOffsetList,
-  placeTickOffsetBet,
   updateStopEntryList,
   updateLayList,
   updateBackList,
-  removeUnmatchedBet,
-  setBetExecutionComplete,
   updateFillOrKillList,
+  reconnectSocket,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppWithSocket);

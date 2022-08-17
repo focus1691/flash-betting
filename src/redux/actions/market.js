@@ -161,3 +161,8 @@ export const removeMatchedAmount = (selectionId) => ({
   type: 'REMOVE_MATCHED_AMOUNT',
   payload: selectionId,
 })
+
+export const reconnectSocket = (socket) => ({
+  type: 'RECONNECT_SOCKET',
+  payload: socket,
+});

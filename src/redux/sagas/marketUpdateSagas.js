@@ -22,6 +22,19 @@ import { SAFE_LADDER_LIMIT } from '../../constants';
 //* HTTP
 import fetchData from '../../http/fetchData';
 
+function* processReconnection(action) {
+  const { socket } = action.payload;
+  
+  const marketOpen = yield select(state => state.market.marketOpen);
+  const marketId = yield select(state => state.market.marketId);
+  const initialClk = yield select(state => state.market.initialClk);
+  const clk = yield select(state => state.market.clk);
+
+  if (socket && marketOpen && marketId && initialClk && clk) {
+    socket.emit('market-resubscription', { marketId, initialClk, clk });
+  }
+}
+
 function* processMarketDefinition(marketDefinition) {
   const { runners, inPlay, status, marketTime } = marketDefinition;
 
@@ -100,4 +113,5 @@ function* processMarketUpdates(action) {
 
 export function* watchMarketUpdates() {
   yield takeEvery('PROCESS_MARKET_UPDATES', processMarketUpdates);
+  yield takeEvery('RECONNECT_SOCKET', processReconnection);
 }
