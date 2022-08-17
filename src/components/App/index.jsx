@@ -108,53 +108,54 @@ const App = ({
    * Listen for bet Change Messages from the Exchange Streaming socket and create/update them
    * @param {obj} data The bet change message data:
    */
-  const onReceiveOrderMessage = useCallback(
-    async (data) => {
-      if (data.oc) {
-        for (let i = 0; i < data.oc.length; i += 1) {
-          if (data.oc[i].orc) {
-            for (let j = 0; j < data.oc[i].orc.length; j += 1) {
-              if (data.oc[i].orc[j].uo) {
-                const { id: selectionId } = data.oc[i].orc[j];
-                for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
-                  // If the bet isn't in the unmatchedBets, we should delete it.
-                  const { id: betId, avp: averagePriceMatched, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
-                  if (sizeRemaining === 0 && sizeMatched === 0) {
-                    //! this is what happens when an bet doesn't get any matched
-                    removeUnmatchedBet({ betId });
-                  } else if (status === 'EXECUTION_COMPLETE' && unmatchedBets[betId] && !matchedBets[betId]) {
-                    setBetExecutionComplete({ betId, sizeMatched, sizeRemaining, price: averagePriceMatched });
-                  }
-
-                  //* Check if the stop loss is matched to initiate the trigger
-                  const isStopLossMatched = isStopLossTriggered(stopLossList[selectionId], rfs, sizeRemaining);
-                  if (isStopLossMatched) {
-                    setStopLossBetMatched({ selectionId });
-                    updateCustomOrder('update-bet-matched', { rfs, assignedIsOrderMatched: true });
-                  }
-                  const tosTriggered = isTickOffsetTriggered(tickOffsetList[selectionId], rfs, sizeMatched);
-                  if (tosTriggered) placeTickOffsetBet({ tickOffset: tickOffsetList[selectionId] });
+  const onReceiveOrderMessage = async (data) => {
+    if (data.oc) {
+      for (let i = 0; i < data.oc.length; i += 1) {
+        if (data.oc[i].orc) {
+          for (let j = 0; j < data.oc[i].orc.length; j += 1) {
+            if (data.oc[i].orc[j].uo) {
+              const { id: selectionId } = data.oc[i].orc[j];
+              for (let k = 0; k < data.oc[i].orc[j].uo.length; k += 1) {
+                // If the bet isn't in the unmatchedBets, we should delete it.
+                const { id: betId, avp: averagePriceMatched, sr: sizeRemaining, sm: sizeMatched, rfs, status } = data.oc[i].orc[j].uo[k];
+                if (sizeRemaining === 0 && sizeMatched === 0) {
+                  //! this is what happens when an bet doesn't get any matched
+                  removeUnmatchedBet({ betId });
+                } else if (status === 'EXECUTION_COMPLETE' && unmatchedBets[betId] && !matchedBets[betId]) {
+                  setBetExecutionComplete({ betId, sizeMatched, sizeRemaining, price: averagePriceMatched });
                 }
+
+                //* Check if the stop loss is matched to initiate the trigger
+                const isStopLossMatched = isStopLossTriggered(stopLossList[selectionId], rfs, sizeRemaining);
+                if (isStopLossMatched) {
+                  setStopLossBetMatched({ selectionId });
+                  updateCustomOrder('update-bet-matched', { rfs, assignedIsOrderMatched: true });
+                }
+                const tosTriggered = isTickOffsetTriggered(tickOffsetList[selectionId], rfs, sizeMatched);
+                if (tosTriggered) placeTickOffsetBet({ tickOffset: tickOffsetList[selectionId] });
               }
             }
           }
         }
       }
-    },
-    [matchedBets, stopLossList, tickOffsetList],
-  );
+    }
+  }
 
-  const onMarketDisconnect = useCallback(
-    async ({ errorCode, errorMessage }) => {
-      if (errorCode) {
-        handleAuthError(errorCode);
-      }
-      if (marketOpen && errorMessage) {
-        setConnectionErrorMessage(errorMessage.split(':')[0]);
-      }
-    },
-    [marketOpen],
-  );
+  const onMarketDisconnect = async ({ errorCode, errorMessage }) => {
+    if (errorCode) {
+      handleAuthError(errorCode);
+    }
+    if (marketOpen && errorMessage) {
+      setConnectionErrorMessage(errorMessage.split(':')[0]);
+    }
+  }
+
+  const onSocketReconnect = () => {
+    if (marketOpen && marketId && initialClk && clk) {
+      socket.emit('market-resubscription', { marketId, initialClk, clk });
+      setConnectionErrorMessage('');
+    }
+  }
 
   const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
@@ -225,8 +226,7 @@ const App = ({
 
   useEffect(() => {
     // // only mount sockets once
-    if (hasAddedSockets.current) return;
-    if (!socket || !marketId) return;
+    if (hasAddedSockets.current || !socket || !marketId) return;
 
     hasAddedSockets.current = true;
 
@@ -235,23 +235,9 @@ const App = ({
     });
     socket.on('ocm', onReceiveOrderMessage);
     socket.on('connection-disconnected', onMarketDisconnect);
-    socket.on('reconnect', () => {
-      if (marketOpen && marketId && initialClk && clk) {
-        socket.emit('market-resubscription', { marketId, initialClk, clk });
-        setConnectionErrorMessage('');
-      }
-    });
-  }, [onMarketDisconnect, onReceiveOrderMessage, socket, clk, initialClk, marketId, marketOpen]);
+    socket.on('reconnect', onSocketReconnect);
+  }, [onReceiveOrderMessage, onMarketDisconnect, onSocketReconnect, socket, clk, initialClk, marketId, marketOpen]);
 
-  // useEffect(() => {
-  //   // remove sockets on unmount
-  //   return () => {
-  //     socket.off('mcm');
-  //     socket.off('ocm');
-  //     socket.off('connection-disconnected');
-  //     socket.off('reconnect');
-  //   };
-  // }, []);
   return isLoading ? (
     <Spinner />
   ) : (
