@@ -53,7 +53,7 @@ const DeconstructLadder = (ladder) => {
     ltpPrev: !isEmpty(ladder.ltp) && ladder.ltp[1] ? ladder.ltp[1] : null, 
     tv: ladder.tv ? ladder.tv : null,
     color: '#FFFFFF',
-    ltpStyle: getLTPstyle(ladder.ltp),
+    ltpStyle: getLTPstyle(true, ladder.ltp),
     atb: deconstructAvailableToBack(ladder.atlo),
     atl: deconstructAvailableToLay(ladder.atbo),
   }
