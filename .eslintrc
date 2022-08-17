@@ -53,7 +53,7 @@
     "jest-dom/prefer-to-have-attribute": "error",
     // react hooks 
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/exhaustive-deps": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "off",
