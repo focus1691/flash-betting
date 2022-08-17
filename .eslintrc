@@ -70,6 +70,7 @@
     "no-param-reassign": "off",
     "no-nested-ternary": "off",
     "no-shadow": "off",
-    "no-extend-native": "off"
+    "no-extend-native": "off",
+    "no-plusplus": "off"
   }
 }
