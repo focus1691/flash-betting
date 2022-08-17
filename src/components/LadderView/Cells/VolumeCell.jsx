@@ -41,7 +41,7 @@ const VolumeCell = ({ volFraction, ltps, price }) => {
 
 const mapStateToProps = (state, { selectionId, price }) => ({
   volFraction: getVolumeFractional(state.market.ladder, { selectionId, price }),
-  ltps: getLadderLTPs(state.market.ladder, selectionId),
+  ltps: getLadderLTPs(state.market.ladder, { selectionId }),
 });
 
 export default connect(mapStateToProps)(VolumeCell);

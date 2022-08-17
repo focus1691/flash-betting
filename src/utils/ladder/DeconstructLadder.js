@@ -1,7 +1,8 @@
 import { isEmpty } from 'lodash';
 import { sortAsc, sortDes } from '../Sort';
 
-const getLTPstyle = (ltp) => {
+const getLTPstyle = (isLTP, ltp) => {
+  if (!isLTP) return { background: '#333f4b' };
   if (!ltp || !ltp[0]) {
     return { background: '#FFF', color: '#000' };
   }

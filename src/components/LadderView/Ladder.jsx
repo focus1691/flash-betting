@@ -8,7 +8,7 @@ import { addStopLoss } from '../../redux/actions/stopLoss';
 import { addTickOffset } from '../../redux/actions/tickOffset';
 import { addFillOrKill } from '../../redux/actions/fillOrKill';
 import { placeOrder } from '../../redux/actions/bet';
-import { getLTP } from '../../selectors/marketSelector';
+import { getLadderLTPs } from '../../selectors/lastTradedPriceSelector';
 import { getSelectionMatchedBets } from '../../selectors/orderSelector';
 //* Utils
 import { getStakeVal } from '../../selectors/settingsSelector';
@@ -24,7 +24,7 @@ import PriceRow from './Rows/PriceRow';
 //* JSS
 import useStyles from '../../jss/components/LadderView/ladderStyle';
 
-const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLadderSideLeft, draggingLadder }) => {
+const Ladder = ({ selectionId, ltps, expanded, order, selectionMatchedBets, setLadderSideLeft, draggingLadder }) => {
   const classes = useStyles();
   const containerRef = useRef(null);
   const listRef = useRef();
@@ -36,7 +36,7 @@ const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLa
   const [ladderLastHovered, setLadderLastHovered] = useState(Date.now());
 
   const ladderStyle = useMemo(() => (listRefSet ? { paddingRight: `${listRef.current.offsetWidth - listRef.current.clientWidth - 17}px` } : ''), [listRefSet]);
-  const ltpHedge = useMemo(() => CalculateLadderHedge(ltp, selectionMatchedBets, 'hedged'), [ltp, selectionMatchedBets]);
+  const ltpHedge = useMemo(() => CalculateLadderHedge(ltps, selectionMatchedBets, 'hedged'), [ltps, selectionMatchedBets]);
   const hedgingAvailable = useMemo(() => ltpHedge && ltpHedge.size >= 0.01, [ltpHedge]);
 
   const setReferenceSent = () => {
@@ -57,13 +57,13 @@ const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLa
   };
 
   const scrollToLTP = useCallback(() => {
-    const ltpIndex = ALL_PRICES.findIndex((item) => parseFloat(item) === parseFloat(ltp[0]));
+    const ltpIndex = ALL_PRICES.findIndex((item) => parseFloat(item) === parseFloat(ltps[0]));
     if (listRef.current !== null && listRef.current !== undefined && ltpIndex !== -1) {
       // we do the calculation because we start in reverse
       listRef.current.scrollToItem(ALL_PRICES.length - 1 - ltpIndex, 'center');
       setlistRefSet(true);
     }
-  }, [ltp]);
+  }, [ltps]);
 
   //* Scroll to the LTP when the ladder first loads
   useEffect(() => {
@@ -75,7 +75,7 @@ const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLa
   //* Scroll to the LTP when the ladder order changes
   useEffect(() => {
     if (!ladderLocked) scrollToLTP();
-  }, [ltp, draggingLadder, scrollToLTP, ladderLocked]);
+  }, [ltps, draggingLadder, scrollToLTP, ladderLocked]);
 
   return (
     <Container isReferenceSet={isReferenceSet} order={order} containerRef={containerRef} isMoving={isMoving} isLadderDown={isLadderDown} setIsReferenceSet={setReferenceSent} setIsMoving={setIsMoving} setLadderDown={setLadderDown}>
@@ -117,7 +117,7 @@ const Ladder = ({ selectionId, ltp, expanded, order, selectionMatchedBets, setLa
 };
 
 const mapStateToProps = (state, { selectionId }) => ({
-  ltp: getLTP(state.market.ladder, { selectionId }),
+  ltps: getLadderLTPs(state.market.ladder, { selectionId }),
   expanded: state.market.ladder[selectionId].expanded,
   selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
   stakeVal: getStakeVal(state.settings.stake, { selectionId }),

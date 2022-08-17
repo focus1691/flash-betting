@@ -6,7 +6,7 @@ const MarketStatus = ({ marketOpen, marketStartTime, marketStatus, inPlay, pastE
   const [statusCircle, setStatusCircle] = useState('ClosedBlack_Light.svg');
 
   useEffect(() => {
-    if (!marketOpen) {
+    if (!marketOpen && marketStatus !== 'CLOSED') {
       setStatus('Select a market');
       setStatusCircle('ClosedBlack_Light.svg');
     } else if (marketStatus === 'SUSPENDED') {

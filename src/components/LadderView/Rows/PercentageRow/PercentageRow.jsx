@@ -8,7 +8,8 @@ import { removeStopLossOnSide } from '../../../../redux/actions/stopLoss';
 import { removeTickOffsetOnSide } from '../../../../redux/actions/tickOffset';
 import { removeStopEntryBetsOnSide } from '../../../../redux/actions/stopEntry';
 import { setBackLayColOrder } from '../../../../redux/actions/ladder';
-import { getLTP, getPercent, getTV } from '../../../../selectors/marketSelector';
+import { getPercent, getTV } from '../../../../selectors/marketSelector';
+import { getLadderLTPs } from '../../../../selectors/lastTradedPriceSelector';
 import { getLTPstyle } from '../../../../utils/ladder/DeconstructLadder';
 import CancelBets from './CancelBets';
 //* HTTP
@@ -19,9 +20,9 @@ import { getSelectionUnmatchedBets } from '../../../../selectors/orderSelector';
 //* JSS
 import useStyles from '../../../../jss/components/LadderView/percentageRowStyle';
 
-const PercentageRow = memo(({ selectionId, ltp, tv, percent, layFirstCol, unmatchedBets, setBackLayColOrder, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
+const PercentageRow = memo(({ selectionId, ltps, tv, percent, layFirstCol, unmatchedBets, setBackLayColOrder, removeAllSelectionLayBets, removeStopLossOnSide, removeTickOffsetOnSide, removeStopEntryBetsOnSide }) => {
   const classes = useStyles();
-  const ltpStyle = useMemo(() => getLTPstyle(ltp), [ltp]);
+  const ltpStyle = useMemo(() => getLTPstyle(true, ltps), [ltps]);
 
   const cancelBetsOnSide = useCallback(
     (side) => {
@@ -54,7 +55,7 @@ const PercentageRow = memo(({ selectionId, ltp, tv, percent, layFirstCol, unmatc
       </div>
       <Tooltip title="Swap Back/Lay Columns" aria-label="Swap matched columns">
         <div role="button" tabIndex="0" className="th" style={ltpStyle} onClick={() => setBackLayColOrder()}>
-          {ltp[0]}
+          {ltps[0]}
         </div>
       </Tooltip>
       <div className="th" style={{ backgroundColor: layFirstCol ? '#007aaf' : '#eba8a6' }}>
@@ -67,7 +68,7 @@ const PercentageRow = memo(({ selectionId, ltp, tv, percent, layFirstCol, unmatc
 
 const mapStateToProps = (state, { selectionId }) => ({
   priceType: state.ladder.priceType,
-  ltp: getLTP(state.market.ladder, { selectionId }),
+  ltps: getLadderLTPs(state.market.ladder, { selectionId }),
   tv: getTV(state.market.ladder, { selectionId }),
   percent: getPercent(state.market.ladder, { selectionId }),
   layFirstCol: state.ladder.layFirstCol,

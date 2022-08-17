@@ -1,22 +1,14 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { getIsLTP, getLTP } from '../../../selectors/marketSelector';
-import { formatPrice } from '../../../utils/Bets/PriceCalculations';
+import React, { useMemo } from 'react';
 import { getLTPstyle } from '../../../utils/ladder/DeconstructLadder';
 
-const LTPCell = ({ price, isLTP, ltp }) => {
-  const ltpStyle = isLTP ? getLTPstyle(ltp) : { background: '#333f4b' };
+const LTPCell = ({ price, isLTP, ltps }) => {
+  const ltpStyle = useMemo(() => getLTPstyle(isLTP, ltps), [isLTP, ltps]);
 
   return (
     <div style={ltpStyle} className="td">
-      {formatPrice(price)}
+      {price}
     </div>
   );
 };
 
-const mapStateToProps = (state, { selectionId, price }) => ({
-  isLTP: getIsLTP(state.market.ladder, { selectionId, price }),
-  ltp: getLTP(state.market.ladder, { selectionId }),
-});
-
-export default connect(mapStateToProps)(LTPCell);
+export default LTPCell;

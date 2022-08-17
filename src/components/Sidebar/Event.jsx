@@ -11,12 +11,15 @@ import useStyles from '../../jss/components/Sidebar/eventStyle';
 
 import MarketStatus from './MarketStatus';
 
-const Event = ({ marketOpen, marketName, marketStartTime, event, eventType }) => {
+const Event = ({ marketOpen, marketStatus, marketName, marketStartTime, event, eventType }) => {
   const classes = useStyles();
 
   const renderTitle = () => {
     if (marketOpen) {
       return formatEventName(marketName, marketStartTime, event, eventType);
+    }
+    if (marketStatus === 'CLOSED') {
+      return 'Market is closed';
     }
     return 'No Event Selected';
   };
@@ -38,6 +41,7 @@ const Event = ({ marketOpen, marketName, marketStartTime, event, eventType }) =>
 
 const mapStateToProps = (state) => ({
   marketOpen: state.market.marketOpen,
+  marketStatus: state.market.status,
   marketName: state.market.marketName,
   marketStartTime: state.market.marketStartTime,
   event: state.market.event,

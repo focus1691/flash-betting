@@ -11,15 +11,9 @@ export const getRunner = createSelector(getRunnerSelector, (runner) => runner);
 
 export const getLadder = createSelector(getLadderSelector, (ladder) => ladder);
 
-export const getLTP = createSelector(getLadderSelector, (ladder) => ((ladder && ladder.ltp) ? ladder.ltp : null));
-
 const getPLSelector = (state, { selectionId }) => state[selectionId];
 
 export const getPL = createSelector(getPLSelector, (pl) => pl);
-
-const getLTPCheckerSelector = (state, { selectionId, price }) => state[selectionId].ltp[0] == price;
-
-export const getIsLTP = createSelector(getLTPCheckerSelector, (isLTP) => isLTP);
 
 const getLadderUnmatchedSelector = (ladder, { selectionId, side, price }) => ({ matched: ladder[selectionId][side == 'BACK' ? 'atbo' : 'atlo'][formatPriceKey(price)], side });
 
