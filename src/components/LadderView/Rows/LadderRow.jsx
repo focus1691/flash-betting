@@ -11,8 +11,7 @@ import { getStakeVal } from '../../../selectors/settingsSelector';
 import { getPL } from '../../../selectors/marketSelector';
 import { getMatchedSide } from '../../../utils/Bets/GetMatched';
 
-const LadderRow = ({ data: { selectionId, hedgingAvailable }, PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol, isLTP, ltps }) => {
-  const key = ALL_PRICES[ALL_PRICES.length - index - 1];
+const LadderRow = ({ data: { selectionId, hedgingAvailable }, PL, selectionMatchedBets, ladderUnmatchedDisplay, stakeVal, style, index, layFirstCol, price, isLTP, ltps }) => {
   const side = getMatchedSide(layFirstCol);
 
   // gets all the bets and returns a hedge or new pl
@@ -22,18 +21,19 @@ const LadderRow = ({ data: { selectionId, hedgingAvailable }, PL, selectionMatch
   // const HedgeSize = useMemo(() => (hedgingAvailable ? CalculateLadderHedge(key, selectionMatchedBets, 'hedged', stakeVal, PL).size : undefined), [hedgingAvailable, selectionMatchedBets, key, stakeVal, PL]);
 
   return (
-    <div key={`ladder-row-${selectionId}-${key}`} className="tr" style={style}>
-      <VolumeCell selectionId={selectionId} price={key} />
-      <HedgeCell selectionId={selectionId} price={key} side={side.left} hedgingAvailable={hedgingAvailable} />
-      <OrderCell selectionId={selectionId} price={key} side={side.left} />
-      <OddsCell selectionId={selectionId} price={key} isLTP={isLTP} ltps={ltps} />
-      <OrderCell selectionId={selectionId} price={key} side={side.right} />
-      <HedgeCell selectionId={selectionId} price={key} side={side.right} hedgingAvailable={hedgingAvailable} />
+    <div key={`ladder-row-${selectionId}-${price}`} className="tr" style={style}>
+      <VolumeCell selectionId={selectionId} price={price} />
+      <HedgeCell selectionId={selectionId} price={price} side={side.left} hedgingAvailable={hedgingAvailable} />
+      <OrderCell selectionId={selectionId} price={price} side={side.left} />
+      <OddsCell selectionId={selectionId} price={price} isLTP={isLTP} ltps={ltps} />
+      <OrderCell selectionId={selectionId} price={price} side={side.right} />
+      <HedgeCell selectionId={selectionId} price={price} side={side.right} hedgingAvailable={hedgingAvailable} />
     </div>
   );
 };
 
 const mapStateToProps = (state, { data: { selectionId }, index }) => ({
+  price: ALL_PRICES[ALL_PRICES.length - index - 1],
   ladderUnmatchedDisplay: state.settings.ladderUnmatched,
   selectionMatchedBets: getSelectionMatchedBets(state.order.bets, { selectionId }),
   stakeVal: getStakeVal(state.settings.stake, { selectionId }),
