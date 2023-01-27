@@ -47,7 +47,6 @@ class BetFairMenuController {
     } catch (error) {
       console.warn('Error fetching the sports menu')
     }
-    return res.sendStatus(401);
   }
 
   getSportData(req, res) {
