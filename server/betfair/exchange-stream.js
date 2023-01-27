@@ -16,20 +16,20 @@ class BetFairStreamAPI {
     this.isTestDisconnected = false;
   }
 
-  authenticate(accessToken) {
+  authenticate(sessionKey) {
     const options = {
       host: 'stream-api.betfair.com',
       port: 443,
     };
     this.client = tls.connect(options, () => {
-      console.log(`Connected ${this.socket.id}`);
+      console.log(`Connected Socket: ${this.socket.id}, Session: ${sessionKey}`);
 
       this.client.setEncoding('utf8');
 
       const authParams = {
         op: 'authentication',
         appKey: process.env.APP_KEY,
-        session: `BEARER ${accessToken}`
+        session: `BEARER ${sessionKey}`
       }
 
       this.client.write(`${JSON.stringify(authParams)}\r\n`);
@@ -64,7 +64,8 @@ class BetFairStreamAPI {
           const result = JSON.parse(this.chunks.join(''));
           if (result.op === 'status') {
             if (result.connectionClosed) {
-              console.log(`status with connection closed ${result} ${this.socket.id}`);
+              console.warn(`status with connection closed ${this.socket.id}`);
+              console.log(result);
               const { errorCode, errorMessage } = result;
               this.socket.emit('connection-disconnected', { errorCode, errorMessage });
             }
@@ -109,9 +110,9 @@ class BetFairStreamAPI {
     });
   }
 
-  subscribe(accessToken, params) {
+  subscribe(sessionKey, params) {
     if (this.connectionClosed || !this.client) {
-      this.authenticate(accessToken);
+      this.authenticate(sessionKey);
       this.subscriptions.push(params);
     } else {
       this.client.write(`${JSON.stringify(params)}\r\n`);
@@ -133,7 +134,7 @@ class BetFairStreamAPI {
     }
   }
 
-  makeMarketSubscription(accessToken, marketId, initialClk, clk) {
+  makeMarketSubscription(sessionKey, marketId, initialClk, clk) {
     const params = {
       op: 'marketSubscription',
       id: BetFairStreamAPI.id += 1,
@@ -153,7 +154,7 @@ class BetFairStreamAPI {
       params.clk = clk;
     }
 
-    this.subscribe(accessToken, params);
+    this.subscribe(sessionKey, params);
   }
 }
 

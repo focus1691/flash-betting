@@ -130,8 +130,9 @@ class BetfairSession {
     this.setAccessToken(null);
   }
 
-  createExchangeStream(client, accessToken=this.accessToken) {
-    return new ExchangeStream(client, accessToken);
+  createExchangeStream(client) {
+    console.log(this.sessionKey);
+    return new ExchangeStream(client, this.sessionKey);
   }
 
   // Create multiple Betfair API calls (account API, bettint api, etc)

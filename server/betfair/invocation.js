@@ -82,7 +82,8 @@ class BetfairInvocation {
     const httpOptions = {
       headers: {
         'X-Application': this.applicationKey,
-        Authorization: `BEARER ${BetfairInvocation.accessToken}`,
+        // Authorization: `BEARER ${BetfairInvocation.accessToken}`,
+        'X-Authentication': BetfairInvocation.sessionKey,
         'Content-Type': 'application/json',
         'Content-Length': this.jsonRequestBody.length,
         'Accept-Encoding': 'gzip, deflate',

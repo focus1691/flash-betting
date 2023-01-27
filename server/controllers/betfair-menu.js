@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 const express = require('express');
 const fetch = require('node-fetch');
+const moment = require('moment');
 const _ = require('lodash');
 const APIHelper = require('../api/helper');
 
@@ -19,10 +20,32 @@ class BetFairMenuController {
   }
 
   async loadSportsMenu(req, res) {
-    const navigationMenu = await APIHelper.getNavigationMenu(req.cookies.token);
-    if (navigationMenu) {
-      req.betfair.allSports = navigationMenu;
-      return res.sendStatus(200);
+
+    try {
+      if (!req.betfair.allSports || !req.betfair.lastMenuUpdate || req.betfair.lastMenuUpdate.diff(moment(), 'minutes') >= 60) {
+        const headers = {
+          'X-Application': process.env.APP_KEY,
+          'X-Authentication': req.betfair.sessionKey,
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate',
+          Connection: 'keep-alive',
+        };
+        await fetch('https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json', {
+          headers,
+        })
+          .then((res) => res.json())
+          .then((menu) => {
+            if (menu && menu.children) {
+              menu.children.forEach((item) => {
+                req.betfair.allSports[item.id] = item.children;
+              });
+              req.betfair.lastMenuUpdate = moment();
+            }
+            return res.status(200).json({ sports: req.betfair.allSports });
+          })
+      }
+    } catch (error) {
+      console.warn('Error fetching the sports menu')
     }
     return res.sendStatus(401);
   }

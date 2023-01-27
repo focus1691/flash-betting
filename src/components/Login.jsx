@@ -75,7 +75,7 @@ const Login = () => {
 
   return (
     <>
-      {sessionKey && !isProcessing && _.isEmpty(error) ? <Redirect to="/authentication" /> : null}
+      {sessionKey && !isProcessing && _.isEmpty(error) ? <Redirect to="/dashboard" /> : null}
       <CssBaseline />
       <Box className={classes.box}>
         <Box className={classes.background} />

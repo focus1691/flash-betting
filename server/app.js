@@ -77,27 +77,30 @@ class App {
         });
       }
 
-      if (!req.cookies.token && !isAuthURL(req.url)) {
-        return res.status(401).json({
-          error: 'NO_SESSION',
-        });
-      }
+      // if (!req.cookies.token && !isAuthURL(req.url)) {
+      //   console.log(5);
+      //   return res.status(401).json({
+      //     error: 'NO_SESSION',
+      //   });
+      // }
     
-      if (!betfair.accessToken && req.cookies.accessToken) {
-        betfair.setAccessToken(req.cookies.accessToken);
-      }
+      // if (!betfair.accessToken && req.cookies.accessToken) {
+      //   console.log(6);
+      //   betfair.setAccessToken(req.cookies.accessToken);
+      // }
     
-      if (!req.cookies.accessToken && !isAuthURL(req.url)) {
-        const accessToken = await apiHelper.getAccessToken(req.cookies.token);
-        if (accessToken) {
-          res.cookie('accessToken', accessToken);
-          betfair.setAccessToken(accessToken);
-        } else {
-          return res.status(401).json({
-            error: 'NO_SESSION',
-          });
-        }
-      }
+      // if (!req.cookies.accessToken && !isAuthURL(req.url)) {
+      //   console.log(7);
+      //   const accessToken = await apiHelper.getAccessToken(req.cookies.token);
+      //   if (accessToken) {
+      //     res.cookie('accessToken', accessToken);
+      //     betfair.setAccessToken(accessToken);
+      //   } else {
+      //     return res.status(401).json({
+      //       error: 'NO_SESSION',
+      //     });
+      //   }
+      // }
       req.betfair = betfair;
       req.apiHelper = apiHelper;
       req.sseStream = this.sseStream;
@@ -118,15 +121,16 @@ class App {
   async onClientConnected(client) {
     console.log('new socket connection', client.id);
     
-    const exchangeStream = betfair.createExchangeStream(client, betfair.accessToken);
+    const exchangeStream = betfair.createExchangeStream(client, betfair.sessionKey);
 
     client.on('market-subscription', async ({ marketId }) => {
-      exchangeStream.makeMarketSubscription(betfair.accessToken, marketId);
+      console.log(`Subscribing to market ${marketId}, Session: ${betfair.sessionKey}`);
+      exchangeStream.makeMarketSubscription(betfair.sessionKey, marketId);
     });
 
     client.on('market-resubscription', async ({ initialClk, clk, marketId }) => {
-      console.log(`resubscribing to market ${marketId}`);
-      exchangeStream.makeMarketSubscription(betfair.accessToken, marketId, initialClk, clk);
+      console.log(`Resubscribing to market ${marketId}, Session: ${betfair.sessionKey}`);
+      exchangeStream.makeMarketSubscription(betfair.sessionKey, marketId, initialClk, clk);
     });
 
     client.on('disconnect', () => {

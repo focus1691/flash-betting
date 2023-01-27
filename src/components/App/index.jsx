@@ -85,13 +85,13 @@ const App = ({
 
   const hasAddedSockets = useRef(false);
 
-  const getPremiumStatus = useCallback(async () => {
-    const vendorClientId = await fetchData('/api/get-vendor-client-id');
-    if (vendorClientId) {
-      setUserId(vendorClientId);
-      setPremiumStatus(true);
-    }
-  }, []);
+  // const getPremiumStatus = useCallback(async () => {
+  //   const vendorClientId = await fetchData('/api/get-vendor-client-id');
+  //   if (vendorClientId) {
+  //     setUserId(vendorClientId);
+  //     setPremiumStatus(true);
+  //   }
+  // }, []);
 
   const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
@@ -144,7 +144,7 @@ const App = ({
 
   useEffect(() => {
     const loadData = async () => {
-      await getPremiumStatus();
+      // await getPremiumStatus();
       await retrieveMarket();
       await setIsLoading(false);
     };
