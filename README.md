@@ -23,7 +23,7 @@ Features:
 In order to connect to the Betfair API you will need an App Key, and a BetFair username/password.
 
 ### App Key
-Follow [these](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Application+Keys) instructions to get your app key, you can either use a delayed or live key.
+Follow <a href="https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Application+Keys" target="_blank">these</a> instructions to get your app key, you can either use a delayed or live key.
 The Live Application Key costs a one time fee of £299 payable to BetFair.
 
 # Installation (Web)
