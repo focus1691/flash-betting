@@ -9,14 +9,14 @@
 Flash Betting is a mostly Front End app used to make trade and interact with the BetFair API.
 
 Features:
-1) Grid View.
-2) Hedging.
-3) One Click Mode in Grid.
-4) Back / Lay tools.
-5) Stop Loss.
-6) Tick Offset.
-7) Charting your recent trade history.
-8) Ladder View (currently still in progress).
+1) Grid View :heavy_check_mark:
+2) Hedging :heavy_check_mark:
+3) One Click Mode in Grid :heavy_check_mark:
+4) Back / Lay tools :heavy_check_mark:
+5) Stop Loss :heavy_check_mark:
+6) Tick Offset :heavy_check_mark:
+7) Charting your recent trade history :heavy_check_mark:
+8) Ladder View (currently still in progress) :hourglass_flowing_sand:
 
 # setup
 
