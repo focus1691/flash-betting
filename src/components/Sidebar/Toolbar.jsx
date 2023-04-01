@@ -76,7 +76,7 @@ const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, videoOpen, setAct
       </Button>
       <Button
         type="button"
-        onClick={handleClick('LadderView')}
+        onClick={null}
         style={view === 'LadderView' ? { background: '#404040' } : {}}
         aria-owns={open ? 'mouse-over-popover' : undefined}
         aria-haspopup="true"

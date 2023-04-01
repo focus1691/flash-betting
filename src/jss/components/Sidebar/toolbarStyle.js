@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
       '&:nth-child(6)': {
         cursor: 'default',
       },
+      '&:nth-child(4)': {
+        cursor: 'not-allowed',
+      },
       '&:nth-child(6) img': {
         cursor: 'not-allowed',
       },
