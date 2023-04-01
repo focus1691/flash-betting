@@ -9,7 +9,7 @@ import { openLiveStream } from '../../redux/actions/draggable';
 //* JSS
 import useStyles from '../../jss/components/Sidebar/toolbarStyle';
 
-const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, premiumMember, videoOpen, setActiveView, setFullscreen, openPremiumDialog, openLiveStream }) => {
+const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, videoOpen, setActiveView, setFullscreen, openPremiumDialog, openLiveStream }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [popupMessage, setPopupMessage] = useState(null);
@@ -76,7 +76,7 @@ const Toolbar = ({ marketOpen, marketStatus, view, fullscreen, premiumMember, vi
       </Button>
       <Button
         type="button"
-        onClick={premiumMember ? handleClick('LadderView') : () => openPremiumDialog(true)}
+        onClick={handleClick('LadderView')}
         style={view === 'LadderView' ? { background: '#404040' } : {}}
         aria-owns={open ? 'mouse-over-popover' : undefined}
         aria-haspopup="true"
@@ -139,7 +139,6 @@ const mapStateToProps = (state) => ({
   marketStatus: state.market.status,
   view: state.settings.view,
   fullscreen: state.settings.fullscreen,
-  premiumMember: state.settings.premiumMember,
   videoOpen: state.draggable.liveStreamOpen,
 });
 

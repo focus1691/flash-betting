@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.spacing(1, 1, 0, 0),
   },
   user: () => userChip(theme),
-  subscription: ({ subscribed }) => subscriptionChip(theme, subscribed),
+  subscription: () => subscriptionChip(theme),
   marketReportContainer: {
     backgroundColor: '#242526',
     boxShadow: '6px 6px 15px #00000057',

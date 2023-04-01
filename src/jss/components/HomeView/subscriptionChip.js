@@ -1,5 +1,5 @@
-const subscriptionChip = (theme, subscribed) => ({
-  background: subscribed ? '#0BBF63' : '#F44336',
+const subscriptionChip = (theme) => ({
+  background: '#0BBF63',
   color: '#121212',
   fontFamily: 'Roboto',
   fontWeight: 'bold',

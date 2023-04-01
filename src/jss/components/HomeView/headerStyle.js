@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#EEEEEE',
   },
   user: () => userChip(theme),
-  subscription: ({ subscribed }) => subscriptionChip(theme, subscribed),
+  subscription: () => subscriptionChip(theme),
   username: {
     textSecurity: 'disc',
     '-webkit-text-security': 'disc',

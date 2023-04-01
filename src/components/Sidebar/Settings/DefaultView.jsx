@@ -10,12 +10,10 @@ import { setItem } from '../../../localStorage/settings';
 import SectionBar from '../../../jss/components/Sidebar/SectionBar';
 import SectionContent from '../../../jss/components/Sidebar/SectionContent';
 
-export default ({ defaultView, toggleDefaultView, premiumMember, classes }) => {
+export default ({ defaultView, toggleDefaultView, classes }) => {
   const [changeMade, setChangeMade] = useState(false);
 
   const handleViewChange = () => (e) => {
-    if (!premiumMember && e.target.value === 'LadderView') return;
-
     setChangeMade(true);
     toggleDefaultView(e.target.value);
   };

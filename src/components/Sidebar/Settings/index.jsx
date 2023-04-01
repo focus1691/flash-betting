@@ -36,7 +36,6 @@ import HorseRacing from './HorseRacing';
 import useStyles from '../../../jss/components/Sidebar/settings/settingsStyle';
 
 const Settings = ({
-  premiumMember,
   defaultView,
   setDefaultView,
   sounds,
@@ -70,7 +69,7 @@ const Settings = ({
 
   return (
     <div className={classes.settingsContainer}>
-      <DefaultView defaultView={defaultView} toggleDefaultView={setDefaultView} premiumMember={premiumMember} classes={classes} />
+      <DefaultView defaultView={defaultView} toggleDefaultView={setDefaultView} classes={classes} />
 
       <Sounds sounds={sounds} toggleSounds={toggleSound} classes={classes} />
 
@@ -104,7 +103,6 @@ const Settings = ({
 };
 
 const mapStateToProps = (state) => ({
-  premiumMember: state.settings.premiumMember,
   defaultView: state.settings.defaultView,
   view: state.settings.view,
   sounds: state.settings.sounds,

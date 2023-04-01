@@ -10,8 +10,8 @@ import useStyles from '../../../jss/components/ClosedMarketView/marketSettlement
 
 const cookies = new Cookies();
 
-const MarketSettlement = ({ id, premiumMember, marketName, marketStartTime, venue }) => {
-  const styles = useStyles({ subscribed: premiumMember });
+const MarketSettlement = ({ id, marketName, marketStartTime, venue }) => {
+  const styles = useStyles();
 
   return (
     <div className={styles.container}>
@@ -19,7 +19,6 @@ const MarketSettlement = ({ id, premiumMember, marketName, marketStartTime, venu
         Market Settlement
         <div>
           <Chip className={styles.user} color="primary" label={`${cookies.get('username')} | ID ${id}`} />
-          <Chip className={styles.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
         </div>
       </Typography>
       <div className={styles.marketReportContainer}>
@@ -38,7 +37,6 @@ const MarketSettlement = ({ id, premiumMember, marketName, marketStartTime, venu
 
 const mapStateToProps = (state) => ({
   id: state.account.id,
-  premiumMember: state.settings.premiumMember,
   marketName: state.market.marketName,
   marketStartTime: state.market.marketStartTime,
   venue: state.market.event.venue,

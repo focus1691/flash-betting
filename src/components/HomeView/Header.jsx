@@ -9,8 +9,8 @@ import useStyles from '../../jss/components/HomeView/headerStyle';
 
 const cookies = new Cookies();
 
-const Header = ({ premiumMember, id }) => {
-  const classes = useStyles({ subscribed: premiumMember });
+const Header = ({ id }) => {
+  const classes = useStyles();
 
   return (
     <div className={classes.header}>
@@ -33,7 +33,6 @@ const Header = ({ premiumMember, id }) => {
             </>
           )}
         />
-        <Chip className={classes.subscription} label={`Subscription: ${premiumMember ? 'Active' : 'Expired'}`} />
       </div>
     </div>
   );
