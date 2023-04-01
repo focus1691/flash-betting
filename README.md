@@ -29,13 +29,13 @@ The Live Application Key costs a one time fee of £299 payable to BetFair.
 # Installation (Web)
 
 ```bash
-$ npm install // Install the depdencies
+$ npm install // Install the dependencies
 $ npm run browser // Run the Front End and Local Back End concurrently
 ```
 
 # Installation (Desktop App)
 
 ```bash
-$ npm install // Install the depdencies
+$ npm install // Install the dependencies
 $ npm run electron-build // Build the .dmg or .exe with Electron Builder
 ```
