@@ -1,38 +1,32 @@
 <p align="center">
   <a href="#">
-    <img src="public/images/logo.png" title="flash-betting">
+    <img src="public/images/logo.png" alt="Flash Betting" width="500">
   </a>
 </p>
+<h1 align="center">Flash Betting</h1>
+<p align="center">Flash Betting is a mostly Front End app used to trade and interact with the BetFair API. The goal is to make a free version that can compete with the likes of GeeksToy, Bet Trader, and others. The app runs both the Front End / Back End locally and concurrently.</p>
+<h2 align="center">Features</h2>
+<p align="center">
+  <img src="https://img.shields.io/badge/Grid%20View-&#x2714;-brightgreen" alt="Grid View">
+  <img src="https://img.shields.io/badge/Hedging-&#x2714;-brightgreen" alt="Hedging">
+  <img src="https://img.shields.io/badge/One%20Click%20Mode%20in%20Grid-&#x2714;-brightgreen" alt="One Click Mode">
+  <img src="https://img.shields.io/badge/Back%20/%20Lay%20tools-&#x2714;-brightgreen" alt="Back / Lay tools">
+  <img src="https://img.shields.io/badge/Stop%20Loss-&#x2714;-brightgreen" alt="Stop Loss">
+  <img src="https://img.shields.io/badge/Tick%20Offset-&#x2714;-brightgreen" alt="Tick Offset">
+  <img src="https://img.shields.io/badge/Charting%20your%20recent%20trade%20history-&#x2714;-brightgreen" alt="Trade Charting">
+  <img src="https://img.shields.io/badge/Ladder%20View-&#x231B;-yellow" alt="Ladder View (in progress)">
+</p>
+<h2 align="center">Technologies used in this project</h2>
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" width="64" height="64">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React.js" width="64" height="64">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg" alt="Redux" width="64" height="64">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/materialui/materialui-original.svg" alt="Material UI" width="64" height="64">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" alt="SQLite" width="64" height="64">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/electron/electron-original.svg" alt="Electron" width="64" height="64">
+</p>
 
-# Flash Betting
-
-Flash Betting is a mostly Front End app used to trade and interact with the BetFair API. The goal is to make a free version that can compete with the likes of GeeksToy, Bet Trader, and others.
-
-The app runs both the Front End / Back End locally and concurrently.
-
-## Features:
-1) Grid View :heavy_check_mark:
-2) Hedging :heavy_check_mark:
-3) One Click Mode in Grid :heavy_check_mark:
-4) Back / Lay tools :heavy_check_mark:
-5) Stop Loss :heavy_check_mark:
-6) Tick Offset :heavy_check_mark:
-7) Charting your recent trade history :heavy_check_mark:
-8) Ladder View (currently still in progress) :hourglass_flowing_sand:
-
-## Technologies used in this project include:
-<table>
-  <tr>
-    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" width="48" height="48" /> Node.js</td>
-    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="48" height="48" /> React.js</td>
-    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg" width="48" height="48" /> Redux</td>
-    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/materialui/materialui-original.svg" width="48" height="48" /> Material UI</td>
-    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="48" height="48" /> SQLite</td>
-    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/electron/electron-original.svg" width="48" height="48" /> Electron</td>
-  </tr>
-</table>
-
-# setup
+# Setup
 
 In order to connect to the Betfair API you will need an App Key, and a BetFair username/password.
 
