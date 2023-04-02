@@ -6,7 +6,7 @@
 
 # Flash Betting
 
-Flash Betting is a mostly Front End app used to make trade and interact with the BetFair API.
+Flash Betting is a mostly Front End app used to trade and interact with the BetFair API. The goal is to make a free version that can compete with the likes of GeeksToy, Bet Trader, and others.
 
 Features:
 1) Grid View :heavy_check_mark:
