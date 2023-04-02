@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://github.com/betcode-org">
-    <img src="public/images/logo.png" title="betcode-org">
+  <a href="www.flashbetting.co.uk">
+    <img src="public/images/logo.png" title="flash-betting">
   </a>
 </p>
 
