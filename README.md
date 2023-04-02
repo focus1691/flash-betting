@@ -8,7 +8,9 @@
 
 Flash Betting is a mostly Front End app used to trade and interact with the BetFair API. The goal is to make a free version that can compete with the likes of GeeksToy, Bet Trader, and others.
 
-Features:
+The app runs both the Front End / Back End locally and concurrently.
+
+## Features:
 1) Grid View :heavy_check_mark:
 2) Hedging :heavy_check_mark:
 3) One Click Mode in Grid :heavy_check_mark:
@@ -17,6 +19,18 @@ Features:
 6) Tick Offset :heavy_check_mark:
 7) Charting your recent trade history :heavy_check_mark:
 8) Ladder View (currently still in progress) :hourglass_flowing_sand:
+
+## Technologies used in this project include:
+<table>
+  <tr>
+    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" width="48" height="48" /> Node.js</td>
+    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="48" height="48" /> React.js</td>
+    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg" width="48" height="48" /> Redux</td>
+    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/materialui/materialui-original.svg" width="48" height="48" /> Material UI</td>
+    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="48" height="48" /> SQLite</td>
+    <td><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/electron/electron-original.svg" width="48" height="48" /> Electron</td>
+  </tr>
+</table>
 
 # setup
 
