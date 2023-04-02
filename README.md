@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="www.flashbetting.co.uk">
+  <a href="#">
     <img src="public/images/logo.png" title="flash-betting">
   </a>
 </p>
