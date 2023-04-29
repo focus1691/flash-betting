@@ -34,6 +34,14 @@ In order to connect to the Betfair API you will need an App Key, and a BetFair u
 Follow <a href="https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Application+Keys" target="_blank">these</a> instructions to get your app key, you can either use a delayed or live key.
 The Live Application Key costs a one time fee of £299 payable to BetFair.
 
+### Environmental Variables
+To configure the environment variables, create a ```.env``` file in the root directory of the project. Use the provided ```example.env``` file as a template to set up your own ```.env``` file. The ```APP_KEY``` variable should be set to your purchased app key from Betfair.
+
+Example:
+```bash
+APP_KEY=your_app_key_here
+```
+
 # Installation (Web)
 
 ```bash
