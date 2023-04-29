@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 const express = require('express');
-const APIHelper = require('../api/helper');
 
 class BetFairAuthenticationController {
   constructor() {
@@ -45,42 +44,6 @@ class BetFairAuthenticationController {
     } catch (error) {
       return res.sendStatus(400).json({ error });
     }
-  }
-
-  async registrationStatus(req, res) {
-    if (!req.cookies.username) {
-      return res.status(400).json({ error: 'Username not found' });
-    }
-    const isRegistered = await APIHelper.isUserRegistered(req.cookies.username);
-    return res.status(200).json({ result: isRegistered });
-  }
-
-  async authenticate(req, res) {
-    const { username } = req.cookies;
-    let { token, accessToken } = req.cookies;
-
-    if (!username) {
-      return res.status(400).json({ error: 'Username not found' });
-    }
-
-    if (!token) {
-      token = await APIHelper.login({ user: req.cookies.username });
-      if (token) res.cookie('token', token);
-    }
-
-    if (token && !accessToken) {
-      accessToken = await APIHelper.getAccessToken(token);
-      if (accessToken) {
-        res.cookie('accessToken', accessToken);
-        req.betfair.setAccessToken(accessToken);
-      }
-    }
-
-    if (!token || !accessToken) {
-      return res.status(400).json({ error: 'Cannot authenticate' });
-    }
-
-    return res.status(200).json({ result: true });
   }
 
   clearSession(res) {
