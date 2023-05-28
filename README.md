@@ -55,3 +55,12 @@ $ npm run browser // Run the Front End and Local Back End concurrently
 $ npm install // Install the dependencies
 $ npm run electron-build // Build the .dmg or .exe with Electron Builder
 ```
+
+# Screenshots
+
+![Login](https://github.com/focus1691/flash-betting/blob/master/screenshots/login_page.png)
+![View 1](https://github.com/focus1691/flash-betting/blob/master/screenshots/chart.png)
+![Chart](https://github.com/focus1691/flash-betting/blob/master/screenshots/collapsed_view.png)
+![Grid](https://github.com/focus1691/flash-betting/blob/master/screenshots/grid_view.png)
+![Ladder](https://github.com/focus1691/flash-betting/blob/master/screenshots/ladder_view.png)
+![Market](https://github.com/focus1691/flash-betting/blob/master/screenshots/market_list.png)
