@@ -6,10 +6,8 @@ const SocketIO = require('socket.io');
 const SseStream = require('ssestream').default;
 
 const BetFairSession = require('./betfair/session.js');
-const APIHelper = require('./api/helper');
 
 const betfair = new BetFairSession(process.env.APP_KEY);
-const apiHelper = new APIHelper(betfair);
 
 const { isAuthURL } = require('./utils/Validator');
 
@@ -76,33 +74,7 @@ class App {
           error: 'NO_SESSION',
         });
       }
-
-      // if (!req.cookies.token && !isAuthURL(req.url)) {
-      //   console.log(5);
-      //   return res.status(401).json({
-      //     error: 'NO_SESSION',
-      //   });
-      // }
-    
-      // if (!betfair.accessToken && req.cookies.accessToken) {
-      //   console.log(6);
-      //   betfair.setAccessToken(req.cookies.accessToken);
-      // }
-    
-      // if (!req.cookies.accessToken && !isAuthURL(req.url)) {
-      //   console.log(7);
-      //   const accessToken = await apiHelper.getAccessToken(req.cookies.token);
-      //   if (accessToken) {
-      //     res.cookie('accessToken', accessToken);
-      //     betfair.setAccessToken(accessToken);
-      //   } else {
-      //     return res.status(401).json({
-      //       error: 'NO_SESSION',
-      //     });
-      //   }
-      // }
       req.betfair = betfair;
-      req.apiHelper = apiHelper;
       req.sseStream = this.sseStream;
       return next();
     }).bind(this);

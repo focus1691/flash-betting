@@ -3,7 +3,6 @@ const express = require('express');
 const fetch = require('node-fetch');
 const moment = require('moment');
 const _ = require('lodash');
-const APIHelper = require('../api/helper');
 
 class BetFairMenuController {
   constructor() {
