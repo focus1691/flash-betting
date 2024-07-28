@@ -4,7 +4,9 @@
   </a>
 </p>
 <h1 align="center">Flash Betting</h1>
-<p align="center">Flash Betting is a mostly Front End app used to trade and interact with the BetFair API. The goal is to make a free version that can compete with the likes of GeeksToy, Bet Trader, and others. The app runs both the Front End / Back End locally and concurrently.</p>
+<p align="center">Flash Betting is a web application to trade using the BetFair API. It uses the Streaming API to get live price updates.</p>
+<p align="center">Written in pure JS, the Front End is built in React and the backend in Node.js. It is integrated with Electron to run as a desktop application.</p>
+<p align="center">Most functionality is implemented, but the app is still in an unfinished state.</p>
 <h2 align="center">Features</h2>
 <p align="center">
   <img src="https://img.shields.io/badge/Grid%20View-&#x2714;-brightgreen" alt="Grid View">
