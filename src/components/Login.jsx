@@ -137,7 +137,7 @@ const Login = () => {
               }}
             />
             <div className={classes.submit}>
-              <Button type="submit" fullWidth variant="contained" disabled={authPending} >
+              <Button type="submit" fullWidth variant="contained" disabled={authPending}>
                 Sign In
               </Button>
             </div>
