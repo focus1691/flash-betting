@@ -44,6 +44,10 @@ Example:
 APP_KEY=your_app_key_here
 ```
 
+### Node.js Requirements
+
+Flash Betting requires Node.js version 14.x to 16.x. Ensure that your environment is using one of these supported versions before proceeding with installation.
+
 # Installation (Web)
 
 ```bash
