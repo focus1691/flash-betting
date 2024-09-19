@@ -131,7 +131,6 @@ class BetfairSession {
   }
 
   createExchangeStream(client) {
-    console.log(this.sessionKey);
     return new ExchangeStream(client, this.sessionKey);
   }
 

@@ -49,16 +49,12 @@ import ConnectionStatus from '../ConnectionStatus';
 import useStyles from '../../jss';
 
 const App = ({
-  initialClk,
-  clk,
   view,
   isLoading,
   marketOpen,
   marketId,
   socket,
-  setUserId,
   setIsLoading,
-  setPremiumStatus,
   processMarketUpdates,
   setConnectionErrorMessage,
   setMarketId,
@@ -84,14 +80,6 @@ const App = ({
   useTools();
 
   const hasAddedSockets = useRef(false);
-
-  // const getPremiumStatus = useCallback(async () => {
-  //   const vendorClientId = await fetchData('/api/get-vendor-client-id');
-  //   if (vendorClientId) {
-  //     setUserId(vendorClientId);
-  //     setPremiumStatus(true);
-  //   }
-  // }, []);
 
   const retrieveMarket = useCallback(async () => {
     const marketId = getQueryVariable('marketId');
@@ -123,7 +111,7 @@ const App = ({
         loadRunners(CreateRunners(runners));
         setRunner(runners[0]);
 
-        //* Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
+        // Subscribe to Market Change Messages (MCM) via the Exchange Streaming API
         socket.emit('market-subscription', { marketId });
       } else {
         const marketBook = await fetchData(`/api/list-market-book?marketId=${marketId}`);
@@ -144,7 +132,6 @@ const App = ({
 
   useEffect(() => {
     const loadData = async () => {
-      // await getPremiumStatus();
       await retrieveMarket();
       await setIsLoading(false);
     };
@@ -152,7 +139,6 @@ const App = ({
   }, []);
 
   const onMarketDisconnect = async ({ errorCode, errorMessage }) => {
-    console.log('onMarketDisconnect', errorCode, errorMessage);
     if (errorCode) {
       handleAuthError(errorCode);
     }

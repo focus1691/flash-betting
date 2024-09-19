@@ -1,10 +1,7 @@
 const { StringDecoder } = require('string_decoder');
-
-const decoder = new StringDecoder('utf8');
-
 const tls = require('tls');
 
-const testWaitTime = 20 * 1000;
+const decoder = new StringDecoder('utf8');
 
 class BetFairStreamAPI {
   constructor(socket) {
@@ -38,26 +35,11 @@ class BetFairStreamAPI {
 
       this.client.on('data', (data) => {
 
-        const now = new Date().getTime();
-
         // Read the data into Buffer
         const bufferedData = Buffer.from(data);
 
         // Convert the buffer into a String
         this.chunks.push(decoder.write(bufferedData));
-
-        // For debug purposes, simulate a connection disconnect
-        if (process.env.BETFAIR_CONNECTION_ERROR === 'test' && !this.isTestDisconnected && now - this.connectedAt > testWaitTime) {
-          console.log(`simulating a disconnect from a Exchange Streaming connection ${this.socket.id}`);
-          if (this.client) {
-            this.client.destroy();
-          }
-          this.socket.emit('connection-disconnected', {
-            errorCode: 'A_TEST_ERROR_CODE',
-            errorMessage: 'This is a simulated socket disconnect from the Streaming API',
-          });
-          this.isTestDisconnected = true;
-        }
 
         // Parse the data String into JSON Object
         try {

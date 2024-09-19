@@ -11,8 +11,6 @@ class BetFairAuthenticationController {
   initRoutes() {
     this.router.post('/login', this.login);
     this.router.get('/logout', this.logout.bind(this));
-    this.router.get('/registration-status', this.registrationStatus);
-    this.router.get('/authenticate-user', this.authenticate);
     this.router.get('/keep-alive', this.keepAlive);
   }
 
