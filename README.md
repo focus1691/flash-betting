@@ -53,14 +53,14 @@ Flash Betting requires Node.js version 14.x to 16.x. Ensure that your environmen
 # Installation (Web)
 
 ```bash
-$ npm install // Install the dependencies
+$ npm install --legacy-peer-deps // Install the dependencies
 $ npm run browser // Run the Front End and Local Back End concurrently
 ```
 
 # Installation (Desktop App)
 
 ```bash
-$ npm install // Install the dependencies
+$ npm install --legacy-peer-deps // Install the dependencies
 $ npm run electron-build // Build the .dmg or .exe with Electron Builder
 ```
 
